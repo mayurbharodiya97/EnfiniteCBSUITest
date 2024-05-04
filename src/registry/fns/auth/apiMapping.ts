@@ -1296,6 +1296,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
     packageName: "",
   },
+  DOLIMITCONFRIMATION: {
+    url: "/loanServiceAPI/DOLIMITCONFRIMATION",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

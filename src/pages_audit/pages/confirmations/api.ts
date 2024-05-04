@@ -51,12 +51,16 @@ export const getConfirmationGridData = async (apiReqPara) => {
           : item.AD_HOC_LIMIT_FLG === "A"
           ? "Ad-Hoc Limit"
           : null;
-      item.STATUS_FLAG =
-        item.STATUS_FLAG === "A"
+      item.EXPIRED_FLAG =
+        item.EXPIRED_FLAG === "A"
           ? "Active"
-          : item.STATUS_FLAG === "E"
+          : item.EXPIRED_FLAG === "E"
           ? "Expired"
           : null;
+
+      if (item.STATUS_FLAG === "E") {
+        item._rowColor = "rgb(255, 225, 225)";
+      }
 
       //stock
       item.STOCK_VALUE = item.STOCK_VALUE

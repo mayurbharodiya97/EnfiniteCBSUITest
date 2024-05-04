@@ -51,10 +51,9 @@ const StockEntryCustom = () => {
   const [closeAlert, setCloseAlert] = useState<any>(true);
   const [refreshForm, setRefreshForm] = useState<any>(0);
   const { authState } = useContext(AuthContext);
-  const deleteDataRef = useRef<any>(null);
   const [value, setValue] = useState("tab1");
+  const deleteDataRef = useRef<any>(null);
   const { MessageBox } = usePopupContext();
-  const initialValuesRef = useRef<any>(null);
   const insertDataRef = useRef<any>(null);
   const myMasterRef = useRef<any>(null);
   const navigate = useNavigate();
@@ -66,31 +65,6 @@ const StockEntryCustom = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    // {
-    //   actionName: "force-view-details",
-    //   actionLabel: "Force-Expire",
-    //   multiple: false,
-    //   rowDoubleClick: true,
-    //   shouldExclude(rowData, authState) {
-    //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
-    //       return true;
-    //     }
-    //     return false;
-    //   },
-    // },
-    // {
-    //   actionName: "force-view-details",
-    //   actionLabel: "View-Detail",
-    //   multiple: false,
-    //   rowDoubleClick: true,
-    //   shouldExclude(rowData, authState) {
-    //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
-    //       return false;
-    //     }
-    //     return true;
-    //   },
-    // },
-
     {
       actionName: "view-upload",
       actionLabel: "View-Upload Document",
@@ -111,7 +85,6 @@ const StockEntryCustom = () => {
         } else {
           newData = { ...StockEntryMetaData };
         }
-
         setNewFormMTdata(newData);
       },
       onError: (error: any) => {
@@ -158,8 +131,6 @@ const StockEntryCustom = () => {
           ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
           ACCT_TYPE: variables?.ACCT_TYPE,
           BRANCH_CD: variables?.BRANCH_CD,
-          // ENTERED_DATE: authState?.workingDate,
-          // GD_TODAY: authState?.workingDate,
           A_USER_LEVEL: authState?.role,
         });
         enqueueSnackbar("Data Delete successfully", { variant: "success" });
@@ -227,7 +198,6 @@ const StockEntryCustom = () => {
             setGridDetailData([]);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   StockGridMetaData.gridConfig.gridLabel = `Stock Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -298,102 +268,99 @@ const StockEntryCustom = () => {
           ) : (
             <LinearProgressBarSpacer />
           )}
-          {value === "tab1" ? (
-            <>
-              <FormWrapper
-                key={"stockEntry" + refreshForm + setNewFormMTdata}
-                metaData={newFormMTdata ?? []}
-                initialValues={initialValuesRef.current ?? []}
-                onSubmitHandler={(data: any, displayData, endSubmit) => {
-                  let apiReq = {
-                    BRANCH_CD: data?.BRANCH_CD,
-                    STOCK_VALUE: data?.STOCK_VALUE,
-                    MARGIN: data?.MARGIN,
-                    CREDITOR: data?.CREDITOR ? data?.CREDITOR : "",
-                    SECURITY_CD: data?.SECURITY_CD,
-                    STOCK_MONTH: data?.STOCK_MONTH,
-                    TRAN_DT: format(new Date(data?.TRAN_DT), "dd-MMM-yyyy"),
-                    ASON_DT: format(new Date(data?.ASON_DT), "dd-MMM-yyyy"),
-                    RECEIVED_DT: format(
-                      new Date(data?.RECEIVED_DT),
-                      "dd-MMM-yyyy"
-                    ),
-                  };
-                  insertDataRef.current = { ...data, ...apiReq };
-                  insertValidateData.mutate(apiReq);
-                  //@ts-ignore
-                  endSubmit(true);
-                }}
-                ref={myMasterRef}
-                formState={{ MessageBox: MessageBox }}
-                setDataOnFieldChange={(action, payload) => {
-                  if (action === "IS_VISIBLE") {
-                    setIsVisible(payload.IS_VISIBLE);
-                  }
-                  if (action === "SECURITY_CD") {
-                    securityStoclDTL.mutate(payload);
-                  }
-                }}
-              >
-                {({ isSubmitting, handleSubmit }) => (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-                  </>
-                )}
-              </FormWrapper>
-            </>
-          ) : value === "tab2" ? (
-            <>
-              <GridWrapper
-                key={`stockGridData` + stockEntryGridData.isSuccess}
-                finalMetaData={StockGridMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                setData={() => {}}
-                loading={stockEntryGridData.isLoading}
-                actions={detailActions}
-                setAction={setCurrentAction}
-                onClickActionEvent={(index, id, data) => {
-                  if (id === "DOC_FLAG") {
-                    setCurrentAction({ rows: [{ data }], name: "view-upload" });
-                  }
-                  if (id === "ALLOW_DELETE_FLAG") {
-                    deleteDataRef.current = data;
-                    setDeletePopup(true);
-                  }
-                }}
-              />
+          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+            <FormWrapper
+              key={"stockEntry" + refreshForm + setNewFormMTdata}
+              metaData={newFormMTdata ?? []}
+              initialValues={{}}
+              onSubmitHandler={(data: any, displayData, endSubmit) => {
+                let apiReq = {
+                  BRANCH_CD: data?.BRANCH_CD,
+                  STOCK_VALUE: data?.STOCK_VALUE,
+                  MARGIN: data?.MARGIN,
+                  CREDITOR: data?.CREDITOR ? data?.CREDITOR : "",
+                  SECURITY_CD: data?.SECURITY_CD,
+                  STOCK_MONTH: data?.STOCK_MONTH,
+                  TRAN_DT: format(new Date(data?.TRAN_DT), "dd-MMM-yyyy"),
+                  ASON_DT: format(new Date(data?.ASON_DT), "dd-MMM-yyyy"),
+                  RECEIVED_DT: format(
+                    new Date(data?.RECEIVED_DT),
+                    "dd-MMM-yyyy"
+                  ),
+                };
+                insertDataRef.current = { ...data, ...apiReq };
+                insertValidateData.mutate(apiReq);
+                //@ts-ignore
+                endSubmit(true);
+              }}
+              ref={myMasterRef}
+              formState={{ MessageBox: MessageBox }}
+              setDataOnFieldChange={(action, payload) => {
+                if (action === "IS_VISIBLE") {
+                  setIsVisible(payload.IS_VISIBLE);
+                }
+                if (action === "SECURITY_CD") {
+                  securityStoclDTL.mutate(payload);
+                }
+              }}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                </>
+              )}
+            </FormWrapper>
+          </div>
+          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+            <GridWrapper
+              key={`stockGridData` + stockEntryGridData.isSuccess}
+              finalMetaData={StockGridMetaData as GridMetaDataType}
+              data={gridDetailData ?? []}
+              setData={() => {}}
+              loading={stockEntryGridData.isLoading}
+              actions={detailActions}
+              setAction={setCurrentAction}
+              onClickActionEvent={(index, id, data) => {
+                if (id === "DOC_FLAG") {
+                  setCurrentAction({ rows: [{ data }], name: "view-upload" });
+                }
+                if (id === "ALLOW_DELETE_FLAG") {
+                  deleteDataRef.current = data;
+                  setDeletePopup(true);
+                }
+              }}
+            />
 
-              <Routes>
-                <Route
-                  path="view-upload/*"
-                  element={
-                    <StockEditViewWrapper
-                      navigate={navigate}
-                      stockEntryGridData={stockEntryGridData}
-                    />
-                  }
-                />
-                <Route
-                  path="force-view-details/*"
-                  element={
-                    <ForceExpireStock
-                      stockEntryGridData={stockEntryGridData}
-                      navigate={navigate}
-                    />
-                  }
-                />
-              </Routes>
-            </>
-          ) : null}
+            <Routes>
+              <Route
+                path="view-upload/*"
+                element={
+                  <StockEditViewWrapper
+                    navigate={navigate}
+                    stockEntryGridData={stockEntryGridData}
+                  />
+                }
+              />
+              <Route
+                path="force-view-details/*"
+                element={
+                  <ForceExpireStock
+                    stockEntryGridData={stockEntryGridData}
+                    navigate={navigate}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </Grid>
       </Container>
 

@@ -52,7 +52,6 @@ const StopPaymentEntryCustom = () => {
   const { authState } = useContext(AuthContext);
   const [value, setValue] = useState("tab1");
   const { MessageBox } = usePopupContext();
-  const initialValuesRef = useRef<any>(null);
   const deleteDataRef = useRef<any>(null);
   const insertDataRef = useRef<any>(null);
   const myMasterRef = useRef<any>(null);
@@ -176,7 +175,6 @@ const StopPaymentEntryCustom = () => {
             setCloseAlert(false);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   StopPayGridMetaData.gridConfig.gridLabel = `Cheque Stop Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -246,12 +244,11 @@ const StopPaymentEntryCustom = () => {
           ) : (
             <LinearProgressBarSpacer />
           )}
-
-          {value === "tab1" ? (
+          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
             <FormWrapper
               key={"stopPayEntry"}
               metaData={StopPayEntryMetadata ?? []}
-              initialValues={initialValuesRef.current ?? {}}
+              initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
                 insertDataRef.current = {
                   ...data,
@@ -293,36 +290,35 @@ const StopPaymentEntryCustom = () => {
                 </>
               )}
             </FormWrapper>
-          ) : value === "tab2" ? (
-            <>
-              <GridWrapper
-                key={`stopPayGridData` + getStopPayDetail.isLoading}
-                finalMetaData={StopPayGridMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                setData={() => {}}
-                loading={getStopPayDetail.isLoading}
-                actions={releaseActions}
-                setAction={setCurrentAction}
-                onClickActionEvent={(index, id, data) => {
-                  if (id === "ALLOW_DELETE") {
-                    deleteDataRef.current = data;
-                    setDeletePopup(true);
-                  }
-                }}
+          </div>
+          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+            <GridWrapper
+              key={`stopPayGridData` + getStopPayDetail.isLoading}
+              finalMetaData={StopPayGridMetaData as GridMetaDataType}
+              data={gridDetailData ?? []}
+              setData={() => {}}
+              loading={getStopPayDetail.isLoading}
+              actions={releaseActions}
+              setAction={setCurrentAction}
+              onClickActionEvent={(index, id, data) => {
+                if (id === "ALLOW_DELETE") {
+                  deleteDataRef.current = data;
+                  setDeletePopup(true);
+                }
+              }}
+            />
+            <Routes>
+              <Route
+                path="release-Cheque/*"
+                element={
+                  <ReleaseCheque
+                    navigate={navigate}
+                    getStopPayDetail={getStopPayDetail}
+                  />
+                }
               />
-              <Routes>
-                <Route
-                  path="release-Cheque/*"
-                  element={
-                    <ReleaseCheque
-                      navigate={navigate}
-                      getStopPayDetail={getStopPayDetail}
-                    />
-                  }
-                />
-              </Routes>
-            </>
-          ) : null}
+            </Routes>
+          </div>
         </Grid>
       </Container>
 

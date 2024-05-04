@@ -39,7 +39,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          ENTERED_DATE: authState?.workingDate,
+          GD_TODAY_DT: authState?.workingDate,
         });
       },
     }

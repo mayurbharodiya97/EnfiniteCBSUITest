@@ -72,6 +72,7 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
@@ -90,6 +91,7 @@ export const limitEntryMetaData = {
           if (field?.value) {
             formState.setDataOnFieldChange();
             return {
+              PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
               ACCT_CD: { value: "" },
               SECURITY_CD: { value: "" },
               ACCT_NM: { value: "" },
@@ -134,17 +136,20 @@ export const limitEntryMetaData = {
             }
 
             if (postData?.[0]?.RESTRICTION) {
-              formState.MessageBox({
+              let res = await formState.MessageBox({
                 messageTitle: "Validation Failed...!",
                 message: postData?.[0]?.RESTRICTION,
                 buttonNames: ["Ok"],
+                defFocusBtnName: "Ok",
               });
-              return {
-                ACCT_CD: { value: "" },
-                ACCT_NM: { value: "" },
-                TRAN_BAL: { value: "" },
-                SANCTIONED_AMT: { value: "" },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: { value: "", isFieldFocused: true },
+                  ACCT_NM: { value: "" },
+                  TRAN_BAL: { value: "" },
+                  SANCTIONED_AMT: { value: "" },
+                };
+              }
             } else if (postData?.[0]?.MESSAGE1) {
               formState.MessageBox({
                 messageTitle: "Risk Category Alert",
@@ -333,6 +338,12 @@ export const limitEntryMetaData = {
         lg: 4,
         xl: 4,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_TYPE",
     },
   ],
 };

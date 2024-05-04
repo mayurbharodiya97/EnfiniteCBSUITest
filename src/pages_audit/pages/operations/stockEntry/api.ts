@@ -204,9 +204,9 @@ export const securityFieldDTL = async (apiReqPara) => {
               return {
                 ...item,
                 required: true,
-                defaultValue: apiReqPara.STOCK_MARGIN
-                  ? apiReqPara.STOCK_MARGIN
-                  : 0.0,
+                setValueOnDependentFieldsChange: (dependentFields) => {
+                  return apiReqPara?.STOCK_MARGIN;
+                },
                 isReadOnly() {
                   if (apiReqPara?.STK_MRG_DISABLE === "N") {
                     return true;
@@ -344,7 +344,7 @@ export const viewDocument = async (apiReqPara) => {
     // return data.map((item) => {
     //   return {
     //     ...item,
-    //     ACTIVE: item.ACTIVE === "Y" ? true : false,
+    //     isReadOnly: true,
     //   };
     // });
   } else {

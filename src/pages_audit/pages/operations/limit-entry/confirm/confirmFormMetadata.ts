@@ -79,67 +79,6 @@ export const limitconfirmFormMetaData = {
 
     {
       render: {
-        componentType: "textField",
-      },
-      name: "FD_BRANCH_CD",
-      label: "FD-Branch Code",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_TYPE",
-      fullWidth: true,
-      label: "FD-Type",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_ACCT_CD",
-      fullWidth: true,
-      label: "FD-Account No",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_NO",
-      label: "FD Number",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
         componentType: "datePicker",
       },
       name: "ENTRY_DT",
@@ -245,21 +184,6 @@ export const limitconfirmFormMetaData = {
         xl: 2,
       },
     },
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "PENAL_RATE",
-      fullWidth: true,
-      label: "Over Drawn%",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
 
     {
       render: {
@@ -299,6 +223,21 @@ export const limitconfirmFormMetaData = {
       name: "INT_SEC_AMOUNT",
       label: "Security Interst Amount",
       fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "PENAL_RATE",
+      fullWidth: true,
+      label: "Over Drawn%",
       GridProps: {
         xs: 12,
         md: 2,

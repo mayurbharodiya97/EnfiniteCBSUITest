@@ -41,6 +41,7 @@ import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { usePopupContext } from "components/custom/popupContext";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { format } from "date-fns";
 
 export const ChequebookTab = () => {
   const ChequeBKPopUpAction: ActionTypes[] = [
@@ -179,6 +180,9 @@ export const ChequebookTab = () => {
       CHEQUE_TO: Number(data?.CHEQUE_TO),
       CHEQUE_BK_TOTAL: Number(data?.CHEQUE_BK_TOTAL),
       CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
+      REQUISITION_DT: data?.REQUISITION_DT
+        ? format(new Date(data?.REQUISITION_DT), "dd-MMM-yyyy")
+        : "",
     };
     let newArray: any = [];
 

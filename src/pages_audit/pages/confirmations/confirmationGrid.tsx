@@ -15,8 +15,6 @@ import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
-import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
 import { AuthContext } from "pages_audit/auth";
 import { chequeBkConfirmGridMetaData } from "./MetaData/chequebkConfirmGridMetadata";
 import { limitConfirmGridMetaData } from "./MetaData/limitConfirmGridMetadata";
@@ -29,6 +27,7 @@ import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadat
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
 import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmationForm";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
@@ -44,9 +43,18 @@ export const Confirmations = ({ screenFlag }) => {
   const [isOpen, setIsOpen] = useState<any>(false);
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
     (data) => {
+      // if (data?.rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
+      //   MessageBox({
+      //     messageTitle: "Alert",
+      //     message: `You can not confirm your own posted transaction.`,
+      //     buttonNames: ["Ok"],
+      //   });
+      // } else
+
       if (data?.name === "retrieve") {
         setIsOpen(true);
       } else {
@@ -144,7 +152,10 @@ export const Confirmations = ({ screenFlag }) => {
                   result={result}
                 />
               ) : screenFlag === "limitCFM" ? (
-                <LimitConfirmationForm closeDialog={ClosedEventCall} />
+                <LimitConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
               ) : screenFlag === "stockCFM" ? (
                 <StockConfirmationForm closeDialog={ClosedEventCall} />
               ) : screenFlag === "stopPaymentCFM" ? (

@@ -1,6 +1,7 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { utilFunction } from "components/utils";
 import * as API from "./api";
+import { isValid } from "date-fns";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -163,13 +164,19 @@ export const ChequeBookEntryMetaData = {
             }
             btn99 = 0;
             return {
-              ACCT_CD: {
-                value:
-                  returnVal !== ""
-                    ? field?.value.padStart(6, "0")?.padEnd(20, " ")
-                    : "",
-                ignoreUpdate: true,
-              },
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -568,6 +575,17 @@ export const ChequeBookEntryMetaData = {
       label: "Requisition Date",
       isMaxWorkingDate: true,
       isWorkingDate: true,
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["This Field is required."] }],
+      },
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "This Field is required.";
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 2,

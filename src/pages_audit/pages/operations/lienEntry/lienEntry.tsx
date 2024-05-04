@@ -50,7 +50,6 @@ const LienEntryCustom = () => {
   const [isVisible, setIsVisible] = useState<any>(false);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const { authState } = useContext(AuthContext);
-  const initialValuesRef = useRef<any>(null);
   const [value, setValue] = useState("tab1");
   const { MessageBox } = usePopupContext();
   const insertDataRef = useRef<any>(null);
@@ -87,26 +86,6 @@ const LienEntryCustom = () => {
     },
   });
 
-  // const validateInsertData: any = useMutation(
-  //   "validateInsert",
-  //   API.validateInsert,
-  //   {
-  //     onSuccess: (data) => {
-  //       if (data?.O_STATUS !== "0") {
-  //         setIsOpenSave(true);
-  //       } else {
-  //         MessageBox({
-  //           messageTitle: "Validation Alert",
-  //           message: data?.[0]?.O_MESSAGE,
-  //         });
-  //       }
-  //     },
-  //     onError: (error: any) => {
-  //       setCloseAlert(true);
-  //     },
-  //   }
-  // );
-
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["lienGridDetail"]);
@@ -125,7 +104,6 @@ const LienEntryCustom = () => {
     };
     insertDataRef.current = { ...data, ...apiReq };
     setIsOpenSave(true);
-    // validateInsertData.mutate(apiReq);
     //@ts-ignore
     endSubmit(true);
   };
@@ -170,7 +148,6 @@ const LienEntryCustom = () => {
             setCloseAlert(false);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   LienGridMetaData.gridConfig.gridLabel = `Lien Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -209,41 +186,35 @@ const LienEntryCustom = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {
-            //   validateInsertData.isLoading ? (
-            //   <LinearProgress color="secondary" />
-            // ) :
+          {(getLienDetail?.isError && closeAlert) ||
+          (crudLienData?.isError && closeAlert) ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={
+                    getLienDetail?.error?.error_msg ??
+                    crudLienData?.error?.error_msg ??
+                    "Unknow Error"
+                  }
+                  errorDetail={
+                    getLienDetail?.error?.error_detail ??
+                    crudLienData?.error?.error_detail ??
+                    ""
+                  }
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
 
-            (getLienDetail?.isError && closeAlert) ||
-            (crudLienData?.isError && closeAlert) ? (
-              <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                <AppBar position="relative" color="primary">
-                  <Alert
-                    severity="error"
-                    errorMsg={
-                      getLienDetail?.error?.error_msg ??
-                      crudLienData?.error?.error_msg ??
-                      "Unknow Error"
-                    }
-                    errorDetail={
-                      getLienDetail?.error?.error_detail ??
-                      crudLienData?.error?.error_detail ??
-                      ""
-                    }
-                    color="error"
-                  />
-                </AppBar>
-              </div>
-            ) : (
-              <LinearProgressBarSpacer />
-            )
-          }
-
-          {value === "tab1" ? (
+          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
             <FormWrapper
               key={"lien-Entry"}
               metaData={LienEntryMetadata ?? {}}
-              initialValues={initialValuesRef.current ?? {}}
+              initialValues={{}}
               onSubmitHandler={onSubmitHandler}
               ref={myMasterRef}
               formState={{ MessageBox: MessageBox }}
@@ -268,32 +239,32 @@ const LienEntryCustom = () => {
                 </>
               )}
             </FormWrapper>
-          ) : value === "tab2" ? (
-            <>
-              <GridWrapper
-                key={`LienGrid-MetaData`}
-                finalMetaData={LienGridMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                setData={() => {}}
-                loading={getLienDetail.isLoading}
-                actions={actions}
-                setAction={setCurrentAction}
-                // refetchData={() => {}}
-                // ref={myGridQuickRef}
+          </div>
+
+          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+            <GridWrapper
+              key={`LienGrid-MetaData`}
+              finalMetaData={LienGridMetaData as GridMetaDataType}
+              data={gridDetailData ?? []}
+              setData={() => {}}
+              loading={getLienDetail.isLoading}
+              actions={actions}
+              setAction={setCurrentAction}
+              // refetchData={() => {}}
+              // ref={myGridQuickRef}
+            />
+            <Routes>
+              <Route
+                path="expire-lien/*"
+                element={
+                  <ExpireLien
+                    navigate={navigate}
+                    getLienDetail={getLienDetail}
+                  />
+                }
               />
-              <Routes>
-                <Route
-                  path="expire-lien/*"
-                  element={
-                    <ExpireLien
-                      navigate={navigate}
-                      getLienDetail={getLienDetail}
-                    />
-                  }
-                />
-              </Routes>
-            </>
-          ) : null}
+            </Routes>
+          </div>
         </Grid>
       </Container>
 

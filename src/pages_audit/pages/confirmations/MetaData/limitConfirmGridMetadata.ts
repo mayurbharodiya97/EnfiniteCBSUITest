@@ -182,7 +182,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 290,
     },
     {
-      accessor: "STATUS_FLAG",
+      accessor: "EXPIRED_FLAG",
       columnName: "Expired Flag",
       sequence: 9,
       alignment: "center",

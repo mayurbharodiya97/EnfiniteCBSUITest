@@ -11,6 +11,7 @@ import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { Alert } from "components/common/alert";
+import { queryClient } from "cache";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -19,7 +20,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
 
-  const chequeBkCfm: any = useMutation("chequeBkConfirmGrid", chequeBookCfm, {
+  const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
       setIsOpenSave(false);
       // closeDialog();
@@ -55,6 +56,12 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       }
     },
   });
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["chequeBookCfm"]);
+    };
+  }, []);
 
   useEffect(() => {
     if (rows?.[0]?.data) {

@@ -56,6 +56,7 @@ export const StockEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
@@ -104,16 +105,20 @@ export const StockEntryMetaData = {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: false,
               });
-              formState.MessageBox({
+              let res = await formState.MessageBox({
                 messageTitle: "Validation Failed...!",
                 message: postData?.RESTRICTION,
+                buttonNames: ["Ok"],
+                defFocusBtnName: "Ok",
               });
-              return {
-                ACCT_CD: { value: "" },
-                ACCT_NM: { value: "" },
-                TRAN_BAL: { value: "" },
-                TRAN_DT: { value: "" },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: { value: "", isFieldFocused: true },
+                  ACCT_NM: { value: "" },
+                  TRAN_BAL: { value: "" },
+                  TRAN_DT: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,

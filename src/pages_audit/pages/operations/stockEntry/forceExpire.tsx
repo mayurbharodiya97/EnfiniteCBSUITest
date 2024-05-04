@@ -16,6 +16,8 @@ import { enqueueSnackbar } from "notistack";
 import { forceExpireStockMetaData } from "./forceExpiredMetadata";
 import { crudStockData } from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { utilFunction } from "components/utils";
+import { format } from "date-fns";
 
 export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   const { state: rows }: any = useLocation();
@@ -31,6 +33,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
         ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
         A_USER_LEVEL: authState?.role,
+        A_GD_DATE: authState?.workingDate,
       });
     },
   });
@@ -52,22 +55,21 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== "")
+    );
+    let upd = utilFunction.transformDetailsData(filteredData, rows?.[0]?.data);
+    console.log("<<<uuu", data, upd);
+
     let apiReq = {
-      // ...data,
-      // _isNewRow: false,
-      // _isDeleteRow: false,
-      // _UPDATEDCOLUMNS: [
-      //   "REMARKS",
-      //   "FORCE_EXP_VERIFIED_BY",
-      //   "EXPIRED_FLAG",
-      //   "FORCE_EXP_DT",
-      // ],
-      // _OLDROWVALUE: {
-      //   REMARKS: rows?.[0]?.data?.REMARKS,
-      //   FORCE_EXP_VERIFIED_BY: "",
-      //   EXPIRED_FLAG: data?.EXPIRED_FLAG,
-      //   FORCE_EXP_DT: "",
-      // },
+      _isNewRow: false,
+      _isDeleteRow: false,
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      WITHDRAW_DT: format(new Date(data?.WITHDRAW_DT), "dd-MMM-yyyy"),
+      REMARKS: data?.REMARKS,
+      ...upd,
     };
     forceExpire.mutate(apiReq);
 

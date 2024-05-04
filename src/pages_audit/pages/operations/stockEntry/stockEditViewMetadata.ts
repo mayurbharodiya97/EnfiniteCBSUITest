@@ -330,7 +330,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "40vh", max: "40vh" },
+      containerHeight: { min: "29vh", max: "29vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: false,

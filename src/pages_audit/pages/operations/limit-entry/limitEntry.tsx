@@ -30,7 +30,6 @@ import { limitEntryMetaData } from "./limitEntryMetadata";
 import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
 import { NSCFormDetail } from "./nscDetail";
 import { ForceExpire } from "./forceExpire";
@@ -39,7 +38,6 @@ import { ClearCacheProvider, queryClient } from "cache";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import * as API from "./api";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { extractMetaData } from "components/utils";
 
 const LimitEntryCustom = () => {
   const fdAction: ActionTypes[] = [
@@ -211,7 +209,7 @@ const LimitEntryCustom = () => {
             ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
             ACCT_TYPE: variables?.ACCT_TYPE,
             BRANCH_CD: variables?.BRANCH_CD,
-            ENTERED_DATE: authState?.workingDate,
+            GD_TODAY_DT: authState?.workingDate,
             USER_LEVEL: authState?.role,
           });
           enqueueSnackbar("Data Delete successfully", { variant: "success" });
@@ -284,6 +282,7 @@ const LimitEntryCustom = () => {
             setGridDetailData([]);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
+                console.log("<<<res", res);
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -297,7 +296,7 @@ const LimitEntryCustom = () => {
                     ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
-                    ENTERED_DATE: authState?.workingDate,
+                    GD_TODAY_DT: authState?.workingDate,
                     USER_LEVEL: authState?.role,
                   };
                   getLimitDetail.mutate(limitDTLRequestPara);
@@ -333,7 +332,8 @@ const LimitEntryCustom = () => {
           ) : (securityLimitData?.isError && closeAlert) ||
             (validateInsertData?.isError && closeAlert) ||
             (fdDetail?.isError && closeAlert) ||
-            (crudLimitData?.isError && closeAlert) ? (
+            (crudLimitData?.isError && closeAlert) ||
+            (getLimitDetail?.isError && closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -343,6 +343,7 @@ const LimitEntryCustom = () => {
                     validateInsertData?.error?.error_msg ??
                     crudLimitData?.error?.error_msg ??
                     fdDetail?.error?.error_msg ??
+                    getLimitDetail?.error?.error_msg ??
                     "Unknow Error"
                   }
                   errorDetail={
@@ -350,6 +351,7 @@ const LimitEntryCustom = () => {
                     validateInsertData?.error?.error_detail ??
                     crudLimitData?.error?.error_detail ??
                     fdDetail?.error?.error_detail ??
+                    getLimitDetail?.error?.error_detail ??
                     ""
                   }
                   color="error"
@@ -366,6 +368,8 @@ const LimitEntryCustom = () => {
               metaData={newFormMTdata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
+                //@ts-ignore
+                endSubmit(true);
                 setCloseAlert(true);
                 let apiReq = {
                   ...data,
@@ -516,7 +520,7 @@ const LimitEntryCustom = () => {
                 </div>
               ))}
             <GridWrapper
-              key={`limitentrygridMetaData`}
+              key={`limitentrygridMetaData` + getLimitDetail.isSuccess}
               finalMetaData={limitEntryGridMetaData as GridMetaDataType}
               data={gridDetailData ?? []}
               loading={
