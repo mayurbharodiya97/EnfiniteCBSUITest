@@ -93,11 +93,11 @@ const ReportExportScreen = ({
           cname: column.columnName,
           [column.accessor]: column.accessor,
           cellType:
-            column?.Cell === components.DateTimeCell
+           ( column?.Cell === components.DateTimeCell || column?.componentType === "dateTime")
               ? "DateTimeCell"
-              : column?.Cell === components.DateCell
+              : (column?.Cell === components.DateCell || column?.componentType === "date")
               ? "DateCell"
-              : column?.Cell === components.TimeCell
+              : (column?.Cell === components.TimeCell || column?.componentType === "time")
               ? "TimeCell"
               : "",
           format: column?.format ?? "",
@@ -281,8 +281,6 @@ const ReportExportScreen = ({
   return (
     <Dialog
       open={true}
-      //@ts-ignore
-      TransitionComponent={Transition}
       PaperProps={{
         style: {
           width: "65%",

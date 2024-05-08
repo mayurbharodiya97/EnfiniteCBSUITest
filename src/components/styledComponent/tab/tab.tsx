@@ -5,9 +5,9 @@ const StyledTab = withStyles((theme: any) => ({
   root: {
     textTransform: "none",
     minWidth: 72,
-    marginRight: theme.spacing(4),
+    marginRight: 0,
     opacity: 1,
-    color: theme.palette.secondary.main,
+    color: "var(--theme-color1)",
     fontWeight: 600,
     fontFamily: [
       "Montserrat",
@@ -17,18 +17,18 @@ const StyledTab = withStyles((theme: any) => ({
       "sans-serif",
     ].join(","),
     "&:hover": {
-      color: "#0063a3",
+      color: "var(--theme-color3)",
       opacity: 1,
     },
     "&$selected": {
-      color: "#fff",
+      color: "var(--theme-color1)",
       fontWeight: "600",
       // background:
       //   "linear-gradient(-90deg, rgba(94,231,131,1) 0%, rgba(74,205,159,1) 35%, rgba(33,150,218,1) 100%)",
-      background: theme.palette.secondary.main,
+      background: "inherit",
     },
     "&:focus": {
-      color: "#fff",
+      color: "var(--theme-color1)",
     },
   },
   selected: {},

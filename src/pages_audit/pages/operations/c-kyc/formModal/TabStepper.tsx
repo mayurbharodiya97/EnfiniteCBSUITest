@@ -99,7 +99,8 @@ export default function TabStepper() {
     },
     [`&.${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        borderColor: '#784af4',
+        // borderColor: '#784af4',
+        borderColor: 'var(--theme-color3)',
       },
     },
     [`& .${stepConnectorClasses.line}`]: {
@@ -126,7 +127,8 @@ export default function TabStepper() {
         }),
       },
       '& .QontoStepIcon-completedIcon': {
-        color: '#784af4',
+        // color: '#784af4',
+        color: 'var(--theme-color1)',
         // color: "red",
         zIndex: 1,
         fontSize: 28,
@@ -154,8 +156,8 @@ export default function TabStepper() {
     let icons:{ [index: string]: React.ReactElement } = {}
     // console.log("wekudiwuegfiwe", state?.tabNameList)
     state?.tabNameList.forEach((tabEl, i) => {
-      // console.log('dwoeff', element)
-      icons[i+1] = <Icon>{`${tabEl.icon}`}</Icon>
+      // console.log('dwoeff', tabEl)
+      icons[i+1] = <Icon>{`${tabEl.icon ? tabEl.icon : "person_add_alt_rounded_icon"}`}</Icon>
     });
     return (
       <QontoStepIconRoot ownerState={{ active }} className={className}>
@@ -176,17 +178,20 @@ export default function TabStepper() {
       </QontoStepIconRoot>
     );
   }
+  const steps = state?.tabNameList.filter(tab => tab.isVisible) 
 
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
-        {state?.tabNameList.map((tabEl, i) => {
+        {steps.map((tabEl, i) => {
+          // if(tabEl.isVisible) {
             // console.log("qwdQDW",)
-          return <Step sx={{}} key={tabEl.tabName} 
-          completed={state?.steps?.[i]?.status == "completed"}
-          >
-            <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
-          </Step>
+            return <Step sx={{}} key={tabEl.tabName} 
+            completed={state?.steps?.[i]?.status == "completed"}
+            >
+              <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
+            </Step>
+          // }
         })}
       </Stepper>
       {/* <Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>

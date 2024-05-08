@@ -7,6 +7,7 @@ export interface AuthStateType {
   access: any;
   companyName: string;
   workingDate: string;
+  minDate: string;
   companyID: string;
   baseCompanyID: string;
   groupName: string;

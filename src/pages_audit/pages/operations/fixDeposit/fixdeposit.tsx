@@ -30,6 +30,7 @@ import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { cloneDeep } from "lodash";
+import { usePopupContext } from "components/custom/popupContext";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -90,16 +91,21 @@ export const FixDepositForm = () => {
     updateFDAccountsFormData,
     updateFDParaDataOnChange,
     updateFDDetailsFormData,
+    updateTransDetailsFormData,
+    resetAllData,
+    setIsBackButton,
   } = useContext(FixDepositContext);
   const submitEventRef = useRef(null);
+  const { MessageBox } = usePopupContext();
 
   const [steps, setSteps] = useState([
     "FD Parameters",
     "Fixed Deposit Detail(s)",
-    "Transfer A/C Detail(s)",
+    "Source A/C Detail(s)",
   ]);
   const fdParameterformRef: any = useRef(null);
   const fdDetailsformRef: any = useRef(null);
+  const sourceAcctformRef: any = useRef(null);
 
   const validFDAccounts = useMutation(API.valiateFDAccounts, {
     onError: (error: any) => {
@@ -119,21 +125,34 @@ export const FixDepositForm = () => {
       }
     },
   });
+
+  const doFixDepositMutation = useMutation(API.doFixDepositCreation, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      MessageBox({ messageTitle: "Error", message: errorMsg, icon: "ERROR" });
+    },
+    onSuccess: (data) => {
+      MessageBox({ messageTitle: "Success", message: data, icon: "SUCCESS" });
+      resetAllData();
+    },
+  });
+
   const setDataOnFieldChange = (action, payload) => {
     updateFDParaDataOnChange({ [action]: payload });
-    if (action === "FD_TYPE") {
-      if (payload === "F") {
-        setSteps([
-          "FD Parameters",
-          "Account Opening",
-          "Fixed Deposit Detail(s)",
-          "Transfer A/C Detail(s)",
-        ]);
+    if (
+      (action === "FD_TYPE" && payload === "E") ||
+      (action === "TRAN_MODE" && fdState?.fdParaFormData?.FD_TYPE === "E")
+    ) {
+      if (action === "TRAN_MODE" && payload === "1") {
+        setSteps(["FD Parameters", "Fixed Deposit Detail(s)"]);
       } else {
         setSteps([
           "FD Parameters",
           "Fixed Deposit Detail(s)",
-          "Transfer A/C Detail(s)",
+          "Source A/C Detail(s)",
         ]);
       }
     }
@@ -142,7 +161,6 @@ export const FixDepositForm = () => {
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
     const fdType = fdState?.fdParaFormData?.FD_TYPE;
-    console.log(">>fdType", fdType);
     // Object mapping step numbers to corresponding icons
     const icons: { [index: string]: React.ReactElement } = {
       1: <SettingsIcon />,
@@ -181,7 +199,6 @@ export const FixDepositForm = () => {
         delete obj.ACCOUNT_LIST;
         return obj;
       });
-      console.log(">>fdState?.fdParaFormData", fdState?.fdParaFormData);
       validFDAccounts.mutate({
         CUSTOMER_ID: fdState?.fdParaFormData?.CUSTOMER_ID ?? "",
         TRAN_MODE: fdState?.fdParaFormData?.TRAN_MODE ?? "",
@@ -205,14 +222,60 @@ export const FixDepositForm = () => {
       fdState.activeStep === 1 &&
       fdState?.fdParaFormData?.FD_TYPE === "E"
     ) {
-      setActiveStep(fdState.activeStep + 1);
       fdDetailsformRef.current?.handleSubmit(e);
+    } else if (
+      fdState.activeStep === 2 &&
+      fdState?.fdParaFormData?.FD_TYPE === "E"
+    ) {
+      sourceAcctformRef.current?.handleSubmit(e);
     }
   };
 
+  const finalOnSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    endSubmit(true);
+    if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
+      MessageBox({
+        messageTitle: "Validation Failed",
+        message: "Total Debit amount can not be greater than Total FD Amount.",
+        icon: "ERROR",
+      });
+    } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message:
+          "Debit Amount less than Total FD Amount.\nAre you sure to add new row?",
+        buttonNames: ["No", "Yes"],
+        defFocusBtnName: "Yes",
+      });
+      if (buttonName === "Yes") {
+        // const lastRow = data?.TRNDTLS[data?.TRNDTLS?.length - 1];
+        updateTransDetailsFormData([...data?.TRNDTLS, { ACCT_NAME: "" }]);
+      }
+    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message: "Are you sure create FD?",
+        buttonNames: ["No", "Yes"],
+        defFocusBtnName: "Yes",
+      });
+      if (buttonName === "Yes") {
+        doFixDepositMutation.mutate({
+          ...fdState?.fdParaFormData,
+          FD_ACCOUNTS: fdState?.fdDetailFormData?.FDDTL ?? [],
+          DR_ACCOUNTS: data?.TRNDTLS ?? [],
+        });
+      }
+    }
+  };
   return (
     <Fragment>
-      <AppBar position="relative" style={{ marginBottom: "10px" }}>
+      <AppBar position="relative" style={{ marginBottom: "5px" }}>
         <Toolbar
           variant="dense"
           style={{ background: "var(--theme-color5)", padding: "0px" }}
@@ -255,9 +318,20 @@ export const FixDepositForm = () => {
               ref={fdParameterformRef}
             />
           ) : fdState.activeStep === 1 ? (
-            <FixDepositDetailForm ref={fdDetailsformRef} />
+            <FixDepositDetailForm
+              doFixDepositMutation={doFixDepositMutation}
+              ref={fdDetailsformRef}
+            />
           ) : fdState.activeStep === 2 ? (
-            <TransferAcctDetailForm />
+            <TransferAcctDetailForm
+              onSubmitHandler={finalOnSubmitHandler}
+              setDataOnFieldChange={(action, payload) => {
+                sourceAcctformRef.current?.handleSubmit({
+                  preventDefault: () => {},
+                });
+              }}
+              ref={sourceAcctformRef}
+            />
           ) : (
             <></>
           )}
@@ -275,18 +349,16 @@ export const FixDepositForm = () => {
           <div style={{ position: "fixed", bottom: 0, right: "10px" }}>
             {fdState.activeStep === 0 ? null : (
               <GradientButton
-                onClick={() => setActiveStep(fdState.activeStep - 1)}
+                onClick={() => {
+                  setIsBackButton(true);
+                  setActiveStep(fdState.activeStep - 1);
+                }}
               >
                 Back
               </GradientButton>
             )}
             {
               fdState.activeStep !== steps.length && (
-                // (completed[activeStep] ? (
-                //   <Typography variant="caption" sx={{ display: "inline-block" }}>
-                //     Step {activeStep + 1} already completed
-                //   </Typography>
-                // ) : (
                 <>
                   {fdState.activeStep !== steps.length - 1 ? (
                     <GradientButton
@@ -301,7 +373,15 @@ export const FixDepositForm = () => {
                       Next
                     </GradientButton>
                   ) : (
-                    <GradientButton onClick={handleComplete}>
+                    <GradientButton
+                      onClick={handleComplete}
+                      endIcon={
+                        doFixDepositMutation?.isLoading ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                      disabled={doFixDepositMutation?.isLoading}
+                    >
                       Finish
                     </GradientButton>
                   )}

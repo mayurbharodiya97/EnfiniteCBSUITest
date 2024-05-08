@@ -154,9 +154,6 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
 
   // const isError = touched && (error ?? "") !== "";
   const isError = touched && Boolean(error);
-
-  console.log(">>isError", isError);
-  console.log(">>error", error);
   return (
     <Suspense fallback={"loading..."}>
       <Autocomplete

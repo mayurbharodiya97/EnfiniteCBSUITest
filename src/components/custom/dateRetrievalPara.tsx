@@ -1,78 +1,118 @@
 import {
-  ThemeProvider,
-  unstable_createMuiStrictModeTheme,
-} from "@mui/material/styles";
-import { GradientButton } from "components/styledComponent/button";
-import { Fragment, useState, useRef } from "react";
-import DatePicker from "@mui/lab/DatePicker";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DateFnsUtils from "@date-io/date-fns";
-import { theme2 } from "app/audit/theme";
-import {
-  geaterThanDate,
-  greaterThanInclusiveDate,
-  lessThanDate,
-  lessThanInclusiveDate,
-} from "registry/rulesEngine";
-import { format } from "date-fns/esm";
-import {
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
 } from "@mui/material";
+import {
+  ThemeProvider,
+  unstable_createMuiStrictModeTheme,
+} from "@mui/material/styles";
+import { GradientButton } from "components/styledComponent/button";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Fragment, useState, useRef } from "react";
+import { KeyboardDatePicker } from "components/styledComponent/datetime";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { theme2 } from "app/audit/theme";
+import { greaterThanInclusiveDate } from "registry/rulesEngine";
+import { format } from "date-fns/esm";
+import { isValidDate } from "components/utils/utilFunctions/function";
+import { TextField } from "components/styledComponent";
+import { isValid } from "date-fns";
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 export const DateRetrievalDialog = ({
   classes,
   open,
   handleClose,
   loginState,
-  selectedDates,
+  retrievalParaValues,
+  defaultData,
 }) => {
   const inputButtonRef = useRef<any>(null);
   const [selectedFromDate, setFromDate] = useState(
-    new Date(format(new Date(), "yyyy/MM/dd"))
+    defaultData?.A_FROM_DT ?? new Date(format(new Date(), "yyyy/MM/dd"))
   );
   const [selectedToDate, setToDate] = useState(
-    new Date(format(new Date(), "yyyy/MM/dd"))
+    defaultData?.A_TO_DT ?? new Date(format(new Date(), "yyyy/MM/dd"))
   );
   const [error, SetError] = useState({ isError: false, error: "" });
+  const [fromerror, SetFromError] = useState({ isError: false, error: "" });
   const onFromDateChange = (date) => {
-    date = new Date(format(date, "yyyy/MM/dd"));
-    setFromDate(date);
-    if (!greaterThanInclusiveDate(selectedToDate, date)) {
-      SetError({
+    if (isValidDate(date)) {
+      date = new Date(format(date, "yyyy/MM/dd"));
+      setFromDate(date);
+      if (!greaterThanInclusiveDate(selectedToDate, date)) {
+        SetFromError({
+          isError: true,
+          error: "From Date should be less than or equal to To Date.",
+        });
+      } else {
+        SetFromError({
+          isError: false,
+          error: "",
+        });
+        SetError({
+          isError: false,
+          error: "",
+        });
+      }
+    } else if (!date) {
+      SetFromError({
         isError: true,
-        error: "To date should be greater than From date.",
+        error: "This Field is Required",
       });
-    } else {
-      SetError({
-        isError: false,
-        error: "",
+      return;
+    } else if (!isValid(date)) {
+      SetFromError({
+        isError: true,
+        error: "Must be a valid date",
       });
+      return;
     }
   };
+
   const onToDateChange = (date) => {
-    date = new Date(format(date, "yyyy/MM/dd"));
-    setToDate(date);
-    if (!greaterThanInclusiveDate(date, selectedFromDate)) {
+    if (isValidDate(date)) {
+      date = new Date(format(date, "yyyy/MM/dd"));
+      setToDate(date);
+      if (!greaterThanInclusiveDate(date, selectedFromDate)) {
+        SetError({
+          isError: true,
+          error: "To Date should be greater than or equal to From Date.",
+        });
+      } else {
+        SetError({
+          isError: false,
+          error: "",
+        });
+        SetFromError({
+          isError: false,
+          error: "",
+        });
+      }
+    } else if (!date) {
       SetError({
         isError: true,
-        error: "To date should be greater than From date.",
+        error: "This Field is Required",
       });
-    } else {
+      return;
+    } else if (!isValid(date)) {
       SetError({
-        isError: false,
-        error: "",
+        isError: true,
+        error: "Must be a valid date",
       });
+      return;
     }
+  };
+  const onFocusSelectDate = (date) => {
+    date.target.select();
   };
 
   return (
     <Fragment>
-      <Dialog open={open} maxWidth="xs">
+      <Dialog open={open} maxWidth="xs" sx={{ marginBottom: "12rem" }}>
         <DialogTitle>Enter Retrieval Parameters</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>Please Verify OTP</DialogContentText> */}
@@ -85,42 +125,60 @@ export const DateRetrievalDialog = ({
             }}
           >
             <ThemeProvider theme={themeObj}>
-              <LocalizationProvider utils={DateFnsUtils}>
-                <DatePicker
-                  placeholder="From Date"
-                  format="dd/MM/yyyy"
-                  KeyboardButtonProps={{
-                    "aria-label": "Select Date",
-                  }}
-                  label="From Date"
-                  onChange={onFromDateChange}
-                  value={selectedFromDate}
-                  style={{ width: "40%", marginRight: "35px" }}
-                  InputLabelProps={{ shrink: true }}
-                  color="primary"
-                  autoComplete="off"
-                  autoOk={true}
-                  showTodayButton={true}
-                />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <div style={{ display: "flex", gap: "1.25rem" }}>
+                  <KeyboardDatePicker
+                    format="dd/MM/yyyy"
+                    label="From Date"
+                    onChange={onFromDateChange}
+                    value={selectedFromDate}
+                    disableFuture
+                    slots={{
+                      textField: TextField,
+                    }}
+                    slotProps={{
+                      textField: {
+                        variant: "standard",
+                        placeholder: "DD/MM/YYYY",
+                        error: fromerror.isError,
+                        helperText: fromerror.error,
+                        onFocus: onFocusSelectDate,
+                        InputLabelProps: { shrink: true },
+                        autoComplete: "off",
+                        "aria-label": "Select Date",
+                      },
+                      actionBar: {
+                        actions: ["today", "accept", "cancel"],
+                      },
+                    }}
+                  />
 
-                <DatePicker
-                  placeholder="To Date"
-                  format="dd/MM/yyyy"
-                  KeyboardButtonProps={{
-                    "aria-label": "Select Date",
-                  }}
-                  label="To Date"
-                  onChange={onToDateChange}
-                  value={selectedToDate}
-                  style={{ width: "40%", marginLeft: "35px" }}
-                  InputLabelProps={{ shrink: true }}
-                  color="primary"
-                  autoComplete="off"
-                  autoOk={true}
-                  showTodayButton={true}
-                  error={error.isError}
-                  helperText={error.error}
-                />
+                  <KeyboardDatePicker
+                    format="dd/MM/yyyy"
+                    label="To Date"
+                    onChange={onToDateChange}
+                    minDate={selectedFromDate}
+                    value={selectedToDate}
+                    slots={{
+                      textField: TextField,
+                    }}
+                    slotProps={{
+                      textField: {
+                        onFocus: onFocusSelectDate,
+                        variant: "standard",
+                        error: error.isError,
+                        helperText: error.error,
+                        placeholder: "DD/MM/YYYY",
+                        InputLabelProps: { shrink: true },
+                        autoComplete: "off",
+                        "aria-label": "Select Date",
+                      },
+                      actionBar: {
+                        actions: ["today", "accept", "cancel"],
+                      },
+                    }}
+                  />
+                </div>
               </LocalizationProvider>
             </ThemeProvider>
           </div>
@@ -128,11 +186,14 @@ export const DateRetrievalDialog = ({
         <Grid item container justifyContent="center" alignItems="center">
           <DialogActions className={classes.verifybutton}>
             <GradientButton
-              disabled={loginState.loading}
+              disabled={
+                loginState.loading || fromerror.isError || error.isError
+              }
               endIcon={
                 loginState.loading ? <CircularProgress size={20} /> : null
               }
               onClick={() => {
+                console.log(selectedFromDate, selectedToDate);
                 if (
                   !greaterThanInclusiveDate(selectedToDate, selectedFromDate)
                 ) {
@@ -141,7 +202,36 @@ export const DateRetrievalDialog = ({
                     error: "To date should be greater than From date.",
                   });
                 } else {
-                  selectedDates(selectedFromDate, selectedToDate);
+                  let retrievalValues = [
+                    {
+                      id: "A_FROM_DT",
+                      value: {
+                        condition: "equal",
+                        value: format(
+                          new Date(
+                            selectedFromDate.toISOString() ?? new Date()
+                          ),
+                          "dd-MMM-yyyy"
+                        ),
+                        columnName: "From Date",
+                      },
+                    },
+                    {
+                      id: "A_TO_DT",
+                      value: {
+                        condition: "equal",
+                        value: format(
+                          new Date(selectedToDate.toISOString() ?? new Date()),
+                          "dd-MMM-yyyy"
+                        ),
+                        columnName: "To Date",
+                      },
+                    },
+                  ];
+                  retrievalParaValues(retrievalValues, {
+                    A_FROM_DT: selectedFromDate,
+                    A_TO_DT: selectedToDate,
+                  });
                 }
               }}
               ref={inputButtonRef}

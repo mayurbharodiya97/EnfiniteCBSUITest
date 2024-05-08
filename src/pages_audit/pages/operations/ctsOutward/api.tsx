@@ -29,6 +29,18 @@ export const clearingBankMasterConfigDML = async (formData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOBANKDETAIL", formData);
   if (status === "0") {
+    return {
+      data,
+      status,
+    };
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getBankChequeAlert = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("BANKCHEQUEALERT", formData);
+  if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -58,7 +70,7 @@ export const getRetrievalClearingData = async (Apireq) => {
 
 export const getOutwardClearingConfigData = async (formData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETOWCLEARINGDETAILS", formData);
+    await AuthSDK.internalFetcher("GETCLEARINGDETAILS", formData);
   if (status === "0") {
     return data.map((item) => {
       return {
@@ -66,6 +78,30 @@ export const getOutwardClearingConfigData = async (formData) => {
         CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
       };
     });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getInwardReasonTypeList = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINWREASONMSTDDW", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DISLAY_REASON, REASON_CD, ...other }) => {
+          return {
+            value: REASON_CD,
+            label: DISLAY_REASON,
+            ...other,
+          };
+        }
+      );
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

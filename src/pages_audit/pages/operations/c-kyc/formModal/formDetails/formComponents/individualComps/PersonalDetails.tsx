@@ -25,13 +25,7 @@ import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "../TabNavigate";
-const PersonalDetails = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
-  displayMode
-}) => {
+const PersonalDetails = () => {
   const { t } = useTranslation();
   const PDFormRef = useRef<any>("");
   const PODFormRef = useRef<any>("");
@@ -45,6 +39,8 @@ const PersonalDetails = ({
     handleModifiedColsctx,
     handleCurrentFormRefctx,
     handleSavectx,
+    handleCurrFormctx,
+    handleApiRes,
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const [isNextLoading, setIsNextLoading] = useState(false);
@@ -70,9 +66,61 @@ const PersonalDetails = ({
 
   useEffect(() => {
     let refs = [PDFormRef, PODFormRef]
-    handleCurrentFormRefctx(refs)
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+    // return () => {
+    //   handleCurrFormctx({
+    //     currentFormRefctx: [],
+    //     currentFormSubmitted: null,
+    //     colTabValuectx: null,
+    //   })
+    // }
   }, [])
 
+  useEffect(() => {
+    // console.log("qweqweqweqwe", formStatus)
+    if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          let newTabs = state?.tabsApiResctx;          
+          if(Array.isArray(newTabs) && newTabs.length>0) {
+            newTabs = newTabs.map(tab => {
+              if(tab.TAB_NAME === "NRI Details") {
+                if(state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "02" ||
+                  state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "03") {
+                    return {...tab, isVisible: false}
+                } else {
+                  return {...tab, isVisible: true}
+                }
+              } else {
+                return tab;
+              }
+            })
+            handleApiRes(newTabs)
+          }          
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: state?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
   // useEffect(() => {
   //     console.log("... personal details", isCustomerData)
@@ -86,8 +134,9 @@ const PersonalDetails = ({
     actionFlag,
     hasError
   ) => {
+      // handleStepStatusctx({ status: "pending", coltabvalue: state?.colTabValuectx });
     // console.log("hasErrorhasError", hasError, data)
-    setIsNextLoading(true);
+    // setIsNextLoading(true);
     // console.log("qweqweqwesdcas", data, displayData, actionFlag)
     if (data && !hasError) {
       let formFields = Object.keys(data) // array, get all form-fields-name 
@@ -114,18 +163,29 @@ const PersonalDetails = ({
         ...commonData,
       };
       handleFormDataonSavectx(newData);
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
+        let tabModifiedCols:any = state?.modifiedFormCols
+        let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+
+        tabModifiedCols = {
+          ...tabModifiedCols,
+          PERSONAL_DETAIL: [...updatedCols]
+        }
+        handleModifiedColsctx(tabModifiedCols)
+      }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, Promise.resolve(1)])
+      setFormStatus(old => [...old, true])
       // if(state?.isFreshEntry) {
         // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
-      // handleStepStatusctx({
-      //   status: "error",
-      //   coltabvalue: state?.colTabValuectx,
-      // });
-      setIsNextLoading(false);
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: state?.colTabValuectx,
+      });
+      // setIsNextLoading(false);
+      setFormStatus(old => [...old, false])
     }
     endSubmit(true);
   };
@@ -137,7 +197,7 @@ const PersonalDetails = ({
     actionFlag,
     hasError
   ) => {
-    setIsNextLoading(true);
+    // setIsNextLoading(true);
     // console.log("qweqweqwe", data)
     // if(Boolean(data["BIRTH_DT"])) {
     //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
@@ -162,7 +222,7 @@ const PersonalDetails = ({
       handleFormDataonSavectx(newData);
       // handleColTabChangectx(1)
 
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
         // let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
         // let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
@@ -182,24 +242,19 @@ const PersonalDetails = ({
           PERSONAL_DETAIL: [...updatedCols]
         }
         // handleEditFormDatactx(updateFormData, tabModifiedCols)
-        // handleModifiedColsctx(tabModifiedCols)
-      } else {
-        // handleStepStatusctx({
-        //   status: "completed",
-        //   coltabvalue: state?.colTabValuectx,
-        // });
+        handleModifiedColsctx(tabModifiedCols)
       }
-      setFormStatus(old => [...old, Promise.resolve(1)])
+      setFormStatus(old => [...old, true])
       // handleColTabChangectx(state?.colTabValuectx + 1);
       // setIsNextLoading(false)
     } else {
-      // handleStepStatusctx({
-      //   status: "error",
-      //   coltabvalue: state?.colTabValuectx,
-      // });
-      // formStatusRef.current = [...formStatusRef.current, Promise.reject(1)]
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: state?.colTabValuectx,
+      });
+      setFormStatus(old => [...old, false])
     }
-    setIsNextLoading(false);
+    // setIsNextLoading(false);
     endSubmit(true);
   };
 
@@ -213,51 +268,12 @@ const PersonalDetails = ({
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
 
-  // useEffect(() => {
-  //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
-  // }, [state?.isFreshEntryctx])
-
-  useEffect(() => {
-    // console.log("evalSave formStatuse", formStatus)
-    if(formStatus.length === 2) {
-      // console.log("evalSave if pro length",formStatus.length)
-      Promise.all(formStatus)
-      .then(res => {
-        // console.log("evalSave in success ",res)
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
-        handleColTabChangectx(state?.colTabValuectx + 1);
-      })
-      .catch(err => {
-        console.log("evalSave in catch", err.message)
-      })
-    } else {
-      // console.log("evalSave pro length else",formStatus.length)
-      if(formStatus.length>0) {
-        handleStepStatusctx({
-          status: "error",
-          coltabvalue: state?.colTabValuectx,
-        })
-      }
-    }
-    setFormStatus([])
-  }, [formStatus.length])
-
-  // const evalSave = (e) => {
-  //   // PDFormRef.current.handleSubmitError(e, "save", false)
-  //   // PODFormRef.current.handleSubmitError(e, "save", false)
-  //   console.log("evalSave kiuiwehfiuwehfwef", formStatus)
-  //   Promise.all([PDFormRef.current.handleSubmitError(e, "save", false), PODFormRef.current.handleSubmitError(e, "save", false)])
-  //   .then((response) => {
-  //     console.log("evalSave in success ", response)
-  //   }).catch(err => {
-  //     console.log("evalSave out catch", err.message)
-  //   })
-  // }
-
   const handleSave = (e) => {
+    // setIsNextLoading(true)
+    // currentFormctx
+    handleCurrFormctx({
+      isLoading: true,
+    })
     const refs = [PDFormRef.current.handleSubmitError(e, "save", false), PODFormRef.current.handleSubmitError(e, "save", false)]
     handleSavectx(e, refs)
   } 
@@ -269,7 +285,7 @@ const PersonalDetails = ({
       rowGap={3}
       // sx={{backgroundColor: "#eee"}}
     >
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -308,7 +324,7 @@ const PersonalDetails = ({
                 metaData={personal_detail_prefix_data as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 controlsAtBottom={false}
                 onFormButtonClickHandel={(fieldID, dependentFields) => {
                   // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.ACCT_NM?.value, typeof dependentFields?.ACCT_NM?.value)
@@ -338,16 +354,17 @@ const PersonalDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -384,7 +401,7 @@ const PersonalDetails = ({
                 metaData={personal_other_detail_meta_data as MetaDataType}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 formStyle={{}}
                 hideHeader={true}
                 onSubmitHandler={onSubmitPODHandler}
@@ -393,15 +410,16 @@ const PersonalDetails = ({
             {/* </Grid> */}
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="300px"
           width="100%"
         ></Skeleton>
-    ) : null}
-      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+    ) : null} */}
+      <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
         {dialogOpen && <SearchListdialog 
             open={dialogOpen} 

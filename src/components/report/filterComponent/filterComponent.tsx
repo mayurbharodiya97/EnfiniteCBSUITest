@@ -54,12 +54,12 @@ export const FilterComponent = ({
   retrievalType,
   isOpenRetrievalDefault,
   setShowFilters,
-  setAllFilters
+  setAllFilters,
 }) => {
   const [open, setOpen] = useState(isOpenRetrievalDefault);
   // const { filterState, dispatch } = useFilterState(filterReducer);
   const classes = useStyles();
-
+  const refFilteredData = useRef<any>(filterData);
   const handleClose = () => {
     setOpen(false);
   };
@@ -186,7 +186,8 @@ export const FilterComponent = ({
           open={open}
           handleClose={handleClose}
           loginState={{}}
-          selectedDates={retrievalParaValues}
+          defaultData={refFilteredData.current}
+          retrievalParaValues={retrievalParaValues}
         />
       ) : // open && retrievalType === "GETPROPMISCDATA" ? (
       // <CommunMSTConfig

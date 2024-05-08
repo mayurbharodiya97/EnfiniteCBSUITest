@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef, useEffect, useContext } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
 import { Omit, Merge } from "../types";
@@ -11,6 +11,8 @@ import { DatePickerProps } from "@mui/lab/DatePicker";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { utilFunction } from "components/utils";
 import { TextField } from "components/styledComponent";
+import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -70,11 +72,12 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   inputProps,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  isWorkingDate = false,
   //disableTimestamp,
   ...others
 }) => {
   const classes = useStyles();
-
+  const { authState } = useContext(AuthContext);
   const {
     value,
     error,
@@ -114,6 +117,28 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
+    //chnages for min-max date is not edit
+    if (value) {
+      const selectedDate = new Date(value).toLocaleDateString();
+      const maxDate = new Date(others.maxDate).toLocaleDateString();
+      const minDate = new Date(others.minDate).toLocaleDateString();
+
+      if (
+        new Date(selectedDate) > new Date(maxDate) &&
+        Boolean(others.maxDate)
+      ) {
+        handleChange(new Date(maxDate));
+        return;
+      }
+
+      if (
+        new Date(selectedDate) < new Date(minDate) &&
+        Boolean(others.minDate)
+      ) {
+        handleChange(new Date(minDate));
+        return;
+      }
+    }
   }, [value, handleChange]);
   const focusRef = useRef();
   // console.log("<<focusRef", isFieldFocused);
@@ -139,11 +164,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }
     }
   }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+
   const isError = touched && (error ?? "") !== "";
 
   if (excluded) {
     return null;
   }
+
   // console.log(fieldKey, value, touched, isError, error);
   const result = (
     // <ThemeProvider theme={themeObj}>
@@ -152,7 +179,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       <KeyboardDatePicker
         {...others}
         key={fieldKey}
-        className={classes.root}
+        // className={classes.root}
         id={fieldKey}
         label={label}
         name={name}
@@ -181,9 +208,17 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
           textField: {
             fullWidth: true,
             error: !isSubmitting && isError,
-            helperText: !isSubmitting && isError ? error : null,
+            helperText:
+              new Date(value) <= new Date(authState?.minDate)
+                ? "Date is out of period"
+                : !isSubmitting && isError
+                ? error
+                : null,
             onBlur: handleBlur,
             InputLabelProps: { shrink: true },
+          },
+          actionBar: {
+            actions: ["today", "accept", "cancel"],
           },
         }}
         tabIndex={readOnly ? -1 : undefined}

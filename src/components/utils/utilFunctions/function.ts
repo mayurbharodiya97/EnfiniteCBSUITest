@@ -316,3 +316,18 @@ export const getPadAccountNumber = (accountNo, optionData) => {
     ?.padStart(optionData?.PADDING_NUMBER ?? 6, "0")
     .padEnd(20, " ");
 };
+
+//For get dependent field data with filtered keys in array fields.
+export const getDependetFieldDataArrayField = (inputData) => {
+  let transformedData = {};
+  for (const key in inputData) {
+    if (inputData.hasOwnProperty(key)) {
+      // Split the key using dots and take the last part
+      const parts = key.split(".");
+      const newKey = parts[parts.length - 1];
+      // Assign the value to the new key
+      transformedData[newKey] = inputData[key]; // Trim any extra spaces
+    }
+  }
+  return transformedData;
+};

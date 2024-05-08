@@ -78,6 +78,9 @@ const reducer = (state, action) => {
         requestCd: action?.payload?.requestCd ?? "",
         username: action?.payload?.username ?? "",
         auth_type: action?.payload?.auth_type,
+        company_ID: action?.payload?.company_ID,
+        branch_cd: action?.payload?.branch_cd,
+        otpValidFor: action?.payload?.otpValidFor,
       };
     }
     case "inititateOTPVerification": {
@@ -175,7 +178,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
           data: resdata,
           message,
         } = await veirfyUsernameandMobileNo(
-          data?.userName,
+          data?.userName.toLowerCase(),
           data?.mobileno,
           screenFlag
         );
@@ -187,6 +190,9 @@ export const ForgotPasswordController = ({ screenFlag }) => {
               requestCd: String(resdata?.TRAN_CD ?? ""),
               username: data?.userName,
               auth_type: resdata?.AUTH_TYPE,
+              company_ID: resdata?.COMP_CD,
+              branch_cd: resdata?.BRANCH_CD,
+              otpValidFor: resdata?.OTP_VALID,
             },
           });
           setOpen(true);
@@ -244,11 +250,11 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       };
       if (!Boolean(data.userName)) {
         validationData.isUsernameError = true;
-        validationData.userMessageforusername = t("UsernameisRequired");
+        validationData.userMessageforusername = "UsernameisRequired";
       }
       if (!Boolean(data.mobileno)) {
         validationData.isMobileError = true;
-        validationData.userMessageforMobileno = t("MobileNoisRequired");
+        validationData.userMessageforMobileno = "MobileNoisRequired";
       } else if (
         isNaN(data.mobileno) ||
         (data.mobileno.length !== 10 && data.mobileno.length !== 13)
@@ -275,9 +281,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       }
       if (!Boolean(data.confirmpassword)) {
         validationData.isConfirmPasswordError = true;
-        validationData.userMessageforconfirmPassword = t(
-          "Confirmpasswordisrequired"
-        );
+        validationData.userMessageforconfirmPassword =
+          "Confirmpasswordisrequired";
       } else if (
         Boolean(data.password) &&
         data.password !== data.confirmpassword
@@ -319,9 +324,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
         loginState?.auth_type,
         screenFlag
       );
-      console.log("loginState?.authType", loginState);
       if (status === "0") {
-        console.log(">>screenFlag", screenFlag);
         if (screenFlag === "totp") {
           enqueueSnackbar(message, {
             variant: "success",
@@ -392,7 +395,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                   handleClose={handleClose}
                   loginState={loginState}
                   VerifyOTP={VerifyOTP}
-                  OTPError={loginState?.OtpuserMessage ?? ""}
+                  OTPError={t(loginState?.OtpuserMessage ?? "")}
                   setOTPError={(error) => {
                     dispath({
                       type: "OTPVerificationFailed",

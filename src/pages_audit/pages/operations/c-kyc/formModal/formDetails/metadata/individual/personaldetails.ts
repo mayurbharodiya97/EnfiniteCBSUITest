@@ -624,12 +624,13 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "autocomplete",
+                componentType: "select",
             },
             options: [
                 {label: "Minor", value: "M"},
                 {label: "Major", value: "J"}
             ],
+            isReadOnly: true,
             dependentFields: ["BIRTH_DT"],
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {

@@ -2,11 +2,12 @@ import { FormHelperText } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { CircularProgress, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { CircularProgress } from "@mui/material";
 import { VerifyFinger } from "./verifyFinger";
 import { Container } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { Grid } from "@mui/material";
 import clsx from "clsx";
 import { useSnackbar } from "notistack";
@@ -26,7 +27,13 @@ export const OTPModel = ({
   resendFlag,
 }) => {
   const [OTP, setOTP] = useState("");
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPasswordTime, setShowPasswordTime] = useState(0);
+  const showPassword = Date.now() < showPasswordTime;
+  const [, forceUpdate] = useState<any | null>();
+  const timerRef = useRef<any>(null);
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
   const [btnshow, setbtnshow] = useState(false);
   const inputButtonRef = useRef<any>(null);
   const [resendotpLoading, setResendotpLoading] = useState(false);
@@ -74,9 +81,10 @@ export const OTPModel = ({
       </a>
     );
   };
+
   const ClickEventHandler = () => {
     if (!Boolean(OTP) || OTP.length < 6) {
-      setOTPError("Please enter a 6 digit OTP number");
+      setOTPError("otp.EnterOTPDigit");
     } else {
       setOTPError("");
       VerifyOTP(OTP);
@@ -116,7 +124,7 @@ export const OTPModel = ({
     }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        {t("otp.OtpExpired")} {remainingtime}
+        {t("otp.OtpExpired")} {remainingtime} {t("otp.second")}
         {/* {t("otp.ValidFor")} {remainingtime} */}
       </span>
     );
@@ -200,7 +208,7 @@ export const OTPModel = ({
             </div>
             <div
               className={classes.divflex}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -213,18 +221,25 @@ export const OTPModel = ({
                 OTPLength={6}
                 otpType="number"
                 disabled={false}
-                secure={showPassword}
+                secure={!showPassword}
                 className={classes.otpinputpadding}
               />
-
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={() => setShowPassword((old) => !old)}
+                onClick={() => {
+                  if (!showPassword) {
+                    setShowPasswordTime(Date.now() + 5000);
+                    timerRef.current = setTimeout(
+                      () => forceUpdate(Date.now()),
+                      5000
+                    );
+                  } else if (showPassword) setShowPasswordTime(0);
+                }}
                 onMouseDown={(e) => e.preventDefault()}
                 disabled={loginState.otploading}
                 className={classes.ibtnvisible}
               >
-                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
             </div>
             {Boolean(OTPError) ? (
@@ -232,7 +247,6 @@ export const OTPModel = ({
                 {OTPError}
               </FormHelperText>
             ) : null}
-
             <div
               style={{
                 display: "flex",
@@ -305,9 +319,8 @@ export const OTPModelForm = ({
   otpresendCount = 0,
 }) => {
   const [OTP, setOTP] = useState("");
-  // const [showPasswordTime, setShowPasswordTime] = useState(0);
-  // const showPassword = Date.now() < showPasswordTime;
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPasswordTime, setShowPasswordTime] = useState(0);
+  const showPassword = Date.now() < showPasswordTime;
   const [, forceUpdate] = useState<any | null>();
   const timerRef = useRef<any>(null);
   useEffect(() => {
@@ -347,7 +360,7 @@ export const OTPModelForm = ({
   };
   const ClickEventHandler = () => {
     if (!Boolean(OTP) || OTP.length < 6) {
-      setOTPError("Please enter a 6 digit OTP number");
+      setOTPError("otp.EnterOTPDigit");
     } else {
       setOTPError("");
       VerifyOTP(OTP);
@@ -361,13 +374,12 @@ export const OTPModelForm = ({
         : loginState?.transactionID,
       loginState?.username,
       resendFlag,
-      loginState.auth_data?.[0]?.companyID,
-      loginState.auth_data?.[0]?.branch_cd
+      loginState?.company_ID,
+      loginState?.branch_cd
     );
     setResendotpLoading(false);
     if (status === "0") {
-      //console.log(data);
-      setNewRequestID(data?.REQUEST_CD);
+      setNewRequestID(data?.TRAN_CD);
       setbtnshow(false);
       enqueueSnackbar(message, { variant: "success" });
     } else {
@@ -396,6 +408,7 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
+
   return (
     <Fragment>
       <Grid alignItems="center">
@@ -446,7 +459,7 @@ export const OTPModelForm = ({
           </div>
           <div
             className={classes.divflex}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 inputButtonRef?.current?.click?.();
               }
@@ -459,7 +472,7 @@ export const OTPModelForm = ({
               OTPLength={6}
               otpType="number"
               disabled={false}
-              secure={showPassword}
+              secure={!showPassword}
               className={classes.otpinputpadding}
             />
 
@@ -482,12 +495,20 @@ export const OTPModelForm = ({
             </IconButton> */}
             <IconButton
               aria-label="toggle password visibility"
-              onClick={() => setShowPassword((old) => !old)}
+              onClick={() => {
+                if (!showPassword) {
+                  setShowPasswordTime(Date.now() + 5000);
+                  timerRef.current = setTimeout(
+                    () => forceUpdate(Date.now()),
+                    5000
+                  );
+                } else if (showPassword) setShowPasswordTime(0);
+              }}
               onMouseDown={(e) => e.preventDefault()}
               disabled={loginState.otploading}
               className={classes.ibtnvisible}
             >
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              {showPassword ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </div>
           {Boolean(OTPError) ? (
@@ -495,7 +516,9 @@ export const OTPModelForm = ({
           ) : null}
           {loginState?.auth_type === "TOTP" ? (
             <div style={{ flex: "auto" }}>
-              <a href="forgot-totp">Forgot TOTP</a>
+              <a href="forgot-totp" style={{ color: "var(--theme-color3)" }}>
+                Forgot TOTP
+              </a>
             </div>
           ) : (
             <></>
@@ -529,10 +552,10 @@ export const OTPModelForm = ({
             </GradientButton>
             <GradientButton
               style={{
-                borderRadius: loginState.loading ? "50%" : "10px",
-                height: loginState.loading ? "40px" : "100%",
-                width: loginState.loading ? "0px" : "100%",
-                minWidth: loginState.loading ? "40px" : "80px",
+                borderRadius: loginState.otploading ? "50%" : "10px",
+                height: loginState.otploading ? "40px" : "100%",
+                width: loginState.otploading ? "0px" : "100%",
+                minWidth: loginState.otploading ? "40px" : "80px",
               }}
               // fullWidth
               disabled={loginState.loading}
@@ -540,7 +563,7 @@ export const OTPModelForm = ({
               ref={inputButtonRef}
               className={classes.otpButtons}
             >
-              {loginState.loading ? (
+              {loginState.otploading ? (
                 <CircularProgress size={25} thickness={4.6} />
               ) : (
                 t("otp.VerifyOTP")

@@ -115,29 +115,30 @@ const Dashboard = () => {
                     />
                   </Grid>
                 ))} */}
+
                 {Array.from(Array(8)).map((_, index) => {
                   const item = data?.[0]?.BOXES?.[index];
                   const isVisible = !!item;
 
-                  if (isVisible) {
-                    return (
-                      <Grid
-                        item
-                        xl={3}
-                        lg={3}
-                        sm={6}
-                        md={4}
-                        xs={12}
-                        key={index}
-                        style={{
-                          borderBottom: "2px solid #EBEDEE",
-                          borderRight: "2px solid #EBEDEE",
-                          // marginBottom: "10px",
-                          paddingRight: "10px",
-                          paddingBottom: "10px",
-                          paddingTop: "10px",
-                        }}
-                      >
+                  return (
+                    <Grid
+                      item
+                      xl={3}
+                      lg={3}
+                      sm={6}
+                      md={4}
+                      xs={12}
+                      key={index}
+                      style={{
+                        borderBottom: "2px solid #EBEDEE",
+                        borderRight: "2px solid #EBEDEE",
+                        paddingRight: "10px",
+                        paddingBottom: "10px",
+                        paddingTop: "10px",
+                        display: isVisible ? "block" : "none", // Set display property based on visibility
+                      }}
+                    >
+                      {isVisible && (
                         <DashboardBox
                           key={"board" + index}
                           body={item.DEFAULT_VAL}
@@ -148,29 +149,9 @@ const Dashboard = () => {
                           apiName={item.API_NAME}
                           visibility={!isVisible}
                         />
-                      </Grid>
-                    );
-                  } else {
-                    return (
-                      <Grid
-                        item
-                        xl={3}
-                        lg={3}
-                        sm={6}
-                        md={4}
-                        xs={12}
-                        key={index}
-                      >
-                        <div
-                          style={{
-                            height: "100px",
-                            width: "100%",
-                            backgroundColor: "transparent",
-                          }}
-                        ></div>
-                      </Grid>
-                    );
-                  }
+                      )}
+                    </Grid>
+                  );
                 })}
 
                 {data?.[0]?.QUICK_ACCESS?.ISVISIBLE ? (

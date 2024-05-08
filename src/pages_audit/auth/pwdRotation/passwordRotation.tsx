@@ -10,6 +10,7 @@ import { Fragment, useRef, useState } from "react";
 import { utilFunction } from "components/utils/utilFunctions";
 import { ResetPassword } from "./api";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export const PasswordRotation = ({
   classes,
@@ -21,6 +22,7 @@ export const PasswordRotation = ({
 }) => {
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
   const [input, setInput] = useState({
     userName: username,
     oldpassword: "",
@@ -60,6 +62,7 @@ export const PasswordRotation = ({
       setPwdData.oldpassworderror = "Current Password is required.";
       isError = true;
     }
+
     let pwdData = utilFunction.ValidatePassword(input.password);
     if (Boolean(pwdData)) {
       setPwdData.isnewpwdError = true;
@@ -185,12 +188,12 @@ export const PasswordRotation = ({
               onChange={handleChange}
               error={pwdReset.isoldPwdError}
               helperText={
-                pwdReset.isoldPwdError ? pwdReset.oldpassworderror : ""
+                pwdReset.isoldPwdError ? t(pwdReset.oldpassworderror) : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -208,12 +211,12 @@ export const PasswordRotation = ({
               onChange={handleChange}
               error={pwdReset.isnewpwdError}
               helperText={
-                pwdReset.isnewpwdError ? pwdReset.newpassworderror : ""
+                pwdReset.isnewpwdError ? t(pwdReset.newpassworderror) : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -232,13 +235,13 @@ export const PasswordRotation = ({
               error={pwdReset.isconfirmnewpwdError}
               helperText={
                 pwdReset.isconfirmnewpwdError
-                  ? pwdReset.confirmnewpassworderror
+                  ? t(pwdReset.confirmnewpassworderror)
                   : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }

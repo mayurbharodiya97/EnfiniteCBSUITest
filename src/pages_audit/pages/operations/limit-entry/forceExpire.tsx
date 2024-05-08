@@ -5,7 +5,7 @@ import {
   Dialog,
   LinearProgress,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
@@ -16,6 +16,7 @@ import { crudLimitEntryData } from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
@@ -26,14 +27,11 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
     FORCE_EXP_DT: authState?.workingDate,
   };
 
-  console.log("<<<newIntialData", newIntialData, authState?.workingDate);
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
     crudLimitEntryData,
     {
       onSuccess: (data, variables) => {
-        console.log("<<<FONCE", data, variables);
-
         navigate(".");
         enqueueSnackbar("Force-Expired successfully", { variant: "success" });
         getLimitDetail.mutate({
@@ -41,20 +39,28 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+          ENTERED_DATE: authState?.workingDate,
         });
       },
     }
   );
+  useEffect(() => {
+    if (rows?.[0]?.data) {
+      forceExpireMetaData.form.label = `  ${
+        rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y"
+          ? "Force-Expire Limit"
+          : "Limit Detail"
+      }     \u00A0\u00A0 
+      ${(
+        rows?.[0]?.data?.COMP_CD +
+        rows?.[0]?.data?.BRANCH_CD +
+        rows?.[0]?.data?.ACCT_TYPE +
+        rows?.[0]?.data?.ACCT_CD
+      ).replace(/\s/g, "")}`;
+    }
+  }, [rows?.[0]?.data]);
 
-  const onSubmitHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value
-  ) => {
-    console.log("<<<savehandle", data);
-
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
     let apiReq = {
       ...data,
       _isNewRow: false,
@@ -101,19 +107,27 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           </div>
         ) : forceExpire.isLoading ? (
           <LinearProgress color="secondary" />
-        ) : null}
+        ) : (
+          <LinearProgressBarSpacer />
+        )}
         <FormWrapper
-          key={"nscdetailForm"}
+          key={"limit-force-exp"}
           metaData={forceExpireMetaData}
           initialValues={newIntialData ?? []}
           onSubmitHandler={onSubmitHandler}
           loading={forceExpire.isLoading}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 367px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                {rows?.[0]?.data?.EXPIRED_FLAG === "A" && (
+                {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
                   <Button
                     onClick={(event) => {
                       handleSubmit(event, "Save");
