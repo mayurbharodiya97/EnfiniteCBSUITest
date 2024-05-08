@@ -77,6 +77,12 @@ export const RetrieveClearing: FC<{
     }
   };
 
+  if (zoneTranType === "S") {
+    RetrieveFormConfigMetaData.form.label = "Retrieve CTS O/W Clearing Data";
+  } else if (zoneTranType === "R") {
+    RetrieveFormConfigMetaData.form.label = "Retrieve Inward Return Entry Data";
+    RetrieveFormConfigMetaData.fields[2].defaultValue = "10  ";
+  }
   return (
     <>
       <>
@@ -93,8 +99,10 @@ export const RetrieveClearing: FC<{
             key={`retrieveForm`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
             initialValues={{
-              FROM_TRAN_DT: tranDate,
-              TO_TRAN_DT: tranDate,
+              FROM_TRAN_DT:
+                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
+              TO_TRAN_DT:
+                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
               ZONE_TRAN_TYPE: zoneTranType,
             }}
             onSubmitHandler={onSubmitHandler}

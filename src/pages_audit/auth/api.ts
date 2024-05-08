@@ -234,6 +234,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     companyID: data?.COMPANYID,
     baseCompanyID: data?.BASECOMPANYID,
     workingDate: data?.WORKINGDATE,
+    minDate: data?.MINDATE,
     groupName: data?.GROUP_NAME,
     menulistdata: [],
     user: {

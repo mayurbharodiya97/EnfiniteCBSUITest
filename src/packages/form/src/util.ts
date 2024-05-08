@@ -72,11 +72,13 @@ const validationConfig = {
 };
 
 export const yupValidationHelper =
-  (schema: any | yup.StringSchema<any> | yup.NumberSchema<any>) =>
-  async (field: FormFieldAtomType) => {
+  (schema: any) => async (field: FormFieldAtomType) => {
     const { value } = field;
     try {
-      await schema.validate(value, validationConfig);
+      await schema.validate(
+        typeof value === "string" ? (value || "").trim() : value,
+        validationConfig
+      );
       return null;
     } catch (e: any) {
       if (e instanceof yup.ValidationError) {

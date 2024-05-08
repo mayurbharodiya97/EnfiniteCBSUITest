@@ -13,6 +13,8 @@ import { Grid, Typography } from "@mui/material";
 import { t } from "i18next";
 import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 import { useSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 
 
 export const CkycConfirm = () => {
@@ -23,8 +25,7 @@ export const CkycConfirm = () => {
   const location: any = useLocation();
 
   // temporary-use-state
-  const [isCustomerData, setIsCustomerData] = useState(true);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
   
 
   const {
@@ -33,10 +34,11 @@ export const CkycConfirm = () => {
       isLoading: isPendingDataLoading,
       isFetching: isPendingDataFetching,
       refetch: PendingRefetch,
+      error: PendingError,
   } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
-      // BRANCH_CD: authState?.user?.branchCode ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       REQ_FLAG: "P",
       // ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
@@ -64,6 +66,7 @@ export const CkycConfirm = () => {
       const maker = data.rows?.[0]?.data?.MAKER
       const loggedinUser = authState?.user?.id;
       if(maker === loggedinUser) {
+        setPreventConfirmDialog(true)
         enqueueSnackbar("You can not confirm your own posted transaction", {
           variant: "error",
         })
@@ -99,6 +102,14 @@ export const CkycConfirm = () => {
 
   return (
     <Grid sx={{mx:"10px"}}>
+      {isPendingError && (
+        <Alert
+          severity={PendingError?.severity ?? "error"}
+          errorMsg={PendingError?.error_msg ?? "Something went to wrong.."}
+          errorDetail={PendingError?.error_detail}
+          color="error"
+        />
+      )}
         {/* <Typography
           sx={{
             color: (theme) => theme.palette.grey[700],
@@ -120,15 +131,25 @@ export const CkycConfirm = () => {
           // ref={myGridRef}
         />
 
+        <MessageBoxWrapper
+          MessageTitle={"ALERT"}
+          Message={"You can not confirm your own posted transaction"}
+          onClickButton={() => {
+            setPreventConfirmDialog(false)
+            // setConfirmAction(null)
+            // setConfirmMsgDialog(false)
+            // closeForm()
+          }}
+          rows={[]}
+          buttonNames={["OK"]}
+          open={preventConfirmDialog}
+        />
+
         <Routes>
           <Route
             path="view-detail/*"
             element={
               <FormModal
-                isLoadingData={isLoadingData}
-                setIsLoadingData={setIsLoadingData}
-                isCustomerData={isCustomerData}
-                setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
                 formmode={"view"}
                 from={"confirmation-entry"}

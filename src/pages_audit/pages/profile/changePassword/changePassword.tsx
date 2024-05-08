@@ -25,7 +25,7 @@ const updatePasswordFnWrapper =
     return updatePassword({ ...data, userID });
   };
 
-export const ChangePassword = ({ onClose, showProfile }) => {
+export const ChangePassword = () => {
   const { enqueueSnackbar } = useSnackbar();
   const authCtx = useContext(AuthContext);
   const formRef = useRef<any>(null);

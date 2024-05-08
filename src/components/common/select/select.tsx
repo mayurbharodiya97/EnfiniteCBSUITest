@@ -44,7 +44,7 @@ interface MySelectExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   GridProps?: GridProps;
   enableGrid: boolean;
-  AlwaysRunPostValidationSetCrossFieldVAlwaysRunPostValidationSetCrossFieldValues?: {
+  AlwaysRunPostValidationSetCrossFieldValues?: {
     alwaysRun?: any;
     touchAndValidate?: any;
   };

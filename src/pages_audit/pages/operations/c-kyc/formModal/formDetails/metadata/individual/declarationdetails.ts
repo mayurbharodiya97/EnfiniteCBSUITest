@@ -77,7 +77,6 @@ export const declaration_meta_data = {
           },
           name: "US_GIIN",
           label: "GIIN",
-          required: true,      
           maxLength: 21,
           FormatProps: {
             isAllowed: (values) => {
@@ -98,13 +97,6 @@ export const declaration_meta_data = {
         },
         name: "DATE_OF_COMMENCEMENT",
         label: "DateOfIncorporation",
-        required: true,
-        schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
-        },
         // placeholder: "",
         // type: "datePicker",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -117,13 +109,6 @@ export const declaration_meta_data = {
           label: "PlaceOfIncorporation",
           placeholder: "",
           type: "text",
-          required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
-          },
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           maxLength: 20,
           FormatProps: {
@@ -144,6 +129,7 @@ export const declaration_meta_data = {
           label: "TIN",
           placeholder: "",
           maxLength: 20,
+          dependentFields: ["TIN_ISSUING_COUNTRY"],
           FormatProps: {
             isAllowed: (values) => {
             if (values?.value?.length > 20) {
@@ -153,13 +139,20 @@ export const declaration_meta_data = {
             },
           },
           required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
+          validate: (columnValue, allField, flag) => {
+            const TIN_ISSUING_COUNTRY = allField?.TIN_ISSUING_COUNTRY?.value;
+            const GSTIN = flag?.GSTIN;
+            if(!Boolean(columnValue?.value)) {
+              if(Boolean(TIN_ISSUING_COUNTRY) && !Boolean(GSTIN)) {
+                return "This field is required";
+              } else {
+                return "";
+              }
+            } else {
+              return API.AlphaNumericValidate(columnValue);
+            }
           },
-          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
+          runValidationOnDependentFieldsChange: true,
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
@@ -171,13 +164,6 @@ export const declaration_meta_data = {
           label: "CountryOfIncorporation",
           options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
           _optionsKey: "CountriesOfIncorporation",
-          required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
-        },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -186,18 +172,26 @@ export const declaration_meta_data = {
           render: {
               componentType: "autocomplete",
           },
-          options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
-          _optionsKey: "TINIssuingCountries",
           name: "TIN_ISSUING_COUNTRY",
           label: "TINIssuingCountry",
+          options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "TINIssuingCountries",
           placeholder: "",
-          required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
+          dependentFields: ["TIN"],
+          validate: (columnValue, allField, flag) => {
+            const TIN = allField?.TIN?.value;
+            const GSTIN = flag?.GSTIN;
+            if(!Boolean(columnValue?.value)) {
+              if(Boolean(TIN) || Boolean(GSTIN)) {
+                return "This field is required";
+              } else {
+                return "";
+              }
+            } else {
+                return "";
+            }
           },
+          // runValidationOnDependentFieldsChange: true,
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },

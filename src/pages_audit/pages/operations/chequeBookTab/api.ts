@@ -21,10 +21,14 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
     });
   if (status === "0") {
     return data.map((item) => {
-      return {
-        ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
-      };
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED = "Confirm";
+      } else {
+        item.CONFIRMED = "Pending";
+      }
+      item.AUTO_CHQBK_FLAG = item.AUTO_CHQBK_FLAG === "Y" ? "Yes" : "No";
+      return item;
     });
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -93,6 +97,48 @@ export const chequeGridDTL = async (Apireq) => {
             : item.FLAG,
       };
     });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getChequeBookFlag = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRETRIVECHQBKFLAG", {});
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const chequeBkConfirmGrid = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHQCNFDATADISP", { ...apiReq });
+  if (status === "0") {
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      item.SERVICE_TAX = item.SERVICE_TAX
+        ? parseFloat(item.SERVICE_TAX).toFixed(2)
+        : "0.00";
+      item.FULL_ACCT_NO =
+        item.BRANCH_CD + " " + item.ACCT_TYPE + " " + item.ACCT_CD;
+      item.CHEQUE_SERIES = item.CHEQUE_FROM + " - " + item.CHEQUE_TO;
+      return item;
+    });
+    return dataStatus;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const chequeBookCfm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCHQBKCONFIRMATION", { ...apireq });
+  if (status === "99") {
+    return { status: status, message: message };
+  } else if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

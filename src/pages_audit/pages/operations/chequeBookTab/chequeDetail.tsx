@@ -1,6 +1,6 @@
-import { AppBar, Button, Dialog } from "@mui/material";
-import React, { useCallback, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { AppBar, Dialog, Paper } from "@mui/material";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ChequeDtlGridMetaData } from "./chequeDetailGridMetadata";
@@ -9,6 +9,7 @@ import { ActionTypes } from "components/dataTable";
 import { queryClient } from "cache";
 import { chequeGridDTL } from "./api";
 import { Alert } from "components/common/alert";
+import Draggable from "react-draggable";
 
 export const ChequeDtlGrid = ({ ClosedEventCall }) => {
   const closeAction: ActionTypes[] = [
@@ -22,20 +23,9 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
   ];
   const { state: rows }: any = useLocation();
 
-  const setCurrentAction = useCallback(
-    (data) => {
-      if (data?.name === "close") {
-        ClosedEventCall();
-      }
-    },
-    [ClosedEventCall]
-  );
-
   const chequeDTL = useQuery<any, any>(["chequeDTL"], () =>
     chequeGridDTL({
-      COMP_CD: rows?.[0]?.data?.COMP_CD,
       BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-      REF_TRAN_CD: rows?.[0]?.data?.TRAN_CD,
       ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
       ACCT_CD: rows?.[0]?.data?.ACCT_CD,
       CHEQUE_FROM: rows?.[0]?.data?.CHEQUE_FROM,
@@ -49,6 +39,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
       queryClient.removeQueries(["chequeDTL"]);
     };
   }, []);
+
   useEffect(() => {
     if (rows?.[0]?.data) {
       ChequeDtlGridMetaData.gridConfig.gridLabel = `Cheque Detail \u00A0\u00A0 
@@ -61,6 +52,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
       ).replace(/\s/g, "")}`;
     }
   }, [rows?.[0]?.data]);
+
   return (
     <Dialog
       open={true}
@@ -68,10 +60,19 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
       PaperProps={{
         style: {
           maxWidth: "750px",
+          padding: "5px",
         },
       }}
+      PaperComponent={(props) => (
+        <Draggable
+          handle="#draggable-dialog-title"
+          cancel={'[class*="MuiDialogContent-root"]'}
+        >
+          <Paper {...props} />
+        </Draggable>
+      )}
     >
-      <>
+      <div id="draggable-dialog-title">
         {chequeDTL?.isError ? (
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <AppBar position="relative" color="primary">
@@ -91,9 +92,9 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
           setData={() => {}}
           loading={chequeDTL?.isLoading}
           actions={closeAction}
-          setAction={setCurrentAction}
+          setAction={() => ClosedEventCall()}
         />
-      </>
+      </div>
     </Dialog>
   );
 };

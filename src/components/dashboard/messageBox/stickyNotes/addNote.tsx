@@ -70,7 +70,7 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
     }
   };
   const handleChangeTitle = (event) => {
-    if (characterLimit - event.target.value.length >= 0) {
+    if (30 - event.target.value.length >= 0) {
       setNoteTitle(event.target.value);
     }
   };
@@ -179,7 +179,7 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
               </Tooltip>
             </div>
           </Grid>
-          <textarea
+          {/* <textarea
             placeholder="Title"
             value={noteTitle}
             onChange={handleChangeTitle}
@@ -193,6 +193,26 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
               height: "15%",
             }}
           ></textarea>
+          <small>{30 - noteTitle.length} Remaining</small> */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <textarea
+              placeholder="Title"
+              value={noteTitle}
+              onChange={handleChangeTitle}
+              style={{
+                marginTop: "20px",
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "100%", // Adjust width to leave space for the small element
+                // width: "calc(100% - 60px)", // Adjust width to leave space for the small element
+                backgroundColor: data?.colors,
+                height: "35%",
+              }}
+            ></textarea>
+            <small style={{ width: "23%", marginTop: "20px" }}>
+              {30 - noteTitle.length} Remaining
+            </small>
+          </div>
 
           <textarea
             // rows="8"
