@@ -102,6 +102,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       isNumericString: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 10) {
+          return false;
+        }
+
+        return true;
+      },
     },
     // StartAdornment: "+88",
   },
@@ -420,70 +427,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     StartAdornment: "INR",
     isCurrencyField: true,
   },
-  accountCode: {
-    render: {
-      componentType: "numberFormat",
-    },
-    label: "Account Number",
-    name: "ACCT_CD",
-    placeholder: "Enter account number",
-    required: true,
-    autoComplete: "off",
-    // maxLength: 8,
-    dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
-    postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    // setValueOnDependentFieldsChange: (dependentFields) => {
-    //   return "";
-    // },
-    schemaValidation: {
-      type: "string",
-      rules: [
-        { name: "required", params: ["Account code is required"] },
-        {
-          name: "max",
-          params: [20, "Account code should not exceed 20 digits"],
-        },
-      ],
-    },
-    GridProps: {
-      xs: 3,
-      md: 3,
-      sm: 3,
-      lg: 3,
-      xl: 3,
-    },
-    FormatProps: {
-      // format: "###########",
-      allowNegative: false,
-      allowLeadingZeros: true,
-      // isNumericString: true,
-
-      isAllowed: (values) => {
-        if (values?.value?.length > 8) {
-          return false;
-        }
-        return true;
-      },
-    },
-  },
-  accountNumberOptional: {
-    render: {
-      componentType: "numberFormat",
-    },
-    FormatProps: {
-      allowNegative: false,
-      allowLeadingZeros: false,
-      isAllowed: (values) => {
-        if (values?.value?.length > 20) {
-          return false;
-        }
-        // if (values.floatValue === 0) {
-        //   return false;
-        // }
-        return true;
-      },
-    },
-  },
   customerID: {
     render: {
       componentType: "numberFormat",
@@ -619,6 +562,69 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
   },
 
+  accountCode: {
+    render: {
+      componentType: "numberFormat",
+    },
+    label: "Account Number",
+    name: "ACCT_CD",
+    placeholder: "Enter account number",
+    required: true,
+    // maxLength: 8,
+    dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+    postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
+    // setValueOnDependentFieldsChange: (dependentFields) => {
+    //   return "";
+    // },
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["Account code is required"] },
+        {
+          name: "max",
+          params: [20, "Account code should not exceed 20 digits"],
+        },
+      ],
+    },
+    GridProps: {
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
+    },
+    FormatProps: {
+      // format: "###########",
+      allowNegative: false,
+      allowLeadingZeros: true,
+      // isNumericString: true,
+
+      isAllowed: (values) => {
+        if (values?.value?.length > 8) {
+          return false;
+        }
+        return true;
+      },
+    },
+  },
+  accountNumberOptional: {
+    render: {
+      componentType: "numberFormat",
+    },
+    FormatProps: {
+      allowNegative: false,
+      allowLeadingZeros: false,
+      isAllowed: (values) => {
+        if (values?.value?.length > 20) {
+          return false;
+        }
+        // if (values.floatValue === 0) {
+        //   return false;
+        // }
+        return true;
+      },
+    },
+  },
   userAccessableTypeForLoginBranch: {
     render: {
       componentType: "select",

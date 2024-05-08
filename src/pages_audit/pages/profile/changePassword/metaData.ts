@@ -42,7 +42,7 @@ export const PasswordChangeMetaData = {
       allowToggleVisiblity: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
     },
     {
@@ -59,7 +59,7 @@ export const PasswordChangeMetaData = {
       allowToggleVisiblity: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       dependentFields: ["currentPassword"],
       runValidationOnDependentFieldsChange: true,
@@ -86,7 +86,7 @@ export const PasswordChangeMetaData = {
       autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       dependentFields: ["password"],
       runValidationOnDependentFieldsChange: true,

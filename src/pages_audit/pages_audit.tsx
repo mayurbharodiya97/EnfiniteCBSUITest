@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, lazy } from "react";
+import { useState, Fragment, useEffect, lazy, useContext } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { AppBar } from "./appBar";
 import { Drawer } from "./drawer";
@@ -6,10 +6,8 @@ import { MySideBar } from "./sideBar";
 import { Content } from "./content";
 // import "react-perfect-scrollbar/dist/css/styles.css";
 import { useStyles } from "./style";
-import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
-import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { Configuration } from "./pages/configuration";
@@ -19,14 +17,29 @@ import Trn002 from "./pages/operations/DailyTransaction/TRN002";
 // import Master from "./pages/master/master";
 const Master = lazy(() => import('./pages/master/master'));
 
+// import { AccDetailContext } from "./auth";
+import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 
 export const PagesAudit = (props, { columns }) => {
-  const classes = useStyles();
-  const [drawerOpen, setDrawerState] = useState(true);
-  const handleDrawerOpen = () => setDrawerState(true);
-  const handleDrawerClose = () => setDrawerState(false);
-  const isValidURL = props?.isValidURL ?? true;
   const location = useLocation();
+  const [drawerOpen, setDrawerState] = useState(true);
+  // const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const classes = useStyles();
+  const isValidURL = props?.isValidURL ?? true;
+
+  const handleDrawerOpen = () => {
+    setDrawerState(true);
+    handleCardStateUpdate();
+  };
+  const handleDrawerClose = () => {
+    setDrawerState(false);
+    handleCardStateUpdate();
+  };
+  const handleCardStateUpdate = () => {
+    //to update the state once | carousal responsiveness
+    let obj = { random: Math.random() };
+    // setCardStore({ ...cardStore, obj });
+  };
 
   useEffect(() => {
     if (location.pathname === "/cbsenfinity/dashboard") {

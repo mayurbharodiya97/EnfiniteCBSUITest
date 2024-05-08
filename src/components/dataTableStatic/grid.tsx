@@ -33,6 +33,7 @@ import { TableFilterStatusBar } from "components/dataTable/tableFilterStatusBar"
 import { AuthContext } from "pages_audit/auth";
 import { useStyles } from "./style";
 import {
+  Dialog,
   Grid,
   LinearProgress,
   Paper,
@@ -42,7 +43,9 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
+import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
 let data2: any[] = [];
 
 export const DataGrid = ({
@@ -92,6 +95,9 @@ export const DataGrid = ({
   defaultSelectedRowId,
   searchPlaceholder,
   paginationText,
+  ReportExportButton,
+  footerNote,
+  finalMetaData,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -130,6 +136,7 @@ export const DataGrid = ({
       getRowId,
       allowColumnReordering: allowColumnReordering,
       autoResetSortBy: false,
+      autoResetGlobalFilter: false,
       disableSortBy: Boolean(disableSorting),
       disableGlobalFilter: Boolean(disableGlobalFilter),
       disableGroupBy: Boolean(disableGroupBy),
@@ -157,7 +164,9 @@ export const DataGrid = ({
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
+  const preDataRef = useRef(null);
   const submitButtonRef = useRef<any>(null);
+  const [isOpenExport, setOpenExport] = useState(false);
   const tableRowRef = useRef<any>(null);
   const rowsToDisplay = enablePagination ? page : rows;
 
@@ -287,6 +296,22 @@ export const DataGrid = ({
       }
     };
   }, [loading]);
+
+  useEffect(() => {
+    if (
+      selectedFlatRows.length > 0 &&
+      onlySingleSelectionAllow &&
+      JSON.stringify(selectedFlatRows[0]?.original) !==
+        JSON.stringify(preDataRef.current)
+    ) {
+      preDataRef.current = selectedFlatRows[0]?.original;
+      setGridAction({
+        name: "_rowChanged",
+        rows: [{ data: selectedFlatRows[0]?.original }],
+      });
+    }
+  }, [selectedFlatRows[0]?.original]);
+
   return (
     <>
       <Paper
@@ -319,6 +344,8 @@ export const DataGrid = ({
             allowColumnHiding={allowColumnHiding}
             headerToolbarStyle={headerToolbarStyle}
             searchPlaceholder={searchPlaceholder}
+            ReportExportButton={ReportExportButton}
+            setOpenExport={setOpenExport}
           />
         )}
         {Boolean(controlsAtBottom) ? null : (
@@ -351,7 +378,14 @@ export const DataGrid = ({
         />
         {!disableLoader ? (
           loading ? (
-            <LinearProgress color="secondary" />
+            <LinearProgress
+              sx={{
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
           ) : (
             <LinearProgressBarSpacer />
           )
@@ -453,9 +487,7 @@ export const DataGrid = ({
                   if (rowColorStyle.length > 0) {
                     rowColorStyle[0].style["cursor"] = "pointer";
                   } else {
-                    rowColorStyle = [
-                      { style: { cursor: "pointer", width: "100%" } },
-                    ];
+                    rowColorStyle = [{ style: { cursor: "pointer" } }];
                   }
                 }
                 return (
@@ -507,6 +539,11 @@ export const DataGrid = ({
           <CustomBackdrop open={Boolean(loading)} />
         </TableContainer>
 
+        {footerNote && (
+          <Typography component="div" fontWeight={500} pl={"24px"}>
+            {footerNote}
+          </Typography>
+        )}
         {hideFooter ? null : enablePagination ? (
           <TablePagination
             style={{ display: "flex" }}
@@ -558,6 +595,21 @@ export const DataGrid = ({
           </div>
         ) : null}
       </Paper>
+      {isOpenExport && (
+        <Dialog open={isOpenExport}>
+          <ReportExportScreen
+            // globalFilter={""}
+            filters={filters}
+            // queryFilters={queryFilters}
+            title={label}
+            rows={rows}
+            columns={finalMetaData}
+            onClose={() => {
+              setOpenExport(false);
+            }}
+          />
+        </Dialog>
+      )}
     </>
   );
 };

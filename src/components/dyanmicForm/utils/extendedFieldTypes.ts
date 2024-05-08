@@ -4,6 +4,8 @@ import {
   ExtendedFieldMetaDataTypeOptional,
   FieldMetaDataType,
 } from "../types";
+import { cloneDeep } from "lodash";
+
 export const extendFieldTypes = (
   metaData: MetaDataType,
   extendedTypes: ExtendedFieldMetaDataTypeOptional,
@@ -18,19 +20,37 @@ export const extendFieldTypes = (
     decimalCount,
     commonDateFormat,
     commonDateTimeFormat,
+    commonTimeFormat,
   } = customParameters;
 
-  const newMetaDataFields = metaData?.fields?.map((one) => {
+  const newMetaDataFields = metaData?.fields?.map((one: any) => {
+    if (one.render.componentType === "arrayField") {
+      let dummyMetaData = cloneDeep({
+        form: metaData.form,
+        fields: one._fields,
+      });
+      let newmetadatArray = extendFieldTypes(
+        dummyMetaData,
+        extendedTypes,
+        lanTranslate,
+        authState,
+        customParameters
+      );
+      one._fields = newmetadatArray.fields;
+    }
     const extendedType = extendedTypes[one.render.componentType];
     if (
       one?.render?.componentType === "datePicker" ||
-      one?.render?.componentType === "datetimePicker"
+      one?.render?.componentType === "datetimePicker" ||
+      one?.render?.componentType === "timePicker"
     ) {
       if (!one?.format) {
         const format =
           one.render.componentType === "datePicker"
             ? commonDateFormat
-            : commonDateTimeFormat;
+            : one?.render?.componentType === "datetimePicker"
+            ? commonDateTimeFormat
+            : commonTimeFormat;
         one = { ...one, format };
       }
     }
@@ -67,7 +87,6 @@ export const extendFieldTypes = (
       } = extendedType;
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
-
       result["FormatProps"] = {
         ...FormatProps,
         ...(one?.FormatProps ?? {}),
@@ -158,7 +177,7 @@ export const extendFieldTypes = (
     }
   };
 
-  newMetaDataFields?.forEach((item) => {
+  newMetaDataFields?.forEach((item: any) => {
     // if (item?.defaultBranchTrue) {
     //   const getBranchVal: string = authState?.user?.branchCode;
     //   item.defaultValue = getBranchVal;
@@ -216,6 +235,17 @@ export const extendFieldTypes = (
       }
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
+    }
+    if (item.render.componentType === "datePicker") {
+      if (Boolean(item?.isWorkingDate)) {
+        item["defaultValue"] = new Date(authState?.workingDate);
+      }
+      if (Boolean(item?.isMaxWorkingDate)) {
+        item["maxDate"] = new Date(authState?.workingDate);
+      }
+      if (Boolean(item?.isMinWorkingDate)) {
+        item["minDate"] = new Date(authState?.workingDate);
+      }
     }
   });
   return {

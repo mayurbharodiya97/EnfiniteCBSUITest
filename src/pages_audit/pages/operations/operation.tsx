@@ -5,30 +5,61 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
+import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
 const StockEntry = lazy(() => import("./stockEntry"));
-const StoppaymentEntry = lazy(() => import("./stopPaymentEntry"));
+const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
+const TemporaryOD = lazy(() => import("./temporaryOD"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
+const CtsOutwardClearingConfirmGrid = lazy(
+  () => import("./ctsOutward/confirmation")
+);
 const InwardClearing = lazy(() => import("./inwardClearing"));
+const ClearingDateTransferGridWrapper = lazy(
+  () => import("./clearingDateTransfer")
+);
+const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
 );
+const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
-    <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
+    <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
+    <Route path="temp-od-entry/*" element={<TemporaryOD />} />
+    <Route
+      path="chequebook-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
+    />
+    <Route
+      path="limit-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
+    />
+    <Route
+      path="stock-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
+    />
+    <Route
+      path="stop-pay-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
+    />
+    <Route
+      path="lien-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
+    />
     <Route path="teller/*" element={<TellerScreen />} />
     {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route
@@ -39,7 +70,14 @@ export const OperationsMenu = () => (
         </CkycProvider>
       }
     />
-    <Route path="account-mst/*" element={<AcctMST />} />
+    <Route
+      path="account-mst/*"
+      element={
+        <AcctMSTProvider>
+          <AcctMST />
+        </AcctMSTProvider>
+      }
+    />
     <Route path="single-deno/*" element={<SingleDeno />} />
 
     <Route
@@ -54,7 +92,28 @@ export const OperationsMenu = () => (
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearingFormWrapper zoneTranType="S" />}
     />
+    <Route
+      path="inward-return-entry/*"
+      element={<CtsOutwardClearingFormWrapper zoneTranType="R" />}
+    />
+    <Route
+      path="cts-o/w-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="S" />}
+    />
+    <Route
+      path="inward-return-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="R" />}
+    />
+    <Route
+      path="outward-return-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="W" />}
+    />
     <Route path="inward-clearing-process/*" element={<InwardClearing />} />
+    <Route
+      path="clearing-date-transfer/*"
+      element={<ClearingDateTransferGridWrapper />}
+    />
+    <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route
       path="fix-deposit/*"
       element={

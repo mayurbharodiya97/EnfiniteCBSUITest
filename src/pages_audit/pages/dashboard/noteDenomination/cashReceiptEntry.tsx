@@ -1,12 +1,5 @@
 import {
   Box,
-  Paper,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow /*TextField*/,
-  Slide,
   CircularProgress,
   Tooltip,
   Dialog,
@@ -18,7 +11,6 @@ import * as API from "./api";
 import { useMutation } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import {
-  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -32,10 +24,8 @@ import {
 } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
-import { useStyles, StyledTableCell } from "./style";
-import { TextField } from "components/styledComponent";
+import { useStyles } from "./style";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import {
   FilterFormMetaType,
   FormComponentView,
@@ -45,16 +35,10 @@ import {
   denoViewTrnGridMetaData,
 } from "./metadata";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import { Button } from "reactstrap";
-import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
-import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import DenoTable from "./denoTable";
-import DualPartTable from "./dualPartTable";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
 import SingleDeno from "./singleDeno";
 
@@ -638,7 +622,7 @@ const CashReceiptEntry = () => {
             onClose={closeAccountDTL}
             // style={{ height: "40vh" }}
           >
-            <AccDetails />
+            <AccDetails cardsData={[]} />
           </Dialog>
         ) : null}
 

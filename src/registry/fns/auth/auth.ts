@@ -98,7 +98,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherPreLoginResponse> => {
     if (baseURL === null) {
       return {
@@ -150,6 +151,7 @@ const authAPI = () => {
           ...payload,
         }),
         timeout: timeout,
+        controller: controller,
       });
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -205,7 +207,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherResponse> => {
     if (baseURL === null) {
       return {
@@ -253,6 +256,7 @@ const authAPI = () => {
             ...payload,
           }),
           timeout: timeout,
+          controller: controller,
         }
       );
 
@@ -313,9 +317,8 @@ const authAPI = () => {
     }
   };
   const fetchWithTimeout = async (resource, options?: any) => {
-    const { timeout = 90000 } = options;
+    const { timeout = 90000, controller = new AbortController() } = options;
 
-    const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     let response;
     await fetch(resource, {
@@ -341,7 +344,7 @@ const authAPI = () => {
     let responsedata = await response?.json();
 
     if (response.status === 404 && process.env.NODE_ENV !== "production") {
-      return "'भटकने वाले सभी खो नहीं जाते' वाह, यह काफी गहरा है! सिवाय ... इस बार डेवलपर निश्चित रूप से विचलित है, क्योंकि यह समापन बिंदु नहीं मिला है!";
+      return "'????? ???? ??? ?? ???? ????' ???, ?? ???? ???? ??! ????? ... ?? ??? ?????? ??????? ??? ?? ?????? ??, ??????? ?? ????? ????? ???? ???? ??!";
     } else if (Boolean(responsedata)) {
       let message = Array.isArray(responsedata)
         ? responsedata?.[0]?.MESSAGE
