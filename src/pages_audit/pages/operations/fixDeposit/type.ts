@@ -4,6 +4,8 @@ export interface FDStateType {
   isOpendfdAcctForm: boolean;
   fdAcctFormData: object;
   fdDetailFormData: object;
+  sourceAcctFormData: object;
+  isBackButton: boolean;
 }
 
 export interface ActionType {
@@ -14,4 +16,16 @@ export interface ActionType {
 export interface FDContextType {
   fdState: FDStateType;
   setActiveStep: any;
+}
+
+export interface FDSchemeType {
+  isOpen: boolean;
+  fdTranCode: string;
+  categCode: string;
+  callBack?: Function;
+}
+
+export interface FDSchemeParams {
+  fdTranCode: string;
+  categCode: string;
 }

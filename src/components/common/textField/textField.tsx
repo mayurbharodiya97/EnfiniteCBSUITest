@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import * as Icons from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
   maxLength?: number;
@@ -121,6 +122,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
+  const { t } = useTranslation();
   useEffect(() => {
     if (typeof setColor === "function") {
       let result = setColor(value);
@@ -140,6 +142,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   );
 
   const focusRef = useRef();
+  const inputfocusRef: any = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
@@ -150,7 +153,12 @@ const MyTextField: FC<MyTextFieldProps> = ({
     setTimeout(() => {
       //@ts-ignore
       focusRef?.current?.focus?.();
-    }, 1);
+      ////////////Below solution is temporary for set focus in numberFormat Component.
+      ////////////Need to find proper solution. If you found proper solution contact Me😎🤷‍♂️.
+      if (!Boolean(focusRef?.current)) {
+        inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
+      }
+    }, 50);
   };
 
   useEffect(() => {
@@ -186,21 +194,22 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      console.log(">>incomingMessage", incomingMessage);
-      const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, error, ignoreUpdate, isFieldFocused, isErrorBlank } =
+        incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
         }
-
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
-      if (Boolean(error)) {
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
         setErrorAsCB(error);
       }
     }
@@ -269,13 +278,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
         id={fieldKey}
         name={name}
         label={label}
-        value={value}
+        value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>
             <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
-                ? myError
+                ? t(myError)
                 : Boolean(validationAPIResult)
                 ? validationAPIResult
                 : numWordsVar}
@@ -318,7 +327,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
                 }
               : {}),
           },
-
           endAdornment: validationRunning ? (
             <InputAdornment position="end">
               <CircularProgress
@@ -359,6 +367,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         disabled={isSubmitting}
         variant={"standard"}
         color="secondary"
+        ref={inputfocusRef}
       />
     </>
   );

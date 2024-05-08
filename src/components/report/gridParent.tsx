@@ -14,6 +14,8 @@ import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { attachFilterComponentToMetaData, formatFilterBy } from "./utils";
 import { AmountProvider } from "./amountContext";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export const ReportGrid: FC<any> = ({
   metaData,
@@ -22,6 +24,7 @@ export const ReportGrid: FC<any> = ({
   title,
   options,
   hideFooter,
+  onDoubleClickAction,
   showSerialNoColumn = false,
   onClose = null,
   reportName,
@@ -34,6 +37,7 @@ export const ReportGrid: FC<any> = ({
   reportID,
   retrievalType,
   otherAPIRequestPara = {},
+  searchPlaceholder,
 }) => {
   /* eslint-disable react-hooks/exhaustive-deps */
   const memoizedColumns = useMemo(() => metaData.columns, []);
@@ -103,7 +107,7 @@ export const ReportGrid: FC<any> = ({
           maxHeight={maxHeight}
           initialState={initialState}
           filterTypes={filterTypes}
-          title={title}
+          title={t(title)}
           options={options}
           loading={isFetching || isLoading}
           hideFooter={hideFooter}
@@ -115,6 +119,8 @@ export const ReportGrid: FC<any> = ({
           hideAmountIn={hideAmountIn}
           retrievalType={retrievalType}
           isOpenRetrievalDefault={!autoFetch}
+          onDoubleClickAction={onDoubleClickAction}
+          searchPlaceholder={searchPlaceholder}
         />
       </AmountProvider>
     </Fragment>

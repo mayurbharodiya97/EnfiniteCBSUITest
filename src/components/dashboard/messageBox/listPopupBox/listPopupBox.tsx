@@ -25,6 +25,8 @@ export const ListPopupMessageWrapper = ({
   transactionID,
   formView,
   screenFlag,
+  isDataChangedRef,
+  isAnnouncementLoading,
 }) => {
   const { authState } = useContext(AuthContext);
   const lastFileData = useRef<any>(null);
@@ -68,7 +70,7 @@ export const ListPopupMessageWrapper = ({
       enqueueSnackbar(data, {
         variant: "success",
       });
-      // isDataChangedRef.current = true;
+      isDataChangedRef.current = true;
       closeDialog();
     },
   });
@@ -112,7 +114,7 @@ export const ListPopupMessageWrapper = ({
           ...upd,
           CIRCULAR_TRAN_CD: mainData?.[0]?.TRAN_CD ?? "",
           USER_NM: authState?.user?.id ?? "",
-          _isNewRow: formView === "view" ? true : false,
+          _isNewRow: false,
         },
         displayData,
         endSubmit,
@@ -148,7 +150,7 @@ export const ListPopupMessageWrapper = ({
 
   return (
     <>
-      {isLoading || isFetching ? (
+      {isAnnouncementLoading ? (
         <LoaderPaperComponent />
       ) : (
         <Dialog

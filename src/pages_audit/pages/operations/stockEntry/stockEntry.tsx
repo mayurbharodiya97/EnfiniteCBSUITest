@@ -17,46 +17,90 @@ import React, {
 } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
-import { StockGridMetaData } from "./stockGridMetadata";
-import { StockEntryMetaData } from "./stockEntryMetadata";
-import { useMutation } from "react-query";
-import { crudDocument, securityFieldDTL, stockGridData } from "./api";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { StockEditViewWrapper } from "./stockEditViewWrapper";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
-import { queryClient } from "cache";
-import { CreateDetailsRequestData } from "components/utils";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { StockEntryMetaData } from "./stockEntryMetadata";
+import { StockGridMetaData } from "./stockGridMetadata";
+import { ActionTypes } from "components/dataTable";
+import { ForceExpireStock } from "./forceExpire";
 import { Alert } from "components/common/alert";
+import { AuthContext } from "pages_audit/auth";
+import { enqueueSnackbar } from "notistack";
+import { SubmitFnType } from "packages/form";
+import { useMutation } from "react-query";
+import { ClearCacheProvider, queryClient } from "cache";
+import {
+  crudStockData,
+  insertValidate,
+  securityFieldDTL,
+  stockGridData,
+} from "./api";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { format } from "date-fns";
 
-export const StockEntry = () => {
+const StockEntryCustom = () => {
+  const [newFormMTdata, setNewFormMTdata] = useState<any>(StockEntryMetaData);
+  const [gridDetailData, setGridDetailData] = useState<any>();
+  const [isVisible, setIsVisible] = useState<any>(false);
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+  const [deletePopup, setDeletePopup] = useState<any>(false);
+  const [closeAlert, setCloseAlert] = useState<any>(true);
+  const [refreshForm, setRefreshForm] = useState<any>(0);
+  const { authState } = useContext(AuthContext);
+  const deleteDataRef = useRef<any>(null);
+  const [value, setValue] = useState("tab1");
+  const { MessageBox } = usePopupContext();
+  const initialValuesRef = useRef<any>(null);
+  const insertDataRef = useRef<any>(null);
+  const myMasterRef = useRef<any>(null);
+  const navigate = useNavigate();
+
   const detailActions: ActionTypes[] = [
     {
-      actionName: "view-details",
-      actionLabel: "Edit Detail",
+      actionName: "force-view-details",
+      actionLabel: "Force-Exp/View-Detail",
       multiple: false,
       rowDoubleClick: true,
     },
+    // {
+    //   actionName: "force-view-details",
+    //   actionLabel: "Force-Expire",
+    //   multiple: false,
+    //   rowDoubleClick: true,
+    //   shouldExclude(rowData, authState) {
+    //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
+    //       return true;
+    //     }
+    //     return false;
+    //   },
+    // },
+    // {
+    //   actionName: "force-view-details",
+    //   actionLabel: "View-Detail",
+    //   multiple: false,
+    //   rowDoubleClick: true,
+    //   shouldExclude(rowData, authState) {
+    //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    // },
+
+    {
+      actionName: "view-upload",
+      actionLabel: "View-Upload Document",
+      multiple: false,
+      rowDoubleClick: false,
+    },
   ];
 
-  const [value, setValue] = useState("tab1");
-  const myMasterRef = useRef<any>(null);
-  const initialValuesRef = useRef<any>(null);
-  const navigate = useNavigate();
-  const [gridDetailData, setGridDetailData] = useState<any>();
-  const [visibleTab, setVisibleTab] = useState<any>(false);
-  const { authState } = useContext(AuthContext);
-  const [isOpenSave, setIsOpenSave] = useState<any>(false);
-  let [messageArray, setmessageArray] = useState<any>([]);
-
-  const [newFormMTdata, setNewFormMTdata] = useState<any>(StockEntryMetaData);
-
   const securityStoclDTL: any = useMutation(
-    "securityLimitData",
+    "securityFieldDTL",
     securityFieldDTL,
     {
       onSuccess: (data) => {
@@ -67,9 +111,12 @@ export const StockEntry = () => {
         } else {
           newData = { ...StockEntryMetaData };
         }
+
         setNewFormMTdata(newData);
       },
-      onError: (error: any) => {},
+      onError: (error: any) => {
+        setCloseAlert(true);
+      },
     }
   );
 
@@ -77,75 +124,127 @@ export const StockEntry = () => {
     onSuccess: (data) => {
       setGridDetailData(data);
     },
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      setCloseAlert(true);
+    },
   });
 
-  const crudDocuments: any = useMutation("uploadDocument", crudDocument, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
+  const insertValidateData: any = useMutation(
+    "uploadDocument",
+    insertValidate,
+    {
+      onSuccess: (data) => {
+        if (data?.[0]?.O_STATUS === "0") {
+          setIsOpenSave(true);
+        } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
+          MessageBox({
+            messageTitle: "Validation Alert..",
+            message: data?.[0]?.O_MESSAGE,
+          });
+        }
+      },
+      onError: (error: any) => {
+        setCloseAlert(true);
+      },
+    }
+  );
+
+  const crudStockDatas: any = useMutation("crudStockData", crudStockData, {
+    onSuccess: (data, variables) => {
+      if (variables?._isDeleteRow) {
+        setDeletePopup(false);
+        stockEntryGridData.mutate({
+          COMP_CD: authState?.companyID,
+          ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+          ACCT_TYPE: variables?.ACCT_TYPE,
+          BRANCH_CD: variables?.BRANCH_CD,
+          // ENTERED_DATE: authState?.workingDate,
+          // GD_TODAY: authState?.workingDate,
+          A_USER_LEVEL: authState?.role,
+        });
+        enqueueSnackbar("Data Delete successfully", { variant: "success" });
+      } else if (variables?._isNewRow) {
+        setNewFormMTdata(StockEntryMetaData);
+        myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+        setIsOpenSave(false);
+        setIsVisible(false);
+        setRefreshForm((old) => old + 1);
+        enqueueSnackbar("Data insert successfully", { variant: "success" });
+      }
+    },
+    onError: (error: any) => {
+      setCloseAlert(true);
+      setIsOpenSave(false);
+      setDeletePopup(false);
+    },
   });
 
   useEffect(() => {
     return () => {
+      queryClient.removeQueries(["securityFieldDTL"]);
+      queryClient.removeQueries(["insertValidate"]);
       queryClient.removeQueries(["stockGridData"]);
+      queryClient.removeQueries(["crudStockData"]);
     };
   }, []);
 
-  const onSubmitHandler: SubmitFnType = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value
-  ) => {
-    //@ts-ignore
-    endSubmit(true);
-  };
-
   const setCurrentAction = useCallback(
-    (data) => {
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+    async (data) => {
+      if (data.name === "view-upload") {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      } else if (data.name === "force-view-details") {
+        if (data?.rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y") {
+          let res = await MessageBox({
+            messageTitle: "Confirmation..",
+            message: "Are you sure to Force-Expire Drawing Power ?",
+            buttonNames: ["Yes", "No"],
+          });
+          if (res === "Yes") {
+            navigate(data?.name, {
+              state: data?.rows,
+            });
+          }
+        } else {
+          navigate(data?.name, {
+            state: data?.rows,
+          });
+        }
+      }
     },
     [navigate]
   );
-
-  const ClosedEventCall = useCallback(() => {
-    navigate(".");
-  }, [navigate]);
-
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
+          sx={{ ml: "25px" }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
-
+            setCloseAlert(false);
+            setGridDetailData([]);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 initialValuesRef.current = res;
-                // if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                // StockGridMetaData.gridConfig.gridLabel = `Stock-Entry Detail \u00A0\u00A0 ${(
-                //   authState?.companyID +
-                //   res?.BRANCH_CD +
-                //   res?.ACCT_TYPE +
-                //   res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
-                // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
-
-                const DTLRequestPara = {
-                  // COMP_CD: authState?.companyID,
-                  // ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
-                  // ACCT_TYPE: res?.ACCT_TYPE,
-                  // BRANCH_CD: res?.BRANCH_CD,
-                  COMP_CD: authState?.companyID,
-                  ACCT_CD: "000073              ",
-                  ACCT_TYPE: "301 ",
-                  BRANCH_CD: "099 ",
-                };
-                stockEntryGridData.mutate(DTLRequestPara);
-                // }
+                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                  StockGridMetaData.gridConfig.gridLabel = `Stock Detail \u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  const RequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                    ACCT_TYPE: res?.ACCT_TYPE,
+                    BRANCH_CD: res?.BRANCH_CD,
+                    A_USER_LEVEL: authState?.role,
+                    A_GD_DATE: authState?.workingDate,
+                  };
+                  stockEntryGridData.mutate(RequestPara);
+                }
               });
             }
           }}
@@ -154,9 +253,7 @@ export const StockEntry = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label="Stock Entry" />
-          {/* {visibleTab &&
-          } */}
-          <Tab value="tab2" label="Stock Detail" />
+          {isVisible && <Tab value="tab2" label="Stock Detail" />}
         </Tabs>
       </Box>
 
@@ -170,53 +267,71 @@ export const StockEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {securityStoclDTL?.isError ? (
+          {securityStoclDTL.isLoading || insertValidateData.isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : (securityStoclDTL?.isError && closeAlert) ||
+            (stockEntryGridData?.isError && closeAlert) ||
+            (insertValidateData?.isError && closeAlert) ||
+            (crudStockDatas?.isError && closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
                   errorMsg={
-                    securityStoclDTL?.error?.error_msg ?? "Unknow Error"
+                    securityStoclDTL?.error?.error_msg ??
+                    stockEntryGridData?.error?.error_msg ??
+                    insertValidateData?.error?.error_msg ??
+                    crudStockDatas?.error?.error_msg ??
+                    "Unknow Error"
                   }
-                  errorDetail={securityStoclDTL?.error?.error_detail ?? ""}
+                  errorDetail={
+                    securityStoclDTL?.error?.error_detail ??
+                    stockEntryGridData?.error?.error_detail ??
+                    insertValidateData?.error?.error_detail ??
+                    crudStockDatas?.error?.error_detail ??
+                    ""
+                  }
                   color="error"
                 />
               </AppBar>
             </div>
-          ) : null}
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
           {value === "tab1" ? (
             <>
-              {securityStoclDTL.isLoading || securityStoclDTL.isFetching ? (
-                <LinearProgress color="secondary" />
-              ) : (
-                <LinearProgressBarSpacer />
-              )}
               <FormWrapper
-                key={"stockEntry" + setNewFormMTdata}
+                key={"stockEntry" + refreshForm + setNewFormMTdata}
                 metaData={newFormMTdata ?? []}
                 initialValues={initialValuesRef.current ?? []}
-                onSubmitHandler={onSubmitHandler}
-                hideHeader={false}
+                onSubmitHandler={(data: any, displayData, endSubmit) => {
+                  let apiReq = {
+                    BRANCH_CD: data?.BRANCH_CD,
+                    STOCK_VALUE: data?.STOCK_VALUE,
+                    MARGIN: data?.MARGIN,
+                    CREDITOR: data?.CREDITOR ? data?.CREDITOR : "",
+                    SECURITY_CD: data?.SECURITY_CD,
+                    STOCK_MONTH: data?.STOCK_MONTH,
+                    TRAN_DT: format(new Date(data?.TRAN_DT), "dd-MMM-yyyy"),
+                    ASON_DT: format(new Date(data?.ASON_DT), "dd-MMM-yyyy"),
+                    RECEIVED_DT: format(
+                      new Date(data?.RECEIVED_DT),
+                      "dd-MMM-yyyy"
+                    ),
+                  };
+                  insertDataRef.current = { ...data, ...apiReq };
+                  insertValidateData.mutate(apiReq);
+                  //@ts-ignore
+                  endSubmit(true);
+                }}
                 ref={myMasterRef}
+                formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
-                  if (action === "MESSAGES") {
-                    if (payload?.MESSAGES) {
-                      const messageArray = payload?.MESSAGES.split(", ").map(
-                        (msg, i) => <p key={i}>{`(${i + 1})  ${msg}`}</p>
-                      );
-                      setmessageArray([messageArray]);
-                      setIsOpenSave(true);
-                      setVisibleTab(payload?.VISIBLE_TAB);
-                    }
-                  } else if (action === "VISIBLE_TAB") {
-                    setVisibleTab(payload?.VISIBLE_TAB);
+                  if (action === "IS_VISIBLE") {
+                    setIsVisible(payload.IS_VISIBLE);
                   }
-                  if (action === "SECURITY_CODE") {
-                    securityStoclDTL.mutate({
-                      COMP_CD: authState?.companyID,
-                      SECURITY_CD: payload,
-                      BRANCH_CD: authState?.user?.branchCode,
-                    });
+                  if (action === "SECURITY_CD") {
+                    securityStoclDTL.mutate(payload);
                   }
                 }}
               >
@@ -245,41 +360,35 @@ export const StockEntry = () => {
                 setData={() => {}}
                 loading={stockEntryGridData.isLoading}
                 actions={detailActions}
-                // controlsAtBottom={true}
                 setAction={setCurrentAction}
                 onClickActionEvent={(index, id, data) => {
-                  console.log("<<<action", index, id, data);
-                  let result: any = [data];
-                  // let finalResult = result.filter(
-                  //   (one) => !Boolean(one?._hidden)
-                  // );
-                  let newData = result.map((item) => {
-                    const newItem = {
-                      ...item,
-                      _hidden: true,
-                    };
-                    return newItem;
-                  });
-                  newData = CreateDetailsRequestData(newData);
-                  console.log("<<<CreateDetailsRequestData", newData);
-                  let ApiReq = {
-                    DETAILS_DATA: newData,
-                  };
-                  crudDocuments.mutate(ApiReq);
+                  if (id === "DOC_FLAG") {
+                    setCurrentAction({ rows: [{ data }], name: "view-upload" });
+                  }
+                  if (id === "ALLOW_DELETE_FLAG") {
+                    deleteDataRef.current = data;
+                    setDeletePopup(true);
+                  }
                 }}
-                // headerToolbarStyle={{
-                //   background: "var(--theme-color2)",
-                //   color: "black",
-                // }}
-                // refetchData={() => {}}
-                // ref={myGridQuickRef}
               />
 
               <Routes>
                 <Route
-                  path="view-details/*"
+                  path="view-upload/*"
                   element={
-                    <StockEditViewWrapper ClosedEventCall={ClosedEventCall} />
+                    <StockEditViewWrapper
+                      navigate={navigate}
+                      stockEntryGridData={stockEntryGridData}
+                    />
+                  }
+                />
+                <Route
+                  path="force-view-details/*"
+                  element={
+                    <ForceExpireStock
+                      stockEntryGridData={stockEntryGridData}
+                      navigate={navigate}
+                    />
                   }
                 />
               </Routes>
@@ -288,28 +397,62 @@ export const StockEntry = () => {
         </Grid>
       </Container>
 
-      {isOpenSave && messageArray?.length > 0 && (
-        <div
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              setIsOpenSave(false);
-              setmessageArray([]);
-            }
+      {isOpenSave && (
+        <PopupMessageAPIWrapper
+          MessageTitle={"Confirmation"}
+          Message={"Are you sure to insert data"}
+          onActionYes={() =>
+            crudStockDatas.mutate({ ...insertDataRef.current, _isNewRow: true })
+          }
+          onActionNo={() => setIsOpenSave(false)}
+          rows={[]}
+          open={isOpenSave}
+          loading={crudStockDatas.isLoading}
+        />
+      )}
+
+      {deletePopup && (
+        <RemarksAPIWrapper
+          TitleText={"Are you sure want to delete this record ..?"}
+          onActionNo={() => setDeletePopup(false)}
+          onActionYes={(val, rows) => {
+            let deleteReqPara = {
+              _isNewRow: false,
+              _isDeleteRow: true,
+              BRANCH_CD: rows.BRANCH_CD,
+              TRAN_CD: rows.TRAN_CD,
+              ACCT_TYPE: rows.ACCT_TYPE,
+              ACCT_CD: rows.ACCT_CD,
+              TRAN_AMOUNT: rows.CHEQUE_AMOUNT,
+              TRAN_DT: rows.TRAN_DT,
+              CONFIRMED: rows.CONFIRMED === "Confirm" ? "Y" : "0",
+              USER_DEF_REMARKS: val
+                ? val
+                : "WRONG ENTRY FROM STOCK ENTRY (TRN/047)",
+
+              ACTIVITY_TYPE: "STOCK ENTRY SCREEN",
+              ENTERED_BY: rows.ENTERED_BY,
+              ACCT_MST_LIMIT: rows?.ACCT_MST_LIMIT,
+            };
+            crudStockDatas.mutate(deleteReqPara);
           }}
-        >
-          <PopupRequestWrapper
-            MessageTitle={"Account Description"}
-            Message={messageArray ? messageArray : "something is wrong "}
-            onClickButton={(rows, buttonName) => {
-              setIsOpenSave(false);
-              setmessageArray([]);
-            }}
-            buttonNames={["Ok"]}
-            rows={[]}
-            open={isOpenSave}
-          />
-        </div>
+          isLoading={crudStockDatas?.isLoading}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
+          open={deletePopup}
+          rows={deleteDataRef.current}
+          defaultValue={"WRONG ENTRY FROM STOCK ENTRY (TRN/047)"}
+        />
       )}
     </>
+  );
+};
+
+export const StockEntry = () => {
+  return (
+    <ClearCacheProvider>
+      <StockEntryCustom />
+    </ClearCacheProvider>
   );
 };

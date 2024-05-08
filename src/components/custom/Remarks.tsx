@@ -26,6 +26,7 @@ export const RemarksAPIWrapper = ({
   isLoading = false,
   open = false,
   rows,
+  label = "Remarks",
   ...other
 }) => {
   //const { state: rows }: any = useLocation();
@@ -60,15 +61,15 @@ export const RemarksAPIWrapper = ({
           <br />
           <TextField
             autoFocus={true}
-            label={"Remarks"}
+            label={label}
             placeholder="Enter Remarks"
             fullWidth
             type={"text"}
             name="remarks"
             variant="standard"
+            color="info"
             margin="dense"
             id="standard-size-normal"
-            color="info"
             value={input || ""}
             onChange={handleChange}
             error={loginState.isError}
@@ -93,7 +94,7 @@ export const RemarksAPIWrapper = ({
                 setLoginState((values) => ({
                   ...values,
                   isError: true,
-                  userMessage: t("Thisisarequiredfield"),
+                  userMessage: t("ThisFieldisrequired"),
                 }));
               } else {
                 onActionYes(input, rows);

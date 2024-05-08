@@ -23,6 +23,7 @@ import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { GradientButton } from "components/styledComponent/button";
+import { AccDetailContext } from "pages_audit/auth";
 
 const TellerDenoTable = ({
   displayTable,
@@ -44,6 +45,7 @@ const TellerDenoTable = ({
   textFieldRef,
   openAcctDtl,
   handleonFocus,
+  extraAccDtl,
 }) => {
   const fieldRef: any = useRef([]);
   const classes = useStyles();
@@ -64,11 +66,11 @@ const TellerDenoTable = ({
         }}
       >
         <DialogTitle variant="h6" sx={{ color: "var(--theme-color2)" }}>
-          {"View Transaction"}
+          {`Cash Receipt/Payment - ${extraAccDtl?.Name}`}
         </DialogTitle>
         {/* <DialogActions> */}
         <GradientButton
-          onClick={() => onCloseTable(false)}
+          onClick={() => onCloseTable(false, "TABLE1")}
           color="primary"
           disabled={false}
           style={{ marginRight: "10px" }}
@@ -95,11 +97,13 @@ const TellerDenoTable = ({
             <TableContainer
               sx={{
                 width: "auto",
+                overflow: "auto",
+                maxHeight: "calc(100vh - 200px)",
               }}
               component={Paper}
             >
               <Table
-                sx={{ minWidth: 650 }}
+                sx={{ minWidth: 650, borderCollapse: "unset !important" }}
                 aria-label="simple table"
                 className={classes.tableBordered}
               >
@@ -174,7 +178,7 @@ const TellerDenoTable = ({
                             // onKeyDown={(event) => {
                             //   handleKeyPress(event, index);
                             // }}
-                            onFocus={(event) => handleonFocus(event, index)}
+                            // onFocus={(event) => handleonFocus(event, index)}
                             inputRef={textFieldRef}
                             onBlur={(event) => handleonBlur(event, index)}
                             helperText={displayError[index] || ""}
@@ -221,7 +225,14 @@ const TellerDenoTable = ({
                   })}
                 </TableBody>
                 <TableBody>
-                  <TableRow sx={{ height: "43px" }}>
+                  <TableRow
+                    sx={{
+                      height: "32px",
+                      position: "sticky",
+                      bottom: 0,
+                      background: "var(--theme-color4)",
+                    }}
+                  >
                     <StyledTableCell
                       component="th"
                       scope="row"
@@ -283,22 +294,25 @@ const TellerDenoTable = ({
                 height: "auto",
                 width: "auto",
                 padding: "2px 8px",
-                borderBottom: "2px solid var(--theme-color6)",
-                borderLeft: "2px solid var(--theme-color6)",
-                borderRight: "2px solid var(--theme-color6)",
+                borderBottom: "1px solid var(--theme-color6)",
+                borderLeft: "1px solid var(--theme-color6)",
+                borderRight: "1px solid var(--theme-color6)",
                 borderBottomLeftRadius: "none",
                 borderBottomRightRadius: "none",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
+                position: "sticky",
+                bottom: 0,
+                background: "var(--theme-color4)",
               }}
             >
               <Typography
                 variant="body1"
                 sx={{
-                  backgroundColor: "var(--theme-color2)",
                   padding: "10px 0px",
                   display: "flex",
+                  background: "var(--theme-color4)",
                 }}
               >
                 <Typography

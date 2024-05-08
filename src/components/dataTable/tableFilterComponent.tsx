@@ -10,8 +10,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export const filterReducer = (state: any = [], action: any = {}) => {
   switch (action.type) {
@@ -111,7 +111,7 @@ export const TableFilterComponent = ({
   }
   //console.log("TableFilterComponent", filterColumns);
   return (
-    <LocalizationProvider utils={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <IconButton
         aria-label="more"
         aria-controls="long-menu"

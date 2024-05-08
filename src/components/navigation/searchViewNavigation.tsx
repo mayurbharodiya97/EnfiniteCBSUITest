@@ -58,6 +58,7 @@ export const SearchViewNavigation: FC<NewSideBarNav> = ({
       </ListItem>
       {/* <div onClick={handleDrawerOpen}> */}
       <SearchBar
+      sx={{overflow:"hidden"}}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onClick={handleClick}

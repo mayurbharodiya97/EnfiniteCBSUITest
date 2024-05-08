@@ -1,5 +1,6 @@
 import { createContext, useReducer, useState } from "react";
-import { FDContextType, FDStateType, ActionType } from "./type";
+import { FDStateType, ActionType, FDSchemeType, FDSchemeParams } from "./type";
+import { FDSchemeGrid } from "./fdScheme/fdSchemeGrid";
 
 const inititalState: FDStateType = {
   activeStep: 0,
@@ -7,6 +8,20 @@ const inititalState: FDStateType = {
   isOpendfdAcctForm: false,
   fdAcctFormData: {},
   fdDetailFormData: {},
+  sourceAcctFormData: {
+    TRNDTLS: [
+      {
+        ACCT_NAME: "",
+      },
+    ],
+  },
+  isBackButton: false,
+};
+
+const initialFDScheme: FDSchemeType = {
+  isOpen: false,
+  fdTranCode: "",
+  categCode: "",
 };
 
 const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -16,11 +31,18 @@ const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
         ...state,
         ...action.payload,
       };
+    case "activeStep":
+      return {
+        ...state,
+        ...action.payload,
+      };
     case "updateFDParaOnChange":
       return {
         ...state,
         fdParaFormData: { ...state?.fdParaFormData, ...action.payload },
       };
+    case "resetAllData":
+      return inititalState;
     default: {
       return state;
     }
@@ -31,10 +53,11 @@ export const FixDepositContext = createContext<any>(inititalState);
 
 export const FixDepositProvider = ({ children }) => {
   const [state, dispatch] = useReducer(fdReducer, inititalState);
+  const [fdScheme, setFDScheme] = useState<FDSchemeType>(initialFDScheme);
 
   const setActiveStep = (value) => {
     dispatch({
-      type: "commonType",
+      type: "activeStep",
       payload: {
         activeStep: value,
       },
@@ -86,6 +109,50 @@ export const FixDepositProvider = ({ children }) => {
     });
   };
 
+  const updateTransDetailsFormData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        sourceAcctFormData: { TRNDTLS: data },
+      },
+    });
+  };
+
+  const resetAllData = (data) => {
+    dispatch({
+      type: "resetAllData",
+      payload: {},
+    });
+  };
+
+  const setIsBackButton = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        isBackButton: data,
+      },
+    });
+  };
+
+  const openFDScheme = ({ fdTranCode, categCode }: FDSchemeParams) => {
+    console.log("in popup");
+    return new Promise((resolve) => {
+      setFDScheme({
+        isOpen: true,
+        fdTranCode,
+        categCode,
+        callBack: (data) => {
+          resolve(data);
+          closeFDScheme();
+        },
+      });
+    });
+  };
+
+  const closeFDScheme = () => {
+    setFDScheme(initialFDScheme);
+  };
+
   return (
     <FixDepositContext.Provider
       value={{
@@ -96,9 +163,22 @@ export const FixDepositProvider = ({ children }) => {
         setIsOpendfdAcctForm,
         updateFDAccountsFormData,
         updateFDDetailsFormData,
+        updateTransDetailsFormData,
+        resetAllData,
+        setIsBackButton,
+        openFDScheme,
+        closeFDScheme,
       }}
     >
       {children}
+      {fdScheme.isOpen ? (
+        <FDSchemeGrid
+          isOpen={fdScheme?.isOpen}
+          fdTranCode={fdScheme?.fdTranCode}
+          categCode={fdScheme?.categCode}
+          onClose={fdScheme?.callBack}
+        />
+      ) : null}
     </FixDepositContext.Provider>
   );
 };
