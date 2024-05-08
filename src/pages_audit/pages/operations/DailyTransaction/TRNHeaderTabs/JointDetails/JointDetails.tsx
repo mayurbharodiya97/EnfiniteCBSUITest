@@ -1,30 +1,18 @@
 //UI
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton, Button } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 //logic
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-} from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useCallback, useRef, useState, useContext } from "react";
+import { useQuery } from "react-query";
 import { JointDetailGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
 
@@ -39,52 +27,67 @@ const actions: ActionTypes[] = [
     actionBackground: "inherit",
   },
 ];
-export const JointDetails = () => {
+export const JointDetails = ({ reqData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { tempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //api define
+  // //api define
 
-  const getJointDetails = useMutation(API.getJointDetailsList, {
-    onSuccess: (data) => {
-      console.log(data, " joint detailssss");
-      setRows(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getJointDetails = useMutation(API.getJointDetailsList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " joint detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getJointDetailsList", { reqData }], () =>
+    API.getJointDetailsList(reqData)
+  );
 
   const setCurrentAction = useCallback((data) => {
-    console.log(data, "rowdata");
     setOpen(true);
   }, []);
 
   return (
     <>
       <div>
+        {isError ? (
+          <Fragment>
+            <div style={{ width: "100%", paddingTop: "10px" }}>
+              <Alert
+                severity={error?.severity ?? "error"}
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+              />
+            </div>
+          </Fragment>
+        ) : null}
         <GridWrapper
           key={`JointDetailGridMetaData`}
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
-          data={rows}
+          data={data ?? []}
           setData={() => null}
           actions={actions}
           setAction={setCurrentAction}
-          refetchData={() => {}}
+          // refetchData={() => {}}
           ref={myGridRef}
-          loading={getJointDetails.isLoading}
+          loading={isLoading || isFetching}
         />
       </div>
 

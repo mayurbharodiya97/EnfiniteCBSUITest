@@ -14,16 +14,17 @@ import { Alert } from 'components/common/alert';
 import TabNavigate from '../TabNavigate';
 // import { format } from 'date-fns';
 
-const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext)
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+  const [formStatus, setFormStatus] = useState<any[]>([])
 
 //   const {data:saveDraftData, isSuccess, isLoading: isSaveDraftLoading, error, refetch} = useQuery(
 //     ["getSaveDraftData"],
@@ -43,19 +44,53 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
 
   useEffect(() => {
     let refs = [DeclarationFormRef]
-    handleCurrentFormRefctx(refs)
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
   }, [])
-
+  useEffect(() => {
+    // console.log("delcatqweqweqweqwe", formStatus)
+    if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: state?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
-        if(data?.[0]?.REQ_CD) {
-            let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
-            handleReqCDctx(req_cd)
-            handleColTabChangectx(state?.colTabValuectx+1)
-        }
+      if(data?.[0]?.REQ_CD) {
+          let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
+          handleReqCDctx(req_cd)
+          setFormStatus(old => [...old, true])
+          // handleColTabChangectx(state?.colTabValuectx+1)
+      } else {
+        setFormStatus(old => [...old, false])
+        console.log("not found req_cd on success", data)
+      }
     },
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      setFormStatus(old => [...old, false])
+    },
   });
 
 
@@ -76,8 +111,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     actionFlag,
     hasError
    ) => {
-    setIsNextLoading(true)
-    console.log("qweqweqwe", data)     
+    // setIsNextLoading(true)
+    // console.log("qweqweqwe", data)     
     if(data && !hasError) {
         let formFields = Object.keys(data) // array, get all form-fields-name 
         formFields = formFields.filter(field => !field.includes("_ignoreField") && field !== "AGE") // array, removed divider field
@@ -130,6 +165,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 IsNewRow: state?.isFreshEntryctx,
                 PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
                 COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? ""
             }
             mutation.mutate(payload)
             // refetch()
@@ -140,13 +176,17 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     handleColTabChangectx(state?.colTabValuectx+1)
         // }
     } else {
-        // handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        setFormStatus(old => [...old, false])
     }
     endSubmit(true)
     // handleColTabChangectx(state?.colTabValuectx+1)
-    setIsNextLoading(false)
+    // setIsNextLoading(false)
    }
   const handleSave = (e) => {
+    handleCurrFormctx({
+      isLoading: true,
+    })
     const refs = [DeclarationFormRef.current.handleSubmitError(e, "save", false)]
     handleSavectx(e, refs)
   } 
@@ -179,7 +219,8 @@ const myGridRef = useRef<any>(null);
             />
           )}
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -201,17 +242,23 @@ const myGridRef = useRef<any>(null);
                         onSubmitHandler={DeclarationSubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
-                        displayMode={displayMode}
+                        displayMode={state?.formmodectx}
                         key={"declaration-form-kyc"+ initialVal}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
+                        formState={{
+                          GSTIN: state?.formDatactx["PERSONAL_DETAIL"]?.GSTIN ??
+                          state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.GSTIN,
+                        }}
                         hideHeader={true}
                     />
                 </Grid>
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

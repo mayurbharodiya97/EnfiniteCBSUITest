@@ -50,3 +50,16 @@
 .css-12960u7-MuiInputBase-root-MuiOutlinedInput-root {
   height: 37px;
 }
+
+.title {
+  background-image: linear-gradient(71.66deg, #4285f4 -2.97%, #885df5 111.3%);
+  color: white;
+  margin-bottom: 10px;
+  height: 50px;
+}
+
+.dialogFooter {
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+}

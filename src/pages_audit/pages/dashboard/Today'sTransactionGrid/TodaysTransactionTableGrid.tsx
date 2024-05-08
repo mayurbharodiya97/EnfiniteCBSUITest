@@ -69,11 +69,12 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
         data={mutation?.data ?? []}
         setData={() => null}
+        ReportExportButton={true}
         actions={actions}
         setAction={setCurrentAction}
         headerToolbarStyle={{
           background: "var(--theme-color2)",
-          color: "black",
+          color: "var(--theme-color3)",
         }}
         loading={mutation.isLoading || mutation.isFetching}
       />

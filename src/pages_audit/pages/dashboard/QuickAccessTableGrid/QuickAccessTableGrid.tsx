@@ -30,7 +30,7 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     flex: "1 1 100%",
-    color: "var(--white)",
+    color: "var(--theme-color1)",
     letterSpacing: "1px",
     fontSize: "1.5rem",
   },

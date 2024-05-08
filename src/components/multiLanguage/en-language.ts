@@ -1,24 +1,28 @@
 export const en_language_data = {
+  Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
   SignInWithUserIDandPassword: "Please provide your UserID and password",
   UserID: "User ID",
   Password: "Password",
   ConfirmPassword: "Confirm Password",
-  MobileNo: "Mobile No.",
+  MobileNo: "Mobile Number",
   EnterUsername: "User ID",
   EnterPassword: "Enter Password",
   EnterMobileNo: "Enter Mobile No.",
+  EnterPasswordValid: "Password must be between 8 and 16 characters long.",
+  EnterPasswordPolicy:
+    "Password must be 8-16 characters long, containing at least one uppercase letter, one lowercase letter, one number, and one special character, with no spaces allowed.",
   EnterConfirmPassword: "Enter Confirm Password",
   ForgotPassword: "Forgot Password",
   Setnewpassword: "Set new password",
-  UsernameisRequired: "Username is a required",
+  UsernameisRequired: "User ID is a required",
   PasswordisRequired: "Password is a required",
-  MobileNoisRequired: "Mobile No. is Required.",
+  MobileNoisRequired: "Mobile Number is Required.",
   Confirmpasswordisrequired: "Confirm password is required.",
   UsernamenandPasswordisRequired: "Username and Password is a required",
   Next: "Next",
-  backtologin: "back to login",
+  backtologin: "back to Sign In",
   Save: "Save",
 
   // For OTP Verify
@@ -29,10 +33,12 @@ export const en_language_data = {
     ResendOTP: "Resend OTP",
     GetNewOTP: "Get New OTP",
     ValidFor: "Valid for",
-    OtpExpired: "OTP Expired in",
+    OtpExpired: "OTP will expire in",
+    second: "Second(s).",
     Hello: " Hello",
     Back: "Back",
     VerifyOTP: "Verify OTP",
+    EnterOTPDigit: "Please enter a 6 digit OTP number",
   },
   // For Biometric
   Biometric: {
@@ -59,6 +65,9 @@ export const en_language_data = {
     AllowedAccess: "Allowed Access",
     ActivityDetail: "Activity Detail",
     Personalizedashboard: "Personalize dashboard",
+    Searchin: "Search in",
+    screens: "screens",
+    records: "records",
   },
   // For Profile in User Profile
   UserId: "User Id",
@@ -418,4 +427,34 @@ export const en_language_data = {
   CompanyInfo: "Company Info",
   // tab - controlling person dtl
   ControllingPersonDTL: "Details of Controlling Person",
+  // account-master
+  AcctMaster: {
+    newAcct: "New Account",
+  },
+
+  sidebar: {
+    Dashboard: "Dashboard",
+
+    Configuration: "Configuration",
+    "Message Language Configuration": "Message Language Configuration",
+    "Select-Get API Configuration": "Select-Get API Configuration",
+    "Limit Security Master": "Limit Security Master",
+    "Common Master Configuration": "Common Master Configuration",
+
+    Master: "Master",
+    "Bank Document Template Entry": "Bank Document Template Entry",
+    "NPA Category Master": "NPA Category Master",
+    "NPA Provision Master": "NPA Provision Master",
+    "Trade Master": "Trade Master",
+
+    Operation: "Operation",
+    "All Screens": "All Screens",
+    "C-KYC Individual/Legal Entry": "C-KYC Individual/Legal Entryss",
+    "Account Opening": "Account Opening",
+    "Teller Transaction(Maker)": "Teller Transaction(Maker)",
+    "Cheque Book Issue Entry": "Cheque Book Issue Entry",
+    "Limit Entry": "Limit Entry",
+    "Stock Entry": "Stock Entry",
+    "Inward Clearing Process": "Inward Clearing Process",
+  },
 };

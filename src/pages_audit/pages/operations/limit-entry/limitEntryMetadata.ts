@@ -1,8 +1,10 @@
+import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { utilFunction } from "components/utils";
 
 export const limitEntryMetaData = {
   form: {
-    name: "limitEntry",
+    name: "limit-Entry",
     label: "Limit Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -70,22 +72,26 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
-        // disableCaching: true,
         options: (dependentValue, formState, _, authState) => {
-          return API.securityDropDownListType(
-            authState?.user?.id,
-            authState?.user?.branchCode,
-            authState?.companyID
-          );
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/046",
+          });
         },
-        _optionsKey: "securityDropDownListType",
-        dependentFields: ["BRANCH_CD", "SECURITY_CD"],
-
-        postValidationSetCrossFieldValues: async (field) => {
+        // _optionsKey: "get_Account_Type",
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
           if (field?.value) {
+            formState.setDataOnFieldChange();
             return {
               ACCT_CD: { value: "" },
-
+              SECURITY_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
             };
@@ -93,7 +99,6 @@ export const limitEntryMetaData = {
         },
       },
       accountCodeMetadata: {
-        dependentFields: ["ACCT_TYPE", "SECURITY_CD", "BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -109,11 +114,24 @@ export const limitEntryMetaData = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-              ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentValue?.ACCT_TYPE?.optionData
+              ),
               GD_TODAY_DT: authState?.workingDate,
               SCREEN_REF: "EMST/046",
             };
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
+
+            if (postData?.length) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: postData?.[0]?.RESTRICTION ? false : true,
+                HDN_CHARGE_AMT: postData?.[0]?.CHARGE_AMT,
+                HDN_GST_AMT: postData?.[0]?.GST_AMT,
+                HDN_GST_ROUND: postData?.[0]?.GST_ROUND,
+                HDN_TAX_RATE: postData?.[0]?.TAX_RATE,
+              });
+            }
 
             if (postData?.[0]?.RESTRICTION) {
               formState.MessageBox({
@@ -128,16 +146,16 @@ export const limitEntryMetaData = {
                 SANCTIONED_AMT: { value: "" },
               };
             } else if (postData?.[0]?.MESSAGE1) {
-              formState.setDataOnFieldChange("NSC_FD_BTN", {
-                NSC_FD_BTN: true,
-              });
-
               formState.MessageBox({
                 messageTitle: "Risk Category Alert",
                 message: postData?.[0]?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
               return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -150,27 +168,13 @@ export const limitEntryMetaData = {
                 BRANCH_CD: {
                   value: postData?.[0]?.BRANCH_CD,
                 },
-                HIDDEN_CHARGE_AMT: {
-                  value: postData?.[0]?.CHARGE_AMT,
-                },
-                HIDDEN_GST_AMT: {
-                  value: postData?.[0]?.GST_AMT,
-                },
-                HIDDEN_GST_ROUND: {
-                  value: postData?.[0]?.GST_ROUND,
-                },
-                HIDDEN_TAX_RATE: {
-                  value: postData?.[0]?.TAX_RATE,
-                },
               };
             } else {
-              formState.setDataOnFieldChange("NSC_FD_BTN", {
-                NSC_FD_BTN: true,
-              });
               return {
-                // ACCT_CD: {
-                //   value: postData?.[0]?.ACCT_NM,
-                // },
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -179,18 +183,6 @@ export const limitEntryMetaData = {
                 },
                 SANCTIONED_AMT: {
                   value: postData?.[0]?.SANCTIONED_AMT,
-                },
-                HIDDEN_CHARGE_AMT: {
-                  value: postData?.[0]?.CHARGE_AMT,
-                },
-                HIDDEN_GST_AMT: {
-                  value: postData?.[0]?.GST_AMT,
-                },
-                HIDDEN_GST_ROUND: {
-                  value: postData?.[0]?.GST_ROUND,
-                },
-                HIDDEN_TAX_RATE: {
-                  value: postData?.[0]?.TAX_RATE,
                 },
               };
             }
@@ -208,56 +200,6 @@ export const limitEntryMetaData = {
       },
     },
 
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
-    },
     {
       render: {
         componentType: "textField",
@@ -282,15 +224,14 @@ export const limitEntryMetaData = {
       name: "TRAN_BAL",
       label: "Tran. Balance",
       placeholder: "Balance",
-      // isFieldFocused: false,
       type: "text",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -305,10 +246,10 @@ export const limitEntryMetaData = {
       sequence: 0,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -326,7 +267,7 @@ export const limitEntryMetaData = {
           { value: "Hoc", label: "Ad-hoc Limit" },
         ];
       },
-      _optionsKey: "getChequeLeavesList",
+      _optionsKey: "limitTypeList",
       GridProps: {
         xs: 12,
         md: 2,
@@ -342,35 +283,14 @@ export const limitEntryMetaData = {
       name: "SECURITY_CD",
       label: "Security Code",
       placeholder: "Security",
-      type: "text",
-      dependentFields: [
-        "ACCT_CD",
-        "BRANCH_CD",
-        "ACCT_TYPE",
-        "SECURITY_CD",
-        "HIDDEN_CHARGE_AMT",
-        "HIDDEN_GST_AMT",
-        "HIDDEN_GST_ROUND",
-        "HIDDEN_TAX_RATE",
-      ],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (
-          !dependentFieldsValues?.ACCT_CD?.value ||
-          dependentFieldsValues?.ACCT_CD?.error
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      },
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
-        if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
+        if (dependentValue?.ACCT_TYPE?.optionData.length) {
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             A_PARENT_TYPE:
-              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim() ??
-              dependentValue?.PARA_TYPE?.value,
+              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
           };
           return API.getSecurityListData(apiReq);
         }
@@ -378,36 +298,40 @@ export const limitEntryMetaData = {
       },
       disableCaching: true,
       _optionsKey: "getSecurityListData",
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        if (field?.value) {
+      postValidationSetCrossFieldValues: async (field, formState) => {
+        if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
-            LIMIT_MARGIN:
-              dependentValue?.SECURITY_CD?.optionData?.[0]?.LIMIT_MARGIN,
-            HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
-            HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
-            HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
-            HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
+            SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
           });
         }
-        return {};
+        return {
+          // FD_BRANCH_CD: { error: "" },
+          // FD_TYPE: { error: "" },
+          // FD_ACCT_CD: { value: "" },
+          // FD_NO: { value: "" },
+          // EXPIRY_DT: { value: "" },
+          // SEC_AMT: { value: "" },
+          // SEC_INT_AMT: { value: "" },
+          // SECURITY_VALUE: { value: "" },
+          // INT_AMT: { value: "" },
+          // INT_RATE: { value: "" },
+          // PENAL_RATE: { value: "" },
+        };
       },
 
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Security Type is required."] }],
+      validate: (currField) => {
+        if (!Boolean(currField?.value)) {
+          return "Security Code is required.";
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
-        md: 3.5,
-        sm: 3.5,
-        lg: 3.5,
-        xl: 3.5,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

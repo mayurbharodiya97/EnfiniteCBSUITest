@@ -10,6 +10,7 @@ export const getAccountInquiry = async (inputdata) => {
       PAN_NO: inputdata?.PAN,
       CUST_ID: inputdata?.CUSTOMER,
       ACCT_NM: inputdata?.NAME,
+      COMP_CD: inputdata?.COMP_CD,
     });
   if (status === "0") {
     const dataStatus = data;

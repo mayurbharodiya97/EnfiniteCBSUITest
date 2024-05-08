@@ -21,7 +21,7 @@ export const useStyles = makeStyles((theme: any) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    // width: theme.spacing(6),
+    width: theme.spacing(8),
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(8),
     },
@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme: any) => ({
     background: "var(--theme-color2)",
     justifyContent: "center",
     height: "80px",
-    borderBottom: "1px dashed #949597",
+    // borderBottom: "1px dashed #949597",
   },
   hrCSS: {
     zIndex: 9999,
