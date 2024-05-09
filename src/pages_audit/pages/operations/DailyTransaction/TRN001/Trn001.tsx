@@ -123,6 +123,8 @@ export const Trn001 = () => {
   const [scrollSaveDialog, setScrollSaveDialog] = useState<any>(false);
   const [accValidDialog, setAccValidDialog] = useState<any>(false);
   const [accValidMsg, setAccValidMsg] = useState<any>("");
+  const [amountValidDialog, setAmountValidDialog] = useState<any>(false);
+  const [amountValidMsg, setAmountValidMsg] = useState<any>([]);
   const [cardsData, setCardsData] = useState<any>([]);
   const [reqData, setReqData] = useState<any>([]);
 
@@ -332,8 +334,9 @@ export const Trn001 = () => {
   });
   const getAmountValidation = useMutation(API.getAmountValidation, {
     onSuccess: (data) => {
-      const obj = [...rows];
+      setAmountValidMsg(data);
       console.log(data, "data res getAmountValidation");
+      setAmountValidDialog(true);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -897,6 +900,24 @@ export const Trn001 = () => {
     );
   };
 
+  const amountValidHtml = () => {
+    return (
+      <>
+        {amountValidMsg &&
+          amountValidMsg?.map((a, i) => {
+            return (
+              <>
+                <div style={{ minWidth: "300px", textAlign: "center" }}>
+                  {a?.O_MESSAGE}
+                </div>
+                <br />
+              </>
+            );
+          })}
+      </>
+    );
+  };
+
   const acInfoHtml = () => {
     return (
       <>
@@ -1406,6 +1427,22 @@ export const Trn001 = () => {
             }}
             rows={[]}
             open={accValidDialog}
+          />
+        ) : (
+          <></>
+        )}
+
+        {amountValidDialog ? (
+          <MessageBoxWrapper
+            MessageTitle="Amount Info"
+            Message={amountValidHtml()}
+            buttonNames={["Ok"]}
+            onClickButton={() => {
+              setAmountValidDialog(false);
+              setAmountValidMsg([]);
+            }}
+            rows={[]}
+            open={amountValidDialog}
           />
         ) : (
           <></>

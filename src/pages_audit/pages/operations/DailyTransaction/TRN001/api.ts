@@ -247,7 +247,7 @@ export const getAmountValidation = async (reqData) => {
   if (status === "0") {
     let responseData = data;
 
-    return responseData[0];
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
