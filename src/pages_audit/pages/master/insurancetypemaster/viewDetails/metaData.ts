@@ -59,11 +59,33 @@ export const InsuTypeMasterFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DESCRIPTION",
+      label: "Description",
+      required: true,
+      maxLength: 75,
+      placeholder: "Enter Description",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Description is required."] }],
+      },
+      GridProps: {
+        xs: 12,
+        sm: 12,
+        md: 4,
+        lg: 4,
+        xl: 4,
+      },
+    },
+
     {
       render: {
         componentType: "select",
@@ -80,37 +102,9 @@ export const InsuTypeMasterFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "DESCRIPTION",
-      label: "Description",
-      required: true,
-      maxLength: 75,
-      placeholder: "Enter Description",
-      validate: (columnValue) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        return "";
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
-      },
-      GridProps: {
-        xs: 12,
-        sm: 12,
-        md: 12,
-        lg: 12,
-        xl: 12,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

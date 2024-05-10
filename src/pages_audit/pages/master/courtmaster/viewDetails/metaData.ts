@@ -1,4 +1,3 @@
-import { utilFunction } from "components/utils";
 import { getCourtMasterArea } from "../api";
 
 export const CourtMasterFormMetadata = {

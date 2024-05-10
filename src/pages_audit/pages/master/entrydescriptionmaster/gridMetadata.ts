@@ -1,10 +1,10 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 
-export const InsuTypeMasterGridMetaData: GridMetaDataType = {
+export const EntryDescMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Insurance Type Master (EMST/097)",
-    rowIdColumn: "INSURANCE_TYPE_CD",
+    gridLabel: "Entry Description Master (EMST/067)",
+    rowIdColumn: "SP_CD",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -18,10 +18,9 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "80vh",
-      max: "80vh",
+      min: "79vh",
+      max: "79vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
@@ -29,7 +28,7 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "Sr.No.",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -39,7 +38,7 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "INSURANCE_TYPE_CD",
+      accessor: "SP_CD",
       columnName: "Code",
       sequence: 2,
       alignment: "left",
@@ -49,25 +48,25 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "DESCRIPTION",
-      columnName: "Description",
+      accessor: "DISPLAY",
+      columnName: "Parent Type",
       sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 300,
+      minWidth: 200,
+      maxWidth: 600,
+    },
+    {
+      accessor: "SP_NM",
+      columnName: "Description",
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 400,
       minWidth: 300,
       maxWidth: 600,
       showTooltip: true,
-    },
-    {
-      accessor: "DISP_DATA",
-      columnName: "Security Type",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 300,
-      minWidth: 200,
-      maxWidth: 600,
     },
   ],
 };
