@@ -158,7 +158,7 @@ if(upd._UPDATEDCOLUMNS.length > 0){
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
-                  }} da
+                  }} 
                   disabled={isSubmitting}
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
