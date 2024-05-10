@@ -55,11 +55,12 @@ export const EntryDescMasterFormMetadata = {
           return "'!' and '&' not allowed";
         }
 
-        const duplicate = utilFunction.checkDupliCateValue(
-          columnValue,
-          ...rest
-        );
-        return duplicate || "";
+        // const duplicate = utilFunction.checkDupliCateValue(
+        //   columnValue,
+        //   ...rest
+        // );
+        // return duplicate || "";
+        return "";
       },
       schemaValidation: {
         type: "string",
@@ -110,7 +111,7 @@ export const EntryDescMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "textFieldCheckDupliCateValue",
+        componentType: "textField",
       },
       name: "SP_NM",
       label: "Description",
