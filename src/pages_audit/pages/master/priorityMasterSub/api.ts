@@ -2,7 +2,7 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 
-export const getPriorityMainMasterSubData = async ({ companyID, branchCode }) => {
+export const getPriorityMasterSubData = async ({ companyID, branchCode }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSUBPRIOMSTDATADISP", {
         COMP_CD: companyID,
@@ -11,9 +11,7 @@ export const getPriorityMainMasterSubData = async ({ companyID, branchCode }) =>
     if (status === "0") {
       return data.map((item)=>{
         return {
-          ...item,
-          ACTIVE_FLAG:
-          item.ACTIVE_FLAG === "Y" ? true : false
+          ...item
         }
       });
   
@@ -52,7 +50,6 @@ export const getPriorityMainMasterSubData = async ({ companyID, branchCode }) =>
       "DOSUBPRIORITYMST",
       {
         ...reqdata,
-        ALERT_TYPE: "E",
       }
     );
     if (status === "0") {

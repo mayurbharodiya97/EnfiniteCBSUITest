@@ -20,43 +20,11 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "SUB_PRIORITY_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Parent Weaker",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Decscription",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "SUB_PRIORITY_CD",
@@ -69,7 +37,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "PARENT_WEAKER",
+      accessor: "PARENT_WEAKER_NM",
       columnName: "Parent Weaker",
       sequence: 4,
       alignment: "left",

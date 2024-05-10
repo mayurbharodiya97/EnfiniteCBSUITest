@@ -1,8 +1,7 @@
 import { Dialog } from "@mui/material";
-import {  useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import FormWrapper from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useLocation } from "react-router-dom";
 import { prioritymastersubformmetadata } from "./metaData";
 import { GradientButton } from "components/styledComponent/button";
@@ -11,6 +10,7 @@ import { extractMetaData, utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const Proritysubform = ({
   isDataChangedRef,
@@ -19,9 +19,9 @@ export const Proritysubform = ({
   data: reqData,
 }) => {
   const { authState } = useContext(AuthContext);
-  const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
 
   const mutation = useMutation((API.updatePriorityMasterSubData),
@@ -31,35 +31,28 @@ export const Proritysubform = ({
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        if (isErrorFuncRef.current == null) {
-          enqueueSnackbar(errorMsg, {
-            variant: "error",
-          });
-        } else {
-          isErrorFuncRef.current?.endSubmit(
-            false,
-            errorMsg,
-            error?.error_detail ?? ""
-          );
-        }
-        onActionCancel();
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox();
       },
       onSuccess: (data) => {
         enqueueSnackbar("Records successfully Saved", {
           variant: "success",
         });
         isDataChangedRef.current = true;
+        CloseMessageBox();
         closeDialog();
       },
     }
   );
-  const onSubmitHandler: SubmitFnType = (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
     setFieldError,
   ) => {
-    // @ts-ignore
+    
     endSubmit(true);
 
     let oldData = reqData?.[0]?.data;
@@ -85,25 +78,27 @@ export const Proritysubform = ({
     if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
       setFormMode("view");
     } else {
-      setIsOpenSave(true);
+      const btnName = await MessageBox({
+        message: "Do you want to save this Request?",
+        messageTitle: "Confirmation",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: "Yes",
+      });
+      if (btnName === "Yes") {
+        mutation.mutate({
+          data: { ...isErrorFuncRef.current?.data },
+        });
+      }
     }
-  };
-
-  const onPopupYes = (rows) => {
-   mutation.mutate({data:rows});
-  };
-
-  const onActionCancel = () => {
-    setIsOpenSave(false);
   };
   return (
     <>
       <FormWrapper
         key={"prioritymastersubformmetadata" + formMode}
-        metaData={extractMetaData(prioritymastersubformmetadata,formMode)} as GridMetaDataType 
+        metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as GridMetaDataType
         displayMode={formMode}
         onSubmitHandler={onSubmitHandler}
-        initialValues={reqData?.[0]?.data ??{}}
+        initialValues={reqData?.[0]?.data ?? {}}
         formStyle={{
           background: "white",
         }}
@@ -122,9 +117,7 @@ export const Proritysubform = ({
                   Save
                 </GradientButton>
                 <GradientButton
-                  onClick={() => {
-                    setFormMode("view");
-                  }}
+                  onClick={closeDialog}
                   color={"primary"}
                   disabled={isSubmitting}
                 >
@@ -165,22 +158,11 @@ export const Proritysubform = ({
           </>
         )}
       </FormWrapper>
-      {isOpenSave ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Do you want to save this Request?"
-          onActionYes={(rowVal) => onPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
-          rows={isErrorFuncRef.current?.data}
-          open={isOpenSave}
-          loading={mutation.isLoading}
-        />
-      ) : null}
     </>
   );
 };
 
-export const ProritymastersubformWrapper = ({ isDataChangedRef,closeDialog, defaultView }) => {
+export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView }) => {
   const { state: data }: any = useLocation();
   return (
     <Dialog
@@ -193,11 +175,11 @@ export const ProritymastersubformWrapper = ({ isDataChangedRef,closeDialog, defa
       }}
       maxWidth="lg"
     >
-      <Proritysubform 
+      <Proritysubform
         isDataChangedRef={isDataChangedRef}
-      closeDialog={closeDialog} 
-      defaultView={defaultView} 
-      data={data} />
+        closeDialog={closeDialog}
+        defaultView={defaultView}
+        data={data} />
     </Dialog>
   );
 };

@@ -3,7 +3,7 @@ export const prioritymastersubformmetadata = {
   form: {
     name: "Priority Master - Sub",
     label: "Priority Master - Sub",
-    resetFieldOnUnmount: true,
+    resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
     render: {
@@ -44,28 +44,22 @@ export const prioritymastersubformmetadata = {
       placeholder: "Code",
       type: "text",
       maxLength:4,
-      isReadOnly:false,
       required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["code is Required"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl:6  },
-      __EDIT__:{isReadOnly:true}
     },
     {
       render: { componentType: "autocomplete" },
-      name: "DATA_VALUE",
+      name: "PARENT_WEAKER_NM",
       label: "Parent Weaker",
       enableDefaultOption: false,
       options:()=> API.getPMISCData("WEAKER_PARENT"),
       _optionsKey: "getPMISCData",
-      defaultValue: "Dynamic SQL",
-      type: "text",
       GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6},
-      fullWidth: true,
-      autoComplete: "off",
-      isFieldFocused: true,
+      __VIEW__: { isReadOnly: true },
     },
     {
       render: { componentType: "textField" },
@@ -76,7 +70,6 @@ export const prioritymastersubformmetadata = {
       placeholder: "Description",
       maxLength:50,
       multiline:true,
-      isFieldFocused: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Description is Required"] }],
