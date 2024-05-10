@@ -1335,7 +1335,24 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
+  GETBANKIFSCCODEMSTGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCCODEMSTGRID",
+    packageName: "",
+  },
+  DOBANKIFSCCODEMSTDML: {
+    url: "commonMasterServiceAPI/DOBANKIFSCCODEMSTDML",
+    packageName: "",
+  },
+  GETBANKIFSCIMPORTDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCIMPORTDDDW",
+    packageName: "",
+  },
+  GETFILETOJSON:{
+    url:"enfinityCommonServiceAPI/GETFILETOJSON",
+    packageName: "",
+  }
 };
+//http://10.55.6.73:8082/
 
 export const GetAPIURLFromAction = (action, pname) => {
   let UrlData = ActionWiseAPIConfiguration[action];

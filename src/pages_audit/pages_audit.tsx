@@ -15,10 +15,10 @@ import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
 // import Master from "./pages/master/master";
+import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 const Master = lazy(() => import('./pages/master/master'));
 
 // import { AccDetailContext } from "./auth";
-import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 
 export const PagesAudit = (props, { columns }) => {
   const location = useLocation();

@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 const LienMasterGrid = lazy(()=> import('./lienMaster/lienMasterGrid'))
 const AcPeriodMasterGrid = lazy(()=> import('./ACperiodMaster/ACperiodMasterGrid'))
 const ModeMasterGrid = lazy(()=> import('./modeMaster/modeMasterGrid'));
+const BankIfscCodeMaster = lazy(()=> import('./bankIfscCodeMaster/bankIfscCodeMaasterGrid'));
 
 const Master = () => {  
   return (  
@@ -12,6 +13,7 @@ const Master = () => {
       <Route path="lien-master/*" element={<LienMasterGrid />} />
       <Route path="a/c-period-master/*" element={<AcPeriodMasterGrid />} />
       <Route path="mode-master/*" element={<ModeMasterGrid />} />
+      <Route path="bank-Ifsc-Code-Master/*" element={<BankIfscCodeMaster />} />
     </Routes>
     </Suspense>
     </Fragment> 
