@@ -12,8 +12,6 @@ export const getTradeMasterData = async ({ companyID, branchCode }) => {
       return data.map((item)=>{
         return {
           ...item,
-          ACTIVE_FLAG:
-          item.ACTIVE_FLAG === "Y" ? true : false
         }
       });
   
@@ -52,7 +50,6 @@ export const getTradeMasterData = async ({ companyID, branchCode }) => {
       "DOTRADEMSTDML",
       {
         ...reqdata,
-        ALERT_TYPE: "E",
       }
     );
     if (status === "0") {

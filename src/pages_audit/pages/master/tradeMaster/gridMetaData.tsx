@@ -21,43 +21,11 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "TRADE_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "TRADE_NM",
-      columnName: "Decscription",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "C-KYC Group",
-      columnName: "Decscription",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "TRADE_CD",
@@ -80,14 +48,14 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       maxWidth: 350,
     },
     {
-      accessor: "CKYC_OCCUPATION",
+      accessor: "CKYC_OCCUPATION_NM",
       columnName: "C-KYC Group",
       sequence: 5,
       alignment: "left",
       componentType: "default",
-      width: 150,
-      minWidth: 130,
-      maxWidth: 400,
+      width: 300,
+      minWidth: 200,
+      maxWidth: 500,
     },
     {
       accessor: "CONST_TYPE_DISP",
