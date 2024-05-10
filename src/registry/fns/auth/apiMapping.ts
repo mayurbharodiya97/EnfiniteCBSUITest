@@ -1347,6 +1347,26 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/DOCOURTMST",
     packageName: "",
   },
+  GETRTGSBNFCRYDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEACWISE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEGRID",
+    packageName: "",
+  },
+  DOCHEQUEVALIDATE: {
+    url: "/transactionServiceAPI/DOCHEQUEVALIDATE",
+    packageName: "",
+  },
+  GETRTGSCHARGES: {
+    url: "/transactionServiceAPI/GETRTGSCHARGES",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
