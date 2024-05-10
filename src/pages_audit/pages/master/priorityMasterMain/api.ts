@@ -2,7 +2,7 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 
-export const getPriorityMainMasterData = async ({ companyID, branchCode }) => {
+export const getPriorityMainMasterData = async ({ companyID, branchCode}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPRIORITYMSTDATADISP", {
       COMP_CD: companyID,
@@ -13,7 +13,7 @@ export const getPriorityMainMasterData = async ({ companyID, branchCode }) => {
       return {
         ...item,
         ACTIVE_FLAG:
-        item.ACTIVE_FLAG === "Y" ? true : false
+        item.ACTIVE_FLAG === "Y" ? true : false,
       }
     });
 
@@ -31,10 +31,11 @@ export const getParentPriority = async (...reqdata) => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ PARENT_GROUP }) => {
+        responseData = responseData.map(({ PRIORITY_CD,PRIORITY_NM,...OTHER  }) => {
           return {
-            value: PARENT_GROUP,
-            label: PARENT_GROUP,
+            ...OTHER,
+            value: PRIORITY_CD.trim(),
+            label:PRIORITY_CD + PRIORITY_NM,
           };
         });
       }
@@ -58,7 +59,7 @@ export const getParentPriority = async (...reqdata) => {
           return {
             ...OTHER,
             value: SUB_PRIORITY_CD,
-          label: SUB_PRIORITY_CD + "- " + DESCRIPTION,
+          label: SUB_PRIORITY_CD.trim()   +  DESCRIPTION,
             
           };
         });
@@ -73,7 +74,6 @@ export const getParentPriority = async (...reqdata) => {
       "PRIORITYMASTERMAINDML",
       {
         ...reqdata,
-        ALERT_TYPE: "E",
       }
     );
     if (status === "0") {

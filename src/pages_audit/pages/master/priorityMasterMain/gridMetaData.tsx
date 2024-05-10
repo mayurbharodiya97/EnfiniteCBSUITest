@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const Prioritymastermainmetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Priority Master Main (EMST/O55)",
+    gridLabel: "Priority Master - Main (EMST/O55)",
     rowIdColumn: "ACCT_PRIORITY_CD",
     defaultColumnConfig: {
       width: 200,
@@ -21,44 +21,11 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "PRIORITY_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "PARENT_GROUP",
-    
-      columnName: "Parent Group",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Sub Priority",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "PRIORITY_CD",

@@ -1,10 +1,9 @@
-import { Placeholder } from 'reactstrap';
 import * as API from '../api'
 export const Viewformmetadata = {
   form: {
     name: "Priority main master",
-    label: "Priority Main Master",
-    resetFieldOnUnmount: true,
+    label: "Priority Master - Main",
+    resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
     render: {
@@ -48,29 +47,28 @@ export const Viewformmetadata = {
       placeholder: "Code",
       type: "text",
       isReadOnly:false,
-      maxLength:7,
+      maxLength:5,
       required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["code is Required"] }],
       },
+      validate: (columnValue) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue.value && !specialChar.test(columnValue.value)) {
+          return "Special character '!' and '&' not allowed";
+        }
+      },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl:6  },
-      __EDIT__:{isReadOnly:true}
     },
     {
       render: { componentType: "autocomplete" },
       name: "PARENT_GROUP",
       label: "Parent Group",
-      enableDefaultOption: false,
       options: API.getParentPriority,
       _optionsKey: "getParentPriority",
-      defaultValue: "Dynamic SQL",
-      type: "text",
       GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6 },
-      fullWidth: true,
-      autoComplete: "off",
-      //@ts-ignore
-      isFieldFocused: true,
+      __VIEW__: { isReadOnly: true },
     },
 
     {
@@ -80,11 +78,9 @@ export const Viewformmetadata = {
         label: "Sub Priority",
         options: API.getSubPriority,
         _optionsKey: "getSubPriority",
-        type: "text",
         GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6 },
-        fullWidth: true,
-        autoComplete: "off",
-        isFieldFocused: false,
+        __VIEW__: { isReadOnly: true },
+
    },
     {
       render: { componentType: "textField" },
@@ -105,6 +101,7 @@ export const Viewformmetadata = {
     {render: {
       componentType: "Divider",
     },
+    name: "SanctionLimit",
     dividerText: "Sanction Limit"
   },
     {
@@ -140,12 +137,27 @@ export const Viewformmetadata = {
         decimalScale: 2,
         fixedDecimalScale: true,
         enableNumWords: false,
-        isFieldFocused: false,
         GridProps: {   xs: 12, sm: 6, md: 6, lg: 6, xl:6   },
+        dependentFields: ["FROM_LIMIT"],
+        runValidationOnDependentFieldsChange: true,
+        validate: (fieldValue, dependentFields) => {
+          if (fieldValue && fieldValue.value !== null &&
+              dependentFields["FROM_LIMIT"] && dependentFields["FROM_LIMIT"].value !== null) {
+              const toLimit = parseFloat(fieldValue.value);
+              const fromLimit = parseFloat(dependentFields["FROM_LIMIT"].value);
+              
+              if (!isNaN(toLimit) && !isNaN(fromLimit)) {
+                  if (toLimit < fromLimit) {
+                      return "To Limit should be greater than or equal to From Limit";
+                  }
+              }
+          }
+      }
       },
       {render: {
         componentType: "Divider",
       },
+    name: "ProvisionPer",
       dividerText: "Provision %"
     },
       {
@@ -191,6 +203,12 @@ export const Viewformmetadata = {
         label: "Active",                         
         defaultValue:true,
         GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6   },
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ACCT_PRIORITY_CD",                       
       },
   ],
 };
