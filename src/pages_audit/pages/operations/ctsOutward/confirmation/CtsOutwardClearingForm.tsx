@@ -95,10 +95,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
   const { authState } = useContext(AuthContext);
   const headerClasses = useTypeStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { MessageBox } = usePopupContext();
-  const [isDelete, SetDelete] = useState(false);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
-  const [isOpenConfirmMsg, setOpenConfirmMsg] = useState(false);
   const [isChequeSign, setIsChequeSign] = useState<any>(false);
   const [isVisibleSign, setIsVisibleSign] = useState<any>(false);
   const [isConfHistory, setIsConfHistory] = useState<any>(false);
@@ -149,7 +147,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
         });
         isDataChangedRef.current = true;
         onClose();
-        setOpenConfirmMsg(false);
+        CloseMessageBox();
       },
       onError: (error: any) => {
         MessageBox({
@@ -157,7 +155,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
           message: error?.error_msg,
           buttonNames: ["Ok"],
         });
-        setOpenConfirmMsg(false);
+        CloseMessageBox();
       },
     }
   );
@@ -170,7 +168,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
-      SetDelete(false);
+      CloseMessageBox();
+      SetDeleteRemark(false);
     },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
@@ -179,27 +178,12 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
       });
       isDataChangedRef.current = true;
       onClose();
-      SetDelete(false);
+      CloseMessageBox();
+      SetDeleteRemark(false);
     },
   });
 
-  const onAcceptDelete = (rows) => {
-    deleteMutation.mutate({
-      DAILY_CLEARING: {
-        TRAN_CD: rowsData?.TRAN_CD,
-      },
-      DETAILS_DATA: {
-        isNewRow: [],
-        isDeleteRow: [
-          {
-            TRAN_CD: rowsData?.TRAN_CD,
-          },
-        ],
-        isUpdatedRow: [],
-      },
-      _isDeleteRow: true,
-    });
-  };
+  const onAcceptDelete = (rows) => {};
   useEffect(() => {
     const handleKeyDown = async (event) => {
       if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
@@ -315,8 +299,31 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     }}
                   >
                     <GradientButton
-                      onClick={() => {
-                        setOpenConfirmMsg(true);
+                      onClick={async () => {
+                        const buttonName = await MessageBox({
+                          messageTitle: "Confirmation",
+                          message: " Proceed ?",
+                          buttonNames: ["No", "Yes"],
+                          loadingBtnName: "Yes",
+                        });
+                        if (buttonName === "Yes") {
+                          confirmation.mutate({
+                            ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
+                            ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
+                            TRAN_CD: data?.[0]?.TRAN_CD,
+                            ACCT_TYPE: data?.[0]?.ACCT_TYPE,
+                            ACCT_CD: data?.[0]?.ACCT_CD,
+                            CONFIRMED: "N",
+                            ENTERED_BY: data?.[0]?.ENTERED_BY,
+                            AMOUNT: data?.[0]?.AMOUNT,
+                            SCREEN_REF:
+                              zoneTranType === "S"
+                                ? "ETRN/560"
+                                : zoneTranType === "R"
+                                ? "ETRN/029"
+                                : "ETRN/346",
+                          });
+                        }
                       }}
                     >
                       Confirm
@@ -468,38 +475,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   height: "65%",
                 }}
               />
-              {Boolean(isOpenConfirmMsg) ? (
-                <PopupMessageAPIWrapper
-                  MessageTitle="Confirmation"
-                  Message={
-                    "Do you want to allow the transaction - Slip No." +
-                    data?.[0]?.SLIP_CD +
-                    " ?"
-                  }
-                  onActionYes={() =>
-                    confirmation.mutate({
-                      ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
-                      ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
-                      TRAN_CD: data?.[0]?.TRAN_CD,
-                      ACCT_TYPE: data?.[0]?.ACCT_TYPE,
-                      ACCT_CD: data?.[0]?.ACCT_CD,
-                      CONFIRMED: "N",
-                      ENTERED_BY: data?.[0]?.ENTERED_BY,
-                      AMOUNT: data?.[0]?.AMOUNT,
-                      SCREEN_REF:
-                        zoneTranType === "S"
-                          ? "ETRN/560"
-                          : zoneTranType === "R"
-                          ? "ETRN/029"
-                          : "ETRN/346",
-                    })
-                  }
-                  onActionNo={() => setOpenConfirmMsg(false)}
-                  rows={[]}
-                  open={isOpenConfirmMsg}
-                  loading={confirmation.isLoading}
-                />
-              ) : null}
 
               {isDeleteRemark && (
                 <RemarksAPIWrapper
@@ -511,8 +486,75 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       : "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)"
                   }
                   onActionNo={() => SetDeleteRemark(false)}
-                  onActionYes={(val, rows) => {
-                    SetDelete(true);
+                  onActionYes={async (val, rows) => {
+                    const buttonName = await MessageBox({
+                      messageTitle: "Confirmation",
+                      message: "Do You Want to delete this row?",
+                      buttonNames: ["No", "Yes"],
+                      defFocusBtnName: "Yes",
+                      loadingBtnName: "Yes",
+                    });
+                    if (buttonName === "Yes") {
+                      deleteMutation.mutate({
+                        DAILY_CLEARING: {
+                          _isNewRow: false,
+                          _isDeleteRow: true,
+                          _isUpdateRow: false,
+                          ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
+                          ENTERED_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD,
+                          TRAN_CD: rowsData?.TRAN_CD,
+                          CONFIRMED: rowsData?.CONFIRMED,
+                          ENTERED_BY: rowsData?.ENTERED_BY,
+                        },
+                        BRANCH_CD: data?.[0]?.CHEQUE_DETAIL?.[0]?.BRANCH_CD,
+                        SR_CD: rowsData?.SR_NO,
+                        ACCT_TYPE: data?.[0]?.ACCT_TYPE,
+                        ACCT_CD: data?.[0]?.ACCT_CD,
+                        AMOUNT: data?.[0]?.AMOUNT,
+                        TRAN_DT: data?.[0]?.TRAN_DT,
+                        TRAN_CD: rowsData?.TRAN_CD,
+                        USER_DEF_REMARKS: val
+                          ? val
+                          : zoneTranType === "S"
+                          ? "WRONG ENTRY FROM CTS O/W CONFIRMATION (TRN/560)"
+                          : zoneTranType === "R"
+                          ? "WRONG ENTRY FROM INWARD RETURN CONFIRMATION(TRN/332)"
+                          : "WRONG ENTRY FROM OUTWARD RETURN CONFIRMATION(TRN/346)",
+
+                        ACTIVITY_TYPE:
+                          zoneTranType === "S"
+                            ? "CTS O/W CONFIRMATION (TRN/560)"
+                            : zoneTranType === "R"
+                            ? "INWARD RETURN CONFIRMATION(TRN/332)"
+                            : "OUTWARD RETURN CONFIRMATION(TRN/346)",
+                        DETAILS_DATA: {
+                          isNewRow: [],
+                          isDeleteRow: [
+                            {
+                              TRAN_CD: rowsData?.TRAN_CD,
+                            },
+                          ],
+                          isUpdatedRow: [],
+                        },
+                        _isDeleteRow: true,
+                      });
+
+                      deleteMutation.mutate({
+                        DAILY_CLEARING: {
+                          TRAN_CD: rowsData?.TRAN_CD,
+                        },
+                        DETAILS_DATA: {
+                          isNewRow: [],
+                          isDeleteRow: [
+                            {
+                              TRAN_CD: rowsData?.TRAN_CD,
+                            },
+                          ],
+                          isUpdatedRow: [],
+                        },
+                        _isDeleteRow: true,
+                      });
+                    }
                   }}
                   // isLoading={crudLimitData?.isLoading}
                   isEntertoSubmit={true}
@@ -530,28 +572,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   rows={undefined}
                 />
               )}
-              {isDelete ? (
-                <PopupMessageAPIWrapper
-                  MessageTitle="Delete Warning.."
-                  Message="Do You Want to delete this row?"
-                  onActionYes={(rows) => onAcceptDelete(rows)}
-                  onActionNo={() => SetDelete(false)}
-                  rows={{}}
-                  open={isDelete}
-                  loading={deleteMutation.isLoading}
-                />
-              ) : null}
-              {isDelete ? (
-                <PopupMessageAPIWrapper
-                  MessageTitle="Delete Warning.."
-                  Message="Do You Want to delete this row?"
-                  onActionYes={(rows) => onAcceptDelete(rows)}
-                  onActionNo={() => SetDelete(false)}
-                  rows={{}}
-                  open={isDelete}
-                  loading={deleteMutation.isLoading}
-                />
-              ) : null}
+
               <>
                 {isChequeSign ? (
                   <>

@@ -50,7 +50,7 @@ export const getOutwardConfirmViewDetailData = async ({
   TRAN_TYPE,
 }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETOWCLEARINGDETAILS", {
+    await AuthSDK.internalFetcher("GETCLEARINGDETAILS", {
       ENTERED_COMP_CD: ENTERED_COMP_CD,
       TRAN_CD: TRAN_CD,
       ENTERED_BRANCH_CD: ENTERED_BRANCH_CD,

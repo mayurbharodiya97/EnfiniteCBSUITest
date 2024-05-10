@@ -1,14 +1,10 @@
-import { Fragment, useEffect, useRef, useContext, useState } from "react";
+import { Fragment, useRef, useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { JointDetailIssueEntry } from "./metaData";
 import { CheckBookGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { Button, Grid, Typography } from "@mui/material";
@@ -111,7 +107,7 @@ export const CheckBook = ({ reqData }) => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        refetchData={() => {}}
+        // refetchData={() => {}}
         ref={myGridRef}
       />
       <Grid

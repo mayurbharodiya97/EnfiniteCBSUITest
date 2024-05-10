@@ -858,8 +858,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
-  GETOWCLEARINGDETAILS: {
-    url: "/chequeServiceAPI/GETOWCLEARINGDETAILS",
+  GETCLEARINGDETAILS: {
+    url: "/chequeServiceAPI/GETCLEARINGDETAILS",
     packageName: "",
   },
   GETEMAILSTATUS: {
@@ -892,6 +892,10 @@ export const ActionWiseAPIConfiguration = {
   },
   VALIDATEFDACCOUNTS: {
     url: "/enfinityFDServiceAPI/VALIDATEFDACCOUNTS",
+    packageName: "",
+  },
+  GETFDSCHEMELIST: {
+    url: "/enfinityFDServiceAPI/GETFDSCHEMELIST",
     packageName: "",
   },
   VALIDATEACCOUNT: {
@@ -1278,6 +1282,34 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCTSVIEWDELDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSVIEWDELDTL",
+    packageName: "",
+  },
+  GETCLGDTTRANSBANKGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSBANKGRID",
+    packageName: "",
+  },
+  GETCLGDTTRANSSLIPGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSSLIPGRID",
+    packageName: "",
+  },
+  GETRTGSTRANTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRANTYPEDDW",
+    packageName: "",
+  },
+  GETCOMMTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEDDDW",
+    packageName: "",
+  },
+  GETBRANCHIFSCCODE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHIFSCCODE",
+    packageName: "",
+  },
+  DOCHQBKCONFIRMATION: {
+    url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
+    packageName: "",
+  },
+  GETACCOUNTDETAIL: {
+    url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
 };

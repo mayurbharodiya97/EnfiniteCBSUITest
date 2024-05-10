@@ -38,8 +38,6 @@ import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPo
 import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
@@ -70,37 +68,58 @@ const actions: ActionTypes[] = [
   },
 ];
 export const InwardClearing = () => {
-  const [isOpenRetrieve, setIsOpenRetrieve] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const headerClasses = useTypeStyles();
   const actionClasses = useStyles();
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const selectedRowsRef = useRef<any>(null);
   const myRef = useRef<any>();
   const inputButtonRef = useRef<any>(null);
   const isDataChangedRef = useRef(false);
   const mysubdtlRef = useRef<any>({});
-
-  const [selectedRows, setSelectedRows] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
-  const [selectedRowsData, setSelectedRowsData] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
-
-  const [selectAll, setSelectAll] = useState<any>(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<any>([]);
-  const [isChequeSign, setIsChequeSign] = useState<any>(false);
-  const [formData, setFormData] = useState<any>();
-  const [messageData, setMessageData] = useState<any>();
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const [isOpenDraft, setIsOpenDraft] = useState(false);
-  const [isOpenDividend, setIsOpenDividend] = useState(false);
   const indexRef = useRef(0);
   const navigate = useNavigate();
 
+  const [state, setState] = useState<any>({
+    selectedRows: authState?.user?.branchCode ?? [],
+    selectedRowsData: authState?.user?.branchCode ?? [],
+    isOpenRetrieve: true,
+    selectAll: false,
+    searchQuery: "",
+    filteredData: [],
+    isChequeSign: false,
+    formData: {},
+    isOpenDividend: false,
+  });
+  const {
+    selectedRows,
+    selectedRowsData,
+    isOpenRetrieve,
+    selectAll,
+    searchQuery,
+    filteredData,
+    isChequeSign,
+    formData,
+    isOpenDividend,
+  } = state;
+
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "retrieve") {
+      setState((prevState) => ({
+        ...prevState,
+        isOpenRetrieve: true,
+      }));
+    } else if (data?.name === "view-detail") {
+      indexRef.current = Number(data?.rows?.[0].id);
+      navigate("view-detail", {
+        state: {
+          gridData: data?.rows?.[0]?.data,
+          index: indexRef.current,
+        },
+      });
+    }
+  }, []);
   const { data, isLoading, isFetching, refetch, error, isError, status } =
     useQuery<any, any>(["BranchSelectionGridData"], () =>
       API.BranchSelectionGridData()
@@ -118,76 +137,6 @@ export const InwardClearing = () => {
 
     onSuccess: (data) => {},
   });
-  const setCurrentAction = useCallback((data) => {
-    if (data?.name === "retrieve") {
-      setIsOpenRetrieve(true);
-    } else if (data?.name === "view-detail") {
-      indexRef.current = Number(data?.rows?.[0].id);
-      navigate("view-detail", {
-        state: {
-          gridData: data?.rows?.[0]?.data,
-          index: indexRef.current,
-        },
-      });
-    }
-    // else if (data?.name === "view-details") {
-    //   mysubdtlRef.current = data?.rows?.[0]?.data;
-    //   setIsChequeReturnPost(true);
-    // }
-  }, []);
-
-  const handleDialogClose = () => {
-    if (isDataChangedRef.current === true) {
-      isDataChangedRef.current = true;
-      getInwardClearingData.mutate({
-        data: {
-          ...formData,
-          BRANCH_CD: selectedRowsRef?.current?.toString(),
-          COMP_CD: authState?.companyID ?? "",
-        },
-      });
-      isDataChangedRef.current = false;
-    }
-    navigate(".");
-    setIsOpenRetrieve(false);
-    setIsOpenSave(false);
-    setIsOpenDraft(false);
-    setIsOpenDividend(false);
-  };
-
-  const handlePrev = useCallback(() => {
-    navigate(".");
-    setIsOpenRetrieve(false);
-    const index = (indexRef.current -= 1);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: getInwardClearingData?.data[index],
-            id: String(index - 1),
-          },
-        ],
-      });
-    }, 0);
-  }, [getInwardClearingData?.data]);
-  const handleNext = useCallback(() => {
-    navigate(".");
-    setIsOpenRetrieve(false);
-    const index = indexRef.current++;
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: getInwardClearingData?.data[index + 1],
-            id: String(index + 1),
-          },
-        ],
-      });
-    }, 0);
-  }, [getInwardClearingData?.data]);
-
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
       // enqueueSnackbar(data, { variant: "success" });
@@ -197,6 +146,7 @@ export const InwardClearing = () => {
       });
       isDataChangedRef.current = true;
       handleDialogClose();
+      CloseMessageBox();
     },
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -206,6 +156,7 @@ export const InwardClearing = () => {
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
+      CloseMessageBox();
     },
   });
   const confirmPostedConfigDML: any = useMutation(API.confirmPostedConfigDML, {
@@ -213,6 +164,7 @@ export const InwardClearing = () => {
       enqueueSnackbar(data, { variant: "success" });
       isDataChangedRef.current = true;
       handleDialogClose();
+      CloseMessageBox();
     },
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -222,34 +174,73 @@ export const InwardClearing = () => {
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
+      CloseMessageBox();
     },
   });
 
   const validatePostData: any = useMutation(API.validatePost, {
-    onSuccess: (data, variables) => {
-      let apiReq = {
-        ...variables,
-        action: "P",
-      };
+    onSuccess: async (data, variables) => {
       if (data?.[0]?.O_STATUS === "0") {
-        setMessageData({
+        const buttonName = await MessageBox({
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
-          apiReq: apiReq,
+          buttonNames: ["No", "Yes"],
+          loadingBtnName: "Yes",
         });
-        setIsOpenSave(true);
+        if (buttonName === "Yes") {
+          postConfigDML.mutate({
+            COMP_CD: mysubdtlRef.current?.COMP_CD,
+            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+              ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            _UPDATEDCOLUMNS: [],
+            _OLDROWVALUE: {},
+            _isNewRow: true,
+          });
+        }
       } else if (data?.[0]?.O_STATUS === "9") {
         MessageBox({
           messageTitle: "Validation Alert",
           message: data?.[0]?.O_MESSAGE,
         });
       } else if (data?.[0]?.O_STATUS === "99") {
-        setMessageData({
+        const buttonName = await MessageBox({
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
-          apiReq: apiReq,
+          buttonNames: ["No", "Yes"],
+          loadingBtnName: "Yes",
         });
-        setIsOpenSave(true);
+        if (buttonName === "Yes") {
+          postConfigDML.mutate({
+            COMP_CD: mysubdtlRef.current?.COMP_CD,
+            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+              ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            _UPDATEDCOLUMNS: [],
+            _OLDROWVALUE: {},
+            _isNewRow: true,
+          });
+        }
       } else if (data?.[0]?.O_STATUS === "999") {
         MessageBox({
           messageTitle: "Validation Failed",
@@ -268,33 +259,69 @@ export const InwardClearing = () => {
     },
   });
   const validateConfirmData: any = useMutation(API.validateConfirm, {
-    onSuccess: (data, variables) => {
-      let apiReq = {
-        ...variables,
-        action: "C",
-      };
+    onSuccess: async (data, variables) => {
       if (data?.[0]?.O_STATUS === "0") {
-        setMessageData({
+        const buttonName = await MessageBox({
           messageTitle: "Validation Successful",
           message:
             "Do you want to allow this transaction - Voucher No." +
             variables?.DAILY_TRN_CD +
             "?",
-          apiReq: apiReq,
+          buttonNames: ["No", "Yes"],
+          loadingBtnName: "Yes",
         });
-        setIsOpenSave(true);
+        if (buttonName === "Yes") {
+          confirmPostedConfigDML.mutate({
+            COMP_CD: mysubdtlRef.current?.COMP_CD,
+            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+            AMOUNT: mysubdtlRef.current?.AMOUNT,
+            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+              ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            SCREEN_REF: "TRN/650",
+          });
+        }
       } else if (data?.[0]?.O_STATUS === "9") {
         MessageBox({
           messageTitle: "Validation Alert",
           message: data?.[0]?.O_MESSAGE,
         });
       } else if (data?.[0]?.O_STATUS === "99") {
-        setMessageData({
+        const buttonName = await MessageBox({
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
-          apiReq: apiReq,
+          buttonNames: ["No", "Yes"],
+          loadingBtnName: "Yes",
         });
-        setIsOpenSave(true);
+        if (buttonName === "Yes") {
+          confirmPostedConfigDML.mutate({
+            COMP_CD: mysubdtlRef.current?.COMP_CD,
+            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+            AMOUNT: mysubdtlRef.current?.AMOUNT,
+            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+              ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            SCREEN_REF: "TRN/650",
+          });
+        }
       } else if (data?.[0]?.O_STATUS === "999") {
         MessageBox({
           messageTitle: "Validation Failed",
@@ -312,12 +339,77 @@ export const InwardClearing = () => {
       });
     },
   });
+  const handlePrev = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = (indexRef.current -= 1);
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index],
+            id: String(index - 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleNext = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = indexRef.current++;
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index + 1],
+            id: String(index + 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleDialogClose = () => {
+    if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
+      getInwardClearingData.mutate({
+        data: {
+          ...formData,
+          BRANCH_CD: selectedRowsRef?.current?.toString(),
+          COMP_CD: authState?.companyID ?? "",
+        },
+      });
+      isDataChangedRef.current = false;
+    }
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+
+    CloseMessageBox();
+    setState((prevState) => ({
+      ...prevState,
+      isOpenDividend: false,
+    }));
+  };
 
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      setFilteredData(data);
+      setState((prevState) => ({
+        ...prevState,
+        filteredData: data,
+      }));
     }
-  }, [isLoading, isFetching]);
+  }, [isLoading, isFetching, data]);
 
   useEffect(() => {
     return () => {
@@ -326,27 +418,33 @@ export const InwardClearing = () => {
   }, []);
 
   const handleRowClick = (event: any, name: string, label: string) => {
-    setSelectAll(false);
-    if (event.ctrlKey) {
-      if (selectedRows.includes(name) || selectedRowsData.includes(label)) {
-        setSelectedRows((prev) => prev?.filter((row) => row !== name));
-        setSelectedRowsData((prev) => prev?.filter((row) => row !== label));
-      } else {
-        setSelectedRows([...selectedRows, name]);
-        setSelectedRowsData([...selectedRowsData, label]);
-      }
-    } else {
-      setSelectedRows([name]);
-      setSelectedRowsData([label]);
-    }
+    setState((prevState) => ({
+      ...prevState,
+      selectAll: false,
+      selectedRows: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRows?.filter((row) => row !== name)
+          : [...prevState.selectedRows, name]
+        : [name],
+      selectedRowsData: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRowsData?.filter((row) => row !== label)
+          : [...prevState.selectedRowsData, label]
+        : [label],
+    }));
   };
+
   const handleSearchInputChange = (event) => {
     const value = event.target.value;
-    setSearchQuery(value);
-    const filtered = data?.filter((item) =>
-      item.label.toLowerCase().includes(value?.toLowerCase())
-    );
-    setFilteredData(filtered);
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: value,
+      filteredData: data?.filter((item) =>
+        item.label.toLowerCase().includes(value?.toLowerCase())
+      ),
+    }));
   };
 
   return (
@@ -355,7 +453,10 @@ export const InwardClearing = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             inputButtonRef?.current?.click?.();
-            setIsOpenRetrieve(false);
+            setState((prevState) => ({
+              ...prevState,
+              isOpenRetrieve: false,
+            }));
           }
         }}
       >
@@ -404,8 +505,11 @@ export const InwardClearing = () => {
                   },
                   endSubmit,
                 });
-                setFormData(data);
-                setIsOpenRetrieve(false);
+                setState((prevState) => ({
+                  ...prevState,
+                  formData: data, // Update formData in the state
+                  isOpenRetrieve: false, // Close the retrieve dialog
+                }));
               }}
               //@ts-ignore
               formStyle={{
@@ -539,7 +643,10 @@ export const InwardClearing = () => {
                                     }
                                   );
                                 } else {
-                                  setIsOpenRetrieve(false);
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    isOpenRetrieve: false,
+                                  }));
                                   myRef?.current?.handleSubmit(event, "save");
                                   selectedRowsRef.current = selectedRows;
                                 }
@@ -559,17 +666,16 @@ export const InwardClearing = () => {
               <>
                 <GradientButton
                   onClick={() => {
-                    if (!selectAll) {
-                      setSelectedRows(filteredData?.map((item) => item?.value));
-                      setSelectedRowsData(
-                        filteredData?.map((item) => item?.label)
-                      );
-                      setSelectAll(true);
-                    } else {
-                      setSelectedRows([]);
-                      setSelectedRowsData([]);
-                      setSelectAll(false);
-                    }
+                    setState((prevState) => ({
+                      ...prevState,
+                      selectAll: !prevState.selectAll,
+                      selectedRows: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.value)
+                        : [],
+                      selectedRowsData: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.label)
+                        : [],
+                    }));
                   }}
                 >
                   {getInwardClearingData?.status === "success" && selectAll
@@ -591,7 +697,10 @@ export const InwardClearing = () => {
                         variant: "error",
                       });
                     } else {
-                      setIsOpenRetrieve(false);
+                      setState((prevState) => ({
+                        ...prevState,
+                        isOpenRetrieve: false,
+                      }));
                       myRef?.current?.handleSubmit(event, "save");
                       selectedRowsRef.current = selectedRows;
                     }
@@ -603,7 +712,10 @@ export const InwardClearing = () => {
 
                 <GradientButton
                   onClick={() => {
-                    setIsOpenRetrieve(false);
+                    setState((prevState) => ({
+                      ...prevState,
+                      isOpenRetrieve: false,
+                    }));
                   }}
                 >
                   Close
@@ -630,16 +742,19 @@ export const InwardClearing = () => {
             getInwardClearingData.mutate({
               data: {
                 ...formData,
-                BRANCH_CD: selectedRowsRef?.current?.toString(),
+                BRANCH_CD: selectedRowsRef?.current?.toString() ?? "",
                 COMP_CD: authState?.companyID ?? "",
               },
             })
           }
           onlySingleSelectionAllow={true}
-          onClickActionEvent={(index, id, data) => {
+          onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
               mysubdtlRef.current = data;
-              setIsChequeSign(true);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: true,
+              }));
             } else if (id === "POST_CONF") {
               mysubdtlRef.current = data;
 
@@ -664,9 +779,59 @@ export const InwardClearing = () => {
                 });
               } else {
                 if (data && data?.DRAFT_DIV === "DRAFT") {
-                  setIsOpenDraft(true);
+                  const buttonName = await MessageBox({
+                    messageTitle: "Confirmation",
+                    message:
+                      authState?.role < "2"
+                        ? "Do you want to realize Draft?"
+                        : "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+                    buttonNames:
+                      authState?.role < "2"
+                        ? ["Yes", "No"]
+                        : ["Yes", "No", "Cancel"],
+                    loadingBtnName: "Yes" || "No",
+                  });
+                  const postData = {
+                    COMP_CD: mysubdtlRef.current?.COMP_CD,
+                    BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+                    ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+                    ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+                    TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+                    CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+                    DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+                    _UPDATEDCOLUMNS: [],
+                    _OLDROWVALUE: {},
+                    _isNewRow: false,
+                    _isUpdateRow: true,
+                  };
+                  if (authState?.role < "2" && buttonName === "Yes") {
+                    postConfigDML.mutate(postData);
+                  } else if (buttonName === "Yes") {
+                    postConfigDML.mutate(postData);
+                  } else if (buttonName === "No") {
+                    validatePostData.mutate({
+                      COMP_CD: mysubdtlRef.current?.COMP_CD ?? "",
+                      BRANCH_CD: mysubdtlRef.current?.BRANCH_CD ?? "",
+                      ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE ?? "",
+                      ACCT_CD: mysubdtlRef.current?.ACCT_CD ?? "",
+                      ERROR_STATUS: mysubdtlRef.current?.ERR_STATUS ?? "",
+                      SCREEN_REF: "TRN/650",
+                      ENTERED_BY: mysubdtlRef.current?.ENTERED_BY ?? "",
+                      ENTERED_BRANCH_CD:
+                        mysubdtlRef.current?.ENTERED_BRANCH_CD ?? "",
+                      REMARKS: mysubdtlRef.current?.REMARKS ?? "",
+                      CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT ?? "",
+                      CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO ?? "",
+                      AMOUNT: mysubdtlRef.current?.AMOUNT ?? "",
+                      TRAN_CD: mysubdtlRef.current?.TRAN_CD ?? "",
+                      MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD ?? "",
+                    });
+                  }
                 } else if (data && data?.DRAFT_DIV === "DIVIDEND") {
-                  setIsOpenDividend(true);
+                  setState((prevState) => ({
+                    ...prevState,
+                    isOpenDividend: true,
+                  }));
                 } else {
                   validatePostData.mutate({
                     COMP_CD: data?.COMP_CD ?? "",
@@ -687,11 +852,7 @@ export const InwardClearing = () => {
                 }
               }
             } else if (id === "VIEW_DETAIL") {
-              // mysubdtlRef.current = data;
-              // mysubdtlRef.current = { data, index };
-              // setIsChequeReturnPost(true);
               indexRef.current = Number(index);
-              // console.log("indexRef.current", indexRef.current, index, data);
               navigate("view-detail", {
                 state: { gridData: data, index: indexRef.current },
               });
@@ -704,9 +865,20 @@ export const InwardClearing = () => {
         {isChequeSign ? (
           <ChequeSignForm
             onClose={() => {
-              setIsChequeSign(false);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: false,
+              }));
             }}
             reqDataRef={mysubdtlRef}
+          />
+        ) : null}
+      </>
+      <>
+        {isOpenDividend ? (
+          <ShareDividendFormWrapper
+            onClose={handleDialogClose}
+            dividendData={mysubdtlRef.current}
           />
         ) : null}
       </>
@@ -726,152 +898,6 @@ export const InwardClearing = () => {
           }
         />
       </Routes>
-      {/* <>
-        {isChequeReturnPost ? (
-          <ChequeReturnPostFormWrapper
-            onClose={handleDialogClose}
-            isDataChangedRef={isDataChangedRef}
-            inwardData={mysubdtlRef}
-          />
-        ) : null}
-      </> */}
-      <>
-        {isOpenDividend ? (
-          <ShareDividendFormWrapper
-            onClose={handleDialogClose}
-            dividendData={mysubdtlRef.current}
-          />
-        ) : null}
-      </>
-      <>
-        {isOpenSave && (
-          <PopupMessageAPIWrapper
-            MessageTitle={messageData.messageTitle}
-            Message={messageData.message}
-            onActionYes={() => {
-              if (messageData?.apiReq?.action === "P") {
-                postConfigDML.mutate({
-                  COMP_CD: mysubdtlRef.current?.COMP_CD,
-                  BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-                  TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-                  ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-                  ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-                  CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-                  DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-                  MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
-                  CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-                    ? format(
-                        new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                        "dd/MMM/yyyy"
-                      )
-                    : "",
-                  _UPDATEDCOLUMNS: [],
-                  _OLDROWVALUE: {},
-                  _isNewRow: true,
-                });
-              } else {
-                confirmPostedConfigDML.mutate({
-                  COMP_CD: mysubdtlRef.current?.COMP_CD,
-                  BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-                  ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
-                  TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-                  ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-                  ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-                  CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-                  AMOUNT: mysubdtlRef.current?.AMOUNT,
-                  MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
-                  CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-                    ? format(
-                        new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                        "dd/MMM/yyyy"
-                      )
-                    : "",
-                  SCREEN_REF: "TRN/650",
-                });
-              }
-            }}
-            onActionNo={() => setIsOpenSave(false)}
-            rows={[]}
-            open={isOpenSave}
-            loading={
-              postConfigDML?.isLoading || confirmPostedConfigDML?.isLoading
-            }
-          />
-        )}
-      </>
-
-      <>
-        {Boolean(isOpenDraft) && (
-          <PopupRequestWrapper
-            MessageTitle={"Confirmation"}
-            Message={
-              authState?.role < "2"
-                ? "Do you want to realize Draft?"
-                : "Do you want to realize Draft?" +
-                  "Or Want to direct post in GL? " +
-                  "Press Yes to Realize Draft " +
-                  "Press No to Direct Post in GL"
-            }
-            onClickButton={(rows, buttonNames) => {
-              const postData = {
-                COMP_CD: mysubdtlRef.current?.COMP_CD,
-                BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-                ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-                ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-                TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-                CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-                DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-                _UPDATEDCOLUMNS: [],
-                _OLDROWVALUE: {},
-                _isNewRow: false,
-                _isUpdateRow: true,
-              };
-              if (authState?.role < "2") {
-                if (Boolean(buttonNames === "Yes")) {
-                  postConfigDML.mutate(postData);
-                } else {
-                  setIsOpenDraft(false);
-                }
-              } else {
-                if (Boolean(buttonNames === "Yes")) {
-                  postConfigDML.mutate(postData);
-                } else if (Boolean(buttonNames === "No")) {
-                  setIsOpenDraft(false);
-                  validatePostData.mutate({
-                    COMP_CD: mysubdtlRef.current?.COMP_CD ?? "",
-                    BRANCH_CD: mysubdtlRef.current?.BRANCH_CD ?? "",
-                    ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE ?? "",
-                    ACCT_CD: mysubdtlRef.current?.ACCT_CD ?? "",
-                    ERROR_STATUS: mysubdtlRef.current?.ERR_STATUS ?? "",
-                    SCREEN_REF: "TRN/650",
-                    ENTERED_BY: mysubdtlRef.current?.ENTERED_BY ?? "",
-                    ENTERED_BRANCH_CD:
-                      mysubdtlRef.current?.ENTERED_BRANCH_CD ?? "",
-                    REMARKS: mysubdtlRef.current?.REMARKS ?? "",
-                    CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT ?? "",
-                    CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO ?? "",
-                    AMOUNT: mysubdtlRef.current?.AMOUNT ?? "",
-                    TRAN_CD: mysubdtlRef.current?.TRAN_CD ?? "",
-                    MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD ?? "",
-                  });
-                } else {
-                  setIsOpenDraft(false);
-                }
-              }
-            }}
-            buttonNames={
-              authState?.role < "2" ? ["Yes", "No"] : ["Yes", "No", "Cancel"]
-            }
-            rows={[]}
-            loading={{
-              Yes: postConfigDML?.isLoading,
-              No: false,
-              Cancel: false,
-            }}
-            open={isOpenDraft}
-          />
-        )}
-      </>
     </>
   );
 };

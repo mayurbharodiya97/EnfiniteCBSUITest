@@ -89,6 +89,7 @@ export const CTSOutwardClearingFormMetaData = {
       __NEW__: {
         dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
         setValueOnDependentFieldsChange: "getSlipNoData",
+        disableCaching: true,
       },
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -100,26 +101,45 @@ export const CTSOutwardClearingFormMetaData = {
       branchCodeMetadata: {
         // defaultValue: "099 ",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
-        postValidationSetCrossFieldValues: () => {
-          return {
-            ACCT_CD: { value: "" },
-            ACCT_NAME: { value: "" },
-            TRAN_BAL: { value: "" },
-          };
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (!field?.value) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_TYPE: { value: "" },
+              ACCT_NAME: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          }
         },
       },
+
       accountTypeMetadata: {
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         isFieldFocused: true,
         defaultfocus: true,
         defaultValue: "",
-        dependentFields: ["ACCT_TYPE"],
-        postValidationSetCrossFieldValues: () => {
-          return {
-            ACCT_CD: { value: "", ignoreUpdate: true },
-            ACCT_NAME: { value: "" },
-            TRAN_BAL: { value: "" },
-          };
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (!field?.value) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
+            return {
+              ACCT_CD: { value: "", ignoreUpdate: true },
+              ACCT_NAME: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          }
         },
       },
       accountCodeMetadata: {
@@ -172,6 +192,7 @@ export const CTSOutwardClearingFormMetaData = {
               formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
+                AMOUNT: { isFieldFocused: false },
                 ACCT_NAME: { value: "" },
                 TRAN_BAL: { value: "" },
               };
@@ -180,6 +201,7 @@ export const CTSOutwardClearingFormMetaData = {
             return {
               ACCT_CD: {
                 value: postData?.[0]?.ACCT_NUMBER ?? "",
+                isFieldFocused: false,
                 // ||
                 // field.value.padStart(6, "0")?.padEnd(20, " "),
                 ignoreUpdate: true,
@@ -189,15 +211,18 @@ export const CTSOutwardClearingFormMetaData = {
               },
               TRAN_BAL: { value: postData?.[0].TRAN_BAL ?? "" },
             };
-          } else if (!field?.value) {
+          } else {
             formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
+              ACCT_CD: {
+                value: "",
+              },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
             };
           }
         },
-        // runPostValidationHookAlways: true,
+        runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
       },
     },
@@ -511,17 +536,20 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   "& .MuiInputBase-input": {
-      //     background: "var(--theme-color5)",
-      //     minHeight: "26px !important",
-      //     fontSize: "15px",
-      //     color: "white",
-      //     boxShadow:
-      //       " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      //   },
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -535,17 +563,24 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-
+      validationRun: "onBlur",
       defaultValue: "0",
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   minHeight: "40px !important",
-      //   fontSize: "15px",
-      //   color: "white",
-      //   boxShadow:
-      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
+
       dependentFields: ["chequeDetails"],
 
       postValidationSetCrossFieldValues: async (
@@ -594,7 +629,12 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
+      validationRun: "onBlur",
       dependentFields: ["SLIP_AMOUNT", "FINALAMOUNT"],
+      FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: true,
+      },
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
           Number(dependentFields?.SLIP_AMOUNT?.value) -
@@ -602,14 +642,20 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
 
         return value ?? "0";
       },
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   minHeight: "40px !important",
-      //   fontSize: "15px",
-      //   color: "white",
-      //   boxShadow:
-      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
@@ -725,6 +771,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           // disableCaching: true,
           // runValidationOnDependentFieldsChange: true,
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
+
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -741,12 +788,9 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                     ? ""
                     : field.value.padEnd(10, " "),
               };
-
               let postData = await clearingBankMasterConfigDML(formData);
-
               if (postData?.data?.length && postData?.data) {
                 formState.setDataOnFieldChange("MESSAGE", postData?.data);
-
                 if (
                   postData?.status === "0" &&
                   dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value &&
@@ -773,12 +817,26 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                       message: data?.[0]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
-                    if (buttonNames === "No") {
+                    if (buttonNames === "Yes") {
+                      return {
+                        BANK_CD: {
+                          value: field?.value ?? "",
+                          ignoreUpdate: true,
+                          isFieldFocused: false,
+                        },
+                        BANK_NM: {
+                          value: postData?.data?.[0]?.BANK_NM ?? "",
+                        },
+                      };
+                    } else {
                       return {
                         BANK_CD: {
                           value: "",
-                          isFieldFocused: true,
                           ignoreUpdate: true,
+                          isFieldFocused: true,
+                        },
+                        BANK_NM: {
+                          value: "",
                         },
                       };
                     }
@@ -1442,25 +1500,11 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             dependentFieldsValues
           ) => {
             if (field.value && Object.keys(formState?.REQ_DATA).length === 0) {
-              const buttonName = formState?.MessageBox({
+              formState?.MessageBox({
                 messageTitle: "Information",
                 message: "Enter Account Information",
                 buttonNames: ["Ok"],
               });
-
-              // if (buttonName === "Ok") {
-              //   let continueButtonName = formState?.MessageBox({
-              //     messageTitle: "Confirmation",
-              //     message: "Are you sure to continue!",
-              //     buttonNames: ["Yes", "No"],
-              //   });
-              //   if (continueButtonName === "No") {
-              //     console.log("field", field?.value);
-              //     return {
-              //       CHEQUE_NO: { value: "" },
-              //     };
-              //   }
-              // }
             } else if (field.value && Object.keys(formState?.REQ_DATA).length) {
               let postData = await GeneralAPI.getChequeNoValidation({
                 COMP_CD: formState?.REQ_DATA?.COMP_CD,
@@ -1482,12 +1526,16 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                 });
                 if (continueButtonName === "Yes") {
                   return {
-                    CHEQUE_NO: { value: field.value },
+                    CHEQUE_NO: { value: field.value, ignoreUpdate: true },
                     AMOUNT: { isFieldFocused: true },
                   };
                 } else {
                   return {
-                    CHEQUE_NO: { value: "", isFieldFocused: true },
+                    CHEQUE_NO: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
                   };
                 }
               }

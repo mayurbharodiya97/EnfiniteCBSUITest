@@ -70,7 +70,7 @@ export const getRetrievalClearingData = async (Apireq) => {
 
 export const getOutwardClearingConfigData = async (formData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETOWCLEARINGDETAILS", formData);
+    await AuthSDK.internalFetcher("GETCLEARINGDETAILS", formData);
   if (status === "0") {
     return data.map((item) => {
       return {

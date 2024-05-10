@@ -9,7 +9,6 @@ import { useSnackbar } from "notistack";
 import { Grid, Typography } from "@mui/material";
 
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
@@ -18,12 +17,12 @@ import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useLocation } from "react-router-dom";
 
 const actions: ActionTypes[] = [
-  {
-    actionName: "view-detail",
-    actionLabel: "",
-    multiple: false,
-    rowDoubleClick: true,
-  },
+  // {
+  //   actionName: "view-detail",
+  //   actionLabel: "",
+  //   multiple: false,
+  //   rowDoubleClick: true,
+  // },
   {
     actionName: "Delete",
     actionLabel: "Remove",
@@ -233,9 +232,7 @@ export const TRN001_Table = ({
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={
-          getTRN001List.isLoading || getCarousalCards.isLoading || isTabsLoading
-        }
+        loading={getTRN001List.isLoading || getCarousalCards.isLoading}
         refetchData={() => getTRN001List.mutate(objData)}
         ref={myGridRef}
         actions={actions}

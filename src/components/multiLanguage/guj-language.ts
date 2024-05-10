@@ -10,6 +10,9 @@ export const guj_language_data = {
   EnterUsername: "વપરાશકર્તા નામ ",
   EnterPassword: "પાસવર્ડ દાખલ કરો",
   EnterMobileNo: "મોબાઈલ નંબર દાખલ કરો.",
+  EnterPasswordValid: "પાસવર્ડ 8 થી 16 અક્ષરોની વચ્ચે હોવો જોઈએ.",
+  EnterPasswordPolicy:
+    "પાસવર્ડ 8-16 અક્ષરો લાંબો હોવો જોઈએ, એટલે ઓછામાં ઓછી એક અપરકેસ અક્ષર, એક લોઅરકેસ અક્ષર, એક નંબર અને એક વિશેષ પાસવર્ડ અક્ષર હોવું જરૂરી છે, અને કોઈ જગ્યા નહીં દીધી જોઈએ.",
   EnterConfirmPassword: "કન્ફર્મ પાસવર્ડ દાખલ કરો",
   ForgotPassword: "પાસવર્ડ ભૂલી ગયા છો?",
   Setnewpassword: "નવો પાસવર્ડ સેટ કરો",

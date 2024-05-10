@@ -31,13 +31,13 @@ import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
 import { queryClient } from "cache";
 
 const actions: ActionTypes[] = [
-  {
-    actionName: "view-detail",
-    actionLabel: "",
-    multiple: false,
-    rowDoubleClick: true,
-    // alwaysAvailable: true,
-  },
+  // {
+  //   actionName: "view-detail",
+  //   actionLabel: "",
+  //   multiple: false,
+  //   rowDoubleClick: true,
+  //   // alwaysAvailable: true,
+  // },
   {
     actionName: "Delete",
     actionLabel: "Remove",

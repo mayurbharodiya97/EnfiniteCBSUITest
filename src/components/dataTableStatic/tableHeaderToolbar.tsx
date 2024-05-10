@@ -130,7 +130,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
         )}
         {ReportExportButton && 
         <GradientButton
-          onClick={() => setOpenExport(true)} endicon="GetApp"
+          onClick={() => setOpenExport(true)} endicon="GetApp" style={{color:"var(--theme-color2",background:"inherit"}}
         >Export</GradientButton>}
         <RenderActions
           key="alwaysRender"

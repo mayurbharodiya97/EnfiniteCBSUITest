@@ -4,11 +4,11 @@ import { AuthSDK } from "registry/fns/auth";
 export const getFDAccountsDetail = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTOMERFDACCOUNTS", { ...Apireq });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
+  // if (status === "0") {
+  //   return data;
+  // } else {
+  return { data, status, message, messageDetails };
+  // }
 };
 
 export const validateAccountAndGetDetail = async (
@@ -49,6 +49,19 @@ export const doFixDepositCreation = async (Apireq) => {
     await AuthSDK.internalFetcher("DOFDDEPOSIT", { ...Apireq });
   if (status === "0") {
     return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getFDSchemeData = async (fdTranCode, categCode) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDSCHEMELIST", {
+      FD_DOUBLE_TRAN_CD: fdTranCode,
+      CATEG_CD: categCode,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

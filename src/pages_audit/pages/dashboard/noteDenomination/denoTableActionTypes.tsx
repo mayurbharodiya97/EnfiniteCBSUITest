@@ -45,6 +45,7 @@ export const SingleTableActionTypes = {
   SET_ACCTVALIDMSG_VAL: "SET_ACCTVALIDMSG_VAL",
   SET_ACCTVALIDMSGBOX_VAL: "SET_ACCTVALIDMSGBOX_VAL",
   SET_DIS_ERR_VAL: "SET_DIS_ERR_VAL",
+  SET_DISP_TABLE_DUAL: "SET_DISP_TABLE_DUAL",
 };
 
 export const SingleTableDataReducer = (state, action) => {
@@ -79,6 +80,8 @@ export const SingleTableDataReducer = (state, action) => {
       return { ...state, acctValidMsg: action.payload };
     case SingleTableActionTypes?.SET_ACCTVALIDMSGBOX_VAL:
       return { ...state, acctValidBox: action.payload };
+    case SingleTableActionTypes?.SET_DISP_TABLE_DUAL:
+      return { ...state, displayTableDual: action.payload };
     case SingleTableActionTypes?.SET_DIS_ERR_VAL:
       return {
         ...state,

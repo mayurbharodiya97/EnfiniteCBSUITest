@@ -1,4 +1,4 @@
-import { ClearCacheProvider, queryClient } from "cache";
+import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import GridWrapper from "components/dataTableStatic";
 import * as API from "./api";
@@ -33,6 +33,7 @@ const actions: ActionTypes[] = [
 
 const Parameters = () => {
   const navigate = useNavigate();
+  const { getEntries } = useContext(ClearCacheContext);
   const {authState} = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
   const [acctOpen, setAcctOpen] = useState(false);
@@ -40,7 +41,7 @@ const Parameters = () => {
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
   const [openDilogue,setOpenDilogue] = useState(false);
-  const [save,setSave] = useState([]);
+  const [auditData,setAuditData] = useState([]);
   const setCurrentAction = useCallback(async (data) => {
     if (data.name === "global") {
       setActionMenu((values) =>
@@ -79,13 +80,6 @@ const Parameters = () => {
         remark: "",
       })
   );
-  useEffect(() => {
-    if (paraType === "H") {
-      ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [Global Level]"
-    } else if (paraType === "G") {
-      ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [HO Level]"
-    }
-  }, [paraType]);
   const validation = ()=>{
     if( authState.user.branchCode===authState.user.baseBranchCode){
       return actionMenu
@@ -93,6 +87,19 @@ const Parameters = () => {
         return actionMenu.filter(action => action.actionName === "edit-detail");
       }
     };
+    ParametersGridMetaData.gridConfig.gridLabel = paraType === "H" ? "Parameter Master [HO Level]" : "Parameter Master [Global Level]";
+    useEffect(() => {
+      return () => {
+        let entries = getEntries() as any[];
+        if (Array.isArray(entries) && entries.length > 0) {
+          entries.forEach((one) => {
+            queryClient.removeQueries(one);
+          });
+        }
+        queryClient.removeQueries(["getParametersGridData"]);
+      };
+    }, [getEntries]);
+
   return (
     <Fragment>
       {isError && (
@@ -114,16 +121,13 @@ const Parameters = () => {
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
         onClickActionEvent={(index, id, data) => {
-          console.log("index",index)
-          console.log("id",id)
-          console.log("data",data)
           setOpenDilogue(true)
-          setSave(data)
+          setAuditData(data)
         }}
       />
     {openDilogue ? (
       <AuditDetail
-      rowsData={save}
+      rowsData={auditData}
       open={openDilogue}
       onClose={() => setOpenDilogue(false)}/>
     ) : null}

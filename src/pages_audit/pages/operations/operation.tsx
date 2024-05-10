@@ -13,11 +13,6 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
-const ChequebookConfirm = lazy(() => import("./Confirmations/chequebook"));
-const LimitConfirm = lazy(() => import("./Confirmations/Limit"));
-const StockConfirm = lazy(() => import("./Confirmations/stock"));
-const StopPaymentConfirm = lazy(() => import("./Confirmations/stopPayment"));
-const LienConfirm = lazy(() => import("./Confirmations/lien"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
@@ -28,9 +23,14 @@ const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
 );
 const InwardClearing = lazy(() => import("./inwardClearing"));
+const ClearingDateTransferGridWrapper = lazy(
+  () => import("./clearingDateTransfer")
+);
+const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
 );
+const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -40,11 +40,26 @@ export const OperationsMenu = () => (
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
-    <Route path="chequebook-confirmation/*" element={<ChequebookConfirm />} />
-    <Route path="limit-confirmation/*" element={<LimitConfirm />} />
-    <Route path="stock-confirmation/*" element={<StockConfirm />} />
-    <Route path="stop-pay-confirmation/*" element={<StopPaymentConfirm />} />
-    <Route path="lien-confirmation/*" element={<LienConfirm />} />
+    <Route
+      path="chequebook-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
+    />
+    <Route
+      path="limit-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
+    />
+    <Route
+      path="stock-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
+    />
+    <Route
+      path="stop-pay-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
+    />
+    <Route
+      path="lien-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
+    />
     <Route path="teller/*" element={<TellerScreen />} />
     {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route
@@ -94,6 +109,11 @@ export const OperationsMenu = () => (
       element={<CtsOutwardClearingConfirmGrid zoneTranType="W" />}
     />
     <Route path="inward-clearing-process/*" element={<InwardClearing />} />
+    <Route
+      path="clearing-date-transfer/*"
+      element={<ClearingDateTransferGridWrapper />}
+    />
+    <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route
       path="fix-deposit/*"
       element={

@@ -360,7 +360,7 @@ export const OTPModelForm = ({
   };
   const ClickEventHandler = () => {
     if (!Boolean(OTP) || OTP.length < 6) {
-      setOTPError(t("otp.EnterOTPDigit"));
+      setOTPError("otp.EnterOTPDigit");
     } else {
       setOTPError("");
       VerifyOTP(OTP);
@@ -374,13 +374,12 @@ export const OTPModelForm = ({
         : loginState?.transactionID,
       loginState?.username,
       resendFlag,
-      loginState.auth_data?.[0]?.companyID,
-      loginState.auth_data?.[0]?.branch_cd
+      loginState?.company_ID,
+      loginState?.branch_cd
     );
     setResendotpLoading(false);
     if (status === "0") {
-      //console.log(data);
-      setNewRequestID(data?.REQUEST_CD);
+      setNewRequestID(data?.TRAN_CD);
       setbtnshow(false);
       enqueueSnackbar(message, { variant: "success" });
     } else {
@@ -409,6 +408,7 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
+
   return (
     <Fragment>
       <Grid alignItems="center">
@@ -552,10 +552,10 @@ export const OTPModelForm = ({
             </GradientButton>
             <GradientButton
               style={{
-                borderRadius: loginState.loading ? "50%" : "10px",
-                height: loginState.loading ? "40px" : "100%",
-                width: loginState.loading ? "0px" : "100%",
-                minWidth: loginState.loading ? "40px" : "80px",
+                borderRadius: loginState.otploading ? "50%" : "10px",
+                height: loginState.otploading ? "40px" : "100%",
+                width: loginState.otploading ? "0px" : "100%",
+                minWidth: loginState.otploading ? "40px" : "80px",
               }}
               // fullWidth
               disabled={loginState.loading}
@@ -563,7 +563,7 @@ export const OTPModelForm = ({
               ref={inputButtonRef}
               className={classes.otpButtons}
             >
-              {loginState.loading ? (
+              {loginState.otploading ? (
                 <CircularProgress size={25} thickness={4.6} />
               ) : (
                 t("otp.VerifyOTP")

@@ -316,7 +316,7 @@ export const AuthLoginController = () => {
       dispath({
         type: "usernameandpasswordrequired",
         payload: {
-          error: t("UsernamenandPasswordisRequired"),
+          error: "UsernamenandPasswordisRequired",
           errorUsername: "UsernameisRequired",
           errorPassword: "PasswordisRequired",
         },
@@ -552,7 +552,7 @@ export const AuthLoginController = () => {
                             });
                           }}
                           open={true}
-                          handleClose={() => {}}
+                          handleClose={changeUserName}
                           resendFlag={"LOGIN"}
                           setNewRequestID={(newRequestID) => {
                             dispath({

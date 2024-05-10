@@ -82,7 +82,6 @@ export const crudStopPayment = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
-    console.log("<<<chequeValidate", apiReqPara, data);
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
