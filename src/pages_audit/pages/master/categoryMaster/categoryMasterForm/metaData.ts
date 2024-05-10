@@ -34,6 +34,9 @@ export const CategoryMasterFormMetaData = {
       autocomplete: {
         fullWidth: true,
       },
+      rateOfInt: {
+        fullWidth: true,
+      },
     },
   },
 
@@ -81,9 +84,9 @@ export const CategoryMasterFormMetaData = {
       render: { componentType: "autocomplete" },
       name: "CONSTITUTION_TYPE",
       label: "Type Of Constitution",
+      placeholder: "Select Type Of Constitution",
       options: () => getPMISCData("CKYC_CONST_TYPE"),
       _optionsKey: "getPMISCData",
-      defaultValue: "01",
       type: "text",
       __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
@@ -97,15 +100,27 @@ export const CategoryMasterFormMetaData = {
       label: "TDS Limit",
       placeholder: "Enter TDS Limit",
       autoComplete: "off",
+      maxLength: 9,
+      FormatProps: {
+        allowLeadingZeros: false,
+        allowNegative: true,
+        isAllowed: (values) => {
+          //@ts-ignore
+          if (values?.value?.length > 9) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 3,
         md: 3,
         lg: 3,
         xl: 3,
-      },
-      FormatProps: {
-        allowNegative: false,
       },
     },
 
@@ -140,6 +155,20 @@ export const CategoryMasterFormMetaData = {
       label: "Rate",
       autoComplete: "off",
       maxLength: 5,
+      FormatProps: {
+        allowLeadingZeros: false,
+        isAllowed: (values) => {
+          //@ts-ignore
+          if (values.floatValue > 99.99) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
+
       GridProps: {
         xs: 12,
         sm: 4,
@@ -154,17 +183,16 @@ export const CategoryMasterFormMetaData = {
       branchCodeMetadata: {
         name: "TDS_BRANCH_CD",
         label: "Branch",
-        placeholder: "Enter TDS Payable Branch",
+        placeholder: "Select Branch",
         __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
       accountTypeMetadata: {
         name: "TDS_ACCT_TYPE",
         label: "Account Type",
+        placeholder: "Select Account Type",
         options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
-        placeholder: "Enter TDS Payable Type",
-        defaultValue: "GL  ",
         __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -172,25 +200,64 @@ export const CategoryMasterFormMetaData = {
         name: "TDS_ACCT_CD",
         label: "Account No.",
         autoComplete: "off",
-        placeholder: "Enter TDS Payable A/c No.",
+        placeholder: "Enter Account No.",
         dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
-          dependentFieldValue
+          dependentFieldValues
         ) => {
-          let resData: any = await GeneralAPI.retrieveStatementDtlAcctCd(
-            currentField,
-            formState,
-            authState,
-            dependentFieldValue
+          if (formState?.isSubmitting) return {};
+          const paddedAcctcode = (currentField?.value).padStart(
+            dependentFieldValues?.TDS_ACCT_TYPE?.optionData?.[0]
+              ?.PADDING_NUMBER || 0,
+            0
           );
-          return {
-            ...resData,
-            TDS_ACCT_NM: resData?.ACCT_NM,
-            TDS_ACCT_CD: resData?.ACCT_CD,
+
+          const reqParameters = {
+            BRANCH_CD: dependentFieldValues?.TDS_BRANCH_CD?.value,
+            COMP_CD: authState?.companyID,
+            ACCT_TYPE: dependentFieldValues?.TDS_ACCT_TYPE?.value,
+            ACCT_CD: paddedAcctcode,
+            SCREEN_REF: "EMST/041",
           };
+
+          if (
+            paddedAcctcode &&
+            dependentFieldValues?.TDS_BRANCH_CD?.value &&
+            dependentFieldValues?.TDS_ACCT_TYPE?.value
+          ) {
+            const postData = await GeneralAPI.getAccNoValidation(reqParameters);
+
+            if (postData?.RESTRICTION) {
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData.RESTRICTION,
+                buttonNames: ["Ok"],
+              });
+              return {
+                TDS_ACCT_CD: { value: "" },
+                TDS_ACCT_TYPE: { value: "" },
+              };
+            }
+
+            if (postData?.MESSAGE1) {
+              formState.MessageBox({
+                messageTitle: "Validation Alert",
+                message: postData.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+            }
+
+            return {
+              TDS_ACCT_CD: {
+                value: paddedAcctcode || "",
+                ignoreUpdate: true,
+              },
+              TDS_ACCT_NM: { value: postData.ACCT_NM || "" },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -202,7 +269,7 @@ export const CategoryMasterFormMetaData = {
       },
       name: "TDS_ACCT_NM",
       label: "Account Name",
-      placeholder: "Enter TDS Payable Account Name",
+      placeholder: "Enter Account Name",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -226,6 +293,19 @@ export const CategoryMasterFormMetaData = {
       label: "Rate",
       autoComplete: "off",
       maxLength: 5,
+      FormatProps: {
+        allowLeadingZeros: false,
+        isAllowed: (values) => {
+          //@ts-ignore
+          if (values.floatValue > 99.99) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 4,
@@ -236,15 +316,14 @@ export const CategoryMasterFormMetaData = {
     },
 
     {
-      render: { componentType: "select" },
+      render: { componentType: "autocomplete" },
       name: "TDS_SUR_ACCT_TYPE",
       label: "Account Type",
-      options: [
-        { label: "GL", value: "GL  ", PADDING_NUMBER: "4" },
-        { label: "PL", value: "PL  ", PADDING_NUMBER: "4" },
-        { label: "0583", value: "0583", PADDING_NUMBER: "4" },
-      ],
-      defaultValue: "GL  ",
+      placeholder: "Select Account Type",
+      options: getDDDWAcctType,
+      _optionsKey: "getDDDWAcctType",
+      type: "text",
+      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
 
@@ -259,7 +338,7 @@ export const CategoryMasterFormMetaData = {
       },
       label: "Account No.",
       name: "TDS_SUR_ACCT_CD",
-      placeholder: "Enter Surcharge A/c No.",
+      placeholder: "Enter Account No.",
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       postValidationSetCrossFieldValues: async (
@@ -268,20 +347,60 @@ export const CategoryMasterFormMetaData = {
         authState,
         dependentFieldValues
       ) => {
-        let resData: any = await GeneralAPI.retrieveStatementDtlAcctCd(
-          currentField,
-          formState,
-          authState,
-          dependentFieldValues
+        if (formState?.isSubmitting) return {};
+        const paddedAcctcode = (currentField?.value).padStart(
+          dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData?.[0]
+            ?.PADDING_NUMBER || 0,
+          0
         );
-        return {
-          ...resData,
-          TDS_SUR_ACCT_CD: resData?.ACCT_CD,
+
+        const reqParameters = {
+          BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+          COMP_CD: authState?.companyID,
+          ACCT_TYPE: dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value,
+          ACCT_CD: paddedAcctcode,
+          SCREEN_REF: "EMST/041",
         };
+
+        if (
+          paddedAcctcode &&
+          dependentFieldValues?.BRANCH_CD?.value &&
+          dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value
+        ) {
+          const postData = await GeneralAPI.getAccNoValidation(reqParameters);
+
+          if (postData?.RESTRICTION) {
+            formState.MessageBox({
+              messageTitle: "Validation Failed...!",
+              message: postData.RESTRICTION,
+              buttonNames: ["Ok"],
+            });
+            return {
+              TDS_SUR_ACCT_CD: { value: "" },
+              TDS_SUR_ACCT_TYPE: { value: "" },
+            };
+          }
+
+          if (postData?.MESSAGE1) {
+            formState.MessageBox({
+              messageTitle: "Validation Alert",
+              message: postData.MESSAGE1,
+              buttonNames: ["Ok"],
+            });
+          }
+
+          return {
+            TDS_SUR_ACCT_CD: {
+              value: paddedAcctcode || "",
+              ignoreUpdate: true,
+            },
+          };
+        }
       },
+
       maxLength: 8,
       GridProps: {
-        xs: 3,
+        xs: 12,
         sm: 4,
         md: 4,
         lg: 4,
@@ -312,40 +431,78 @@ export const CategoryMasterFormMetaData = {
       branchCodeMetadata: {
         name: "TDS_REC_BRANCH_CD",
         label: "Branch",
-        placeholder: "Enter TDS Receivable Branch",
+        placeholder: "Select Branch",
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
         name: "TDS_REC_ACCT_TYPE",
         label: "Account Type",
-        placeholder: "Enter TDS Receivable Type",
+        placeholder: "Select Account Type",
         _optionsKey: "getDDDWAcctType",
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
-        defaultValue: "GL  ",
       },
       accountCodeMetadata: {
         name: "TDS_REC_ACCT_CD",
         label: "Account No.",
-        placeholder: "Enter TDS Receivable A/c No.",
+        placeholder: "Enter Account No.",
         autoComplete: "off",
         dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
-          dependentFieldValue
+          dependentFieldValues
         ) => {
-          let resData: any = await GeneralAPI.retrieveStatementDtlAcctCd(
-            currentField,
-            formState,
-            authState,
-            dependentFieldValue
+          if (formState?.isSubmitting) return {};
+          const paddedAcctcode = (currentField?.value).padStart(
+            dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData?.[0]
+              ?.PADDING_NUMBER || 0,
+            0
           );
-          return {
-            ...resData,
-            TDS_REC_ACCT_NM: resData?.ACCT_NM,
-            TDS_REC_ACCT_CD: resData?.ACCT_CD,
+
+          const reqParameters = {
+            BRANCH_CD: dependentFieldValues?.TDS_REC_BRANCH_CD?.value,
+            COMP_CD: authState?.companyID,
+            ACCT_TYPE: dependentFieldValues?.TDS_REC_ACCT_TYPE?.value,
+            ACCT_CD: paddedAcctcode,
+            SCREEN_REF: "EMST/041",
           };
+
+          if (
+            paddedAcctcode &&
+            dependentFieldValues?.TDS_REC_BRANCH_CD?.value &&
+            dependentFieldValues?.TDS_REC_ACCT_TYPE?.value
+          ) {
+            const postData = await GeneralAPI.getAccNoValidation(reqParameters);
+
+            if (postData?.RESTRICTION) {
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData.RESTRICTION,
+                buttonNames: ["Ok"],
+              });
+              return {
+                TDS_REC_ACCT_CD: { value: "" },
+                TDS_REC_ACCT_TYPE: { value: "" },
+              };
+            }
+
+            if (postData?.MESSAGE1) {
+              formState.MessageBox({
+                messageTitle: "Validation Alert",
+                message: postData.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+            }
+
+            return {
+              TDS_REC_ACCT_CD: {
+                value: paddedAcctcode || "",
+                ignoreUpdate: true,
+              },
+              TDS_REC_ACCT_NM: { value: postData.ACCT_NM || "" },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
@@ -357,7 +514,7 @@ export const CategoryMasterFormMetaData = {
       },
       name: "TDS_REC_ACCT_NM",
       label: "Account Name",
-      placeholder: "Enter TDS Receivable Account Name",
+      placeholder: "Enter Account Name",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },

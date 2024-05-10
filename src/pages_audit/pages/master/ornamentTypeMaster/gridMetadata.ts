@@ -19,42 +19,8 @@ export const OrnamentTypeMasterMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowFilter: true,
     isCusrsorFocused: true,
   },
-
-  filters: [
-    {
-      accessor: "CODE",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "ORN_MARGIN",
-      columnName: "Margin",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
 
   columns: [
     {
@@ -86,7 +52,7 @@ export const OrnamentTypeMasterMetaData: GridMetaDataType = {
       componentType: "default",
       width: 170,
       minWidth: 150,
-      maxWidth: 190,
+      maxWidth: 250,
     },
     {
       accessor: "ORN_MARGIN",

@@ -19,43 +19,9 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
-
-  filters: [
-    {
-      accessor: "ACTION_TAKEN_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DATA_DISP",
-      columnName: "A4 Suit File Status Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
 
   columns: [
     {

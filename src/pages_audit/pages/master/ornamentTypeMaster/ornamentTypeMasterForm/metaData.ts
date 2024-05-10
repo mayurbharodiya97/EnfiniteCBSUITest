@@ -1,9 +1,7 @@
-import * as API from "../api";
-
-export const ActionTakenMasterFormMetaData = {
+export const OrnamentTypeMasterFormMetaData = {
   form: {
-    name: "actionTakenMaster",
-    label: "Action Taken Master",
+    name: "ornamentTypeMaster",
+    label: "Ornament Type Master",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -24,10 +22,7 @@ export const ActionTakenMasterFormMetaData = {
       textField: {
         fullWidth: true,
       },
-      autocomplete: {
-        fullWidth: true,
-      },
-      checkbox: {
+      rateOfInt: {
         fullWidth: true,
       },
     },
@@ -38,14 +33,19 @@ export const ActionTakenMasterFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "ACTION_TAKEN_CD",
+      name: "CODE",
       label: "Code",
       placeholder: "Enter Code",
       type: "text",
       maxLength: 4,
-      autoComplete: "off",
       isFieldFocused: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+      autoComplete: "off",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Code is required."] }],
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3 },
       validate: (columnValue) => {
         let specialChar = /^[^!&]*$/;
         if (columnValue.value && !specialChar.test(columnValue.value)) {
@@ -65,7 +65,12 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 50,
       type: "text",
       autoComplete: "off",
-      GridProps: { xs: 12, sm: 5, md: 4, lg: 4.5, xl: 4.5 },
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Description is required."] }],
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 6 },
       validate: (columnValue) => {
         let specialChar = /^[^!&]*$/;
         if (columnValue.value && !specialChar.test(columnValue.value)) {
@@ -76,22 +81,34 @@ export const ActionTakenMasterFormMetaData = {
     },
 
     {
-      render: { componentType: "autocomplete" },
-      name: "SUIT_FILED_STATUS_CD",
-      label: "A4 Suit File Status Code",
-      options: API.getSuitFldStdMstData,
-      _optionsKey: "getSuitFldStdMstData",
-      __VIEW__: { isReadOnly: true },
-      defaultValue: "A ",
-      GridProps: { xs: 12, sm: 5, md: 4, lg: 4.5, xl: 4.5 },
-    },
-
-    {
-      render: { componentType: "checkbox" },
-      name: "LEGAL_PROCESS",
-      label: "Legal Process",
-      defaultValue: false,
-      GridProps: { xs: 12, sm: 12, md: 2, lg: 1.5, xl: 1.5 },
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "ORN_MARGIN",
+      label: "Margin",
+      autoComplete: "off",
+      required: true,
+      fullWidth: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Margin is required."] }],
+      },
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 3,
+      },
+      FormatProps: {
+        isAllowed: (values) => {
+          //@ts-ignore
+          if (parseFloat(values?.value) >= 100.01) {
+            return false;
+          }
+          return true;
+        },
+      },
     },
   ],
 };
