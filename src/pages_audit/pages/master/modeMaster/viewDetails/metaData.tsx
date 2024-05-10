@@ -71,6 +71,7 @@ export const metaData = {
       maxLength: 50,
       type: "text",
       required: true,
+      txtTransform:"uppercase",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Description is Required"] }],
@@ -111,12 +112,9 @@ export const metaData = {
       name: "MAX_NO_OF_JOINT",
       label: "Maximum No. of Joints",
       placeholder: "Maximum No. of Joints-",
-      defaultValue:"00",
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: false,
-        // defaultValue:"00",
-        decimalScale: 0,
         isAllowed: (values) => {
           if (values?.value?.length > 3) {
             return false;

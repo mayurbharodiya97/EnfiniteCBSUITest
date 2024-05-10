@@ -1,183 +1,188 @@
-import { Dialog } from "@mui/material";
-import {useContext, useRef, useState } from "react";
-import { useSnackbar } from "notistack";
-import FormWrapper from "components/dyanmicForm";
-import {  SubmitFnType } from "packages/form";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { useLocation } from "react-router-dom";
-import { metaData } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
+import React, { useContext, useRef, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
-import * as API from "../api";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { useLocation } from "react-router-dom";
+import {metaData  } from "./metaData";
+import { CircularProgress, Dialog } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
+import * as API from "../api";
+import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 
-export const ModeMasterForm = ({
+
+const ModeMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  data: reqData,
+  gridData = [],
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
+  const isErrorFuncRef = useRef<any>(null);
+  const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
- 
-       
-  const mutation = useMutation(API.updateModeMasterData, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      if (isErrorFuncRef.current == null) {
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const mutation = useMutation(API.updateModeMasterData,
+
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
         enqueueSnackbar(errorMsg, {
           variant: "error",
         });
-      } else {
-        isErrorFuncRef.current?.endSubmit(
-          false,
-          errorMsg,
-          error?.error_detail ?? ""
-        );
-      }
-      onActionCancel();
-    },
-    onSuccess: (data) => {
-    
-      enqueueSnackbar("Record Saved Successfully", {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      closeDialog();
-    },
-  });
+        CloseMessageBox();
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        closeDialog();
+        CloseMessageBox();
+      },
+    }
+  );
 
-  const onActionCancel = () => {
-    setIsOpenSave(false);
-  };
-  const onPopupYes = (rows) => {
-    mutation.mutate({ data: rows });
-  };
+  const codeArr = gridData?.map((ele: any) => ele?.MODE_CD);
+  const filterNumbers = codeArr?.filter((ele) => !isNaN(ele));
+  const codeIncrement =
+    filterNumbers?.length > 0 ? Math.max(...filterNumbers) + 1 : "";
+  const codeIncreByOne =
+    String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 
-  const onSubmitHandler: SubmitFnType = (
+  const onSubmitHandler: SubmitFnType =async  (
     data: any,
-    displayData,
+    displayData: any,
     endSubmit,
-    setFieldError,
+    setFieldError
   ) => {
-  
     endSubmit(true);
-    let oldData = reqData?.[0]?.data;
-    let newData = data;
-    let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
-  
+
+    let newData = {
+      ...data,
+       };
+    let oldData = {
+      ...rows?.[0]?.data,
+     };
+    let upd = utilFunction.transformDetailsData(newData, oldData);
+
     isErrorFuncRef.current = {
       data: {
         ...newData,
         ...upd,
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        _isNewRow: formMode === "add" ? true : false,
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        _isNewRow: defaultView === "add" ? true : false,
       },
       displayData,
       endSubmit,
       setFieldError,
     };
 
-    
     if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
       setFormMode("view");
     } else {
-      setIsOpenSave(true);
+      const btnName = await MessageBox({
+        message: "Are you sure to Save the record?",
+        messageTitle: "Confirmation",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: "Yes",
+      });
+      if (btnName === "Yes") {
+        mutation.mutate({
+          data: {...isErrorFuncRef.current?.data },
+        });
+      }
     }
   };
 
   return (
     <>
-        <FormWrapper
-          key={"modeMasterForm" + formMode}
-          metaData={extractMetaData(metaData,formMode)}as MetaDataType
-          displayMode={formMode}
-          formStyle = {{
-            overflowX: "auto",
-          }}
-          onSubmitHandler={onSubmitHandler}
-          initialValues={reqData?.[0]?.data ?? {}}
-        >
-          {({ isSubmitting, handleSubmit }) => (
-            <>
-              {formMode === "add" ? (
-                <>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                  >
-                    Submit
-                  </GradientButton>
-                  <GradientButton
-                    onClick={() => {
-                      setFormMode("view");
-                    }}
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </GradientButton>
-                </>
-              ) : formMode === "edit" ? (
-                <>
-                  <GradientButton
-                    onClick={(event) => {
-                      
-                      handleSubmit(event, "Save");
-                    }}endI
-                    disable={isSubmitting}
-                  >
-                    Save
-                  </GradientButton>
-                 
-                  <GradientButton
-                    onClick={closeDialog}
-                    color={"primary"}
-                  >
-                    Close
-                  </GradientButton>
-                </>
-              ) : (
-                <>
-                  <GradientButton
-                    onClick={() => {
-                      setFormMode("edit");
-                    }}
-                    color={"primary"}
-                  >
-                    Edit
-                  </GradientButton>
-                  <GradientButton
-                    onClick={closeDialog}
-                    color={"primary"}
-                  >
-                    Close
-                  </GradientButton>
-                </>
-              )}
-            </>
-          )}
-        </FormWrapper>
-        {isOpenSave ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Confirmation"
-            Message="Do you want to save this Request?"
-            onActionYes={(rowVal) => onPopupYes(rowVal)}
-            onActionNo={() => onActionCancel()}
-            rows={isErrorFuncRef.current?.data}
-            open={isOpenSave}
-            loading={mutation.isLoading}
-          />
-        ) : null}
-
+      <FormWrapper
+        key={"modeMasterForm" + formMode}
+        metaData={
+          extractMetaData(
+            metaData,
+            formMode
+          ) as MetaDataType
+        }
+        displayMode={formMode}
+        onSubmitHandler={onSubmitHandler}
+        initialValues={
+          formMode === "add"
+            ? {
+                ...rows?.[0]?.data,
+                MODE_CD: codeIncreByOne,
+              }
+            : { ...(rows?.[0]?.data as InitialValuesType) }
+        }
+        formStyle={{
+          background: "white",
+        }}
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <>
+            {formMode === "edit" ? (
+              <>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting}
+                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  Save
+                </GradientButton>
+                <GradientButton
+                  onClick={() => {
+                    setFormMode("view");
+                  }}
+                  color={"primary"}
+                >
+                  Cancel
+                </GradientButton>
+              </>
+            ) : formMode === "add" ? (
+              <>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting}
+                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  Save
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  Close
+                </GradientButton>
+              </>
+            ) : (
+              <>
+                <GradientButton
+                  onClick={() => {
+                    setFormMode("edit");
+                  }}
+                  color={"primary"}
+                >
+                  Edit
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  Close
+                </GradientButton>
+              </>
+            )}
+          </>
+        )}
+      </FormWrapper>
+    
     </>
   );
 };
@@ -186,17 +191,23 @@ export const ModeMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData = [],
 }) => {
-  const { state: data }: any = useLocation();
   return (
     <Dialog
       open={true}
+      PaperProps={{
+        style: {
+          width: "60%",
+          overflow: "auto",
+        },
+      }}
       maxWidth="lg"
     >
       <ModeMasterForm
         closeDialog={closeDialog}
         defaultView={defaultView}
-        data={data}
+        gridData={gridData}
         isDataChangedRef={isDataChangedRef}
       />
     </Dialog>

@@ -20,53 +20,11 @@ export const gridMetadata: GridMetaDataType = {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "MODE_CD",
-      columnName: "Mode",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "MODE_NM",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "MIN_NO_OF_JOINT",
-      columnName: "Minimum No. of Joints",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "MAX_NO_OF_JOINT",
-      columnName: "Maximum No. of Joints",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "MODE_CD",
