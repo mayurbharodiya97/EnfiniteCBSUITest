@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 const EntryDescription = lazy(() => import("./entrydescriptionmaster/"));
 const InsuranceType = lazy(() => import("./insurancetypemaster/"));
 const NpaCategory = lazy(() => import("./npaCateMast/"));
-// import LienMaster from "./lienMaster";
+const CourtMaster = lazy(() => import("./courtmaster"));
 
 const Master = () => {
   return (
@@ -15,6 +15,7 @@ const Master = () => {
         />
         <Route path="insurance-type-master/*" element={<InsuranceType />} />
         <Route path="npa-category-master/*" element={<NpaCategory />} />
+        <Route path="court-master/*" element={<CourtMaster />} />
       </Routes>
     </>
   );

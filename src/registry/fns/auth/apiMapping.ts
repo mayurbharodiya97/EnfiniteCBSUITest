@@ -1323,6 +1323,30 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
+  DOSPECIALINSTMST: {
+    url: "commonMasterServiceAPI/DOSPECIALINSTMST",
+    packageName: "",
+  },
+  INSURANCETYPEMASTERDML: {
+    url: "commonMasterServiceAPI/INSURANCETYPEMASTERDML",
+    packageName: "",
+  },
+  DONPACATEGDML: {
+    url: "commonMasterServiceAPI/DONPACATEGDML",
+    packageName: "",
+  },
+  GETCOURTMSTAREADDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOURTMSTAREADDW",
+    packageName: "",
+  },
+  GETCOURTMSTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOURTMSTGRID",
+    packageName: "",
+  },
+  DOCOURTMST: {
+    url: "commonMasterServiceAPI/DOCOURTMST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
