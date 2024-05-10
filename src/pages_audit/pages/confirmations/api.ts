@@ -73,10 +73,20 @@ export const getConfirmationGridData = async (apiReqPara) => {
 
       //stopPayment
       item.CHEQUE_FROM_TO = item.CHEQUE_FROM + " - " + item.CHEQUE_TO;
+      if (item.FLAG === "P") {
+        item._rowColor = "#ebdcef";
+      }
+      if (item.FLAG === "S") {
+        item._rowColor = "#cee0ef";
+      }
+      if (item.FLAG === "D") {
+        item._rowColor = "#daefe2";
+      }
 
       //lien
       item.PARENT_CD_NM = item.PARENT_CD + " - " + item.LEAN_NM;
-      item.LIEN_STATUS =
+
+      item.LIEN_STATUS_DISPLAY =
         item.LIEN_STATUS === "A"
           ? "Active"
           : item.LIEN_STATUS === "E"

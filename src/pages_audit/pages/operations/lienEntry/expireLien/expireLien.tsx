@@ -15,28 +15,27 @@ import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { crudLien } from "./api";
+import { crudLien } from "../api";
 import { format } from "date-fns";
 import { usePopupContext } from "components/custom/popupContext";
+import { queryClient } from "cache";
+import { useTranslation } from "react-i18next";
 
 export const ExpireLien = ({ navigate, getLienDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
-  let newIntialData = {
-    ...rows?.[0]?.data,
-    LIEN_STATUS: rows?.[0]?.data?.LIEN_STATUS === "Active" ? "A" : "E",
-  };
+  const { t } = useTranslation();
 
   const expireLienData: any = useMutation("crudLien", crudLien, {
     onSuccess: (data) => {
       if (data?.[0]?.O_STATUS === "99" && data?.[0]?.O_MESSAGE) {
         MessageBox({
-          messageTitle: "Validation Alert",
+          messageTitle: "ValidationAlert",
           message: data?.[0]?.O_MESSAGE,
         });
       } else {
-        enqueueSnackbar("Lien Expired Successfully.", {
+        enqueueSnackbar(t("LienExpiredSuccessfully"), {
           variant: "success",
         });
         getLienDetail.mutate({
@@ -51,8 +50,14 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
   });
 
   useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["crudLien"]);
+    };
+  }, []);
+
+  useEffect(() => {
     if (rows?.[0]?.data) {
-      lienExpireMetadata.form.label = ` Lien Expire  \u00A0\u00A0
+      lienExpireMetadata.form.label = ` ${t("LienExpire")}  \u00A0\u00A0
         ${(
           rows?.[0]?.data?.COMP_CD +
           rows?.[0]?.data?.BRANCH_CD +
@@ -68,7 +73,7 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
     );
     let upd = utilFunction.transformDetailsData(
       filteredData,
-      newIntialData ?? {}
+      rows?.[0]?.data ?? {}
     );
     let apiReq = {
       _isNewRow: false,
@@ -125,6 +130,12 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
             } ?? {}
           }
           onSubmitHandler={onSubmitHandler}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 459px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
             return (
@@ -137,11 +148,11 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
                 >
-                  Save
+                  {t("Save")}
                 </Button>
 
                 <Button color="primary" onClick={() => navigate(".")}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );

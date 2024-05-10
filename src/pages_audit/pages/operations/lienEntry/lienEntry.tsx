@@ -28,12 +28,13 @@ import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
-import { ExpireLien } from "./expireLien";
+import { ExpireLien } from "./expireLien/expireLien";
 import { useMutation } from "react-query";
 import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 const LienEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -45,44 +46,36 @@ const LienEntryCustom = () => {
     },
   ];
 
-  const [gridDetailData, setGridDetailData] = useState<any>([]);
-  const [closeAlert, setCloseAlert] = useState<any>(true);
-  const [isVisible, setIsVisible] = useState<any>(false);
-  const [isOpenSave, setIsOpenSave] = useState(false);
   const { authState } = useContext(AuthContext);
   const [value, setValue] = useState("tab1");
-  const { MessageBox } = usePopupContext();
-  const insertDataRef = useRef<any>(null);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
   const myMasterRef = useRef<any>(null);
   const navigate = useNavigate();
+  const reqDataRef = useRef<any>({});
+  const { isVisible, closeAlert } = reqDataRef.current;
 
   const getLienDetail: any = useMutation("lienGridDetail", API.lienGridDetail, {
-    onSuccess: (data) => {
-      setGridDetailData(data);
-    },
-    onError: (error: any) => {
-      setCloseAlert(true);
+    onError: () => {
+      reqDataRef.current.closeAlert = true;
     },
   });
 
   const crudLienData: any = useMutation("crudLien", API.crudLien, {
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       if (data?.O_STATUS !== "0") {
-        setIsOpenSave(false);
         MessageBox({
-          messageTitle: "Validation Alert",
+          messageTitle: "validationAlert",
           message: data?.[0]?.O_MESSAGE,
         });
       } else {
-        setIsOpenSave(false);
-        setIsVisible(false);
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
-        enqueueSnackbar("Data insert successfully", { variant: "success" });
+        enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
       }
     },
-    onError: (error: any) => {
-      setIsOpenSave(false);
-      setCloseAlert(true);
+    onError: () => {
+      CloseMessageBox();
+      reqDataRef.current.closeAlert = true;
     },
   });
 
@@ -94,36 +87,52 @@ const LienEntryCustom = () => {
     };
   }, []);
 
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData,
+    endSubmit
+  ) => {
     let apiReq = {
       REMOVAL_DT: data?.REMOVAL_DT
         ? format(new Date(data?.REMOVAL_DT), "dd-MMM-yyyy")
         : "",
       EFECTIVE_DT: format(new Date(data?.EFECTIVE_DT), "dd-MMM-yyyy"),
       SCREEN_REF: "ETRN/652",
+      _isNewRow: true,
     };
-    insertDataRef.current = { ...data, ...apiReq };
-    setIsOpenSave(true);
+
+    let res = await MessageBox({
+      messageTitle: t("confirmation"),
+      message: t("insertMessage"),
+      buttonNames: ["No", "Yes"],
+      defFocusBtnName: "Yes",
+      loadingBtnName: "Yes",
+    });
+
+    if (res === "Yes") {
+      let apiReqs = { ...data, ...apiReq };
+      crudLienData.mutate(apiReqs);
+    }
     //@ts-ignore
     endSubmit(true);
   };
 
   const setCurrentAction = useCallback(
     async (data) => {
-      if (data?.rows?.[0]?.data?.CONFIRMED === "Pending") {
+      if (data?.rows?.[0]?.data?.CONFIRMED !== "Y") {
         MessageBox({
-          messageTitle: "Alert Message",
-          message: "Lien Entry Not Confirmed",
+          messageTitle: "Alert",
+          message: "LienEntryNotConfirmed",
         });
-      } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "Expired") {
+      } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "E") {
         MessageBox({
-          messageTitle: "Alert Message",
-          message: "Lien Entry Expired you can't modified.",
+          messageTitle: "Alert",
+          message: "LienEntryExpired",
         });
-      } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "Active") {
+      } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "A") {
         let res = await MessageBox({
-          messageTitle: "Confirmation",
-          message: "Are you sure to Expire Lien ?",
+          messageTitle: "confirmation",
+          message: "LienExpireMsg",
           buttonNames: ["Yes", "No"],
         });
         if (res === "Yes") {
@@ -144,12 +153,15 @@ const LienEntryCustom = () => {
           sx={{ ml: "25px" }}
           onChange={(event, newValue) => {
             setValue(newValue);
-            setGridDetailData([]);
-            setCloseAlert(false);
+            getLienDetail.data = [];
+            reqDataRef.current.closeAlert = false;
             if (newValue === "tab2") {
+              //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  LienGridMetaData.gridConfig.gridLabel = `Lien Detail \u00A0\u00A0 ${(
+                  LienGridMetaData.gridConfig.gridLabel = `${t(
+                    "LienDetail"
+                  )} \u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
@@ -171,8 +183,8 @@ const LienEntryCustom = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="tab1" label="Lien Entry" />
-          {isVisible && <Tab value="tab2" label="Lien Detail" />}
+          <Tab value="tab1" label={t("LienEntry")} />
+          {isVisible && <Tab value="tab2" label={t("LienDetail")} />}
         </Tabs>
       </Box>
 
@@ -213,14 +225,14 @@ const LienEntryCustom = () => {
           <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
             <FormWrapper
               key={"lien-Entry"}
-              metaData={LienEntryMetadata ?? {}}
+              metaData={(LienEntryMetadata as MetaDataType) ?? {}}
               initialValues={{}}
               onSubmitHandler={onSubmitHandler}
               ref={myMasterRef}
               formState={{ MessageBox: MessageBox }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
-                  setIsVisible(payload.IS_VISIBLE);
+                  reqDataRef.current.isVisible = payload.IS_VISIBLE;
                 }
               }}
             >
@@ -234,7 +246,7 @@ const LienEntryCustom = () => {
                     //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </Button>
                 </>
               )}
@@ -245,7 +257,7 @@ const LienEntryCustom = () => {
             <GridWrapper
               key={`LienGrid-MetaData`}
               finalMetaData={LienGridMetaData as GridMetaDataType}
-              data={gridDetailData ?? []}
+              data={getLienDetail.data ?? []}
               setData={() => {}}
               loading={getLienDetail.isLoading}
               actions={actions}
@@ -267,20 +279,6 @@ const LienEntryCustom = () => {
           </div>
         </Grid>
       </Container>
-
-      {isOpenSave && (
-        <PopupMessageAPIWrapper
-          MessageTitle={"Confirmation"}
-          Message={"Are you sure you want to insert?"}
-          onActionYes={() =>
-            crudLienData.mutate({ ...insertDataRef.current, _isNewRow: true })
-          }
-          onActionNo={() => setIsOpenSave(false)}
-          rows={[]}
-          open={isOpenSave}
-          loading={crudLienData.isLoading}
-        />
-      )}
     </>
   );
 };

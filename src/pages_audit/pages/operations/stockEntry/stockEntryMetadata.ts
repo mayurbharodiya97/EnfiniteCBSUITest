@@ -1,12 +1,12 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
-import { getLimitEntryData } from "../limit-entry/api";
 import { utilFunction } from "components/utils";
+import { t } from "i18next";
 
 export const StockEntryMetaData = {
   form: {
     name: "Stock-entry",
-    label: "Stock Entry",
+    label: "stockEntry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -106,14 +106,15 @@ export const StockEntryMetaData = {
                 IS_VISIBLE: false,
               });
               let res = await formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+                messageTitle: t("ValidationFailed"),
                 message: postData?.RESTRICTION,
-                buttonNames: ["Ok"],
-                defFocusBtnName: "Ok",
               });
               if (res === "Ok") {
                 return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
+                  ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
                   ACCT_NM: { value: "" },
                   TRAN_BAL: { value: "" },
                   TRAN_DT: { value: "" },
@@ -123,37 +124,46 @@ export const StockEntryMetaData = {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let res = await formState.MessageBox({
+                messageTitle: t("RiskCategoryAlert"),
                 message: postData?.MESSAGE1,
-                buttonNames: ["Ok"],
               });
-              return {
-                ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                TRAN_DT: {
-                  value: authState?.workingDate ?? "",
-                },
-                ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-                TRAN_BAL: {
-                  value: postData?.WIDTH_BAL ?? "",
-                },
-                ACCT_MST_LIMIT: {
-                  value: postData?.LIMIT_AMT ?? "",
-                },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentValue?.ACCT_TYPE?.optionData
+                    ),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                  TRAN_DT: {
+                    value: authState?.workingDate ?? "",
+                  },
+                  ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                  TRAN_BAL: {
+                    value: postData?.WIDTH_BAL ?? "",
+                  },
+                  ACCT_MST_LIMIT: {
+                    value: postData?.LIMIT_AMT ?? "",
+                  },
+                };
+              }
             } else {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
               return {
                 ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentValue?.ACCT_TYPE?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 TRAN_DT: {
                   value: authState?.workingDate ?? "",
@@ -188,8 +198,7 @@ export const StockEntryMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
-      placeholder: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -220,8 +229,7 @@ export const StockEntryMetaData = {
         componentType: "amountField",
       },
       name: "ACCT_MST_LIMIT",
-      label: "Account Limit Amount",
-      placeholder: "Account Limit AMT",
+      label: "AccountLimitAmt",
       isReadOnly: true,
       GridProps: {
         xs: 12,

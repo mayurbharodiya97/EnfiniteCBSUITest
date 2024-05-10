@@ -29,6 +29,7 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
       CloseMessageBox();
       setDeletePopup(false);
       result.mutate({
+        screenFlag: "limitCFM",
         COMP_CD: authState.companyID,
         BRANCH_CD: authState?.user?.branchCode,
       });

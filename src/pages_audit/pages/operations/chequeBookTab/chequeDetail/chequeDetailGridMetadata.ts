@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ChequeDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Cheque Detail",
+    gridLabel: "ChequeDetail",
     rowIdColumn: "CHEQUE_NO",
     defaultColumnConfig: {
       width: 150,
@@ -28,7 +28,7 @@ export const ChequeDtlGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -39,18 +39,18 @@ export const ChequeDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Processed Date",
+      columnName: "ProcessedDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 102,
-      minWidth: 900,
-      maxWidth: 130,
+      width: 140,
+      minWidth: 90,
+      maxWidth: 170,
     },
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque No.",
+      columnName: "ChequeNo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -58,17 +58,6 @@ export const ChequeDtlGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 200,
     },
-    // {
-    //   accessor: "CHEQUE_TO",
-    //   columnName: "To Chq. No.",
-    //   sequence: 5,
-    //   alignment: "center",
-    //   componentType: "default",
-    //   width: 120,
-    //   minWidth: 150,
-    //   maxWidth: 200,
-    // },
-
     {
       accessor: "AMOUNT",
       columnName: "Charge",

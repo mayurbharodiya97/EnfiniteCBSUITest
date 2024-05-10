@@ -3,7 +3,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
   masterForm: {
     form: {
       name: "Upload-View-doc",
-      label: "Upload-View Document",
+      label: "ViewUploadDocument",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -28,7 +28,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "textField",
         },
         name: "BRANCH_CD",
-        label: "Branch",
+        label: "BranchCode",
         isReadOnly: true,
         fullWidth: true,
         GridProps: {
@@ -44,7 +44,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "textField",
         },
         name: "ACCT_TYPE",
-        label: "Account Type",
+        label: "AccountType",
         isReadOnly: true,
         fullWidth: true,
         GridProps: {
@@ -60,7 +60,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "textField",
         },
         name: "ACCT_CD",
-        label: "Account Number",
+        label: "AccountNumber",
         fullWidth: true,
         isReadOnly: true,
         GridProps: {
@@ -76,7 +76,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "textField",
         },
         name: "ACCT_NM",
-        label: "Account Name",
+        label: "AccountName",
         fullWidth: true,
         isReadOnly: true,
         GridProps: {
@@ -110,7 +110,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
         name: "ACCT_MST_LIMIT",
         fullWidth: true,
-        label: "Account Limit Amount",
+        label: "AccountLimitAmt",
         isReadOnly: true,
         GridProps: {
           xs: 12,
@@ -145,7 +145,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         fullWidth: true,
         name: "TRAN_DT",
         isReadOnly: true,
-        label: "Statement Date",
+        label: "StatementDate",
         GridProps: {
           xs: 12,
           md: 2.4,
@@ -161,7 +161,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         name: "ASON_DT",
         fullWidth: true,
         isReadOnly: true,
-        label: "Statement Valid Till Date",
+        label: "StatementValidTillDate",
         GridProps: {
           xs: 12,
           md: 2.4,
@@ -192,7 +192,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
         name: "NO_OF_SHARE",
         fullWidth: true,
-        label: "No. of Share",
+        label: "NoOfShare",
         isReadOnly: true,
         GridProps: {
           xs: 12,
@@ -209,7 +209,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
         name: "STOCK_VALUE",
         fullWidth: true,
-        label: "Stock Value",
+        label: "StockValue",
         isReadOnly: true,
         GridProps: {
           xs: 12,
@@ -226,7 +226,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
         name: "MARGIN",
         fullWidth: true,
-        label: "Margin",
+        label: "Margin%",
         isReadOnly: true,
         GridProps: {
           xs: 12,
@@ -241,7 +241,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "datePicker",
         },
         name: "RECEIVED_DT",
-        label: "Received Date",
+        label: "RecievedDate",
         fullWidth: true,
         isReadOnly: true,
         GridProps: {
@@ -257,7 +257,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           componentType: "textField",
         },
         name: "STOCK_DESC",
-        label: "Stock Decription",
+        label: "StockDescription",
         fullWidth: true,
         isReadOnly: true,
         GridProps: {
@@ -290,7 +290,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
         fullWidth: true,
         name: "DRAWING_POWER",
-        label: "Drawing Power",
+        label: "DrawingPower",
         isReadOnly: true,
         GridProps: {
           xs: 12,
@@ -339,7 +339,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
     columns: [
       {
         accessor: "SR_CDZ",
-        columnName: "Sr No.",
+        columnName: "SrNo",
         componentType: "default",
         sequence: 1,
         alignment: "center",
@@ -350,7 +350,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "DOC_DEC",
-        columnName: "Document Description",
+        columnName: "DocumentDescription",
         componentType: "editableTextField",
         placeholder: " ",
         sequence: 2,
@@ -379,7 +379,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "DOC_DATA",
-        columnName: "Document Image",
+        columnName: "DocumentImage",
         componentType: "icondefault",
         sequence: 2,
         alignment: "center",
@@ -388,18 +388,18 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         minWidth: 90,
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["This field is required"] }],
+          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
         },
       },
 
       {
-        columnName: "Document View",
+        columnName: "ViewUploadDocument",
         componentType: "buttonRowCell",
         accessor: "VIEW_DOC",
         alignment: "center",
         buttonLabel: "",
         sequence: 3,
-        width: 130,
+        width: 164,
         maxWidth: 180,
         minWidth: 90,
         isVisible: true,
@@ -415,7 +415,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         },
       },
       {
-        columnName: "Document Download",
+        columnName: "DocumentDownload",
         componentType: "buttonRowCell",
         accessor: "DOWNLOAD",
         alignment: "center",
@@ -435,6 +435,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       },
       {
         columnName: "Action",
+        buttonLabel: "Delete",
         componentType: "deleteRowCell",
         accessor: "_hidden",
         sequence: 3,
@@ -448,43 +449,6 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           }
           return true;
         },
-      },
-      {
-        accessor: "COMP_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "BRANCH_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "ACCT_TYPE",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "ACCT_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-
-      {
-        accessor: "DOC_CD",
-        columnName: "",
-        defaultValue: "TRN/047     ",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
       },
     ],
   },

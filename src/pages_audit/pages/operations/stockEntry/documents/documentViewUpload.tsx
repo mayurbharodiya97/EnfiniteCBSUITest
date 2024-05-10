@@ -9,10 +9,10 @@ import {
   Grid,
 } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { stockViewEditMSTMetaData } from "./stockEditViewMetadata";
+import { stockViewEditMSTMetaData } from "./documentMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
-import { uploadDocument, viewDocument } from "./api";
+import { uploadDocument, viewDocument } from "../api";
 import { queryClient } from "cache";
 import { MasterDetailsForm } from "components/formcomponent";
 import { transformFileObject } from "components/fileUpload/utils";
@@ -22,12 +22,15 @@ import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
-  const [isopenImgViewer, setOpenImgViewer] = useState(false);
+  const [isopenImgViewer, setOpenImgViewer] = useState<boolean>(false);
   const { state: rows }: any = useLocation();
   const myImgRef = useRef<any>(null);
   const myRef = useRef<any>(null);
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
@@ -39,7 +42,8 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   );
 
   const uploadDocuments: any = useMutation("uploadDocument", uploadDocument, {
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
+      navigate(".");
       stockEntryGridData.mutate({
         COMP_CD: rows?.[0]?.data?.COMP_CD,
         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
@@ -48,24 +52,10 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
         A_USER_LEVEL: authState?.role,
         A_GD_DATE: authState?.workingDate,
       });
-      if (
-        variables?.DETAILS_DATA?.isNewRow.length &&
-        variables?.DETAILS_DATA?.isUpdatedRow.length
-      ) {
-        enqueueSnackbar("Data insert & update successfully", {
-          variant: "success",
-        });
-      } else if (variables?.DETAILS_DATA?.isNewRow.length) {
-        enqueueSnackbar("Document insert successfully", {
-          variant: "success",
-        });
-      } else if (variables?.DETAILS_DATA?.isUpdatedRow.length) {
-        enqueueSnackbar("Data Update successfully", {
-          variant: "success",
-        });
-      }
+      enqueueSnackbar(t("DataSaveSuccessfully"), {
+        variant: "success",
+      });
     },
-    onError: (error: any) => {},
   });
 
   useEffect(() => {
@@ -79,12 +69,12 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     myRef.current?.addNewRow(true, {
       COMP_CD: rows?.[0]?.data?.COMP_CD,
       BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-      REF_TRAN_CD: rows?.[0]?.data?.TRAN_CD,
       ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
       ACCT_CD: rows?.[0]?.data?.ACCT_CD,
-      DOC_CD: "TRN/047",
       ENTERED_COMP_CD: rows?.[0]?.data?.ENTERED_COMP_CD,
       ENTERED_BRANCH_CD: rows?.[0]?.data?.ENTERED_BRANCH_CD,
+      REF_TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      DOC_CD: "TRN/047",
       ACTIVE: "Y",
     });
   };
@@ -119,6 +109,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     endSubmit(true);
   };
 
+  // for download document
   const handleDownloadImage = (DOC_DATA) => {
     const imageData = DOC_DATA;
     const byteCharacters = atob(imageData);
@@ -138,6 +129,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     document.body.removeChild(link);
   };
 
+  //for upload document
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
   };
@@ -170,6 +162,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     }
   };
 
+  //for open local file-manager
   const openFilePicker = () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -254,13 +247,8 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    <Button
-                      onClick={AddNewRow}
-                      // disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Add New Document
+                    <Button onClick={AddNewRow} color={"primary"}>
+                      {t("AddNewDocument")}
                     </Button>
 
                     <Button
@@ -271,14 +259,14 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                       }
                       color={"primary"}
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                     <Button
                       onClick={() => navigate(".")}
                       // disabled={isSubmitting}
                       color={"primary"}
                     >
-                      Close
+                      {t("Close")}
                     </Button>
                   </>
                 );
@@ -290,7 +278,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
 
       {isopenImgViewer ? (
         <ImgaeViewerandUpdate
-          title={"Document Image"}
+          title={t("DocumentImage")}
           onClose={() => {
             setOpenImgViewer(false);
           }}
@@ -318,7 +306,6 @@ const ImgaeViewerandUpdate = ({ title, onClose, filedata }) => {
       setFilecnt(filecnt + 1);
     }
   };
-
   useEffect(() => {
     setImageURL(filedata);
   }, []);
@@ -342,7 +329,7 @@ const ImgaeViewerandUpdate = ({ title, onClose, filedata }) => {
         }}
       >
         <DialogTitle>{title}</DialogTitle>
-        <GradientButton onClick={onClose}>Close</GradientButton>{" "}
+        <GradientButton onClick={onClose}>{t("Close")}</GradientButton>{" "}
       </DialogActions>
       <DialogContent
         sx={{

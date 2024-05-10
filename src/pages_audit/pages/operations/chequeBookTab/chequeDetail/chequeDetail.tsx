@@ -7,7 +7,7 @@ import { ChequeDtlGridMetaData } from "./chequeDetailGridMetadata";
 import { useQuery } from "react-query";
 import { ActionTypes } from "components/dataTable";
 import { queryClient } from "cache";
-import { chequeGridDTL } from "./api";
+import { chequeGridDTL } from "../api";
 import { Alert } from "components/common/alert";
 import Draggable from "react-draggable";
 

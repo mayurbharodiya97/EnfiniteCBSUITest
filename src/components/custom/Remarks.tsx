@@ -55,14 +55,14 @@ export const RemarksAPIWrapper = ({
     <>
       <Dialog fullWidth={true} open={open}>
         <DialogTitle className={classes.dialogTitleClass}>
-          {TitleText}
+          {t(TitleText)}
         </DialogTitle>
         <DialogContent>
           <br />
           <TextField
             autoFocus={true}
-            label={label}
-            placeholder="Enter Remarks"
+            label={t(label)}
+            placeholder={t("EnterRemarks")}
             fullWidth
             type={"text"}
             name="remarks"
@@ -103,7 +103,7 @@ export const RemarksAPIWrapper = ({
             }}
             ref={inputButtonRef}
           >
-            {AcceptbuttonLabelText}
+            {t(AcceptbuttonLabelText)}
           </GradientButton>
           <GradientButton
             disabled={isLoading}
@@ -112,7 +112,7 @@ export const RemarksAPIWrapper = ({
               setInput("");
             }}
           >
-            {CanceltbuttonLabelText}
+            {t(CanceltbuttonLabelText)}
           </GradientButton>
         </DialogActions>
       </Dialog>

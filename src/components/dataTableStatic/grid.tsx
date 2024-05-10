@@ -46,6 +46,7 @@ import {
   Typography,
 } from "@mui/material";
 import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
+import { useTranslation } from "react-i18next";
 let data2: any[] = [];
 
 export const DataGrid = ({
@@ -161,7 +162,7 @@ export const DataGrid = ({
   );
 
   const { authState } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const tbodyRef = useRef(null);
   const preDataRef = useRef(null);
   const submitButtonRef = useRef<any>(null);
@@ -540,7 +541,7 @@ export const DataGrid = ({
 
         {footerNote && (
           <Typography component="div" fontWeight={500} pl={"24px"}>
-            {footerNote}
+            {t(footerNote)}
           </Typography>
         )}
         {hideFooter ? null : enablePagination ? (

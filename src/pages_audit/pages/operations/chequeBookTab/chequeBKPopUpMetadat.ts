@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ChequeBKPopUpGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ChequeBook Series Detail",
+    gridLabel: "ChequeBookSeriesDetail",
     rowIdColumn: "CHEQUE_FROM",
     defaultColumnConfig: {
       width: 150,
@@ -29,7 +29,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
   columns: [
     {
       accessor: "CHEQUE_FROM",
-      columnName: "From Chq. No.",
+      columnName: "FromChequeNo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -40,7 +40,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TO",
-      columnName: "To Chq. No.",
+      columnName: "ToChequeNo",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -50,7 +50,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TOTAL",
-      columnName: "No. Chq(s)",
+      columnName: "NoOfCheques",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -61,7 +61,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
 
     {
       accessor: "SERVICE_TAX",
-      columnName: "Charge",
+      columnName: "ServiceCharge",
       sequence: 7,
       alignment: "right",
       componentType: "currency",
@@ -71,7 +71,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
     },
     {
       accessor: "AMOUNT",
-      columnName: "GST-Amount",
+      columnName: "GSTAmount",
       sequence: 8,
       alignment: "right",
       componentType: "currency",

@@ -99,3 +99,15 @@ export const validateInsert = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const stopPaymentConfirm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSTOPPYTCONFIRMATION", { ...apireq });
+  if (status === "99") {
+    return { status: status, message: message };
+  } else if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

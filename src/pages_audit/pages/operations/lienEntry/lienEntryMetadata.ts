@@ -6,7 +6,7 @@ import * as API from "./api";
 export const LienEntryMetadata = {
   form: {
     name: "Lien-entry",
-    label: "Lien Entry",
+    label: "LienEntry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -120,7 +120,7 @@ export const LienEntryMetadata = {
                 IS_VISIBLE: false,
               });
               let res = await formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
                 buttonNames: ["Ok"],
                 defFocusBtnName: "Ok",
@@ -137,7 +137,7 @@ export const LienEntryMetadata = {
                 IS_VISIBLE: true,
               });
               formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
                 defFocusBtnName: "Ok",
@@ -189,7 +189,7 @@ export const LienEntryMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -205,8 +205,8 @@ export const LienEntryMetadata = {
         componentType: "autocomplete",
       },
       name: "LIEN_CD",
-      label: "Lien Code",
-      placeholder: "Select Lien Code",
+      label: "LienCode",
+      placeholder: "SelectLienCode",
       disableCaching: true,
       required: true,
       dependentFields: ["BRANCH_CD"],
@@ -230,7 +230,7 @@ export const LienEntryMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Lien Code is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -246,7 +246,7 @@ export const LienEntryMetadata = {
         componentType: "amountField",
       },
       name: "LIEN_AMOUNT",
-      label: "Lien Amount",
+      label: "LienAmount",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -260,7 +260,7 @@ export const LienEntryMetadata = {
         componentType: "autocomplete",
       },
       name: "LIEN_STATUS",
-      label: "Lien Status",
+      label: "LienStatus",
       isReadOnly: true,
       required: true,
       defaultValue: "A",
@@ -284,7 +284,7 @@ export const LienEntryMetadata = {
         componentType: "textField",
       },
       name: "PARENT_CD",
-      label: "Parent Code/Name",
+      label: "ParentCodeName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -302,7 +302,7 @@ export const LienEntryMetadata = {
       isReadOnly: true,
       required: true,
       isWorkingDate: true,
-      label: "Effective Date",
+      label: "EffectiveDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -316,7 +316,7 @@ export const LienEntryMetadata = {
         componentType: "datePicker",
       },
       name: "REMOVAL_DT",
-      label: "Removal Date",
+      label: "RemovalDate",
       isMinWorkingDate: true,
       GridProps: {
         xs: 12,
@@ -332,7 +332,7 @@ export const LienEntryMetadata = {
       },
       name: "LIEN_REASON_CD",
       label: "Reason",
-      placeholder: "Select Reason",
+      placeholder: "SelectReason",
       disableCaching: true,
       dependentFields: ["BRANCH_CD"],
       options: (dependentValue, formState, any, authState) => {
@@ -361,10 +361,10 @@ export const LienEntryMetadata = {
       name: "REMARKS",
       label: "Remarks",
       required: true,
-      placeholder: "Enter Remarks",
+      placeholder: "EnterRemarks",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Remarks is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
