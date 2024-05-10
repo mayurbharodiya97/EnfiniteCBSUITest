@@ -20,43 +20,11 @@ export const gridMetadata: GridMetaDataType = {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "LEAN_CD",
-      columnName: "LEAN_CD",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "PARENT_TYPE_DISP",
-      columnName: "Parent_type",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "LEAN_NM",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "SR_NO",
