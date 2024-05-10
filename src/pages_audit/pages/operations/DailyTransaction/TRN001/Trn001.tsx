@@ -624,7 +624,7 @@ export const Trn001 = () => {
       });
       obj[i].debit = Number(0)?.toFixed(2);
     }
-
+    obj[i].withdraw = withdraw?.COL_VALUE;
     getAmountValidation.mutate(obj[i]);
   };
 
@@ -636,6 +636,7 @@ export const Trn001 = () => {
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
+    obj[i].withdraw = withdraw?.COL_VALUE;
     getAmountValidation.mutate(obj[i]);
   };
 

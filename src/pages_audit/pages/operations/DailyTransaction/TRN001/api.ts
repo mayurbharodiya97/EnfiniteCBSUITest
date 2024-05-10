@@ -224,8 +224,9 @@ export const getAmountValidation = async (reqData) => {
       COMP_CD: reqData?.branch?.info?.COMP_CD,
       OP_DATE: format(new Date(reqData?.date), "dd/MMM/yyyy"),
 
+      AMOUNT: reqData?.isCredit ? reqData?.credit : reqData?.debit,
+      AVALIABLE_BAL: reqData?.withdraw,
       TRAN_CD: "157505",
-      AVALIABLE_BAL: "100",
       SHADOW_CL: "10",
       HOLD_BAL: "10",
       LEAN_AMT: "10",
@@ -236,7 +237,6 @@ export const getAmountValidation = async (reqData) => {
       UNCL_BAL: "10",
       LIMIT_AMOUNT: "100",
       DRAWING_POWER: "",
-      AMOUNT: "100000",
       OD_APPLICABLE: "",
       INST_NO: "",
       INST_RS: "",
