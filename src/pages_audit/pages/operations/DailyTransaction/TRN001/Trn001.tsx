@@ -334,11 +334,14 @@ export const Trn001 = () => {
   });
   const getAmountValidation = useMutation(API.getAmountValidation, {
     onSuccess: (data) => {
+      setLoading(false);
       setAmountValidMsg(data);
       console.log(data, "data res getAmountValidation");
       setAmountValidDialog(true);
     },
     onError: (error: any) => {
+      setLoading(false);
+
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -625,6 +628,7 @@ export const Trn001 = () => {
       obj[i].debit = Number(0)?.toFixed(2);
     }
     obj[i].withdraw = withdraw?.COL_VALUE;
+    setLoading(true);
     getAmountValidation.mutate(obj[i]);
   };
 
@@ -637,6 +641,7 @@ export const Trn001 = () => {
       obj[i].credit != obj[i].debit &&
       handleAddRow();
     obj[i].withdraw = withdraw?.COL_VALUE;
+    setLoading(true);
     getAmountValidation.mutate(obj[i]);
   };
 
