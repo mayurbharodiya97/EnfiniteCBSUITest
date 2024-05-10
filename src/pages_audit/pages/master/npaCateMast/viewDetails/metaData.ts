@@ -70,10 +70,10 @@ export const NpaCategoryMasterFormMetadata = {
       isFieldFocused: true,
       GridProps: {
         xs: 12,
-        sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        sm: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -99,10 +99,10 @@ export const NpaCategoryMasterFormMetadata = {
       },
       GridProps: {
         xs: 12,
-        sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        sm: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -128,10 +128,10 @@ export const NpaCategoryMasterFormMetadata = {
       },
       GridProps: {
         xs: 12,
-        sm: 12,
-        md: 12,
-        lg: 12,
-        xl: 12,
+        sm: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 
@@ -154,10 +154,10 @@ export const NpaCategoryMasterFormMetadata = {
       ],
       GridProps: {
         xs: 12,
-        sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        sm: 6,
+        md: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -176,46 +176,39 @@ export const NpaCategoryMasterFormMetadata = {
       ],
       GridProps: {
         xs: 12,
-        sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        sm: 6,
+        md: 3,
+        lg: 3,
+        xl: 3,
       },
     },
-
-    {
-      render: {
-        componentType: "Divider",
-      },
-      dividerText: "Provision Rate",
-      name: "Rate",
-    },
-
     {
       render: {
         componentType: "rateOfIntWithoutValidation",
       },
       name: "SECURE_PROV_PERC",
-      label: "Secure Rate",
+      label: "Provision Secure Rate",
       placeholder: "Enter Provision Secure Rate",
+      defaultValue: "0",
       fullWidth: true,
       FormatProps: {
         allowNegative: false,
       },
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "rateOfIntWithoutValidation",
       },
       name: "UNSECURE_PROV_PERC",
-      label: "Un-Secure Rate",
+      label: "Provision Un-Secure Rate",
       placeholder: "Enter Provision Un-Secure Rate",
+      defaultValue: "0",
       fullWidth: true,
       FormatProps: {
         allowNegative: false,
       },
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
   ],
 };

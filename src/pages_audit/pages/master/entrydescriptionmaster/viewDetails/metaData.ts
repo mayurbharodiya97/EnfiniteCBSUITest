@@ -1,3 +1,4 @@
+import { utilFunction } from "components/utils";
 export const EntryDescMasterFormMetadata = {
   form: {
     name: "entryDescriptionMaster",
@@ -42,40 +43,23 @@ export const EntryDescMasterFormMetadata = {
       maxLength: 4,
       txtTransform: "uppercase",
       placeholder: "Enter Code",
+      isFieldFocused: true,
       __EDIT__: {
         isReadOnly: true,
         isFieldFocused: false,
       },
+
       validate: (columnValue, ...rest) => {
         let specialChar = /^[^!&]*$/;
         if (columnValue?.value && !specialChar.test(columnValue.value)) {
           return "'!' and '&' not allowed";
         }
 
-        const gridData = rest[1]?.gridData;
-        const accessor = columnValue?.fieldKey?.split("/")?.pop();
-        const fieldValue = columnValue?.value;
-        const rowColumnValue = rest[1]?.rows?.[accessor];
-
-        if (
-          fieldValue?.trim()?.toLowerCase() ===
-          rowColumnValue?.trim()?.toLowerCase()
-        ) {
-          return "";
-        }
-        if (gridData) {
-          for (let i = 0; i < gridData?.length; i++) {
-            const ele = gridData?.[i];
-            const trimmedColumnValue = ele?.[accessor]?.trim()?.toLowerCase();
-            const trimmedFieldValue = columnValue?.value?.toLowerCase()?.trim();
-
-            if (trimmedColumnValue === trimmedFieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
-            }
-          }
-        }
-
-        return "";
+        const duplicate = utilFunction.checkDupliCateValue(
+          columnValue,
+          ...rest
+        );
+        return duplicate || "";
       },
       schemaValidation: {
         type: "string",
@@ -84,13 +68,12 @@ export const EntryDescMasterFormMetadata = {
           { name: "specialChar", params: ["'!' and '&' not allowed"] },
         ],
       },
-      isFieldFocused: true,
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -120,14 +103,14 @@ export const EntryDescMasterFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "textFieldCheckDupliCateValue",
       },
       name: "SP_NM",
       label: "Description",
@@ -140,31 +123,8 @@ export const EntryDescMasterFormMetadata = {
         if (columnValue?.value && !specialChar.test(columnValue.value)) {
           return "'!' and '&' not allowed";
         }
-
-        const gridData = rest[1]?.gridData;
-        const accessor = columnValue?.fieldKey?.split("/")?.pop();
-        const fieldValue = columnValue?.value;
-        const rowColumnValue = rest[1]?.rows?.[accessor];
-
-        if (
-          fieldValue?.trim()?.toLowerCase() ===
-          rowColumnValue?.trim()?.toLowerCase()
-        ) {
-          return "";
-        }
-        if (gridData) {
-          for (let i = 0; i < gridData?.length; i++) {
-            const ele = gridData?.[i];
-            const trimmedColumnValue = ele?.[accessor]?.trim()?.toLowerCase();
-            const trimmedFieldValue = columnValue?.value?.toLowerCase()?.trim();
-
-            if (trimmedColumnValue === trimmedFieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
-            }
-          }
-        }
-        return "";
       },
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Description is required."] }],
@@ -172,9 +132,9 @@ export const EntryDescMasterFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 12,
-        lg: 12,
-        xl: 12,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

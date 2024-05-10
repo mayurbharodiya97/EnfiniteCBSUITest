@@ -1,10 +1,10 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 
-export const EntryDescMasterGridMetaData: GridMetaDataType = {
+export const InsuTypeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Entry Description Master (EMST/067)",
-    rowIdColumn: "SP_CD",
+    gridLabel: "Insurance Type Master (EMST/097)",
+    rowIdColumn: "INSURANCE_TYPE_CD",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -21,7 +21,6 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       min: "80vh",
       max: "80vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
@@ -29,7 +28,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "Sr.No.",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -39,7 +38,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "SP_CD",
+      accessor: "INSURANCE_TYPE_CD",
       columnName: "Code",
       sequence: 2,
       alignment: "left",
@@ -49,25 +48,25 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "DISPLAY",
-      columnName: "Parent Type",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 300,
-      minWidth: 200,
-      maxWidth: 600,
-    },
-    {
-      accessor: "SP_NM",
+      accessor: "DESCRIPTION",
       columnName: "Description",
-      sequence: 4,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 400,
       minWidth: 300,
       maxWidth: 600,
       showTooltip: true,
+    },
+    {
+      accessor: "DISP_DATA",
+      columnName: "Security Type",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 300,
+      minWidth: 200,
+      maxWidth: 600,
     },
   ],
 };
