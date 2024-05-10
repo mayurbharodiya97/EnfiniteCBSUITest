@@ -81,7 +81,6 @@ export const metaData = {
       GridProps: {  xs: 12, sm: 12, md: 12, lg: 6, xl:6 },
       fullWidth: true,
       autoComplete: "on",
-      //@ts-ignore
       isFieldFocused: false,
       __EDIT__: {isReadOnly:true},
       schemaValidation: {
@@ -100,7 +99,8 @@ export const metaData = {
       placeholder: "Description",
       maxLength: 40,
       type: "text",
-      required: true,
+      required: true, 
+      txtTransform:"uppercase",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Description is Required"] }],

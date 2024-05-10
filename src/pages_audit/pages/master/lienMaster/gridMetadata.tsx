@@ -25,38 +25,6 @@ export const gridMetadata: GridMetaDataType = {
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "LEAN_CD",
-      columnName: "LEAN_CD",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "PARENT_TYPE_DISP",
-      columnName: "Parent_type",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "LEAN_NM",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "LEAN_CD",
@@ -74,16 +42,6 @@ export const gridMetadata: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      // color: (val, data) => {
-      //   let Parent_Type = data?.original?.PARENT_TYPE ?? "";
-      //   return Parent_Type === "05  "
-      //     ? "red"
-      //     : Parent_Type === "11  "
-      //     ? "blue"
-      //     : Parent_Type === "44  "
-      //     ? "coral"
-      //     : "green";
-      // },
       width: 250,
       minWidth: 100,
       maxWidth: 500,
