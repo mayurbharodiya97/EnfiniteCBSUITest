@@ -82,6 +82,7 @@ export const Trn001 = () => {
     trx: { label: "", value: "", code: "" }, //TYPE_CD
     bugMsgTrx: "",
     scroll: "", //token
+    bugMsgScroll: "",
     sdc: { label: "", value: "", info: {} },
     remark: "",
     cNo: "",
@@ -303,21 +304,21 @@ export const Trn001 = () => {
       });
     },
   });
+
   const getAmountValidation = useMutation(API.getAmountValidation, {
     onSuccess: (data) => {
       setLoading(false);
       setAmountValidMsg(data);
-      console.log(data, "data res getAmountValidation");
       setAmountValidDialog(true);
     },
     onError: (error: any) => {
       setLoading(false);
-
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
     },
   });
+
   const getDateValidation = useMutation(API.getChqDateValidation, {
     onSuccess: (data) => {
       const obj = [...rows];
@@ -473,14 +474,18 @@ export const Trn001 = () => {
     } else {
       setIsArray(false);
     }
+
+    if (value?.code == "4") {
+      obj[i].bugMsgScroll = "token is required";
+    }
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleScrollBlur = (e, i) => {
     const obj = [...rows];
-    if (!obj[i].scroll) {
-      obj[i].bugMsgScroll = "scroll Required";
+    if (!obj[i].scroll && obj[i].trx.code == "4") {
+      obj[i].bugMsgScroll = "token Required";
     } else {
       obj[i].bugMsgScroll = "";
     }
@@ -747,6 +752,7 @@ export const Trn001 = () => {
     let isErrTrx = false;
     let isErrCNo = false;
     let isErrDate = false;
+    let isErrToken = false;
 
     rows.map((a) => {
       if (a.bugDate) {
@@ -761,12 +767,19 @@ export const Trn001 = () => {
       if (a.bugMsgAccType) {
         isErrAccType = true;
       }
+      if (a.bugMsgScroll) {
+        isErrToken = true;
+      }
 
       if (a.bugAccNo || a.bugMsgAccNo) {
         isErrAccNo = true;
       }
     });
-
+    if (isErrToken) {
+      enqueueSnackbar("Kindly Check, Error in Token", {
+        variant: "error",
+      });
+    }
     if (isErrTrx) {
       enqueueSnackbar("Kindly Check, Error in Trx", {
         variant: "error",
@@ -807,7 +820,9 @@ export const Trn001 = () => {
       (!isArray && amountDiff == 0) ||
       (isArray && amountDiff != 0) ||
       isErrAccNo ||
-      isErrCNo
+      isErrCNo ||
+      isErrAccType ||
+      isErrToken
     ) {
     } else {
       cardsData?.length > 0 && setSaveDialog(true);
@@ -1121,24 +1136,29 @@ export const Trn001 = () => {
                             />{" "}
                           </TableCell>
                         </Tooltip>
-                        <TableCell sx={{ minWidth: 60 }}>
-                          <TextField
-                            value={a.scroll}
-                            fullWidth={true}
-                            type="number"
-                            disabled={
-                              a.trx?.code == "3" ||
-                              a.trx?.code == "6" ||
-                              !a.trx?.code
-                                ? true
-                                : false
-                            }
-                            size="small"
-                            onChange={(e) => handleScroll(e, i)}
-                            onBlur={(e) => handleScrollBlur(e, i)}
-                            error={a?.bugMsgScroll ? true : false}
-                          />
-                        </TableCell>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgScroll && <h3>{a?.bugMsgScroll}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 60 }}>
+                            <TextField
+                              value={a.scroll}
+                              fullWidth={true}
+                              type="number"
+                              disabled={
+                                a.trx?.code == "3" ||
+                                a.trx?.code == "6" ||
+                                !a.trx?.code
+                                  ? true
+                                  : false
+                              }
+                              size="small"
+                              onChange={(e) => handleScroll(e, i)}
+                              onBlur={(e) => handleScrollBlur(e, i)}
+                              error={a?.bugMsgScroll ? true : false}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
                         <Tooltip
                           disableInteractive={true}
                           title={
