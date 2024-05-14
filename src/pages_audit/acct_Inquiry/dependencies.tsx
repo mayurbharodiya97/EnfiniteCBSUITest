@@ -4,7 +4,6 @@ import * as API from "./api";
 import { DependenciesData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
 import Report from "components/report";
-import { t } from "i18next";
 const Dependencies = ({ open, onClose, rowsData }) => {
   const { authState } = useContext(AuthContext);
   return (
@@ -26,9 +25,7 @@ const Dependencies = ({ open, onClose, rowsData }) => {
         metaData={DependenciesData}
         disableFilters
         maxHeight={window.innerHeight - 151}
-        title={t(
-          `DependenciesOfCustomer_id = ${rowsData?.[0]?.data?.CUSTOMER_ID}`
-        )}
+        title={`Dependencies of Customer-id = ${rowsData?.[0]?.data?.CUSTOMER_ID}`}
         onClose={onClose}
         hideFooter={DependenciesData.hideFooter}
         hideAmountIn={DependenciesData.hideAmountIn}

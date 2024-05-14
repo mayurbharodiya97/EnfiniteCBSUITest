@@ -30,7 +30,6 @@ const StyledTab = withStyles((theme: any) => ({
     "&:focus": {
       color: "var(--theme-color1)",
     },
-    padding: "3px 8px 3px 8px",
   },
   selected: {},
 }))(Tab);

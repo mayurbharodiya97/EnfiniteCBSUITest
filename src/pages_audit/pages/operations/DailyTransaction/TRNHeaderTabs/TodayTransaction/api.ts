@@ -126,32 +126,6 @@ export const getAcctDtlList = async (reqParaMeters) => {
       CUST_ID: reqParaMeters?.CUSTOMER_ID ? reqParaMeters?.CUSTOMER_ID : "",
     });
   if (status === "0") {
-    /// FOR rearange gridData get mathed record first
-    const rearrangeData = (rowData, gridData: any) => {
-      let matchedRecord = null;
-      const remainingRecords: any = [];
-      for (let i = 0; i < gridData?.length; i++) {
-        if (
-          gridData[i]?.AC_CD?.trim()?.replace(/\s+/g, "") ===
-          rowData?.ACCT_NO?.trim()
-        ) {
-          matchedRecord = gridData[i];
-        } else {
-          remainingRecords.push(gridData[i]);
-        }
-      }
-
-      if (matchedRecord) {
-        return [matchedRecord, ...remainingRecords];
-      } else {
-        return gridData;
-      }
-    };
-    let rearangedGridData = [];
-    if (data?.length > 0 && Object?.keys(reqParaMeters)?.length > 0) {
-      rearangedGridData = rearrangeData(reqParaMeters, data);
-    }
-
     // const dataStatus = data;
     // dataStatus.map((item) => {
     //   if (item?.ORG_STATUS === "Close") {
@@ -165,7 +139,7 @@ export const getAcctDtlList = async (reqParaMeters) => {
     //   }
     // });
     // // return dataStatus;
-    return rearangedGridData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

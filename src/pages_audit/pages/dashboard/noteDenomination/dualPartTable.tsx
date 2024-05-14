@@ -609,26 +609,29 @@ const DualPartTable = ({
   columnDefinitions,
   isLoading,
   displayTableDual,
-  // openAcctDtl,
+  openAcctDtl,
   onCloseTable,
   handleChange,
   inputValues,
   totalAmounts,
-  gridLable,
+  extraAccDtl,
   handleBlur,
   inputRestrictions,
   remainExcess,
   remainExcessLable,
   errors,
-  confirmation,
-  setConfirmation,
 }) => {
   const classes = useStyles();
   const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
+  const [confirmation, setConfirmation] = useState(false);
 
-  // useEffect(() => {
-  // }, [remainExcess]);
+  //PENDING PENDING PENDING PENDING PENDING PENDING PENDING PENDING PENDING PENDING
+  useEffect(() => {
+    if (remainExcess == 0) {
+      setConfirmation(true);
+    }
+  }, [remainExcess]);
 
   const renderTableHeader = () => {
     return (
@@ -680,9 +683,7 @@ const DualPartTable = ({
                       onChange={(e) =>
                         isEditable && handleChange(e, index, column.fieldName)
                       }
-                      onBlur={(event) =>
-                        handleBlur(event, column?.fieldName, index)
-                      }
+                      onBlur={(event) => handleBlur(column?.fieldName, index)}
                       placeholder={"Enter value"}
                       InputProps={{
                         readOnly: !isEditable,
@@ -722,6 +723,7 @@ const DualPartTable = ({
   };
 
   const renderTableFooter = () => {
+    console.log(totalAmounts, "totalAmounts");
     return (
       <TableBody
         style={{
@@ -757,10 +759,10 @@ const DualPartTable = ({
   };
 
   return (
-    <Dialog open={displayTableDual && data?.length > 0} maxWidth={"xl"}>
+    <Dialog open={displayTableDual && openAcctDtl} maxWidth={"xl"}>
       <Box
         sx={{
-          height: "auto",
+          height: "8vh",
           background: "var(--theme-color5)",
           display: "flex",
           justifyContent: "space-between",
@@ -768,16 +770,8 @@ const DualPartTable = ({
           margin: "10px",
         }}
       >
-        <DialogTitle
-          variant="subtitle1"
-          sx={{
-            color: "var(--theme-color2)",
-            padding: "16px 4px",
-            maxWidth: "83rem",
-          }}
-        >
-          {" "}
-          {gridLable}
+        <DialogTitle variant="h6" sx={{ color: "var(--theme-color2)" }}>
+          {`Cash Receipt/Payment - ${extraAccDtl?.Name}`}
         </DialogTitle>
         {/* <DialogActions> */}
         <GradientButton
@@ -865,7 +859,7 @@ const DualPartTable = ({
           </Paper>{" "}
         </Paper>
       </DialogContent>
-      {Boolean(confirmation) ? (
+      {/* {Boolean(confirmation) ? (
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}
           Message={"All Transaction are Completed Want to Proceed"}
@@ -881,7 +875,7 @@ const DualPartTable = ({
           loading={{ Yes: false, No: false }}
           open={Boolean(confirmation)}
         />
-      ) : null}
+      ) : null} */}
     </Dialog>
   );
 };

@@ -36,7 +36,7 @@ const CommonFooter = ({
   filteredRows,
 }) => {
   if (!filteredRows) {
-    filteredRows = []; /// /// /// /// ///
+    filteredRows = [];
   }
 
   const [scrollDeleteDialog, setScrollDeleteDialog] = useState(false);
@@ -56,12 +56,16 @@ const CommonFooter = ({
 
   useEffect(() => {
     let abc = filteredRows && filteredRows?.some((a) => a?.CONFIRMED === "Y");
-    setIsConfirmedRec(abc); /// /// /// /// ///
+    setIsConfirmedRec(abc);
   }, [filteredRows]);
 
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
+
+  useEffect(() => {
+    console.log(tempStore, "tempStoreCommon");
+  }, [tempStore]);
 
   //api define
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
@@ -73,7 +77,7 @@ const CommonFooter = ({
         variant: "success",
       });
       if (isTrn1) {
-        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() }); // add new method to display tabs
+        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
       } else {
         handleRefresh();
       }
@@ -90,7 +94,7 @@ const CommonFooter = ({
       setLoading(false);
       setScrollDeleteDialog(false);
       setScrollNo("");
-      handleSetRemarks(); /// /// /// /// ///
+      handleSetRemarks();
       if (data?.messageDetails) {
         enqueueSnackbar(data?.messageDetails, {
           variant: "success",
@@ -98,7 +102,7 @@ const CommonFooter = ({
       }
 
       if (isTrn1) {
-        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() }); //
+        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
       } else {
         handleRefresh();
       }
@@ -132,13 +136,6 @@ const CommonFooter = ({
       ENTERED_COMP_CD: filteredRows[0]?.COMP_CD,
       ENTERED_BRANCH_CD: filteredRows[0]?.BRANCH_CD,
       scrollNo: scrollNo,
-      ACCT_TYPE: filteredRows[0]?.ACCT_TYPE,
-      ACCT_CD: filteredRows[0]?.ACCT_CD,
-      CONFIRMED: "Y",
-      CONFIRM_FLAG: "Y",
-      TYPE_CD: filteredRows[0]?.TYPE_CD,
-      AMOUNT: filteredRows[0]?.AMOUNT,
-      SCREEN_REF: "ETRN/002",
     };
     confirmScroll.mutate(data);
   };
@@ -267,6 +264,7 @@ const CommonFooter = ({
             id="draggable-dialog-title"
           >
             <div className="dialogTitle" style={{ padding: "10px" }}>
+              {" "}
               {scrollConfirmDialog ? "Scroll Confirmation" : " Scroll Delete"}
             </div>
           </DialogTitle>
@@ -351,4 +349,4 @@ const CommonFooter = ({
     </>
   );
 };
-export default memo(CommonFooter); /// /// /// /// ///
+export default memo(CommonFooter);

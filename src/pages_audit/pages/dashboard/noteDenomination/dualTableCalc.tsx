@@ -5,10 +5,10 @@ import { useStyles } from "./style";
 const DualTableCalc = ({
   data,
   displayTableDual,
-  // openAcctDtl,
+  openAcctDtl,
   onCloseTable,
   isLoading,
-  gridLable,
+  extraAccDtl,
   formData,
 }) => {
   const columnDefinitions = [
@@ -40,10 +40,10 @@ const DualTableCalc = ({
   const [inputValues, setInputValues] = useState({});
   const [totalAmounts, setTotalAmounts] = useState({});
   type ErrorType = { index: number; fieldName: string; message: string };
+
   const [errors, setErrors] = useState<ErrorType[]>([]);
-  const [confirmation, setConfirmation] = useState(false);
-  const [remainExcess, setRemainExcess] = useState<number>();
-  // const remainExcess: any = useRef({});
+
+  const remainExcess: any = useRef({});
   const fixedDataTotal: any = useRef({});
   const classes = useStyles();
 
@@ -71,14 +71,15 @@ const DualTableCalc = ({
 
   useEffect(() => {
     if (Boolean(formData)) {
-      // remainExcess.current = finalReceiptPayment;
-      setRemainExcess(finalReceiptPayment);
+      remainExcess.current = finalReceiptPayment;
     }
   }, [formData]);
 
-  const handleBlur = (event, fieldName, index) => {
+  // console.log(remainExcess, "remainExcessremainExcess");
+
+  const handleBlur = (fieldName, index) => {
     const newTotalAmounts = { ...totalAmounts };
-    const { value } = event?.target;
+
     columnDefinitions.forEach((column) => {
       const fieldName = column.fieldName;
       newTotalAmounts[fieldName] = data.reduce((total, item, i) => {
@@ -90,16 +91,10 @@ const DualTableCalc = ({
     const operation = formData?.TRN === "R" ? -1 : 1;
     const fieldOperation = fieldName === "receipt" ? 1 : -1;
     const amountfieldName = fieldName === "receipt" ? "amount" : "amount2";
-    // remainExcess.current =
-    //   Number(finalReceiptPayment) +
-    //   operation * fieldOperation * newTotalAmounts[amountfieldName];
+    remainExcess.current =
+      Number(finalReceiptPayment) +
+      operation * fieldOperation * newTotalAmounts[amountfieldName];
 
-    if (Boolean(value)) {
-      setRemainExcess(
-        Number(finalReceiptPayment) +
-          operation * fieldOperation * newTotalAmounts[amountfieldName]
-      );
-    }
     setTotalAmounts(newTotalAmounts);
 
     if (
@@ -125,14 +120,6 @@ const DualTableCalc = ({
           (error) => !(error.index === index && error.fieldName === fieldName)
         )
       );
-    }
-    openConfirmation();
-  };
-
-  //for open confirmation after match remain/eccess 0
-  const openConfirmation = () => {
-    if (remainExcess === 0) {
-      setConfirmation(true);
     }
   };
 
@@ -178,13 +165,17 @@ const DualTableCalc = ({
     setErrors([]);
   }, [onCloseTable]);
 
+  // useEffect(() => {
+  //   console.log(totalAmounts, "totalAmountstotalAmounts");
+  // }, [totalAmounts]);
+
   return (
     <DualPartTable
       data={data || []}
       columnDefinitions={columnDefinitions}
       isLoading={isLoading}
       displayTableDual={displayTableDual}
-      // openAcctDtl={openAcctDtl}
+      openAcctDtl={openAcctDtl}
       onCloseTable={onCloseTable}
       handleChange={handleChange}
       inputValues={inputValues}
@@ -193,16 +184,12 @@ const DualTableCalc = ({
           ? fixedDataTotal.current
           : totalAmounts
       }
-      gridLable={gridLable}
+      extraAccDtl={extraAccDtl}
       handleBlur={handleBlur}
       inputRestrictions={inputRestrictions}
-      remainExcess={remainExcess}
-      remainExcessLable={
-        remainExcess ? (remainExcess >= 0 ? "Remaining " : "Excess ") : ""
-      }
+      remainExcess={remainExcess?.current}
+      remainExcessLable={remainExcess?.current >= 0 ? "Remaining " : "Excess "}
       errors={errors}
-      confirmation={confirmation}
-      setConfirmation={setConfirmation}
     />
   );
 };

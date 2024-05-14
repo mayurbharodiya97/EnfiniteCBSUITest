@@ -192,50 +192,38 @@ export const sp_language_data = {
   AccountInquiry: "Consulta de cuenta",
   CustomerDetail: "Detalle del cliente",
   AccountNo: "Número de cuenta",
-  CustomerID: "ID del cliente",
-  Mobile_No: "Número de móvil",
-  PanNo: "PAN",
-  Account_Name: "Nombre de la cuenta",
+  PanNo: "Pan No.",
   Retrieve: "Recuperar",
-  AcctHolderType: "Tipo de titular de la cuenta",
-  Email_Id: "ID de correo electrónico",
+  AccountPersonName: "Nombre de cuenta/persona",
   OpeningDate: "Fecha de apertura",
   CloseDate: "Fecha de cierre",
-  WithdrawBalance: "Retirar saldo",
-  Status: "Estado",
-  SearchCriteriaData: "Datos de criterios de búsqueda",
-  PleaseEnterAnyValue: "Por favor, introduzca cualquier valor",
-  //Account Inquiry => Passbook/Statement Print Option
+
+  // Passbook/Statement Print Option
 
   PassbookStatementPrintOption:
-    "Opción de impresión de libreta/estado de cuenta",
+    "Opción de impresión de libreta de ahorros/estado de cuenta",
   Template: "Plantilla",
   ToDate: "Hasta la fecha :-",
-  FromDate: "Desde la fecha :-",
-  passbook: "libreta",
+  FromDate: "Partir de la fecha :-",
+  passbook: "libreta de depósitos",
   Statement: "Declaración",
-  FrontPage: "Portada",
+  FrontPage: "Página delantera",
   FirstPage: "Primera página",
   Detail: "Detalle",
-  ThisFieldisrequired: "Este campo es requerido",
+  ThisFieldisrequired: "Este campo es obligatorio",
   newPasswordCantbeSameasOldPassword:
     "La nueva contraseña no puede ser la misma que la antigua",
   NewPasswordandConfirmPassworddidnotmatched:
-    "La nueva contraseña y la confirmación de la contraseña no coinciden",
-  CustomerIDisrequired: "Se requiere ID del cliente",
+    "Nueva contraseña y Confirmar contraseña no coinciden",
+  CustomerIDisrequired: "Se requiere ID de cliente",
   CustomerIDShouldNotBeLessThan12Digits:
     "El ID del cliente no debe tener menos de 12 dígitos",
 
-  EnterAccountType: "Introduzca el tipo de cuenta.",
+  EnterAccountType: "Ingrese el tipo de cuenta.",
   ModeOfOperation: "Modo de operación",
-  GetDetails: "Obtener detalles",
-  EnterAcNo: "Introduzca el número de cuenta.",
+  GetDetails: "Obtén detalles",
+  EnterAcNo: "Ingrese el número de aire acondicionado",
 
-  //Account Inquiry => Dependencies
-
-  Assets_Liabilities: "Activos y pasivos",
-  Account_Status: "Estado de la cuenta",
-  DependenciesOfCustomer_id: "Dependencias del ID del cliente",
   //  ckyc
   EmailId: "Identificación de correo",
   CustomerName: "Nombre del cliente",
