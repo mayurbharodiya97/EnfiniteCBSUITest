@@ -160,37 +160,8 @@ export const Trn001 = () => {
 
   useEffect(() => {
     //bug checker on row change
-    let i = 0;
-    rows[i].bug = false;
-    if (rows.length > 0) {
-      i = rows.length - 1;
-    }
-    if (
-      !rows[i].trx?.code ||
-      !rows[i].branch ||
-      !rows[i].accType ||
-      !rows[i].accNo
-    ) {
-      rows[i].bug = true;
-    }
-    if (rows[i]?.bugAccNo || rows[i]?.bugCNo) {
-      rows[i].bug = true;
-    }
 
-    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
-      //credit true
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
-      //debit true
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
-      rows[i].bug = true;
-    }
-
-    let result = rows && rows.some((a) => a?.bug);
+    let result = rows && rows.some((a) => a?.bug || a?.bugAccNo || a?.bugCNo);
     setIsSave(!result);
     console.log(rows, "rows");
   }, [rows]);
@@ -841,7 +812,9 @@ export const Trn001 = () => {
       (!isArray && amountDiff == 0) ||
       (isArray && amountDiff != 0) ||
       isErrAccNo ||
-      isErrCNo
+      isErrCNo ||
+      isErrAccType ||
+      isErrToken
     ) {
     } else {
       cardsData?.length > 0 && setSaveDialog(true);
