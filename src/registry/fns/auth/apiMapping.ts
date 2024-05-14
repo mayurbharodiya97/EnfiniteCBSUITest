@@ -1312,6 +1312,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
+  GETCUSTMSTDOCDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTMSTDOCDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

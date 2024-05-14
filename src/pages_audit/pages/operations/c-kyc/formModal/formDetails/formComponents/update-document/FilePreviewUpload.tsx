@@ -14,7 +14,7 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow }) => {
   const [files, setFiles] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [allowUpdate, setAllowUpdate] = useState<boolean>(true);
+  const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
   // console.log(detailsDataRef, "detailsDataRefdetailsDataRef", filesGridData)
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
@@ -202,11 +202,11 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
           {/* rowdata?.[0]?.data?.CUSTOMER_ID */}
         </DialogTitle>
 
-        <UploadTarget
+        {allowUpdate && <UploadTarget
           existingFiles={files}
           onDrop={validateFilesAndAddToListCB}
           disabled={loading}
-        />
+        />}
         {files && (files?._mimeType?.includes("pdf") || files?.blob?.type?.includes("pdf")) ? (
           <PDFViewer
             blob={files?.blob}

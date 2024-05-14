@@ -71,6 +71,19 @@ export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, 
     }
   };
 
+export const getDocDetails = async ({REQ_CD, CUSTOMER_ID }) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTMSTDOCDTL", {
+        REQ_CD: REQ_CD, 
+        CUSTOMER_ID: CUSTOMER_ID
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry, CONFIRMFLAG }) => {
   if(!CATEGORY_CD || !CONS_TYPE) {
     return []

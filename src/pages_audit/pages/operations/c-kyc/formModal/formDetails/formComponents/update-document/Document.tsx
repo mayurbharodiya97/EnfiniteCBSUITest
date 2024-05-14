@@ -26,41 +26,27 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
   const [girdData, setGridData] = useState<any>([]);
   const { authState } = useContext(AuthContext);
   const { state } = useLocation();
-  let payload: {
-    COMP_CD?: string;
-    BRANCH_CD: string;
-    REQUEST_CD?: string;
-    CUSTOMER_ID?: string;
-  } = {
-    // COMP_CD: authState?.companyID ?? "",
-    BRANCH_CD: authState?.user?.branchCode ?? "",
-  };
   const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
   const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
-  if (Boolean(reqCD)) {
-    payload["REQUEST_CD"] = reqCD;
-  }
-  if (Boolean(custID)) {
-    payload["CUSTOMER_ID"] = custID;
+  const payload = {
+    REQ_CD: reqCD,
+    CUSTOMER_ID: custID
   }
 
   // useEffect(() => {
   //   console.log("on state change", state, state?.[0]?.data.REQUEST_ID, state?.[0]?.data.CUSTOMER_ID)
   // }, [state])
 
-  // get customer form details
-  const custDTLMutation: any = useMutation(API.getCustomerDetailsonEdit, {
+  const custDTLMutation: any = useMutation(API.getDocDetails, {
     onSuccess: (data) => {
       // console.log("on successssss.,", data, state);
       if (Array.isArray(data) && data.length > 0) {
-        if (Boolean(data[0]?.DOC_MST) && Array.isArray(data[0]?.DOC_MST)) {
-          let newData: any[] = data[0]?.DOC_MST;
+          let newData: any[] = data;
           newData = newData.map((doc) => {
             return { ...doc, TRANSR_CD: `${doc.TRAN_CD}${doc.SR_CD}`, SUBMIT: doc.SUBMIT === "Y" ? true : false };
           });
           // console.log("on successssss., wedqw", newData);
           setGridData([...newData]);
-        }
       }
     }
   });
