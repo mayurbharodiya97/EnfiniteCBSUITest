@@ -96,43 +96,6 @@ export const Trn002 = () => {
     BRANCH_CD: authState?.user?.branchCode,
   };
 
-  const subjectOptions = [
-    { value: "science", label: "science" },
-    { value: "maths", label: "maths" },
-  ];
-
-  const formMetaData: any = [
-    {
-      value: "",
-      label: "Name",
-      type: "text",
-      component: "textField",
-    },
-    {
-      value: "0",
-      label: "Age",
-      type: "Number",
-      component: "textField",
-    },
-    {
-      value: "",
-      label: "subjects",
-      type: "text",
-      component: "autoComplete",
-      options: subjectOptions,
-    },
-    {
-      value: "",
-      label: "X",
-      type: "",
-      component: "clearBtn",
-    },
-  ];
-
-  // const handleFormSave = (obj) => {
-
-  // };
-
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
@@ -193,6 +156,15 @@ export const Trn002 = () => {
     },
     onError: (error) => {},
   });
+  const getConfirmDataValidation = useMutation(
+    trn2Api.getConfirmDataValidation,
+    {
+      onSuccess: (data) => {
+        console.log(data, "data getConfirmDataValidation");
+      },
+      onError: (error) => {},
+    }
+  );
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
@@ -250,6 +222,7 @@ export const Trn002 = () => {
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setDataRow(row);
+    // getConfirmDataValidation.mutate(row);
     if (data.name === "_rowChanged") {
       let obj: any = {
         COMP_CD: row?.COMP_CD,
@@ -286,6 +259,7 @@ export const Trn002 = () => {
 
     if (data.name === "view") {
       if (row.CONFIRMED == "0") {
+        getConfirmDataValidation.mutate(row);
         setConfirmDialog(true);
       } else {
         enqueueSnackbar("Transaction Already Confirmed", {
@@ -357,6 +331,7 @@ export const Trn002 = () => {
   };
 
   const handleConfirm = () => {
+    console.log("abcd");
     confirmScroll.mutate(dataRow);
   };
 

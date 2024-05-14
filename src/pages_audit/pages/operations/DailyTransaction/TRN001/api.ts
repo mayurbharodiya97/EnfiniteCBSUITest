@@ -209,5 +209,48 @@ export const getChqDateValidation = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getAmountValidation = async (reqData) => {
+  console.log(reqData, "reqData getAmountValidation");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECREDITDEBITAMT", {
+      BRANCH_CD: reqData?.branch?.value, //099
+      TYPE_CD: reqData?.trx?.value, //5
+      CHEQUE_NO: reqData?.cNo, //33
+      CHEQUE_DT: format(new Date(reqData?.date), "dd/MMM/yyyy"), //06/Mar/2024
+
+      ACCT_TYPE: reqData?.accType?.value,
+      ACCT_CD: reqData.accNo.padEnd(20, " "),
+
+      COMP_CD: reqData?.branch?.info?.COMP_CD,
+      OP_DATE: format(new Date(reqData?.date), "dd/MMM/yyyy"),
+
+      AMOUNT: reqData?.isCredit ? reqData?.credit : reqData?.debit,
+      AVALIABLE_BAL: reqData?.withdraw,
+      TRAN_CD: "157505",
+      SHADOW_CL: "10",
+      HOLD_BAL: "10",
+      LEAN_AMT: "10",
+      AGAINST_CLEARING: "",
+      MIN_BALANCE: "1000",
+      CONF_BAL: "1000",
+      TRAN_BAL: "100",
+      UNCL_BAL: "10",
+      LIMIT_AMOUNT: "100",
+      DRAWING_POWER: "",
+      OD_APPLICABLE: "",
+      INST_NO: "",
+      INST_RS: "",
+      PENDING_AMOUNT: "10",
+      STATUS: "",
+      TYPE: "C",
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 //others
