@@ -296,12 +296,73 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       min: "42vh",
       max: "50vh",
     },
-    allowFilter: false,
+    allowFilter: true,
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
-  // filters: [],
+  filters: [
+    {
+      accessor: "CUSTOMER_ID",
+      columnName: "CustomerId",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CUSTOMER_NAME",
+      columnName: "Customer Name",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CUSTOMER_TYPE_FLAG",
+      columnName: "Customer Type",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "UPD_TAB_NAME",
+      columnName: "Update Type",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "MAKER",
+      columnName: "Maker",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CHECKER",
+      columnName: "Checker",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+  ],
   columns: [
     {
       accessor: "REQUEST_ID",
