@@ -675,7 +675,7 @@ export const termLoan_metadata = {
         },
         {
             render: {
-                componentType: "numberFormat",
+                componentType: "numberFormat",//come back
             },
             name: "INST_NO",
             label: "No. of Installment",
