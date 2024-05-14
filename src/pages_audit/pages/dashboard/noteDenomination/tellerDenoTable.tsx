@@ -43,9 +43,9 @@ const TellerDenoTable = ({
   finalLable,
   onCloseTable,
   textFieldRef,
-  openAcctDtl,
+  // openAcctDtl,
   handleonFocus,
-  extraAccDtl,
+  gridLable,
 }) => {
   const fieldRef: any = useRef([]);
   const classes = useStyles();
@@ -54,10 +54,10 @@ const TellerDenoTable = ({
 
   return (
     // <Slide direction="left" in={displayTable} mountOnEnterx unmountOnExit>
-    <Dialog open={displayTable && openAcctDtl} maxWidth={"xl"}>
+    <Dialog open={displayTable && data?.length > 0} maxWidth={"xl"}>
       <Box
         sx={{
-          height: "8vh",
+          height: "auto",
           background: "var(--theme-color5)",
           display: "flex",
           justifyContent: "space-between",
@@ -65,8 +65,15 @@ const TellerDenoTable = ({
           margin: "10px",
         }}
       >
-        <DialogTitle variant="h6" sx={{ color: "var(--theme-color2)" }}>
-          {`Cash Receipt/Payment - ${extraAccDtl?.Name}`}
+        <DialogTitle
+          variant="subtitle1"
+          sx={{
+            color: "var(--theme-color2)",
+            padding: "16px 4px",
+            maxWidth: "55rem",
+          }}
+        >
+          {gridLable}
         </DialogTitle>
         {/* <DialogActions> */}
         <GradientButton

@@ -9,6 +9,7 @@ interface CustomProperties {
   commonDateFormat?: string;
   commonDateTimeFormat?: string;
   commonTimeFormat?: string;
+  denoTableType?: string;
 }
 
 const customParameters: CustomProperties = {
@@ -20,6 +21,7 @@ const customParameters: CustomProperties = {
   commonDateFormat: "dd/MM/yyyy", //this prop for gridWrapper ,report and formWrapper
   commonDateTimeFormat: "dd/MM/yyyy hh:mm:ss aa",
   commonTimeFormat: "hh:ss:mm aa", //this prop for gridWrapper ,report and formWrapper
+  denoTableType: "single", //this prop for which type of denomination table you required(type:1.single-->manage receipt and payment both in single column,2.dual:-->manage receipt and payment in saperate column)
 };
 
 export const CustomPropertiesConfigurationContext =

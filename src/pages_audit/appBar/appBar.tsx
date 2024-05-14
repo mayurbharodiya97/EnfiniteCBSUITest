@@ -44,11 +44,16 @@ export const MyAppBar = ({
   handleDrawerClose,
   open,
   columns,
+  hideActionBtns = false,
+  hideSearchScreen = false,
+  hideSidebarIcon = false,
+  offProfileNavigate = false,
+  isNewStyle = false,
 }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const logos = useLogoPics();
-  const classes = useStyles();
+  const classes = useStyles({ isNewStyle });
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<any>(false);
   const [acctInquiry, setAcctInquiry] = useState(false);
@@ -157,47 +162,49 @@ export const MyAppBar = ({
       className={clsx(classes.appBar, open && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-            height: "80px",
-            width: "227px",
-          }}
-        >
-          {open ? (
-            <IconButton
-              disableRipple
-              onClick={handleDrawerClose}
-              className={classes.DrawerClose_icon}
-            >
-              <MenuOutlinedIcon fontSize="large" />
-            </IconButton>
-          ) : (
-            <IconButton
-              disableRipple
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={classes.DrawerClose_icon}
-            >
-              <MenuOutlinedIcon fontSize="large" />
-            </IconButton>
-          )}
+        {!hideSidebarIcon && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              height: isNewStyle ? "57px" : "80px",
+              width: "227px",
+            }}
+          >
+            {open ? (
+              <IconButton
+                disableRipple
+                onClick={handleDrawerClose}
+                className={classes.DrawerClose_icon}
+              >
+                <MenuOutlinedIcon fontSize="large" />
+              </IconButton>
+            ) : (
+              <IconButton
+                disableRipple
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                className={classes.DrawerClose_icon}
+              >
+                <MenuOutlinedIcon fontSize="large" />
+              </IconButton>
+            )}
 
-          <div>
-            <img
-              src={Boolean(logos?.logo) ? logos?.logo : Logo}
-              alt="CbsEnfinity"
-              className={classes.logo}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("./dashboard");
-              }}
-            />
-            <p className={classes.version01}>{logos?.version}</p>
-          </div>
-        </Box>
+            <div>
+              <img
+                src={Boolean(logos?.logo) ? logos?.logo : Logo}
+                alt="CbsEnfinity"
+                className={classes.logo}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("./dashboard");
+                }}
+              />
+              <p className={classes.version01}>{logos?.version}</p>
+            </div>
+          </Box>
+        )}
         <Stack direction="row" spacing={4} mx={2}>
           <Box className={classes.heading_user_img_border}>
             <Avatar
@@ -293,152 +300,160 @@ export const MyAppBar = ({
               name="dashboardSearch"
               enableGrid={true}
             /> */}
-            <SearchScreen />
+            {!hideSearchScreen && <SearchScreen />}
             <MultiLanguages />
 
-            <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
-              <Tooltip title="Account Inquiry" placement="bottom" arrow>
-                <IconButton
-                  // renderIcon="PersonSearchOutlined"
-                  onClick={() => setAcctInquiry(true)}
-                  sx={{
-                    backgroundColor: acctInquiry
-                      ? "var(--theme-color3)"
-                      : "rgba(235, 237, 238, 0.45)",
-                    color: acctInquiry
-                      ? "var(--theme-color2)"
-                      : "var(--theme-color3)",
-                    borderRadius: "10px",
-                    height: "30px",
-                    width: "30px",
-                    "&:hover": {
-                      background: "var(--theme-color2)",
-                      borderRadius: "10px",
-                      transition: "all 0.2s ease 0s",
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                      "& .MuiSvgIcon-root": {
-                        height: "32px",
-                        width: "32px",
-                        transition: "all 0.2s ease 0s",
-                        padding: "4px",
-                      },
-                    },
-                  }}
-                >
-                  <PersonSearchOutlinedIcon
-                    fontSize="small"
+            {!hideActionBtns && (
+              <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
+                <Tooltip title="Account Inquiry" placement="bottom" arrow>
+                  <IconButton
+                    // renderIcon="PersonSearchOutlined"
+                    onClick={() => setAcctInquiry(true)}
                     sx={{
+                      backgroundColor: acctInquiry
+                        ? "var(--theme-color3)"
+                        : "rgba(235, 237, 238, 0.45)",
                       color: acctInquiry
                         ? "var(--theme-color2)"
                         : "var(--theme-color3)",
-                    }}
-                  />
-                </IconButton>
-              </Tooltip>
-              {acctInquiry && (
-                <Accountinquiry
-                  open={acctInquiry}
-                  onClose={() => setAcctInquiry(false)}
-                />
-              )}
-              <Quick_View />
-              <Notification_App />
-
-              <Tooltip title="Logout" placement="bottom" arrow>
-                <IconButton
-                  onClick={() => {
-                    setLogoutOpen(true);
-                    // authController?.logout();
-                    // handleClose();
-                  }}
-                  color="error"
-                  sx={{
-                    backgroundColor: "rgba(235, 237, 238, 0.45)",
-
-                    borderRadius: "10px",
-                    height: "30px",
-                    width: "30px",
-                    "&:hover": {
-                      background: "var(--theme-color2)",
                       borderRadius: "10px",
-                      transition: "all 0.2s ease 0s",
-                      boxShadow:
-                        "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                      "& .MuiSvgIcon-root": {
-                        height: "32px",
-                        width: "32px",
+                      height: "30px",
+                      width: "30px",
+                      "&:hover": {
+                        background: "var(--theme-color2)",
+                        borderRadius: "10px",
                         transition: "all 0.2s ease 0s",
-                        padding: "4px",
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                        "& .MuiSvgIcon-root": {
+                          height: "32px",
+                          width: "32px",
+                          transition: "all 0.2s ease 0s",
+                          padding: "4px",
+                        },
                       },
-                    },
-                  }}
-                  aria-label="show 4 new mails"
-                >
-                  <LogoutIcon />
-                </IconButton>
-              </Tooltip>
-
-              {logoutOpen && (
-                <Dialog
-                  // fullScreen={fullScreen}
-                  open={true}
-                  // onClose={handleClose}
-                  // maxWidth={"sm"}
-                  PaperProps={{
-                    style: {
-                      width: "auto",
-                      height: "auto",
-                    },
-                  }}
-                  aria-labelledby="responsive-dialog-title"
-                >
-                  <DialogTitle
-                    sx={{
-                      background: "var(--theme-color3)",
-                      color: "var(--theme-color2)",
-                      // letterSpacing: "1.3px",
-                      justifyItems:"center",
-                      margin: "10px",
-                      boxShadow:
-                        "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                      fontWeight: 500,
-                      borderRadius: "inherit",
-                      minWidth: "150px",
-                      py: 1,
                     }}
-                    id="responsive-dialog-title"
                   >
-                     <Typography variant="h4">Logout</Typography>
-                    {/* <img src={Logout} alt="logout-icon"  style={{height:"100%", paddingLeft:"85px"}}/> */}
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText
+                    <PersonSearchOutlinedIcon
+                      fontSize="small"
                       sx={{
-                        // fontSize: "22px",
-                        display: "flex",
-                        justifyContent: "center",
-                        // height:"100px"
-                        // marginTop: "15px",
+                        color: acctInquiry
+                          ? "var(--theme-color2)"
+                          : "var(--theme-color3)",
                       }}
-                    >
-                      {/* <h2 style={{color:"black"}}>Are you sure want to </h2> */}
-                      <Typography variant="h5" style={{color:"black"}}>Are you sure want to</Typography>
-                      {/* <HelpIcon color="secondary" fontSize="large" /> */}
-                    </DialogContentText>
-                    <DialogContentText
+                    />
+                  </IconButton>
+                </Tooltip>
+                {acctInquiry && (
+                  <Accountinquiry
+                    open={acctInquiry}
+                    onClose={() => setAcctInquiry(false)}
+                  />
+                )}
+                <Quick_View />
+                <Notification_App />
+
+                <Tooltip title="Logout" placement="bottom" arrow>
+                  <IconButton
+                    onClick={() => {
+                      setLogoutOpen(true);
+                      // authController?.logout();
+                      // handleClose();
+                    }}
+                    color="error"
+                    sx={{
+                      backgroundColor: "rgba(235, 237, 238, 0.45)",
+
+                      borderRadius: "10px",
+                      height: "30px",
+                      width: "30px",
+                      "&:hover": {
+                        background: "var(--theme-color2)",
+                        borderRadius: "10px",
+                        transition: "all 0.2s ease 0s",
+                        boxShadow:
+                          "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                        "& .MuiSvgIcon-root": {
+                          height: "32px",
+                          width: "32px",
+                          transition: "all 0.2s ease 0s",
+                          padding: "4px",
+                        },
+                      },
+                    }}
+                    aria-label="show 4 new mails"
+                  >
+                    <LogoutIcon />
+                  </IconButton>
+                </Tooltip>
+
+                {logoutOpen && (
+                  <Dialog
+                    // fullScreen={fullScreen}
+                    open={true}
+                    // onClose={handleClose}
+                    // maxWidth={"sm"}
+                    PaperProps={{
+                      style: {
+                        width: "auto",
+                        height: "auto",
+                      },
+                    }}
+                    aria-labelledby="responsive-dialog-title"
+                  >
+                    <DialogTitle
                       sx={{
-                        // fontSize: "22px",
-                        display: "flex",
-                        justifyContent: "center",
-                        // height:"100px"
-                        // marginTop: "15px",
+                        background: "var(--theme-color3)",
+                        color: "var(--theme-color2)",
+                        // letterSpacing: "1.3px",
+                        justifyItems: "center",
+                        margin: "10px",
+                        boxShadow:
+                          "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+                        fontWeight: 500,
+                        borderRadius: "inherit",
+                        minWidth: "150px",
+                        py: 1,
                       }}
+                      id="responsive-dialog-title"
                     >
-                      {/* <h2 style={{color:"black",textAlign:"center"}}>logout.. ?</h2> */}
-                      <Typography variant="h5" style={{color:"black",textAlign:"center"}}>logout.. ?</Typography>
-                      {/* <HelpIcon color="secondary" fontSize="large" /> */}
-                    </DialogContentText>
+                      <Typography variant="h4">Logout</Typography>
+                      {/* <img src={Logout} alt="logout-icon"  style={{height:"100%", paddingLeft:"85px"}}/> */}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText
+                        sx={{
+                          // fontSize: "22px",
+                          display: "flex",
+                          justifyContent: "center",
+                          // height:"100px"
+                          // marginTop: "15px",
+                        }}
+                      >
+                        {/* <h2 style={{color:"black"}}>Are you sure want to </h2> */}
+                        <Typography variant="h5" style={{ color: "black" }}>
+                          Are you sure want to
+                        </Typography>
+                        {/* <HelpIcon color="secondary" fontSize="large" /> */}
+                      </DialogContentText>
+                      <DialogContentText
+                        sx={{
+                          // fontSize: "22px",
+                          display: "flex",
+                          justifyContent: "center",
+                          // height:"100px"
+                          // marginTop: "15px",
+                        }}
+                      >
+                        {/* <h2 style={{color:"black",textAlign:"center"}}>logout.. ?</h2> */}
+                        <Typography
+                          variant="h5"
+                          style={{ color: "black", textAlign: "center" }}
+                        >
+                          logout.. ?
+                        </Typography>
+                        {/* <HelpIcon color="secondary" fontSize="large" /> */}
+                      </DialogContentText>
                       {/* <DialogContentText
                       sx={{
                         fontSize: "20px",
@@ -451,7 +466,7 @@ export const MyAppBar = ({
                     <img src={Logout} alt="logout-icon" />
 
                     </DialogContentText> */}
-                    {/* <DialogContentText
+                      {/* <DialogContentText
                       sx={{
                         fontSize: "20px",
                         display: "flex",
@@ -461,33 +476,41 @@ export const MyAppBar = ({
                     >
                       logout <HelpIcon color="secondary" fontSize="large" />
                     </DialogContentText> */}
-                  </DialogContent>
-                     <DialogActions style={{ justifyContent: "center", padding:"10px 20px",borderRadius:"5px",marginTop:"-15px"}}>
-                    <GradientButton
-                      // sx={{
-                      //   background: "var(--theme-color1)",
-                      // }}
-                    
-                      onClick={() => authController?.logout()}
-                      autoFocus
+                    </DialogContent>
+                    <DialogActions
+                      style={{
+                        justifyContent: "center",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        marginTop: "-15px",
+                      }}
                     >
-                      Yes
-                    </GradientButton>
-                    <GradientButton
-                      // sx={{
-                      //   background: "var(--theme-color2)",
-                      //   color:"var(--theme-color3)",
-                      // }}
-                      
-                      // autoFocus
-                      onClick={() => setLogoutOpen(false)}
-                    >
-                      No
-                    </GradientButton>
-                  </DialogActions>
-                </Dialog>
-              )}
-            </Box>
+                      <GradientButton
+                        // sx={{
+                        //   background: "var(--theme-color1)",
+                        // }}
+
+                        onClick={() => authController?.logout()}
+                        autoFocus
+                      >
+                        Yes
+                      </GradientButton>
+                      <GradientButton
+                        // sx={{
+                        //   background: "var(--theme-color2)",
+                        //   color:"var(--theme-color3)",
+                        // }}
+
+                        // autoFocus
+                        onClick={() => setLogoutOpen(false)}
+                      >
+                        No
+                      </GradientButton>
+                    </DialogActions>
+                  </Dialog>
+                )}
+              </Box>
+            )}
           </Box>
         </Box>
         <Stack direction="row" spacing={4} ml={1}>
@@ -512,7 +535,7 @@ export const MyAppBar = ({
             >
               <Avatar
                 className={classes.heading_user_img}
-                onClick={handleNavigate}
+                onClick={offProfileNavigate ? () => {} : handleNavigate}
                 alt="Remy Sharp"
                 // src={
                 //   Boolean(pictureURL?.profile)

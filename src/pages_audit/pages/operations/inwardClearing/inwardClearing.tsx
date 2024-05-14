@@ -185,7 +185,7 @@ export const InwardClearing = () => {
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
@@ -218,7 +218,7 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
@@ -268,7 +268,7 @@ export const InwardClearing = () => {
             variables?.DAILY_TRN_CD +
             "?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
@@ -300,7 +300,7 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
@@ -789,7 +789,7 @@ export const InwardClearing = () => {
                       authState?.role < "2"
                         ? ["Yes", "No"]
                         : ["Yes", "No", "Cancel"],
-                    loadingBtnName: "Yes" || "No",
+                    loadingBtnName: ["Yes" || "No"],
                   });
                   const postData = {
                     COMP_CD: mysubdtlRef.current?.COMP_CD,

@@ -202,42 +202,52 @@ export const guj_language_data = {
     Role: "ભૂમિકા",
     LastUnsuccessfulLogin: "છેલ્લું અસફળ લૉગિન",
   },
+
   // Account Inquiry
   AccountInquiry: "ખાતા તપાસ",
   CustomerDetail: "ગ્રાહક વિગતો",
-  AccountNo: "ખાતા નં.",
+  AccountNo: "ખાતા નંબર",
+  CustomerID: "ગ્રાહક આઈડી",
+  Mobile_No: "મોબાઇલ નં.",
   PanNo: "પાન નં.",
+  Account_Name: "ખાતાનું નામ",
   Retrieve: "મેળવો",
-  AccountPersonName: "ખાતા/વ્યક્તિનું નામ",
+  AcctHolderType: "ખાતા ધારકનો પ્રકાર",
+  Email_Id: "ઇમેઇલ આઈડી",
   OpeningDate: "ખુલવાની તારીખ",
   CloseDate: "બંધ તારીખ",
+  WithdrawBalance: "ખેંચી શકાય બેલેન્સ",
+  Status: "સ્થિતિ",
+  SearchCriteriaData: "શોધ માપદંડ ડેટા",
+  PleaseEnterAnyValue: "કૃપા કરીને કોઈપણ મૂલ્ય દાખલ કરો",
+  //Account Inquiry => Passbook/Statement Print Option
 
-  // Passbook/Statement Print Option
-
-  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિન્ટ વિકલ્પ",
+  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
-  ToDate: "આજ સુધી :-",
-  FromDate: "તારીખ થી :-",
+  ToDate: "આજ સુધી",
+  FromDate: "તારીખ થી",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
-  FirstPage: "પહેલું પાનું",
+  FirstPage: "પ્રથમ પાનું",
   Detail: "વિગત",
-  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે.",
+  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે",
   newPasswordCantbeSameasOldPassword:
-    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ.",
+    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ",
   NewPasswordandConfirmPassworddidnotmatched:
-    " નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
-
+    "નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
   CustomerIDisrequired: "ગ્રાહક આઈડી જરૂરી છે",
   CustomerIDShouldNotBeLessThan12Digits:
     "ગ્રાહક આઈડી 12 અંક કરતા ઓછો ન હોવો જોઈએ",
-
-  EnterAccountType: "એકાઉન્ટ પ્રકાર દાખલ કરો.",
+  EnterAccountType: "ખાતા પ્રકાર દાખલ કરો.",
   ModeOfOperation: "ઓપરેશન મોડ",
   GetDetails: "વિગતો મેળવો",
+  EnterAcNo: "ખાતા નં. દાખલ કરો",
 
-  EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
+  Account_Status: "ખાતા સ્થિતિ",
 
   sidebar: {
     Dashboard: "ડેશબોર્ડ",

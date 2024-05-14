@@ -177,7 +177,7 @@ export const Trn002 = () => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
-      arr.map((a, i) => (a.index = i));
+      arr.map((a, i) => (a.index = i)); /// /// /// /// ///
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
@@ -427,7 +427,7 @@ export const Trn002 = () => {
           }
           ref={myGridRef}
           refetchData={() => handleGetTRN002List()}
-          actions={actions}
+          actions={actions} /// /// /// /// ///
           setAction={setCurrentAction}
           onlySingleSelectionAllow={true}
           isNewRowStyle={true}
@@ -474,7 +474,7 @@ export const Trn002 = () => {
         </Grid>
       </Card>
       <CommonFooter
-        viewOnly={true}
+        viewOnly={true} /// /// /// /// ///
         filteredRows={filteredRows}
         handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}

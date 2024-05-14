@@ -93,7 +93,7 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
@@ -141,7 +141,7 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
@@ -202,7 +202,7 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: "Are you sure to return this Cheque??",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
@@ -276,7 +276,7 @@ export const ChequeReturnPostForm: FC<{
             variables?.DAILY_TRN_CD +
             "?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
@@ -305,7 +305,7 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
@@ -554,7 +554,7 @@ export const ChequeReturnPostForm: FC<{
                     authState?.role < "2"
                       ? ["Yes", "No"]
                       : ["Yes", "No", "Cancel"],
-                  loadingBtnName: "Yes" || "No",
+                  loadingBtnName: ["Yes" || "No"],
                 });
                 const postData = {
                   COMP_CD: inwardGridData?.COMP_CD,
