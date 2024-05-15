@@ -2,19 +2,21 @@ import { alpha } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 const drawerWidth = 227;
-
+interface StylesProps {
+  isNewStyle?: boolean;
+}
 export const useStyles = makeStyles((theme: any) => ({
-  appBar: {
+  appBar: (props?: StylesProps) => ({
     // zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     color: "#0063A3",
-    height: "80px",
+    height: props?.isNewStyle ? "57px" : "80px",
     background: "var(--theme-color2)",
     boxShadow: "0px 1px 0px -0.5px #DEE0E2",
-  },
+  }),
   searchBar: {
     width: 290,
     border: "none",
@@ -78,11 +80,12 @@ export const useStyles = makeStyles((theme: any) => ({
     borderRadius: "50%",
     padding: "4px",
   },
-  toolbar: {
-    minHeight: "80px",
+  toolbar: (props?: StylesProps) => ({
+    minHeight: props?.isNewStyle ? "57px" : "80px",
     paddingLeft: "0px",
-    height: "80px",
-  },
+    height: props?.isNewStyle ? "57px" : "80px",
+    // Add other toolbar styles as needed...
+  }),
   title: {
     flexGrow: 1,
     padding: theme.spacing(0.5, 0),

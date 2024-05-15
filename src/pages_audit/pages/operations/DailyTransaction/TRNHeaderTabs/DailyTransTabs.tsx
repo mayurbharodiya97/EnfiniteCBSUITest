@@ -73,6 +73,8 @@ import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
 import { queryClient } from "cache";
+import { MyAppBar } from "pages_audit/appBar/appBar";
+import DialogWithAppbar from "components/custom/dialogWithAppbar";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,6 +101,7 @@ interface DailyTransTabsProps {
   tabsData: any;
   cardsData: any;
   reqData: any;
+  hideCust360Btn?: boolean;
 }
 
 export const DailyTransTabs = ({
@@ -106,6 +109,7 @@ export const DailyTransTabs = ({
   tabsData,
   cardsData,
   reqData,
+  hideCust360Btn,
 }: DailyTransTabsProps) => {
   const [tabValue, setTabValue] = React.useState(0);
   const navArray = tabsData ? tabsData : [];
@@ -198,7 +202,10 @@ export const DailyTransTabs = ({
                 {a?.TAB_NAME.includes("APBS") && <APBS reqData={reqData} />}
                 {a?.TAB_NAME.includes("PMBY") && <PMBY reqData={reqData} />}
                 {a.TAB_NAME.includes("Account") && (
-                  <AccDetails cardsData={cardsData} />
+                  <AccDetails
+                    cardsData={cardsData}
+                    hideCust360Btn={hideCust360Btn}
+                  />
                 )}
                 {a.TAB_NAME.includes("Joint") && (
                   <JointDetailsForm reqData={reqData} />
@@ -238,7 +245,7 @@ export const DailyTransTabs = ({
           ))
         ) : (
           <TabPanel value={tabValue} index={0}>
-            <AccDetails cardsData={cardsData} />
+            <AccDetails cardsData={cardsData} hideCust360Btn={hideCust360Btn} />
           </TabPanel>
         )}
       </>
@@ -299,6 +306,16 @@ export const DailyTransTabsWithDialog = ({
     any
   >(["getAcctDtlList"], () => API.getAcctDtlList(rowsData?.[0]?.data));
 
+  const updatedMetaData = {
+    ...AccountDetailsGridMetadata,
+    gridConfig: {
+      ...AccountDetailsGridMetadata.gridConfig,
+      gridLabel:
+        data?.length > 0
+          ? `Account Details        Total No. of records:${data?.length}`
+          : `Account Details`,
+    },
+  };
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardsData(data);
@@ -387,100 +404,54 @@ export const DailyTransTabsWithDialog = ({
   }, []);
 
   return (
-    <Dialog
+    <DialogWithAppbar
       open={true}
-      fullScreen
-      PaperProps={{ style: { background: "var(--theme-color4)" } }}
-    >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          background: "var(--theme-color5)",
-          margin: "10px 32px 0px 32px",
-          alignItems: "center",
-          height: "7vh",
-          boxShadow:
-            "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
-        }}
-      >
-        <Typography
-          sx={{
-            fontWeight: 500,
-            fontSize: "1.25rem",
-            lineHeight: 1.6,
-            letterSpacing: "0.0075em",
-            color: "#fff",
-          }}
-        >
-          {`Account Details For Customer ID : ${
-            rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
-          }`}
-        </Typography>
-        <Box>
-          {/* <GradientButton
-            onClick={() =>
-              navigate("view-details", {
-                state: [
-                  {
-                      data: {
-                          BRANCH: "099 ",
-                          CONFIRMED_FLAG: "CONFIRMED",
-                          CATEGORY_CODE: "01  ",
-                          ACTIVE: "Y",
-                          MOBILE_NUMBER: "7858089344",
-                          CUSTOMER_TYPE: "I",
-                          CUSTOMER_ID: "213951",
-                          KYC_NO: "",
-                          REMARKS: "",
-                          REQUEST_ID: "1492",
-                          CATEG_NM: "INDIVIDUAL PERSON",
-                          UPD_TAB_FLAG_NM: "D",
-                          CONSTITUTION_NAME: "INDIVIDUAL",
-                          CUSTOMER_NAME: "HINAL  ",
-                          CONFIRMED: "Y",
-                          UPD_TAB_NAME: "EXISTING DOC MODIFY",
-                          CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
-                          MAKER: "adi",
-                          PAN_NO: "DWIPP9643D",
-                          CONSTITUTION_TYPE: "01"
-                      },
-                      id: "213951"
-                  }
-              ],
-              })
-            }
-            color="primary"
+      paperProps={{ style: { background: "var(--theme-color4)" } }}
+      title={
+        <>
+          <Typography
+            sx={{
+              fontWeight: 500,
+              fontSize: "1.25rem",
+              lineHeight: 1.6,
+              letterSpacing: "0.0075em",
+              color: "#fff",
+            }}
           >
-            Customer Details
-          </GradientButton> */}
-          <GradientButton onClick={() => handleClose()} color="primary">
-            Close
-          </GradientButton>
-        </Box>
-      </DialogTitle>
-      {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
-        <LinearProgress
-          sx={{
-            margin: "4px 32px 0 32px",
-            background: "var(--theme-color6)",
-            "& .MuiLinearProgress-bar": {
-              background: "var(--theme-color1) !important",
-            },
-          }}
-        />
-      ) : null}
-      <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+            {`Account Details For Customer ID : ${
+              rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
+            }`}
+          </Typography>
+          <Box>
+            <GradientButton onClick={() => handleClose()} color="primary">
+              Close
+            </GradientButton>
+          </Box>
+        </>
+      }
+      content={
         <>
           <DailyTransTabs
             heading={""}
             tabsData={tabsDetails}
             cardsData={cardData}
             reqData={rowsData?.[0]?.data}
+            hideCust360Btn={true}
           />
+          {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
+            <LinearProgress
+              sx={{
+                // margin: "4px 32px 0 32px",
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
+          ) : null}
           <GridWrapper
             key={`TodaysTransactionTableGrid${isLoading}`}
-            finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
+            finalMetaData={updatedMetaData as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
             ReportExportButton={true}
@@ -491,24 +462,141 @@ export const DailyTransTabsWithDialog = ({
             isNewRowStyle={true}
             defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
           />
+          <Routes>
+            <Route
+              path="view-details"
+              element={
+                <CkycProvider>
+                  <FormModal
+                    onClose={() => {
+                      navigate(".");
+                    }}
+                    formmode={"new"}
+                    from={"new-entry"}
+                  />
+                </CkycProvider>
+              }
+            />
+          </Routes>
         </>
-        <Routes>
-          <Route
-            path="view-details"
-            element={
-              <CkycProvider>
-                <FormModal
-                  onClose={() => {
-                    navigate(".");
-                  }}
-                  formmode={"new"}
-                  from={"new-entry"}
-                />
-              </CkycProvider>
-            }
-          />
-        </Routes>
-      </DialogContent>
-    </Dialog>
+      }
+      // {/* <DialogTitle
+      //   sx={{
+      //     display: "flex",
+      //     justifyContent: "space-between",
+      //     background: "var(--theme-color5)",
+      //     margin: "10px 32px 0px 32px",
+      //     alignItems: "center",
+      //     height: "7vh",
+      //     boxShadow:
+      //       "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+      //   }}
+      // >
+      //   <Typography
+      //     sx={{
+      //       fontWeight: 500,
+      //       fontSize: "1.25rem",
+      //       lineHeight: 1.6,
+      //       letterSpacing: "0.0075em",
+      //       color: "#fff",
+      //     }}
+      //   >
+      //     {`Account Details For Customer ID : ${
+      //       rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
+      //     }`}
+      //   </Typography>
+      //   <Box>
+      //       <GradientButton
+      //       onClick={() =>
+      //         navigate("view-details", {
+      //           state: [
+      //             {
+      //                 data: {
+      //                     BRANCH: "099 ",
+      //                     CONFIRMED_FLAG: "CONFIRMED",
+      //                     CATEGORY_CODE: "01  ",
+      //                     ACTIVE: "Y",
+      //                     MOBILE_NUMBER: "7858089344",
+      //                     CUSTOMER_TYPE: "I",
+      //                     CUSTOMER_ID: "213951",
+      //                     KYC_NO: "",
+      //                     REMARKS: "",
+      //                     REQUEST_ID: "1492",
+      //                     CATEG_NM: "INDIVIDUAL PERSON",
+      //                     UPD_TAB_FLAG_NM: "D",
+      //                     CONSTITUTION_NAME: "INDIVIDUAL",
+      //                     CUSTOMER_NAME: "HINAL  ",
+      //                     CONFIRMED: "Y",
+      //                     UPD_TAB_NAME: "EXISTING DOC MODIFY",
+      //                     CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
+      //                     MAKER: "adi",
+      //                     PAN_NO: "DWIPP9643D",
+      //                     CONSTITUTION_TYPE: "01"
+      //                 },
+      //                 id: "213951"
+      //             }
+      //         ],
+      //         })
+      //       }
+      //       color="primary"
+      //     >
+      //       Customer Details
+      //     </GradientButton>
+      //     <GradientButton onClick={() => handleClose()} color="primary">
+      //       Close
+      //     </GradientButton>
+      //   </Box>
+      // </DialogTitle> */}
+      // {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
+      //   <LinearProgress
+      //     sx={{
+      //       margin: "4px 32px 0 32px",
+      //       background: "var(--theme-color6)",
+      //       "& .MuiLinearProgress-bar": {
+      //         background: "var(--theme-color1) !important",
+      //       },
+      //     }}
+      //   />
+      // ) : null}
+      // <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+      //   <>
+      //     <DailyTransTabs
+      //       heading={""}
+      //       tabsData={tabsDetails}
+      //       cardsData={cardData}
+      //       reqData={rowsData?.[0]?.data}
+      //     />
+      //     <GridWrapper
+      //       key={`TodaysTransactionTableGrid${isLoading}`}
+      //       finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
+      //       data={data ?? []}
+      //       setData={() => null}
+      //       ReportExportButton={true}
+      //       actions={[]}
+      //       setAction={setCurrentAction}
+      //       loading={isLoading || isFetching}
+      //       onlySingleSelectionAllow={true}
+      //       isNewRowStyle={true}
+      //       defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
+      //     />
+      //   </>
+      //   <Routes>
+      //     <Route
+      //       path="view-details"
+      //       element={
+      //         <CkycProvider>
+      //           <FormModal
+      //             onClose={() => {
+      //               navigate(".");
+      //             }}
+      //             formmode={"new"}
+      //             from={"new-entry"}
+      //           />
+      //         </CkycProvider>
+      //       }
+      //     />
+      //   </Routes>
+      // </DialogContent>
+    />
   );
 };

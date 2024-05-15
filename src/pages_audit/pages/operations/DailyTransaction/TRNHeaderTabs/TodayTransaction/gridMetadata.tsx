@@ -172,7 +172,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     disableSorting: false,
     disableGroupBy: true,
     enablePagination: false,
-    hideFooter: false,
+    hideFooter: true,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -181,7 +181,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   filters: [],

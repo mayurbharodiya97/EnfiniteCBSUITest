@@ -2,6 +2,7 @@ import { components } from "components/report";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 export const TellerScreenMetadata: any = {
   form: {
     name: "TellerOperation",
@@ -144,7 +145,7 @@ export const TellerScreenMetadata: any = {
       },
       accountTypeMetadata: {
         name: "ACCT_TYPE",
-        dependentFields: ["TRN"],
+        dependentFields: ["TRN", "BRANCH_CD"],
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -153,7 +154,10 @@ export const TellerScreenMetadata: any = {
           dependentFieldValues,
           reqFlag
         ) => {
-          formState.setDataOnFieldChange("ACCT_TYPE", currentField);
+          formState.setDataOnFieldChange("ACCT_TYPE", {
+            currentField,
+            branch_cd: dependentFieldValues?.BRANCH_CD?.value,
+          });
           return {
             ACCT_CD: { value: "" },
             RECEIPT: { value: "" },
@@ -212,6 +216,8 @@ export const TellerScreenMetadata: any = {
                 messageTitle: "Validation Failed...!",
                 message: postData.RESTRICTION,
                 buttonNames: ["Ok"],
+                defFocusBtnName: "Ok",
+                icon: "ERROR",
               });
               return {
                 ACCT_CD: { value: "" },
@@ -226,6 +232,8 @@ export const TellerScreenMetadata: any = {
                 messageTitle: "Validation Alert",
                 message: postData.MESSAGE1,
                 buttonNames: ["Ok"],
+                defFocusBtnName: "Ok",
+                icon: "INFO",
               });
             }
 
