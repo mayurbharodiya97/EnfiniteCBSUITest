@@ -12,11 +12,13 @@ import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { usePopupContext } from "components/custom/popupContext";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export const LimitConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const [deletePopup, setDeletePopup] = useState<any>(false);
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const limitCfm: any = useMutation("limitConfirm", limitConfirm, {
@@ -34,11 +36,11 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
         BRANCH_CD: authState?.user?.branchCode,
       });
       if (Boolean(variables?.IS_CONFIMED)) {
-        enqueueSnackbar("Data has been successfully confirmed", {
+        enqueueSnackbar(t("DataConfirmMessage"), {
           variant: "success",
         });
       } else if (!Boolean(variables?.IS_CONFIMED)) {
-        enqueueSnackbar("Data has been successfully Rejected", {
+        enqueueSnackbar(t("DataRejectMessage"), {
           variant: "success",
         });
       }
@@ -53,7 +55,9 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      limitconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      limitconfirmFormMetaData.form.label = `${t(
+        "ConfirmationDetail"
+      )} \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -104,8 +108,8 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
-                      messageTitle: "Confirmation",
-                      message: `Are you sure to Confirm `,
+                      messageTitle: "confirmation",
+                      message: `AreYouSureToConfirm`,
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: "Yes",
@@ -122,7 +126,7 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                     }
                   }}
                 >
-                  Confirm
+                  {t("Confirm")}
                 </Button>
                 <Button
                   color="primary"
@@ -130,10 +134,10 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                     setDeletePopup(true);
                   }}
                 >
-                  Reject
+                  {t("Reject")}
                 </Button>
                 <Button color="primary" onClick={() => closeDialog()}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );
@@ -143,11 +147,10 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
 
       {deletePopup && (
         <RemarksAPIWrapper
-          TitleText={"Enter Removal Remarks for Limit Confirmation (TRN/374)"}
-          label={"Removal Remarks"}
+          TitleText={"RemovalRemarksLimit"}
+          label={"RemovalRemarks"}
           onActionNo={() => setDeletePopup(false)}
           onActionYes={(val, rows) => {
-            console.log("<<<dele", val, rows);
             limitCfm.mutate({
               IS_CONFIMED: false,
               FLAG: rows?.STATUS_FLAG,

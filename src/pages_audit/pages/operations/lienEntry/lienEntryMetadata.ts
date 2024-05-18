@@ -1,5 +1,4 @@
 import { utilFunction } from "components/utils";
-import React from "react";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 
@@ -45,8 +44,22 @@ export const LienEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async (field) => {
+        postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_TAX: { value: "" },
+              CHEQUE_DT: { value: "" },
+              CHEQUE_AMOUNT: { value: "" },
+            };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
             return {
               ACCT_TYPE: { value: "" },
               ACCT_CD: { value: "" },
@@ -61,6 +74,7 @@ export const LienEntryMetadata = {
             };
           }
         },
+        runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -69,25 +83,26 @@ export const LienEntryMetadata = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/652",
+            DOC_CD: "TRN/652",
           });
         },
         _optionsKey: "get_Account_Type",
-        postValidationSetCrossFieldValues: async (field) => {
-          if (field?.value) {
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              TRAN_BAL: { value: "" },
-              CHEQUE_FROM: { value: "" },
-              CHEQUE_TO: { value: "" },
-              AMOUNT: { value: "" },
-              SERVICE_TAX: { value: "" },
-              CHEQUE_DT: { value: "" },
-              CHEQUE_AMOUNT: { value: "" },
-            };
-          }
+        postValidationSetCrossFieldValues: (field, formState) => {
+          formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
+            CHEQUE_FROM: { value: "" },
+            CHEQUE_TO: { value: "" },
+            AMOUNT: { value: "" },
+            SERVICE_TAX: { value: "" },
+            CHEQUE_DT: { value: "" },
+            CHEQUE_AMOUNT: { value: "" },
+          };
         },
+        runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
         postValidationSetCrossFieldValues: async (
@@ -109,7 +124,7 @@ export const LienEntryMetadata = {
               ),
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-              SCREEN_REF: "ETRN/048",
+              SCREEN_REF: "TRN/048",
             };
             let postData = await GeneralAPI.getAccNoValidation(
               otherAPIRequestPara
@@ -136,31 +151,38 @@ export const LienEntryMetadata = {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
-              formState.MessageBox({
+              let res = await formState.MessageBox({
                 messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
-                buttonNames: ["Ok"],
                 defFocusBtnName: "Ok",
               });
-              return {
-                ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-                TRAN_BAL: {
-                  value: postData?.WIDTH_BAL ?? "",
-                },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentValue?.ACCT_TYPE?.optionData
+                    ),
+                    ignoreUpdate: true,
+                  },
+                  ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                  TRAN_BAL: {
+                    value: postData?.WIDTH_BAL ?? "",
+                  },
+                };
+              }
             } else {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
               return {
                 ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentValue?.ACCT_TYPE?.optionData
+                  ),
                   ignoreUpdate: true,
                 },
                 ACCT_NM: {

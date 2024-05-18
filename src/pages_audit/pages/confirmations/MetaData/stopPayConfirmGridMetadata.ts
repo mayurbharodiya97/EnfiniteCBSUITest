@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const stopPayConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stop Payment Confirmation",
+    gridLabel: "StopPaymentConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -31,7 +31,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -55,7 +55,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "Account No.",
+      columnName: "AccountNumber",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +65,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Holder Name",
+      columnName: "AccountName",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -75,7 +75,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_FROM_TO",
-      columnName: "Cheque From - To",
+      columnName: "ChequeFromTo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -86,7 +86,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_DT",
-      columnName: "Cheque Date",
+      columnName: "ChequeDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -98,7 +98,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_AMOUNT",
-      columnName: "Cheque Amount",
+      columnName: "ChequeAmount",
       sequence: 4,
       alignment: "right",
       componentType: "currency",
@@ -109,7 +109,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
+      columnName: "LastEnteredBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -130,7 +130,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "VERIFIED_BY",
-      columnName: "Verified By",
+      columnName: "VerifiedBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",

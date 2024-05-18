@@ -35,21 +35,23 @@ import { format } from "date-fns";
 import * as API from "./api";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { useTranslation } from "react-i18next";
 
 export const TemporaryOD = () => {
-  const [gridDetailData, setGridDetailData] = useState<any>([]);
-  const [refreshForm, setRefreshForm] = useState<any>(0);
-  const [closeAlert, setCloseAlert] = useState<any>(true);
-  const [isVisible, setIsVisible] = useState<any>(false);
+  const [isData, setIsData] = useState({
+    isVisible: false,
+    value: "tab1",
+    closeAlert: true,
+  });
   const { authState } = useContext(AuthContext);
-  const [value, setValue] = useState("tab1");
   const { MessageBox } = usePopupContext();
   const myRef = useRef<any>(null);
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const actions: ActionTypes[] = [
     {
-      actionName: "documents",
+      actionName: "add",
       actionLabel: "Add",
       multiple: false,
       rowDoubleClick: false,
@@ -61,11 +63,8 @@ export const TemporaryOD = () => {
     "lienGridDetail",
     API.temporaryODdetails,
     {
-      onSuccess: (data) => {
-        setGridDetailData(data);
-      },
-      onError: (error: any) => {
-        setCloseAlert(true);
+      onError: () => {
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
@@ -73,22 +72,21 @@ export const TemporaryOD = () => {
   const crudTempOD: any = useMutation("crudTemoraryOD", API.crudTemoraryOD, {
     onSuccess: (data, variables) => {
       if (Boolean(variables?._isNewRow)) {
-        enqueueSnackbar("Data insert successfully", { variant: "success" });
-        setRefreshForm((old) => old + 1);
+        enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
       } else if (!Boolean(variables?.isNewRow)) {
-        enqueueSnackbar("Force-Expire successfully", { variant: "success" });
+        enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
         temporaryODDetail.mutate({
           COMP_CD: authState?.companyID,
           BRANCH_CD: variables?.BRANCH_CD,
           ACCT_TYPE: variables?.ACCT_TYPE,
           ACCT_CD: variables?.ACCT_CD,
-          FLAG: "Y",
+          FLAG: "H",
           ASON_DT: authState?.workingDate,
         });
       }
     },
-    onError: (error: any) => {
-      setCloseAlert(true);
+    onError: () => {
+      setIsData((old) => ({ ...old, closeAlert: true }));
     },
   });
 
@@ -116,7 +114,7 @@ export const TemporaryOD = () => {
 
   const setCurrentAction = useCallback(
     async (data) => {
-      if (data.name === "documents") {
+      if (data.name === "add") {
         myRef.current?.addNewRow(true, { VALID_UPTO: authState?.workingDate });
       }
     },
@@ -130,23 +128,26 @@ export const TemporaryOD = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
-          value={value}
+          value={isData.value}
           sx={{ ml: "25px" }}
           onChange={(event, newValue) => {
-            setValue(newValue);
-            setGridDetailData([]);
-            setCloseAlert(false);
+            setIsData((old) => ({
+              ...old,
+              value: newValue,
+              closeAlert: false,
+            }));
+            temporaryODDetail.data = [];
 
             const handleTabChange = (metaData, flag) => {
               myRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  metaData.gridConfig.gridLabel = `Temporary-OD ${
-                    flag === "T" ? "Today" : "History"
-                  } Detail \u00A0\u00A0 ${(
+                  metaData.gridConfig.gridLabel = `${t("TemporaryOD")} ${
+                    flag === "T" ? t("Todays") : t("History")
+                  } ${t("Detail")} \u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
-                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                    res?.ACCT_CD
                   ).replace(/\s/g, "")}`;
 
                   let Apireq = {
@@ -172,9 +173,9 @@ export const TemporaryOD = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="tab1" label="Temporary-OD Entry" />
-          {isVisible && <Tab value="tab2" label="Today(s) Detail" />}
-          {isVisible && <Tab value="tab3" label="History Detail" />}
+          <Tab value="tab1" label={t("TemporaryODEntry")} />
+          {isData.isVisible && <Tab value="tab2" label={t("TodaysDetail")} />}
+          {isData.isVisible && <Tab value="tab3" label={t("HistoryDetail")} />}
         </Tabs>
       </Box>
 
@@ -190,8 +191,8 @@ export const TemporaryOD = () => {
         >
           {crudTempOD?.isLoading ? (
             <LinearProgress color="secondary" />
-          ) : (temporaryODDetail?.isError && closeAlert) ||
-            (crudTempOD?.isError && closeAlert) ? (
+          ) : (temporaryODDetail?.isError && isData.closeAlert) ||
+            (crudTempOD?.isError && isData.closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -213,18 +214,23 @@ export const TemporaryOD = () => {
           ) : (
             <LinearProgressBarSpacer />
           )}
-          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
+          >
             <MasterDetailsForm
-              key={"temporaryODentry" + refreshForm}
+              key={"temporaryODentry"}
               metaData={metadata}
               initialData={{}}
               onSubmitData={onSubmitHandler}
               isNewRow={false}
-              onClickActionEvent={(index, id, data) => {}}
+              onClickActionEvent={() => {}}
               formState={{ MessageBox: MessageBox }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
-                  setIsVisible(payload.IS_VISIBLE);
+                  setIsData((old) => ({
+                    ...old,
+                    isVisible: payload.IS_VISIBLE,
+                  }));
                 }
               }}
               actions={actions}
@@ -233,7 +239,7 @@ export const TemporaryOD = () => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "23vh",
+                height: "27vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
@@ -249,36 +255,40 @@ export const TemporaryOD = () => {
                       // }
                       color={"primary"}
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </>
                 );
               }}
             </MasterDetailsForm>
           </div>
-          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
+          >
             <>
               <GridWrapper
                 key={`tempODGrid-Today-data` + temporaryODDetail.isSuccess}
                 finalMetaData={tempODGridTodayMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
+                data={temporaryODDetail.data ?? []}
                 setData={() => {}}
                 loading={temporaryODDetail.isLoading}
               />
             </>
           </div>
-          <div style={{ display: value === "tab3" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab3" ? "inherit" : "none" }}
+          >
             <>
               <GridWrapper
                 key={`tempODGrid-History-Data` + temporaryODDetail.isSuccess}
                 finalMetaData={tempODGridHistoryMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
+                data={temporaryODDetail.data ?? []}
                 setData={() => {}}
                 loading={temporaryODDetail.isLoading}
                 onClickActionEvent={async (index, id, data) => {
                   let res = await MessageBox({
-                    messageTitle: "Confirmation",
-                    message: "Are you sure to force expire ?",
+                    messageTitle: "confirmation",
+                    message: "AreYouSureToForceExp",
                     buttonNames: ["Yes", "No"],
                   });
                   if (res === "Yes") {

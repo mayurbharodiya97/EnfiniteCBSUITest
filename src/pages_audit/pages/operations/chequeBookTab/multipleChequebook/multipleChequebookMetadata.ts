@@ -1,5 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const ChequeBKPopUpGridData: GridMetaDataType = {
+export const multipleChequebookGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "ChequeBookSeriesDetail",
@@ -18,8 +18,8 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "50vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -33,9 +33,9 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 123,
+      width: 139,
       minWidth: 100,
-      maxWidth: 150,
+      maxWidth: 160,
       isVisible: true,
     },
     {
@@ -54,9 +54,9 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
       sequence: 6,
       alignment: "center",
       componentType: "default",
-      width: 105,
+      width: 138,
       minWidth: 100,
-      maxWidth: 130,
+      maxWidth: 150,
     },
 
     {
@@ -65,7 +65,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
       sequence: 7,
       alignment: "right",
       componentType: "currency",
-      width: 80,
+      width: 108,
       minWidth: 70,
       maxWidth: 120,
     },

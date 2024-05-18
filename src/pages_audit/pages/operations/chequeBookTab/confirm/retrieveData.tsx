@@ -9,9 +9,11 @@ import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
 import { chequeBKRetrievalMetadata } from "./retrieveMetadata";
+import { useTranslation } from "react-i18next";
 
 const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const {
     data: chequeBookFlag,
@@ -77,7 +79,7 @@ const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
                     disabled={isSubmitting}
                     color={"primary"}
                   >
-                    ok
+                    {t("Ok")}
                   </GradientButton>
                 )}
 
@@ -86,7 +88,7 @@ const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
                   color={"primary"}
                   disabled={isSubmitting}
                 >
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}

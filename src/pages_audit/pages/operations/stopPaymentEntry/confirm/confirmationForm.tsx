@@ -11,11 +11,13 @@ import { queryClient } from "cache";
 import { stopPaymentConfirm } from "../api";
 import { enqueueSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
+import { useTranslation } from "react-i18next";
 
 export const StopPayConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const stopPaymentCfm: any = useMutation(
     "stopPaymentConfirm",
@@ -34,11 +36,11 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
         });
 
         if (Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully confirmed", {
+          enqueueSnackbar(t("DataConfirmMessage"), {
             variant: "success",
           });
         } else if (!Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully Rejected", {
+          enqueueSnackbar(t("DataRejectMessage"), {
             variant: "success",
           });
         }
@@ -54,7 +56,9 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      stopPayconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      stopPayconfirmFormMetaData.form.label = `${t(
+        "ConfirmationDetail"
+      )} \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -88,7 +92,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
         <FormWrapper
           key={"stopPay-confirmation-Form"}
           metaData={stopPayconfirmFormMetaData}
-          initialValues={rows?.[0]?.data ?? []}
+          initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
@@ -99,15 +103,14 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
           }}
         >
           {({ isSubmitting, handleSubmit }) => {
-            console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
                 <Button
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
-                      messageTitle: "Confirmation",
-                      message: `Are you sure to Confirm `,
+                      messageTitle: "confirmation",
+                      message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: "Yes",
@@ -124,14 +127,14 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                     }
                   }}
                 >
-                  Confirm
+                  {t("Confirm")}
                 </Button>
                 <Button
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
-                      messageTitle: "Confirmation",
-                      message: `Are you sure to Confirm `,
+                      messageTitle: "confirmation",
+                      message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: "Yes",
@@ -148,10 +151,10 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                     }
                   }}
                 >
-                  Reject
+                  {t("Reject")}
                 </Button>
                 <Button color="primary" onClick={() => closeDialog()}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );

@@ -557,10 +557,11 @@ export const DataGrid = ({
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
             ActionsComponent={TablePaginationActions}
+            labelRowsPerPage={t("Rowsperpage")}
           />
         ) : (
           <TableCell style={{ display: "flex" }}>
-            Total No. of {paginationText}: {rowCount}
+            {t("TotalNoOf")} {t(paginationText)}: {rowCount}
           </TableCell>
         )}
 

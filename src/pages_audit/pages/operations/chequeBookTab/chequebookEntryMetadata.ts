@@ -46,22 +46,43 @@ export const ChequeBookEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async () => {
-          return {
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
-            ACCT_NM: { value: "" },
-            ACCT_BAL: { value: "" },
-            CHEQUE_FROM: { value: "" },
-            CHEQUE_TO: { value: "" },
-            SERVICE_TAX: { value: "" },
-            GST: { value: "" },
-            CHEQUE_TOTAL: { value: "" },
-            AMOUNT: { value: "" },
-            TOOLBAR_DTL: { value: "" },
-            SR_CD: { value: "" },
-          };
+        postValidationSetCrossFieldValues: (field, formState) => {
+          if (field.value) {
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              SERVICE_TAX: { value: "" },
+              GST: { value: "" },
+              CHEQUE_TOTAL: { value: "" },
+              AMOUNT: { value: "" },
+              TOOLBAR_DTL: { value: "" },
+              SR_CD: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
+            };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              SERVICE_TAX: { value: "" },
+              GST: { value: "" },
+              CHEQUE_TOTAL: { value: "" },
+              AMOUNT: { value: "" },
+              TOOLBAR_DTL: { value: "" },
+              SR_CD: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
+            };
+          }
         },
+
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
@@ -71,11 +92,13 @@ export const ChequeBookEntryMetaData = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/045",
+            DOC_CD: "TRN/045",
           });
         },
         _optionsKey: "securityDropDownListType",
-        postValidationSetCrossFieldValues: async () => {
+        postValidationSetCrossFieldValues: (field, formState) => {
+          formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
+
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -88,6 +111,7 @@ export const ChequeBookEntryMetaData = {
             AMOUNT: { value: "" },
             TOOLBAR_DTL: { value: "" },
             SR_CD: { value: "" },
+            NEW_LEAF_ARR: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
@@ -119,6 +143,10 @@ export const ChequeBookEntryMetaData = {
             postData = postData.sort(
               (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
             );
+            formState.setDataOnFieldChange("DTL_TAB", {
+              DTL_TAB:
+                postData.some((item) => item["O_STATUS"] === "0") ?? false,
+            });
 
             let btn99, returnVal;
 
@@ -126,11 +154,8 @@ export const ChequeBookEntryMetaData = {
               let btnName = await formState.MessageBox(obj);
               return { btnName, obj };
             };
-            for (let i = 0; i < postData.length; i++) {
-              formState.setDataOnFieldChange("DTL_TAB", {
-                DTL_TAB: postData[i]?.O_STATUS === "0" ? true : false,
-              });
 
+            for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
@@ -239,6 +264,7 @@ export const ChequeBookEntryMetaData = {
               TOOLBAR_DTL: { value: "" },
               JOINT_NAME_1: { value: "" },
               JOINT_NAME_2: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
             };
           }
 
@@ -282,7 +308,7 @@ export const ChequeBookEntryMetaData = {
             Number(dependentFields.CHEQUE_BK_TOTAL.value) >
           Number(currentField.value)
         ) {
-          return "balance is less than service-charge";
+          return t("BalanceIsLesThanServicecharge");
         }
         return "";
       },
@@ -368,7 +394,7 @@ export const ChequeBookEntryMetaData = {
         auth,
         dependentFieldsValues
       ) => {
-        if (field.value) {
+        if (field.value && dependentFieldsValues.ACCT_CD.value) {
           let Apireq = {
             BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
             ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,

@@ -2,11 +2,13 @@ import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import { DefaultValue } from "recoil";
+import { t } from "i18next";
+import { isValid } from "date-fns";
 export const temporaryODentryMetadata = {
   masterForm: {
     form: {
       name: "temporaryOD-entryMetadata",
-      label: "Temporary OD Against Entry",
+      label: "TemporaryODAgainstEntry",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -34,15 +36,21 @@ export const temporaryODentryMetadata = {
         branchCodeMetadata: {
           postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
-              // formState.setDataOnFieldChange("IS_VISIBLE", {
-              //   IS_VISIBLE: false,
-              // });
+              return {
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "" },
+              };
+            } else if (!field.value) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
               return {
                 ACCT_TYPE: { value: "" },
                 ACCT_CD: { value: "" },
               };
             }
           },
+          runPostValidationHookAlways: true,
         },
         accountTypeMetadata: {
           isFieldFocused: true,
@@ -51,20 +59,21 @@ export const temporaryODentryMetadata = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: authState?.user?.branchCode,
               USER_NAME: authState?.user?.id,
-              DOC_CD: "ETRN/054",
+              DOC_CD: "TRN/054",
             });
           },
           _optionsKey: "get_Account_Type",
           postValidationSetCrossFieldValues: async (field, formState) => {
+            formState.setDataOnFieldChange("IS_VISIBLE", {
+              IS_VISIBLE: false,
+            });
             if (field?.value) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
-              });
               return {
                 ACCT_CD: { value: "" },
               };
             }
           },
+          runPostValidationHookAlways: true,
         },
 
         accountCodeMetadata: {
@@ -87,7 +96,7 @@ export const temporaryODentryMetadata = {
                 ),
                 ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
                 BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-                SCREEN_REF: "ETRN/047",
+                SCREEN_REF: "TRN/047",
               };
               let postData = await GeneralAPI.getAccNoValidation(
                 otherAPIRequestPara
@@ -98,9 +107,8 @@ export const temporaryODentryMetadata = {
                   IS_VISIBLE: false,
                 });
                 let res = await formState.MessageBox({
-                  messageTitle: "Validation Failed...!",
+                  messageTitle: "ValidationFailed",
                   message: postData?.RESTRICTION,
-                  buttonNames: ["Ok"],
                   defFocusBtnName: "Ok",
                 });
 
@@ -117,25 +125,34 @@ export const temporaryODentryMetadata = {
                 formState.setDataOnFieldChange("IS_VISIBLE", {
                   IS_VISIBLE: true,
                 });
-                formState.MessageBox({
-                  messageTitle: "Risk Category Alert",
+                let res = await formState.MessageBox({
+                  messageTitle: "RiskCategoryAlert",
                   message: postData?.MESSAGE1,
-                  buttonNames: ["Ok"],
                 });
-                return {
-                  ACCT_CD: {
-                    value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                    ignoreUpdate: true,
-                  },
-                };
+                if (res === "Ok") {
+                  return {
+                    ACCT_CD: {
+                      value: utilFunction.getPadAccountNumber(
+                        field?.value,
+                        dependentValue?.ACCT_TYPE?.optionData
+                      ),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    },
+                  };
+                }
               } else {
                 formState.setDataOnFieldChange("IS_VISIBLE", {
                   IS_VISIBLE: true,
                 });
                 return {
                   ACCT_CD: {
-                    value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentValue?.ACCT_TYPE?.optionData
+                    ),
                     ignoreUpdate: true,
+                    isFieldFocused: false,
                   },
                 };
               }
@@ -143,6 +160,11 @@ export const temporaryODentryMetadata = {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: false,
               });
+              return {
+                AMOUNT_UPTO: { value: "" },
+                FROM_EFF_DATE: { value: authState?.workingDate },
+                TO_EFF_DATE: { value: authState?.workingDate },
+              };
             }
             return {};
           },
@@ -158,7 +180,7 @@ export const temporaryODentryMetadata = {
         label: "Parameters",
         required: true,
         fullWidth: true,
-        placeholder: "Select Parameters",
+        placeholder: "SelectParameters",
         disableCaching: true,
         dependentFields: ["ACCT_TYPE"],
         options: (dependentFields) => {
@@ -172,7 +194,7 @@ export const temporaryODentryMetadata = {
         _optionsKey: "parametersListDD",
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["Please Select Value"] }],
+          rules: [{ name: "required", params: ["PleaseSelectValue"] }],
         },
         GridProps: {
           xs: 12,
@@ -190,8 +212,9 @@ export const temporaryODentryMetadata = {
         name: "FROM_EFF_DATE",
         fullWidth: true,
         isWorkingDate: true,
+        required: true,
         isMinWorkingDate: true,
-        label: "Effective From Date",
+        label: "EffectiveFromDate",
         GridProps: {
           xs: 12,
           md: 3,
@@ -206,9 +229,27 @@ export const temporaryODentryMetadata = {
         },
         name: "TO_EFF_DATE",
         fullWidth: true,
+        required: true,
         isWorkingDate: true,
-        isMaxWorkingDate: true,
-        label: "Effective To Date",
+        isMinWorkingDate: true,
+        validate: (currentField, dependentField) => {
+          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+            return t("Mustbeavaliddate");
+          }
+          if (
+            new Date(currentField?.value) <
+            new Date(dependentField?.FROM_EFF_DATE?.value)
+          ) {
+            return t("ToDateshouldbegreaterthanorequaltoFromDate");
+          }
+          return "";
+        },
+        onFocus: (date) => {
+          date.target.select();
+        },
+        dependentFields: ["FROM_EFF_DATE"],
+        runValidationOnDependentFieldsChange: true,
+        label: "EffectiveToDate",
         GridProps: {
           xs: 12,
           md: 3,
@@ -223,7 +264,12 @@ export const temporaryODentryMetadata = {
           componentType: "amountField",
         },
         name: "AMOUNT_UPTO",
-        label: "Amount UpTo",
+        label: "AmountUpTo",
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        },
         FormatProps: {
           allowNegative: false,
         },
@@ -286,9 +332,8 @@ export const temporaryODentryMetadata = {
       // },
       {
         accessor: "TEMPLATE_CD",
-        columnName: "Document(s)",
+        columnName: "Documents",
         componentType: "editableAutocomplete",
-        // componentType: "editableSelect",
         options: (_, auth) => {
           return API.documentsListDD({
             COMP_CD: auth?.companyID,
@@ -302,9 +347,19 @@ export const temporaryODentryMetadata = {
         width: 350,
         minWidth: 200,
         maxWidth: 400,
+        enableDefaultOption: true,
+        // validation: (value, data, prev) => {
+        //   if (Array.isArray(prev)) {
+        //     let lb_error = prev.some((item) => value === item?.SR_CD);
+        //     if (lb_error) {
+        //       return "OptionIsAlreadyEntered";
+        //     }
+        //   }
+        //   return "";
+        // },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["This field is required"] }],
+          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
         },
       },
       {
@@ -321,12 +376,12 @@ export const temporaryODentryMetadata = {
 
       {
         accessor: "VALID_UPTO",
-        columnName: "Valid Till Date",
+        columnName: "ValidTillDate",
         componentType: "editableDatePicker",
         alignment: "center",
         validation: (value, data, prev) => {
           if (!Boolean(value)) {
-            return "This field is required.";
+            return t("ThisFieldisrequired");
           }
         },
         sequence: 2,

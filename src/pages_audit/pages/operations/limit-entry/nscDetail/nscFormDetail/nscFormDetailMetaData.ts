@@ -1,7 +1,7 @@
-export const confirmFormMetaData = {
+export const nscDetailFormMetaData = {
   form: {
-    name: "chequebook-confirmation-form",
-    label: "ConfirmationDetail",
+    name: "nscDeatil",
+    label: "NSCDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -47,10 +47,59 @@ export const confirmFormMetaData = {
   fields: [
     {
       render: {
+        componentType: "textField",
+      },
+      name: "SECURITY_CD",
+      label: "SecurityCode",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CERTI_NO",
+      label: "CertificateNumber",
+      type: "text",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "COLLATERAL_NAME",
+      label: "AccountName",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4.8,
+        sm: 4.8,
+        lg: 4.8,
+        xl: 4.8,
+      },
+    },
+    {
+      render: {
         componentType: "datePicker",
       },
       name: "ISSUE_DATE",
       label: "IssueDate",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -59,43 +108,13 @@ export const confirmFormMetaData = {
         xl: 2.4,
       },
     },
-
     {
       render: {
         componentType: "textField",
       },
-      name: "CHEQUE_SERIES",
-      label: "ChequeSeries",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHEQUE_TOTAL",
-      label: "NoOfCheques",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "SERVICE_TAX",
-      label: "GST",
+      name: "PERIOD_NO",
+      label: "PeriodNumber",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -109,8 +128,72 @@ export const confirmFormMetaData = {
       render: {
         componentType: "amountField",
       },
-      name: "TRAN_BAL",
-      label: "Balance",
+      name: "COLLATERAL_AMT",
+      label: "CollateralAmount",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "COLLATERAL_RATE",
+      label: "CollateralRate",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "MATURED_AMT",
+      label: "MaturedAmount",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "EXP_DATE",
+      label: "ExpiryDate",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ISSUE_COMPANY",
+      label: "IssueCompany",
+      isReadOnly: true,
+      sequence: 0,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -124,8 +207,10 @@ export const confirmFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "AUTO_CHQBK_FLAG",
-      label: "AutoIssueFlag",
+      name: "REGISTRATION_NO",
+      label: "RegistrationNumber",
+      isReadOnly: true,
+      sequence: 0,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -139,8 +224,9 @@ export const confirmFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "ENTERED_BY",
-      label: "EnteredBy",
+      name: "LIEN_YES_NO",
+      label: "LienYesNo",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -152,16 +238,17 @@ export const confirmFormMetaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "Remark",
       },
-      name: "VERIFIED_BY",
-      label: "VerifiedBy",
+      name: "REMARK",
+      label: "Remarks",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 4.8,
+        sm: 4.8,
+        lg: 4.8,
+        xl: 4.8,
       },
     },
   ],

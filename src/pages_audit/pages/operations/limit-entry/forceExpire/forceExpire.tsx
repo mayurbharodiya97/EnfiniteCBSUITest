@@ -8,42 +8,35 @@ import {
 import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { releaseChequeMetadata } from "./releaseChequeMetadata";
 import { useLocation } from "react-router-dom";
+import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { utilFunction } from "components/utils";
-import { enqueueSnackbar } from "notistack";
+import { crudLimitEntryData } from "../api";
 import { useMutation } from "react-query";
-import { crudStopPayment } from "./api";
+import { enqueueSnackbar } from "notistack";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
+import { utilFunction } from "components/utils";
 
-export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
+export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
-  let newIntialData = {
-    ...rows?.[0]?.data,
-    RELEASE_DATE: authState?.workingDate,
-  };
-
-  const releaseStpCheque: any = useMutation(
-    "crudStopPayment",
-    crudStopPayment,
+  const forceExpire: any = useMutation(
+    "crudLimitEntryData",
+    crudLimitEntryData,
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         navigate(".");
-        enqueueSnackbar("Cheque released Successfully.", {
-          variant: "success",
-        });
-        getStopPayDetail.mutate({
+        enqueueSnackbar(t("ForceExpSuccessfully"), { variant: "success" });
+        getLimitDetail.mutate({
           COMP_CD: authState?.companyID,
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          // ENTERED_DATE: authState?.workingDate,
-          GD_TODAY: authState?.workingDate,
+          GD_TODAY_DT: authState?.workingDate,
           USER_LEVEL: authState?.role,
         });
       },
@@ -51,17 +44,17 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   );
   useEffect(() => {
     if (rows?.[0]?.data) {
-      releaseChequeMetadata.form.label = `   ${
-        rows?.[0]?.data?.ALLOW_RELEASE === "Y"
-          ? "Release Cheque Detail"
-          : "Stop Cheque Detail"
-      }  \u00A0\u00A0
+      forceExpireMetaData.form.label = `  ${
+        rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y"
+          ? t("ForceExpireLimit")
+          : t("LimitDetail")
+      }     \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
         rows?.[0]?.data?.ACCT_TYPE +
         rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")} - ${rows?.[0]?.data?.ACCT_NM}`;
+      ).replace(/\s/g, "")}`;
     }
   }, [rows?.[0]?.data]);
 
@@ -69,22 +62,15 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== "")
     );
-    let upd = utilFunction.transformDetailsData(
-      filteredData,
-      newIntialData ?? rows?.[0]?.data
-    );
+    let upd = utilFunction.transformDetailsData(filteredData, rows?.[0]?.data);
+
     let apiReq = {
+      ...data,
       _isNewRow: false,
       _isDeleteRow: false,
-      BRANCH_CD: data?.BRANCH_CD,
-      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-      RELEASE_DATE: format(new Date(data?.RELEASE_DATE), "dd-MMM-yyyy"),
-      REMARKS: data?.REMARKS,
-      REASON_CD: data?.REASON_CD,
-      INFAVOUR_OF: data?.INFAVOUR_OF,
       ...upd,
     };
-    releaseStpCheque.mutate(apiReq);
+    forceExpire.mutate(apiReq);
 
     //@ts-ignore
     endSubmit(true);
@@ -96,38 +82,43 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
       PaperProps={{
         style: {
           maxWidth: "1150px",
-          padding: "5px",
         },
       }}
     >
       <>
-        {releaseStpCheque?.isError ? (
+        {forceExpire?.isError ? (
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={releaseStpCheque?.error?.error_msg ?? "Unknow Error"}
-                errorDetail={releaseStpCheque?.error?.error_detail ?? ""}
+                errorMsg={forceExpire?.error?.error_msg ?? "Unknow Error"}
+                errorDetail={forceExpire?.error?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
           </div>
-        ) : releaseStpCheque.isLoading ? (
+        ) : forceExpire.isLoading ? (
           <LinearProgress color="secondary" />
         ) : (
           <LinearProgressBarSpacer />
         )}
         <FormWrapper
-          key={"releaseChequeMetadata"}
-          metaData={releaseChequeMetadata}
-          initialValues={newIntialData ?? []}
+          key={"limit-force-exp"}
+          metaData={forceExpireMetaData}
+          initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
+          loading={forceExpire.isLoading}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 398px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
-            console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                {newIntialData?.ALLOW_RELEASE === "Y" && (
+                {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
                   <Button
                     onClick={(event) => {
                       handleSubmit(event, "Save");
@@ -138,12 +129,11 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
                     }
                     color={"primary"}
                   >
-                    Release
+                    {t("Save")}
                   </Button>
                 )}
-
                 <Button color="primary" onClick={() => navigate(".")}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );

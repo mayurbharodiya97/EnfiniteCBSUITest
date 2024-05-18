@@ -128,8 +128,8 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
-                      messageTitle: t("confirmation"),
-                      message: t("AreYouSureToConfirm"),
+                      messageTitle: "confirmation",
+                      message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: "Yes",

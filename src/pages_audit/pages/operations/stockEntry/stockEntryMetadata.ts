@@ -45,35 +45,54 @@ export const StockEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async (field) => {
+        postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
               ACCT_TYPE: { value: "" },
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
+            };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
             };
           }
         },
+        runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
         isFieldFocused: true,
-        options: (dependentValue, formState, _, authState) => {
+        options: (depen, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/047",
+            DOC_CD: "TRN/047",
           });
         },
         _optionsKey: "get_Account_Type",
-        postValidationSetCrossFieldValues: async (field) => {
-          if (field?.value) {
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-            };
-          }
+        postValidationSetCrossFieldValues: (field, formState) => {
+          formState.setDataOnFieldChange("IS_VISIBLE", {
+            IS_VISIBLE: false,
+          });
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
+            ACCT_MST_LIMIT: { value: "" },
+            SECURITY_CD: { value: "" },
+          };
         },
+        runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
         postValidationSetCrossFieldValues: async (
@@ -95,7 +114,7 @@ export const StockEntryMetaData = {
               ),
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-              SCREEN_REF: "ETRN/047",
+              SCREEN_REF: "TRN/047",
             };
             let postData = await GeneralAPI.getAccNoValidation(
               otherAPIRequestPara
@@ -185,6 +204,7 @@ export const StockEntryMetaData = {
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
               ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
             };
           }
           return {};
@@ -248,7 +268,7 @@ export const StockEntryMetaData = {
       disableCaching: true,
       _optionsKey: "securityListDD",
       dependentFields: ["ACCT_TYPE", "ACCT_CD", "BRANCH_CD", "ACCT_MST_LIMIT"],
-      options: (dependentValue, formState, _, authState, other) => {
+      options: (dependentValue, formState, _, authState) => {
         if (
           dependentValue?.ACCT_TYPE?.value &&
           dependentValue?.ACCT_CD?.value &&

@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const forceExpireMetaData = {
   form: {
-    name: "limit-force-exp",
-    label: "Force-Expire Limit",
+    name: "limit-force-expired",
+    label: "ForceExpireLimit",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -53,33 +55,11 @@ export const forceExpireMetaData = {
   fields: [
     {
       render: {
-        componentType: "hidden",
-      },
-      name: "BRANCH_CD",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "TRAN_CD",
-    },
-    {
-      render: {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
-      label: "Limit Amount",
+      label: "LimitAmount",
       isReadOnly: true,
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   // "& .MuiInputLabel-formControl": {
-      //   //   right: "0",
-      //   //   left: "auto",
-      //   // },
-      // },
       GridProps: {
         xs: 12,
         md: 2,
@@ -94,7 +74,7 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "SECURITY_CD",
-      label: "Security Code",
+      label: "SecurityCode",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -104,37 +84,12 @@ export const forceExpireMetaData = {
         xl: 2,
       },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "SECURITY",
-    //   label: "Security ",
-    //   isReadOnly: true,
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 3,
-    //     sm: 3,
-    //     lg: 3,
-    //     xl: 3,
-    //   },
-    // },
     {
       render: {
         componentType: "textField",
       },
       name: "FD_BRANCH_CD",
-      label: "FD-Branch Code",
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   // "& .MuiInputLabel-formControl": {
-      //   //   right: "0",
-      //   //   left: "auto",
-      //   // },
-      // },
+      label: "FDBranchCode",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -150,17 +105,7 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "FD_TYPE",
-      label: "FD-Type",
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   // "& .MuiInputLabel-formControl": {
-      //   //   right: "0",
-      //   //   left: "auto",
-      //   // },
-      // },
+      label: "FDType",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -175,18 +120,8 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "FD_ACCT_CD",
-      label: "FD-Account No",
+      label: "FDAccountNumber",
       isReadOnly: true,
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   "& .MuiInputLabel-formControl": {
-      //     right: "0",
-      //     left: "auto",
-      //   },
-      // },
       GridProps: {
         xs: 12,
         md: 2,
@@ -200,18 +135,8 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "FD_NO",
-      label: "FD Number",
+      label: "FDNumber",
       isReadOnly: true,
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   // "& .MuiInputLabel-formControl": {
-      //   //   right: "0",
-      //   //   left: "auto",
-      //   // },
-      // },
       GridProps: {
         xs: 12,
         md: 2,
@@ -225,7 +150,7 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "ENTRY_DT",
-      label: "Entry Date",
+      label: "EntryDate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -240,7 +165,7 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Effective Date",
+      label: "EffectiveDate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -256,7 +181,7 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "EXPIRY_DT",
-      label: "Expiry Date",
+      label: "ExpiryDate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -271,18 +196,8 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "SECURITY_VALUE",
-      label: "Security Value",
+      label: "SecurityValue",
       isReadOnly: true,
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //     background: "var(--theme-color7)",
-      //   },
-      //   // "& .MuiInputLabel-formControl": {
-      //   //   right: "0",
-      //   //   left: "auto",
-      //   // },
-      // },
       GridProps: {
         xs: 12,
         md: 2,
@@ -297,7 +212,7 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "SECURITY",
-      label: "Security Description",
+      label: "SecurityDescription",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -312,7 +227,7 @@ export const forceExpireMetaData = {
         componentType: "rateOfInt",
       },
       name: "MARGIN",
-      label: "Margin",
+      label: "Margin%",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -328,7 +243,7 @@ export const forceExpireMetaData = {
         componentType: "rateOfInt",
       },
       name: "INT_RATE",
-      label: "Int. Rate",
+      label: "IntRate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -343,7 +258,7 @@ export const forceExpireMetaData = {
         componentType: "rateOfInt",
       },
       name: "PENAL_RATE",
-      label: "Penal Rate",
+      label: "PenalRate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -359,7 +274,7 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "DRAWING_POWER",
-      label: "Drawing Power",
+      label: "DrawingPower",
       defaultValue: "0",
       isReadOnly: true,
       GridProps: {
@@ -377,7 +292,7 @@ export const forceExpireMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Enter Remarks",
+      placeholder: "EnterRemarks",
       dependentFields: ["ALLOW_FORCE_EXP"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
@@ -388,7 +303,7 @@ export const forceExpireMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["This Field is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -404,7 +319,7 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "RESOLUTION_DATE",
-      label: "Resolution Date",
+      label: "ResolutionDate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -420,21 +335,22 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "FORCE_EXP_DT",
-      label: "Forced Expired Date",
-      placeholder: "Forced Expired Date",
+      isWorkingDate: true,
+      label: "ForcedExpiredDate",
+      placeholder: "ForcedExpiredDate",
       dependentFields: ["ALLOW_FORCE_EXP"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
+      isReadOnly(fieldData, dependentFieldsValues) {
         if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
           return false;
         } else {
           return true;
         }
       },
+      required: true,
+
       schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Force Expired Date is required."] },
-        ],
+        type: "date",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -461,6 +377,18 @@ export const forceExpireMetaData = {
         componentType: "hidden",
       },
       name: "FORCE_EXP_VERIFIED_BY",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
     },
   ],
 };

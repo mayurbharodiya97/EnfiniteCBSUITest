@@ -1036,12 +1036,9 @@ export const getLimitDTL = async (limitDetail) => {
       if (item?.ALLOW_FORCE_EXP === "Y") {
         item._rowColor = "rgb(255, 225, 225)";
       }
-      if (item?.CONFIRMED === "Y") {
-        // item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED = "Confirmed";
-      } else {
-        item.CONFIRMED = "Pending";
-      }
+
+      item.CONFIRMED_DISPLAY =
+        item?.CONFIRMED === "Y" ? "Confirmed" : "Pending";
 
       item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
       item.INT_RATE = parseFloat(item.INT_RATE).toFixed(2);

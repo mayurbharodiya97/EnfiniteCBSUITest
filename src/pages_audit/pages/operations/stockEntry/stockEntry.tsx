@@ -42,16 +42,20 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
 const StockEntryCustom = () => {
-  const [deletePopup, setDeletePopup] = useState<boolean>(false);
-  const [value, setValue] = useState<string>("tab1");
+  const [isData, setIsData] = useState({
+    isDelete: false,
+    isVisible: false,
+    value: "tab1",
+    closeAlert: true,
+    newFormMTdata: StockEntryMetaData,
+  });
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const myMasterRef = useRef<any>(null);
-  const reqDataRef = useRef<any>({ newFormMTdata: StockEntryMetaData });
-  const { insertReq, deleteReq, isVisible, closeAlert, newFormMTdata } =
-    reqDataRef.current;
+  const reqDataRef = useRef<any>({});
+  const { insertReq, deleteReq } = reqDataRef.current;
 
   const detailActions: ActionTypes[] = [
     {
@@ -76,21 +80,21 @@ const StockEntryCustom = () => {
         let newData;
         if (data.length > 0) {
           let newMetadata: any = [...StockEntryMetaData.fields, ...data];
-          newData = { ...newFormMTdata, fields: newMetadata };
+          newData = { ...isData.newFormMTdata, fields: newMetadata };
         } else {
           newData = { ...StockEntryMetaData };
         }
-        reqDataRef.current.newFormMTdata = newData;
+        setIsData((old) => ({ ...old, newFormMTdata: newData }));
       },
       onError: () => {
-        reqDataRef.current.closeAlert = true;
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
 
   const stockEntryGridData: any = useMutation("stockGridData", stockGridData, {
     onError: () => {
-      reqDataRef.current.closeAlert = true;
+      setIsData((old) => ({ ...old, closeAlert: true }));
     },
   });
 
@@ -121,7 +125,7 @@ const StockEntryCustom = () => {
         }
       },
       onError: () => {
-        reqDataRef.current.closeAlert = true;
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
@@ -129,7 +133,7 @@ const StockEntryCustom = () => {
   const stockDataCRUD: any = useMutation("crudStockData", crudStockData, {
     onSuccess: (data, variables) => {
       if (variables?._isDeleteRow) {
-        setDeletePopup(false);
+        setIsData((old) => ({ ...old, isDelete: false }));
         stockEntryGridData.mutate({
           COMP_CD: authState?.companyID,
           ACCT_CD: variables?.ACCT_CD,
@@ -140,15 +144,14 @@ const StockEntryCustom = () => {
         });
         enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
       } else if (variables?._isNewRow) {
-        reqDataRef.current.newFormMTdata = StockEntryMetaData;
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
+        setIsData((old) => ({ ...old, newFormMTdata: StockEntryMetaData }));
       }
     },
     onError: () => {
-      reqDataRef.current.closeAlert = true;
+      setIsData((old) => ({ ...old, closeAlert: true, isDelete: false }));
       CloseMessageBox();
-      setDeletePopup(false);
     },
   });
 
@@ -193,10 +196,14 @@ const StockEntryCustom = () => {
       <Box sx={{ width: "100%" }}>
         <Tabs
           sx={{ ml: "25px" }}
-          value={value}
+          value={isData.value}
           onChange={(event, newValue) => {
-            setValue(newValue);
-            reqDataRef.current.closeAlert = false;
+            setIsData((old) => ({
+              ...old,
+              value: newValue,
+              closeAlert: false,
+            }));
+
             stockEntryGridData.data = [];
             if (newValue === "tab2") {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
@@ -228,7 +235,7 @@ const StockEntryCustom = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label={t("stockEntry")} />
-          {isVisible && <Tab value="tab2" label={t("stockDetail")} />}
+          {isData.isVisible && <Tab value="tab2" label={t("stockDetail")} />}
         </Tabs>
       </Box>
 
@@ -244,10 +251,10 @@ const StockEntryCustom = () => {
         >
           {securityStoclDTL.isLoading || insertValidateData.isLoading ? (
             <LinearProgress color="secondary" />
-          ) : (securityStoclDTL?.isError && closeAlert) ||
-            (stockEntryGridData?.isError && closeAlert) ||
-            (insertValidateData?.isError && closeAlert) ||
-            (stockDataCRUD?.isError && closeAlert) ? (
+          ) : (securityStoclDTL?.isError && isData.closeAlert) ||
+            (stockEntryGridData?.isError && isData.closeAlert) ||
+            (insertValidateData?.isError && isData.closeAlert) ||
+            (stockDataCRUD?.isError && isData.closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -273,10 +280,12 @@ const StockEntryCustom = () => {
           ) : (
             <LinearProgressBarSpacer />
           )}
-          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
+          >
             <FormWrapper
               key={"stockEntry"}
-              metaData={(newFormMTdata as MetaDataType) ?? {}}
+              metaData={(isData.newFormMTdata as MetaDataType) ?? {}}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
                 let apiReq = {
@@ -306,7 +315,11 @@ const StockEntryCustom = () => {
               formState={{ MessageBox: MessageBox }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
-                  reqDataRef.current.isVisible = payload.IS_VISIBLE;
+                  setIsData((old) => ({
+                    ...old,
+                    isVisible: payload.IS_VISIBLE,
+                    newFormMTdata: StockEntryMetaData,
+                  }));
                 }
                 if (action === "SECURITY_CD") {
                   securityStoclDTL.mutate(payload);
@@ -328,7 +341,9 @@ const StockEntryCustom = () => {
               )}
             </FormWrapper>
           </div>
-          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
+          >
             <GridWrapper
               key={`stockGridData` + stockEntryGridData.isSuccess}
               finalMetaData={StockGridMetaData as GridMetaDataType}
@@ -343,7 +358,7 @@ const StockEntryCustom = () => {
                 }
                 if (id === "ALLOW_DELETE_FLAG") {
                   reqDataRef.current.deleteReq = data;
-                  setDeletePopup(true);
+                  setIsData((old) => ({ ...old, isDelete: true }));
                 }
               }}
             />
@@ -372,10 +387,10 @@ const StockEntryCustom = () => {
         </Grid>
       </Container>
 
-      {deletePopup && (
+      {isData.isDelete && (
         <RemarksAPIWrapper
           TitleText={t("deleteTitle")}
-          onActionNo={() => setDeletePopup(false)}
+          onActionNo={() => setIsData((old) => ({ ...old, isDelete: false }))}
           onActionYes={(val, rows) => {
             let deleteReqPara = {
               _isNewRow: false,
@@ -401,7 +416,7 @@ const StockEntryCustom = () => {
           isEntertoSubmit={true}
           AcceptbuttonLabelText={t("Ok")}
           CanceltbuttonLabelText={t("Cancel")}
-          open={deletePopup}
+          open={isData.isDelete}
           rows={deleteReq}
           defaultValue={"WRONG ENTRY FROM STOCK ENTRY (TRN/047)"}
         />

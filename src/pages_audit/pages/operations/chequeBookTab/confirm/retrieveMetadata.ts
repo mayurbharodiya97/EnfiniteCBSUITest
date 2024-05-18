@@ -6,7 +6,7 @@ import { t } from "i18next";
 export const chequeBKRetrievalMetadata = {
   form: {
     name: "retrieve-para",
-    label: "Retrieve Parameters",
+    label: "RetrieveParameters",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -31,7 +31,7 @@ export const chequeBKRetrievalMetadata = {
         componentType: "datePicker",
       },
       name: "FROM_DATE",
-      label: "From Date",
+      label: "FromDate",
       placeholder: "",
       // defaultValue: new Date(),
       isWorkingDate: true,
@@ -62,7 +62,7 @@ export const chequeBKRetrievalMetadata = {
         componentType: "datePicker",
       },
       name: "TO_DATE",
-      label: "To Date",
+      label: "ToDate",
       placeholder: "",
       // defaultValue: new Date(),
       isWorkingDate: true,
@@ -108,12 +108,12 @@ export const chequeBKRetrievalMetadata = {
           return true;
         }
       },
-      label: "Retrieve For",
+      label: "Retrieve",
       RadioGroupProps: { row: true },
       defaultValue: "B",
       options: [
-        { label: "Before Cheque Book Printing", value: "B" },
-        { label: "After Cheque Book Printing", value: "A" },
+        { label: "BeforeChequeBookPrinting", value: "B" },
+        { label: "AfterChequeBookPrinting", value: "A" },
       ],
       GridProps: {
         xs: 12,

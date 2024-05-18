@@ -47,17 +47,19 @@ const LienEntryCustom = () => {
   ];
 
   const { authState } = useContext(AuthContext);
-  const [value, setValue] = useState("tab1");
+  const [isData, setIsData] = useState({
+    isVisible: false,
+    value: "tab1",
+    closeAlert: true,
+  });
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const myMasterRef = useRef<any>(null);
   const navigate = useNavigate();
-  const reqDataRef = useRef<any>({});
-  const { isVisible, closeAlert } = reqDataRef.current;
 
   const getLienDetail: any = useMutation("lienGridDetail", API.lienGridDetail, {
     onError: () => {
-      reqDataRef.current.closeAlert = true;
+      setIsData((old) => ({ ...old, closeAlert: true }));
     },
   });
 
@@ -75,7 +77,7 @@ const LienEntryCustom = () => {
     },
     onError: () => {
       CloseMessageBox();
-      reqDataRef.current.closeAlert = true;
+      setIsData((old) => ({ ...old, closeAlert: true }));
     },
   });
 
@@ -83,7 +85,6 @@ const LienEntryCustom = () => {
     return () => {
       queryClient.removeQueries(["lienGridDetail"]);
       queryClient.removeQueries(["crudLien"]);
-      queryClient.removeQueries(["validateInsert"]);
     };
   }, []);
 
@@ -149,12 +150,15 @@ const LienEntryCustom = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
-          value={value}
+          value={isData.value}
           sx={{ ml: "25px" }}
           onChange={(event, newValue) => {
-            setValue(newValue);
+            setIsData((old) => ({
+              ...old,
+              value: newValue,
+              closeAlert: false,
+            }));
             getLienDetail.data = [];
-            reqDataRef.current.closeAlert = false;
             if (newValue === "tab2") {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
@@ -184,7 +188,7 @@ const LienEntryCustom = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label={t("LienEntry")} />
-          {isVisible && <Tab value="tab2" label={t("LienDetail")} />}
+          {isData.isVisible && <Tab value="tab2" label={t("LienDetail")} />}
         </Tabs>
       </Box>
 
@@ -198,8 +202,8 @@ const LienEntryCustom = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {(getLienDetail?.isError && closeAlert) ||
-          (crudLienData?.isError && closeAlert) ? (
+          {(getLienDetail?.isError && isData.closeAlert) ||
+          (crudLienData?.isError && isData.closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -222,7 +226,9 @@ const LienEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
 
-          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
+          >
             <FormWrapper
               key={"lien-Entry"}
               metaData={(LienEntryMetadata as MetaDataType) ?? {}}
@@ -232,7 +238,10 @@ const LienEntryCustom = () => {
               formState={{ MessageBox: MessageBox }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
-                  reqDataRef.current.isVisible = payload.IS_VISIBLE;
+                  setIsData((old) => ({
+                    ...old,
+                    isVisible: payload?.IS_VISIBLE,
+                  }));
                 }
               }}
             >
@@ -253,7 +262,9 @@ const LienEntryCustom = () => {
             </FormWrapper>
           </div>
 
-          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
+          >
             <GridWrapper
               key={`LienGrid-MetaData`}
               finalMetaData={LienGridMetaData as GridMetaDataType}
