@@ -738,17 +738,18 @@ const CkycProvider = ({children}) => {
                 console.log(_.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd new", state?.formDatactx[TAB], state?.modifiedFormCols[TAB])
 
                 let upd;
+                if(TAB == "DOC_MST") {
 
-                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                } else if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS") {
                     let oldRow:any[] = []
                     let newRow:any[] = []
                     // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
                         oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) ? state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
                             let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
-                            if(TAB == "DOC_MST") {
-                                filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
-                                // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
-                            }
+                            // if(TAB == "DOC_MST") {
+                            //     filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
+                            //     // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
+                            // }
                             console.log("wadqwdwq. asdasdawdawqqqqqq filteredrow", filteredRow)
                             return filteredRow;
                         }) : [];
@@ -813,7 +814,9 @@ const CkycProvider = ({children}) => {
                     // console.log(update_type, ":qweewqasdcde3", "upd else", upd )
                 }
                 if(Object.keys(updated_tab_format).includes(TAB)) {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                    if(TAB == "DOC_MST") {
+                        updated_tab_format[TAB] = [...state?.formDatactx[TAB]?.doc_mst_payload];
+                    } else if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS") {
                         updated_tab_format[TAB] = [{
                             ...updated_tab_format.TAB,
                             ...upd,
@@ -829,7 +832,9 @@ const CkycProvider = ({children}) => {
                         }
                     }
                 } else {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                    if(TAB == "DOC_MST") {
+                        updated_tab_format[TAB] = [...state?.formDatactx[TAB]?.doc_mst_payload];
+                    } else if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS") {
                         // console.log("asdqwezxc arraytabupdate", TAB, upd)
                         // if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
                             if(Array.isArray(upd.isDeleteRow) && upd.isDeleteRow?.length>0 ||

@@ -43,7 +43,8 @@ import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
 // import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
-import Document from './formDetails/formComponents/document/Document';
+// import Document from './formDetails/formComponents/document/Document';
+import Document from './DocumentTab/Document';
 import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy2';
 import { format } from 'date-fns';
 import { GradientButton } from 'components/styledComponent/button';

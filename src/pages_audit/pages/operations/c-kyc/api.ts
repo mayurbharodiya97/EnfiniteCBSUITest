@@ -147,11 +147,27 @@ export const getCustomerDetailsonEdit = async (reqData) => {
   }
 };
 
-export const getDocumentImagesList = async (payload) => {
+export const getDocumentImagesList = async ({TRAN_CD, SR_CD, REQ_CD}) => {
   const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", payload);
+  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", {
+    TRAN_CD : TRAN_CD,
+    SR_CD : SR_CD,
+    REQ_CD : REQ_CD
+  });
   if (status === "0") {
-    return data
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ LINE_CD, ...other }) => {
+          return {
+            ...other,
+            LINE_CD: LINE_CD,
+            LINE_ID: LINE_CD
+          };
+        }
+      );
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
