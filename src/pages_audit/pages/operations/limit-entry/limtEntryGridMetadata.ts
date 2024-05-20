@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const limitEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Limit Detail",
+    gridLabel: "LimitDetail",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -15,21 +15,21 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     enablePagination: true,
     hideFooter: false,
     pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
+    defaultPageSize: 8,
     containerHeight: {
-      min: "53vh",
-      max: "53vh",
+      min: "60vh",
+      max: "60vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
-    footerNote: "Note : Double-click on Pink row to force-expire the limit.",
+    footerNote: "limitFooterNote",
   },
   filters: [],
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -40,40 +40,40 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTRY_DT",
-      columnName: "Entry Date",
+      columnName: "EntryDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 100,
+      width: 109,
       minWidth: 90,
       maxWidth: 150,
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Effective Date",
+      columnName: "EffectiveDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 120,
+      width: 136,
       minWidth: 100,
       maxWidth: 200,
     },
     {
       accessor: "EXPIRY_DT",
-      columnName: "Expiry Date",
+      columnName: "ExpiryDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 105,
+      width: 114,
       minWidth: 90,
       maxWidth: 150,
     },
     {
       accessor: "INT_RATE",
-      columnName: "Int. Rate%",
+      columnName: "IntRate",
       sequence: 4,
       alignment: "right",
       componentType: "default",
@@ -94,7 +94,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SECURITY_VALUE",
-      columnName: "Security Value",
+      columnName: "SecurityValue",
       sequence: 4,
       alignment: "right",
       componentType: "default",
@@ -105,7 +105,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LIMIT_AMOUNT",
-      columnName: "Limit Amount",
+      columnName: "LimitAmount",
       sequence: 4,
       alignment: "right",
       componentType: "currency",
@@ -116,7 +116,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FD_DESC",
-      columnName: "FD Description",
+      columnName: "FDDescription",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -126,7 +126,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RESOLUTION_DATE",
-      columnName: "Resolution Date",
+      columnName: "ResolutionDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -135,7 +135,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "CONFIRMED",
+      accessor: "CONFIRMED_DISPLAY",
       columnName: "Status",
       sequence: 4,
       alignment: "center",
@@ -147,8 +147,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     {
       accessor: "ALLOW_DELETE",
       columnName: "Action",
-      buttonLabel: "Remove",
-
+      buttonLabel: "Delete",
       sequence: 4,
       alignment: "center",
       componentType: "buttonRowCell",

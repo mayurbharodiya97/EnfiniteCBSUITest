@@ -1,7 +1,7 @@
 export const confirmFormMetaData = {
   form: {
     name: "chequebook-confirmation-form",
-    label: "Confirmation Detail",
+    label: "ConfirmationDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -50,8 +50,7 @@ export const confirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "ISSUE_DATE",
-      label: "Issue Date",
-      // isReadOnly: true,
+      label: "IssueDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -66,8 +65,7 @@ export const confirmFormMetaData = {
         componentType: "textField",
       },
       name: "CHEQUE_SERIES",
-      label: "Cheque Series",
-      //   isReadOnly: true,
+      label: "ChequeSeries",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -82,8 +80,7 @@ export const confirmFormMetaData = {
         componentType: "textField",
       },
       name: "CHEQUE_TOTAL",
-      label: "No. of Cheque(s)",
-      //   isReadOnly: true,
+      label: "NoOfCheques",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -99,7 +96,6 @@ export const confirmFormMetaData = {
       },
       name: "SERVICE_TAX",
       label: "GST",
-      //   isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -115,7 +111,6 @@ export const confirmFormMetaData = {
       },
       name: "TRAN_BAL",
       label: "Balance",
-      //   isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -130,8 +125,7 @@ export const confirmFormMetaData = {
         componentType: "textField",
       },
       name: "AUTO_CHQBK_FLAG",
-      label: "Auto Issue Flag",
-      //   isReadOnly: true,
+      label: "AutoIssueFlag",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -146,8 +140,7 @@ export const confirmFormMetaData = {
         componentType: "textField",
       },
       name: "ENTERED_BY",
-      label: "Entered By",
-      //   isReadOnly: true,
+      label: "EnteredBy",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -162,8 +155,7 @@ export const confirmFormMetaData = {
         componentType: "textField",
       },
       name: "VERIFIED_BY",
-      label: "Verified By",
-      //   isReadOnly: true,
+      label: "VerifiedBy",
       GridProps: {
         xs: 12,
         md: 2.4,

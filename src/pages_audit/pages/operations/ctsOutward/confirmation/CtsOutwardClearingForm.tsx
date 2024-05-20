@@ -183,7 +183,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     },
   });
 
-  const onAcceptDelete = (rows) => {};
   useEffect(() => {
     const handleKeyDown = async (event) => {
       if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
@@ -660,36 +659,9 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         },
                       }}
                     >
-                      {/* <AppBar position="relative" color="secondary">
-                        <Toolbar
-                          className={headerClasses.root}
-                          variant={"dense"}
-                        >
-                          <Typography
-                            className={headerClasses.title}
-                            color="inherit"
-                            variant={"h6"}
-                            component="div"
-                          >
-                            Inward Return Confirmation
-                          </Typography>
-                          <GradientButton
-                            onClick={() => {
-                              setIsChequeSign(false);
-                            }}
-                          >
-                            Close
-                          </GradientButton>
-                        </Toolbar>
-                      </AppBar> */}
-
                       <GridWrapper
                         key={"CtsOutwardClearingConfirmGrid" + zoneTranType}
-                        finalMetaData={
-                          zoneTranType === "S"
-                            ? DualConfHistoryGridMetaData
-                            : DualConfHistoryGridMetaData
-                        }
+                        finalMetaData={DualConfHistoryGridMetaData}
                         data={confHistory?.data ?? []}
                         setData={() => null}
                         loading={

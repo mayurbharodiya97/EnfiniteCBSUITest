@@ -1,7 +1,7 @@
 export const stockconfirmFormMetaData = {
   form: {
     name: "stock-confirmation-form",
-    label: "Confirmation Detail",
+    label: "ConfirmationDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -82,7 +82,7 @@ export const stockconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
-      label: "Limit Amount",
+      label: "LimitAmount",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -97,7 +97,7 @@ export const stockconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Statement Date",
+      label: "StatementDate",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -113,7 +113,7 @@ export const stockconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "ASON_DT",
-      label: "Statement Till Date",
+      label: "StatementValidTillDate",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -128,7 +128,7 @@ export const stockconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "STOCK_VALUE",
-      label: "Stock Value",
+      label: "StockValue",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -159,7 +159,7 @@ export const stockconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "STOCK_DESC",
-      label: "Stock Description",
+      label: "StockDescription",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -175,7 +175,7 @@ export const stockconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "DRAWING_POWER",
-      label: "Drawing Power",
+      label: "DrawingPower",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -202,20 +202,20 @@ export const stockconfirmFormMetaData = {
       },
     },
 
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "RESOLUTION_DATE",
-      fullWidth: true,
-      label: "Received Date",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "datePicker",
+    //   },
+    //   name: "RESOLUTION_DATE",
+    //   fullWidth: true,
+    //   label: "ReceivedDate",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //     lg: 2,
+    //     xl: 2,
+    //   },
+    // },
   ],
 };

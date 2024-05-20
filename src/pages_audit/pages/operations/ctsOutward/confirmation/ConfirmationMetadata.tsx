@@ -7,7 +7,6 @@ export const RetrieveFormConfigMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -489,7 +488,6 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      // sequence: 9,
       label: "Presentment Date",
       placeholder: "",
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
@@ -530,9 +528,6 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        // render: {
-        //   componentType: "textField",
-        // },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         textFieldStyle: {
           "& .MuiInputBase-root": {
@@ -550,9 +545,6 @@ export const CTSOutwardClearingConfirmMetaData = {
         },
       },
       accountTypeMetadata: {
-        // render: {
-        //   componentType: "textField",
-        // },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         isFieldFocused: true,
         defaultfocus: true,
@@ -779,7 +771,6 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
       render: {
         componentType: "arrayField",
       },
-      // isCustomStyle: true,
       isRemoveButton: true,
       displayCountName: "Cheque Detail",
       fixedRows: true,
@@ -789,7 +780,6 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
       errorTitle: "Are you Sure you want to delete this row?",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      // arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -836,7 +826,6 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
           type: "text",
           required: true,
           isReadOnly: true,
-          // maxLength: 100,
           showMaxLength: true,
           autoComplete: "off",
           GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.8, xl: 2.5 },
@@ -908,7 +897,6 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          // isFieldFocused: true,
           required: true,
           type: "text",
           textFieldStyle: {
@@ -978,7 +966,6 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
       render: {
         componentType: "arrayField",
       },
-      // isCustomStyle: true,
       isRemoveButton: true,
       displayCountName: "Cheque Detail",
       fixedRows: true,
@@ -988,7 +975,6 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
       errorTitle: "Are you Sure you want to delete this row?",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      // arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -1013,7 +999,6 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           type: "text",
           required: true,
           isReadOnly: true,
-          // maxLength: 100,
           showMaxLength: true,
           autoComplete: "off",
           GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
@@ -1037,14 +1022,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
         },
-        // {
-        //   render: {
-        //     componentType: "select",
-        //   },
-        //   name: "REASON",
-        //   label: "Reason",
-        //   GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-        // },
+
         {
           render: {
             componentType: "numberFormat",
@@ -1088,7 +1066,6 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          // isFieldFocused: true,
           required: true,
           type: "text",
           FormatProps: {
