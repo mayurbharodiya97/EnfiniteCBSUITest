@@ -7,7 +7,7 @@ import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
-import { queryClient } from "cache";
+import { ClearCacheContext, queryClient } from "cache";
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -18,6 +18,7 @@ const actions: ActionTypes[] = [
   },
 ];
  const AuditDetail = ({ open, onClose, rowsData}) => {
+  const { getEntries } = useContext(ClearCacheContext);
     const navigate = useNavigate();
     const { data, isLoading, isFetching,} = useQuery<any, any>(
         ["getParaAuditHistory"],
@@ -34,13 +35,18 @@ const actions: ActionTypes[] = [
           navigate(data?.name);
         }
       }, [navigate]);
-
-      useEffect(()=>{
+      AuditMetadata.gridConfig.gridLabel="Para Code = "+rowsData?.PARA_CD+" "+rowsData?.PARA_NM
+      useEffect(() => {
         return () => {
-          AuditMetadata.gridConfig.gridLabel="Para Code = "+rowsData?.PARA_CD+" "+rowsData?.PARA_NM
-          queryClient.removeQueries("getParaAuditHistory");
-        }
-      },[])
+          let entries = getEntries() as any[];
+          if (Array.isArray(entries) && entries.length > 0) {
+            entries.forEach((one) => {
+              queryClient.removeQueries(one);
+            });
+          }
+          queryClient.removeQueries(["getParaAuditHistory"]);
+        };
+      }, [getEntries]);
     
   return (
     <>

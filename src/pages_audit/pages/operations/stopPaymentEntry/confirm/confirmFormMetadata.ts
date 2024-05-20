@@ -1,7 +1,7 @@
 export const stopPayconfirmFormMetaData = {
   form: {
     name: "stopPay-confirmation-form",
-    label: "Confirmation Detail",
+    label: "ConfirmationDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -65,7 +65,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "autocomplete",
       },
       name: "FLAG",
-      label: "Cheque Stop Type",
+      label: "ChequeStopType",
       defaultValue: "P",
       placeholder: "Select one",
       options: () => {
@@ -89,7 +89,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Intimate Date",
+      label: "IntimateDate",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -111,7 +111,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "SURR_DT",
-      label: "Surrender Date",
+      label: "SurrenderDate",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -133,7 +133,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_FROM",
-      label: "Cheque From",
+      label: "FromChequeNo",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -147,7 +147,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_TO",
-      label: "Cheque To",
+      label: "ToChequeNo",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -175,7 +175,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "Charge Amount",
+      label: "ChargeAmount",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {
@@ -197,7 +197,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GST-Amount",
+      label: "GSTAmount",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {
@@ -219,7 +219,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "CHEQUE_DT",
-      label: "Cheque Date",
+      label: "ChequeDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -234,8 +234,8 @@ export const stopPayconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "CHEQUE_AMOUNT",
-      label: "Cheque Amount",
-      placeholder: "Cheque Amount",
+      label: "ChequeAmount",
+      placeholder: "ChequeAmount",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {

@@ -9,9 +9,11 @@ import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
 import { chequeBKRetrievalMetadata } from "./retrieveMetadata";
+import { useTranslation } from "react-i18next";
 
 const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const {
     data: chequeBookFlag,
@@ -42,7 +44,7 @@ const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
         <LoaderPaperComponent />
       ) : (
         <>
-          {isError ? (
+          {isError && (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
@@ -51,23 +53,24 @@ const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
                 color="error"
               />
             </AppBar>
-          ) : (
-            <FormWrapper
-              key={"Retrieve-data"}
-              metaData={chequeBKRetrievalMetadata}
-              initialValues={{
-                FLAG: chequeBookFlag?.[0]?.CHQ_PRINT_BUTTON_FLAG === "N" && "B",
-              }}
-              onSubmitHandler={onSubmitHandler}
-              //@ts-ignore
-              formStyle={{
-                background: "white",
-              }}
-              controlsAtBottom={true}
-              containerstyle={{ padding: "10px" }}
-            >
-              {({ isSubmitting, handleSubmit }) => (
-                <>
+          )}
+          <FormWrapper
+            key={"Retrieve-data"}
+            metaData={chequeBKRetrievalMetadata}
+            initialValues={{
+              FLAG: chequeBookFlag?.[0]?.CHQ_PRINT_BUTTON_FLAG === "N" && "B",
+            }}
+            onSubmitHandler={onSubmitHandler}
+            //@ts-ignore
+            formStyle={{
+              background: "white",
+            }}
+            controlsAtBottom={true}
+            containerstyle={{ padding: "10px" }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                {!Boolean(isError) && (
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
@@ -76,19 +79,20 @@ const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
                     disabled={isSubmitting}
                     color={"primary"}
                   >
-                    ok
+                    {t("Ok")}
                   </GradientButton>
-                  <GradientButton
-                    onClick={closeDialog}
-                    color={"primary"}
-                    disabled={isSubmitting}
-                  >
-                    Close
-                  </GradientButton>
-                </>
-              )}
-            </FormWrapper>
-          )}
+                )}
+
+                <GradientButton
+                  onClick={closeDialog}
+                  color={"primary"}
+                  disabled={isSubmitting}
+                >
+                  {t("Close")}
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
         </>
       )}
     </>

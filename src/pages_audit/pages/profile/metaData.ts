@@ -663,7 +663,6 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
             }
             if (value === item?.DOC_CD) {
               lb_error = true;
-              // ls_msg = "Option is Already entered at Line " + (index + 1);
               ls_msg = "Option is Already entered";
               return ls_msg;
             }
