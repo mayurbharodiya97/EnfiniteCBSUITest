@@ -1,9 +1,9 @@
-import * as API from "./api";
+import * as API from "../api";
 
 export const releaseChequeMetadata = {
   form: {
     name: "release-Cheque-Metadata",
-    label: "Release Cheque Detail",
+    label: "ReleaseChequeDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -57,7 +57,7 @@ export const releaseChequeMetadata = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -72,7 +72,7 @@ export const releaseChequeMetadata = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account No.",
+      label: "AccountNumber",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -87,7 +87,7 @@ export const releaseChequeMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -119,7 +119,7 @@ export const releaseChequeMetadata = {
         componentType: "textField",
       },
       name: "FLAG",
-      label: "Cheque Stop Type",
+      label: "ChequeStopType",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -134,7 +134,7 @@ export const releaseChequeMetadata = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Intimate Date",
+      label: "IntimateDate",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
@@ -156,7 +156,7 @@ export const releaseChequeMetadata = {
         componentType: "datePicker",
       },
       name: "SURR_DT",
-      label: "Surrender Date",
+      label: "SurrenderDate",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
@@ -178,7 +178,7 @@ export const releaseChequeMetadata = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_FROM",
-      label: "Cheque From",
+      label: "FromChequeNo",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -193,7 +193,7 @@ export const releaseChequeMetadata = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_TO",
-      label: "Cheque To",
+      label: "ToChequeNo",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -209,7 +209,6 @@ export const releaseChequeMetadata = {
       },
       name: "REASON_CD",
       label: "Reason",
-      // placeholder: "Select Reason",
       disableCaching: true,
       dependentFields: ["FLAG", "BRANCH_CD", "ALLOW_RELEASE"],
       options: (dependentValue, formState, any, authState) => {
@@ -250,7 +249,7 @@ export const releaseChequeMetadata = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "Charge Amount",
+      label: "ChargeAmount",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
@@ -272,7 +271,7 @@ export const releaseChequeMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GST-Amount",
+      label: "GSTAmount",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
@@ -294,7 +293,7 @@ export const releaseChequeMetadata = {
         componentType: "datePicker",
       },
       name: "CHEQUE_DT",
-      label: "Cheque Date",
+      label: "ChequeDate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -310,7 +309,7 @@ export const releaseChequeMetadata = {
         componentType: "amountField",
       },
       name: "CHEQUE_AMOUNT",
-      label: "Cheque Amount",
+      label: "ChequeAmount",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
@@ -380,8 +379,9 @@ export const releaseChequeMetadata = {
         componentType: "datePicker",
       },
       name: "RELEASE_DATE",
-      label: "Release Date",
+      label: "ReleaseDate",
       isMaxWorkingDate: true,
+      isWorkingDate: true,
       dependentFields: ["ALLOW_RELEASE"],
       // isReadOnly(fieldData, dependentFieldsValues, formState) {
       //   if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {

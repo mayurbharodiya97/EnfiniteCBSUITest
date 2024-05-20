@@ -1,7 +1,7 @@
 export const forceExpireStockMetaData = {
   form: {
     name: "stock-force-exp",
-    label: "Force-Expire Stock",
+    label: "ForceExpStock",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -57,7 +57,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      label: "Branch",
+      label: "BranchCode",
       isReadOnly: true,
       fullWidth: true,
       GridProps: {
@@ -73,7 +73,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       fullWidth: true,
       isReadOnly: true,
       GridProps: {
@@ -89,7 +89,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account Number",
+      label: "AccountNumber",
       fullWidth: true,
       isReadOnly: true,
       GridProps: {
@@ -105,7 +105,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       fullWidth: true,
       isReadOnly: true,
       GridProps: {
@@ -139,7 +139,7 @@ export const forceExpireStockMetaData = {
       },
       name: "ACCT_MST_LIMIT",
       fullWidth: true,
-      label: "Account Limit Amount",
+      label: "AccountLimitAmt",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -173,7 +173,7 @@ export const forceExpireStockMetaData = {
       fullWidth: true,
       name: "TRAN_DT",
       isReadOnly: true,
-      label: "Statement Date",
+      label: "StatementDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -189,7 +189,7 @@ export const forceExpireStockMetaData = {
       name: "ASON_DT",
       fullWidth: true,
       isReadOnly: true,
-      label: "Statement Valid Till Date",
+      label: "StatementValidTillDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -220,7 +220,7 @@ export const forceExpireStockMetaData = {
       },
       name: "NO_OF_SHARE",
       fullWidth: true,
-      label: "No. of Share",
+      label: "NoOfShare",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -237,7 +237,7 @@ export const forceExpireStockMetaData = {
       },
       name: "STOCK_VALUE",
       fullWidth: true,
-      label: "Stock Value",
+      label: "StockValue",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -269,7 +269,7 @@ export const forceExpireStockMetaData = {
         componentType: "datePicker",
       },
       name: "RECEIVED_DT",
-      label: "Received Date",
+      label: "RecievedDate",
       fullWidth: true,
       isReadOnly: true,
       GridProps: {
@@ -285,7 +285,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "STOCK_DESC",
-      label: "Stock Description",
+      label: "StockDescription",
       isReadOnly: true,
       fullWidth: true,
       GridProps: {
@@ -319,7 +319,7 @@ export const forceExpireStockMetaData = {
       },
       fullWidth: true,
       name: "DRAWING_POWER",
-      label: "Drawing Power",
+      label: "DrawingPower",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -335,7 +335,7 @@ export const forceExpireStockMetaData = {
         componentType: "datePicker",
       },
       name: "WITHDRAW_DT",
-      label: "Expire Date",
+      label: "ExpireDate",
       isWorkingDate: true,
       fullWidth: true,
       GridProps: {

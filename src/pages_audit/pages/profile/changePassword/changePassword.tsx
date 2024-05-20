@@ -10,8 +10,6 @@ import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import SyncLockIcon from "@mui/icons-material/SyncLock";
-
 interface UpdatePasswordFnType {
   data: object;
   displayData?: object;

@@ -1,9 +1,9 @@
-import * as API from "./api";
+import * as API from "../api";
 
 export const lienExpireMetadata = {
   form: {
     name: "lien-expireMetadata",
-    label: "Lien Expire",
+    label: "LienExpire",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -42,7 +42,7 @@ export const lienExpireMetadata = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      label: "Branch",
+      label: "BranchCode",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -57,7 +57,7 @@ export const lienExpireMetadata = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -72,7 +72,7 @@ export const lienExpireMetadata = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account No.",
+      label: "AccountNumber",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -87,7 +87,7 @@ export const lienExpireMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -103,7 +103,7 @@ export const lienExpireMetadata = {
         componentType: "autocomplete",
       },
       name: "LIEN_CD",
-      label: "Lien Code",
+      label: "LienCode",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -119,7 +119,7 @@ export const lienExpireMetadata = {
         componentType: "amountField",
       },
       name: "LIEN_AMOUNT",
-      label: "Lien Amount",
+      label: "LienAmount",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -134,7 +134,7 @@ export const lienExpireMetadata = {
         componentType: "autocomplete",
       },
       name: "LIEN_STATUS",
-      label: "Lien Status",
+      label: "LienStatus",
       defaultValue: "E",
       isReadOnly: true,
       options: () => {
@@ -157,7 +157,7 @@ export const lienExpireMetadata = {
         componentType: "textField",
       },
       name: "PARENT_CD",
-      label: "Parent Code/Name",
+      label: "ParentCodeName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -173,7 +173,7 @@ export const lienExpireMetadata = {
       },
       name: "EFECTIVE_DT",
       isReadOnly: true,
-      label: "Effective Date",
+      label: "EffectiveDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -187,7 +187,7 @@ export const lienExpireMetadata = {
         componentType: "datePicker",
       },
       name: "REMOVAL_DT",
-      label: "Removal Date",
+      label: "RemovalDate",
       isWorkingDate: true,
       isReadOnly: true,
       GridProps: {
@@ -236,7 +236,7 @@ export const lienExpireMetadata = {
       placeholder: "Enter Remarks",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Remarks is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,

@@ -1319,6 +1319,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
     packageName: "",
   },
+  DOLIMITCONFRIMATION: {
+    url: "/loanServiceAPI/DOLIMITCONFRIMATION",
+    packageName: "",
+  },
+  DOSTOPPYTCONFIRMATION: {
+    url: "/chequeServiceAPI/DOSTOPPYTCONFIRMATION",
+    packageName: "",
+  },
+  DOSTOCKCONFIRMATION: {
+    url: "/accountServiceAPI/DOSTOCKCONFIRMATION",
+    packageName: "",
+  },
+  DOLIENCONFIRMATION: {
+    url: "/transactionServiceAPI/DOLIENCONFIRMATION",
+    packageName: "",
+  },
   GETACCOUNTDETAIL: {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",

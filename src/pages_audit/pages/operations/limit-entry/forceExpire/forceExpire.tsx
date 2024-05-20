@@ -9,65 +9,66 @@ import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
+import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
+import { crudLimitEntryData } from "../api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { forceExpireStockMetaData } from "./forceExpiredMetadata";
-import { crudStockData } from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { useTranslation } from "react-i18next";
+import { utilFunction } from "components/utils";
 
-export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
+export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
-  const forceExpire: any = useMutation("crudStockData", crudStockData, {
-    onSuccess: () => {
-      navigate(".");
-      enqueueSnackbar("Force-Expired successfully", { variant: "success" });
-      stockEntryGridData.mutate({
-        COMP_CD: authState?.companyID,
-        ACCT_CD: rows?.[0]?.data?.ACCT_CD,
-        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
-        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-        A_USER_LEVEL: authState?.role,
-      });
-    },
-  });
-
+  const forceExpire: any = useMutation(
+    "crudLimitEntryData",
+    crudLimitEntryData,
+    {
+      onSuccess: () => {
+        navigate(".");
+        enqueueSnackbar(t("ForceExpSuccessfully"), { variant: "success" });
+        getLimitDetail.mutate({
+          COMP_CD: authState?.companyID,
+          ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+          ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+          GD_TODAY_DT: authState?.workingDate,
+          USER_LEVEL: authState?.role,
+        });
+      },
+    }
+  );
   useEffect(() => {
     if (rows?.[0]?.data) {
-      forceExpireStockMetaData.form.label = `${
-        rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y"
-          ? "Stock Detail"
-          : "Force-Expire Stock"
-      } \u00A0\u00A0 
-        ${(
-          rows?.[0]?.data?.COMP_CD +
-          rows?.[0]?.data?.BRANCH_CD +
-          rows?.[0]?.data?.ACCT_TYPE +
-          rows?.[0]?.data?.ACCT_CD
-        ).replace(/\s/g, "")} -  ${rows?.[0]?.data?.ACCT_NM} `;
+      forceExpireMetaData.form.label = `  ${
+        rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y"
+          ? t("ForceExpireLimit")
+          : t("LimitDetail")
+      }     \u00A0\u00A0 
+      ${(
+        rows?.[0]?.data?.COMP_CD +
+        rows?.[0]?.data?.BRANCH_CD +
+        rows?.[0]?.data?.ACCT_TYPE +
+        rows?.[0]?.data?.ACCT_CD
+      ).replace(/\s/g, "")}`;
     }
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== "")
+    );
+    let upd = utilFunction.transformDetailsData(filteredData, rows?.[0]?.data);
+
     let apiReq = {
-      // ...data,
-      // _isNewRow: false,
-      // _isDeleteRow: false,
-      // _UPDATEDCOLUMNS: [
-      //   "REMARKS",
-      //   "FORCE_EXP_VERIFIED_BY",
-      //   "EXPIRED_FLAG",
-      //   "FORCE_EXP_DT",
-      // ],
-      // _OLDROWVALUE: {
-      //   REMARKS: rows?.[0]?.data?.REMARKS,
-      //   FORCE_EXP_VERIFIED_BY: "",
-      //   EXPIRED_FLAG: data?.EXPIRED_FLAG,
-      //   FORCE_EXP_DT: "",
-      // },
+      ...data,
+      _isNewRow: false,
+      _isDeleteRow: false,
+      ...upd,
     };
     forceExpire.mutate(apiReq);
 
@@ -101,27 +102,23 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
         ) : (
           <LinearProgressBarSpacer />
         )}
-        {/* ALLOW_FORCE_EXPIRE_FLAG */}
         <FormWrapper
-          key={"stock-force-exp"}
-          metaData={forceExpireStockMetaData}
-          displayMode={
-            rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y" ? "view" : null
-          }
-          initialValues={rows?.[0]?.data ?? []}
+          key={"limit-force-exp"}
+          metaData={forceExpireMetaData}
+          initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
+          loading={forceExpire.isLoading}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 367px)",
+            height: "calc(100vh - 398px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}
         >
           {({ isSubmitting, handleSubmit }) => {
-            console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" && (
+                {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
                   <Button
                     onClick={(event) => {
                       handleSubmit(event, "Save");
@@ -132,11 +129,11 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </Button>
                 )}
                 <Button color="primary" onClick={() => navigate(".")}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );

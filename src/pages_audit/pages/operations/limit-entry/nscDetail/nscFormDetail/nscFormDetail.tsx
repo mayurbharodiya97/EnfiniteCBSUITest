@@ -3,10 +3,12 @@ import React from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { NSC_FormMetaData } from "./limit_NSC_FD_Metadata";
+import { nscDetailFormMetaData } from "./nscFormDetailMetaData";
+import { useTranslation } from "react-i18next";
 
 export const NSCFormDetail = ({ navigate }) => {
   const { state: rows }: any = useLocation();
+  const { t } = useTranslation();
   return (
     <Dialog
       open={true}
@@ -20,20 +22,19 @@ export const NSCFormDetail = ({ navigate }) => {
       <>
         <FormWrapper
           key={"nscdetailForm"}
-          metaData={NSC_FormMetaData}
+          metaData={nscDetailFormMetaData}
           initialValues={rows?.[0]?.data ?? []}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 367px)",
+            height: "calc(100vh - 466px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}
         >
           {({ isSubmitting, handleSubmit }) => {
-            console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <Button color="primary" onClick={() => navigate(".")}>
-                close
+                {t("Close")}
               </Button>
             );
           }}
