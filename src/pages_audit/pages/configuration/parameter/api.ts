@@ -23,7 +23,7 @@ export const getParametersGridData = async ({para_type, comp_cd, branch_cd, conf
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-export const getparaauditbtn = async ({para_cd,comp_cd, branch_cd}) => {
+export const getParaAuditHistory = async ({para_cd,comp_cd, branch_cd}) => {
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSYSPARAAUDBTN", {
         PARA_CD:para_cd,

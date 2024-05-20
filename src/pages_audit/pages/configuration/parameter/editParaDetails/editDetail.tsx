@@ -113,7 +113,7 @@ import { usePopupContext } from "components/custom/popupContext";
       old_datatype: rowsData[0].data?.DATATYPE_CD ?? "",
       old_paraValue: rowsData[0].data?.PARA_VALUE ?? "",
       remark: rowsData1?.REMARKS ?? "",
-      compCode: rowsData1?.COMP_CD ?? "",
+      comp_cd: rowsData[0].data?.COMP_CD ?? "",
       branch_cd: rowsData[0].data?.BRANCH_CD ?? "",
       paraCode: rowsData1?.PARA_CD ?? "",
     })

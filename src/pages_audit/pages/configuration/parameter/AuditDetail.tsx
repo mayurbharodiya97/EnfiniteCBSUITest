@@ -18,14 +18,13 @@ const actions: ActionTypes[] = [
   },
 ];
  const AuditDetail = ({ open, onClose, rowsData}) => {
-    const {authState} = useContext(AuthContext);
     const navigate = useNavigate();
-    const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
-        ["getparaauditbtn"],
-        () => API.getparaauditbtn({
+    const { data, isLoading, isFetching,} = useQuery<any, any>(
+        ["getParaAuditHistory"],
+        () => API.getParaAuditHistory({
             para_cd:rowsData?.PARA_CD,
-            comp_cd:authState?.companyID,
-            branch_cd:authState?.user?.branchCode,
+            comp_cd:rowsData?.COMP_CD,
+            branch_cd:rowsData?.BRANCH_CD,
         })
       );
       const setCurrentAction = useCallback(async (data) => {
@@ -39,7 +38,7 @@ const actions: ActionTypes[] = [
       useEffect(()=>{
         return () => {
           AuditMetadata.gridConfig.gridLabel="Para Code = "+rowsData?.PARA_CD+" "+rowsData?.PARA_NM
-          queryClient.removeQueries("getparaauditbtn");
+          queryClient.removeQueries("getParaAuditHistory");
         }
       },[])
     
@@ -54,7 +53,7 @@ const actions: ActionTypes[] = [
       }}
     >
         <GridWrapper
-        key={"parametersGrid"}
+        key={"parametersGridAudit"}
         finalMetaData={AuditMetadata as GridMetaDataType}
         data={data ?? []}
         ReportExportButton={true}

@@ -982,7 +982,18 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
-
+  GETENTDESCMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETENTDESCMSTDATADISP",
+    packageName: "",
+  },
+  GETINSUTYPMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUTYPMSTDATADISP",
+    packageName: "",
+  },
+  GETNPACATMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNPACATMSTDATADISP",
+    packageName: "",
+  },
   GETDDDWACCTTYPE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
     packageName: "",
@@ -1292,6 +1303,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSSLIPGRID",
     packageName: "",
   },
+  GETRTGSTRANTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRANTYPEDDW",
+    packageName: "",
+  },
+  GETCOMMTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEDDDW",
+    packageName: "",
+  },
+  GETBRANCHIFSCCODE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHIFSCCODE",
+    packageName: "",
+  },
   DOCHQBKCONFIRMATION: {
     url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
     packageName: "",
@@ -1310,6 +1333,54 @@ export const ActionWiseAPIConfiguration = {
   },
   DOLIENCONFIRMATION: {
     url: "/transactionServiceAPI/DOLIENCONFIRMATION",
+    packageName: "",
+  },
+  GETACCOUNTDETAIL: {
+    url: "/transactionServiceAPI/GETACCOUNTDETAIL",
+    packageName: "",
+  },
+  DOSPECIALINSTMST: {
+    url: "commonMasterServiceAPI/DOSPECIALINSTMST",
+    packageName: "",
+  },
+  INSURANCETYPEMASTERDML: {
+    url: "commonMasterServiceAPI/INSURANCETYPEMASTERDML",
+    packageName: "",
+  },
+  DONPACATEGDML: {
+    url: "commonMasterServiceAPI/DONPACATEGDML",
+    packageName: "",
+  },
+  GETCOURTMSTAREADDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOURTMSTAREADDW",
+    packageName: "",
+  },
+  GETCOURTMSTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOURTMSTGRID",
+    packageName: "",
+  },
+  DOCOURTMST: {
+    url: "commonMasterServiceAPI/DOCOURTMST",
+    packageName: "",
+  },
+  GETRTGSBNFCRYDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEACWISE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEGRID",
+    packageName: "",
+  },
+  DOCHEQUEVALIDATE: {
+    url: "/transactionServiceAPI/DOCHEQUEVALIDATE",
+    packageName: "",
+  },
+  GETRTGSCHARGES: {
+    url: "/transactionServiceAPI/GETRTGSCHARGES",
     packageName: "",
   },
 };

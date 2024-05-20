@@ -9,17 +9,13 @@ import {
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import * as API from "./api";
-
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { AppBar } from "@mui/material";
-import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import FormWrapper from "components/dyanmicForm";
+import { ClearCacheProvider, queryClient } from "cache";
 import {
   RetrieveFormConfigMetaData,
   clearingDateTransferGridMetaData,
@@ -38,9 +34,8 @@ const actions: ActionTypes[] = [
 const ClearingDateTransferGrid = () => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
-  const indexRef = useRef(0);
-  const navigate = useNavigate();
   const [isFlag, setIsFlag] = useState();
+
   const mutation: any = useMutation(
     "getRetrievalClearingData",
     API.getRetrievalClearingData,

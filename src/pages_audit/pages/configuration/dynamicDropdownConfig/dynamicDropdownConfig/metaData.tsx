@@ -71,7 +71,7 @@ export const DynamicDropdownConfigMetaData = {
         { label: "Default Option", value: "DO" },
       ],
       _optionsKey: "defualt",
-      defaultValue: "Dynamic SQL",
+      defaultValue: "DS",
       required: true,
       type: "text",
       GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
