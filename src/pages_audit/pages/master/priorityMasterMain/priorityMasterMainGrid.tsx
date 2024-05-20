@@ -55,13 +55,16 @@ const PriorityMasterMainGrid = () => {
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
-            data: { ...isDeleteDataRef.current?.data, _isDeleteRow: true },
+            ...isDeleteDataRef.current?.data,
+            _isDeleteRow: true,
           });
         }
       }
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );
@@ -90,8 +93,8 @@ const PriorityMasterMainGrid = () => {
       enqueueSnackbar("Records successfully deleted", {
         variant: "success",
       });
+      CloseMessageBox();
       refetch();
-      CloseMessageBox()
     },
   });
 

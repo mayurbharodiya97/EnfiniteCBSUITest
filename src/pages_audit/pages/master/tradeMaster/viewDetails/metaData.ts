@@ -81,7 +81,7 @@ export const TradeMasterMetaData = {
     },
     {
       render: { componentType: "select" },
-      name: "CONST_TYPE_DISP",
+      name: "CONSTITUTION_TYPE",
       label: "Constitution",
       options: () => API.getPMISCData("BANK_CONS_TYPE"),
       _optionsKey: "getDataForConstitution",
