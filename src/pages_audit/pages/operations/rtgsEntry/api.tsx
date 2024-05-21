@@ -140,7 +140,7 @@ export const getRtgsBenfDtlList = async (ApiReq) => {
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, ...other }) => {
         return {
-          value: DISP_VAL,
+          value: TO_ACCT_NO,
           label: DISP_VAL,
           ...other,
         };
@@ -239,7 +239,7 @@ export const getRtgsEntryDML = async (ApiReq) => {
       ...ApiReq,
     });
   if (status === "0") {
-    return data;
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -153,14 +153,22 @@ const RtgsEntryForm: FC<{}> = () => {
       enqueueSnackbar(data, {
         variant: "success",
       });
+      setState((old) => ({
+        ...old,
+        activeStep: 0,
+      }));
+      setState((old) => ({
+        ...old,
+        beneficiaryDtlRefresh: 0,
+      }));
       // setGridData([]);
       // setChequeDetailData({
       //   chequeDetails: [{ ECS_USER_NO: "" }],
       //   SLIP_AMOUNT: "0",
       // });
       // setChequeDtlRefresh(0);
-      // myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-      // myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
       CloseMessageBox();
     },
   });
@@ -217,12 +225,18 @@ const RtgsEntryForm: FC<{}> = () => {
       Boolean(data?.beneficiaryAcDetails) &&
       Array.isArray(data?.beneficiaryAcDetails)
     ) {
-      newData = data?.beneficiaryAcDetails?.map((item) => ({
-        ...item,
-        _isNewRow: formMode === "new" ? true : false,
-        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
-        COMP_CD: authState?.companyID,
-      }));
+      newData = data?.beneficiaryAcDetails?.map(
+        (item) => (
+          console.log("item", item),
+          {
+            ...item,
+            _isNewRow: formMode === "new" ? true : false,
+            BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
+            COMP_CD: authState?.companyID,
+            TO_ACCT_NO: item?.TO_ACCT_NO,
+          }
+        )
+      );
     }
 
     validateRtgsDetail.mutate(
@@ -266,9 +280,10 @@ const RtgsEntryForm: FC<{}> = () => {
                 //   endSubmit,
                 // };
 
-                const finalReqDataRef = {
+                finalReqDataRef.current = {
                   ...slipFormDataRef?.current,
                   _isNewRow: true,
+                  COMP_CD: authState?.companyID,
                   // TRAN_CD: slipFormDataRef?.current?.DEF_TRAN_CD,
                   // SCREEN_REF: "MST/552",
                   DETAILS_DATA: {
@@ -278,7 +293,6 @@ const RtgsEntryForm: FC<{}> = () => {
                   },
                   endSubmit,
                 };
-                console.log("finalReqDataRef", finalReqDataRef);
                 endSubmit(true);
                 const buttonName = await MessageBox({
                   messageTitle: "Confirmation",
@@ -287,7 +301,7 @@ const RtgsEntryForm: FC<{}> = () => {
                   loadingBtnName: "Yes",
                 });
                 if (buttonName === "Yes") {
-                  mutationRtgs.mutate(finalReqDataRef);
+                  mutationRtgs.mutate(finalReqDataRef.current);
                 }
               } else if (
                 parseFloat(benData?.TOTAL_AMOUNT) > 0 &&

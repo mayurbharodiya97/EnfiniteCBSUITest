@@ -537,7 +537,7 @@ export const RtgsEntryFormMetaData = {
       label: "Cheque No.",
       placeholder: "Cheque No.",
       type: "text",
-      required: true,
+      // required: true,
       autoComplete: "off",
       // isFieldFocused: true,
       // defaultfocus: true,
@@ -552,15 +552,15 @@ export const RtgsEntryFormMetaData = {
           return true;
         },
       },
-      schemaValidation: {
-        type: "string",
-        rules: [
-          {
-            name: "required",
-            params: ["Please enter Cheque Number"],
-          },
-        ],
-      },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [
+      //     {
+      //       name: "required",
+      //       params: ["Please enter Cheque Number"],
+      //     },
+      //   ],
+      // },
       dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD"],
       postValidationSetCrossFieldValues: async (
         field,
@@ -596,6 +596,7 @@ export const RtgsEntryFormMetaData = {
           field.value &&
           dependentFieldsValues?.["ACCT_CD"]?.value?.length
         ) {
+          if (formState?.isSubmitting) return {};
           let postData = await API.getRtgsChequeNoValidation({
             BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
             ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
@@ -976,90 +977,90 @@ export const RtgsEntryFormMetaData = {
         return value ?? "--";
       },
     },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "ENTERED_BY",
-      label: "Maker",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      __VIEW__: { render: { componentType: "textField" } },
-      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "ENTERED_DATE",
-      label: "Maker Time",
-      placeholder: "",
-      type: "text",
-      format: "dd/MM/yyyy HH:mm:ss",
-      __VIEW__: { render: { componentType: "datetimePicker" } },
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-    },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "ENTERED_BY",
+    //   label: "Maker",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   isReadOnly: true,
+    //   __VIEW__: { render: { componentType: "textField" } },
+    //   GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "ENTERED_DATE",
+    //   label: "Maker Time",
+    //   placeholder: "",
+    //   type: "text",
+    //   format: "dd/MM/yyyy HH:mm:ss",
+    //   __VIEW__: { render: { componentType: "datetimePicker" } },
+    //   fullWidth: true,
+    //   isReadOnly: true,
+    //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+    // },
 
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "CONFIRMED",
-      label: "Confirm status",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      __VIEW__: { render: { componentType: "textField" } },
-      GridProps: { xs: 12, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "VERIFIED_BY",
-      label: "Checker",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      dependentFields: ["CONFIRMED"],
-      __VIEW__: { render: { componentType: "textField" } },
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      GridProps: { xs: 12, sm: 1.3, md: 1.2, lg: 1.2, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "VERIFIED_DATE",
-      label: "Checker Time",
-      placeholder: "",
-      type: "text",
-      format: "dd/MM/yyyy HH:mm:ss",
-      __VIEW__: { render: { componentType: "datetimePicker" } },
-      fullWidth: true,
-      isReadOnly: true,
-      dependentFields: ["CONFIRMED"],
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "CONFIRMED",
+    //   label: "Confirm status",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   isReadOnly: true,
+    //   __VIEW__: { render: { componentType: "textField" } },
+    //   GridProps: { xs: 12, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "VERIFIED_BY",
+    //   label: "Checker",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   isReadOnly: true,
+    //   dependentFields: ["CONFIRMED"],
+    //   __VIEW__: { render: { componentType: "textField" } },
+    //   shouldExclude: (_, dependentFieldsValues, __) => {
+    //     if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    //   },
+    //   GridProps: { xs: 12, sm: 1.3, md: 1.2, lg: 1.2, xl: 1.5 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "VERIFIED_DATE",
+    //   label: "Checker Time",
+    //   placeholder: "",
+    //   type: "text",
+    //   format: "dd/MM/yyyy HH:mm:ss",
+    //   __VIEW__: { render: { componentType: "datetimePicker" } },
+    //   fullWidth: true,
+    //   isReadOnly: true,
+    //   dependentFields: ["CONFIRMED"],
+    //   shouldExclude: (_, dependentFieldsValues, __) => {
+    //     if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    //   },
+    //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+    // },
   ],
 };
 
@@ -1517,18 +1518,29 @@ export const rtgsAccountDetailFormMetaData: any = {
 
           GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
           options: async (dependentValue, formState, _, authState) => {
+            console.log("formState", formState);
             return API.getRtgsBenfDtlList({
               COMP_CD: authState?.companyID,
               BRANCH_CD:
                 formState?.rtgsAcData?.BRANCH_CD ??
                 authState?.user?.branchCode ??
                 "",
-              ACCT_TYPE: formState?.rtgsAcData?.ACCT_TYPE ?? "",
-              ACCT_CD: formState?.rtgsAcData?.ACCT_CD ?? "",
-              FLAG:
-                formState?.rtgsAcData?.PARA_BNFCRY !== null
-                  ? "N"
-                  : formState?.rtgsAcData?.PARA_BNFCRY,
+              ACCT_TYPE:
+                formState?.rtgsAcData?.PARA_BNFCRY === "Y"
+                  ? formState?.rtgsAcData?.ACCT_TYPE ?? ""
+                  : "",
+              ACCT_CD:
+                formState?.rtgsAcData?.PARA_BNFCRY === "Y"
+                  ? formState?.rtgsAcData?.ACCT_CD ?? ""
+                  : "",
+              FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
+              // formState?.rtgsAcData?.PARA_BNFCRY === "Y"
+              //   ? formState?.rtgsAcData?.PARA_BNFCRY
+              //   : "",
+              // FLAG:
+              //   formState?.rtgsAcData?.PARA_BNFCRY !== null
+              //     ? "N"
+              //     : formState?.rtgsAcData?.PARA_BNFCRY,
             });
           },
           _optionsKey: "getRtgsBenfDtlList",
@@ -1538,6 +1550,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            if (formState?.isSubmitting) return {};
             if (
               field?.value &&
               field.optionData &&
@@ -1629,7 +1642,7 @@ export const rtgsAccountDetailFormMetaData: any = {
               };
             }
           },
-          runPostValidationHookAlways: true,
+          // runPostValidationHookAlways: true,
           disableCaching: true,
         },
         {
