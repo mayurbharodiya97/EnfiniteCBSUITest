@@ -41,11 +41,7 @@ pipeline{
             }
         }
 
-    //  stage('Test') {
-    //         steps {
-    //             sh 'npm test'
-    //         }
-    //     }
+
 
          stage('Archive Artifacts') {
             steps {
