@@ -51,6 +51,7 @@ import {
   ColorlibStepIconRoot,
   ColorlibConnector,
 } from "../../../../components/dyanmicForm/stepperForm/style";
+import { AddNewBeneficiaryDetail } from "./addNewBeneficiaryAcDetail";
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -64,11 +65,11 @@ const actions: ActionTypes[] = [
 const RtgsEntryForm: FC<{}> = () => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const myFormRef: any = useRef(null);
   const myChequeFormRef: any = useRef(null);
   const slipFormDataRef: any = useRef(null);
-
+  const finalReqDataRef: any = useRef(null);
   const [beneficiaryDtlData, setBeneficiaryDtlData] = useState<any>({
     beneficiaryAcDetails: [{ AMOUNT: "", REMARKS: "" }],
     SLIP_AMOUNT: "0",
@@ -81,6 +82,9 @@ const RtgsEntryForm: FC<{}> = () => {
     activeStep: 0,
     ifscGrid: false,
     isIfscCode: [],
+    isIfscCdData: [],
+    isOpenAddBeneficiaryAc: false,
+    isBenAuditTrailData: [],
   });
   const {
     formMode,
@@ -90,6 +94,9 @@ const RtgsEntryForm: FC<{}> = () => {
     activeStep,
     ifscGrid,
     isIfscCode,
+    isIfscCdData,
+    isOpenAddBeneficiaryAc,
+    isBenAuditTrailData,
   } = state;
   const steps = [
     "New RTGS Entry(Ordering A/C Details)",
@@ -117,6 +124,47 @@ const RtgsEntryForm: FC<{}> = () => {
 
     onSuccess: (data) => {},
   });
+  const validateRtgsDetail: any = useMutation(API.validateRtgsDetail, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+
+    onSuccess: (data, variables) => {},
+  });
+
+  const mutationRtgs = useMutation(API.getRtgsEntryDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+      // setGridData([]);
+      // setChequeDetailData({
+      //   chequeDetails: [{ ECS_USER_NO: "" }],
+      //   SLIP_AMOUNT: "0",
+      // });
+      // setChequeDtlRefresh(0);
+      // myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      // myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      CloseMessageBox();
+    },
+  });
+
   useEffect(() => {
     const handleKeyDown = async (event) => {
       if (event.ctrlKey && (event?.key === "J" || event?.key === "j")) {
@@ -163,6 +211,7 @@ const RtgsEntryForm: FC<{}> = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
+    let benData = data;
     let newData = [];
     if (
       Boolean(data?.beneficiaryAcDetails) &&
@@ -172,104 +221,167 @@ const RtgsEntryForm: FC<{}> = () => {
         ...item,
         _isNewRow: formMode === "new" ? true : false,
         BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
-        PROCESSED: "N",
-        // REASON: zoneTranType === "S" ? "N" : item?.REASON,
-        CLEARING_STATUS: "C",
+        COMP_CD: authState?.companyID,
       }));
     }
 
-    if (
-      !Boolean(data?.SLIP_AMOUNT) ||
-      parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
-    ) {
-      MessageBox({
-        messageTitle: "Validation Failed",
-        message: "Please Enter RTGS/NEFT Ordering Amount",
-      });
-    } else if (
-      parseFloat(data?.TOTAL_AMOUNT) === 0 &&
-      newData &&
-      newData.length > 0
-    ) {
-      // finalReqDataRef.current = {
-      //   DAILY_CLEARING: {
-      //     ...slipFormDataRef?.current,
-      //     _isNewRow: true,
-      //     REQUEST_CD: "",
-      //     TRAN_TYPE: zoneTranType,
-      //   },
-      //   DETAILS_DATA: {
-      //     isNewRow: [...newData],
-      //     isUpdatedRow: [],
-      //     isDeleteRow: [],
-      //   },
-      //   ...slipFormDataRef?.current,
-      //   PROCESSED: "N",
-      //   SKIP_ENTRY: "N",
-      //   _isNewRow: true,
-      //   endSubmit,
-      // };
-      endSubmit(true);
-      const buttonName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: " Proceed ?",
-        buttonNames: ["No", "Yes"],
-        loadingBtnName: "Yes",
-      });
-      if (buttonName === "Yes") {
-        // mutationOutward.mutate(finalReqDataRef.current);
+    validateRtgsDetail.mutate(
+      {
+        ...slipFormDataRef?.current,
+        TRAN_CD: slipFormDataRef?.current?.DEF_TRAN_CD,
+        SCREEN_REF: "MST/552",
+        BENEFICIARY_ACCT_DTL: [...newData],
+      },
+      {
+        onSuccess: async (data, variables) => {
+          for (let i = 0; i < data?.length; i++) {
+            if (data[i]?.O_STATUS === "999") {
+              const buttonName = await MessageBox({
+                messageTitle: "Account Validation Failed",
+                message: data[i]?.O_MESSAGE,
+              });
+            } else if (data[i]?.O_STATUS === "0") {
+              console.log("test", benData?.TOTAL_AMOUNT);
+              if (
+                parseFloat(benData?.TOTAL_AMOUNT) === 0 &&
+                newData &&
+                newData.length > 0
+              ) {
+                // finalReqDataRef.current = {
+                //   DAILY_CLEARING: {
+                //     ...slipFormDataRef?.current,
+                //     _isNewRow: true,
+                //     REQUEST_CD: "",
+                //     TRAN_TYPE: zoneTranType,
+                //   },
+                //   DETAILS_DATA: {
+                //     isNewRow: [...newData],
+                //     isUpdatedRow: [],
+                //     isDeleteRow: [],
+                //   },
+                //   ...slipFormDataRef?.current,
+                //   PROCESSED: "N",
+                //   SKIP_ENTRY: "N",
+                //   _isNewRow: true,
+                //   endSubmit,
+                // };
+
+                const finalReqDataRef = {
+                  ...slipFormDataRef?.current,
+                  _isNewRow: true,
+                  // TRAN_CD: slipFormDataRef?.current?.DEF_TRAN_CD,
+                  // SCREEN_REF: "MST/552",
+                  DETAILS_DATA: {
+                    isNewRow: [...newData],
+                    isUpdatedRow: [],
+                    isDeleteRow: [],
+                  },
+                  endSubmit,
+                };
+                console.log("finalReqDataRef", finalReqDataRef);
+                endSubmit(true);
+                const buttonName = await MessageBox({
+                  messageTitle: "Confirmation",
+                  message: " Proceed ?",
+                  buttonNames: ["No", "Yes"],
+                  loadingBtnName: "Yes",
+                });
+                if (buttonName === "Yes") {
+                  mutationRtgs.mutate(finalReqDataRef);
+                }
+              } else if (
+                parseFloat(benData?.TOTAL_AMOUNT) > 0 &&
+                Array.isArray(beneficiaryDtlData?.beneficiaryAcDetails) &&
+                beneficiaryDtlData?.beneficiaryAcDetails?.length > 0 &&
+                benData?.beneficiaryAcDetails?.length > 0
+              ) {
+                console.log("if else test", benData?.TOTAL_AMOUNT);
+                setBeneficiaryDtlData((old) => ({
+                  ...old,
+                  beneficiaryAcDetails: [
+                    {
+                      ...old?.beneficiaryAcDetails,
+                    },
+                    ...benData.beneficiaryAcDetails,
+                  ],
+                }));
+                myChequeFormRef?.current?.handleFormReset({
+                  preventDefault: () => {},
+                });
+                setState((old) => ({
+                  ...old,
+                  beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
+                }));
+              } else if (
+                (parseFloat(benData?.TOTAL_AMOUNT) > 0 || newData?.length,
+                newData.length === 0)
+              ) {
+                console.log(
+                  "if 4",
+                  benData?.TOTAL_AMOUNT,
+                  beneficiaryDtlData?.beneficiaryAcDetails
+                );
+                setBeneficiaryDtlData((old) => ({
+                  ...old,
+                  beneficiaryAcDetails: [
+                    {
+                      ...old?.beneficiaryAcDetails,
+                      // SLIP_AMOUNT: benData?.SLIP_AMOUNT,
+                    },
+                  ],
+                }));
+
+                setState((old) => ({
+                  ...old,
+                  beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
+                }));
+              }
+              //   // if (validateRtgsDetail?.[0]?.O_STATUS === "0") {
+              //   // } else if (data?.[0]?.O_STATUS === "9") {
+              //   //   MessageBox({
+              //   //     messageTitle: "Validation Alert",
+              //   //     message: data?.[0]?.O_MESSAGE,
+              //   //   });
+              //   // } else if (validateRtgsDetail?.[0]?.O_STATUS === "99") {
+              //   // } else if (validateRtgsDetail?.[0]?.O_STATUS === "999") {
+              //   //   MessageBox({
+              //   //     messageTitle: "Validation Failed",
+              //   //     message: data?.[0]?.O_MESSAGE,
+              //   //   });
+              //   // }
+              // }
+              // if (
+              //   !Boolean(data?.SLIP_AMOUNT) ||
+              //   parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
+              // ) {
+              //   MessageBox({
+              //     messageTitle: "Validation Failed",
+              //     message: "Please Enter RTGS/NEFT Ordering Amount",
+              //   });
+              // } else
+              //  else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
+              //     MessageBox({
+              //       messageTitle: "Validation Failed",
+              //       message:
+              //         "Total Beneficiary Amount can't be greater than total ordering RTGS/NEFT Amount",
+              //     });
+            }
+          }
+        },
       }
-    } else if (
-      parseFloat(data?.TOTAL_AMOUNT) > 0 &&
-      Array.isArray(beneficiaryDtlData?.beneficiaryAcDetails) &&
-      beneficiaryDtlData?.beneficiaryAcDetails?.length > 0 &&
-      data?.beneficiaryAcDetails?.length > 0
-    ) {
-      setBeneficiaryDtlData((old) => ({
-        ...old,
-        beneficiaryAcDetails: [
-          {
-            ...old?.beneficiaryAcDetails,
-          },
-          ...data.beneficiaryAcDetails,
-        ],
-      }));
-      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-      setState((old) => ({
-        ...old,
-        beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
-      }));
-    } else if (
-      (parseFloat(data?.TOTAL_AMOUNT) > 0 || newData?.length,
-      newData.length === 0)
-    ) {
-      console.log(
-        "if 4",
-        data?.TOTAL_AMOUNT,
-        beneficiaryDtlData?.beneficiaryAcDetails
-      );
-      setBeneficiaryDtlData((old) => ({
-        ...old,
-        beneficiaryAcDetails: [
-          {
-            ...old?.beneficiaryAcDetails,
-            SLIP_AMOUNT: data?.SLIP_AMOUNT,
-          },
-        ],
-      }));
-
-      setState((old) => ({
-        ...old,
-        beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
-      }));
-    } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
-      MessageBox({
-        messageTitle: "Validation Failed",
-        message:
-          "Total Beneficiary Amount can't be greater than total ordering RTGS/NEFT Amount",
-      });
-    }
+    );
   };
+
+  // if (RtgsEntryFormMetaData?.fields && isIfscCdData.length) {
+  //   const itemWithDefaultValueY = isIfscCdData.find(
+  //     (item) => item?.DEFAULT_VALUE === "Y"
+  //   );
+  //   if (itemWithDefaultValueY) {
+  //     RtgsEntryFormMetaData.fields[5].defaultValue =
+  //       itemWithDefaultValueY.value;
+  //   }
+  // }
+
   return (
     <Fragment>
       <AppBar position="relative" style={{ marginBottom: "5px" }}>
@@ -350,9 +462,8 @@ const RtgsEntryForm: FC<{}> = () => {
                   // );
                   setBeneficiaryDtlData((old) => ({
                     beneficiaryAcDetails: [{ AMOUNT: "", REMARKS: "" }],
-                    SLIP_AMOUNT: data?.TOTAL,
+                    SLIP_AMOUNT: data?.AMOUNT,
                   }));
-
                   setState((old) => ({
                     ...old,
                     beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
@@ -363,7 +474,12 @@ const RtgsEntryForm: FC<{}> = () => {
                   // }
                 }}
                 setDataOnFieldChange={(action, payload) => {
-                  if (action === "JOINT_DETAIL") {
+                  if (action === "IFSC_DATA") {
+                    setState((old) => ({
+                      ...old,
+                      isIfscCdData: payload,
+                    }));
+                  } else if (action === "JOINT_DETAIL") {
                     setState((old) => ({
                       ...old,
                       gridData: payload,
@@ -525,22 +641,41 @@ const RtgsEntryForm: FC<{}> = () => {
                     if (id === "ADDNEWROW") {
                       let event: any = { preventDefault: () => {} };
                       myChequeFormRef?.current?.handleSubmit(event, "FINAL");
-                    } else {
-                      setState((old) => ({
-                        ...old,
-                        ifscGrid: isIfscCode.length > 0 ? true : old.ifscGrid,
-                      }));
-                      getIfscBankGridData.mutate({
-                        COMP_CD: authState?.companyID ?? "",
-                        BRANCH_CD: authState?.user?.branchCode ?? "",
-                        IFSC_CODE: isIfscCode ?? "",
-                      });
+                    } else if (
+                      id.slice(id.indexOf(".") + 1) === "BENEFICIARY"
+                    ) {
+                      if (slipFormDataRef.current?.ACCT_CD.length === 0) {
+                        MessageBox({
+                          messageTitle: "Validation Failed",
+                          message: "Please enter A/c Type For Ordering A/c No.",
+                        });
+                      } else {
+                        setState((old) => ({
+                          ...old,
+                          isOpenAddBeneficiaryAc: true,
+                        }));
+                      }
+                    } else if (id.slice(id.indexOf(".") + 1) === "IFSC") {
+                      if (isIfscCode.length > 0) {
+                        setState((old) => ({
+                          ...old,
+                          ifscGrid: true,
+                        }));
+                        getIfscBankGridData.mutate({
+                          COMP_CD: authState?.companyID ?? "",
+                          BRANCH_CD: authState?.user?.branchCode ?? "",
+                          IFSC_CODE: isIfscCode ?? "",
+                        });
+                      }
                     }
                   }}
                   ref={myChequeFormRef}
                   formState={{
                     MessageBox: MessageBox,
                     rtgsAcData: slipFormDataRef.current,
+                    isIfscCdData: isIfscCdData.map((item) => {
+                      return item?.VISIBLE_BNFCRY_YN;
+                    }),
                   }}
                 />
               </div>
@@ -613,6 +748,20 @@ const RtgsEntryForm: FC<{}> = () => {
               loading={getIfscBankGridData?.isLoading}
             />
           </Dialog>
+        ) : null}
+      </>
+      <>
+        {isOpenAddBeneficiaryAc ? (
+          <AddNewBeneficiaryDetail
+            isOpen={true}
+            onClose={() => {
+              setState((old) => ({
+                ...old,
+                isOpenAddBeneficiaryAc: false,
+              }));
+            }}
+            isBenAuditTrailData={slipFormDataRef.current}
+          />
         ) : null}
       </>
       {/* )} */}

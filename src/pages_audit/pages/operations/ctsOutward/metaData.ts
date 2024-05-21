@@ -944,7 +944,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
-          required: true,
+          // required: true,
 
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
         },

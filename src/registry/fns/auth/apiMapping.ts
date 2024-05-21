@@ -1395,6 +1395,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
     packageName: "",
   },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
+    packageName: "",
+  },
+  VALIDATERTGSDTL: {
+    url: "/transactionServiceAPI/VALIDATERTGSDTL",
+    packageName: "",
+  },
+  VALIDATEAMOUNT: {
+    url: "/transactionServiceAPI/VALIDATEAMOUNT",
+    packageName: "",
+  },
+  DOSAVERTGSENTRY: {
+    url: "/transactionServiceAPI/DOSAVERTGSENTRY",
+    packageName: "",
+  },
+  GETRTGSENTRYTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSENTRYTYPEDDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

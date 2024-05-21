@@ -15,6 +15,27 @@ export const getAccountDetail = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getEntryType = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSENTRYTYPEDDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DISPLAY_VALUE, DEFAULT_VALUE, DATA_VALUE, ...other }) => {
+          return {
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+            ...other,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getJointDetailsList = async (Apireq?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNJOINTTAB", { ...Apireq });
@@ -119,7 +140,7 @@ export const getRtgsBenfDtlList = async (ApiReq) => {
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, ...other }) => {
         return {
-          value: TO_ACCT_NO,
+          value: DISP_VAL,
           label: DISP_VAL,
           ...other,
         };
@@ -179,3 +200,69 @@ export const getRtgsAmountChargeValidation = async (ApiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getIfscBenDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETIFSCDETAILS", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateRtgsDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATERTGSDTL", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateAmount = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEAMOUNT", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsEntryDML = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSAVERTGSENTRY", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// export const getIfscBenDetail = async (reqObj: reqObjTypes) => {
+//   const { reqData, controllerFinal } = reqObj;
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher(
+//       "GETIFSCDETAILS",
+//       {
+//         // PARENT_TYPE: reqData?.PARENT_TYPE,
+//         IFSC_CODE: reqData?.TO_IFSCCODE,
+//         ENTRY_TYPE: "RTGS",
+//       },
+//       {},
+//       null,
+//       controllerFinal
+//     ); // Pass signal as an option
+
+//   if (status === "0") {
+//     return data;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };
