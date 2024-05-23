@@ -558,52 +558,54 @@ const CkycProvider = ({children}) => {
             // retrieveFormDataApiRes: {...retrieveApiRes},
             accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
         }
-        // PHOTO_MST - getting photo sign on retrieve form data to populate images
-        if(data && data.PHOTO_MST) {
-            // photoBase64ctx
-            // signBase64ctx
-            // if(data.PHOTO_MST) {
-                payload["photoBase64ctx"] = data.PHOTO_MST.CUST_PHOTO
-                payload["signBase64ctx"] = data.PHOTO_MST.CUST_SIGN
-            // }
-        }
-
-        // OTHER-DTL, Y-> true, N -> false
-        if(retrieveApiRes && retrieveApiRes.OTHER_DTL) {
-            let resData = retrieveApiRes.OTHER_DTL
-            if(resData["POLITICALLY_CONNECTED"] == "Y") {
-                resData["POLITICALLY_CONNECTED"] = true
-            } else {
-                resData["POLITICALLY_CONNECTED"] = false
+        if(!Boolean(state?.isFreshEntryctx) || !Boolean(state?.isDraftSavedctx)) {
+            // PHOTO_MST - getting photo sign on retrieve form data to populate images
+            if(data && data.PHOTO_MST) {
+                // photoBase64ctx
+                // signBase64ctx
+                // if(data.PHOTO_MST) {
+                    payload["photoBase64ctx"] = data.PHOTO_MST.CUST_PHOTO
+                    payload["signBase64ctx"] = data.PHOTO_MST.CUST_SIGN
+                // }
             }
-
-            if(resData["BLINDNESS"] == "Y") {
-                resData["BLINDNESS"] = true
-            } else {
-                resData["BLINDNESS"] = false
+    
+            // OTHER-DTL, Y-> true, N -> false
+            if(retrieveApiRes && retrieveApiRes.OTHER_DTL) {
+                let resData = retrieveApiRes.OTHER_DTL
+                if(resData["POLITICALLY_CONNECTED"] == "Y") {
+                    resData["POLITICALLY_CONNECTED"] = true
+                } else {
+                    resData["POLITICALLY_CONNECTED"] = false
+                }
+    
+                if(resData["BLINDNESS"] == "Y") {
+                    resData["BLINDNESS"] = true
+                } else {
+                    resData["BLINDNESS"] = false
+                }
+    
+                if(resData["REFERRED_BY_STAFF"] == "Y") {
+                    resData["REFERRED_BY_STAFF"] = true
+                } else {
+                    resData["REFERRED_BY_STAFF"] = false
+                }
+                retrieveApiRes = {...retrieveApiRes, OTHER_DTL: {...retrieveApiRes.OTHER_DTL, resData}}
+                // payload.retrieveFormDataApiRes.OTHER_DTL = {...resData}
             }
-
-            if(resData["REFERRED_BY_STAFF"] == "Y") {
-                resData["REFERRED_BY_STAFF"] = true
-            } else {
-                resData["REFERRED_BY_STAFF"] = false
-            }
-            retrieveApiRes = {...retrieveApiRes, OTHER_DTL: {...retrieveApiRes.OTHER_DTL, resData}}
-            // payload.retrieveFormDataApiRes.OTHER_DTL = {...resData}
-        }
-        // OTHER-DTL, Y-> true, N -> false
-        if(retrieveApiRes && retrieveApiRes.DOC_MST) {
-            let resData = retrieveApiRes.DOC_MST
-            if(resData.length>0) {
-                resData = resData.map(doc => {
-                    let newDoc = doc
-                    newDoc["SUBMIT"] = doc.SUBMIT === "Y" ? true : false
-                    console.log("wekjfhiuwefwef", doc, doc.SUBMIT === "Y" ? true : false)
-                    return newDoc
-                })
-            }
-
-            retrieveApiRes = {...retrieveApiRes, DOC_MST: resData}
+            // OTHER-DTL, Y-> true, N -> false
+            if(retrieveApiRes && retrieveApiRes.DOC_MST) {
+                let resData = retrieveApiRes.DOC_MST
+                if(resData.length>0) {
+                    resData = resData.map(doc => {
+                        let newDoc = doc
+                        newDoc["SUBMIT"] = doc.SUBMIT === "Y" ? true : false
+                        console.log("wekjfhiuwefwef", doc, doc.SUBMIT === "Y" ? true : false)
+                        return newDoc
+                    })
+                }
+    
+                retrieveApiRes = {...retrieveApiRes, DOC_MST: resData}
+            }            
         }
         payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
         dispatch({
