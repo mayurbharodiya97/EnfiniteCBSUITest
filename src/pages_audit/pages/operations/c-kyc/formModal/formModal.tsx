@@ -784,7 +784,7 @@ export default function FormModal({
               color="primary"
               // disabled={mutation.isLoading}
             >
-              {t("Cancel")}
+              {t("Close")}
             </Button>
           </Toolbar>
         </AppBar>
