@@ -113,9 +113,11 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const docValidationMutation: any = useMutation(API.validateDocData, {
         onSuccess: (data) => {
             // console.log("qwiwuiefhqioweuhfd", data?.[0]?.MESSAGE)
-            setDocValidateDialog(true)
             if(data?.[0]?.MESSAGE) {
+                setDocValidateDialog(true)
                 setErrMsg(data?.[0]?.MESSAGE)
+            } else {
+                onSave()
             }
         },
         onError: (error: any) => {
@@ -201,14 +203,22 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                 // console.log("acdsvq currentFormctx mutateeee...", state?.steps)
                 // if(state?.req_cd_ctx) {}
                 // /customerServiceAPI/VALIDATEDOCDATA
+                let submittedDoc = state?.formDatactx["DOC_MST"]?.["doc_mst_payload"];
+                if(Array.isArray(submittedDoc)) {
+                    submittedDoc = submittedDoc?.map(docRow => {
+                        return docRow?.TEMPLATE_CD ?? "";
+                    })
+                    submittedDoc = submittedDoc.toString();
+                }
+
                 let docValidatePayload = {
-                    PAN_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO : state?.formDatactx["PERSONAL_DETAIL"]?.PAN_NO,
-                    UNIQUE_ID: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.UNIQUE_ID : state?.formDatactx["PERSONAL_DETAIL"]?.UNIQUE_ID,
-                    ELECTION_CARD_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.ELECTION_CARD_NO : state?.formDatactx["PERSONAL_DETAIL"]?.ELECTION_CARD_NO,
-                    NREGA_JOB_CARD: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.NREGA_JOB_CARD : state?.formDatactx["PERSONAL_DETAIL"]?.NREGA_JOB_CARD,
-                    PASSPORT_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PASSPORT_NO : state?.formDatactx["PERSONAL_DETAIL"]?.PASSPORT_NO,
-                    DRIVING_LICENSE_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO : state?.formDatactx["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO,
-                    TEMPLATE_CD: "", //temp
+                    PAN_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.PAN_NO ?? "",
+                    UNIQUE_ID: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.UNIQUE_ID ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.UNIQUE_ID ?? "",
+                    ELECTION_CARD_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.ELECTION_CARD_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.ELECTION_CARD_NO ?? "",
+                    NREGA_JOB_CARD: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.NREGA_JOB_CARD ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.NREGA_JOB_CARD ?? "",
+                    PASSPORT_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PASSPORT_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.PASSPORT_NO ?? "",
+                    DRIVING_LICENSE_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO ?? "",
+                    TEMPLATE_CD: submittedDoc ?? "", //temp
                     CUST_TYPE: state?.entityTypectx ?? "",
                     // PAN_NO: "DWIPP9643D",
                     // UNIQUE_ID: "123123123123",
