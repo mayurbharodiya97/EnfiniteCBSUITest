@@ -31,7 +31,7 @@ pipeline{
             }
         }
         
-        stage('Buildd') {
+        stage('Build') {
             environment {
                     CI = 'false'
                 }
