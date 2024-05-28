@@ -616,13 +616,13 @@ export default function FormModal({
         >
           {t("Confirm")}
         </Button>
-        <Button
+        {!Boolean(state?.customerIDctx) && <Button
           onClick={() => openActionDialog("M")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Raise Query")}
-        </Button>
+        </Button>}
         <Button
           onClick={() => openActionDialog("R")}
           color="primary"
