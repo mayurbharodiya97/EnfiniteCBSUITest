@@ -313,6 +313,16 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       },
     },
     {
+      accessor: "REQUEST_ID",
+      columnName: "Req. ID",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
       accessor: "CUSTOMER_NAME",
       columnName: "Customer Name",
       filterComponentType: "valueFilter",
