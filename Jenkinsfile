@@ -49,6 +49,11 @@ pipeline{
             }
         }
 
+        stage('SonarQube - SAST'){
+            steps {
+                sonar-scanner -Dsonar.projectKey=Enfinity_UI -Dsonar.sources=. -Dsonar.host.url=http://10.150.17.113:9000 -Dsonar.token=sqp_7d1e1ca6ed168d92b946d73063943309a26d959a
+            }
+        }   
 
 }
 }
