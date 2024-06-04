@@ -40,6 +40,7 @@ export const AdvocateMstFormMetaData = {
       type: "text",
       required: true,
       maxLength: 4,
+      autoComplete: "off",
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
@@ -62,6 +63,7 @@ export const AdvocateMstFormMetaData = {
       label: "Advocate Name",
       placeholder: "Enter Advocate Name",
       type: "text",
+      autoComplete: "off",
       required: true,
       maxLength: 100,
       schemaValidation: {
@@ -80,6 +82,7 @@ export const AdvocateMstFormMetaData = {
       required: true,
       maxLength: 10,
       fullWidth: true,
+      autoComplete: "off",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Mobile No. is required"] }],
@@ -93,6 +96,7 @@ export const AdvocateMstFormMetaData = {
       name: "ADD1",
       label: "Address",
       placeholder: "Enter Address",
+      autoComplete: "off",
       type: "text",
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },
@@ -104,7 +108,7 @@ export const AdvocateMstFormMetaData = {
       label: "Email ID",
       placeholder: "Enter Email ID",
       type: "text",
-      autoComplete: false,
+      autoComplete: "off",
       schemaValidation: {
         type: "string",
         rules: [{ name: "email", params: ["Invalid Email ID"] }],
