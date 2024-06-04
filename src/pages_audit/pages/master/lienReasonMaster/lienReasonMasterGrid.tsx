@@ -1,21 +1,16 @@
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import GridWrapper from "components/dataTableStatic";
 import { LienReasonMstGridMetaData } from "./gridMetadata";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "reactstrap";
-import { useQuery } from "react-query";
+import { Alert } from "components/common/alert";
+import { useMutation, useQuery } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { LienReasonMstFormWrapper } from "./form/lienReasonMstForm";
+import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
   {
@@ -40,18 +35,29 @@ const actions: ActionTypes[] = [
 ];
 
 export const LienReasonMstGrid = () => {
-  const [isDelete, setDelete] = useState(false);
   const isDeleteDataRef = useRef<any>(null);
   const isDataChangedRef = useRef(false);
   const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
-        setDelete(true);
+        const btnName = await MessageBox({
+          message: "Are you sure to delete selected row?",
+          messageTitle: "Confirmation",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: "Yes",
+        });
+        if (btnName === "Yes") {
+          deleteMutation.mutate({
+            ...isDeleteDataRef.current?.data,
+            _isDeleteRow: true,
+          });
+        }
       } else if (data?.name === "add") {
         navigate(data?.name, {
           state: [],
@@ -90,6 +96,26 @@ export const LienReasonMstGrid = () => {
     };
   }, [getEntries]);
 
+  const deleteMutation = useMutation(API.LienReasonMstDataDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: () => {
+      enqueueSnackbar("Record successfully deleted", {
+        variant: "success",
+      });
+      CloseMessageBox();
+      refetch();
+    },
+  });
+
   const handleDialogClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
@@ -99,7 +125,7 @@ export const LienReasonMstGrid = () => {
   }, [navigate]);
 
   return (
-    <Fragment>
+    <>
       {isError && (
         <Alert
           severity="error"
@@ -140,6 +166,6 @@ export const LienReasonMstGrid = () => {
           }
         />
       </Routes>
-    </Fragment>
+    </>
   );
 };
