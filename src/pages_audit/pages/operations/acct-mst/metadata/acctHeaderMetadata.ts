@@ -114,7 +114,7 @@ export const acctMSTHeaderFormMetadata = {
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
           USER_NAME: authState?.user?.id,
-          DOC_CD: "EMST/002",
+          DOC_CD: "MST/002",
         });
       },
       _optionsKey: "acctTypesOp",
