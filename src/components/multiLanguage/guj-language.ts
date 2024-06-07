@@ -203,23 +203,21 @@ export const guj_language_data = {
     LastUnsuccessfulLogin: "છેલ્લું અસફળ લૉગિન",
   },
 
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "ખાતા તપાસ",
+  AccountDetails: "ખાતાની વિગતો",
   CustomerDetail: "ગ્રાહક વિગતો",
   AccountNo: "ખાતા નંબર",
-  CustomerID: "ગ્રાહક આઈડી",
-  Mobile_No: "મોબાઇલ નં.",
-  PanNo: "પાન નં.",
+  PAN_NO: "પાન નં",
   Account_Name: "ખાતાનું નામ",
   Retrieve: "મેળવો",
   AcctHolderType: "ખાતા ધારકનો પ્રકાર",
-  Email_Id: "ઇમેઇલ આઈડી",
   OpeningDate: "ખુલવાની તારીખ",
   CloseDate: "બંધ તારીખ",
   WithdrawBalance: "ખેંચી શકાય બેલેન્સ",
-  Status: "સ્થિતિ",
   SearchCriteriaData: "શોધ માપદંડ ડેટા",
   PleaseEnterAnyValue: "કૃપા કરીને કોઈપણ મૂલ્ય દાખલ કરો",
+  TotalNoOfRecords: "કુલ રેકોર્ડની સંખ્યા:",
   //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",

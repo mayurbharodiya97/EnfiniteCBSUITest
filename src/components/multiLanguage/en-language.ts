@@ -206,23 +206,21 @@ export const en_language_data = {
     Role: "Role",
     LastUnsuccessfulLogin: "Last Unsuccessful Login",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Account Inquiry",
+  AccountDetails: "Account Details",
   CustomerDetail: "Customer Detail",
   AccountNo: "A/c Number",
-  CustomerID: "Customer ID",
-  Mobile_No: "Mobile No.",
-  PanNo: "PAN",
+  PAN_NO: "PAN",
   Account_Name: "A/c Name",
   Retrieve: "Retrieve",
   AcctHolderType: "A/C Holder Type",
-  Email_Id: "Email ID",
   OpeningDate: "Opening Date",
   CloseDate: "Close Date",
   WithdrawBalance: "Withdraw Balance",
-  Status: "Status",
   SearchCriteriaData: "Search Criteria Data",
   PleaseEnterAnyValue: "Please enter any value",
+  TotalNoOfRecords: "Total No Of Records:",
   //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption: "Passbook/Statement Print Option",

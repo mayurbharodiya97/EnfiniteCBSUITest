@@ -207,23 +207,21 @@ export const fr_language_data = {
     Role: "Rôle",
     LastUnsuccessfulLogin: "Dernière connexion infructueuse",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Demande de compte",
+  AccountDetails: "Détails du compte",
   CustomerDetail: "Détail du client",
   AccountNo: "Numéro de compte",
-  CustomerID: "ID du client",
-  Mobile_No: "Numéro de mobile",
-  PanNo: "PAN",
+  PAN_NO: "PAN",
   Account_Name: "Nom du compte",
   Retrieve: "Récupérer",
   AcctHolderType: "Type de titulaire de compte",
-  Email_Id: "ID de courrier électronique",
   OpeningDate: "Date d'ouverture",
   CloseDate: "Date de clôture",
   WithdrawBalance: "Retirer le solde",
-  Status: "Statut",
   SearchCriteriaData: "Données de critères de recherche",
   PleaseEnterAnyValue: "Veuillez entrer une valeur",
+  TotalNoOfRecords: "Nombre total d'enregistrements:",
   //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption: "Option d'impression de livret/déclaration",

@@ -188,23 +188,21 @@ export const sp_language_data = {
     Role: "Role",
     LastUnsuccessfulLogin: "Último inicio de sesión fallido",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Consulta de cuenta",
+  AccountDetails: "Detalles de la cuenta",
   CustomerDetail: "Detalle del cliente",
   AccountNo: "Número de cuenta",
-  CustomerID: "ID del cliente",
-  Mobile_No: "Número de móvil",
-  PanNo: "PAN",
+  PAN_NO: "PAN",
   Account_Name: "Nombre de la cuenta",
   Retrieve: "Recuperar",
   AcctHolderType: "Tipo de titular de la cuenta",
-  Email_Id: "ID de correo electrónico",
   OpeningDate: "Fecha de apertura",
   CloseDate: "Fecha de cierre",
   WithdrawBalance: "Retirar saldo",
-  Status: "Estado",
   SearchCriteriaData: "Datos de criterios de búsqueda",
   PleaseEnterAnyValue: "Por favor, introduzca cualquier valor",
+  TotalNoOfRecords: "Número total de registros:",
   //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption:
