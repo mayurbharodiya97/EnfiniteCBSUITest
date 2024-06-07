@@ -116,6 +116,7 @@ export interface GridWrapperPropTypes {
   isNewRowStyle?: boolean;
   defaultSelectedRowId?: any;
   ReportExportButton?: boolean;
+  hideActionBar?: boolean;
 }
 
 export interface YupSchemaMetaDataType {

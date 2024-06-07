@@ -98,6 +98,7 @@ export const DataGrid = ({
   ReportExportButton,
   footerNote,
   finalMetaData,
+  hideActionBar,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -356,6 +357,7 @@ export const DataGrid = ({
             singleActions={singleActions}
             setGridAction={setGridAction} //for single/multiple actions
             submitButtonRef={submitButtonRef}
+            hideActionBar={hideActionBar}
           />
         )}
         <ActionContextMenu

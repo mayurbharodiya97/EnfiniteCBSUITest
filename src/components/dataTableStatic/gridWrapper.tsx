@@ -61,6 +61,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       isNewRowStyle = false,
       defaultSelectedRowId = null,
       ReportExportButton,
+      hideActionBar = false,
     },
     ref
   ) => {
@@ -337,6 +338,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         ReportExportButton={ReportExportButton}
         footerNote={metaData.gridConfig?.footerNote ?? false}
         finalMetaData={finalMetaData.columns}
+        hideActionBar={hideActionBar}
       />
     );
   }
