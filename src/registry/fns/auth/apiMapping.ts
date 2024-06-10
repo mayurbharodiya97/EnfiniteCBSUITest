@@ -464,6 +464,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
     packageName: "",
   },
+  VALIDATETOINACTIVE: {
+    url: "/customerServiceAPI/VALIDATETOINACTIVE",
+    packageName: "",
+  },
   GETINSURANCE: {
     url: "/customerServiceAPI/GETINSURANCE",
     packageName: "",
@@ -1314,6 +1318,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTMSTDOCDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTMSTDOCDTL",
+    packageName: "",
+  },
+  GETCATEGORYDTL: {
+    url: "/customerServiceAPI/GETCATEGORYDTL",
+    packageName: "",
+  },
+  CALCULATEINTRATE: {
+    url: "/customerServiceAPI/CALCULATEINTRATE",
+    packageName: "",
+  },
+  SAVECATEGORYDTL: {
+    url: "/customerServiceAPI/SAVECATEGORYDTL",
     packageName: "",
   },
 };
