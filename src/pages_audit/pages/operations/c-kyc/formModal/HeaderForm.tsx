@@ -6,11 +6,14 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
+import { GradientButton } from "components/styledComponent/button";
+import CategoryUpdate from "./CategoryUpdate";
 
 const HeaderForm = () => {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
     const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
     const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
+    const [changeCategDialog, setChangeCategDialog] = useState<boolean>(false)
     const {authState} = useContext(AuthContext);
     const location: any = useLocation();
     // state?.currentFormctx.isLoading && <LinearProgress color="secondary" />
@@ -117,6 +120,7 @@ const HeaderForm = () => {
     }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
 
     return (
+      <>
         <AppBar
         position="sticky"
         // color=""
@@ -213,6 +217,15 @@ const HeaderForm = () => {
               value={accTypeValue}
               size="small"
             />} */}
+
+            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx) &&
+            <Grid sx={{alignSelf: "flex-end"}}>
+              <GradientButton
+                onClick={() => setChangeCategDialog(true)}
+                disabled={false}
+                style={{width: "auto", maxWidth: "20px"}}
+              >...</GradientButton>
+            </Grid>}
 
             <Grid item xs={12} sm={6} md>
               <Autocomplete sx={{width: "100%"}}
@@ -313,7 +326,14 @@ const HeaderForm = () => {
         {loader}
         {/* {state?.currentFormctx.isLoading && <LinearProgress color="secondary" />} */}
   </AppBar>
-    )
+        {changeCategDialog && 
+          <CategoryUpdate 
+            open={changeCategDialog} 
+            setChangeCategDialog={setChangeCategDialog} 
+          />
+        }
+    </>
+  )
 }
 
 export default HeaderForm;
