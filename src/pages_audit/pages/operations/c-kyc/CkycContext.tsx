@@ -49,6 +49,7 @@ const initialState:any  = {
     customerIDctx: "",
     formDataDraftctx: {},
     isFreshEntryctx: false,
+    isCustActivectx: null,
     req_cd_ctx: "",
 
     photoBlobctx: null,
@@ -230,7 +231,7 @@ const CkycProvider = ({children}) => {
     }
 
     const handleFormModalOpenOnEditctx = (recordData) => {
-        // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
+        // console.log("qweqeqeqwsxqswq", recordData)
         // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
         // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
         if(recordData[0]?.data?.CATEG_NM && recordData[0]?.data?.CONSTITUTION_NAME) {
@@ -251,7 +252,7 @@ const CkycProvider = ({children}) => {
                 categConstitutionValuectx: categConstitutionValue,
                 categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isCustActivectx: recordData[0]?.data?.ACTIVE, isFreshEntryctx: false,
                 customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
                 req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
             }
@@ -328,6 +329,7 @@ const CkycProvider = ({children}) => {
                 accTypeValuectx: "",
                 tabsApiResctx: [],
                 isFreshEntryctx: false,
+                isCustActivectx: null,
                 tabNameList: [],
                 formDatactx: {},
                 steps: {},
@@ -551,7 +553,7 @@ const CkycProvider = ({children}) => {
 
 
         // let apiRes = {...data[0]}
-        console.log("wqkdhqiwuheqieqwdata", data)
+        // console.log("wqkdhqiwuheqieqwdata", data)
         let retrieveApiRes = data
         // console.log("daatadtatad", data)
         let payload = {
@@ -599,7 +601,7 @@ const CkycProvider = ({children}) => {
                     resData = resData.map(doc => {
                         let newDoc = doc
                         newDoc["SUBMIT"] = doc.SUBMIT === "Y" ? true : false
-                        console.log("wekjfhiuwefwef", doc, doc.SUBMIT === "Y" ? true : false)
+                        // console.log("wekjfhiuwefwef", doc, doc.SUBMIT === "Y" ? true : false)
                         return newDoc
                     })
                 }
