@@ -53,12 +53,12 @@ const RetrieveCustomer = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    // {
-    //   actionName: "inactive-customer",
-    //   actionLabel: "Inactivate Customer",
-    //   multiple: false,
-    //   rowDoubleClick: false,
-    // },
+    {
+      actionName: "inactive-customer",
+      actionLabel: "Inactivate Customer",
+      multiple: false,
+      rowDoubleClick: false,
+    },
     // {
     //   actionName: "change-category",
     //   actionLabel: "Change Category",

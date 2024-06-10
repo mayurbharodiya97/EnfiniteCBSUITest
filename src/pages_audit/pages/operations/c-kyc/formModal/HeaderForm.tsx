@@ -284,7 +284,14 @@ const HeaderForm = () => {
                 color="secondary"
               />
             </Grid>
-            {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
+            {!state?.isFreshEntryctx && (
+              <FormControlLabel 
+              control={
+                <Checkbox 
+                  checked={Boolean(state?.isCustActivectx && state?.isCustActivectx === "Y") ? true : false} 
+                  disabled color="secondary" />
+              } label="Active" />
+            )}            
             {/* <ButtonGroup size="small" variant="outlined" color="secondary">
               <Button color="secondary" onClick={() => {
                   setIsCustomerData(false)
