@@ -1483,7 +1483,8 @@ export const AlphaNumericValidate = (columnValue) => {
 // to show total_acct number, in deactivate customer
 export const DeactivateCustomer = async ({CUSTOMER_ID, COMP_CD}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
+    await AuthSDK.internalFetcher("VALIDATETOINACTIVE", {
+      // VALIDATETOINACTIVE, old - CUSTOMERDEPENDENCYCOUNT
       COMP_CD: COMP_CD, 
       CUSTOMER_ID: CUSTOMER_ID,
     });
@@ -1809,6 +1810,49 @@ export const getFinancialDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
     CUSTOMER_ID: CUSTOMER_ID,
     COMP_CD: COMP_CD,
   })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCategoryDTL = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("GETCATEGORYDTL", {
+    COMP_CD: COMP_CD,
+    BRANCH_CD: BRANCH_CD,
+    CUSTOMER_ID: CUSTOMER_ID,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCalculatedRate = async (reqObj) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("CALCULATEINTRATE", reqObj)
+  if(status == 0) {
+    const {NEW_PENAL_RATE, NEW_AGCLR_RATE, NEW_DUE_AMT, NEW_INT_RATE, NEW_INSU_PENAL_RATE, NEW_INST_RS} = data;
+    return {
+      NEW_AG_CL_RATE: {value: "50" ?? ""},
+      NEW_INST_RS: {value: "10"},
+      NEW_INS_EXPIRY_PENAL_RATE: {value: "20" ?? ""},
+      NEW_INT_RATE: {value: "30" ?? ""},
+      NEW_PENAL_RATE: {value: "60" ?? ""},
+      NEW_DUE_AMT: {value: "40" ?? ""},
+    }
+    return {...data, NEW_PENAL_RATE: {value: "10"}};
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const saveCategUpdate = async (reqObj) => {  
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("SAVECATEGORYDTL", reqObj)
   if(status == 0) {
     return data;
   } else {
