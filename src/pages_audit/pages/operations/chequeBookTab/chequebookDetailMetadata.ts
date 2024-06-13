@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ChequebookDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Cheque Book Issued",
+    gridLabel: "ChequeBookIssued",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -18,8 +18,8 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "61vh",
-      max: "61vh",
+      min: "63vh",
+      max: "63vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -29,7 +29,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -41,7 +41,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
 
     {
       accessor: "TRAN_DT",
-      columnName: "Issue Date",
+      columnName: "IssueDate",
       sequence: 1,
       alignment: "center",
       componentType: "date",
@@ -51,8 +51,8 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       maxWidth: 130,
     },
     {
-      accessor: "AUTO_CHQBK_FLAG",
-      columnName: "Auto Issue",
+      accessor: "AUTO_CHQBK_FLAG_DISPLAY",
+      columnName: "AutoIssue",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -62,28 +62,27 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_FROM",
-      columnName: "From Chq. No.",
+      columnName: "FromChequeNo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 122,
+      width: 139,
       minWidth: 100,
       maxWidth: 150,
-      isVisible: true,
     },
     {
       accessor: "CHEQUE_TO",
-      columnName: "To Chq. No.",
+      columnName: "ToChequeNo",
       sequence: 5,
       alignment: "center",
       componentType: "default",
-      width: 107,
+      width: 128,
       minWidth: 100,
-      maxWidth: 130,
+      maxWidth: 140,
     },
     {
       accessor: "CHEQUE_TOTAL",
-      columnName: "No of Cheque(s)",
+      columnName: "NoOfCheques",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -94,17 +93,17 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
 
     {
       accessor: "SERVICE_TAX",
-      columnName: "Charge",
+      columnName: "ServiceCharge",
       sequence: 7,
       alignment: "right",
       componentType: "currency",
-      width: 70,
-      minWidth: 100,
+      width: 109,
+      minWidth: 80,
       maxWidth: 130,
     },
     {
       accessor: "AMOUNT",
-      columnName: "GST",
+      columnName: "GSTAmount",
       sequence: 8,
       alignment: "right",
       componentType: "currency",
@@ -113,7 +112,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       maxWidth: 130,
     },
     {
-      accessor: "CONFIRMED",
+      accessor: "CONFIRMED_DISPLAY",
       columnName: "Status",
       sequence: 8,
       alignment: "center",
@@ -136,7 +135,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       accessor: "ALLOW_DELETE",
       columnName: "Action",
       sequence: 8,
-      buttonLabel: "Remove",
+      buttonLabel: "Delete",
       alignment: "center",
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
         if (initialValue === "Y") {
@@ -162,17 +161,17 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAYABLE_AT_PAR",
-      columnName: "At PAR",
+      columnName: "PayableAtPAR",
       sequence: 8,
       alignment: "center",
       componentType: "default",
-      width: 90,
+      width: 147,
       minWidth: 70,
-      maxWidth: 120,
+      maxWidth: 190,
     },
     {
       accessor: "REQUISITION_DT",
-      columnName: "Requisition Date",
+      columnName: "RequisitionDate",
       sequence: 8,
       alignment: "center",
       componentType: "date",
@@ -184,11 +183,11 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
 
     {
       accessor: "UNUSED_CHQ",
-      columnName: "Unused Chq.",
+      columnName: "UnusedCheque",
       sequence: 10,
       alignment: "center",
       componentType: "default",
-      width: 115,
+      width: 125,
       minWidth: 70,
       maxWidth: 140,
     },

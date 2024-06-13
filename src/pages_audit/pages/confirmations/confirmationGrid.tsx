@@ -15,8 +15,6 @@ import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
-import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
 import { AuthContext } from "pages_audit/auth";
 import { chequeBkConfirmGridMetaData } from "./MetaData/chequebkConfirmGridMetadata";
 import { limitConfirmGridMetaData } from "./MetaData/limitConfirmGridMetadata";
@@ -29,6 +27,8 @@ import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadat
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
 import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmationForm";
+import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 
 export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
@@ -44,10 +44,18 @@ export const Confirmations = ({ screenFlag }) => {
   const [isOpen, setIsOpen] = useState<any>(false);
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const setCurrentAction = useCallback(
     (data) => {
-      if (data?.name === "retrieve") {
+      if (data?.rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
+        MessageBox({
+          messageTitle: t("Alert"),
+          message: t("ConfirmRestrictMsg"),
+          buttonNames: ["Ok"],
+        });
+      } else if (data?.name === "retrieve") {
         setIsOpen(true);
       } else {
         navigate(data?.name, {
@@ -58,10 +66,8 @@ export const Confirmations = ({ screenFlag }) => {
     [navigate]
   );
 
-  const result = useMutation(API.getConfirmationGridData, {
-    onSuccess: (response: any) => {},
-    onError: (error: any) => {},
-  });
+  const result: any = useMutation(API.getConfirmationGridData, {});
+
   useEffect(() => {
     result.mutate({
       screenFlag: screenFlag,
@@ -144,13 +150,25 @@ export const Confirmations = ({ screenFlag }) => {
                   result={result}
                 />
               ) : screenFlag === "limitCFM" ? (
-                <LimitConfirmationForm closeDialog={ClosedEventCall} />
+                <LimitConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
               ) : screenFlag === "stockCFM" ? (
-                <StockConfirmationForm closeDialog={ClosedEventCall} />
+                <StockConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
               ) : screenFlag === "stopPaymentCFM" ? (
-                <StopPayConfirmationForm closeDialog={ClosedEventCall} />
+                <StopPayConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
               ) : screenFlag === "lienCFM" ? (
-                <LienConfirmationForm closeDialog={ClosedEventCall} />
+                <LienConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
               ) : (
                 <></>
               )
