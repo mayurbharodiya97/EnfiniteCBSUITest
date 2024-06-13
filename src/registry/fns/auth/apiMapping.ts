@@ -982,6 +982,30 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+  GETLEANMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETLEANMSTDATADISP",
+    packageName: "",
+  },
+  GETPERIODMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPERIODMSTDATADISP",
+    packageName: "",
+  },
+  GETACCTMODEMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMODEMSTDATADISP",
+    packageName: "",
+  },
+  MODEMASTERDML: {
+    url: "commonMasterServiceAPI/MODEMASTERDML",
+    packageName: "",
+  },
+  DOLEANMSTDM: {
+    url: "commonMasterServiceAPI/DOLEANMSTDML",
+    packageName: "",
+  },
+  DOACCOUNTPERIODMST: {
+    url: "commonMasterServiceAPI/DOACCOUNTPERIODMST",
+    packageName: "",
+  },
   GETCLGBNKMSTDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGBNKMSTDATADISP",
     packageName: "",
@@ -1349,6 +1373,22 @@ export const ActionWiseAPIConfiguration = {
   },
   GETACCOUNTDETAIL: {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
+    packageName: "",
+  },
+  GETBANKIFSCCODEMSTGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCCODEMSTGRID",
+    packageName: "",
+  },
+  DOBANKIFSCCODEMSTDML: {
+    url: "commonMasterServiceAPI/DOBANKIFSCCODEMSTDML",
+    packageName: "",
+  },
+  GETBANKIFSCIMPORTDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCIMPORTDDDW",
+    packageName: "",
+  },
+  GETFILETOJSON:{
+    url:"enfinityCommonServiceAPI/GETFILETOJSON",
     packageName: "",
   },
   DOSPECIALINSTMST: {
