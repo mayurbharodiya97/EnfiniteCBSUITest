@@ -37,7 +37,7 @@ const actions: ActionTypes[] = [
 ];
 
 
-export default function ImportData ({CloseFileUpload})  {
+export default function ImportData({ CloseFileUpload }) {
   const [isFileUploadopen, setFileUpload] = useState(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.uploadFileData,
@@ -54,7 +54,7 @@ export default function ImportData ({CloseFileUpload})  {
         CloseFileUpload();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar("data imported successfully", {
           variant: "success",
         });
         CloseFileUpload();
@@ -63,54 +63,47 @@ export default function ImportData ({CloseFileUpload})  {
     }
   );
 
- 
-
- 
 
   return (
     <div>
-        <Dialog fullWidth maxWidth="md" open={isFileUploadopen}>
-          <FileUploadControl
-            key={"BankMasterFileUploadData"}
-            onClose={() => {
-              CloseFileUpload();
-            }}
-            additionalColumns={AdditionalcollumnMetadata}
-            editableFileName={false}
-            defaultFileData={[]}
-            onUpload={async(
-              formDataObj,
-              proccessFunc,
-              ResultFunc,
-              base64Object,
-              result
-            ) => {
-
-
-             
-              
-              const btnName = await  MessageBox({
-                message: "Are you sure to Insert the File Data ?",
-                messageTitle: "Confirmation",
-                buttonNames: ["Yes", "No"],
-                loadingBtnName: "Yes",
-              });
-              
-              if (btnName === "Yes") {
-                  const FILE_FORMAT =base64Object[0].DESCRIPTION[0];
-                  const TRAN_CD =base64Object[0].DESCRIPTION[1];
-                  const FILEBLOB =base64Object;
-                  mutation.mutate({FILE_FORMAT,TRAN_CD,FILEBLOB});
-            }
-          
+      <Dialog fullWidth maxWidth="md" open={isFileUploadopen}>
+        <FileUploadControl
+          key={"BankMasterFileUploadData"}
+          onClose={() => {
+            CloseFileUpload();
           }}
-            gridProps={{}}
-            maxAllowedSize={1024 * 1204 * 10} //10Mb file
-            allowedExtensions={["xlsx", "csv","txt"]}
-            onUpdateFileData={(files) => {}}
-          />
-        </Dialog>
- 
+          additionalColumns={AdditionalcollumnMetadata}
+          editableFileName={false}
+          defaultFileData={[]}
+          onUpload={async (
+            formDataObj,
+            proccessFunc,
+            ResultFunc,
+            base64Object,
+            result
+          ) => {
+            const btnName = await MessageBox({
+              message: "Are you sure to Insert the File Data ?",
+              messageTitle: "Confirmation",
+              buttonNames: ["Yes", "No"],
+              loadingBtnName: "Yes",
+            });
+
+            if (btnName === "Yes") {
+              const FILE_FORMAT = base64Object[0].DESCRIPTION[0];
+              const TRAN_CD = base64Object[0].DESCRIPTION[1];
+              const FILEBLOB = base64Object;
+              mutation.mutate({ FILE_FORMAT, TRAN_CD, FILEBLOB });
+            }
+
+          }}
+          gridProps={{}}
+          maxAllowedSize={1024 * 1204 * 10} //10Mb file
+          allowedExtensions={["xlsx", "pdf", "csv", "txt", "xls"]}
+          onUpdateFileData={(files) => { }}
+        />
+      </Dialog>
+
 
     </div>
   );

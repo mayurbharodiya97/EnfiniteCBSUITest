@@ -245,7 +245,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     myError = "";
     myTouch = true;
   }
-  /*fix for numberFormat*/
+  /*fix for number*/
   if (InputProps?.inputProps) {
     InputProps.inputProps = {
       ...InputProps.inputProps,
@@ -286,8 +286,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
               {!isSubmitting && isError
                 ? t(myError)
                 : Boolean(validationAPIResult)
-                ? validationAPIResult
-                : numWordsVar}
+                  ? validationAPIResult
+                  : numWordsVar}
             </FormHelperText>
             {maxLength > 0 && Boolean(showMaxLength) ? (
               <FormHelperText
@@ -318,13 +318,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
             background: textFieldStyle
               ? ""
               : Boolean(readOnly)
-              ? "var(--theme-color7)"
-              : "",
+                ? "var(--theme-color7)"
+                : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
-                  color: currentColor,
-                  fontWeight: "bold",
-                }
+                color: currentColor,
+                fontWeight: "bold",
+              }
               : {}),
           },
           endAdornment: validationRunning ? (

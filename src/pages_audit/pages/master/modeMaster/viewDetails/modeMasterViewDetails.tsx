@@ -3,7 +3,7 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import {metaData  } from "./metaData";
+import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
@@ -55,7 +55,7 @@ const ModeMasterForm = ({
   const codeIncreByOne =
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 
-  const onSubmitHandler: SubmitFnType =async  (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
     endSubmit,
@@ -65,10 +65,10 @@ const ModeMasterForm = ({
 
     let newData = {
       ...data,
-       };
+    };
     let oldData = {
       ...rows?.[0]?.data,
-     };
+    };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
     isErrorFuncRef.current = {
@@ -95,7 +95,7 @@ const ModeMasterForm = ({
       });
       if (btnName === "Yes") {
         mutation.mutate({
-          data: {...isErrorFuncRef.current?.data },
+          data: { ...isErrorFuncRef.current?.data },
         });
       }
     }
@@ -116,9 +116,9 @@ const ModeMasterForm = ({
         initialValues={
           formMode === "add"
             ? {
-                ...rows?.[0]?.data,
-                MODE_CD: codeIncreByOne,
-              }
+              ...rows?.[0]?.data,
+              MODE_CD: codeIncreByOne,
+            }
             : { ...(rows?.[0]?.data as InitialValuesType) }
         }
         formStyle={{
@@ -182,7 +182,7 @@ const ModeMasterForm = ({
           </>
         )}
       </FormWrapper>
-    
+
     </>
   );
 };
