@@ -65,7 +65,6 @@ export interface ArrayField2Props {
   runExternalFunction?: Boolean;
   isRemoveButton?: Boolean;
   onFormDataChange?: any;
-  isHeightAdjust?: any;
 }
 
 const metaDataTransform = (
@@ -110,7 +109,6 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   displayCountName,
   isScreenStyle,
   isRemoveButton,
-  isHeightAdjust,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -247,7 +245,6 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         displayCountName={displayCountName}
         isScreenStyle={isScreenStyle}
         isRemoveButton={isRemoveButton}
-        isHeightAdjust={isHeightAdjust}
       />
     );
   });
@@ -289,8 +286,6 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           style={{
             paddingBottom: "0px",
             paddingTop: "0px",
-            height: isHeightAdjust ? isHeightAdjust : "",
-            overflow: isHeightAdjust ? "auto" : "visible",
           }}
         >
           <Grid
@@ -365,7 +360,6 @@ export const ArrayFieldRow = ({
   displayCountName,
   isScreenStyle,
   isRemoveButton,
-  isHeightAdjust,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);

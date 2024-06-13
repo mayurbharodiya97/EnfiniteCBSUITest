@@ -1,8 +1,10 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import { t } from "i18next";
+
 export const StockGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stock Entry Detail",
+    gridLabel: "stockDetail",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -24,15 +26,14 @@ export const StockGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Stock Detail",
-    footerNote:
-      "Note : Stock can be Remove on a same working Day and Double-click on Pink row to force-expire the Stock.",
+    searchPlaceholder: "stockDetail",
+    footerNote: "StockFooterNote",
   },
   filters: [],
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -43,18 +44,18 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Statement Date",
+      columnName: "StatementDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 130,
+      width: 135,
       minWidth: 100,
       maxWidth: 150,
     },
     {
       accessor: "ASON_DT",
-      columnName: "Stock Till Date",
+      columnName: "StockTillDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
@@ -65,7 +66,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "STOCK_DESC",
-      columnName: "Stock Decription",
+      columnName: "StockDescription",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -85,7 +86,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "STOCK_VALUE",
-      columnName: "Stock Value",
+      columnName: "StockValue",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -95,7 +96,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DRAWING_POWER",
-      columnName: "Drawing Power",
+      columnName: "DrawingPower",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -106,16 +107,16 @@ export const StockGridMetaData: GridMetaDataType = {
 
     {
       accessor: "ENTERED_DATE",
-      columnName: "Entered Date",
+      columnName: "EnteredDate",
       sequence: 8,
       alignment: "center",
       componentType: "date",
-      width: 115,
+      width: 139,
       minWidth: 100,
       maxWidth: 150,
     },
     {
-      accessor: "CONFIRMED",
+      accessor: "DISPLAY_CONFIRM",
       columnName: "Status",
       sequence: 8,
       alignment: "center",
@@ -126,7 +127,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RECEIVED_DT",
-      columnName: "Recieved Date",
+      columnName: "RecievedDate",
       sequence: 9,
       alignment: "center",
       componentType: "date",
@@ -137,7 +138,7 @@ export const StockGridMetaData: GridMetaDataType = {
     {
       accessor: "ALLOW_DELETE_FLAG",
       columnName: "Action",
-      buttonLabel: "Remove",
+      buttonLabel: "Delete",
       sequence: 9,
       alignment: "center",
       componentType: "buttonRowCell",
@@ -153,7 +154,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Upload/View",
+      columnName: "UploadView",
       componentType: "buttonRowCell",
       accessor: "DOC_FLAG",
       sequence: 10,
@@ -162,7 +163,7 @@ export const StockGridMetaData: GridMetaDataType = {
       minWidth: 90,
       isColumnName: (initialValue) => {
         if (initialValue) {
-          return initialValue === "U" ? "Upload" : "Upload/View";
+          return initialValue === "U" ? "Upload" : "UploadView";
         }
       },
       // isVisible: false,

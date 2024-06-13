@@ -309,6 +309,15 @@ export const ShareDividendFormWrapper: FC<{
                 setViewMasterTab(payload);
                 setCurrentTab("tab1");
               }
+              // else if (action === "TAB_CHANGED") {
+              //   setCurrentTab("tab2");
+              //   // getDividendPaidWarrantGridData.mutate({
+              //   //   ...reqData,
+              //   //   COMP_CD: authState?.companyID,
+              //   //   YEAR_CHAR: reqData?.YEAR_CD,
+              //   //   A_FLAG: "1",
+              //   // });
+              // }
               if (action === "POST_DATA") {
                 setDivAmount(payload);
               }

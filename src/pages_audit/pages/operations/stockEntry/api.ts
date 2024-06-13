@@ -51,14 +51,11 @@ export const scriptListDD = async (ApiReq) => {
 export const securityFieldDTL = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTKSECFIELDDISP", {
-      // ...apiReqPara,
       COMP_CD: apiReqPara?.COMP_CD,
       SECURITY_CD: apiReqPara?.SECURITY_CD,
       BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
   if (status === "0") {
-    // return data;
-
     let transformedSecurityData: any[] = [];
 
     if (Array.isArray(data)) {
@@ -204,9 +201,9 @@ export const securityFieldDTL = async (apiReqPara) => {
               return {
                 ...item,
                 required: true,
-                defaultValue: apiReqPara.STOCK_MARGIN
-                  ? apiReqPara.STOCK_MARGIN
-                  : 0.0,
+                setValueOnDependentFieldsChange: (dependentFields) => {
+                  return apiReqPara?.STOCK_MARGIN;
+                },
                 isReadOnly() {
                   if (apiReqPara?.STK_MRG_DISABLE === "N") {
                     return true;
@@ -279,13 +276,7 @@ export const stockGridData = async (apiReqPara) => {
       if (item?.ALLOW_FORCE_EXPIRE_FLAG === "Y") {
         item._rowColor = "rgb(255, 225, 225)";
       }
-
-      if (item?.CONFIRMED === "Y") {
-        // item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED = "Confirm";
-      } else {
-        item.CONFIRMED = "Pending";
-      }
+      item.DISPLAY_CONFIRM = item?.CONFIRMED === "Y" ? "Confirm" : "Pending";
       item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
       return item;
     });
@@ -335,18 +326,9 @@ export const viewDocument = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTKUPVEWBTNDOCDTLDISP", {
       ...apiReqPara,
-      // COMP_CD: "132 ",
-      // BRANCH_CD: "099 ",
-      // REF_TRAN_CD: "266",
     });
   if (status === "0") {
     return data;
-    // return data.map((item) => {
-    //   return {
-    //     ...item,
-    //     ACTIVE: item.ACTIVE === "Y" ? true : false,
-    //   };
-    // });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -358,6 +340,18 @@ export const uploadDocument = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const stockConfirm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSTOCKCONFIRMATION", { ...apireq });
+  if (status === "99") {
+    return { status: status, message: message };
+  } else if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

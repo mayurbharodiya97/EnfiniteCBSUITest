@@ -1,0 +1,63 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+
+export const AddBranchGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Clearing Bank Master",
+    rowIdColumn: "CODE",
+    defaultColumnConfig: {
+      width: 440,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [5, 15, 25],
+    defaultPageSize: 5,
+    containerHeight: {
+      min: "30vh",
+      max: "30vh",
+    },
+    allowFilter: true,
+    allowColumnHiding: true,
+    allowRowSelection: true,
+    isCusrsorFocused: true,
+  },
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "Sr. No.",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 100,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "CODE",
+      columnName: "Code",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 110,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+    {
+      accessor: "DISPLAY_NAME",
+      columnName: "Display Name",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 120,
+      minWidth: 90,
+      maxWidth: 150,
+      showTooltip: true,
+    },
+  ],
+};
