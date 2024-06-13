@@ -90,12 +90,12 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "CUSTOMER",
-      label: "CustomerID",
+      label: "CustomerId",
       maxLength: 12,
       schemaValidation: {
         type: "string",
       },
-      placeholder: "CustomerID",
+      placeholder: "CustomerId",
       type: "text",
       startsIcon: "PortraitSharp",
       iconStyle: {
@@ -127,9 +127,9 @@ export const AccountInquiryMetadata = {
         componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
-      label: "Mobile_No",
+      label: "MobileNo",
       maxLength: 10,
-      placeholder: "Mobile_No",
+      placeholder: "MobileNo",
       type: "string",
       // startsIcon: Mobile_Number_Svg,
       startsIcon: "PhoneAndroidSharp",
@@ -161,8 +161,8 @@ export const AccountInquiryMetadata = {
         componentType: "panCardOptional",
       },
       name: "PAN",
-      label: "PanNo",
-      placeholder: "PanNo",
+      label: "PAN_NO",
+      placeholder: "PAN_NO",
       maxLength: 10,
       type: "text",
       schemaValidation: {
@@ -330,7 +330,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "CustomerID",
+      columnName: "CustomerId",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -340,7 +340,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT2",
-      columnName: "Mobile_No",
+      columnName: "MobileNo",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -350,7 +350,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "PanNo",
+      columnName: "PAN_NO",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -371,7 +371,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "E_MAIL_ID",
-      columnName: "Email_Id",
+      columnName: "EmailID",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -394,7 +394,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISPLAY_STATUS",
-      columnName: "Status",
+      columnName: "STATUS",
       sequence: 10,
       alignment: "left",
       componentType: "default",

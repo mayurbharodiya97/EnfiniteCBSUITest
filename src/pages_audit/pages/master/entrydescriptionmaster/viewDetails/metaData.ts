@@ -55,11 +55,11 @@ export const EntryDescMasterFormMetadata = {
           return "'!' and '&' not allowed";
         }
 
-        const duplicate = utilFunction.checkDupliCateValue(
-          columnValue,
-          ...rest
-        );
-        return duplicate || "";
+        // const duplicate = utilFunction.checkDupliCateValue(
+        //   columnValue,
+        //   ...rest
+        // );
+        // return duplicate || "";
       },
       schemaValidation: {
         type: "string",
