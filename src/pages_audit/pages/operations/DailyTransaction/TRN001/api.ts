@@ -210,7 +210,6 @@ export const getChqDateValidation = async (reqData) => {
   }
 };
 export const getAmountValidation = async (reqData) => {
-  console.log(reqData, "reqData getAmountValidation");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATECREDITDEBITAMT", {
       BRANCH_CD: reqData?.branch?.value, //099
@@ -243,6 +242,7 @@ export const getAmountValidation = async (reqData) => {
       PENDING_AMOUNT: "10",
       STATUS: "",
       TYPE: "C",
+      SCREEN_REF: "TRN/001",
     });
   if (status === "0") {
     let responseData = data;

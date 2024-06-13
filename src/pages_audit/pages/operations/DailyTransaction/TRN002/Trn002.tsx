@@ -160,7 +160,6 @@ export const Trn002 = () => {
     trn2Api.getConfirmDataValidation,
     {
       onSuccess: (data) => {
-        console.log(data, "data getConfirmDataValidation");
       },
       onError: (error) => {},
     }
@@ -229,7 +228,7 @@ export const Trn002 = () => {
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
         PARENT_TYPE: row?.PARENT_TYPE ?? "",
-
+        PARENT_CODE: row?.PARENT_CODE ?? "",
         BRANCH_CD: row?.BRANCH_CD,
         // authState: authState,
       };
@@ -331,7 +330,6 @@ export const Trn002 = () => {
   };
 
   const handleConfirm = () => {
-    console.log("abcd");
     confirmScroll.mutate(dataRow);
   };
 

@@ -163,7 +163,6 @@ export const Trn001 = () => {
 
     let result = rows && rows.some((a) => a?.bug || a?.bugAccNo || a?.bugCNo); /// /// /// /// ///
     setIsSave(!result);
-    console.log(rows, "rows");
   }, [rows]);
 
   useEffect(() => {
@@ -721,6 +720,7 @@ export const Trn001 = () => {
       ACCT_TYPE: rows[i]?.accType?.value,
       ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
       PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
+      PARENT_CODE: rows[i]?.accType?.info?.PARENT_CODE ?? "",
       BRANCH_CD: rows[i]?.branch?.value,
       SCREEN_REF: "ETRN/001",
       // authState: authState,
