@@ -420,6 +420,9 @@ export const DataGrid = ({
                         <HeaderCellWrapper
                           column={column}
                           key={column.getHeaderProps().key}
+                          SelectAllColumn={column.SelectAllColumn}
+                          rows={rowsToDisplay}
+                          updateGridData = {updateGridData}
                         >
                           {column.render("Header")}
                         </HeaderCellWrapper>
