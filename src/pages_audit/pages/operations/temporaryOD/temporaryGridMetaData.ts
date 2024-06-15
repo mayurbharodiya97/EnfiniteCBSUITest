@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const tempODGridTodayMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Temporary-OD Today Detail",
+    gridLabel: "TemporaryODTodayDetail",
     rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 150,
@@ -17,8 +17,8 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "63vh",
+      max: "63vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -30,7 +30,7 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -42,29 +42,29 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
 
     {
       accessor: "FROM_EFF_DATE",
-      columnName: "From Eff Date",
+      columnName: "EffectiveFromDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 120,
+      width: 150,
       minWidth: 100,
-      maxWidth: 150,
+      maxWidth: 170,
     },
     {
       accessor: "TO_EFF_DATE",
-      columnName: "To Eff Date",
+      columnName: "EffectiveToDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 105,
-      minWidth: 90,
-      maxWidth: 150,
+      width: 162,
+      minWidth: 120,
+      maxWidth: 180,
     },
     {
       accessor: "CODE_DESC",
-      columnName: "Code Decription",
+      columnName: "CodeDecription",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -74,7 +74,7 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
     },
     {
       accessor: "AMOUNT_UPTO",
-      columnName: "Amount UpTo",
+      columnName: "AmountUpTo",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -95,30 +95,30 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
     },
     {
       accessor: "FORCE_EXP_DT",
-      columnName: "Force Exp Date",
+      columnName: "ForceExpDate",
       sequence: 6,
       alignment: "center",
       componentType: "date",
-      width: 125,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 164,
+      minWidth: 120,
+      maxWidth: 180,
     },
     {
       accessor: "FORCE_EXP_BY",
-      columnName: "Force Exp By",
+      columnName: "ForceExpBy",
       sequence: 8,
       alignment: "center",
       componentType: "default",
-      width: 115,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 153,
+      minWidth: 130,
+      maxWidth: 170,
     },
   ],
 };
 export const tempODGridHistoryMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Temporary-OD History",
+    gridLabel: "TemporaryODHistory",
     rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 150,
@@ -133,8 +133,8 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "63vh",
+      max: "63vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -146,7 +146,7 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -158,29 +158,29 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
 
     {
       accessor: "FROM_EFF_DATE",
-      columnName: "From Eff Date",
+      columnName: "EffectiveFromDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 120,
+      width: 150,
       minWidth: 100,
-      maxWidth: 150,
+      maxWidth: 170,
     },
     {
       accessor: "TO_EFF_DATE",
-      columnName: "To Eff Date",
+      columnName: "EffectiveToDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 105,
+      width: 162,
       minWidth: 90,
-      maxWidth: 150,
+      maxWidth: 170,
     },
     {
       accessor: "CODE_DESC",
-      columnName: "Code Decription",
+      columnName: "CodeDecription",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -190,7 +190,7 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
     },
     {
       accessor: "AMOUNT_UPTO",
-      columnName: "Amount UpTo",
+      columnName: "AmountUpTo",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -212,7 +212,7 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
+      columnName: "LastEnteredBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -222,7 +222,7 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_MACHINE_NM",
-      columnName: "Last Machine Name",
+      columnName: "LastMachineName",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -231,7 +231,7 @@ export const tempODGridHistoryMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      columnName: "Force-Expire",
+      columnName: "ForceExpire",
       componentType: "buttonRowCell",
       // buttonLabel: "Remove",
       accessor: "FORCE_EXP_FLAG",

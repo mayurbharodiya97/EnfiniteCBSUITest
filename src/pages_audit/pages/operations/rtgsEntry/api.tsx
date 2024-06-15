@@ -22,7 +22,6 @@ export const getJointDetailsList = async (Apireq?) => {
     // return data;
     let responseData = data;
     responseData.map((a, i) => {
-      console.log("ai", a, i);
       a.index = i;
       a.phone1 = [a.MOBILE_NO, a.PHONE].filter(Boolean).join(", ");
       a.MEM_DISP_ACCT_TYPE = [a.MEM_ACCT_TYPE, a.MEM_ACCT_CD]
@@ -106,6 +105,76 @@ export const getIfscCodeList = async (ApiReq) => {
       );
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsBenfDtlList = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSBNFCRYDTL", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, ...other }) => {
+        return {
+          value: TO_ACCT_NO,
+          label: DISP_VAL,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getIfscBankDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSIFSCCODEACWISE", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getIfscBankGridData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSIFSCCODEGRID", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    data.map((a, i) => {
+      a.index = i;
+      return a;
+    });
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsChequeNoValidation = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCHEQUEVALIDATE", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsAmountChargeValidation = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSCHARGES", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

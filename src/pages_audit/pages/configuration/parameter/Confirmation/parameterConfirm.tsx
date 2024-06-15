@@ -1,4 +1,4 @@
-import { useRef, Fragment, useState, useContext, useCallback, } from "react";
+import { useRef, Fragment, useState, useContext, useCallback, useEffect, } from "react";
 import { ParameterConfirmGridMetaData } from "./gridMetadata";
 import * as API from "./api"
 import GridWrapper from "components/dataTableStatic";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { Alert } from "components/common/alert";
+import { ClearCacheContext, queryClient } from "cache";
 
 const actions: ActionTypes[] = [
   {
@@ -28,6 +29,7 @@ const actions: ActionTypes[] = [
 const ParameterConfirmGridWrapper = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
+  const { getEntries } = useContext(ClearCacheContext);
   const navigate = useNavigate();
   const [rowData, setRowData] = useState([])
   const [isOpenAccept, setIsOpenAccept] = useState(false);
@@ -70,7 +72,7 @@ const ParameterConfirmGridWrapper = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getParameterConfirmGridData"], () => {
+  >(["getParameterConfirm"], () => {
     if (authState?.role < "4") {
       return null;
     } else {
@@ -110,6 +112,17 @@ const ParameterConfirmGridWrapper = () => {
       branch_cd: rows[0]?.data?.BRANCH_CD ?? "",
     });
   };
+  useEffect(() => {
+    return () => {
+      let entries = getEntries() as any[];
+      if (Array.isArray(entries) && entries.length > 0) {
+        entries.forEach((one) => {
+          queryClient.removeQueries(one);
+        });
+      }
+      queryClient.removeQueries(["getParameterConfirm"]);
+    };
+  }, [getEntries]);
   return (
     <Fragment>
       {isError && (

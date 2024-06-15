@@ -11,26 +11,26 @@ import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { Alert } from "components/common/alert";
+import { queryClient } from "cache";
+import { useTranslation } from "react-i18next";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const [isConfirm, setIsConfirm] = useState<any>();
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
-  const chequeBkCfm: any = useMutation("chequeBkConfirmGrid", chequeBookCfm, {
+  const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
-      setIsOpenSave(false);
-      // closeDialog();
+      CloseMessageBox();
     },
     onSuccess: (data, variables) => {
-      setIsOpenSave(false);
+      CloseMessageBox();
       closeDialog();
 
       if (data?.status === "99") {
         MessageBox({
-          messageTitle: "Invalid Confirmation",
+          messageTitle: "InvalidConfirmation",
           message: data?.message,
           icon: "WARNING",
         });
@@ -44,11 +44,11 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           FLAG: variables?.FLAG ?? "",
         });
         if (Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully confirmed", {
+          enqueueSnackbar(t("DataConfirmMessage"), {
             variant: "success",
           });
         } else if (!Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully Rejected", {
+          enqueueSnackbar(t("DataRejectMessage"), {
             variant: "success",
           });
         }
@@ -57,8 +57,14 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   });
 
   useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["chequeBookCfm"]);
+    };
+  }, []);
+
+  useEffect(() => {
     if (rows?.[0]?.data) {
-      confirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      confirmFormMetaData.form.label = `${t("ConfirmationDetail")} \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -67,6 +73,30 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       ).replace(/\s/g, "")}   \u00A0\u00A0   ${rows?.[0]?.data?.ACCT_NM}   `;
     }
   }, [rows?.[0]?.data]);
+
+  const handelChange = async (isConfirm) => {
+    let apiReq = {
+      IS_CONFIMED: isConfirm === "C" ? true : false,
+      FLAG: rows?.[0]?.data?.REQ_FLAG,
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
+      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+    };
+    let res = await MessageBox({
+      messageTitle: t("confirmation"),
+      message:
+        isConfirm === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
+      buttonNames: ["No", "Yes"],
+      defFocusBtnName: "Yes",
+      loadingBtnName: "Yes",
+    });
+
+    if (res === "Yes") {
+      chequeBkCfm.mutate(apiReq);
+    }
+  };
 
   return (
     <Dialog
@@ -106,55 +136,19 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setIsOpenSave(true);
-                    setIsConfirm("C");
-                  }}
-                >
-                  Confirm
+                <Button color="primary" onClick={() => handelChange("C")}>
+                  {t("Confirm")}
                 </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setIsOpenSave(true);
-                    setIsConfirm("R");
-                  }}
-                >
-                  Reject
+                <Button color="primary" onClick={() => handelChange("R")}>
+                  {t("Reject")}
                 </Button>
                 <Button color="primary" onClick={closeDialog}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );
           }}
         </FormWrapper>
-
-        {isOpenSave && (
-          <PopupMessageAPIWrapper
-            MessageTitle={"Confirmation"}
-            Message={`Are you sure to  ${
-              isConfirm === "C" ? "Confirm" : "Reject"
-            } `}
-            onActionYes={(rows) => {
-              chequeBkCfm.mutate({
-                IS_CONFIMED: isConfirm === "C" ? true : false,
-                FLAG: rows?.REQ_FLAG,
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: rows?.BRANCH_CD,
-                TRAN_CD: rows?.TRAN_CD,
-                AUTO_CHQBK_PRINT_FLAG: rows?.AUTO_CHQBK_PRINT_FLAG,
-                ENTERED_BY: rows?.ENTERED_BY,
-              });
-            }}
-            onActionNo={() => setIsOpenSave(false)}
-            rows={rows?.[0]?.data}
-            open={isOpenSave}
-            loading={chequeBkCfm.isLoading}
-          />
-        )}
       </>
     </Dialog>
   );
