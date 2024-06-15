@@ -982,6 +982,10 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+  GETCATMSTGENDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCATMSTGENDATADISP",
+    packageName: "",
+  },
   GETLEANMSTDATADISP: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETLEANMSTDATADISP",
     packageName: "",
@@ -1032,6 +1036,30 @@ export const ActionWiseAPIConfiguration = {
   },
   GETDDDWACCTTYPE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
+    packageName: "",
+  },
+  CATEGORYMASTERDML: {
+    url: "/commonMasterServiceAPI/CATEGORYMASTERDML",
+    packageName: "",
+  },
+  GETORNAMTYPMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETORNAMTYPMSTDATADISP",
+    packageName: "",
+  },
+  DOORNAMTYPMSTDATA: {
+    url: "/commonMasterServiceAPI/DOORNAMTYPMSTDATA",
+    packageName: "",
+  },
+  GETACTIONTAKENMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTIONTAKENMSTDATADISP",
+    packageName: "",
+  },
+  DOACTIONTAKENDML: {
+    url: "/commonMasterServiceAPI/DOACTIONTAKENDML",
+    packageName: "",
+  },
+  GETSUITFLDMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSUITFLDMSTDATADISP",
     packageName: "",
   },
   GETLIMITDATAVALIDATE: {
