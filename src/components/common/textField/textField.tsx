@@ -273,16 +273,37 @@ const MyTextField: FC<MyTextFieldProps> = ({
     };
   }
 
-  const splitBySlash = (fieldData) =>
-    fieldData?.fieldKey?.split("/").pop() ?? null;
+  const splitBySlash = (fieldData) => {
+    return fieldData?.fieldKey?.split("/").pop()?.split(".").pop() ?? null;
+  };
+  const splitBySlash2 = (fieldData) => {
+    return fieldData?.fieldKey?.split("/").pop() ?? null;
+  };
 
   const checkValuesNotEmpty = (keysToCheck) => {
     const fieldsWithValue = keysToCheck.reduce((acc, key) => {
-      const fieldData = [fieldDataOnBlr, dependentValues[key]].find(
-        (data) => splitBySlash(data) === key
-      );
+      // Check if the key exists in either dependentValues or fieldDataOnBlr
+      const dependentKeys = Object.keys(dependentValues);
+      const mainFieldKey = splitBySlash2(fieldDataOnBlr);
+      const allKeys = [mainFieldKey, ...dependentKeys];
+      const matchingKey: any = allKeys.find((depKey) => {
+        if (typeof depKey === "string") {
+          const keyMatch = depKey === key || depKey.endsWith(`.${key}`);
+          return keyMatch;
+        }
+        return false;
+      });
 
-      if (fieldData?.value) acc[key] = fieldData.value;
+      if (matchingKey) {
+        const splitedFieldDataOnBlr = splitBySlash2(fieldDataOnBlr);
+
+        const fieldData =
+          matchingKey === splitedFieldDataOnBlr
+            ? fieldDataOnBlr
+            : dependentValues[matchingKey];
+        if (fieldData?.value) acc[key] = fieldData.value;
+      }
+
       return acc;
     }, {});
 
@@ -309,12 +330,15 @@ const MyTextField: FC<MyTextFieldProps> = ({
       event.ctrlKey &&
       event.altKey &&
       allFieldsNotEmpty &&
-      event.key === "5"
+      event.key === "5" &&
+      !validationRunning
     ) {
       setReq360([
         { data: { ...fieldsWithValue, COMP_CD: authState?.companyID } },
       ]);
       setOpen360(true);
+      event.preventDefault();
+    } else if (!event.ctrlKey && event.key === "F5") {
       event.preventDefault();
     }
   };
