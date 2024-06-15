@@ -117,7 +117,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
-    //chnages for min-max date is not edit
+    // chnages for min-max date is not edit
     if (value) {
       const selectedDate = new Date(value).toLocaleDateString();
       const maxDate = new Date(others.maxDate).toLocaleDateString();

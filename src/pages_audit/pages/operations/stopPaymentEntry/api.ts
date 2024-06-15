@@ -20,12 +20,7 @@ export const stopPayDetail = async (apiReqPara) => {
           ? (item.FLAG = "Stop Payment")
           : item.FLAG;
 
-      if (item?.CONFIRMED === "Y") {
-        // item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED = "Confirm";
-      } else {
-        item.CONFIRMED = "Pending";
-      }
+      item.CONFIRMED_DISPLAY = item?.CONFIRMED === "Y" ? "Confirm" : "Pending";
 
       if (item?.ALLOW_RELEASE === "Y") {
         item._rowColor = "rgb(255, 225, 225)";
@@ -94,6 +89,18 @@ export const validateInsert = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const stopPaymentConfirm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSTOPPYTCONFIRMATION", { ...apireq });
+  if (status === "99") {
+    return { status: status, message: message };
+  } else if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

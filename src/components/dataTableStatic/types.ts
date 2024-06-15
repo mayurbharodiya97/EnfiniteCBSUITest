@@ -50,6 +50,7 @@ export interface GridColumnType {
   shouldExclude?: any;
   isVisibleInNew?: Boolean;
   isColumnName?: any;
+  SelectAllColumn?: Boolean;
 }
 
 export interface GridConfigType {

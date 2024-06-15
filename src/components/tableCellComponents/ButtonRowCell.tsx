@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
 import Button from "@mui/material/Button";
+import { useTranslation } from "react-i18next";
 
 export const ButtonRowCell = (props) => {
+  const { t } = useTranslation();
   const {
     value: initialValue,
     row: {
@@ -64,7 +66,7 @@ export const ButtonRowCell = (props) => {
           onClick={handleClick}
           fullWidth
         >
-          {Boolean(buttonLabel) ? buttonLabel : newColumnName}
+          {Boolean(buttonLabel) ? t(buttonLabel) : t(newColumnName)}
         </Button>
       ) : null}
     </CellWrapper>
