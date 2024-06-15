@@ -57,7 +57,6 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      // sequence: 9,
       label: "Presentment Date",
       placeholder: "",
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
@@ -70,7 +69,6 @@ export const CTSOutwardClearingFormMetaData = {
       label: "Zone",
       defaultValue: "0   ",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      // runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
@@ -99,7 +97,6 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        // defaultValue: "099 ",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (
@@ -108,15 +105,13 @@ export const CTSOutwardClearingFormMetaData = {
           auth,
           dependentFieldsValues
         ) => {
-          if (!field?.value) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_TYPE: { value: "" },
-              ACCT_NAME: { value: "" },
-              TRAN_BAL: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
         },
       },
 
@@ -132,14 +127,12 @@ export const CTSOutwardClearingFormMetaData = {
           auth,
           dependentFieldsValues
         ) => {
-          if (!field?.value) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "", ignoreUpdate: true },
-              ACCT_NAME: { value: "" },
-              TRAN_BAL: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "", ignoreUpdate: true },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -192,6 +185,7 @@ export const CTSOutwardClearingFormMetaData = {
               formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
+                AMOUNT: { isFieldFocused: false },
                 ACCT_NAME: { value: "" },
                 TRAN_BAL: { value: "" },
               };
@@ -200,6 +194,7 @@ export const CTSOutwardClearingFormMetaData = {
             return {
               ACCT_CD: {
                 value: postData?.[0]?.ACCT_NUMBER ?? "",
+                isFieldFocused: false,
                 // ||
                 // field.value.padStart(6, "0")?.padEnd(20, " "),
                 ignoreUpdate: true,
@@ -212,26 +207,13 @@ export const CTSOutwardClearingFormMetaData = {
           } else {
             formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
+              ACCT_CD: {
+                value: "",
+              },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
             };
           }
-          // else if (
-          //   !field?.value &&
-          //   !dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-          //   !dependentFieldsValues?.["BRANCH_CD"]?.value
-          // ) {
-          //   console.log(
-          //     "",
-          //     field?.value,
-          //     dependentFieldsValues?.["ACCT_TYPE"]?.value
-          //   );
-          //   formState.setDataOnFieldChange("ACCT_CD_BLANK");
-          //   return {
-          //     ACCT_NAME: { value: "" },
-          //     TRAN_BAL: { value: "" },
-          //   };
-          // }
         },
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
@@ -381,7 +363,6 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Joint Detail",
     rowIdColumn: "GRID_SR_NO",
-    // rowIdColumn: "J_TYPE",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -713,7 +694,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       render: {
         componentType: "arrayField",
       },
-      // isCustomStyle: true,
       isRemoveButton: true,
       displayCountName: "Cheque Detail",
       fixedRows: true,
@@ -723,7 +703,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       errorTitle: "Are you Sure you want to delete this row?",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      // arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -736,8 +715,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
-          // isFieldFocused: true,
-          // defaultfocus: true,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -779,8 +756,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             type: "string",
             rules: [{ name: "required", params: ["Bank Code is required."] }],
           },
-          // disableCaching: true,
-          // runValidationOnDependentFieldsChange: true,
+
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
 
           postValidationSetCrossFieldValues: async (
@@ -887,7 +863,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           isReadOnly: true,
-          // maxLength: 100,
           showMaxLength: true,
           autoComplete: "off",
           dependentFields: ["BANK_CD"],
@@ -967,15 +942,10 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           name: "BRANCH",
           label: "Description",
-          // placeholder: "EnterAcNo",
           type: "text",
           fullWidth: true,
           required: true,
-          // maxLength: 20,
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["Description is required."] }],
-          // },
+
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
         },
         {
@@ -988,7 +958,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           fullWidth: true,
           defaultValue: "10",
           required: true,
-          // maxLength: 6,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -1015,7 +984,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
-          // isReadOnly: true,\
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["Payee Name is required."] }],
@@ -1029,7 +997,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          // isFieldFocused: true,
           required: true,
           type: "text",
           FormatProps: {
@@ -1130,17 +1097,20 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   "& .MuiInputBase-input": {
-      //     background: "var(--theme-color5)",
-      //     minHeight: "26px !important",
-      //     fontSize: "15px",
-      //     color: "white",
-      //     boxShadow:
-      //       " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      //   },
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -1156,14 +1126,20 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       type: "text",
 
       defaultValue: "0",
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   minHeight: "40px !important",
-      //   fontSize: "15px",
-      //   color: "white",
-      //   boxShadow:
-      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
       dependentFields: ["chequeDetails"],
 
@@ -1221,14 +1197,20 @@ export const inwardReturnChequeDetailFormMetaData: any = {
 
         return value ?? "0";
       },
-      // textFieldStyle: {
-      //   background: "var(--theme-color5)",
-      //   minHeight: "40px !important",
-      //   fontSize: "15px",
-      //   color: "white",
-      //   boxShadow:
-      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      // },
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
@@ -1275,7 +1257,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       render: {
         componentType: "arrayField",
       },
-      // isCustomStyle: true,
       isRemoveButton: true,
       displayCountName: "Cheque Detail",
       fixedRows: true,
@@ -1285,7 +1266,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       errorTitle: "Are you Sure you want to delete this row?",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      // arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -1312,8 +1292,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             type: "string",
             rules: [{ name: "required", params: ["Bank Code is required."] }],
           },
-          // disableCaching: true,
-          // runValidationOnDependentFieldsChange: true,
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
           postValidationSetCrossFieldValues: async (
             field,
@@ -1336,43 +1314,43 @@ export const inwardReturnChequeDetailFormMetaData: any = {
 
               if (postData?.data?.length && postData?.data) {
                 formState.setDataOnFieldChange("MESSAGE", postData?.data);
-                if (
-                  postData?.status === "0" &&
-                  dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value &&
-                  field.value
-                ) {
-                  let data = await getBankChequeAlert({
-                    ENTERED_COMP_CD: auth.companyID ?? "",
-                    ENTERED_BRANCH_CD:
-                      formState?.REQ_DATA?.BRANCH_CD ??
-                      auth.user.branchCode ??
-                      "",
-                    BANK_CD:
-                      field.value && Number.isNaN(Number(field.value))
-                        ? ""
-                        : field.value.padEnd(10, " "),
-                    TRAN_TYPE: formState?.ZONE_TRAN_TYPE,
-                    TRAN_DT: dependentFieldsValues?.TRAN_DT?.value ?? "",
-                    CHEQUE_NO:
-                      dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value,
-                  });
-                  if (data?.[0]?.O_STATUS === "99") {
-                    let buttonNames = await formState?.MessageBox({
-                      messageTitle: "Information",
-                      message: data?.[0]?.O_MESSAGE,
-                      buttonNames: ["Yes", "No"],
-                    });
-                    if (buttonNames === "No") {
-                      return {
-                        BANK_CD: {
-                          value: "",
-                          isFieldFocused: true,
-                          ignoreUpdate: true,
-                        },
-                      };
-                    }
-                  }
-                }
+                // if (
+                //   postData?.status === "0" &&
+                //   dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value &&
+                //   field.value
+                // ) {
+                //   let data = await getBankChequeAlert({
+                //     ENTERED_COMP_CD: auth.companyID ?? "",
+                //     ENTERED_BRANCH_CD:
+                //       formState?.REQ_DATA?.BRANCH_CD ??
+                //       auth.user.branchCode ??
+                //       "",
+                //     BANK_CD:
+                //       field.value && Number.isNaN(Number(field.value))
+                //         ? ""
+                //         : field.value.padEnd(10, " "),
+                //     TRAN_TYPE: formState?.ZONE_TRAN_TYPE,
+                //     TRAN_DT: dependentFieldsValues?.TRAN_DT?.value ?? "",
+                //     CHEQUE_NO:
+                //       dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value,
+                //   });
+                //   if (data?.[0]?.O_STATUS === "99") {
+                //     let buttonNames = await formState?.MessageBox({
+                //       messageTitle: "Information",
+                //       message: data?.[0]?.O_MESSAGE,
+                //       buttonNames: ["Yes", "No"],
+                //     });
+                //     if (buttonNames === "No") {
+                //       return {
+                //         BANK_CD: {
+                //           value: "",
+                //           isFieldFocused: true,
+                //           ignoreUpdate: true,
+                //         },
+                //       };
+                //     }
+                //   }
+                // }
                 return {
                   BANK_CD: { error: postData?.data?.[0]?.ERROR_MSSAGE ?? "" },
                   BANK_NM: {
@@ -1404,7 +1382,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           isReadOnly: true,
-          // maxLength: 100,
           showMaxLength: true,
           autoComplete: "off",
           dependentFields: ["BANK_CD"],
@@ -1422,15 +1399,10 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           },
           name: "BRANCH",
           label: "Description",
-          // placeholder: "EnterAcNo",
           type: "text",
           fullWidth: true,
           required: true,
-          // maxLength: 20,
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["Description is required."] }],
-          // },
+
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1440,8 +1412,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           name: "REASON",
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-          // runValidationOnDependentFieldsChange: true,
-          skipDefaultOption: true,
+
           options: (dependentValue, formState, _, authState) => {
             let ApiReq = {
               BRANCH_CD: authState?.user?.branchCode,
@@ -1451,7 +1422,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             return API.getInwardReasonTypeList(ApiReq);
           },
           _optionsKey: "getInwardReasonTypeList",
-          // disableCaching: true,
         },
 
         {
@@ -1464,7 +1434,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           fullWidth: true,
           defaultValue: "10",
           required: true,
-          // maxLength: 6,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -1491,8 +1460,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
-          // isFieldFocused: true,
-          // defaultfocus: true,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -1504,48 +1471,102 @@ export const inwardReturnChequeDetailFormMetaData: any = {
               return true;
             },
           },
+          dependentFields: ["BANK_CD", "TRAN_DT"],
           postValidationSetCrossFieldValues: async (
             field,
             formState,
             auth,
             dependentFieldsValues
           ) => {
-            if (field.value && Object.keys(formState?.REQ_DATA).length === 0) {
-              formState?.MessageBox({
-                messageTitle: "Information",
-                message: "Enter Account Information",
-                buttonNames: ["Ok"],
+            if (
+              dependentFieldsValues?.["chequeDetails.BANK_CD"]?.value &&
+              field.value
+            ) {
+              let data = await getBankChequeAlert({
+                ENTERED_COMP_CD: auth.companyID ?? "",
+                ENTERED_BRANCH_CD:
+                  formState?.REQ_DATA?.BRANCH_CD ?? auth.user.branchCode ?? "",
+                CHEQUE_NO:
+                  field.value && Number.isNaN(Number(field.value))
+                    ? ""
+                    : field.value.padEnd(10, " "),
+                TRAN_TYPE: formState?.ZONE_TRAN_TYPE,
+                TRAN_DT: dependentFieldsValues?.TRAN_DT?.value ?? "",
+                BANK_CD:
+                  dependentFieldsValues?.["chequeDetails.BANK_CD"]?.value,
               });
-            } else if (field.value && Object.keys(formState?.REQ_DATA).length) {
-              let postData = await GeneralAPI.getChequeNoValidation({
-                COMP_CD: formState?.REQ_DATA?.COMP_CD,
-                BRANCH_CD: formState?.REQ_DATA?.BRANCH_CD,
-                ACCT_TYPE: formState?.REQ_DATA?.ACCT_TYPE,
-                ACCT_CD: formState?.REQ_DATA?.ACCT_CD,
-                CHEQUE_NO: field.value,
-              });
-              const buttonName = await formState?.MessageBox({
-                messageTitle: "Information",
-                message: postData?.[0]?.ERR_MSG,
-                buttonNames: ["Ok"],
-              });
-              if (buttonName === "Ok") {
-                let continueButtonName = await formState?.MessageBox({
-                  messageTitle: "Confirmation",
-                  message: "Are you sure to continue!",
+
+              if (data?.[0]?.O_STATUS === "99") {
+                let buttonNames = await formState?.MessageBox({
+                  messageTitle: "Information",
+                  message: data?.[0]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                 });
-                if (continueButtonName === "Yes") {
+                if (buttonNames === "Yes") {
+                  if (
+                    field.value &&
+                    Object.keys(formState?.REQ_DATA).length === 0
+                  ) {
+                    formState?.MessageBox({
+                      messageTitle: "Information",
+                      message: "Enter Account Information",
+                      buttonNames: ["Ok"],
+                    });
+                  } else if (
+                    field.value &&
+                    Object.keys(formState?.REQ_DATA).length
+                  ) {
+                    let postData = await GeneralAPI.getChequeNoValidation({
+                      COMP_CD: formState?.REQ_DATA?.COMP_CD,
+                      BRANCH_CD: formState?.REQ_DATA?.BRANCH_CD,
+                      ACCT_TYPE: formState?.REQ_DATA?.ACCT_TYPE,
+                      ACCT_CD: formState?.REQ_DATA?.ACCT_CD,
+                      CHEQUE_NO: field.value,
+                    });
+                    const buttonName = await formState?.MessageBox({
+                      messageTitle: "Information",
+                      message: postData?.[0]?.ERR_MSG,
+                      buttonNames: ["Ok"],
+                    });
+                    if (buttonName === "Ok") {
+                      let continueButtonName = await formState?.MessageBox({
+                        messageTitle: "Confirmation",
+                        message: "Are you sure to continue!",
+                        buttonNames: ["Yes", "No"],
+                      });
+                      if (continueButtonName === "Yes") {
+                        return {
+                          CHEQUE_NO: {
+                            value: field.value,
+                            ignoreUpdate: true,
+                            isFieldFocused: false,
+                          },
+                          AMOUNT: { isFieldFocused: true },
+                        };
+                      } else {
+                        return {
+                          CHEQUE_NO: {
+                            value: "",
+                            isFieldFocused: true,
+                            ignoreUpdate: true,
+                          },
+                        };
+                      }
+                    }
+                  }
                   return {
-                    CHEQUE_NO: { value: field.value, ignoreUpdate: true },
-                    AMOUNT: { isFieldFocused: true },
+                    CHEQUE_NO: {
+                      value: field?.value ?? "",
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    },
                   };
                 } else {
                   return {
                     CHEQUE_NO: {
                       value: "",
-                      isFieldFocused: true,
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                   };
                 }
@@ -1598,7 +1619,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          // isFieldFocused: true,
           required: true,
           type: "text",
           FormatProps: {
@@ -1740,7 +1760,6 @@ export const AddNewBankMasterFormMetadata = {
       },
       name: "EXCLUDE",
       label: "Exclude",
-      // defaultValue: true,
       GridProps: { xs: 6, sm: 2, md: 1.5, lg: 4, xl: 1 },
     },
     {
@@ -1761,7 +1780,6 @@ export const RetrieveFormConfigMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1896,7 +1914,6 @@ export const RetrieveFormConfigMetaData = {
         },
       },
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
-      // maxLength: 50,
     },
     {
       render: {

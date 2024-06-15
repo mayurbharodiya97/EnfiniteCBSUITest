@@ -63,7 +63,7 @@ const CtsOutwardClearingForm: FC<{
   const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
-  const [gridData, setGridData] = useState([]);
+  const [gridData, setGridData] = useState<any>([]);
   const [chequeReqData, setChequeReqData] = useState<any>({});
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
@@ -96,16 +96,15 @@ const CtsOutwardClearingForm: FC<{
       // setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
     }
   }, []);
-
-  const { data, isLoading, isError, error, refetch } = useQuery<any, any>(
-    ["getBussinessDate", formMode, zoneTranType],
-    () => API.getBussinessDate()
-  );
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getBussinessDate", formMode, zoneTranType], () => API.getBussinessDate());
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getBussinessDate", formMode]);
     };
-  }, []);
+  }, [formMode]);
   const getOutwardClearingData: any = useMutation(
     API.getOutwardClearingConfigData,
     {
@@ -194,7 +193,11 @@ const CtsOutwardClearingForm: FC<{
         message: "Please Enter Slip Amount",
         messageTitle: "Validation Failed",
       });
-    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
+    } else if (
+      parseFloat(data?.TOTAL_AMOUNT) === 0 &&
+      newData &&
+      newData.length > 0
+    ) {
       finalReqDataRef.current = {
         DAILY_CLEARING: {
           ...slipFormDataRef?.current,
@@ -241,21 +244,31 @@ const CtsOutwardClearingForm: FC<{
         ],
       }));
       setChequeDtlRefresh((old) => old + 1);
-    } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
+    } else if (
+      (parseFloat(data?.TOTAL_AMOUNT) > 0 || newData?.length,
+      newData.length === 0)
+    ) {
       setChequeDetailData((old) => ({
         chequeDetails: [
-          ...old.chequeDetails.map((item) => {
-            return {
-              ...item,
-            };
-          }),
+          {
+            ECS_USER_NO: gridData?.ACCT_NAME ?? "",
+            CHEQUE_DATE: authState?.workingDate ?? "",
+          },
         ],
+        // chequeDetails: [
+        //   ...old.chequeDetails.map((item) => {
+        //     console.log("old", old);
+        //     return {
+        //       ...item,
+        //     };
+        //   }),
+        // ],
       }));
       setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Check Amount",
+        message: "Please Check Amount",
+        messageTitle: "Validation Failed",
       });
     }
   };
@@ -309,7 +322,7 @@ const CtsOutwardClearingForm: FC<{
 
   return (
     <Fragment>
-      {isLoading || getOutwardClearingData.isLoading ? (
+      {isLoading || isFetching || getOutwardClearingData.isLoading ? (
         <div style={{ height: 100, paddingTop: 10 }}>
           <div style={{ padding: 10 }}>
             <LoaderPaperComponent />
@@ -385,7 +398,7 @@ const CtsOutwardClearingForm: FC<{
                 setChequeReqData(payload);
               } else if (action === "ACCT_CD_VALID") {
                 setJointDtlExpand(true);
-                setGridData(payload?.ACCT_JOIN_DETAILS);
+                setGridData(payload);
                 setChequeDetailData((old) => {
                   return {
                     ...old,
@@ -462,6 +475,15 @@ const CtsOutwardClearingForm: FC<{
                     <GradientButton
                       onClick={() => {
                         setFormMode("new");
+                        setChequeDetailData(() => ({
+                          chequeDetails: [
+                            {
+                              ECS_USER_NO: "",
+                              CHEQUE_DATE: authState?.workingDate ?? "",
+                            },
+                          ],
+                          SLIP_AMOUNT: "0",
+                        }));
                         refetch();
                       }}
                     >
@@ -515,7 +537,8 @@ const CtsOutwardClearingForm: FC<{
                 backgroundColor: "var(--theme-color2)",
                 margin: "0px 0px 0px 10px",
                 padding:
-                  gridData && gridData?.length > 0
+                  gridData?.ACCT_JOIN_DETAILS &&
+                  gridData?.ACCT_JOIN_DETAILS?.length > 0
                     ? isJointDtlExpand
                       ? "10px"
                       : "0px"
@@ -552,13 +575,14 @@ const CtsOutwardClearingForm: FC<{
               </Grid>
               <Collapse in={isJointDtlExpand}>
                 <Grid item>
-                  {gridData && gridData?.length > 0 ? (
+                  {gridData?.ACCT_JOIN_DETAILS &&
+                  gridData?.ACCT_JOIN_DETAILS?.length > 0 ? (
                     <GridWrapper
                       key={
                         "JoinDetailGridMetaData" + mutationOutward?.isSuccess
                       }
                       finalMetaData={SlipJoinDetailGridMetaData}
-                      data={gridData ?? []}
+                      data={gridData?.ACCT_JOIN_DETAILS ?? []}
                       setData={() => null}
                       actions={actions}
                       setAction={setCurrentAction}
@@ -639,7 +663,7 @@ const CtsOutwardClearingForm: FC<{
               }}
               onFormButtonClickHandel={() => {
                 let event: any = { preventDefault: () => {} };
-                myChequeFormRef?.current?.handleSubmit(event);
+                myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
               }}
               ref={myChequeFormRef}
               formStyle={{
@@ -672,7 +696,7 @@ const CtsOutwardClearingForm: FC<{
                     ENTERED_COMP_CD: rowsData?.[0]?.data?.ENTERED_COMP_CD ?? "",
                     ENTERED_BRANCH_CD:
                       rowsData?.[0]?.data?.ENTERED_BRANCH_CD ?? "",
-                    TRAN_TYPE: zoneTranType,
+                    // TRAN_TYPE: zoneTranType,
                   });
                   setFormMode("view");
                 }

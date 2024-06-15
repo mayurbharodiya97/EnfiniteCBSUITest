@@ -14,7 +14,6 @@ export const chequeReturnPostFormMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -174,10 +173,6 @@ export const chequeReturnPostFormMetaData = {
 
       maxLength: 6,
 
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Cheque Date is required."] }],
-      // },
       GridProps: { xs: 12, sm: 2, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
@@ -214,16 +209,14 @@ export const chequeReturnPostFormMetaData = {
         },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (field, formState) => {
-          if (!field?.value.trim()) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_TYPE: { value: "" },
-              ACCT_NM: { value: "" },
-              WIDTH_BAL: { value: "" },
-              OTHER_REMARKS: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_NM: { value: "" },
+            WIDTH_BAL: { value: "" },
+            OTHER_REMARKS: { value: "" },
+          };
         },
       },
       accountTypeMetadata: {
@@ -246,15 +239,13 @@ export const chequeReturnPostFormMetaData = {
           rules: [{ name: "", params: "" }],
         },
         postValidationSetCrossFieldValues: (field, formState) => {
-          if (!field?.value) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              WIDTH_BAL: { value: "" },
-              OTHER_REMARKS: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            WIDTH_BAL: { value: "" },
+            OTHER_REMARKS: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -271,10 +262,6 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "", params: "" }],
-        // },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -284,7 +271,6 @@ export const chequeReturnPostFormMetaData = {
           }
         },
 
-        // disableCaching: false,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -294,17 +280,9 @@ export const chequeReturnPostFormMetaData = {
           if (formState?.isSubmitting) return {};
           if (
             field.value &&
-            // dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            // dependentFieldsValues?.["BRANCH_CD"]?.value
             dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
             dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
           ) {
-            // console.log(
-            //   ">>if value",
-            //   field.value,
-            //   dependentFieldsValues?.["ACCT_TYPE"]?.value,
-            //   dependentFieldsValues?.["BRANCH_CD"]?.value
-            // );
             let Apireq = {
               COMP_CD: auth?.companyID,
               ACCT_CD: utilFunction.getPadAccountNumber(
@@ -401,11 +379,9 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4.3, md: 4.3, lg: 4.3, xl: 4.3 },
     },
@@ -487,7 +463,6 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "DIVIDER",
       label: "",
-      // defaultValue: "For Return",
       TypographyProps: {
         style: {
           whiteSpace: "pre-line",
@@ -514,7 +489,6 @@ export const chequeReturnPostFormMetaData = {
       name: "ZONE_CD",
       label: "Zone",
       dependentFields: ["ACCT_CD", "BRANCH_CD", "ACCT_TYPE"],
-      // disableCaching: true,
       options: (dependentValue, formState, _, authState) => {
         let ApiReq = {
           BRANCH_CD: authState?.user?.branchCode,
@@ -524,14 +498,6 @@ export const chequeReturnPostFormMetaData = {
         return API.getInwardZoneTypeList(ApiReq);
       },
       _optionsKey: "getInwardZoneTypeList",
-
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       postValidationSetCrossFieldValues: (
         field,
         __,
@@ -574,7 +540,6 @@ export const chequeReturnPostFormMetaData = {
       placeholder: "Branch",
       type: "text",
       required: true,
-      // maxLength: 16,
       options: GeneralAPI.getBranchCodeList,
       _optionsKey: "getBranchCodeList",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
@@ -586,17 +551,6 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Branch Code is required."] }],
-      // },
     },
     {
       render: {
@@ -617,20 +571,6 @@ export const chequeReturnPostFormMetaData = {
       },
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
-
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     { name: "required", params: ["Return Account Type is required."] },
-      //   ],
-      // },
     },
     {
       render: {
@@ -639,16 +579,8 @@ export const chequeReturnPostFormMetaData = {
       name: "RET_ACCT_CD",
       label: "Return A/C Number",
       type: "text",
-      // fullWidth: true,
       required: true,
       dependentFields: ["DISABLE_RET_AC"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 6) {
@@ -664,13 +596,6 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     { name: "required", params: ["Return Account Number is required."] },
-      //   ],
-      // },
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
     },
     {
@@ -680,7 +605,6 @@ export const chequeReturnPostFormMetaData = {
       name: "REASON_CD",
       label: "Reason",
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-      // runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: (dependentValue, formState, _, authState) => {
         let ApiReq = {
@@ -691,15 +615,6 @@ export const chequeReturnPostFormMetaData = {
         return API.getInwardReasonTypeList(ApiReq);
       },
       _optionsKey: "getInwardReasonTypeList",
-      // disableCaching: true,
-      // dependentFields: ["RETURN"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
     },
 
     {
@@ -708,10 +623,8 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "REASON",
       label: "Other Reason",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
-      // required: true,
       validate: (currentField, value) => {
         console.log("currentField", currentField?.value);
         if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(currentField?.value)) {
@@ -719,19 +632,6 @@ export const chequeReturnPostFormMetaData = {
         }
         return "";
       },
-      // maxLength: 20,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Other Reason is required."] }],
-      // },
-      // dependentFields: ["RETURN"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
@@ -749,7 +649,7 @@ export const chequeReturnPostFormMetaData = {
 };
 export const chequesignFormMetaData = {
   form: {
-    name: "InwardClearingChequeDetail",
+    name: "InwardClearingchequeSign",
     label: "Inward Clearing Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -857,11 +757,9 @@ export const chequesignFormMetaData = {
       },
       name: "BRANCH_CD",
       label: "Branch Code",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -871,11 +769,9 @@ export const chequesignFormMetaData = {
       },
       name: "ACCT_TYPE",
       label: "Account Type",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -885,11 +781,9 @@ export const chequesignFormMetaData = {
       },
       name: "ACCT_CD",
       label: "Account Number",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
     },
@@ -899,11 +793,9 @@ export const chequesignFormMetaData = {
       },
       name: "ACCT_NM",
       label: "Account Name",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
     },
@@ -913,11 +805,9 @@ export const chequesignFormMetaData = {
       },
       name: "OTHER_REMARKS",
       label: "Mode of Operation",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
@@ -936,28 +826,19 @@ export const chequesignFormMetaData = {
           fontSize: "1.1rem",
           marginLeft: "21px",
           marginTop: "30px",
-          // position: "absolute",
-          // bottom: 0,
         },
       },
       GridProps: { xs: 12, sm: 5, md: 5, lg: 5, xl: 5 },
-      // GridProps: {
-      //   xs: 4,
-      //   md: 4,
-      //   sm: 4,
-      //   style: { alignSelf: "center" },
-      // },
     },
   ],
 };
 export const positivePayFormMetaData = {
   form: {
-    name: "InwardClearingChequeDetail",
+    name: "InwardClearingPositivePay",
     label: "Inward Clearing Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1010,7 +891,6 @@ export const positivePayFormMetaData = {
       },
       name: "BRANCH_CD",
       label: "Branch Code",
-      // placeholder: "EnterAcNo",
       type: "text",
 
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
@@ -1021,11 +901,9 @@ export const positivePayFormMetaData = {
       },
       name: "ACCT_TYPE",
       label: "Account Type",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
@@ -1035,11 +913,9 @@ export const positivePayFormMetaData = {
       },
       name: "ACCT_CD",
       label: "Account Number",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 2 },
     },
@@ -1104,7 +980,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4.3, md: 4.3, lg: 4.3, xl: 4.3 },
     },
@@ -1118,7 +993,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
@@ -1131,7 +1005,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
@@ -1144,7 +1017,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
@@ -1157,7 +1029,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
@@ -1170,7 +1041,6 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
     },
@@ -1178,12 +1048,11 @@ export const positivePayFormMetaData = {
 };
 export const shareDividendMetaData = {
   form: {
-    name: "InwardClearingProcess",
+    name: "InwardClearingProcessShareDividend",
     label: "Inward Clearing Process",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1238,7 +1107,13 @@ export const shareDividendMetaData = {
       name: "YEAR_CD",
       label: "Year",
       type: "text",
-
+      postValidationSetCrossFieldValues: (field) => {
+        return {
+          WARRANT_NO: { value: "" },
+          DIVIDEND_AMOUNT: { value: "" },
+          ACCT_CD: { value: "", isFieldFocused: true },
+        };
+      },
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -1251,12 +1126,11 @@ export const shareDividendMetaData = {
         GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
 
         postValidationSetCrossFieldValues: (field) => {
-          if (!field?.value.trim()) {
-            return {
-              WARRANT_NO: { value: "" },
-              DIVIDEND_AMOUNT: { value: "" },
-            };
-          }
+          return {
+            WARRANT_NO: { value: "" },
+            DIVIDEND_AMOUNT: { value: "" },
+            ACCT_CD: { value: "" },
+          };
         },
       },
       accountTypeMetadata: {
@@ -1276,16 +1150,12 @@ export const shareDividendMetaData = {
         },
         _optionsKey: "getInwardDividendTypeList",
         postValidationSetCrossFieldValues: (field) => {
-          if (!field?.value) {
-            return {
-              WARRANT_NO: { value: "" },
-              DIVIDEND_AMOUNT: { value: "" },
-            };
-          }
+          return {
+            WARRANT_NO: { value: "" },
+            DIVIDEND_AMOUNT: { value: "" },
+            ACCT_CD: { value: "" },
+          };
         },
-        // CreateFilterOptionsConfig: (field) => {
-        //   console.log("requestProps", field);
-        // },
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
@@ -1303,8 +1173,6 @@ export const shareDividendMetaData = {
         },
 
         dependentFields: ["ACCT_TYPE", "BRANCH_CD", "YEAR_CD", "AMOUNT"],
-
-        // disableCaching: false,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -1331,30 +1199,62 @@ export const shareDividendMetaData = {
 
             let postData = await getDividendAccountDetail(Apireq);
             formState.setDataOnFieldChange("POST_DATA", postData);
-            // First, handle "999" status
-            let validationFailedMessageShown = false; // Flag to prevent showing multiple "Account Validation Failed" messages
-            postData = postData?.map((item) => {
-              if (item?.O_STATUS === "999" && !validationFailedMessageShown) {
-                validationFailedMessageShown = true;
-                formState?.MessageBox({
+            postData = postData.sort(
+              (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
+            );
+
+            let btn99, returnVal;
+
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.O_STATUS === "999") {
+                const { btnName, obj } = await getButtonName({
                   messageTitle: "Account Validation Failed",
-                  message: item?.O_MESSAGE,
+                  message: postData[i]?.O_MESSAGE,
                 });
-              }
-              return item; // Return the item in the map function
-            });
-
-            // Then, handle "99" status
-            if (postData && postData?.[0]?.O_STATUS === "99") {
-              if (!validationFailedMessageShown) {
-                // Check if "999" message is not shown yet
-                formState?.MessageBox({
-                  messageTitle: "Information",
-                  message: postData?.[0]?.O_MESSAGE,
-                  buttonNames: ["Ok"],
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "99") {
+                formState.setDataOnFieldChange("TAB_CHANGED");
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Risk Category Alert",
+                  message: postData[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
                 });
-
-                if (postData?.[0]?.RET_FLAG === "Y") {
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData[i]?.O_STATUS === "9") {
+                formState.setDataOnFieldChange("TAB_CHANGED");
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "HNI Alert",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData[i];
+                } else {
+                  returnVal = "";
+                }
+                if (postData[i]?.DIVIDEND_AMOUNT) {
+                  if (
+                    postData[i]?.DIVIDEND_AMOUNT !==
+                    dependentFieldsValues?.["AMOUNT"]?.value
+                  ) {
+                    formState?.MessageBox({
+                      messageTitle: "Validation Failed",
+                      message: "Dividend Amount not match ",
+                      buttonNames: ["Ok"],
+                    });
+                  }
+                }
+                if (postData[i]?.RET_FLAG === "Y") {
                   let viewMasterData = await getDividendViewMasterData({
                     ...Apireq,
                     A_ASON_DT: auth?.workingDate,
@@ -1363,31 +1263,28 @@ export const shareDividendMetaData = {
                   formState.setDataOnFieldChange("VIEW_MASTER", viewMasterData);
                 }
               }
-              if (postData?.[0]?.DIVIDEND_AMOUNT) {
-                if (
-                  postData?.[0]?.DIVIDEND_AMOUNT !==
-                  dependentFieldsValues?.["AMOUNT"]?.value
-                ) {
-                  formState?.MessageBox({
-                    messageTitle: "Validation Failed",
-                    message: "Dividend Amount not match ",
-                    buttonNames: ["Ok"],
-                  });
-                }
-              }
-              return {
-                ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                WARRANT_NO: {
-                  value: postData?.[0]?.WARRANT_NO ?? "",
-                },
-                DIVIDEND_AMOUNT: {
-                  value: postData?.[0]?.DIVIDEND_AMOUNT ?? "",
-                },
-              };
             }
+            btn99 = 0;
+            return {
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+              WARRANT_NO: {
+                value: returnVal?.WARRANT_NO ?? "",
+              },
+              DIVIDEND_AMOUNT: {
+                value: returnVal?.DIVIDEND_AMOUNT ?? "",
+              },
+            };
           } else if (!field?.value) {
             return {
               WARRANT_NO: { value: "" },
@@ -1817,11 +1714,9 @@ export const ViewMasterMetaData = {
       },
       name: "BRANCH_CD",
       label: "Branch Code",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
     },
@@ -1831,7 +1726,6 @@ export const ViewMasterMetaData = {
       },
       name: "ACCT_TYPE",
       label: "Account Type",
-      // placeholder: "EnterAcNo",
       type: "text",
 
       GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
@@ -1842,11 +1736,9 @@ export const ViewMasterMetaData = {
       },
       name: "ACCT_CD",
       label: "Account Number",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
     },
@@ -1856,11 +1748,9 @@ export const ViewMasterMetaData = {
       },
       name: "ACCT_NM",
       label: "Account Name",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
     },
@@ -1870,11 +1760,9 @@ export const ViewMasterMetaData = {
       },
       name: "CUSTOMER_ID",
       label: "Id",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
     },
@@ -1888,7 +1776,6 @@ export const ViewMasterMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Cheque Date is required."] }],
@@ -1902,11 +1789,9 @@ export const ViewMasterMetaData = {
       },
       name: "JOINT1",
       label: "Joint Name",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
     },
@@ -1981,11 +1866,9 @@ export const ViewMasterMetaData = {
       },
       name: "NOMI1",
       label: "Nominee",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
     },
@@ -1995,11 +1878,9 @@ export const ViewMasterMetaData = {
       },
       name: "MODE_NM",
       label: "Mode Name",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
     },
@@ -2009,11 +1890,9 @@ export const ViewMasterMetaData = {
       },
       name: "CATEG_NM",
       label: "Category",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
     },
@@ -2032,11 +1911,9 @@ export const ViewMasterMetaData = {
       },
       name: "ADD1",
       label: "Address",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 4.5 },
     },
@@ -2046,11 +1923,9 @@ export const ViewMasterMetaData = {
       },
       name: "AREA_NM",
       label: "Area",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
@@ -2060,11 +1935,9 @@ export const ViewMasterMetaData = {
       },
       name: "CITY_NM",
       label: "City",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
@@ -2074,11 +1947,9 @@ export const ViewMasterMetaData = {
       },
       name: "PIN_CODE",
       label: "Pin Code",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
@@ -2088,11 +1959,9 @@ export const ViewMasterMetaData = {
       },
       name: "ADD2",
       label: "Address2",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 4.5 },
     },
@@ -2103,11 +1972,9 @@ export const ViewMasterMetaData = {
       },
       name: "DIST_NM",
       label: "District",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
@@ -2117,11 +1984,9 @@ export const ViewMasterMetaData = {
       },
       name: "STATE_NM",
       label: "State",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
@@ -2131,11 +1996,9 @@ export const ViewMasterMetaData = {
       },
       name: "COUNTRY_NM",
       label: "Country",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
@@ -2194,11 +2057,9 @@ export const ViewMasterMetaData = {
       },
       name: "ISSUED_BRANCH",
       label: "Issued Branch",
-      // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-      // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },

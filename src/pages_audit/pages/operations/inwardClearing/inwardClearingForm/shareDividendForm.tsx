@@ -14,14 +14,12 @@ import {
   ViewDetailGridMetaData,
   ViewMasterMetaData,
 } from "./metaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import {
   AppBar,
   CircularProgress,
-  Grid,
   Typography,
   Theme,
-  IconButton,
   Toolbar,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -249,7 +247,6 @@ export const ShareDividendFormWrapper: FC<{
             <Tab label="Paid Warrant" id="2" value="tab2" />
           </Tabs>
           <div className={tabClasses.tabPanel}>
-            {/* <TabPanel value={currentTab} index="0" key={0}> */}
             {currentTab === "tab0" ? (
               <GridWrapper
                 key={`ViewDetailGridMetaData`}
@@ -258,7 +255,6 @@ export const ShareDividendFormWrapper: FC<{
                 setData={() => null}
                 loading={getDividendViewDetailGridData.isLoading}
                 refetchData={() => {}}
-                // ref={myGridRef}
               />
             ) : currentTab === "tab1" ? (
               <FormWrapper
@@ -281,12 +277,10 @@ export const ShareDividendFormWrapper: FC<{
                 <GridWrapper
                   key={`PaidWarrentGridMetaData`}
                   finalMetaData={PaidWarrantGridMetaData as GridMetaDataType}
-                  // finalMetaData={PaidWarrantGridMetaData as GridMetaDataType}
                   data={getDividendPaidWarrantGridData?.data ?? []}
                   setData={() => null}
                   loading={getDividendPaidWarrantGridData.isLoading}
                   refetchData={() => {}}
-                  // ref={myGridRef}
                 />
               </>
             ) : null}
@@ -303,7 +297,6 @@ export const ShareDividendFormWrapper: FC<{
             }}
             ref={myRef}
             //@ts-ignore
-            // displayMode={formMode}
             formStyle={{
               background: "white",
             }}
@@ -316,6 +309,15 @@ export const ShareDividendFormWrapper: FC<{
                 setViewMasterTab(payload);
                 setCurrentTab("tab1");
               }
+              // else if (action === "TAB_CHANGED") {
+              //   setCurrentTab("tab2");
+              //   // getDividendPaidWarrantGridData.mutate({
+              //   //   ...reqData,
+              //   //   COMP_CD: authState?.companyID,
+              //   //   YEAR_CHAR: reqData?.YEAR_CD,
+              //   //   A_FLAG: "1",
+              //   // });
+              // }
               if (action === "POST_DATA") {
                 setDivAmount(payload);
               }

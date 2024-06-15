@@ -283,7 +283,10 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         />
         <CardContent
           className={classes.arrayRowCardContent}
-          style={{ paddingBottom: "0px", paddingTop: "0px" }}
+          style={{
+            paddingBottom: "0px",
+            paddingTop: "0px",
+          }}
         >
           <Grid
             container

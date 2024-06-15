@@ -12,37 +12,46 @@ import {
   useState,
 } from "react";
 import {
-  CTSOutwardClearingFormMetaData,
-  ctsOutwardChequeDetailFormMetaData,
+  IFSCBankDetailGridMetaData,
+  RtgsEntryFormMetaData,
   SlipJoinDetailGridMetaData,
-  inwardReturnChequeDetailFormMetaData,
+  rtgsAccountDetailFormMetaData,
 } from "./metaData";
 import * as API from "./api";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
-import { AppBar, Collapse, Grid, IconButton, Typography } from "@mui/material";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import {
+  AppBar,
+  Box,
+  Grid,
+  Stack,
+  Step,
+  StepIconProps,
+  StepLabel,
+  Stepper,
+  Toolbar,
+  Typography,
+  IconButton,
+  Collapse,
+  Dialog,
+} from "@mui/material";
+import { SubmitFnType } from "packages/form";
 import { ActionTypes } from "components/dataTable";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { AddNewBankMasterForm } from "./addNewBank";
+// import { AddNewBankMasterForm } from "./addNewBank";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 // import { RetrieveClearingForm } from "./retrieveClearing";
 import { usePopupContext } from "components/custom/popupContext";
-import { format } from "date-fns";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-
+import SettingsIcon from "@mui/icons-material/Settings";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import {
+  ColorlibStepIconRoot,
+  ColorlibConnector,
+} from "../../../../components/dyanmicForm/stepperForm/style";
 const actions: ActionTypes[] = [
-  {
-    actionName: "view-details",
-    actionLabel: "Edit Detail",
-    multiple: undefined,
-    rowDoubleClick: true,
-  },
   {
     actionName: "close",
     actionLabel: "cancel",
@@ -56,114 +65,94 @@ const RtgsEntryForm: FC<{}> = () => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox } = usePopupContext();
-  const [formMode, setFormMode] = useState("new");
-  const [isJointDtlExpand, setJointDtlExpand] = useState(false);
-  const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
-  const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
-  const [isDelete, SetDelete] = useState(false);
-  const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
-  const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
-  const [gridData, setGridData] = useState([]);
-  const [chequeReqData, setChequeReqData] = useState<any>({});
-  const [isDeleteRemark, SetDeleteRemark] = useState(false);
-  const [chequeDetailData, setChequeDetailData] = useState<any>({
-    chequeDetails: [
-      { ECS_USER_NO: "", CHEQUE_DATE: authState?.workingDate ?? "" },
-    ],
-    SLIP_AMOUNT: "0",
-  });
   const myFormRef: any = useRef(null);
   const myChequeFormRef: any = useRef(null);
   const slipFormDataRef: any = useRef(null);
-  const finalReqDataRef: any = useRef(null);
-  const retrieveDataRef: any = useRef(null);
-  console.log("authState", authState);
-  const setCurrentAction = useCallback((data) => {
-    if (data.name === "view-details") {
-      setChequeDetailData((old) => {
-        return {
-          ...old,
-          chequeDetails: [
-            ...old.chequeDetails.map((item) => {
-              return {
-                ...item,
-                ECS_USER_NO: data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "",
-              };
-            }),
-          ],
-        };
-      });
-      setChequeDtlRefresh((old) => old + 1);
-      // setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
+
+  const [beneficiaryDtlData, setBeneficiaryDtlData] = useState<any>({
+    beneficiaryAcDetails: [{ AMOUNT: "", REMARKS: "" }],
+    SLIP_AMOUNT: "0",
+  });
+  const [state, setState] = useState<any>({
+    formMode: "new",
+    isJointDtlExpand: false,
+    gridData: [],
+    beneficiaryDtlRefresh: 0,
+    activeStep: 0,
+    ifscGrid: false,
+    isIfscCode: [],
+  });
+  const {
+    formMode,
+    isJointDtlExpand,
+    gridData,
+    beneficiaryDtlRefresh,
+    activeStep,
+    ifscGrid,
+    isIfscCode,
+  } = state;
+  const steps = [
+    "New RTGS Entry(Ordering A/C Details)",
+    "Beneficiary A/C Detail",
+  ];
+
+  const setCurrentAction = useCallback(async (data) => {
+    if (data.name === "close") {
+      setState((old) => ({
+        ...old,
+        ifscGrid: false,
+      }));
     }
   }, []);
+  const getIfscBankGridData: any = useMutation(API.getIfscBankGridData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
 
-  const { data, isLoading, isError, error, refetch } = useQuery<any, any>(
-    ["getBussinessDate", formMode],
-    () => API.getBussinessDate()
-  );
+    onSuccess: (data) => {},
+  });
   useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getBussinessDate", formMode]);
+    const handleKeyDown = async (event) => {
+      if (event.ctrlKey && (event?.key === "J" || event?.key === "j")) {
+        event.preventDefault();
+        setState((old) => ({
+          ...old,
+          isJointDtlExpand: true,
+        }));
+      } else if (event && event?.key === "Escape") {
+        setState((old) => ({
+          ...old,
+          isJointDtlExpand: false,
+        }));
+      }
     };
-  }, []);
-  const getOutwardClearingData: any = useMutation(
-    API.getOutwardClearingConfigData,
-    {
-      onSuccess: (data) => {
-        // isDataChangedRef.current = true;
-      },
-      onError: (error: any) => {},
-    }
-  );
+    document.addEventListener("keydown", handleKeyDown);
+  }, [formMode]);
 
-  const mutationOutward = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      setOpenProceedMsg(false);
-    },
+  function ColorlibStepIcon(props: StepIconProps) {
+    const { active, completed, className } = props;
+    // const fdType = fdState?.fdParaFormData?.FD_TYPE;
+    // Object mapping step numbers to corresponding icons
+    const icons: { [index: string]: React.ReactElement } = {
+      1: <SettingsIcon />,
+      2: <GroupAddIcon />,
+    };
 
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      setOpenProceedMsg(false);
-      setGridData([]);
-      setChequeDetailData({
-        chequeDetails: [{ ECS_USER_NO: "" }],
-        SLIP_AMOUNT: "0",
-      });
-      setChequeDtlRefresh(0);
-      myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-    },
-  });
-  const deleteMutation = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      SetDelete(false);
-    },
-    onSuccess: (data) => {
-      // isDataChangedRef.current = true;
-      enqueueSnackbar("Records successfully deleted", {
-        variant: "success",
-      });
-      SetDelete(false);
-      setFormMode("new");
-    },
-  });
+    return (
+      <ColorlibStepIconRoot
+        ownerState={{ completed, active }}
+        className={className}
+      >
+        {icons[String(props.icon)]}
+      </ColorlibStepIconRoot>
+    );
+  }
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -174,535 +163,459 @@ const RtgsEntryForm: FC<{}> = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    const newData = data.chequeDetails?.map((item) => ({
-      ...item,
-      _isNewRow: formMode === "new" ? true : false,
-      BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
-      PROCESSED: "N",
-      // REASON: zoneTranType === "S" ? "N" : item?.REASON,
-      CLEARING_STATUS: "C",
-    }));
+    let newData = [];
+    if (
+      Boolean(data?.beneficiaryAcDetails) &&
+      Array.isArray(data?.beneficiaryAcDetails)
+    ) {
+      newData = data?.beneficiaryAcDetails?.map((item) => ({
+        ...item,
+        _isNewRow: formMode === "new" ? true : false,
+        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
+        PROCESSED: "N",
+        // REASON: zoneTranType === "S" ? "N" : item?.REASON,
+        CLEARING_STATUS: "C",
+      }));
+    }
 
     if (
       !Boolean(data?.SLIP_AMOUNT) ||
       parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
     ) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Enter Slip Amount",
+        messageTitle: "Validation Failed",
+        message: "Please Enter RTGS/NEFT Ordering Amount",
       });
-    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
-      finalReqDataRef.current = {
-        DAILY_CLEARING: {
-          ...slipFormDataRef?.current,
-          _isNewRow: true,
-          REQUEST_CD: "",
-          // TRAN_TYPE: zoneTranType,
-        },
-        DETAILS_DATA: {
-          isNewRow: [...newData],
-          isUpdatedRow: [],
-          isDeleteRow: [],
-        },
-        ...slipFormDataRef?.current,
-        PROCESSED: "N",
-        SKIP_ENTRY: "N",
-        _isNewRow: true,
-        endSubmit,
-      };
-      setOpenProceedMsg(true);
+    } else if (
+      parseFloat(data?.TOTAL_AMOUNT) === 0 &&
+      newData &&
+      newData.length > 0
+    ) {
+      // finalReqDataRef.current = {
+      //   DAILY_CLEARING: {
+      //     ...slipFormDataRef?.current,
+      //     _isNewRow: true,
+      //     REQUEST_CD: "",
+      //     TRAN_TYPE: zoneTranType,
+      //   },
+      //   DETAILS_DATA: {
+      //     isNewRow: [...newData],
+      //     isUpdatedRow: [],
+      //     isDeleteRow: [],
+      //   },
+      //   ...slipFormDataRef?.current,
+      //   PROCESSED: "N",
+      //   SKIP_ENTRY: "N",
+      //   _isNewRow: true,
+      //   endSubmit,
+      // };
+      endSubmit(true);
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message: " Proceed ?",
+        buttonNames: ["No", "Yes"],
+        loadingBtnName: "Yes",
+      });
+      if (buttonName === "Yes") {
+        // mutationOutward.mutate(finalReqDataRef.current);
+      }
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) > 0 &&
-      Array.isArray(chequeDetailData?.chequeDetails) &&
-      chequeDetailData?.chequeDetails?.length > 0 &&
-      data?.chequeDetails?.length > 0
+      Array.isArray(beneficiaryDtlData?.beneficiaryAcDetails) &&
+      beneficiaryDtlData?.beneficiaryAcDetails?.length > 0 &&
+      data?.beneficiaryAcDetails?.length > 0
     ) {
-      setChequeDetailData((old) => ({
+      setBeneficiaryDtlData((old) => ({
         ...old,
-        chequeDetails: [
+        beneficiaryAcDetails: [
           {
-            ...data?.chequeDetails[0],
-            AMOUNT: "",
-            CHEQUE_NO: "",
+            ...old?.beneficiaryAcDetails,
           },
+          ...data.beneficiaryAcDetails,
+        ],
+      }));
+      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      setState((old) => ({
+        ...old,
+        beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
+      }));
+    } else if (
+      (parseFloat(data?.TOTAL_AMOUNT) > 0 || newData?.length,
+      newData.length === 0)
+    ) {
+      console.log(
+        "if 4",
+        data?.TOTAL_AMOUNT,
+        beneficiaryDtlData?.beneficiaryAcDetails
+      );
+      setBeneficiaryDtlData((old) => ({
+        ...old,
+        beneficiaryAcDetails: [
+          {
+            ...old?.beneficiaryAcDetails,
+            SLIP_AMOUNT: data?.SLIP_AMOUNT,
+          },
+        ],
+      }));
 
-          ...data.chequeDetails,
-        ],
+      setState((old) => ({
+        ...old,
+        beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
       }));
-      setChequeDtlRefresh((old) => old + 1);
-    } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
-      setChequeDetailData((old) => ({
-        chequeDetails: [
-          ...old.chequeDetails.map((item) => {
-            return {
-              ...item,
-            };
-          }),
-        ],
-      }));
-      setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Check Amount",
+        messageTitle: "Validation Failed",
+        message:
+          "Total Beneficiary Amount can't be greater than total ordering RTGS/NEFT Amount",
       });
     }
   };
-  const onAcceptDelete = (rows) => {
-    deleteMutation.mutate({
-      DAILY_CLEARING: {
-        TRAN_CD: retrieveDataRef.current?.TRAN_CD,
-      },
-      DETAILS_DATA: {
-        isNewRow: [],
-        isDeleteRow: [
-          {
-            TRAN_CD: retrieveDataRef.current?.TRAN_CD,
-          },
-        ],
-        isUpdatedRow: [],
-      },
-      _isDeleteRow: true,
-    });
-  };
-  useEffect(() => {
-    const handleKeyDown = async (event) => {
-      if (event.ctrlKey && (event?.key === "R" || event?.key === "r")) {
-        event.preventDefault();
-        setIsOpenRetrieve(true);
-      } else if (formMode === "view") {
-        if (event.ctrlKey && (event?.key === "D" || event?.key === "d")) {
-          event.preventDefault();
-          if (
-            retrieveDataRef.current?.CONFIRMED === "Y" &&
-            authState?.role < "2"
-          ) {
-            await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Confirmed Transaction",
-              buttonNames: ["Ok"],
-            });
-          } else if (
-            !(
-              format(
-                new Date(retrieveDataRef.current?.TRAN_DT),
-                "dd/MMM/yyyy"
-              ) >= format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-            )
-          ) {
-            await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Back Dated Entry",
-              buttonNames: ["Ok"],
-            });
-          } else {
-            SetDeleteRemark(true);
-          }
-        }
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-  }, [formMode]);
-
   return (
     <Fragment>
-      {isLoading || getOutwardClearingData.isLoading ? (
-        <div style={{ height: 100, paddingTop: 10 }}>
-          <div style={{ padding: 10 }}>
-            <LoaderPaperComponent />
-          </div>
-        </div>
-      ) : isError ? (
-        <>
-          <div
-            style={{
-              paddingRight: "10px",
-              paddingLeft: "10px",
-              height: 100,
-              paddingTop: 10,
-            }}
-          >
-            <AppBar position="relative" color="primary">
-              <Alert
-                severity="error"
-                errorMsg={error?.error_msg ?? "Unknow Error"}
-                errorDetail={error?.error_detail ?? ""}
-                color="error"
-              />
-            </AppBar>
-          </div>
-        </>
-      ) : (
-        <>
-          <FormWrapper
-            key={"CTSOutwardForm" + formMode + mutationOutward?.isSuccess}
-            metaData={
-              extractMetaData(
-                CTSOutwardClearingFormMetaData,
-                formMode
-              ) as MetaDataType
-            }
-            initialValues={
-              formMode === "new"
-                ? {
-                    TRAN_DT: authState?.workingDate ?? "",
-                  }
-                : {
-                    ...getOutwardClearingData.data?.[0],
-                  }
-            }
-            onSubmitHandler={async (
-              data: any,
-              displayData,
-              endSubmit,
-              setFieldError,
-              action
-            ) => {
-              //@ts-ignore
-              endSubmit(true);
-              slipFormDataRef.current = data;
-              if (action === "CHEQUEDTL") {
-                let event: any = { preventDefault: () => {} };
-                myChequeFormRef?.current?.handleSubmit(event, "FINAL");
-              }
-            }}
-            setDataOnFieldChange={(action, payload) => {
-              if (action === "API_REQ") {
-                setChequeReqData(payload);
-              } else if (action === "ACCT_CD_VALID") {
-                setJointDtlExpand(true);
-                setGridData(payload?.ACCT_JOIN_DETAILS);
-                setChequeDetailData((old) => {
-                  return {
-                    ...old,
-                    chequeDetails: [
-                      ...old.chequeDetails.map((item) => {
-                        return {
-                          ...item,
-                          ECS_USER_NO: payload?.ACCT_NAME ?? "",
-                          CHEQUE_DATE: authState?.workingDate ?? "",
-                        };
-                      }),
-                    ],
-                  };
-                });
-                setChequeDtlRefresh((old) => old + 1);
-              } else if (action === "ACCT_CD_BLANK") {
-                setGridData([]);
-                setChequeDetailData(() => ({
-                  chequeDetails: [
-                    {
-                      ECS_USER_NO: "",
-                      CHEQUE_DATE: authState?.workingDate ?? "",
-                    },
-                  ],
-                  SLIP_AMOUNT: "0",
-                }));
-                setChequeDtlRefresh((old) => old + 1);
-                // setIsSlipJointDetail("");
-              } else if (action === "AMOUNT") {
-                setChequeDetailData((old) => ({
-                  ...old,
-                  SLIP_AMOUNT: payload,
-                }));
-                setChequeDtlRefresh((old) => old + 1);
-                let event: any = { preventDefault: () => {} };
-                myFormRef?.current?.handleSubmit(event);
-              }
-            }}
-            //@ts-ignore
-            displayMode={formMode}
-            formStyle={{
-              background: "white",
-              width: "100%",
-              padding: "05px",
-            }}
-            formState={{
-              // ZONE_TRAN_TYPE: zoneTranType,
-              MessageBox: MessageBox,
-            }}
-            ref={myFormRef}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                {formMode === "new" ? (
-                  <>
-                    <GradientButton
-                      onClick={() => {
-                        setIsOpenRetrieve(true);
-                      }}
-                    >
-                      Retrieve
-                    </GradientButton>
-                  </>
-                ) : formMode === "view" ? (
-                  <>
-                    <GradientButton
-                      onClick={() => {
-                        setIsOpenRetrieve(true);
-                      }}
-                    >
-                      Retrieve
-                    </GradientButton>
-
-                    <GradientButton
-                      onClick={() => {
-                        setFormMode("new");
-                        refetch();
-                      }}
-                    >
-                      New
-                    </GradientButton>
-
-                    <GradientButton
-                      onClick={async () => {
-                        if (
-                          retrieveDataRef.current?.CONFIRMED === "Y" &&
-                          authState?.role < "2"
-                        ) {
-                          await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Confirmed Transaction",
-                            buttonNames: ["Ok"],
-                          });
-                        } else if (
-                          !(
-                            format(
-                              new Date(retrieveDataRef.current?.TRAN_DT),
-                              "dd/MMM/yyyy"
-                            ) >=
-                            format(
-                              new Date(authState?.workingDate),
-                              "dd/MMM/yyyy"
-                            )
-                          )
-                        ) {
-                          await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Back Dated Entry",
-                            buttonNames: ["Ok"],
-                          });
-                        } else {
-                          SetDeleteRemark(true);
-                        }
-                      }}
-                    >
-                      Remove
-                    </GradientButton>
-                  </>
-                ) : null}
-              </>
-            )}
-          </FormWrapper>
-
-          {formMode === "new" ? (
-            <Grid
-              sx={{
-                backgroundColor: "var(--theme-color2)",
-                margin: "0px 0px 0px 10px",
-                padding:
-                  gridData && gridData?.length > 0
-                    ? isJointDtlExpand
-                      ? "10px"
-                      : "0px"
-                    : "0px",
-                border: "1px solid rgba(0,0,0,0.12)",
-                borderRadius: "20px",
-              }}
-              container
-              item
-              xs={11.8}
-              direction={"column"}
-            >
-              <Grid
-                container
-                item
-                sx={{ alignItems: "center", justifyContent: "space-between" }}
+      <AppBar position="relative" style={{ marginBottom: "5px" }}>
+        <Toolbar
+          variant="dense"
+          style={{ background: "var(--theme-color5)", padding: "0px" }}
+        >
+          <Typography component="span" variant="h5" color="primary" px={2}>
+            {"RTGS Entry(MST/552)"}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Stack sx={{ width: "100%" }} spacing={4}>
+        <Stepper
+          alternativeLabel
+          activeStep={activeStep}
+          connector={<ColorlibConnector />}
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel
+                StepIconComponent={ColorlibStepIcon}
+                componentsProps={{
+                  label: {
+                    style: { marginTop: "2px", color: "var(--theme-color1)" },
+                  },
+                }}
               >
-                <Typography
-                  sx={{
-                    color: "var(--theme-color3)",
-                    marginLeft: "15px",
-                    marginTop: "6px",
-                  }}
-                  gutterBottom={true}
-                  variant={"h6"}
-                >
-                  Joint - Details
-                </Typography>
-                <IconButton
-                  onClick={() => setJointDtlExpand(!isJointDtlExpand)}
-                >
-                  {!isJointDtlExpand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                </IconButton>
-              </Grid>
-              <Collapse in={isJointDtlExpand}>
-                <Grid item>
-                  {gridData && gridData?.length > 0 ? (
-                    <GridWrapper
-                      key={
-                        "JoinDetailGridMetaData" + mutationOutward?.isSuccess
-                      }
-                      finalMetaData={SlipJoinDetailGridMetaData}
-                      data={gridData ?? []}
-                      setData={() => null}
-                      actions={actions}
-                      setAction={setCurrentAction}
-                    />
-                  ) : null}
-                </Grid>
-              </Collapse>
-            </Grid>
-          ) : null}
-          <div
-            onKeyDown={(e) => {
-              let target: any = e?.target;
-              const charAtIndex = target.name?.split("").find((char, index) => {
-                return index === 39;
-              });
-              if (e.key === "Enter" || e.key === "Tab") {
-                if (
-                  (target?.name ?? "") ===
-                  ctsOutwardChequeDetailFormMetaData.form.name +
-                    "/" +
-                    ctsOutwardChequeDetailFormMetaData.fields[7].name +
-                    `[${charAtIndex}]` +
-                    ".AMOUNT"
-                ) {
-                  let event: any = { preventDefault: () => {} };
-                  myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div style={{ marginTop: "0px" }}>
+          {/* {RenderStepForm(fdState.activeStep)} */}
+
+          {activeStep === 0 ? (
+            <>
+              <FormWrapper
+                key={"RtgsEntry" + formMode}
+                metaData={
+                  extractMetaData(
+                    RtgsEntryFormMetaData,
+                    formMode
+                  ) as MetaDataType
                 }
-              }
-            }}
-          >
-            <FormWrapper
-              key={`ChequeDetails` + chequeDtlRefresh + formMode}
-              metaData={
-                extractMetaData(
-                  ctsOutwardChequeDetailFormMetaData,
-                  formMode
-                ) as MetaDataType
-              }
-              displayMode={formMode}
-              onSubmitHandler={onSubmitHandler}
-              initialValues={
-                formMode === "new"
-                  ? {
-                      ...chequeDetailData,
-                      TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
-                    }
-                  : {
-                      chequeDetails:
-                        getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL ?? "",
-                    }
-              }
-              hideHeader={true}
-              containerstyle={{ padding: "0px !important" }}
-              setDataOnFieldChange={async (action, paylod) => {
-                if (action === "MESSAGE") {
-                  if (paylod?.[0]?.ERROR_MSSAGE) {
-                    let res = await MessageBox({
-                      messageTitle: "Confirmation..",
-                      message: "Are You sure To Add Bank?",
-                      buttonNames: ["Yes", "No"],
+                initialValues={
+                  formMode === "new"
+                    ? {
+                        ...slipFormDataRef.current,
+                        TRAN_DT: authState?.workingDate ?? "",
+                      }
+                    : {}
+                }
+                onSubmitHandler={async (
+                  data: any,
+                  displayData,
+                  endSubmit,
+                  setFieldError,
+                  action
+                ) => {
+                  //@ts-ignore
+                  endSubmit(true);
+                  slipFormDataRef.current = data;
+
+                  setState((old) => ({
+                    ...old,
+                    activeStep: old.activeStep + 1,
+                  }));
+
+                  // setBeneficiaryDtlData(
+                  //   (old) => (
+                  //     {
+                  //       ...old,
+                  //       SLIP_AMOUNT: data?.TOTAL,
+                  //     }
+                  //   )
+                  // );
+                  setBeneficiaryDtlData((old) => ({
+                    beneficiaryAcDetails: [{ AMOUNT: "", REMARKS: "" }],
+                    SLIP_AMOUNT: data?.TOTAL,
+                  }));
+
+                  setState((old) => ({
+                    ...old,
+                    beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
+                  }));
+                  // if (rtgsAccountDetailFormMetaData.fields[5]?._fields?.[0]) {
+                  //   rtgsAccountDetailFormMetaData.fields[5]._fields[0].isFieldFocused ??=
+                  //     true;
+                  // }
+                }}
+                setDataOnFieldChange={(action, payload) => {
+                  if (action === "JOINT_DETAIL") {
+                    setState((old) => ({
+                      ...old,
+                      gridData: payload,
+                    }));
+                  }
+                }}
+                //@ts-ignore
+                displayMode={formMode}
+                formStyle={{
+                  background: "white",
+                  width: "100%",
+                  padding: "05px",
+                  // height: "19.2em",
+                  // overflow: "auto",
+                }}
+                formState={{
+                  MessageBox: MessageBox,
+                }}
+                ref={myFormRef}
+                hideHeader={true}
+              ></FormWrapper>
+              {formMode === "new" ? (
+                <Grid
+                  sx={{
+                    backgroundColor: "var(--theme-color2)",
+                    margin: "0px 0px 0px 10px",
+                    padding:
+                      gridData && gridData?.length > 0
+                        ? isJointDtlExpand
+                          ? "10px"
+                          : "0px"
+                        : "0px",
+                    border: "1px solid rgba(0,0,0,0.12)",
+                    borderRadius: "20px",
+                  }}
+                  container
+                  item
+                  xs={11.8}
+                  direction={"column"}
+                >
+                  <Grid
+                    container
+                    item
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "var(--theme-color3)",
+                        marginLeft: "15px",
+                        marginTop: "6px",
+                      }}
+                      gutterBottom={true}
+                      variant={"h6"}
+                    >
+                      Joint - Details
+                    </Typography>
+                    <IconButton
+                      onClick={() => {
+                        setState((old) => ({
+                          ...old,
+                          isJointDtlExpand: !old.isJointDtlExpand,
+                        }));
+                      }}
+                    >
+                      {!isJointDtlExpand ? (
+                        <ExpandMoreIcon />
+                      ) : (
+                        <ExpandLessIcon />
+                      )}
+                    </IconButton>
+                  </Grid>
+                  <Collapse in={isJointDtlExpand}>
+                    <Grid item>
+                      {gridData && gridData?.length > 0 ? (
+                        <GridWrapper
+                          key={"JoinDetailGridMetaData"}
+                          finalMetaData={SlipJoinDetailGridMetaData}
+                          data={gridData ?? []}
+                          setData={() => null}
+                          actions={actions}
+                          setAction={{}}
+                        />
+                      ) : null}
+                    </Grid>
+                  </Collapse>
+                </Grid>
+              ) : null}
+            </>
+          ) : activeStep === 1 ? (
+            <>
+              <div
+                onKeyDown={(e) => {
+                  let target: any = e?.target;
+                  const charAtIndex = target.name
+                    ?.split("")
+                    .find((char, index) => {
+                      return index === 48;
                     });
-                    if (res === "Yes") {
-                      setOpenAddBankForm(true);
+                  if (e?.key === "Enter" || e?.key === "Tab") {
+                    // beneficiaryDtlFormMetaData/beneficiaryAcDetails[0].AMOUNT
+                    let metaData;
+                    metaData = rtgsAccountDetailFormMetaData;
+                    if (
+                      (target?.name ?? "") ===
+                      metaData.form.name +
+                        "/" +
+                        metaData.fields[5].name +
+                        `[${charAtIndex}]` +
+                        ".AMOUNT"
+                    ) {
+                      let event: any = { preventDefault: () => {} };
+                      myChequeFormRef?.current?.handleSubmit(event, "FINAL");
                     }
                   }
-                }
-              }}
-              onFormButtonClickHandel={() => {
-                let event: any = { preventDefault: () => {} };
-                myChequeFormRef?.current?.handleSubmit(event);
-              }}
-              ref={myChequeFormRef}
-              formStyle={{
-                height: "65%",
-              }}
-              formState={{
-                REQ_DATA: chequeReqData,
-                MessageBox: MessageBox,
-              }}
-            />
+                }}
+              >
+                <FormWrapper
+                  key={`ChequeDetails` + formMode + beneficiaryDtlRefresh}
+                  metaData={
+                    extractMetaData(
+                      rtgsAccountDetailFormMetaData,
+                      formMode
+                    ) as MetaDataType
+                  }
+                  displayMode={formMode}
+                  onSubmitHandler={onSubmitHandler}
+                  initialValues={
+                    formMode === "new"
+                      ? {
+                          ...beneficiaryDtlData,
+                        }
+                      : {}
+                  }
+                  hideHeader={true}
+                  containerstyle={{ padding: "0px !important" }}
+                  setDataOnFieldChange={async (action, paylod) => {
+                    if (action === "MESSAGE") {
+                      if (paylod?.[0]?.ERROR_MSSAGE) {
+                        let res = await MessageBox({
+                          messageTitle: "Confirmation..",
+                          message: "Are You sure To Add Bank?",
+                          buttonNames: ["Yes", "No"],
+                        });
+                        if (res === "Yes") {
+                          // setOpenAddBankForm(true);
+                        }
+                      }
+                    } else if (action === "IFSC_CD") {
+                      setState((old) => ({
+                        ...old,
+                        isIfscCode: paylod,
+                      }));
+                    }
+                  }}
+                  onFormButtonClickHandel={(id) => {
+                    if (id === "ADDNEWROW") {
+                      let event: any = { preventDefault: () => {} };
+                      myChequeFormRef?.current?.handleSubmit(event, "FINAL");
+                    } else {
+                      setState((old) => ({
+                        ...old,
+                        ifscGrid: isIfscCode.length > 0 ? true : old.ifscGrid,
+                      }));
+                      getIfscBankGridData.mutate({
+                        COMP_CD: authState?.companyID ?? "",
+                        BRANCH_CD: authState?.user?.branchCode ?? "",
+                        IFSC_CODE: isIfscCode ?? "",
+                      });
+                    }
+                  }}
+                  ref={myChequeFormRef}
+                  formState={{
+                    MessageBox: MessageBox,
+                    rtgsAcData: slipFormDataRef.current,
+                  }}
+                />
+              </div>
+            </>
+          ) : null}
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            pt: 2,
+            marginTop: "0px !important",
+            position: "relative",
+          }}
+        >
+          {/* <Box sx={{ flex: "1 1 auto" }} /> */}
+          <div style={{ position: "fixed", bottom: 0, right: "10px" }}>
+            {activeStep === 0 ? null : (
+              <GradientButton
+                tabindex={-1}
+                onClick={() => {
+                  // setIsBackButton(true);
+                  setState((old) => ({
+                    ...old,
+                    activeStep: old.activeStep - 1,
+                  }));
+                }}
+              >
+                Back
+              </GradientButton>
+            )}
+            {
+              activeStep !== steps.length && (
+                <>
+                  {activeStep !== steps.length - 1 ? (
+                    <GradientButton
+                      onClick={(event) => {
+                        myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
+                      }}
+                    >
+                      Next
+                    </GradientButton>
+                  ) : null}
+                </>
+              )
+              // ))
+            }
           </div>
-          {/* {isOpenAddBankForm ? (
-            <AddNewBankMasterForm
-              isOpen={isOpenAddBankForm}
-              onClose={() => {
-                setOpenAddBankForm(false);
-              }}
+        </Box>
+      </Stack>
+      <>
+        {ifscGrid ? (
+          <Dialog
+            open={true}
+            // onClose={() => }
+            PaperProps={{
+              style: {
+                width: "100%",
+              },
+            }}
+            maxWidth="lg"
+          >
+            <GridWrapper
+              key={"IFSCBankDetailGridMetaData"}
+              finalMetaData={IFSCBankDetailGridMetaData}
+              data={getIfscBankGridData?.data ?? []}
+              setData={() => null}
+              actions={actions}
+              setAction={setCurrentAction}
+              loading={getIfscBankGridData?.isLoading}
             />
-          ) : null}
-          {isOpenRetrieve ? (
-            <RetrieveClearingForm
-              onClose={(flag, rowsData) => {
-                setIsOpenRetrieve(false);
-                if (flag === "action") {
-                  retrieveDataRef.current = rowsData?.[0]?.data ?? "";
-                  getOutwardClearingData.mutate({
-                    TRAN_CD: rowsData?.[0]?.data?.TRAN_CD ?? "",
-                    ENTERED_COMP_CD: rowsData?.[0]?.data?.ENTERED_COMP_CD ?? "",
-                    ENTERED_BRANCH_CD:
-                      rowsData?.[0]?.data?.ENTERED_BRANCH_CD ?? "",
-                    // TRAN_TYPE: zoneTranType,
-                  });
-                  setFormMode("view");
-                }
-              }}
-              tranDate={data?.[0]?.TRAN_DATE ?? ""}
-            />
-          ) : null}
-          {isOpenProceedMsg ? (
-            <PopupMessageAPIWrapper
-              MessageTitle="Confirmation"
-              Message=" Proceed ?"
-              onActionYes={(rowsVal) => mutationOutward.mutate(rowsVal)}
-              onActionNo={() => setOpenProceedMsg(false)}
-              rows={finalReqDataRef.current}
-              open={isOpenProceedMsg}
-              loading={mutationOutward.isLoading}
-            />
-          ) : null}
-          {isDeleteRemark && (
-            <RemarksAPIWrapper
-              TitleText={
-                zoneTranType === "S"
-                  ? "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)"
-                  : "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)"
-              }
-              onActionNo={() => SetDeleteRemark(false)}
-              onActionYes={(val, rows) => {
-                SetDelete(true);
-              }}
-              // isLoading={crudLimitData?.isLoading}
-              isEntertoSubmit={true}
-              AcceptbuttonLabelText="Ok"
-              CanceltbuttonLabelText="Cancel"
-              open={isDeleteRemark}
-              // rows={deleteDataRef.current}
-              defaultValue={
-                zoneTranType === "S"
-                  ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
-                  : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)"
-              }
-              rows={undefined}
-            />
-          )}
-          {isDelete ? (
-            <PopupMessageAPIWrapper
-              MessageTitle="Confirmation"
-              Message="Do You Want to delete this row?"
-              onActionYes={(rows) => onAcceptDelete(rows)}
-              onActionNo={() => SetDelete(false)}
-              rows={{}}
-              open={isDelete}
-              loading={deleteMutation.isLoading}
-            />
-          ) : null} */}
-        </>
-      )}
+          </Dialog>
+        ) : null}
+      </>
+      {/* )} */}
     </Fragment>
   );
 };
@@ -710,7 +623,7 @@ const RtgsEntryForm: FC<{}> = () => {
 export const RtgsEntryFormWrapper = () => {
   return (
     <ClearCacheProvider>
-      <RtgsEntryForm />
+      <RtgsEntryForm key={"RtgsEntryForm"} />
     </ClearCacheProvider>
   );
 };
