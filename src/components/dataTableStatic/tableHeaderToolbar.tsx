@@ -56,13 +56,14 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       headerToolbarStyle,
       searchPlaceholder,
       ReportExportButton,
-      setOpenExport
+      setOpenExport,
+      subGridLabel,
     },
     ref
-    ) => {
-      const { progress, enabled, intervalElapsed, pause, resume } =
+  ) => {
+    const { progress, enabled, intervalElapsed, pause, resume } =
       useAutoRefresh(refetchData, autoRefreshInterval);
-      const classes = useStyles();
+    const classes = useStyles();
     useImperativeHandle(ref, () => ({
       pause: pause,
       resume: resume,
@@ -80,7 +81,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
           component="div"
           style={{ ...headerToolbarStyle }}
         >
-          {label}
+          {label} {subGridLabel}
         </Typography>
         {allowFilter ? (
           <TableFilterComponent
@@ -128,10 +129,11 @@ export const TableHeaderToolbar = forwardRef<any, any>(
             searchPlaceholder={searchPlaceholder}
           />
         )}
-        {ReportExportButton && 
-        <GradientButton
-          onClick={() => setOpenExport(true)} endicon="GetApp"
-        >Export</GradientButton>}
+        {ReportExportButton && (
+          <GradientButton onClick={() => setOpenExport(true)} endicon="GetApp">
+            Export
+          </GradientButton>
+        )}
         <RenderActions
           key="alwaysRender"
           selectedRows={selectedFlatRows}

@@ -50,6 +50,8 @@ export interface GridColumnType {
   shouldExclude?: any;
   isVisibleInNew?: Boolean;
   isColumnName?: any;
+  isDisplayTotal?: Boolean;
+  totalDecimalCount?: number;
 }
 
 export interface GridConfigType {
@@ -83,6 +85,7 @@ export interface GridConfigType {
   searchPlaceholder?: string;
   paginationText?: any;
   footerNote?: any;
+  subGridLabel?: any;
 }
 
 export interface GridMetaDataType {

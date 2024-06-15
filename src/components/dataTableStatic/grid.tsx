@@ -41,6 +41,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TablePagination,
   TableRow,
   Typography,
@@ -99,6 +100,7 @@ export const DataGrid = ({
   ReportExportButton,
   footerNote,
   finalMetaData,
+  subGridLabel,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -108,6 +110,7 @@ export const DataGrid = ({
   const {
     getTableProps,
     getTableBodyProps,
+    footerGroups,
     headerGroups,
     prepareRow,
     selectedFlatRows,
@@ -312,6 +315,45 @@ export const DataGrid = ({
     }
   }, [selectedFlatRows[0]?.original]);
 
+  const RenderFooter = ({ footerGroup }) =>
+    Array.isArray(footerGroup?.headers) &&
+    footerGroup.headers.some((item) => item.isDisplayTotal) ? (
+      <TableFooter
+        component="div"
+        style={{
+          color: "var(--theme-color2)",
+          background: "var(--theme-color4)",
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
+        <TableRow {...footerGroup.getFooterGroupProps()} component="div">
+          {footerGroup.headers.map((column) => (
+            <TableCell
+              key={column.id}
+              {...column.getFooterProps({
+                style: {
+                  textAlign: column?.TableCellProps?.align || "unset",
+                  display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  padding: "0px 10px",
+                  lineHeight: "22px",
+                  fontWeight: 700,
+                  fontSize: "smaller",
+                  color: "black",
+                },
+              })}
+              component="div"
+            >
+              {column.render("Footer")}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableFooter>
+    ) : null;
+
   return (
     <>
       <Paper
@@ -346,6 +388,7 @@ export const DataGrid = ({
             searchPlaceholder={searchPlaceholder}
             ReportExportButton={ReportExportButton}
             setOpenExport={setOpenExport}
+            subGridLabel={subGridLabel}
           />
         )}
         {Boolean(controlsAtBottom) ? null : (
@@ -440,6 +483,12 @@ export const DataGrid = ({
                 },
               ])}
               onContextMenu={handleContextMenuOpenforAdd}
+              // set container height after add  RenderFooter row----
+              style={{
+                height: Boolean(containerHeight?.min)
+                  ? "calc(" + containerHeight?.min + " - 58px)"
+                  : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
+              }}
             >
               {rowsToDisplay.length <= 0 &&
               //loading === false &&
@@ -535,13 +584,19 @@ export const DataGrid = ({
                 );
               })}
             </TableBody>
+            <RenderFooter footerGroup={footerGroups[0]} />
           </Table>
           <CustomBackdrop open={Boolean(loading)} />
         </TableContainer>
 
         {footerNote && (
-          <Typography component="div" fontWeight={500} pl={"24px"}>
-            {t(footerNote)}
+          <Typography
+            component="div"
+            fontWeight={500}
+            display={"flex"}
+            pl={"24px"}
+          >
+            {typeof footerNote === "string" ? t(footerNote) : footerNote}
           </Typography>
         )}
         {hideFooter ? null : enablePagination ? (

@@ -65,14 +65,17 @@ const LienEntryCustom = () => {
 
   const crudLienData: any = useMutation("crudLien", API.crudLien, {
     onSuccess: (data) => {
-      if (data?.O_STATUS !== "0") {
+      if (data?.[0]?.O_STATUS && data?.[0]?.O_STATUS !== "0") {
         MessageBox({
           messageTitle: "validationAlert",
           message: data?.[0]?.O_MESSAGE,
+          defFocusBtnName: "Yes",
         });
       } else {
-        myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+        CloseMessageBox();
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
+        myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+        setIsData((old) => ({ ...old, isVisible: false }));
       }
     },
     onError: () => {
@@ -94,9 +97,8 @@ const LienEntryCustom = () => {
     endSubmit
   ) => {
     let apiReq = {
-      REMOVAL_DT: data?.REMOVAL_DT
-        ? format(new Date(data?.REMOVAL_DT), "dd-MMM-yyyy")
-        : "",
+      REMOVAL_DT:
+        data?.REMOVAL_DT && format(new Date(data?.REMOVAL_DT), "dd-MMM-yyyy"),
       EFECTIVE_DT: format(new Date(data?.EFECTIVE_DT), "dd-MMM-yyyy"),
       SCREEN_REF: "ETRN/652",
       _isNewRow: true,
@@ -163,9 +165,7 @@ const LienEntryCustom = () => {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  LienGridMetaData.gridConfig.gridLabel = `${t(
-                    "LienDetail"
-                  )} \u00A0\u00A0 ${(
+                  LienGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +

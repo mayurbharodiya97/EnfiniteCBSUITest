@@ -103,6 +103,7 @@ const ChequebookTabCustom = () => {
       onError: (error, variables) => {
         if (variables?.DETAILS_DATA?.isNewRow.length > 1) {
           navigate(".");
+          CloseMessageBox();
         }
         setIsData((old) => ({ ...old, closeAlert: true, isDelete: false }));
       },
@@ -243,9 +244,7 @@ const ChequebookTabCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  ChequebookDtlGridMetaData.gridConfig.gridLabel = `${t(
-                    "ChequeBookIssued"
-                  )} \u00A0\u00A0 ${(
+                  ChequebookDtlGridMetaData.gridConfig.subGridLabel = ` \u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +

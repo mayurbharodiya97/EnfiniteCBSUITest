@@ -1208,8 +1208,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
-  DOOVERDRAWNDML: {
-    url: "accountServiceAPI/DOOVERDRAWNDML",
+  DOTEMPODDML: {
+    url: "accountServiceAPI/DOTEMPODDML",
     packageName: "",
   },
   GETRETRIVECHQBKFLAG: {
@@ -1310,6 +1310,14 @@ export const ActionWiseAPIConfiguration = {
   },
   DOLIENCONFIRMATION: {
     url: "/transactionServiceAPI/DOLIENCONFIRMATION",
+    packageName: "",
+  },
+  GETTEMPODAGCNFDATAGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTEMPODAGCNFDATAGRID",
+    packageName: "",
+  },
+  DOTEMPODCONFIRMATION: {
+    url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
 };

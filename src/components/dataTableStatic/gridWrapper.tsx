@@ -27,6 +27,7 @@ import {
 } from "../utils/autoRefresh";
 import { attachFilterComponentToMetaData } from "components/dataTable/utils";
 import { useTranslation } from "react-i18next";
+import { FooterCell } from "components/tableCellComponents/footerCell";
 export const GridWrapperWithAutoRefresh = forwardRef<any, GridWrapperPropTypes>(
   (props, ref) => {
     return (
@@ -111,6 +112,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         width: 150,
         maxWidth: 200,
         minWidth: 50,
+        Footer: FooterCell,
         Header: DefaultHeaderColumnRenderer,
         ...metaData?.gridConfig?.defaultColumnConfig,
       }),
@@ -337,6 +339,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         ReportExportButton={ReportExportButton}
         footerNote={metaData.gridConfig?.footerNote ?? false}
         finalMetaData={finalMetaData.columns}
+        subGridLabel={t(metaData.gridConfig?.subGridLabel ?? "")}
       />
     );
   }
