@@ -580,7 +580,7 @@
 
 // export default DualPartTable;
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Box,
   Dialog,
@@ -596,6 +596,10 @@ import {
   TextField,
   Typography,
   TableFooter,
+  Grid,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
 import { boolean } from "yup";
@@ -621,14 +625,40 @@ const DualPartTable = ({
   remainExcessLable,
   errors,
   confirmation,
-  setConfirmation,
+  closeConfirmation,
 }) => {
   const classes = useStyles();
+  const inputRefs = useRef<any>({});
+  const [refsReady, setRefsReady] = useState(false);
   const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
-  // useEffect(() => {
-  // }, [remainExcess]);
+  useEffect(() => {
+    // console.log(inputRefs.current, "inputRefs.current5645454545");
+    if (Object.keys(inputRefs.current).length > 0) {
+      setRefsReady(true);
+    }
+  }, [data]); // Assuming 'data' influences the number of TextFields
+
+  useEffect(() => {
+    if (refsReady) {
+      // console.log(
+      //   "&&&&&&&TELLER",
+      //   inputRefs?.current["0"],
+      //   displayTableDual,
+      //   "display",
+      //   data,
+      //   "tata"
+      // );
+      let timer = setTimeout(() => {
+        inputRefs?.current["0"].focus();
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [refsReady, displayTableDual, data]);
 
   const renderTableHeader = () => {
     return (
@@ -708,6 +738,30 @@ const DualPartTable = ({
                         const keyValue = String.fromCharCode(keyCode);
                         if (!/^[0-9]$/.test(keyValue)) event.preventDefault();
                       }}
+                      // autoFocus={
+                      //   column?.fieldName === "receipt" &&
+                      //   displayTableDual &&
+                      //   data &&
+                      //   index === 0
+                      // }
+                      inputRef={(input) => {
+                        if (input && column?.fieldName === "receipt") {
+                          // console.log(
+                          //   input,
+                          //   "input",
+                          //   column?.fieldName === "receipt",
+                          //   "check Conditopn"
+                          // );
+                          // if (index === 0) {
+                          //   console.log(input, "check Conditopn2222");
+                          // }
+                          inputRefs.current[index] = input;
+                          if (index === data.length - 1) {
+                            // Check if the last input is set
+                            setRefsReady(true);
+                          }
+                        }
+                      }}
                     />
                   ) : (
                     <Typography>{displayValue}</Typography>
@@ -758,7 +812,7 @@ const DualPartTable = ({
 
   return (
     <Dialog open={displayTableDual && data?.length > 0} maxWidth={"xl"}>
-      <Box
+      {/* <Box
         sx={{
           height: "auto",
           background: "var(--theme-color5)",
@@ -779,24 +833,55 @@ const DualPartTable = ({
           {" "}
           {gridLable}
         </DialogTitle>
-        {/* <DialogActions> */}
-        <GradientButton
-          onClick={() => onCloseTable(false, "TABLE2")}
-          color="primary"
-          disabled={false}
-          style={{ marginRight: "10px" }}
-        >
-          Close
-        </GradientButton>
-        {/* </DialogActions> */}
-      </Box>
+        <DialogActions>
+          <GradientButton
+            onClick={() => onCloseTable(false, "TABLE2")}
+            color="primary"
+            disabled={false}
+            style={{ marginRight: "10px" }}
+          >
+            Close
+          </GradientButton>
+        </DialogActions>
+      </Box> */}
+
+      <AppBar
+        position="static"
+        sx={{
+          height: "auto",
+          background: "var(--theme-color5)",
+          margin: "10px",
+          width: "auto",
+        }}
+      >
+        <Toolbar>
+          <Typography
+            variant="h6"
+            style={{ flexGrow: 1 }}
+            sx={{
+              fontWeight: 700,
+              color: "var(--theme-color2)",
+              fontSize: "1rem",
+            }}
+          >
+            {gridLable}
+          </Typography>
+          <GradientButton
+            onClick={() => onCloseTable(false, "TABLE2")}
+            color="primary"
+            disabled={false}
+          >
+            Close
+          </GradientButton>
+        </Toolbar>
+      </AppBar>
       <DialogContent sx={{ padding: 0 }}>
         <Paper
           sx={{
-            padding: "7px 2px",
             boxShadow: "none",
             borderRadius: "0px",
             margin: "0 10px",
+            paddingBottom: "6px",
           }}
         >
           <TableContainer
@@ -873,7 +958,7 @@ const DualPartTable = ({
             if (Boolean(buttonNames === "Yes")) {
               console.log("form Submitted");
             } else if (Boolean(buttonNames === "No")) {
-              setConfirmation(false);
+              closeConfirmation();
             }
           }}
           buttonNames={["Yes", "No"]}

@@ -16,7 +16,6 @@ import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
-import SingleDeno from "./singleDeno";
 import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { cashReportMetaData } from "./metadataTeller";
 import { ActionTypes } from "components/dataTable/types";
@@ -25,7 +24,7 @@ import Report from "components/report";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
-import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
+// import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
 // import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
 import {
   SingleTableDataReducer,
@@ -39,8 +38,10 @@ import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransact
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { padding } from "@mui/system";
+import { FocusTrap } from "@mui/base";
 const TellerScreen = () => {
   const formRef: any = useRef(null);
+  const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
   const textFieldRef: any = useRef(null);
   const popupReqWrapperRef: any = useRef(null);
@@ -76,13 +77,14 @@ const TellerScreen = () => {
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
     if (cardDetails?.length > 0 && Array.isArray(cardDetails)) {
-      const extraAccDtl = cardDetails.reduce((result, details) => {
-        // if (
-        //   details?.COL_LABEL === "Name" ||
-        //   details?.COL_LABEL === "A/c Number"
-        // ) {
-        //   result[details.COL_LABEL] = details.COL_VALUE ?? "";
-        // }
+      // console.log(cardDetails, "cardDetailscardDetailscardDetails58586316352");
+      const extraAccDtl = cardDetails.reduce((result, details: any) => {
+        if (
+          details?.COL_LABEL === "Name" ||
+          details?.COL_LABEL === "A/c Number"
+        ) {
+          result[details.COL_LABEL] = details.COL_VALUE ?? "";
+        }
         return result;
       }, {});
 
@@ -130,14 +132,19 @@ const TellerScreen = () => {
 
   const data: any = useMemo(() => {
     if (Array.isArray(getData.data)) {
+      endSubmitRef?.current?.endSubmit(true);
       return [...getData.data];
     }
   }, [getData.data]);
 
-  let dataLimit;
   useEffect(() => {
-    if (data?.length) {
-      dataLimit = data?.[0]?.PAYMENT_LIMIT;
+    if (data?.length > 0) {
+      // console.log(data?.[0]?.PAYMENT_LIMIT, "data?.[0]?.PAYMENT_LIMIT");
+      setExtraAccDtl((prevExtraAccDtl) => ({
+        ...prevExtraAccDtl,
+        ...extraAccDtl,
+        LIMIT: data?.[0]?.PAYMENT_LIMIT ?? "",
+      }));
     }
   }, [data]);
 
@@ -148,7 +155,7 @@ const TellerScreen = () => {
     setFieldError,
     actionFlag
   ) => {
-    endSubmit(true);
+    // endSubmit(true);
     endSubmitRef.current = {
       data: { data },
       displayData,
@@ -171,11 +178,14 @@ const TellerScreen = () => {
           ...extraAccDtl,
           TRN_TYPE: data?.TRN === "R" ? `1` : `4` ?? "",
           REMARKS: data?.REMARK ?? "",
-          LIMIT: dataLimit ?? "",
         }));
       }
     }
   };
+
+  // useEffect(() => {
+  //   console.log(extraAccDtl, "52143215145145");
+  // }, [extraAccDtl]);
 
   //initial value set in available note and balance column
   useEffect(() => {
@@ -330,32 +340,32 @@ const TellerScreen = () => {
       payload: newValue,
     });
 
-    if (state?.remainExcess === 0) {
-      // dispatch({
-      //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-      //   payload: true,
-      // });
-      const res = await MessageBox({
-        messageTitle: "Confirmation",
-        message: "All Transaction are Completed Want to Proceed ?",
-        //@ts-ignore
-        buttonNames: ["Yes", "No"],
-        defFocusBtnName: "Yes",
-        // loadingBtnName: ["Yes"],
-        icon: "INFO",
-      });
-      if (res === "Yes") {
-        console.log("form Submitted");
-      } else if (res === "No") {
-        CloseMessageBox();
-      }
-    } else {
-      // dispatch({
-      //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-      //   payload: false,
-      // });
-      CloseMessageBox();
-    }
+    // if (state?.remainExcess === 0) {
+    //   // dispatch({
+    //   //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
+    //   //   payload: true,
+    //   // });
+    //   const res = await MessageBox({
+    //     messageTitle: "Confirmation",
+    //     message: "All Transaction are Completed Want to Proceed ?",
+    //     //@ts-ignore
+    //     buttonNames: ["Yes", "No"],
+    //     defFocusBtnName: "Yes",
+    //     // loadingBtnName: ["Yes"],
+    //     icon: "INFO",
+    //   });
+    //   if (res === "Yes") {
+    //     console.log("form Submitted");
+    //   } else if (res === "No") {
+    //     CloseMessageBox();
+    //   }
+    // } else {
+    //   // dispatch({
+    //   //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
+    //   //   payload: false,
+    //   // });
+    //   CloseMessageBox();
+    // }
 
     if (
       state?.fieldsData?.TRN === "R" &&
@@ -507,6 +517,54 @@ const TellerScreen = () => {
 
   let finalScreenRef = "";
 
+  useEffect(() => {
+    dispatch({
+      type: SingleTableActionTypes?.SET_INPUT_VAL,
+      payload: {},
+    });
+    dispatch({ type: SingleTableActionTypes?.SET_AMOUNT_VAL, payload: [] });
+    dispatch({
+      type: SingleTableActionTypes?.SET_REMAINEXCESS_VAL,
+      payload: "",
+    });
+  }, []);
+
+  var receiptInput = document.getElementsByName(
+    "TellerOperation/RECEIPT"
+  )[0] as HTMLInputElement;
+
+  const textField = document.getElementsByName(
+    "TellerOperation/RECEIPT"
+  )[0] as HTMLInputElement;
+
+  const trnField = document.getElementsByName(
+    "TellerOperation/TRN"
+  )[0] as HTMLInputElement;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab" && viewTrnRef.current) {
+        // console.log(viewTrnRef.current, "viewTrnRef.current");
+        // viewTrnRef.current.focus();
+        trnField.focus();
+        // event.preventDefault();
+      }
+    };
+
+    if (textField) {
+      textField.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (textField) {
+        textField.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [textField, viewTrnRef]);
+  // useEffect(() => {
+  //   console.log(cardTabsReq, "cardTabsReq");
+  // }, [cardTabsReq]);
+
   return (
     <>
       <DailyTransTabs
@@ -533,19 +591,11 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox }}
+        formState={{ MessageBox: MessageBox, setCardDetails }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
-            // const res = await MessageBox({
-            //   messageTitle: "Denomination confirmation",
-            //   message: "Are you sure to open denomination",
-            //   //@ts-ignore
-            //   buttonNames: ["Table 1", "Table 2", "Cancle"],
-            //   defFocusBtnName: "Table 1",
-            //   loadingBtnName: ["Table 1", "Table 2"],
-            //   icon: "INFO",
-            // });
-
+            let event: any = { preventDefault: () => {} };
+            formRef?.current?.handleSubmit(event, "SAVE");
             if (denoTableType === "single") {
               const formattedDate = format(
                 parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
@@ -575,23 +625,7 @@ const TellerScreen = () => {
                 FLAG: "TABLE2",
               });
             }
-            let event: any = { preventDefault: () => {} };
-            formRef?.current?.handleSubmit(event, "SAVE");
-            const { dependentFieldsValues } = payload;
-            setCardTabsReq({
-              COMP_CD: authState?.companyID,
-              ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
-              ACCT_CD: dependentFieldsValues?.ACCT_CD?.value,
-              PARENT_TYPE:
-                dependentFieldsValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE,
-              BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-              SCREEN_REF: "ETRN/039",
-            });
           } else if (action === "TRN") {
-            // dispatch({
-            //   type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-            //   payload: false,
-            // });
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({
                   type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
@@ -615,58 +649,23 @@ const TellerScreen = () => {
               Boolean(payload?.carousalCardData.length)
             ) {
               setCardDetails(payload?.carousalCardData);
-              // dispatch({
-              //   type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-              //   payload: true,
-              // });
-              // if (!payload?.paddedAcctcode) {
-              //   setCardDetails([]);
-              // }
             }
-
-            // if (postData.RESTRICTION || postData.MESSAGE1) {
-            //   let acctValidateMsg = postData.RESTRICTION || postData.MESSAGE1;
-            //   dispatch({
-            //     type: SingleTableActionTypes?.SET_ACCTVALIDMSG_VAL,
-            //     payload: acctValidateMsg,
-            //   });
-            //   dispatch({
-            //     type: SingleTableActionTypes?.SET_ACCTVALIDMSGBOX_VAL,
-            //     payload: true,
-            //   });
-            // }
-            // if (
-            //   Boolean(data) &&
-            //   Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
-            //   Boolean(dependentFieldValues?.ACCT_TYPE?.value)
-            // ) {
-            //   if (!Boolean(postData.RESTRICTION)) {
-            //     getCarousalCards.mutate({
-            //       COMP_CD: authState?.companyID,
-            //       ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
-            //       ACCT_CD: data,
-            //       PARENT_TYPE:
-            //         dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
-            //           ?.PARENT_TYPE ?? "",
-            //     });
-            //   } else {
-            //     dispatch({
-            //       type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-            //       payload: false,
-            //     });
-            //   }
-            // }
-          } else if (action === "BRANCH_CD") {
-            // dispatch({
-            //   type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-            //   payload: false,
-            // });
-            // setCardDetails([]);
+            if (payload) {
+              // console.log(payload, "payload");
+              const { dependentFieldValues, paddedAcctcode } = payload;
+              setCardTabsReq({
+                COMP_CD: authState?.companyID,
+                ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                ACCT_CD: paddedAcctcode,
+                PARENT_TYPE:
+                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE,
+                PARENT_CODE:
+                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_CODE,
+                BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+                SCREEN_REF: "ETRN/039",
+              });
+            }
           } else if (action === "ACCT_TYPE") {
-            // dispatch({
-            //   type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-            //   payload: false,
-            // });
             setTabsDetails([]);
             setCardDetails([]);
             if (Boolean(payload?.currentField?.value)) {
@@ -680,6 +679,10 @@ const TellerScreen = () => {
                 reqData: tabApiReqPara,
               });
             }
+          } else if (action === "BRANCH_CD") {
+            // console.log("csdkjbnvcdiojv");
+            // setTabsDetails([]);
+            // setCardDetails([]);
           }
         }}
         ref={formRef}
@@ -697,27 +700,10 @@ const TellerScreen = () => {
               }}
               color={"primary"}
               disabled={false}
+              ref={viewTrnRef}
             >
               View Trn
             </GradientButton>
-            {/* {Boolean(state?.displayTable) ? (
-              <GradientButton
-                // ref={buttonRef}
-                style={{ marginRight: "5px" }}
-                onClick={(event) => {
-                  if (Boolean(endSubmitRef.current?.endSubmit)) {
-                    endSubmitRef.current?.endSubmit(true);
-                  }
-                  dispatch({
-                    type: SingleTableActionTypes?.SET_DISP_TABLE,
-                    payload: false,
-                  });
-                }}
-                color={"primary"}
-              >
-                Reset
-              </GradientButton>
-            ) : null} */}
           </>
         )}
       </FormWrapper>
@@ -790,50 +776,55 @@ const TellerScreen = () => {
           open={Boolean(state?.openDeno)}
         />
       ) : null} */}
-      <TellerDenoTable
-        displayTable={state?.displayTable}
-        data={data ?? []}
-        handleChange={handleChange}
-        inputValue={state?.inputVal}
-        amount={state?.amount}
-        availNotes={state?.availNote}
-        balance={state?.balance}
-        handleonBlur={handleonBlur}
-        noteCntTotal={state?.columnTotal?.inputVal}
-        amountTotal={state?.columnTotal?.amount}
-        availNoteTotal={state?.columnTotal?.availNote}
-        balanceTotal={state?.columnTotal?.balance}
-        remainExcessBal={state?.remainExcess}
-        finalLable={state?.remainExcess >= 0 ? "Remaining " : "Excess "}
-        onCloseTable={onCloseTable}
-        textFieldRef={textFieldRef}
-        // openAcctDtl={state?.openAcctDtl}
-        displayError={state?.displayError}
-        handleonFocus={handleonFocus}
-        gridLable={
-          state?.fieldsData?.TRN === "R"
-            ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
-            : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
-        }
-      />
+      {state?.displayTable ? (
+        <TellerDenoTable
+          displayTable={state?.displayTable}
+          data={data ?? []}
+          handleChange={handleChange}
+          inputValue={state?.inputVal}
+          amount={state?.amount}
+          availNotes={state?.availNote}
+          balance={state?.balance}
+          handleonBlur={handleonBlur}
+          noteCntTotal={state?.columnTotal?.inputVal}
+          amountTotal={state?.columnTotal?.amount}
+          availNoteTotal={state?.columnTotal?.availNote}
+          balanceTotal={state?.columnTotal?.balance}
+          remainExcessBal={state?.remainExcess}
+          finalLable={state?.remainExcess >= 0 ? "Remaining " : "Excess "}
+          onCloseTable={onCloseTable}
+          textFieldRef={textFieldRef}
+          // openAcctDtl={state?.openAcctDtl}
+          displayError={state?.displayError}
+          // handleonFocus={handleonFocus}
+          gridLable={
+            state?.fieldsData?.TRN === "R"
+              ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
+              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
+          }
+        />
+      ) : null}
+
       {/* <DualTableCalc data={data ?? []} /> */}
-      <DualTableCalc
-        // columnDefinitions={columnDefinitions}
-        // isLoading={false}
-        // formData={state?.fieldsData}
-        displayTableDual={state?.displayTableDual}
-        // openAcctDtl={state?.openAcctDtl}
-        formData={state?.fieldsData}
-        data={data ?? []}
-        isLoading={getData?.isLoading}
-        onCloseTable={onCloseTable}
-        gridLable={
-          state?.fieldsData?.TRN === "R"
-            ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
-            : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
-        }
-      />
-      {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null}
+      {state?.displayTableDual ? (
+        <DualTableCalc
+          // columnDefinitions={columnDefinitions}
+          // isLoading={false}
+          // formData={state?.fieldsData}
+          displayTableDual={state?.displayTableDual}
+          // openAcctDtl={state?.openAcctDtl}
+          formData={state?.fieldsData}
+          data={data ?? []}
+          isLoading={getData?.isLoading}
+          onCloseTable={onCloseTable}
+          gridLable={
+            state?.fieldsData?.TRN === "R"
+              ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
+              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
+          }
+        />
+      ) : null}
+      {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}
       {state?.viewAcctDetails ? (
         <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>
           <Report

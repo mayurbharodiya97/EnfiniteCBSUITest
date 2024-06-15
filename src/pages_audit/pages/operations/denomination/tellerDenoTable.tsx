@@ -1,84 +1,140 @@
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
+  AppBar,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Paper,
+  Slide,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableHead,
-  TableRow /*TextField*/,
-  Slide,
-  CircularProgress,
-  Tooltip,
-  Dialog,
-  LinearProgress,
+  TableRow,
+  Toolbar,
+  Typography,
   // TextField,
 } from "@mui/material";
-import { Typography } from "@mui/material";
-import * as API from "./api";
-import { useMutation } from "react-query";
-import { GradientButton } from "components/styledComponent/button";
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
-import { AuthContext } from "pages_audit/auth";
 import { useStyles, StyledTableCell } from "./style";
 import { TextField } from "components/styledComponent";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import {
-  FilterFormMetaType,
-  FormComponentView,
-} from "components/formcomponent";
-import {
-  DenominationScreenMetaData,
-  denoViewTrnGridMetaData,
-} from "./metadata";
-import { UpdateRequestDataVisibleColumn } from "components/utils";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import { Button } from "reactstrap";
-import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
-import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
-import { Alert } from "components/common/alert";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import { GradientButton } from "components/styledComponent/button";
+import { AccDetailContext } from "pages_audit/auth";
 
-const DenoTable = ({
+const TellerDenoTable = ({
   displayTable,
   data,
-  isDisableField,
-  inputVal,
   handleChange,
-  handleKeyPress,
-  updateTotalAmount,
   displayError,
-  multiplicationResult,
-  availNote,
+  inputValue,
+  amount,
+  availNotes,
   balance,
-  totalInputAmount,
-  totalAmount,
-  displayTotal,
-  upadatedFinalAmount,
+  handleonBlur,
+  noteCntTotal,
+  amountTotal,
+  availNoteTotal,
+  balanceTotal,
+  remainExcessBal,
+  finalLable,
+  onCloseTable,
+  textFieldRef,
+  // openAcctDtl,
+  // handleonFocus,
+  gridLable,
 }) => {
+  const fieldRef = useRef<any>([]);
   const classes = useStyles();
+  const inputRefs = useRef<any>({});
+  const [refsReady, setRefsReady] = useState(false);
   const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
+  // useEffect(() => {
+  //   inputValue = {};
+  //   amount = {};
+  // }, []);
+
+  const handleonFocus = (event, index) => {
+    const input = event.target;
+    if (input.value) {
+      input.select();
+    }
+  };
+  // console.log(displayTable, data, "weuweuwueywe");
+
+  // useEffect(() => {
+  //   console.log("ref<<222", fieldRef.current);
+  //   if (fieldRef.current && displayTable && data?.length > 0) {
+  //     console.log("ref<<", fieldRef.current["0"]?.firstChild?.firstChild);
+  //     console.log("Its 2 seconds over s");
+  //     fieldRef.current["0"]?.firstChild?.firstChild?.focus();
+  //   }
+  // }, [displayTable, data]);
+
+  useEffect(() => {
+    // console.log(inputRefs.current, "inputRefs.current5645454545");
+    if (Object.keys(inputRefs.current).length > 0) {
+      setRefsReady(true);
+    }
+  }, [data]); // Assuming 'data' influences the number of TextFields
+
+  useEffect(() => {
+    if (refsReady) {
+      inputRefs?.current["0"].focus();
+    }
+  }, [refsReady, displayTable, data]);
+
   return (
-    <>
-      {displayTable && data && isDisableField ? (
-        <Slide direction="left" in={displayTable} mountOnEnter unmountOnExit>
+    // <Slide direction="left" in={displayTable} mountOnEnterx unmountOnExit>
+    <Dialog open={displayTable && data?.length > 0} maxWidth={"xl"}>
+      <AppBar
+        position="static"
+        sx={{
+          height: "auto",
+          background: "var(--theme-color5)",
+          margin: "10px",
+          width: "auto",
+        }}
+      >
+        <Toolbar>
+          <Typography
+            variant="h6"
+            style={{ flexGrow: 1 }}
+            sx={{
+              fontWeight: 700,
+              color: "var(--theme-color2)",
+              fontSize: "1rem",
+            }}
+          >
+            {gridLable}
+          </Typography>
+          <GradientButton
+            onClick={() => onCloseTable(false, "TABLE1")}
+            color="primary"
+            disabled={false}
+          >
+            Close
+          </GradientButton>
+        </Toolbar>
+      </AppBar>
+      <DialogContent sx={{ padding: "0px" }}>
+        <Paper
+          sx={{
+            boxShadow: "none",
+            borderRadius: "0px",
+            margin: "0 10px",
+            paddingBottom: "6px",
+          }}
+        >
           <Box
-            borderRadius={"10px"}
+            borderRadius={"none"}
             boxShadow={"rgba(226, 236, 249, 0.5) 0px 11px 70px"}
             overflow={"hidden"}
             style={{ transform: "scale(90deg)" }}
@@ -86,11 +142,13 @@ const DenoTable = ({
             <TableContainer
               sx={{
                 width: "auto",
+                overflow: "auto",
+                maxHeight: "calc(100vh - 200px)",
               }}
               component={Paper}
             >
               <Table
-                sx={{ minWidth: 650 }}
+                sx={{ minWidth: 650, borderCollapse: "unset !important" }}
                 aria-label="simple table"
                 className={classes.tableBordered}
               >
@@ -137,7 +195,7 @@ const DenoTable = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.map((row, index) => {
+                  {data?.map((row: any, index: any) => {
                     return (
                       <TableRow key={index}>
                         <StyledTableCell
@@ -145,19 +203,13 @@ const DenoTable = ({
                           scope="row"
                           className="cellBordered"
                         >
-                          {formatCurrency(
-                            parseFloat(row.NOTE),
-                            getCurrencySymbol(dynamicAmountSymbol),
-                            currencyFormat,
-                            decimalCount
-                          )}
+                          {row.DENO_LABLE}
                         </StyledTableCell>
                         <StyledTableCell
                           align="left"
                           sx={{
                             borderRight: "1px solid var(--theme-color6)",
                             borderLeft: "1px solid var(--theme-color6)",
-                            backgroundColor: "var(--theme-color4)",
                             maxWidth: "167px",
                           }}
                           tabIndex={index + 2}
@@ -166,30 +218,49 @@ const DenoTable = ({
                           <TextField
                             classes={{ root: classes.leftTextAlign }}
                             placeholder={"Enter value"}
-                            value={inputVal[index] || ""}
-                            onChange={(event) =>
-                              handleChange(event.target.value, index)
-                            }
-                            onKeyDown={(event) => {
-                              handleKeyPress(event, index);
-                            }}
-                            onBlur={(event) => updateTotalAmount(event, index)}
+                            value={inputValue[index] || ""}
+                            onChange={(event) => handleChange(event, index)}
+                            // onKeyDown={(event) => {
+                            //   handleKeyPress(event, index);
+                            // }}
+                            onFocus={(event) => handleonFocus(event, index)}
+                            // inputRef={textFieldRef}
+                            onBlur={(event) => handleonBlur(event, index)}
                             helperText={displayError[index] || ""}
+                            error={Boolean(displayError[index])}
                             type={"text"}
                             InputProps={{
                               style: { textAlign: "left" },
                             }}
                             tabIndex={index + 2}
                             sx={{ width: "-webkit-fill-available" }}
-                            autoFocus={
-                              displayTable && data && index === 0 ? true : false
-                            }
+                            // autoFocus={displayTable && data && index === 0}
+                            // ref={(input) => {
+                            //   fieldRef.current[index] = input;
+                            // }}
+                            // ref={(input) => {
+                            //   console.log(input, "inputssssssss");
+                            //   fieldRef.current = {
+                            //     ...fieldRef.current,
+                            //     [index]: input,
+                            //   };
+                            // }}
+                            // onFocus={() => handleonFocus(index)}
+                            inputRef={(input) => {
+                              if (input) {
+                                inputRefs.current[index] = input;
+                                if (index === data.length - 1) {
+                                  // Check if the last input is set
+                                  setRefsReady(true);
+                                }
+                              }
+                            }}
                           />
                         </StyledTableCell>
                         <StyledTableCell align="right" className="cellBordered">
                           {" "}
                           {formatCurrency(
-                            parseFloat(multiplicationResult[index] || "0"),
+                            parseFloat(amount[index] || "0"),
                             getCurrencySymbol(dynamicAmountSymbol),
                             currencyFormat,
                             decimalCount
@@ -199,17 +270,11 @@ const DenoTable = ({
                           align="right"
                           // className="cellBordered"
                         >
-                          {availNote && availNote[index] !== undefined
-                            ? availNote[index]
-                            : availNote}
+                          {row?.AVAIL_QTY}
                         </StyledTableCell>
                         <StyledTableCell align="right" className="cellBordered">
                           {formatCurrency(
-                            parseFloat(
-                              balance && balance[index] !== undefined
-                                ? balance[index]
-                                : balance
-                            ),
+                            parseFloat(row?.AVAIL_VAL),
                             getCurrencySymbol(dynamicAmountSymbol),
                             currencyFormat,
                             decimalCount
@@ -220,7 +285,14 @@ const DenoTable = ({
                   })}
                 </TableBody>
                 <TableBody>
-                  <TableRow sx={{ height: "43px" }}>
+                  <TableRow
+                    sx={{
+                      height: "32px",
+                      position: "sticky",
+                      bottom: 0,
+                      background: "var(--theme-color4)",
+                    }}
+                  >
                     <StyledTableCell
                       component="th"
                       scope="row"
@@ -233,7 +305,6 @@ const DenoTable = ({
                     <StyledTableCell
                       align="left"
                       sx={{
-                        backgroundColor: "var(--theme-color4)",
                         maxWidth: "167px",
                         padding: "4px 17px !important",
                         fontWeight: "bold",
@@ -241,7 +312,7 @@ const DenoTable = ({
                       }}
                       className="cellBordered"
                     >
-                      {totalInputAmount}
+                      {noteCntTotal}
                     </StyledTableCell>
                     <StyledTableCell
                       align="right"
@@ -249,7 +320,7 @@ const DenoTable = ({
                       sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     >
                       {formatCurrency(
-                        parseFloat(totalAmount),
+                        parseFloat(amountTotal),
                         getCurrencySymbol(dynamicAmountSymbol),
                         currencyFormat,
                         decimalCount
@@ -260,7 +331,7 @@ const DenoTable = ({
                       className="cellBordered"
                       sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     >
-                      {displayTotal?.AVAIL_NOTE}
+                      {availNoteTotal}
                     </StyledTableCell>
                     <StyledTableCell
                       align="right"
@@ -268,7 +339,7 @@ const DenoTable = ({
                       sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     >
                       {formatCurrency(
-                        parseFloat(displayTotal?.TOTAL_AMNT),
+                        parseFloat(balanceTotal),
                         getCurrencySymbol(dynamicAmountSymbol),
                         currencyFormat,
                         decimalCount
@@ -283,22 +354,25 @@ const DenoTable = ({
                 height: "auto",
                 width: "auto",
                 padding: "2px 8px",
-                borderBottom: "2px solid var(--theme-color6)",
-                borderLeft: "2px solid var(--theme-color6)",
-                borderRight: "2px solid var(--theme-color6)",
-                borderBottomLeftRadius: "10px",
-                borderBottomRightRadius: "10px",
+                borderBottom: "1px solid var(--theme-color6)",
+                borderLeft: "1px solid var(--theme-color6)",
+                borderRight: "1px solid var(--theme-color6)",
+                borderBottomLeftRadius: "none",
+                borderBottomRightRadius: "none",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
+                position: "sticky",
+                bottom: 0,
+                background: "var(--theme-color4)",
               }}
             >
               <Typography
                 variant="body1"
                 sx={{
-                  backgroundColor: "var(--theme-color2)",
                   padding: "10px 0px",
                   display: "flex",
+                  background: "var(--theme-color4)",
                 }}
               >
                 <Typography
@@ -306,14 +380,12 @@ const DenoTable = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {" "}
-                  {upadatedFinalAmount >= 0 ? "Remaining " : "Excess "} {": "}
+                  {`${finalLable} :`}
                 </Typography>
                 <Typography sx={{ fontWeight: "bold" }}>
+                  {/* {remainExcessBal} */}
                   {formatCurrency(
-                    parseFloat(
-                      !isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0
-                    ),
+                    parseFloat(remainExcessBal),
                     getCurrencySymbol(dynamicAmountSymbol),
                     currencyFormat,
                     decimalCount
@@ -322,10 +394,11 @@ const DenoTable = ({
               </Typography>
             </Paper>{" "}
           </Box>
-        </Slide>
-      ) : null}
-    </>
+        </Paper>
+      </DialogContent>
+    </Dialog>
+    // </Slide>
   );
 };
 
-export default DenoTable;
+export default TellerDenoTable;
