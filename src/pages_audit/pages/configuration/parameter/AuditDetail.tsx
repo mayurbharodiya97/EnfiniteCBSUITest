@@ -19,12 +19,13 @@ const actions: ActionTypes[] = [
 ];
  const AuditDetail = ({ open, onClose, rowsData}) => {
   const { getEntries } = useContext(ClearCacheContext);
+  const {authState}= useContext(AuthContext)
     const navigate = useNavigate();
     const { data, isLoading, isFetching,} = useQuery<any, any>(
         ["getParaAuditHistory"],
         () => API.getParaAuditHistory({
             para_cd:rowsData?.PARA_CD,
-            comp_cd:rowsData?.COMP_CD,
+            comp_cd:authState?.companyID,
             branch_cd:rowsData?.BRANCH_CD,
         })
       );
