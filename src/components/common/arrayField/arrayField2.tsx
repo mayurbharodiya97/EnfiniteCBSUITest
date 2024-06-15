@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useContext,
+  useEffect,
 } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -120,6 +121,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   const classes = useStyles();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [dialogMsg, setDialogMsg] = useState("");
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   let metaData = { form: {}, fields: currentFieldsMeta } as MetaDataType;
   const transformedMetaData = useRef<MetaDataType | null>(null);
   if (transformedMetaData.current === null) {
@@ -245,6 +247,9 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         displayCountName={displayCountName}
         isScreenStyle={isScreenStyle}
         isRemoveButton={isRemoveButton}
+        getAllRowsValues={getAllRowsValues}
+        selectedRowIndex={selectedRowIndex}
+        setSelectedRowIndex={setSelectedRowIndex}
       />
     );
   });
@@ -286,6 +291,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           style={{
             paddingBottom: "0px",
             paddingTop: "0px",
+            marginBottom: "16px",
           }}
         >
           <Grid
@@ -360,6 +366,9 @@ export const ArrayFieldRow = ({
   displayCountName,
   isScreenStyle,
   isRemoveButton,
+  getAllRowsValues,
+  selectedRowIndex,
+  setSelectedRowIndex,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -437,6 +446,39 @@ export const ArrayFieldRow = ({
   } else {
     finalClass = classes.arrayRowContainer;
   }
+
+  const handleWrapperClick = () => {
+    setSelectedRowIndex(rowIndex);
+    const allRowsValues = getAllRowsValues();
+
+    // Create an array to store the keys needed to access the value in allRowsValues
+    const getFieldValue = (fieldName) => {
+      const parts = fieldName.replace(/\]/g, "").split(/\[|\./);
+      let value = allRowsValues;
+
+      parts.forEach((part) => {
+        if (value && part in value) {
+          value = value[part];
+        } else {
+          value = undefined;
+        }
+      });
+
+      return value;
+    };
+
+    const wrapperData = Object.keys(row.cells).reduce((acc, key) => {
+      const fieldName = row.cells[key].name;
+
+      // Extract the value of the field from allRowsValues
+      const fieldValue = getFieldValue(fieldName);
+      acc[key] = fieldValue;
+      return acc;
+    }, {});
+    if (typeof formState?.onArrayFieldRowClickHandle === "function") {
+      formState?.onArrayFieldRowClickHandle(wrapperData);
+    }
+  };
   return (
     <Fragment key={row.fieldIndexKey}>
       {Boolean(isDisplayCount) ? (
@@ -470,27 +512,36 @@ export const ArrayFieldRow = ({
           )}
         </>
       ) : null}
-      <Grid
-        container
-        item
-        xs={12}
-        md={12}
-        sm={12}
-        spacing={1}
-        className={finalClass}
+      <div
+        onClick={formState?.onArrayFieldRowClickHandle && handleWrapperClick}
+        className={
+          selectedRowIndex === rowIndex
+            ? classes?.arrayFieldSelected
+            : classes?.arrayFieldUnselected
+        }
       >
-        {oneRow}
-        {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
-        Boolean(isRemoveButton) ? (
-          <IconButton
-            onClick={dialogOpen}
-            className={classes.arrayRowRemoveBtn}
-            disabled={isSubmitting}
-          >
-            <RemoveCircleOutlineIcon />
-          </IconButton>
-        ) : null}
-      </Grid>
+        <Grid
+          container
+          item
+          xs={12}
+          md={12}
+          sm={12}
+          spacing={1}
+          className={finalClass}
+        >
+          {oneRow}
+          {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
+          Boolean(isRemoveButton) ? (
+            <IconButton
+              onClick={dialogOpen}
+              className={classes.arrayRowRemoveBtn}
+              disabled={isSubmitting}
+            >
+              <RemoveCircleOutlineIcon />
+            </IconButton>
+          ) : null}
+        </Grid>
+      </div>
       {fixedRows && rowIndex + 1 < totalRows ? (
         <Divider
           sx={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%" }}

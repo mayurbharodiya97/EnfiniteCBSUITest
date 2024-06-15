@@ -675,6 +675,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATECHQDATE",
     packageName: "",
   },
+  VALIDATECONFRIMEDDATA: {
+    url: "/transactionServiceAPI/VALIDATECONFRIMEDDATA",
+    packageName: "",
+  },
+  VALIDATECREDITDEBITAMT: {
+    url: "/transactionServiceAPI/VALIDATECREDITDEBITAMT",
+    packageName: "",
+  },
   GETDAILYTRNLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
