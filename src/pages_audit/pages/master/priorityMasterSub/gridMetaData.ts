@@ -22,10 +22,21 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: true,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
+    {
+      accessor: "Sr_No",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 60,
+      minWidth: 50,
+      maxWidth: 100,
+      isAutoSequence:true
+    },
     {
       accessor: "SUB_PRIORITY_CD",
       columnName: "Code",
@@ -39,7 +50,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
     {
       accessor: "PARENT_WEAKER_NM",
       columnName: "ParentWeaker",
-      sequence: 4,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 300,
@@ -49,7 +60,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
     {
       accessor: "DESCRIPTION",
       columnName: "Description",
-      sequence: 5,
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 300,

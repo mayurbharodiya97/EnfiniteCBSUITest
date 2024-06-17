@@ -72,7 +72,7 @@ export const AreaMasterMetaData = {
     {
       render: { componentType: "numberFormat" },
       name: "PIN_CODE",
-      label: "Pin Code",
+      label: "PinCode",
       placeholder: "Pin Code",
       require:false,
       GridProps: {  xs: 12, sm: 3, md: 3, lg: 3, xl:3 },
@@ -89,7 +89,7 @@ export const AreaMasterMetaData = {
     {
       render: { componentType: "autocomplete" },
       name: "PARENT_AREA",
-      label: "Parent Area",
+      label: "ParentArea",
       options: API.GETAREAMSTPARENTDDW,
       __VIEW__: { isReadOnly: true },
       _optionsKey: "getAreaMstParentddw",

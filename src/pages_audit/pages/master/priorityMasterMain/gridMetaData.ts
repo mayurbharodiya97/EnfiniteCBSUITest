@@ -23,14 +23,14 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: true,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
     {
       accessor: "PRIORITY_CD",
       columnName: "Code",
-      sequence: 2,
+      sequence: 1,
       alignment: "left",
       componentType: "default",
       width: 100,
@@ -68,7 +68,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "FROM_LIMIT",
+      accessor: "FROMLIMIT",
       columnName: "SanctionFromLimit",
       sequence: 6,
       alignment: "right",
@@ -78,7 +78,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "TO_LIMIT",
+      accessor: "TOLIMIT",
       columnName: "SanctionToLimit",
       sequence: 7,
       alignment: "right",

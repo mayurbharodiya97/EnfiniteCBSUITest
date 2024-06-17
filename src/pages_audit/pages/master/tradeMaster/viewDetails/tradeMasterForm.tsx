@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
 import { InitialValuesType, SubmitFnType } from "packages/form";
@@ -11,6 +11,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoadingTextAnimation } from "components/common/loader";
 
 
 const TradeMasterForm = ({
@@ -24,6 +25,7 @@ const TradeMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   const mutation = useMutation(API.updateTradeMasterData,
     {
@@ -99,9 +101,15 @@ const TradeMasterForm = ({
       }
     }
   };
-
+  useEffect(() => {
+    if (gridData.length > 0) {
+      setIsLoading(false);
+    }
+  }, [gridData]);
   return (
     <>
+    {isLoading ? ( <LoadingTextAnimation/>
+      ) : (
       <FormWrapper
         key={"TradeMasterForm" + formMode}
         metaData={
@@ -122,6 +130,10 @@ const TradeMasterForm = ({
         }
         formStyle={{
           background: "white",
+        }}
+        formState={{
+          gridData: gridData,
+          rows: rows?.[0]?.data,
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
@@ -181,6 +193,7 @@ const TradeMasterForm = ({
           </>
         )}
       </FormWrapper>
+      )}
     </>
   );
 };
@@ -189,18 +202,18 @@ export const TradeMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData
 }) => {
   return (
     <Dialog
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      maxWidth="md"
     >
       <TradeMasterForm
         closeDialog={closeDialog}

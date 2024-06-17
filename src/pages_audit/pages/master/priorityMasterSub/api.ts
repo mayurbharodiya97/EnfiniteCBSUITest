@@ -30,11 +30,11 @@ export const getPriorityMasterSubData = async ({ companyID, branchCode }) => {
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ DISPLAY_VALUE, DATA_VALUE,...other}) => {
+          ({ DISPLAY_NM, DATA_VALUE,...other}) => {
             return {
               ...other,
               value: DATA_VALUE,
-              label: DISPLAY_VALUE,
+              label: DISPLAY_NM,
             };
           }
         );

@@ -134,6 +134,7 @@ const Prioritymastersub = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               defaultView={"add"}
+              gridData={data}
             />
           }
         />
@@ -144,6 +145,7 @@ const Prioritymastersub = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />

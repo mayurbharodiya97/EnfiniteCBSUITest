@@ -1,5 +1,5 @@
 import { Dialog } from "@mui/material";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
@@ -11,18 +11,20 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoadingTextAnimation } from "components/common/loader";
 
 export const Proritysubform = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  data: reqData,
+  gridData = [],
 }) => {
   const { authState } = useContext(AuthContext);
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-
+  const {state : rows} = useLocation()
+  const [isLoading, setIsLoading] = useState(true);
 
   const mutation = useMutation((API.updatePriorityMasterSubData),
     {
@@ -55,14 +57,17 @@ export const Proritysubform = ({
     
     endSubmit(true);
 
-    let oldData = reqData?.[0]?.data;
-    let newData = data;
-
+    let oldData = {
+      ...rows?.[0]?.data,
+    };
+    let newData = {
+      ...data,
+    };
     let updatedValue: any = utilFunction.transformDetailsData(
       newData,
       oldData ?? {}
-    );
-
+    ); 
+    
     isErrorFuncRef.current = {
       data: {
         ...newData,
@@ -91,16 +96,27 @@ export const Proritysubform = ({
       }
     }
   };
+  useEffect(() => {
+    if (gridData.length > 0) {
+      setIsLoading(false);
+    }
+  }, [gridData]);
   return (
     <>
+    {isLoading ? ( <LoadingTextAnimation/>
+      ) : (
       <FormWrapper
         key={"prioritymastersubformmetadata" + formMode}
-        metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as GridMetaDataType
+        metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as MetaDataType
         displayMode={formMode}
         onSubmitHandler={onSubmitHandler}
-        initialValues={reqData?.[0]?.data ?? {}}
+        initialValues={{...rows?.[0]?.data}}
         formStyle={{
           background: "white",
+        }}
+        formState={{
+          gridData: gridData,
+          rows: rows?.[0]?.data,
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
@@ -158,12 +174,13 @@ export const Proritysubform = ({
           </>
         )}
       </FormWrapper>
+      )}
     </>
+      
   );
 };
 
-export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView }) => {
-  const { state: data }: any = useLocation();
+export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView, gridData = []}) => {
   return (
     <Dialog
       open={true}
@@ -179,7 +196,7 @@ export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, def
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         defaultView={defaultView}
-        data={data} />
+        gridData={gridData} />
     </Dialog>
   );
 };

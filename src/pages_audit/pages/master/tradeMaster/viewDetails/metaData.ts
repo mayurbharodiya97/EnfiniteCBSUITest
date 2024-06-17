@@ -68,12 +68,40 @@ export const TradeMasterMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Description is Required"] }],
       },
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       GridProps: {  xs: 12, sm: 12, md: 12, lg: 12, xl:12 },
     },
     {
       render: { componentType: "autocomplete" },
-      name: "CKYC_OCCUPATION_NM",
-      label: "C-KYC Group", 
+      name: "CKYC_OCCUPATION",
+      label: "CKYCGroup", 
       options:()=> API.getPMISCData("CKYC_OCCUPATION"),
       _optionsKey: "getDataForCkycGroup",
       __VIEW__: { isReadOnly: true },

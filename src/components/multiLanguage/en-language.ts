@@ -12,6 +12,9 @@ export const en_language_data = {
   CKYCGroup:"C-KYC Group",
   Constitution:"Constitution",
   PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
+  
   //
   Delete: "Remove",
   Loading: "Loading..",

@@ -23,10 +23,21 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: true,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
+    {
+      accessor: "Sr_No",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 60,
+      minWidth: 50,
+      maxWidth: 100,
+      isAutoSequence:true
+    },
     {
       accessor: "TRADE_CD",
       columnName: "Code",
@@ -40,7 +51,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
     {
       accessor: "TRADE_NM",
       columnName: "Description",
-      sequence: 4,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 300,
@@ -50,7 +61,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
     {
       accessor: "CKYC_OCCUPATION_NM",
       columnName: "CKYCGroup",
-      sequence: 5,
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 300,

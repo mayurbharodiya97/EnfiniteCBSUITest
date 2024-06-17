@@ -56,45 +56,48 @@ const AreaMasterForm = ({
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 
 
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData: any,
-    endSubmit,
-    setFieldError
-  ) => {
-    endSubmit(true);
-
-    let newData = {
-      ...data,
-    };
-    let oldData = {
-      ...rows?.[0]?.data,
-    };
-    let upd = utilFunction.transformDetailsData(newData, oldData);
-
-
-    const duplicateItem = gridData.find((item: any) => {
-      return (
-        item.AREA_NM === newData.AREA_NM &&
-        item.PIN_CODE === newData.PIN_CODE 
-      );
-    });
+    const onSubmitHandler: SubmitFnType = async (
+      data: any,
+      displayData: any,
+      endSubmit,
+      setFieldError
+    ) => {
+      endSubmit(true);
     
-if(upd._UPDATEDCOLUMNS.length > 0){
-    if (duplicateItem) {
-      //@ts-ignore
-      const duplicateIndex = gridData.indexOf(duplicateItem);
-      //@ts-ignore
-      const errorMessage = `Area & Pin Code already entered at row-${duplicateIndex + 1} - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
-      await MessageBox({
-        message: errorMessage,
-        messageTitle: "Alert",
-        buttonNames: ["Ok"],
+      let newData = {
+        ...data,
+      };
+    
+      let oldData = {
+        ...rows?.[0]?.data,
+      };
+    
+      let upd = utilFunction.transformDetailsData(newData, oldData);
+      const currentRowId = rows?.[0]?.data?.AREA_CD; 
+      const duplicateItem = gridData.find((item: any) => {
+        if (item.AREA_CD === currentRowId) {
+          return false;
+        }
+        return (
+          item.AREA_NM === newData.AREA_NM &&
+          item.PIN_CODE === newData.PIN_CODE
+        );
       });
-      return;
-    } }
-
-
+    
+      if (upd._UPDATEDCOLUMNS.length > 0) {
+        if (duplicateItem) {
+          const duplicateIndex = gridData.indexOf(duplicateItem);
+          //@ts-ignore
+          const errorMessage = `Area & Pin Code already entered at Sr No - ${duplicateIndex + 1} - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
+          await MessageBox({
+            message: errorMessage,
+            messageTitle: "Alert",
+            buttonNames: ["Ok"],
+          });
+          return;
+        }
+      }
+    
       isErrorFuncRef.current = {
         data: {
           ...newData,
@@ -107,7 +110,7 @@ if(upd._UPDATEDCOLUMNS.length > 0){
         endSubmit,
         setFieldError,
       };
-  
+    
       if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
         setFormMode("view");
       } else {
@@ -119,13 +122,14 @@ if(upd._UPDATEDCOLUMNS.length > 0){
         });
         if (btnName === "Yes") {
           mutation.mutate({
-           data: { ...isErrorFuncRef.current?.data },
-         });
+            data: { ...isErrorFuncRef.current?.data },
+          });
         }
       }
-      
-  };
-
+    };
+    
+    
+    
 
   return (
     <>
