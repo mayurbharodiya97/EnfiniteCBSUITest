@@ -23,6 +23,11 @@ export const getInstructionList = async (reqData) => {
     responseData.map((a, i) => {
       a.index = i;
       a.sr = i + 1;
+      if (a?.TYPE_CD == "1" || a?.TYPE_CD == "2" || a?.TYPE_CD == "3") {
+        a.type1 = "credit";
+      } else {
+        a.type1 = "debit";
+      }
     });
     return responseData;
   } else {

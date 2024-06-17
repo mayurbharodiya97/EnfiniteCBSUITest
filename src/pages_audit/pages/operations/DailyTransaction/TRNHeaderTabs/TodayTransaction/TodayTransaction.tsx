@@ -1,9 +1,11 @@
 import { Fragment, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TodayTransGridMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
+// import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { Alert } from "components/common/alert";
-import { GridMetaDataType } from "components/dataTable/types";
+// import { GridMetaDataType } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";

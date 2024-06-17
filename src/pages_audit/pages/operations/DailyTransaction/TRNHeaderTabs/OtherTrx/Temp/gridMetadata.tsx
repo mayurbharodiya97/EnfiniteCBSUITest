@@ -36,13 +36,6 @@ export const TempGridMetaData: GridMetaDataType = {
       minWidth: 50,
     },
     {
-      columnName: "A/C P",
-      accessor: "2",
-      sequence: 2,
-      componentType: "default",
-      width: 80,
-    },
-    {
       columnName: "From Eff. Date",
       accessor: "3",
       sequence: 3,
@@ -76,6 +69,27 @@ export const TempGridMetaData: GridMetaDataType = {
       sequence: 7,
       componentType: "default",
       width: 80,
+    },
+    {
+      columnName: "Entered By",
+      accessor: "ENTERED_BY",
+      sequence: 8,
+      componentType: "default",
+      width: 80,
+    },
+    {
+      columnName: "Confirmed",
+      accessor: "CONFIRMED",
+      sequence: 9,
+      componentType: "default",
+      width: 80,
+    },
+    {
+      columnName: "Last Machine Name",
+      accessor: "LAST_MACHINE_NM",
+      sequence: 10,
+      componentType: "default",
+      width: 100,
     },
   ],
 };

@@ -25,7 +25,6 @@ export const StockGridMetaData: GridMetaDataType = {
     allowRowSelection: true,
     hideHeader: false,
     isCusrsorFocused: true,
-
   },
   filters: [],
   columns: [
@@ -49,7 +48,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Stock Till Date",
-      accessor: "ASON_DT", //
+      accessor: "WITHDRAW_DT",
       sequence: 3,
       componentType: "date",
       isVisible: true,
@@ -92,6 +91,7 @@ export const StockGridMetaData: GridMetaDataType = {
       sequence: 7,
       componentType: "default",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Entered Dt",
@@ -111,14 +111,14 @@ export const StockGridMetaData: GridMetaDataType = {
       dateFormat: "dd/MM/yyyy",
       width: 120,
     },
-    // {
-    //   columnName: "Max Ason Dt",
-    //   accessor: "ASON_DT",
-    //   sequence: 10,
-    //   componentType: "date",
-    //   isVisible: true,
-    //   dateFormat: "dd/MM/yyyy",
-    //   width: 120,
-    // },
+    {
+      columnName: "Max Ason Dt",
+      accessor: "ASON_DT",
+      sequence: 10,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 120,
+    },
   ],
 };
