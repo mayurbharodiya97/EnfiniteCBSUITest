@@ -71,10 +71,14 @@ export const PopupRequestWrapper = ({
           sx={{
             // paddingTop: "1rem !important",
             // paddingBottom: "2rem !important",
-            paddingLeft: "10px",
+            // paddingLeft: "10px",
             display: "flex",
-            // alignItems: "center",
-            gap: "0.5rem",
+            alignItems: "center",
+            // gap: "0.5rem",
+            minHeight: "45px",
+            padding: "0px",
+            margin: "10px",
+            // maxHeight: "65px",
           }}
         >
           <Box style={{ position: "fixed" }}>
@@ -121,8 +125,8 @@ export const PopupRequestWrapper = ({
               style={{
                 color: "black",
                 whiteSpace: "pre-wrap",
-                marginLeft: "3rem",
-                paddingTop: "0.6rem",
+                marginLeft: "3.3rem",
+                maxHeight: "60vh",
               }}
             >
               {Message.startsWith("\n") ? t(Message?.slice(1)) : t(Message)}

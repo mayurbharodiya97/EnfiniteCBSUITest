@@ -4,7 +4,7 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { limitconfirmFormMetaData } from "./confirmFormMetadata";
 import { useMutation } from "react-query";
-import { limitConfirm } from "../api";
+import { crudLimitEntryData, limitConfirm } from "../api";
 import { queryClient } from "cache";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
@@ -46,7 +46,27 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
       }
     },
   });
-
+  const crudLimitData: any = useMutation(
+    "crudLimitEntryData",
+    crudLimitEntryData,
+    {
+      onSuccess: () => {
+        enqueueSnackbar(t("DataRejectMessage"), { variant: "success" });
+        closeDialog();
+        CloseMessageBox();
+        setDeletePopup(false);
+        result.mutate({
+          screenFlag: "limitCFM",
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        });
+      },
+      onError: () => {
+        CloseMessageBox();
+        setDeletePopup(false);
+      },
+    }
+  );
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["limitConfirm"]);
@@ -78,16 +98,24 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
       }}
     >
       <>
-        {limitCfm.isError && (
+        {limitCfm.isError || crudLimitData?.isError ? (
           <AppBar position="relative" color="primary">
             <Alert
               severity="error"
-              errorMsg={limitCfm?.error?.error_msg ?? "Unknow Error"}
-              errorDetail={limitCfm?.error?.error_detail ?? ""}
+              errorMsg={
+                limitCfm?.error?.error_msg ??
+                crudLimitData?.error?.error_msg ??
+                "Unknow Error"
+              }
+              errorDetail={
+                limitCfm?.error?.error_detail ??
+                crudLimitData?.error?.error_detail ??
+                ""
+              }
               color="error"
             />
           </AppBar>
-        )}
+        ) : null}
         <FormWrapper
           key={"limit-confirmation-Form"}
           metaData={limitconfirmFormMetaData}
@@ -118,10 +146,9 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                       limitCfm.mutate({
                         IS_CONFIMED: true,
                         COMP_CD: authState?.companyID,
-                        FLAG: rows?.[0]?.data?.STATUS_FLAG,
                         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
                         TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+                        STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
                       });
                     }
                   }}
@@ -151,17 +178,12 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
           label={"RemovalRemarks"}
           onActionNo={() => setDeletePopup(false)}
           onActionYes={(val, rows) => {
-            limitCfm.mutate({
-              IS_CONFIMED: false,
-              FLAG: rows?.STATUS_FLAG,
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: rows?.BRANCH_CD,
-              TRAN_CD: rows?.TRAN_CD,
-              ENTERED_BY: rows?.ENTERED_BY,
-              ACCT_TYPE: rows?.ACCT_TYPE,
-              ACCT_CD: rows?.ACCT_CD,
-              LIMIT_AMOUNT: rows?.LIMIT_AMOUNT,
-              CONFIRMED: "N",
+            let ApiReq = {
+              BRANCH_CD: rows.BRANCH_CD,
+              TRAN_CD: rows.TRAN_CD,
+              ACCT_TYPE: rows.ACCT_TYPE,
+              ACCT_CD: rows.ACCT_CD,
+              LIMIT_AMOUNT: rows.LIMIT_AMOUNT,
               ACTIVITY_TYPE: "LIMIT CONFIRMATION",
               TRAN_DT: rows?.TRAN_DT
                 ? format(new Date(rows?.TRAN_DT), "dd-MMM-yyyy")
@@ -169,12 +191,29 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
               USER_DEF_REMARKS: val
                 ? val
                 : "WRONG ENTRY FROM LIMIT CONFIRMATION (TRN/048) ",
-              FORCE_EXP_DT: rows?.FORCE_EXP_DT
-                ? format(new Date(rows?.FORCE_EXP_DT), "dd-MMM-yyyy")
-                : "",
-            });
+              CONFIRMED: rows.CONFIRMED,
+              ENTERED_BY: rows.ENTERED_BY,
+            };
+            if (rows.STATUS_FLAG === "A") {
+              crudLimitData.mutate({
+                ...ApiReq,
+                _isNewRow: false,
+                _isDeleteRow: true,
+              });
+            } else if (rows.STATUS_FLAG === "E") {
+              limitCfm.mutate({
+                ...ApiReq,
+                IS_CONFIMED: false,
+                STATUS_FLAG: rows?.STATUS_FLAG,
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: rows?.BRANCH_CD,
+                FORCE_EXP_DT: rows?.FORCE_EXP_DT
+                  ? format(new Date(rows?.FORCE_EXP_DT), "dd-MMM-yyyy")
+                  : "",
+              });
+            }
           }}
-          isLoading={limitCfm?.isLoading}
+          isLoading={limitCfm?.isLoading || crudLimitData?.isLoading}
           isEntertoSubmit={true}
           AcceptbuttonLabelText="Ok"
           CanceltbuttonLabelText="Cancel"

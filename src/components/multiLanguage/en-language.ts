@@ -1,3 +1,5 @@
+import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
+
 export const en_language_data = {
   Delete: "Remove",
   Loading: "Loading..",
@@ -612,11 +614,13 @@ export const en_language_data = {
   DepositeDate: "Deposite Date",
   CertificateNumber: "Cetificate No.",
   CollateralName: "Collateral Name",
+  EnterCollateralName: "Enter Collateral Name",
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
+  Period: "Period",
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
@@ -632,6 +636,10 @@ export const en_language_data = {
   OtherDescription: "Other Description",
   ExpiredFlag: "Expired Flag",
   ResolutionNumber: "Resolution Number",
+  SecurityDetail: "Security Detail",
+  SecurityType: "Security Type",
+  CollateralRemarks: "Collateral Remarks",
+  AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
 
   // stop payment
 
@@ -693,6 +701,7 @@ export const en_language_data = {
   LimitAmount: "LimitAmount",
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
+  AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
 
   // Lien Entry
 
@@ -734,11 +743,13 @@ export const en_language_data = {
   Flag: "Flag",
   Submit: "Submit",
   ValidTillDate: "Valid Till Date",
-  TemporaryODTodayDetail: "Temporary-OD Today Detail",
+  TemporaryODTodayDetail: "Temporary-OD Today(s) Detail",
   CodeDecription: "Code Decription",
   ForceExpDate: "Force Exp Date",
   ForceExpBy: "Force Exp By",
-  TemporaryODHistory: "Temporary-OD History",
+  TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  TempODAgainstConfirmation: "Temporary OD Against Confirmation",
+  Defination: "Defination",
 };

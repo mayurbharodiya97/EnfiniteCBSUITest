@@ -420,11 +420,13 @@ export const guj_language_data = {
   DepositeDate: "જમા તારીખ",
   CertificateNumber: "પ્રમાણપત્ર નંબર",
   CollateralName: "કોલેટરલ નામ",
+  EnterCollateralName: "કોલેટરલ નામ દાખલ કરો",
   CollateralAmount: "કોલેટરલ રકમ",
   CollateralRate: "કોલેટરલ દર%",
   IssueCompany: "ઇશ્યુ કંપની",
   MaturedAmount: "પરિપક્વ રકમ",
   PeriodNumber: "પીરિયડ નંબર",
+  Period: "પીરિયડ",
   RegistrationNumber: "નોંધણી નંબર",
   LienYesNo: "લિયન હા ના",
   RemovalRemarksLimit: "લિમિટ એન્ટ્રી (ETRN/046) માટે રીમુવલ રીમાર્કસ દાખલ કરો",
@@ -440,6 +442,10 @@ export const guj_language_data = {
   OtherDescription: "અન્ય વર્ણન",
   ExpiredFlag: "સમાપ્ત થયેલ ફ્લેગ",
   ResolutionNumber: "રિઝોલ્યુશન નંબર",
+  SecurityDetail: "સુરક્ષા વિગતો",
+  SecurityType: "સુરક્ષા પ્રકાર",
+  CollateralRemarks: "કોલેટરલ ટિપ્પણી",
+  AreYouSureToFutureLimit: "શું તમે ભવિષ્યની મર્યાદા દાખલ કરવા માટે ચોક્કસ છો?",
 
   // stop payment
 
@@ -504,6 +510,7 @@ export const guj_language_data = {
   StockAsonDate: "સ્ટોક એસોન તારીખ",
   Active: "સક્રિય",
   InvalidDeleteOperation: "અમાન્ય ડિલીટ ઓપરેશન",
+  AreYouSureToWithdrawShare: "શું તમે શેરો પાછા ખેંચવા માટે ચોક્કસ છો ?",
 
   // lien Entry
 
@@ -550,7 +557,10 @@ export const guj_language_data = {
   CodeDecription: "કોડ વર્ણન",
   ForceExpDate: "ફોર્સ એક્સપાયર તારીખ",
   ForceExpBy: "દ્વારા ફોર્સ એક્સપાયર",
-  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસ",
+  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+
+  TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
+  Defination: "વ્યાખ્યા",
 };

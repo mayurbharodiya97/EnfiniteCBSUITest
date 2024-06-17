@@ -57,6 +57,10 @@ export const OperationsMenu = () => (
       path="lien-confirmation/*"
       element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
     />
+    <Route
+      path="tempOd-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
+    />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
     <Route
