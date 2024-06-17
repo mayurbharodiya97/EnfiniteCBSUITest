@@ -49,7 +49,7 @@ export const AreaMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PIN_CODE",
-      columnName: "Pin Code",
+      columnName: "PinCode",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -69,7 +69,7 @@ export const AreaMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PARENT_AREA_NM",
-      columnName: "Parent Area",
+      columnName: "ParentArea",
       sequence: 5,
       alignment: "left",
       componentType: "default",

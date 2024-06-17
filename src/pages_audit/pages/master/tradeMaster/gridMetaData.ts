@@ -39,7 +39,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRADE_NM",
-      columnName: "Decscription",
+      columnName: "Description",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -49,7 +49,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CKYC_OCCUPATION_NM",
-      columnName: "C-KYC Group",
+      columnName: "CKYCGroup",
       sequence: 5,
       alignment: "left",
       componentType: "default",

@@ -11,23 +11,24 @@ import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: "Add",
+    actionLabel: t("Add"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
   {
     actionName: "Delete",
-    actionLabel: "Delete",
+    actionLabel: t("Delete"),
     multiple: false,
   },
 ];

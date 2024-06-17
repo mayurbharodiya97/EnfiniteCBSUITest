@@ -12,24 +12,25 @@ import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 
 const actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: "Add",
+    actionLabel: t("Add"),
     multiple: undefined,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
   {
     actionName: "Delete",
-    actionLabel: "Delete",
+    actionLabel: t("Delete"),
     multiple: false,
     rowDoubleClick: true,
   },

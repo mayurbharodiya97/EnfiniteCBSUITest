@@ -38,7 +38,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
     },
     {
       accessor: "PARENT_WEAKER_NM",
-      columnName: "Parent Weaker",
+      columnName: "ParentWeaker",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -48,7 +48,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
     },
     {
       accessor: "DESCRIPTION",
-      columnName: "Decscription",
+      columnName: "Description",
       sequence: 5,
       alignment: "left",
       componentType: "default",

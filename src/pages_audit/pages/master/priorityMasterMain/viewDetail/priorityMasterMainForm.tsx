@@ -57,22 +57,22 @@ export const Prorityform = ({
     endSubmit(true);
     let oldData = {
       ...reqData?.[0]?.data,
-      ACTIVE_FLAG: Boolean(reqData?.[0]?.data?.ACTIVE_FLAG) ? "Y" : "N",
-    };
+      ACTIVE_FLAG: Boolean(reqData?.[0]?.data?.ACTIVE_FLAG) ? "Y" : "N", 
+      ACCT_PRIORITY_CD: reqData?.[0]?.data?.ACCT_PRIORITY_CD,
+      HIERACHY_INFO: reqData?.[0]?.data?.HIERACHY_INFO
+    }
     let newData = {
       ...data,
       ACTIVE_FLAG: Boolean(data?.ACTIVE_FLAG) ? "Y" : "N",
-      PRIORITY_CD: data?.PRIORITY_CD.trim(),
+      PRIORITY_CD: data?.PRIORITY_CD.trim(),     
       };
     let upd: any = utilFunction.transformDetailsData(newData, oldData);
-
-
+    upd._OLDROWVALUE = { ...oldData };
     if (upd._UPDATEDCOLUMNS.length > 0) {
       upd._UPDATEDCOLUMNS = upd._UPDATEDCOLUMNS.filter(
         (field) =>
           field !== "SanctionLimit" &&
-        field !== "ProvisionPer" &&
-        field !== "ACCT_PRIORITY_CD" 
+        field !== "ProvisionPer" 
       );
       isErrorFuncRef.current = {
         data: {
@@ -86,7 +86,8 @@ export const Prorityform = ({
         endSubmit,
         setFieldError,
       };
-
+   
+  
       if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
         setFormMode("view");
       } else {
@@ -96,6 +97,7 @@ export const Prorityform = ({
           buttonNames: ["Yes", "No"],
           loadingBtnName: "Yes",
         });
+        
         if (btnName === "Yes") {
           mutation.mutate({
             data: { ...isErrorFuncRef.current?.data },

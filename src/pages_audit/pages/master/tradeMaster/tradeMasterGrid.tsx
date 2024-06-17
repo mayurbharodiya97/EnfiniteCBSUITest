@@ -11,24 +11,25 @@ import { useMutation, useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 const actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: "Add",
+    actionLabel: t("Add"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
   {
-    actionName: "Delete",
-    actionLabel: "Delete",
+    actionName: "delete",
+    actionLabel: t("Delete"),
     multiple: false,
   },
 ];
@@ -42,7 +43,7 @@ const TradeMaster = () => {
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
     async (data) => {
-      if (data?.name === "Delete") {
+      if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
           message: "Are you sure to delete selected row?",

@@ -39,7 +39,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
       accessor: "PARENT_GROUP",
-      columnName: "Parent Group",
+      columnName: "ParentGroup",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -49,7 +49,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
       accessor: "DESCRIPTION",
-      columnName: "Sub Priority",
+      columnName: "SubPriority",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -59,7 +59,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
       accessor: "PRIORITY_NM",
-      columnName: "Decscription",
+      columnName: "Description",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -69,7 +69,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
       accessor: "FROM_LIMIT",
-      columnName: "Sanction From Limit",
+      columnName: "SanctionFromLimit",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -79,7 +79,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
       accessor: "TO_LIMIT",
-      columnName: "Sanction To Limit",
+      columnName: "SanctionToLimit",
       sequence: 7,
       alignment: "right",
       componentType: "currency",
@@ -89,7 +89,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
     },
     {
         accessor: "SECURE_PROV_PERC",
-        columnName: "Provision Secured %",
+        columnName: "ProvisionSecured",
         sequence: 8,
         alignment: "right",
         componentType: "currency",
@@ -99,7 +99,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       },
       {
         accessor: "UNSECURE_PROV_PERC",
-        columnName: "Provision Unsecured %",
+        columnName: "ProvisionUnsecured",
         sequence: 9,
         alignment: "right",
         componentType: "currency",

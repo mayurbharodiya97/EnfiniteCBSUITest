@@ -1,4 +1,23 @@
+import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
+
 export const fr_language_data = {
+  //Parent master main
+  ParentGroup:"Groupe de parents",
+  SubPriority:"Sous-priorité",
+  Description:"Description",
+  SanctionFromLimit:"Sanction de la limite",
+  SanctionToLimit:"Sanction à limiter",
+  ProvisionSecured:"Provision sécurisée %",
+  ProvisionUnSecured:"Provision non garantie %",
+  ViewDetail:"Voir les détails",
+  ParentWeaker:"Parent plus faible",
+  CKYCGroup:"Groupe C-KYC",
+  Constitution:"Constitution",
+  PinCode:"Code PIN",
+  Add:"Ajouter",
+  Delete:"Supprimer",
+
+  //
   Loading: "Chargement..",
   SignIn: "S'identifier",
   SignInWithUserIDandPassword:

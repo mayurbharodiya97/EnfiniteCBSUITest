@@ -36,6 +36,21 @@ export const sp_language_data = {
     Back: "Atrás",
     VerifyOTP: "Verificar OTP",
   },
+  //priority master main
+  ParentGroup:"GGrupo de padres",
+  SubPriority:"Subprioridad",
+  Description:"Descripción",
+  SanctionFromLimit:"Sanción desde límite",
+  SanctionToLimit:"Sanción para limitar",
+  ProvisionSecured:"Provisión % asegurada",
+  ProvisionUnSecured:"Provisión % no garantizada",
+  ViewDetail:"Ver Detalle",
+  ParentWeaker:"Padre más débil",
+  CKYCGroup:"Grupo C-KYC",
+  Constitution:"Constitución",
+  PinCode:"Código PIN",
+  Add:"Agregar",
+  Delete:"Borrar",
   // For Biometric
   Biometric: {
     BiometrixAuthentication: "Autenticación Biometrix",
