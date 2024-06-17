@@ -730,4 +730,12 @@ export const en_language_data = {
   TemporaryODHistory: "Temporary-OD History",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  // lien Mater
+  ParentType:"Parent_Type",
+ MinimumNoofJoints:"Minimum No. of Joints",
+ MaximumNoofJoints:"Maximum No. of Joints",
+   // Ac period Mater
+   PeriodName:"Period-Name",
+   InstNo:"Inst. No.",
+   InstallmentPeriod:"Installment Period"
 };

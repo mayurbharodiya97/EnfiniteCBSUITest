@@ -545,4 +545,16 @@ export const guj_language_data = {
   TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસ",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+  // lien Master
+  ParentType: "પિતૃ પ્રકાર",
+  // Mode Master
+  Mode: "મોડ",
+  MinimumNoofJoints: "સાંધાઓની ન્યૂનતમ સંખ્યા",
+  MaximumNoofJoints: "સાંધાઓની મહત્તમ સંખ્યા",
+  // Ac period Mater
+  PeriodName:"પીરિયડનું નામ",
+  InstNo:"હપ્તા નં.",
+  InstallmentPeriod:"હપ્તાનો સમયગાળો"
 };
+
+

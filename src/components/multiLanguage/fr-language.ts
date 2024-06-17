@@ -366,4 +366,14 @@ export const fr_language_data = {
     "Stock Entry": "Entrée de stock",
     "Inward Clearing Process": "Processus de compensation entrante",
   },
+  // lien Mater
+  ParentType: "Type de parent",
+  // Mode Master
+  Mode: "Mode",
+  MinimumNoofJoints: "Nombre minimum de joints",
+  MaximumNoofJoints: "Nombre maximum de joints",
+  // Ac period Mater
+  PeriodName: "Nom de la période",
+  InstNo: "numéro de versement",
+  InstallmentPeriod: "Période de versement"
 };
