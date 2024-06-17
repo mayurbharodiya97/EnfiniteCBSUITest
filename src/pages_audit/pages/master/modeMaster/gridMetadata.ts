@@ -13,14 +13,13 @@ export const gridMetadata: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true, 
+    enablePagination: true,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: false,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
@@ -36,7 +35,7 @@ export const gridMetadata: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 500,
     },
-    { 
+    {
       accessor: "MODE_NM",
       columnName: "Description",
       sequence: 2,
@@ -48,7 +47,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "MIN_NO_OF_JOINT",
-      columnName: "Minimum No. of Joints",
+      columnName: "MinimumNoofJoints",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -58,7 +57,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "MAX_NO_OF_JOINT",
-      columnName: "Maximum No. of Joints",
+      columnName: "MaximumNoofJoints",
       sequence: 4,
       alignment: "left",
       componentType: "default",
