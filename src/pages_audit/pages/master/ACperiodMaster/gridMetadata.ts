@@ -13,65 +13,22 @@ export const gridMetadata: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true, 
+    enablePagination: true,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
       min: "67vh",
       max: "67vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "PERIOD_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "INST_NO",
-      columnName: "Period-Name",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "PARENT_TYPE_DISP",
-      columnName: "Inst. No.",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DATA_DISPLAY_INSTALLMENT",
-      columnName: "Installment Period",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
-      accessor: "Sr no.",
-      isAutoSequence:true,
-      columnName: "Sr no.",
+      accessor: "SrNo",
+      isAutoSequence: true,
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -89,9 +46,9 @@ export const gridMetadata: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 500,
     },
-    { 
+    {
       accessor: "PERIOD_NM",
-      columnName: "Period-Name",
+      columnName: "PeriodName",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -101,7 +58,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "INST_NO",
-      columnName: "Inst. No.",
+      columnName: "InstNo",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -111,7 +68,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "DATA_DISPLAY_INSTALLMENT",
-      columnName: "Installment Period",
+      columnName: "InstallmentPeriod",
       sequence: 4,
       alignment: "left",
       componentType: "default",
