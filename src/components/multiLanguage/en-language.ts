@@ -1,6 +1,23 @@
 import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
 
 export const en_language_data = {
+  //for priority master main
+  ParentGroup:"Parent Group",
+  SubPriority:"Sub Priority",
+  Description:"Description",
+  SanctionFromLimit:"Sanction From Limit",
+  SanctionToLimit:"Sanction To Limit",
+  ProvisionSecured:"Provision Secured %",
+  ProvisionUnSecured:"Provision Unsecured %",
+  ViewDetail:"View Detail",
+  ParentWeaker:"Parent Weaker",
+  CKYCGroup:"C-KYC Group",
+  Constitution:"Constitution",
+  PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
+  
+  //
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",

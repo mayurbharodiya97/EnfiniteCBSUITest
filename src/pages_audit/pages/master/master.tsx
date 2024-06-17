@@ -15,6 +15,10 @@ const BankIfscCodeMaster = lazy(()=> import('./bankIfscCodeMaster/bankIfscCodeMa
 const CategoryMasterGrid = lazy(() => import("./categoryMaster"));
 const OrnamentTypeMasterGrid = lazy(() => import("./ornamentTypeMaster"));
 const ActionTakenMasterGrid = lazy(() => import("./actionTakenMaster"));
+const Prioritymain = lazy(() => import('./priorityMasterMain/priorityMasterMainGrid'));
+const Prioritymastersub = lazy(()=> import('./priorityMasterSub/priorityMasterSubGrid'))
+const TradeMaster = lazy(()=> import('./tradeMaster/tradeMasterGrid'))
+const AreaMaster = lazy(()=> import('./areaMaster/areaMasterGrid'))
 
 
 
@@ -42,7 +46,10 @@ const Master = () => {
         <Route path="clearing-bank-master/*" element={<ClearingBankMst />} />
         <Route path="lien-reason-master/*" element={<LienReasonMst />} />
         <Route path="advocate-master/*" element={<AdvocateMstGrid />} />
-
+        <Route path="priority-master-main/*" element={<Prioritymain />} />
+        <Route path="priority-master-sub/*" element={<Prioritymastersub />} />
+        <Route path="trade-master/*" element={<TradeMaster />} />
+        <Route path="area-master/*" element={<AreaMaster />} />
       </Routes>
     </>
   );

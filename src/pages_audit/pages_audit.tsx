@@ -65,7 +65,7 @@ export const PagesAudit = (props, { columns }) => {
           open={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           handleDrawerOpen={handleDrawerOpen}
-        >
+        > 
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>
