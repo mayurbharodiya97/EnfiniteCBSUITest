@@ -117,5 +117,19 @@ export const APBSGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 120,
     },
+    {
+      columnName: "Upload File Name",
+      accessor: "12",
+      sequence: 12,
+      componentType: "default",
+      width: 120,
+    },
+    {
+      columnName: "Remarks",
+      accessor: "13",
+      sequence: 13,
+      componentType: "default",
+      width: 120,
+    },
   ],
 };

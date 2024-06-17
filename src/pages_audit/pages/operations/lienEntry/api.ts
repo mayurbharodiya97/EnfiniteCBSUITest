@@ -57,15 +57,15 @@ export const lienGridDetail = async (apiReqPara) => {
     const dataStatus = data;
     dataStatus.map((item) => {
       if (item?.LIEN_STATUS === "A") {
-        item.LIEN_STATUS = "Active";
+        item.LIEN_STATUS_DISPLAY = "Active";
       } else {
-        item.LIEN_STATUS = "Expired";
+        item.LIEN_STATUS_DISPLAY = "Expired";
         item._rowColor = "var(--theme-color7)";
       }
       if (item?.CONFIRMED === "Y") {
-        item.CONFIRMED = "Confirmed";
+        item.DISPLAY_CONFIRMED = "Confirmed";
       } else {
-        item.CONFIRMED = "Pending";
+        item.DISPLAY_CONFIRMED = "Pending";
       }
 
       return item;
@@ -94,6 +94,18 @@ export const validateInsert = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const lienConfirmation = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOLIENCONFIRMATION", { ...apireq });
+  if (status === "99") {
+    return { status: status, message: message };
+  } else if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

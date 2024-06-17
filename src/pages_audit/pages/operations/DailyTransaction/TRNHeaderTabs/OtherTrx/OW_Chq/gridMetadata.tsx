@@ -77,6 +77,7 @@ export const OwChqGridMetaData: GridMetaDataType = {
       columnName: "AMOUNT",
       sequence: 6,
       componentType: "currency",
+      alignment: "right",
       width: 120,
     },
     {

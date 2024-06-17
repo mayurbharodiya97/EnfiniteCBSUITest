@@ -1,4 +1,6 @@
+import { constructInitialValuesForArrayFields } from "components/dyanmicForm/utils/constructINITValues";
 import { DefaultErrorObject, utilFunction } from "components/utils";
+import { isValid } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getSecurityListData = async (apiReq) => {
@@ -10,10 +12,10 @@ export const getSecurityListData = async (apiReq) => {
     let responseData = data;
 
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DISPLAY_NM, ...other }) => {
+      responseData = responseData.map(({ ...other }) => {
         return {
           value: other.SECURITY_CD,
-          label: DISPLAY_NM,
+          label: other.DISPLAY_NM,
           ...other,
         };
       });
@@ -368,43 +370,113 @@ export const LimitSecurityData = async (apiReqPara) => {
                 let postData = await getFDdetailBFD(ApiReq);
 
                 if (postData?.[0]?.RESTRICTION) {
-                  formState.MessageBox({
+                  let buttonName = await formState.MessageBox({
                     messageTitle: "Validation Failed...!",
                     message: postData?.[0]?.RESTRICTION,
-                    buttonNames: ["Ok"],
+                    buttonNames: ["Yes", "No"],
+                    defFocusBtnName: "Yes",
                   });
-                  return {
-                    SECURITY_VALUE: {
-                      value: "",
-                    },
-                    FD_NO: {
-                      value: "",
-                    },
-                    EXPIRY_DT: {
-                      value: "",
-                    },
-                    INT_RATE: {
-                      value: "",
-                    },
-                  };
+                  if (buttonName === "Yes") {
+                    return {
+                      SECURITY_VALUE: {
+                        value: "",
+                      },
+                      EXPIRY_DT: {
+                        value: "",
+                      },
+                      INT_RATE: {
+                        value: "",
+                      },
+                    };
+                  } else {
+                    return {
+                      SECURITY_VALUE: {
+                        value: "",
+                      },
+                      FD_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                      },
+                      EXPIRY_DT: {
+                        value: "",
+                      },
+                      INT_RATE: {
+                        value: "",
+                      },
+                    };
+                  }
                 } else if (postData?.[0]?.MESSAGE1) {
-                  formState.MessageBox({
+                  let buttonName = await formState.MessageBox({
                     messageTitle: "Risk Category Alert",
                     message: postData?.[0]?.MESSAGE1,
-                    buttonNames: ["Ok"],
+                    buttonNames: ["Yes", "No"],
+                    defFocusBtnName: "Yes",
                   });
-
-                  return {
-                    SECURITY_VALUE: {
-                      value: postData?.[0]?.SECURITY_VALUE,
-                    },
-                    EXPIRY_DT: {
-                      value: postData?.[0]?.EXPIRY_DT,
-                    },
-                    INT_RATE: {
-                      value: postData?.[0]?.INT_RATE,
-                    },
-                  };
+                  if (buttonName === "Yes") {
+                    return {
+                      SECURITY_VALUE: {
+                        value: postData?.[0]?.SECURITY_VALUE,
+                      },
+                      EXPIRY_DT: {
+                        value: postData?.[0]?.EXPIRY_DT,
+                      },
+                      INT_RATE: {
+                        value: postData?.[0]?.INT_RATE,
+                      },
+                    };
+                  } else {
+                    return {
+                      SECURITY_VALUE: {
+                        value: "",
+                      },
+                      EXPIRY_DT: {
+                        value: "",
+                      },
+                      INT_RATE: {
+                        value: "",
+                      },
+                      FD_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                      },
+                    };
+                  }
+                } else if (postData?.[0]?.MESSAGE2) {
+                  let buttonName = await formState.MessageBox({
+                    messageTitle: "Risk Category Alert",
+                    message: postData?.[0]?.MESSAGE1,
+                    buttonNames: ["Yes", "No"],
+                    defFocusBtnName: "Yes",
+                  });
+                  if (buttonName === "Yes") {
+                    return {
+                      SECURITY_VALUE: {
+                        value: postData?.[0]?.SECURITY_VALUE,
+                      },
+                      EXPIRY_DT: {
+                        value: postData?.[0]?.EXPIRY_DT,
+                      },
+                      INT_RATE: {
+                        value: postData?.[0]?.INT_RATE,
+                      },
+                    };
+                  } else {
+                    return {
+                      SECURITY_VALUE: {
+                        value: "",
+                      },
+                      EXPIRY_DT: {
+                        value: "",
+                      },
+                      INT_RATE: {
+                        value: "",
+                      },
+                      FD_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                      },
+                    };
+                  }
                 } else {
                   return {
                     SECURITY_VALUE: {
@@ -430,19 +502,95 @@ export const LimitSecurityData = async (apiReqPara) => {
           } else if (item.name === "ENTRY_DT") {
             // item.defaultValue = apiReqPara?.WORKING_DATE;
             item.isWorkingDate = true;
+            item.required = true;
+
+            item.schemaValidation = {
+              type: "string",
+              rules: [
+                { name: "required", params: ["This Field is required."] },
+              ],
+            };
+            item.validate = (value) => {
+              if (Boolean(value?.value) && !isValid(value?.value)) {
+                return "This Field is required.";
+              }
+              return "";
+            };
+          } else if (item.name === "TRAN_DT") {
+            // item.defaultValue = apiReqPara?.WORKING_DATE;
+            item.required = true;
+            item.isWorkingDate = true;
+            item.schemaValidation = {
+              type: "string",
+              rules: [
+                { name: "required", params: ["This Field is required."] },
+              ],
+            };
+            item.validate = (value) => {
+              if (Boolean(value?.value) && !isValid(value?.value)) {
+                return "This Field is required.";
+              }
+              return "";
+            };
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState
+            ) => {
+              if (new Date(field?.value) > new Date(authState.workingDate)) {
+                let buttonName = await formState.MessageBox({
+                  messageTitle: "Alert",
+                  message: "AreYouSureToFutureLimit",
+                  buttonNames: ["No", "Yes"],
+                });
+                if (buttonName === "Yes") {
+                  return {
+                    EXPIRY_DT: { value: field?.value, isFieldFocused: true },
+                  };
+                } else if (buttonName === "No") {
+                  return {
+                    EXPIRY_DT: { value: "" },
+                    TRAN_DT: { value: "", isFieldFocused: true },
+                  };
+                }
+              }
+            };
           } else if (item.name === "EXPIRY_DT") {
-            item.dependentFields = ["FD_NO"];
-            item.isReadOnly = (fieldData, dependentFieldsValues, formState) => {
+            item.required = true;
+            item.schemaValidation = {
+              type: "string",
+              rules: [
+                { name: "required", params: ["This Field is required."] },
+              ],
+            };
+            item.validate = (value) => {
+              if (Boolean(value?.value) && !isValid(value?.value)) {
+                return "This Field is required.";
+              }
+              return "";
+            };
+            item.dependentFields = ["FD_NO", "TRAN_DT", "ENTRY_DT"];
+            item.isReadOnly = (
+              fieldData,
+              dependentFieldsValues,
+              formState,
+              authState
+            ) => {
               if (fieldData?.value && dependentFieldsValues?.FD_NO?.value) {
+                return true;
+              } else if (
+                (apiReqPara?.SECURITY_TYPE === "OTH" &&
+                  new Date(dependentFieldsValues?.TRAN_DT?.value) >
+                    new Date(dependentFieldsValues?.ENTRY_DT?.value)) ||
+                (apiReqPara?.SECURITY_TYPE === "PRT" &&
+                  new Date(dependentFieldsValues?.TRAN_DT?.value) >
+                    new Date(dependentFieldsValues?.ENTRY_DT?.value))
+              ) {
                 return true;
               } else {
                 return false;
               }
             };
-          } else if (item.name === "TRAN_DT") {
-            item.defaultValue = apiReqPara?.WORKING_DATE;
-
-            item.isWorkingDate = true;
           } else if (item.name === "SECURITY_VALUE") {
             item.dependentFields = ["MARGIN", "SEC_INT_AMT"];
             item.postValidationSetCrossFieldValues = (
@@ -639,82 +787,51 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
               return "";
             };
-          } else if (item.name === "INT_RATE") {
+          } else if (item.name === "LIMIT_AMOUNT") {
             item.dependentFields = [
-              "LIMIT_AMOUNT",
               "BRANCH_CD",
               "ACCT_TYPE",
               "ACCT_CD",
               "PANEL_FLAG",
             ];
-            item.setValueOnDependentFieldsChange = async (
-              dependentFields,
+
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
               authState,
-              other
+              dependentFields
             ) => {
               if (
+                field?.value &&
                 dependentFields?.ACCT_CD?.value &&
-                dependentFields?.LIMIT_AMOUNT?.value &&
                 apiReqPara?.SECURITY_CD &&
-                apiReqPara?.SECURITY_TYPE !== "BFD" &&
-                apiReqPara?.SECURITY_TYPE !== "BRD"
+                dependentFields?.PANEL_FLAG?.value
               ) {
                 let ApiReq = {
                   BRANCH_CD: dependentFields?.BRANCH_CD?.value,
                   ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
                   ACCT_CD: dependentFields?.ACCT_CD?.value,
+                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
                   SECURITY_CD: apiReqPara?.SECURITY_CD,
                   SECURITY_TYPE: apiReqPara?.SECURITY_TYPE,
-                  LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
-                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
+                  LIMIT_AMOUNT: field?.value,
                   SCREEN_REF: "ETRN/047",
                 };
 
                 let postData = await limitRate(ApiReq);
 
-                if (postData) {
-                  return apiReqPara?.SECURITY_TYPE !== "BFD" &&
-                    apiReqPara?.SECURITY_TYPE !== "BRD"
-                    ? postData?.[0]?.INT_RATE
-                    : null;
-                }
-              }
-            };
-          } else if (item.name === "PENAL_RATE") {
-            item.dependentFields = [
-              "LIMIT_AMOUNT",
-              "BRANCH_CD",
-              "ACCT_TYPE",
-              "ACCT_CD",
-              "PANEL_FLAG",
-            ];
-            item.setValueOnDependentFieldsChange = async (
-              dependentFields,
-              authState,
-              other
-            ) => {
-              if (
-                dependentFields?.ACCT_CD?.value &&
-                dependentFields?.LIMIT_AMOUNT?.value &&
-                apiReqPara?.SECURITY_CD
-              ) {
-                let ApiReq = {
-                  BRANCH_CD: dependentFields?.BRANCH_CD?.value,
-                  ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
-                  ACCT_CD: dependentFields?.ACCT_CD?.value,
-                  SECURITY_CD: apiReqPara?.SECURITY_CD,
-                  SECURITY_TYPE: apiReqPara?.SECURITY_TYPE,
-                  LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
-                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
-                  SCREEN_REF: "ETRN/047",
+                return {
+                  PENAL_RATE: { value: postData?.[0]?.PENAL_RATE ?? "" },
+                  INT_RATE: {
+                    value:
+                      apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                      apiReqPara?.SECURITY_TYPE !== "BRD"
+                        ? postData?.[0]?.INT_RATE ?? ""
+                        : "",
+                  },
                 };
-
-                let postData = await limitRate(ApiReq);
-
-                if (postData) {
-                  return postData?.[0]?.PENAL_RATE;
-                }
               }
+              return {};
             };
           } else if (item.name === "CHARGE_AMT") {
             // item.defaultValue = apiReqPara?.HDN_CHARGE_AMT;
@@ -759,7 +876,40 @@ export const LimitSecurityData = async (apiReqPara) => {
             item.setValueOnDependentFieldsChange = (dependentFields) => {
               return apiReqPara?.HDN_GST_AMT;
             };
+          } else if (item.name === "REMARKS") {
+            item.validate = (columnValue) => {
+              let regex = /^[a-zA-Z0-9\s]*$/;
+              if (!regex.test(columnValue.value)) {
+                return "Special Characters not Allowed in Reamrks.";
+              }
+              return "";
+            };
+          } else if (item.name === "SECURITY") {
+            item.validate = (columnValue) => {
+              let regex = /^[a-zA-Z0-9\s]*$/;
+              if (!regex.test(columnValue.value)) {
+                return "Special Characters not Allowed in Description.";
+              }
+              return "";
+            };
+          } else if (item.name === "DOCKET_NO") {
+            item.validate = (columnValue) => {
+              let regex = /^[a-zA-Z0-9\s]*$/;
+              if (!regex.test(columnValue.value)) {
+                return "Special Characters not Allowed in Docket No.";
+              }
+              return "";
+            };
+          } else if (item.name === "RESOLUTION_NO") {
+            item.validate = (columnValue) => {
+              let regex = /^[a-zA-Z0-9\s]*$/;
+              if (!regex.test(columnValue.value)) {
+                return "Special Characters not Allowed in Resolution No.";
+              }
+              return "";
+            };
           }
+
           return item;
         })
       );
@@ -893,16 +1043,13 @@ export const getLimitDTL = async (limitDetail) => {
       if (item?.ALLOW_FORCE_EXP === "Y") {
         item._rowColor = "rgb(255, 225, 225)";
       }
-      if (item?.CONFIRMED === "Y") {
-        item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED = "Confirmed";
-      } else {
-        item.CONFIRMED = "Pending";
-      }
-
-      item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
-      item.INT_RATE = parseFloat(item.INT_RATE).toFixed(2);
-      item.SECURITY_VALUE = parseFloat(item.SECURITY_VALUE).toFixed(2);
+      item.CONFIRMED_DISPLAY =
+        item?.CONFIRMED === "Y" ? "Confirmed" : "Pending";
+      item.MARGIN = item.MARGIN ? parseFloat(item.MARGIN).toFixed(2) : 0;
+      item.INT_RATE = item.INT_RATE ? parseFloat(item.INT_RATE).toFixed(2) : 0;
+      item.SECURITY_VALUE = item.SECURITY_VALUE
+        ? parseFloat(item.SECURITY_VALUE).toFixed(2)
+        : 0;
       return item;
     });
     return dataStatus;
@@ -957,11 +1104,23 @@ export const validateDelete = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const limitRate = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITRATE", {
       ...apiReq,
     });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const limitConfirm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOLIMITCONFRIMATION", { ...apireq });
+
   if (status === "0") {
     return data;
   } else {

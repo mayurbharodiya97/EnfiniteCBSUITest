@@ -49,6 +49,7 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_IFT_LIMIT",
       sequence: 3,
       componentType: "default",
+      alignment: "right",
       width: 100,
     },
     {
@@ -56,6 +57,7 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_RTGS_LIMIT",
       sequence: 4,
       componentType: "default",
+      alignment: "right",
       width: 100,
     },
     {
@@ -63,6 +65,7 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_NEFT_LIMIT",
       sequence: 5,
       componentType: "default",
+      alignment: "right",
       width: 100,
     },
     {
@@ -70,6 +73,7 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_P2P_LIMIT",
       sequence: 6,
       componentType: "default",
+      alignment: "right",
       width: 100,
     },
     {
@@ -77,6 +81,7 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_P2A_LIMIT",
       sequence: 7,
       componentType: "default",
+      alignment: "right",
       width: 100,
     },
     {
@@ -84,6 +89,15 @@ export const IMPSGridMetaData: GridMetaDataType = {
       accessor: "PERDAY_OWN_LIMIT",
       sequence: 8,
       componentType: "default",
+      alignment: "right",
+      width: 100,
+    },
+    {
+      columnName: "BBPS Limit",
+      accessor: "9",
+      sequence: 9,
+      componentType: "default",
+      alignment: "right",
       width: 100,
     },
   ],

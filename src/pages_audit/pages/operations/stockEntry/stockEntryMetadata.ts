@@ -1,12 +1,12 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
-import { getLimitEntryData } from "../limit-entry/api";
 import { utilFunction } from "components/utils";
+import { t } from "i18next";
 
 export const StockEntryMetaData = {
   form: {
     name: "Stock-entry",
-    label: "Stock Entry",
+    label: "stockEntry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -45,34 +45,55 @@ export const StockEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async (field) => {
+        isReadOnly: true,
+        postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
               ACCT_TYPE: { value: "" },
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
+            };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
             };
           }
         },
+        runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
-        options: (dependentValue, formState, _, authState) => {
+        isFieldFocused: true,
+        options: (depen, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/047",
+            DOC_CD: "TRN/047",
           });
         },
         _optionsKey: "get_Account_Type",
-        postValidationSetCrossFieldValues: async (field) => {
-          if (field?.value) {
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-            };
-          }
+        postValidationSetCrossFieldValues: (field, formState) => {
+          formState.setDataOnFieldChange("IS_VISIBLE", {
+            IS_VISIBLE: false,
+          });
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
+            ACCT_MST_LIMIT: { value: "" },
+            SECURITY_CD: { value: "" },
+          };
         },
+        runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
         postValidationSetCrossFieldValues: async (
@@ -94,7 +115,7 @@ export const StockEntryMetaData = {
               ),
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-              SCREEN_REF: "ETRN/047",
+              SCREEN_REF: "TRN/047",
             };
             let postData = await GeneralAPI.getAccNoValidation(
               otherAPIRequestPara
@@ -104,51 +125,65 @@ export const StockEntryMetaData = {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: false,
               });
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let res = await formState.MessageBox({
+                messageTitle: t("ValidationFailed"),
                 message: postData?.RESTRICTION,
               });
-              return {
-                ACCT_CD: { value: "" },
-                ACCT_NM: { value: "" },
-                TRAN_BAL: { value: "" },
-                TRAN_DT: { value: "" },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  ACCT_NM: { value: "" },
+                  TRAN_BAL: { value: "" },
+                  TRAN_DT: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let res = await formState.MessageBox({
+                messageTitle: t("RiskCategoryAlert"),
                 message: postData?.MESSAGE1,
-                buttonNames: ["Ok"],
               });
-              return {
-                ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                TRAN_DT: {
-                  value: authState?.workingDate ?? "",
-                },
-                ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-                TRAN_BAL: {
-                  value: postData?.WIDTH_BAL ?? "",
-                },
-                ACCT_MST_LIMIT: {
-                  value: postData?.LIMIT_AMT ?? "",
-                },
-              };
+              if (res === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentValue?.ACCT_TYPE?.optionData
+                    ),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                  TRAN_DT: {
+                    value: authState?.workingDate ?? "",
+                  },
+                  ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                  TRAN_BAL: {
+                    value: postData?.WIDTH_BAL ?? "",
+                  },
+                  ACCT_MST_LIMIT: {
+                    value: postData?.LIMIT_AMT ?? "",
+                  },
+                };
+              }
             } else {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: true,
               });
               return {
                 ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentValue?.ACCT_TYPE?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 TRAN_DT: {
                   value: authState?.workingDate ?? "",
@@ -170,6 +205,7 @@ export const StockEntryMetaData = {
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
               ACCT_MST_LIMIT: { value: "" },
+              SECURITY_CD: { value: "" },
             };
           }
           return {};
@@ -183,8 +219,7 @@ export const StockEntryMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
-      placeholder: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -215,8 +250,7 @@ export const StockEntryMetaData = {
         componentType: "amountField",
       },
       name: "ACCT_MST_LIMIT",
-      label: "Account Limit Amount",
-      placeholder: "Account Limit AMT",
+      label: "AccountLimitAmt",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -235,7 +269,7 @@ export const StockEntryMetaData = {
       disableCaching: true,
       _optionsKey: "securityListDD",
       dependentFields: ["ACCT_TYPE", "ACCT_CD", "BRANCH_CD", "ACCT_MST_LIMIT"],
-      options: (dependentValue, formState, _, authState, other) => {
+      options: (dependentValue, formState, _, authState) => {
         if (
           dependentValue?.ACCT_TYPE?.value &&
           dependentValue?.ACCT_CD?.value &&

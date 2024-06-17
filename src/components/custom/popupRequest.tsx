@@ -15,6 +15,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const PopupRequestWrapper = ({
   MessageTitle,
@@ -29,6 +30,7 @@ export const PopupRequestWrapper = ({
   loadingBtnName = "",
 }) => {
   //const { state: rowsdata }: any = useLocation();
+  const { t } = useTranslation();
   const classes = useStyles();
   const [buttonRef, setButtonRef] = useState<HTMLButtonElement | null>(null);
   const colorMap = {
@@ -63,16 +65,20 @@ export const PopupRequestWrapper = ({
           className={classes.dialogTitleClass}
           style={{ background: colorMap[icon] }}
         >
-          {MessageTitle}
+          {t(MessageTitle)}
         </DialogTitle>
         <DialogContent
           sx={{
             // paddingTop: "1rem !important",
             // paddingBottom: "2rem !important",
-            paddingLeft: "10px",
+            // paddingLeft: "10px",
             display: "flex",
-            // alignItems: "center",
-            gap: "0.5rem",
+            alignItems: "center",
+            // gap: "0.5rem",
+            minHeight: "45px",
+            padding: "0px",
+            margin: "10px",
+            // maxHeight: "65px",
           }}
         >
           <Box style={{ position: "fixed" }}>
@@ -119,11 +125,11 @@ export const PopupRequestWrapper = ({
               style={{
                 color: "black",
                 whiteSpace: "pre-wrap",
-                marginLeft: "3rem",
-                paddingTop: "0.6rem",
+                marginLeft: "3.3rem",
+                maxHeight: "60vh",
               }}
             >
-              {Message.startsWith("\n") ? Message?.slice(1) : Message}
+              {Message.startsWith("\n") ? t(Message?.slice(1)) : t(Message)}
             </Typography>
           </DialogContentText>
         </DialogContent>
@@ -146,7 +152,7 @@ export const PopupRequestWrapper = ({
                 }
                 onClick={() => onClickButton(buttonName)}
               >
-                {buttonName}
+                {t(buttonName)}
               </GradientButton>
             );
           })}

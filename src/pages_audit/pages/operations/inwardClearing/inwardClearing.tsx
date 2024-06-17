@@ -177,7 +177,15 @@ export const InwardClearing = () => {
       CloseMessageBox();
     },
   });
-
+  const commonReqData = {
+    COMP_CD: mysubdtlRef.current?.COMP_CD,
+    BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+    TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+    ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+    ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+    CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+    MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+  };
   const validatePostData: any = useMutation(API.validatePost, {
     onSuccess: async (data, variables) => {
       if (data?.[0]?.O_STATUS === "0") {
@@ -185,24 +193,18 @@ export const InwardClearing = () => {
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
-            COMP_CD: mysubdtlRef.current?.COMP_CD,
-            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
                   new Date(mysubdtlRef.current["CHEQUE_DT"]),
                   "dd/MMM/yyyy"
                 )
               : "",
+            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
             _UPDATEDCOLUMNS: [],
             _OLDROWVALUE: {},
             _isNewRow: true,
@@ -218,24 +220,18 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
-            COMP_CD: mysubdtlRef.current?.COMP_CD,
-            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
                   new Date(mysubdtlRef.current["CHEQUE_DT"]),
                   "dd/MMM/yyyy"
                 )
               : "",
+            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
             _UPDATEDCOLUMNS: [],
             _OLDROWVALUE: {},
             _isNewRow: true,
@@ -268,19 +264,11 @@ export const InwardClearing = () => {
             variables?.DAILY_TRN_CD +
             "?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
-            COMP_CD: mysubdtlRef.current?.COMP_CD,
-            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
-            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-            AMOUNT: mysubdtlRef.current?.AMOUNT,
-            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
                   new Date(mysubdtlRef.current["CHEQUE_DT"]),
@@ -288,6 +276,8 @@ export const InwardClearing = () => {
                 )
               : "",
             SCREEN_REF: "TRN/650",
+            AMOUNT: mysubdtlRef.current?.AMOUNT,
+            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
           });
         }
       } else if (data?.[0]?.O_STATUS === "9") {
@@ -300,25 +290,18 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
-            COMP_CD: mysubdtlRef.current?.COMP_CD,
-            BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
-            TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-            ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-            ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-            CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-            AMOUNT: mysubdtlRef.current?.AMOUNT,
-            MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+            ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
                   new Date(mysubdtlRef.current["CHEQUE_DT"]),
                   "dd/MMM/yyyy"
                 )
               : "",
+            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
             SCREEN_REF: "TRN/650",
           });
         }
@@ -789,7 +772,7 @@ export const InwardClearing = () => {
                       authState?.role < "2"
                         ? ["Yes", "No"]
                         : ["Yes", "No", "Cancel"],
-                    loadingBtnName: "Yes" || "No",
+                    loadingBtnName: ["Yes" || "No"],
                   });
                   const postData = {
                     COMP_CD: mysubdtlRef.current?.COMP_CD,
@@ -810,10 +793,7 @@ export const InwardClearing = () => {
                     postConfigDML.mutate(postData);
                   } else if (buttonName === "No") {
                     validatePostData.mutate({
-                      COMP_CD: mysubdtlRef.current?.COMP_CD ?? "",
-                      BRANCH_CD: mysubdtlRef.current?.BRANCH_CD ?? "",
-                      ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE ?? "",
-                      ACCT_CD: mysubdtlRef.current?.ACCT_CD ?? "",
+                      ...commonReqData,
                       ERROR_STATUS: mysubdtlRef.current?.ERR_STATUS ?? "",
                       SCREEN_REF: "TRN/650",
                       ENTERED_BY: mysubdtlRef.current?.ENTERED_BY ?? "",
@@ -821,10 +801,7 @@ export const InwardClearing = () => {
                         mysubdtlRef.current?.ENTERED_BRANCH_CD ?? "",
                       REMARKS: mysubdtlRef.current?.REMARKS ?? "",
                       CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT ?? "",
-                      CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO ?? "",
                       AMOUNT: mysubdtlRef.current?.AMOUNT ?? "",
-                      TRAN_CD: mysubdtlRef.current?.TRAN_CD ?? "",
-                      MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD ?? "",
                     });
                   }
                 } else if (data && data?.DRAFT_DIV === "DIVIDEND") {

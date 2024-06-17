@@ -4,7 +4,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -18,9 +17,7 @@ import React, {
   useState,
 } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { FD_gridData, NSC_gridData } from "./limit_NSC_FD_Metadata";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { usePopupContext } from "components/custom/popupContext";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
@@ -30,66 +27,44 @@ import { limitEntryMetaData } from "./limitEntryMetadata";
 import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
-import { NSCFormDetail } from "./nscDetail";
-import { ForceExpire } from "./forceExpire";
+import { ForceExpire } from "./forceExpire/forceExpire";
 import { useMutation } from "react-query";
 import { ClearCacheProvider, queryClient } from "cache";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import * as API from "./api";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { extractMetaData } from "components/utils";
+import { FdDetails } from "./fdDetail/fdDetails";
+import { NscDetails } from "./nscDetail/nscDetails";
+import { useTranslation } from "react-i18next";
+import { SecurityDetailForm } from "./securityDetail/securityDetail";
+import { use } from "i18next";
 
 const LimitEntryCustom = () => {
-  const fdAction: ActionTypes[] = [
-    {
-      actionName: "close",
-      actionLabel: "close",
-      multiple: false,
-      rowDoubleClick: false,
-      alwaysAvailable: true,
-    },
-  ];
-  const nscAction: ActionTypes[] = [
-    {
-      actionName: "view-detail",
-      actionLabel: "View Detail",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "close",
-      actionLabel: "Close",
-      multiple: undefined,
-      rowDoubleClick: false,
-      alwaysAvailable: true,
-    },
-  ];
-  const forceExpireActions: ActionTypes[] = [
+  const actions: ActionTypes[] = [
     {
       actionName: "forceExpire",
-      actionLabel: "Force Expire",
+      actionLabel: "ForceExpire",
       multiple: false,
       rowDoubleClick: true,
     },
   ];
-  const [newFormMTdata, setNewFormMTdata] = useState<any>(limitEntryMetaData);
-  const [closeAlert, setCloseAlert] = useState<any>(true);
-  const [isVisible, setIsVisible] = useState<any>(false);
-  const [deletePopup, setDeletePopup] = useState<any>(false);
-  const [gridDetailData, setGridDetailData] = useState<any>([]);
-  const [messageData, setMessageData] = useState<any>();
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const [detailForm, setDetailForm] = useState<any>();
-  const [formRefresh, setFormRefresh] = useState(0);
-  const [value, setValue] = useState("tab1");
+
+  const [isData, setIsData] = useState<any>({
+    isDelete: false,
+    isVisible: false,
+    value: "tab1",
+    newFormMTdata: limitEntryMetaData,
+    closeAlert: true,
+    formRefresh: 0,
+    gridRefresh: 0,
+  });
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
-  const deleteDataRef = useRef<any>(null);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const myMasterRef = useRef<any>(null);
-  const acctValidDataRef = useRef<any>({});
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const reqDataRef = useRef<any>({});
+  const { deleteReq, acctValidData } = reqDataRef.current;
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -99,9 +74,12 @@ const LimitEntryCustom = () => {
         let newData;
         if (data.length > 0) {
           let newMetadata: any = [...limitEntryMetaData.fields, ...data];
-          newData = { ...newFormMTdata, fields: newMetadata };
+          newData = { ...isData.newFormMTdata, fields: newMetadata };
         }
-        setNewFormMTdata({ ...newData });
+        setIsData((old) => ({ ...old, newFormMTdata: newData }));
+      },
+      onError() {
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
@@ -110,71 +88,60 @@ const LimitEntryCustom = () => {
     "getLimitDnewFormMTdataTL",
     API.getLimitDTL,
     {
-      onSuccess: (data) => {
-        setGridDetailData(data);
-      },
-      onError: (error: any) => {},
-    }
-  );
-
-  const nscDetail: any = useMutation(
-    "getLimitNSCdetail",
-    API.getLimitNSCdetail,
-    {
-      onSuccess: (data) => {
-        setGridDetailData(data);
+      onError() {
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
-
-  const fdDetail: any = useMutation("getLimitFDdetail", API.getLimitFDdetail, {
-    onSuccess: (data) => {
-      if (data?.[0]?.MESSAGE) {
-        MessageBox({
-          messageTitle: "Account Description",
-          message: data?.[0]?.MESSAGE,
-        });
-      } else {
-        setDetailForm("fddetail");
-        setGridDetailData(data);
-      }
-    },
-  });
 
   const validateInsertData: any = useMutation(
     "validateInsert",
     API.validateInsert,
     {
       onSuccess: (data, variables) => {
-        let apiReq = {
-          ...variables,
-          _isNewRow: true,
-        };
-        if (data?.[0]?.O_STATUS === "0") {
-          setMessageData({
-            messageTitle: "Validation Successfull..",
-            message: "Do you Want to save this data",
-            apiReq: apiReq,
-          });
-          setIsOpenSave(true);
-        } else if (data?.[0]?.O_STATUS === "9") {
-          MessageBox({
-            messageTitle: "Validation Alert..",
-            message: data?.[0]?.O_MESSAGE,
-          });
-        } else if (data?.[0]?.O_STATUS === "99") {
-          setMessageData({
-            messageTitle: "Do you Want to Continue with this Record",
-            message: data?.[0]?.O_MESSAGE,
-            apiReq: apiReq,
-          });
-          setIsOpenSave(true);
-        } else if (data?.[0]?.O_STATUS === "999") {
-          MessageBox({
-            messageTitle: "Validation Failed...!",
-            message: data?.[0]?.O_MESSAGE,
-          });
+        async function validData() {
+          let apiReq = {
+            ...variables,
+            _isNewRow: true,
+          };
+          if (data?.[0]?.O_STATUS === "0") {
+            let res = await MessageBox({
+              messageTitle: "ValidationSuccessfull",
+              message: "DoYouWantToSaveThisData",
+              buttonNames: ["No", "Yes"],
+              defFocusBtnName: "Yes",
+              loadingBtnName: "Yes",
+            });
+            if (res === "Yes") {
+              crudLimitData.mutate(apiReq);
+            }
+          } else if (data?.[0]?.O_STATUS === "9") {
+            MessageBox({
+              messageTitle: "ValidationAlert",
+              message: data?.[0]?.O_MESSAGE,
+            });
+          } else if (data?.[0]?.O_STATUS === "99") {
+            let res = await MessageBox({
+              messageTitle: "DoYouContinueWithRecord",
+              message: data?.[0]?.O_MESSAGE,
+              buttonNames: ["No", "Yes"],
+              defFocusBtnName: "Yes",
+              loadingBtnName: "Yes",
+            });
+            if (res === "Yes") {
+              crudLimitData.mutate(apiReq);
+            }
+          } else if (data?.[0]?.O_STATUS === "999") {
+            MessageBox({
+              messageTitle: "ValidationFailed",
+              message: data?.[0]?.O_MESSAGE,
+            });
+          }
         }
+        validData();
+      },
+      onError() {
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
@@ -183,18 +150,24 @@ const LimitEntryCustom = () => {
     "validateDelete",
     API.validateDelete,
     {
-      onSuccess: async (data) => {
+      onSuccess: async (data, variables) => {
         if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_RESTRICT) {
           MessageBox({
-            messageTitle: "Invalid Delete Operation",
+            messageTitle: "InvalidDeleteOperation",
             message: data?.[0]?.O_RESTRICT,
           });
         } else if (
           data?.[0]?.O_STATUS === "0" &&
           data?.[0]?.O_RESTRICT === "SUCCESS"
         ) {
-          setDeletePopup(true);
+          reqDataRef.current.deleteReq = variables;
+          setIsData((old) => {
+            return { ...old, isDelete: true };
+          });
         }
+      },
+      onError() {
+        setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
   );
@@ -205,28 +178,30 @@ const LimitEntryCustom = () => {
     {
       onSuccess: (data, variables) => {
         if (variables?._isDeleteRow) {
-          setDeletePopup(false);
+          setIsData((old) => ({ ...old, isDelete: false }));
           getLimitDetail.mutate({
             COMP_CD: authState?.companyID,
-            ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+            ACCT_CD: variables?.ACCT_CD,
             ACCT_TYPE: variables?.ACCT_TYPE,
             BRANCH_CD: variables?.BRANCH_CD,
-            ENTERED_DATE: authState?.workingDate,
+            GD_TODAY_DT: authState?.workingDate,
             USER_LEVEL: authState?.role,
           });
-          enqueueSnackbar("Data Delete successfully", { variant: "success" });
+          enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
         } else if (variables?._isNewRow) {
-          setNewFormMTdata(limitEntryMetaData);
+          setIsData((old) => ({
+            ...old,
+            isVisible: false,
+            newFormMTdata: limitEntryMetaData,
+            formRefresh: old.formRefresh + 1,
+          }));
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
-          setFormRefresh((old) => old + 1);
-          setIsOpenSave(false);
-          setIsVisible(false);
-          enqueueSnackbar("Data insert successfully", { variant: "success" });
+          CloseMessageBox();
+          enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
         }
       },
-
-      onError: (error: any) => {
-        setIsOpenSave(false);
+      onError() {
+        setIsData((old) => ({ ...old, isDelete: false, closeAlert: true }));
       },
     }
   );
@@ -235,9 +210,9 @@ const LimitEntryCustom = () => {
     return () => {
       queryClient.removeQueries(["getLimitDTL"]);
       queryClient.removeQueries(["securityLimitData"]);
-      queryClient.removeQueries(["getLimitNSCdetail"]);
-      queryClient.removeQueries(["getLimitFDdetail"]);
       queryClient.removeQueries(["crudLimitEntryData"]);
+      queryClient.removeQueries(["validateInsert"]);
+      queryClient.removeQueries(["validateDelete"]);
     };
   }, []);
 
@@ -248,13 +223,12 @@ const LimitEntryCustom = () => {
           state: data?.rows,
         });
       } else if (data?.name === "close") {
-        setGridDetailData([]);
-        setDetailForm("");
+        getLimitDetail.data = [];
       } else if (data?.name === "forceExpire") {
         if (data?.rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y") {
           let res = await MessageBox({
-            messageTitle: "Confirmation..",
-            message: "Are you sure to force expire limit ?",
+            messageTitle: "confirmation",
+            message: "AreYouSureForceExpLimit",
             buttonNames: ["Yes", "No"],
           });
           if (res === "Yes") {
@@ -269,37 +243,40 @@ const LimitEntryCustom = () => {
         }
       }
     },
-    [setDetailForm, navigate]
+    [navigate]
   );
-
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
           sx={{ ml: "15px" }}
-          value={value}
+          value={isData.value}
           onChange={(event, newValue) => {
-            setValue(newValue);
-            setCloseAlert(false);
-            setGridDetailData([]);
+            setIsData((old) => ({
+              ...old,
+              value: newValue,
+              closeAlert: false,
+            }));
+            getLimitDetail.data = [];
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
+                  limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
-                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                    res?.ACCT_CD
                   ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const limitDTLRequestPara = {
                     COMP_CD: authState?.companyID,
-                    ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                    ACCT_CD: res?.ACCT_CD,
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
-                    ENTERED_DATE: authState?.workingDate,
+                    GD_TODAY_DT: authState?.workingDate,
                     USER_LEVEL: authState?.role,
                   };
+
                   getLimitDetail.mutate(limitDTLRequestPara);
                 }
               });
@@ -309,9 +286,8 @@ const LimitEntryCustom = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="tab1" label="Limit Entry" />
-
-          {isVisible && <Tab value="tab2" label="Limit Detail" />}
+          <Tab value="tab1" label={t("LimitEntry")} />
+          {isData.isVisible && <Tab value="tab2" label={t("LimitDetail")} />}
         </Tabs>
       </Box>
 
@@ -327,13 +303,13 @@ const LimitEntryCustom = () => {
         >
           {securityLimitData.isLoading ||
           validateInsertData?.isLoading ||
-          fdDetail.isLoading ||
           validateDeleteData.isLoading ? (
             <LinearProgress color="secondary" />
-          ) : (securityLimitData?.isError && closeAlert) ||
-            (validateInsertData?.isError && closeAlert) ||
-            (fdDetail?.isError && closeAlert) ||
-            (crudLimitData?.isError && closeAlert) ? (
+          ) : (securityLimitData?.isError && isData.closeAlert) ||
+            (validateInsertData?.isError && isData.closeAlert) ||
+            (crudLimitData?.isError && isData.closeAlert) ||
+            (getLimitDetail?.isError && isData.closeAlert) ||
+            (validateDeleteData?.isError && isData.closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -342,14 +318,16 @@ const LimitEntryCustom = () => {
                     securityLimitData?.error?.error_msg ??
                     validateInsertData?.error?.error_msg ??
                     crudLimitData?.error?.error_msg ??
-                    fdDetail?.error?.error_msg ??
+                    getLimitDetail?.error?.error_msg ??
+                    validateDeleteData?.error?.error_msg ??
                     "Unknow Error"
                   }
                   errorDetail={
                     securityLimitData?.error?.error_detail ??
                     validateInsertData?.error?.error_detail ??
                     crudLimitData?.error?.error_detail ??
-                    fdDetail?.error?.error_detail ??
+                    getLimitDetail?.error?.error_detail ??
+                    validateDeleteData?.error?.error_detail ??
                     ""
                   }
                   color="error"
@@ -360,16 +338,17 @@ const LimitEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
 
-          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+          <div
+            style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
+          >
             <FormWrapper
-              key={"limitEntryForm" + formRefresh}
-              metaData={newFormMTdata as MetaDataType}
+              key={"limitEntryForm" + isData.formRefresh}
+              metaData={isData.newFormMTdata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
-                setCloseAlert(true);
                 let apiReq = {
                   ...data,
-                  ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                  ...reqDataRef.current.securityDetails,
                 };
                 validateInsertData.mutate(apiReq);
                 //@ts-ignore
@@ -378,99 +357,50 @@ const LimitEntryCustom = () => {
               hideHeader={false}
               ref={myMasterRef}
               formState={{ MessageBox: MessageBox }}
+              onFormButtonClickHandel={() => {
+                navigate("security-detail/");
+              }}
               setDataOnFieldChange={(action, payload) => {
-                setNewFormMTdata({ ...limitEntryMetaData });
-
                 if (action === "SECURITY_CODE") {
-                  setCloseAlert(false);
+                  setIsData((old) => ({
+                    ...old,
+                    closeAlert: false,
+                    newFormMTdata: limitEntryMetaData,
+                  }));
                   securityLimitData.mutate({
                     ...payload,
-                    ...acctValidDataRef.current,
+                    ...acctValidData,
                     COMP_CD: authState?.companyID,
                     BRANCH_CD: authState?.user?.branchCode,
                     WORKING_DATE: authState?.workingDate,
                   });
                 }
                 if (action === "NSC_FD_BTN") {
-                  setIsVisible(payload?.NSC_FD_BTN);
-                  acctValidDataRef.current = { ...payload };
+                  setIsData((old) => ({
+                    ...old,
+                    isVisible: payload?.NSC_FD_BTN,
+                    newFormMTdata: limitEntryMetaData,
+                  }));
+                  reqDataRef.current.acctValidData = payload;
                 }
               }}
             >
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    {isVisible ? (
+                    {isData.isVisible ? (
                       <>
                         <Button
                           color="primary"
-                          // disabled={isSubmitting}
-                          onClick={async () => {
-                            const buttonName = await MessageBox({
-                              messageTitle: "Confirmation...",
-                              message: `
-                                    Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,                             
-                                    Press 'No' then to view all the FD(s) of
-                                    this Customer.
-                                `,
-                              buttonNames: ["Yes", "No"],
-                            });
-
-                            myMasterRef?.current?.getFieldData().then((res) => {
-                              if (
-                                res?.ACCT_CD &&
-                                res?.ACCT_TYPE &&
-                                res?.BRANCH_CD
-                              ) {
-                                const FD_DTLRequestPara = {
-                                  COMP_CD: authState?.companyID,
-                                  ACCT_CD: res?.ACCT_CD?.padStart(
-                                    6,
-                                    "0"
-                                  )?.padEnd(20, " "),
-                                  ACCT_TYPE: res?.ACCT_TYPE,
-                                  BRANCH_CD: res?.BRANCH_CD,
-                                  LOGIN_COMP_CD: authState?.companyID,
-                                  FLAG:
-                                    buttonName === "Yes"
-                                      ? "L"
-                                      : buttonName === "No"
-                                      ? "C"
-                                      : null,
-                                };
-
-                                fdDetail.mutate(FD_DTLRequestPara);
-                              }
-                            });
-                          }}
+                          onClick={() => navigate("fd-detail/")}
                         >
-                          FD Detail
+                          {t("FDDetail")}
                         </Button>
                         <Button
                           color="primary"
-                          onClick={() => {
-                            setDetailForm("nscdetail");
-                            myMasterRef?.current?.getFieldData().then((res) => {
-                              if (
-                                res?.ACCT_CD &&
-                                res?.ACCT_TYPE &&
-                                res?.BRANCH_CD
-                              ) {
-                                const NSC_DTLRequestPara = {
-                                  COMP_CD: authState?.companyID,
-                                  ACCT_CD: res?.ACCT_CD?.padStart(
-                                    6,
-                                    "0"
-                                  )?.padEnd(20, " "),
-                                  ACCT_TYPE: res?.ACCT_TYPE,
-                                  BRANCH_CD: res?.BRANCH_CD,
-                                };
-                                nscDetail.mutate(NSC_DTLRequestPara);
-                              }
-                            });
-                          }}
+                          onClick={() => navigate("nsc-detail")}
                         >
-                          NSC Detail
+                          {t("NSCDetail")}
                         </Button>
                       </>
                     ) : null}
@@ -485,48 +415,56 @@ const LimitEntryCustom = () => {
                       }
                       color={"primary"}
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </>
                 );
               }}
             </FormWrapper>
+            <Routes>
+              <Route
+                path="fd-detail/"
+                element={
+                  <FdDetails navigate={navigate} myMasterRef={myMasterRef} />
+                }
+              />
+              <Route
+                path="nsc-detail/*"
+                element={
+                  <NscDetails navigate={navigate} myMasterRef={myMasterRef} />
+                }
+              />
+              <Route
+                path="security-detail/*"
+                element={
+                  <SecurityDetailForm
+                    navigate={navigate}
+                    myMasterRef={myMasterRef}
+                    reqDataRef={reqDataRef}
+                  />
+                }
+              />
+            </Routes>
           </div>
 
-          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
-            {getLimitDetail?.isError ||
-              (validateDeleteData?.isError && (
-                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                  <AppBar position="relative" color="primary">
-                    <Alert
-                      severity="error"
-                      errorMsg={
-                        getLimitDetail?.error?.error_msg ??
-                        validateDeleteData?.error?.error_msg ??
-                        "Unknow Error"
-                      }
-                      errorDetail={
-                        getLimitDetail?.error?.error_detail ??
-                        validateDeleteData?.error?.error_detail ??
-                        ""
-                      }
-                      color="error"
-                    />
-                  </AppBar>
-                </div>
-              ))}
+          <div
+            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
+          >
             <GridWrapper
-              key={`limitentrygridMetaData`}
+              key={
+                `limitentrygridMetaData` +
+                getLimitDetail.isSuccess +
+                isData.gridRefresh
+              }
               finalMetaData={limitEntryGridMetaData as GridMetaDataType}
-              data={gridDetailData ?? []}
+              data={getLimitDetail.data ?? []}
               loading={
                 getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
               }
               setData={() => {}}
-              actions={forceExpireActions}
+              actions={actions}
               setAction={setCurrentAction}
               onClickActionEvent={(index, id, data) => {
-                deleteDataRef.current = data;
                 validateDeleteData.mutate(data);
               }}
             />
@@ -545,79 +483,17 @@ const LimitEntryCustom = () => {
         </Grid>
       </Container>
 
-      {detailForm === "fddetail" ? (
-        <>
-          {fdDetail.isLoading ? (
-            <LoaderPaperComponent />
-          ) : (
-            <Dialog
-              open={true}
-              PaperProps={{
-                style: {
-                  maxWidth: "1065px",
-                  padding: "5px",
-                },
-              }}
-            >
-              <GridWrapper
-                key={`personalizew`}
-                finalMetaData={FD_gridData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                setData={() => {}}
-                loading={fdDetail.isLoading}
-                actions={fdAction}
-                setAction={setCurrentAction}
-              />
-            </Dialog>
-          )}
-        </>
-      ) : detailForm === "nscdetail" ? (
-        <Dialog
-          open={true}
-          fullWidth={true}
-          PaperProps={{
-            style: {
-              maxWidth: "1150px",
-              padding: "5px",
-            },
-          }}
-        >
-          {nscDetail?.isError && (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={nscDetail?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={nscDetail?.error?.error_detail ?? ""}
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          )}
-          <GridWrapper
-            key={`nscGridData`}
-            finalMetaData={NSC_gridData as GridMetaDataType}
-            data={gridDetailData ?? []}
-            setData={() => {}}
-            loading={nscDetail.isLoading}
-            actions={nscAction}
-            setAction={setCurrentAction}
-          />
-
-          <Routes>
-            <Route
-              path="view-detail/*"
-              element={<NSCFormDetail navigate={navigate} />}
-            />
-          </Routes>
-        </Dialog>
-      ) : null}
-
-      {deletePopup && (
+      {isData.isDelete && (
         <RemarksAPIWrapper
-          TitleText={"Are you sure want to delete this record ..?"}
-          onActionNo={() => setDeletePopup(false)}
+          TitleText={"deleteTitle"}
+          onActionNo={() =>
+            setIsData((old) => ({
+              ...old,
+              isDelete: false,
+            }))
+          }
           onActionYes={(val, rows) => {
+            console.log("<<<delde", val, rows);
             let deleteReqPara = {
               _isNewRow: false,
               _isDeleteRow: true,
@@ -629,6 +505,7 @@ const LimitEntryCustom = () => {
               ACTIVITY_TYPE: "LIMIT ENTRY SCREEN",
               TRAN_DT: rows.TRAN_DT,
               CONFIRMED: rows.CONFIRMED,
+              ENTERED_BY: rows.ENTERED_BY,
               USER_DEF_REMARKS: val
                 ? val
                 : "WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)",
@@ -639,21 +516,9 @@ const LimitEntryCustom = () => {
           isEntertoSubmit={true}
           AcceptbuttonLabelText="Ok"
           CanceltbuttonLabelText="Cancel"
-          open={deletePopup}
-          rows={deleteDataRef.current}
+          open={isData?.isDelete}
+          rows={deleteReq}
           defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
-        />
-      )}
-
-      {isOpenSave && (
-        <PopupMessageAPIWrapper
-          MessageTitle={messageData.messageTitle}
-          Message={messageData.message}
-          onActionYes={() => crudLimitData.mutate(messageData.apiReq)}
-          onActionNo={() => setIsOpenSave(false)}
-          rows={[]}
-          open={isOpenSave}
-          loading={crudLimitData.isLoading}
         />
       )}
     </>
@@ -665,5 +530,20 @@ export const LimitEntry = () => {
     <ClearCacheProvider>
       <LimitEntryCustom />
     </ClearCacheProvider>
+  );
+};
+
+export const PinkColor: any = () => {
+  return (
+    <>
+      <div
+        style={{
+          background: "red",
+          borderRadius: "50%",
+          height: "15px",
+          width: "15px",
+        }}
+      ></div>
+    </>
   );
 };

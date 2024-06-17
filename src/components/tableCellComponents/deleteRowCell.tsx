@@ -1,8 +1,10 @@
 import { Button } from "@mui/material";
 import { CellWrapper } from "./cellWrapper";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export const DeleteRowButton = (props) => {
+  const { t } = useTranslation();
   const {
     value: initialValue,
     rows,
@@ -51,7 +53,7 @@ export const DeleteRowButton = (props) => {
         onClick={handleClick}
         fullWidth
       >
-        {Boolean(buttonLabel) ? buttonLabel : "Remove"}
+        {Boolean(buttonLabel) ? t(buttonLabel) : t("Delete")}
       </Button>
     </CellWrapper>
   );

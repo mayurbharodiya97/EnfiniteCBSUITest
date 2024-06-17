@@ -226,40 +226,51 @@ export const fr_language_data = {
     Role: "Rôle",
     LastUnsuccessfulLogin: "Dernière connexion infructueuse",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Demande de compte",
+  AccountDetails: "Détails du compte",
   CustomerDetail: "Détail du client",
-  AccountNo: "N ° de compte.",
-  PanNo: "Pan No.",
+  AccountNo: "Numéro de compte",
+  PAN_NO: "PAN",
+  Account_Name: "Nom du compte",
   Retrieve: "Récupérer",
-  AccountPersonName: "Nom de compte/personne",
+  AcctHolderType: "Type de titulaire de compte",
   OpeningDate: "Date d'ouverture",
   CloseDate: "Date de clôture",
+  WithdrawBalance: "Retirer le solde",
+  SearchCriteriaData: "Données de critères de recherche",
+  PleaseEnterAnyValue: "Veuillez entrer une valeur",
+  TotalNoOfRecords: "Nombre total d'enregistrements:",
+  //Account Inquiry => Passbook/Statement Print Option
 
-  // Passbook/Statement Print Option
-
-  PassbookStatementPrintOption: "Option d'impression livret/relevé",
+  PassbookStatementPrintOption: "Option d'impression de livret/déclaration",
   Template: "Modèle",
   ToDate: "À ce jour :-",
-  FromDate: "Partir de la date :-",
+  FromDate: "À partir de la date :-",
   passbook: "livret",
   Statement: "Déclaration",
   FrontPage: "Page de garde",
   FirstPage: "Première page",
   Detail: "Détail",
-  ThisFieldisrequired: "Ce champ est obligatoire",
+  ThisFieldisrequired: "Ce champ est requis",
   newPasswordCantbeSameasOldPassword:
-    "Le nouveau mot de passe ne peut pas être le même que l'ancien mot de passe",
+    "Le nouveau mot de passe ne peut pas être le même que l'ancien",
   NewPasswordandConfirmPassworddidnotmatched:
     "Le nouveau mot de passe et la confirmation du mot de passe ne correspondent pas",
-  CustomerIDisrequired: "L'identifiant client est requis",
+  CustomerIDisrequired: "L'ID du client est requis",
   CustomerIDShouldNotBeLessThan12Digits:
-    "L'ID client ne doit pas être inférieur à 12 chiffres",
+    "L'ID du client ne doit pas être inférieur à 12 chiffres",
 
   EnterAccountType: "Entrez le type de compte.",
   ModeOfOperation: "Mode de fonctionnement",
   GetDetails: "Obtenir des détails",
-  EnterAcNo: "Entrez le numéro de climatisation.",
+  EnterAcNo: "Entrez le numéro de compte.",
+
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "Actifs et passifs",
+  Account_Status: "Statut du compte",
+  DependenciesOfCustomer_id: "Dépendances de l'ID du client",
 
   //  ckyc
   EmailId: "Email-Id",

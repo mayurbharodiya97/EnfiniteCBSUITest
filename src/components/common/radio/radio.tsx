@@ -2,6 +2,7 @@ import { FC, useCallback, useState } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps } from "../types";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
+import { t } from "i18next";
 import {
   CircularProgress,
   CircularProgressProps,
@@ -64,9 +65,9 @@ const StyledRadioField = withStyles({
       //color: "#26A456",
       color: "var(--theme-color1)",
     },
-    "& .css-ih0lv8-MuiButtonBase-root-MuiRadio-root.Mui-checked":{
-      color:"var(--theme-color1)"
-    }
+    "& .css-ih0lv8-MuiButtonBase-root-MuiRadio-root.Mui-checked": {
+      color: "var(--theme-color1)",
+    },
   },
 })(FormControl);
 
@@ -190,7 +191,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       onBlur={handleBlur}
     >
       <FormLabel {...FormLabelProps} component="label">
-        {label}
+        {t(label)}
       </FormLabel>
       <RadioGroup
         {...RadioGroupProps}

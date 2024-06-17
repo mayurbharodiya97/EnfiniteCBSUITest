@@ -86,6 +86,17 @@ export const ChequeReturnPostForm: FC<{
       queryClient.removeQueries(["getInwardChequeSignFormData"]);
     };
   }, []);
+
+  const oldReqData = {
+    COMP_CD: inwardGridData?.COMP_CD ?? "",
+    BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
+    ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
+    ACCT_CD: inwardGridData?.ACCT_CD ?? "",
+    CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
+    DRAFT_DIV: inwardGridData?.DRAFT_DIV ?? "",
+    TRAN_CD: inwardGridData?.TRAN_CD,
+    MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
+  };
   const viewDetailValidatePostData: any = useMutation(API.validatePost, {
     onSuccess: async (data, variables) => {
       if (data?.[0]?.O_STATUS === "0") {
@@ -93,18 +104,11 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
-            COMP_CD: inwardGridData?.COMP_CD ?? "",
-            BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
-            ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
-            ACCT_CD: inwardGridData?.ACCT_CD ?? "",
-            CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
-            DRAFT_DIV: inwardGridData?.DRAFT_DIV ?? "",
-            TRAN_CD: inwardGridData?.TRAN_CD,
-            MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
+            ...oldReqData,
             CHEQUE_DT: inwardGridData?.CHEQUE_DT,
           };
           const newData = {
@@ -141,18 +145,11 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
-            COMP_CD: inwardGridData?.COMP_CD ?? "",
-            BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
-            ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
-            ACCT_CD: inwardGridData?.ACCT_CD ?? "",
-            CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
-            DRAFT_DIV: inwardGridData?.DRAFT_DIV ?? "",
-            TRAN_CD: inwardGridData?.TRAN_CD,
-            MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
+            ...oldReqData,
             CHEQUE_DT: inwardGridData?.CHEQUE_DT,
           };
           const newData = {
@@ -202,7 +199,7 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Validation Successful",
           message: "Are you sure to return this Cheque??",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           const oldData = {
@@ -268,6 +265,21 @@ export const ChequeReturnPostForm: FC<{
   });
   const validateConfirmData: any = useMutation(API.validateConfirm, {
     onSuccess: async (data, variables) => {
+      const apiReq = {
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
+        BRANCH_CD: variables?.BRANCH_CD ?? "",
+        ENTERED_BY: inwardGridData?.ENTERED_BY,
+        TRAN_CD: inwardGridData?.TRAN_CD,
+        ACCT_TYPE: variables?.ACCT_TYPE ?? "",
+        ACCT_CD: variables?.ACCT_CD ?? "",
+        CHEQUE_NO: variables?.CHEQUE_NO ?? "",
+        AMOUNT: variables?.AMOUNT,
+        MICR_TRAN_CD: variables?.MICR_TRAN_CD,
+        CHEQUE_DT: variables?.CHEQUE_DT
+          ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
+          : "",
+        SCREEN_REF: "TRN/650",
+      };
       if (data?.[0]?.O_STATUS === "0") {
         const buttonName = await MessageBox({
           messageTitle: "Validation Successful",
@@ -276,23 +288,11 @@ export const ChequeReturnPostForm: FC<{
             variables?.DAILY_TRN_CD +
             "?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
-            COMP_CD: inwardGridData?.COMP_CD ?? "",
-            BRANCH_CD: variables?.BRANCH_CD ?? "",
-            ENTERED_BY: inwardGridData?.ENTERED_BY,
-            TRAN_CD: inwardGridData?.TRAN_CD,
-            ACCT_TYPE: variables?.ACCT_TYPE ?? "",
-            ACCT_CD: variables?.ACCT_CD ?? "",
-            CHEQUE_NO: variables?.CHEQUE_NO ?? "",
-            AMOUNT: variables?.AMOUNT,
-            MICR_TRAN_CD: variables?.MICR_TRAN_CD,
-            CHEQUE_DT: variables?.CHEQUE_DT
-              ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
-              : "",
-            SCREEN_REF: "TRN/650",
+            apiReq,
           });
         }
       } else if (data?.[0]?.O_STATUS === "9") {
@@ -305,23 +305,11 @@ export const ChequeReturnPostForm: FC<{
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
-            COMP_CD: inwardGridData?.COMP_CD ?? "",
-            BRANCH_CD: variables?.BRANCH_CD ?? "",
-            ENTERED_BY: inwardGridData?.ENTERED_BY,
-            TRAN_CD: inwardGridData?.TRAN_CD,
-            ACCT_TYPE: variables?.ACCT_TYPE ?? "",
-            ACCT_CD: variables?.ACCT_CD ?? "",
-            CHEQUE_NO: variables?.CHEQUE_NO ?? "",
-            AMOUNT: variables?.AMOUNT,
-            MICR_TRAN_CD: variables?.MICR_TRAN_CD,
-            CHEQUE_DT: variables?.CHEQUE_DT
-              ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
-              : "",
-            SCREEN_REF: "TRN/650",
+            apiReq,
           });
         }
       } else if (data?.[0]?.O_STATUS === "999") {
@@ -404,6 +392,7 @@ export const ChequeReturnPostForm: FC<{
       CloseMessageBox();
     },
   });
+
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -414,17 +403,8 @@ export const ChequeReturnPostForm: FC<{
     endSubmit(true);
     if (actionFlag === "Save") {
       const oldData = {
-        COMP_CD: inwardGridData?.COMP_CD ?? "",
-        BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
-        ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
-        ACCT_CD: inwardGridData?.ACCT_CD ?? "",
-        CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
-        TRAN_CD: inwardGridData?.TRAN_CD,
-        MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
-        CHEQUE_DT: inwardGridData?.CHEQUE_DT
-          ? format(new Date(inwardGridData?.["CHEQUE_DT"]), "dd/MMM/yyyy")
-          : "",
-        DRAFT_DIV: inwardGridData?.DRAFT_DIV,
+        ...oldReqData,
+        CHEQUE_DT: inwardGridData?.CHEQUE_DT,
       };
       const newData = {
         COMP_CD: inwardGridData?.COMP_CD ?? "",
@@ -554,16 +534,10 @@ export const ChequeReturnPostForm: FC<{
                     authState?.role < "2"
                       ? ["Yes", "No"]
                       : ["Yes", "No", "Cancel"],
-                  loadingBtnName: "Yes" || "No",
+                  loadingBtnName: ["Yes" || "No"],
                 });
                 const postData = {
-                  COMP_CD: inwardGridData?.COMP_CD,
-                  BRANCH_CD: inwardGridData?.BRANCH_CD,
-                  ACCT_TYPE: inwardGridData?.ACCT_TYPE,
-                  ACCT_CD: inwardGridData?.ACCT_CD,
-                  TRAN_CD: inwardGridData?.TRAN_CD,
-                  CHEQUE_NO: inwardGridData?.CHEQUE_NO,
-                  DRAFT_DIV: inwardGridData?.DRAFT_DIV,
+                  oldReqData,
                   _UPDATEDCOLUMNS: [],
                   _OLDROWVALUE: {},
                   _isNewRow: false,

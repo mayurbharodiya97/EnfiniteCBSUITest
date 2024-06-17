@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const StopPayGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Cheque Stop Detail",
+    gridLabel: "ChequeStopDetail",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -24,14 +24,13 @@ export const StopPayGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     searchPlaceholder: "Stop Cheque Detail",
-    footerNote:
-      "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
+    footerNote: "StopPayFooterNote",
   },
   filters: [],
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -42,7 +41,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Intimate Date",
+      columnName: "IntimateDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
@@ -53,7 +52,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_FROM",
-      columnName: "Cheque From",
+      columnName: "FromChequeNo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -63,17 +62,17 @@ export const StopPayGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TO",
-      columnName: "Cheque To",
+      columnName: "ToChequeNo",
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 102,
+      width: 115,
       minWidth: 90,
       maxWidth: 120,
     },
     {
       accessor: "CHEQUE_DT",
-      columnName: "Cheque Date",
+      columnName: "ChequeDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -85,11 +84,11 @@ export const StopPayGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_AMOUNT",
-      columnName: "Cheque Amount",
+      columnName: "ChequeAmount",
       sequence: 5,
       alignment: "right",
       componentType: "currency",
-      width: 115,
+      width: 120,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -105,7 +104,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FLAG",
-      columnName: "Cheque Stop Type",
+      columnName: "ChequeStopType",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -114,7 +113,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      accessor: "CONFIRMED",
+      accessor: "CONFIRMED_DISPLAY",
       columnName: "Status",
       sequence: 6,
       alignment: "center",
@@ -126,7 +125,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     {
       accessor: "ALLOW_DELETE",
       columnName: "Action",
-      buttonLabel: "Remove",
+      buttonLabel: "Delete",
       sequence: 8,
       alignment: "center",
       componentType: "buttonRowCell",

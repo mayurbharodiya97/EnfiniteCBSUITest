@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const limitConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Limit Confirmation",
+    gridLabel: "LimitConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -15,11 +15,11 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: true,
     hideFooter: false,
-    pageSizes: [12, 20, 30],
-    defaultPageSize: 12,
+    pageSizes: [15, 25, 50],
+    defaultPageSize: 15,
     containerHeight: {
-      min: "66vh",
-      max: "66vh",
+      min: "73vh",
+      max: "73vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -31,7 +31,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -55,7 +55,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "Account No.",
+      columnName: "AccountNumber",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +65,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Holder Name",
+      columnName: "AccountName",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -75,52 +75,52 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "EXPIRY_DT",
-      columnName: "Expiry Date",
+      columnName: "ExpiryDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 105,
+      width: 115,
       minWidth: 70,
-      maxWidth: 120,
+      maxWidth: 140,
     },
 
     {
       accessor: "INT_RATE",
-      columnName: "Int. Rate",
+      columnName: "IntRate",
       sequence: 6,
       alignment: "right",
       componentType: "default",
-      width: 68,
+      width: 80,
       minWidth: 50,
       maxWidth: 100,
     },
 
     {
       accessor: "PENAL_RATE",
-      columnName: "Over Drawn Rate",
+      columnName: "OverDrawn",
       sequence: 8,
       alignment: "right",
       componentType: "default",
-      width: 117,
+      width: 105,
       minWidth: 50,
       maxWidth: 140,
     },
 
     {
       accessor: "MARGIN",
-      columnName: "Margin",
+      columnName: "Margin%",
       sequence: 8,
       alignment: "right",
       componentType: "default",
-      width: 62,
+      width: 70,
       minWidth: 50,
       maxWidth: 100,
     },
 
     {
       accessor: "LIMIT_AMOUNT",
-      columnName: "Limit Amount",
+      columnName: "LimitAmount",
       sequence: 9,
       alignment: "right",
       componentType: "currency",
@@ -130,7 +130,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DRAWING_POWER",
-      columnName: "Drawing Power",
+      columnName: "DrawingPower",
       sequence: 9,
       alignment: "right",
       componentType: "currency",
@@ -141,7 +141,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
+      columnName: "LastEnteredBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -163,7 +163,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "AD_HOC_LIMIT_FLG",
-      columnName: "Limit Type",
+      columnName: "LimitType",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -173,7 +173,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SECURITY",
-      columnName: "Other Description",
+      columnName: "OtherDescription",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -182,19 +182,19 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 290,
     },
     {
-      accessor: "STATUS_FLAG",
-      columnName: "Expired Flag",
+      accessor: "EXPIRED_FLAG",
+      columnName: "ExpiredFlag",
       sequence: 9,
       alignment: "center",
       componentType: "default",
-      width: 112,
+      width: 134,
       minWidth: 80,
       maxWidth: 150,
     },
 
     {
       accessor: "VERIFIED_BY",
-      columnName: "Verified By",
+      columnName: "VerifiedBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",

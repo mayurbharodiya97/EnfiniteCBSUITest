@@ -6,7 +6,7 @@ import { forwardRef, useContext } from "react";
 
 const GradientButtonCustom = withStyles({
   root: {
-    background: "var(--theme-color3)",
+    background: "var(--theme-color5)",
     border: 0,
     //Comment By Bhavyata to Change color on OTP verify screen.
     // color: "#fff",
@@ -53,7 +53,7 @@ const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
         color: color ? color : "var(--theme-color2) !important",
         "&:hover": {
           // background: "#4462bbbd",
-          backgroundColor: "var(--theme-color3) ",
+          backgroundColor: "var(--theme-color5) ",
           boxShadow: "none",
           "& .MuiSvgIcon-root": {
             transform: rotateIcon,

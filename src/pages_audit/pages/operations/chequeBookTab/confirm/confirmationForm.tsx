@@ -1,64 +1,74 @@
 import { AppBar, Button, Dialog } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { confirmFormMetaData } from "./confirmationFormMetadata";
 import { useMutation } from "react-query";
 import { chequeBookCfm } from "../api";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { Alert } from "components/common/alert";
+import { queryClient } from "cache";
+import { useTranslation } from "react-i18next";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const [isConfirm, setIsConfirm] = useState<any>();
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
+  const buttonRef: any = useRef<any>(null);
 
-  const chequeBkCfm: any = useMutation("chequeBkConfirmGrid", chequeBookCfm, {
+  const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
-      setIsOpenSave(false);
-      // closeDialog();
+      CloseMessageBox();
     },
     onSuccess: (data, variables) => {
-      setIsOpenSave(false);
+      CloseMessageBox();
       closeDialog();
 
-      if (data?.status === "99") {
+      const resultData = {
+        screenFlag: "chequebookCFM",
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+        FROM_DATE: result?.variables?.FROM_DATE ?? authState.workingDate,
+        TO_DATE: result?.variables?.TO_DATE ?? authState.workingDate,
+        FLAG: variables?.FLAG ?? "",
+      };
+
+      if (data?.[0]?.STATUS === "999") {
         MessageBox({
-          messageTitle: "Invalid Confirmation",
-          message: data?.message,
+          messageTitle: "InvalidConfirmation",
+          message: data?.message || data?.[0]?.MESSAGE,
           icon: "WARNING",
         });
       } else {
-        result.mutate({
-          screenFlag: "chequebookCFM",
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          FROM_DATE: result?.variables?.FROM_DATE,
-          TO_DATE: result?.variables?.TO_DATE,
-          FLAG: variables?.FLAG ?? "",
-        });
-        if (Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully confirmed", {
-            variant: "success",
-          });
-        } else if (!Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar("Data has been successfully Rejected", {
-            variant: "success",
-          });
-        }
+        result.mutate(resultData);
+        enqueueSnackbar(
+          t(
+            variables?.IS_CONFIMED ? "DataConfirmMessage" : "DataRejectMessage"
+          ),
+          { variant: "success" }
+        );
       }
     },
   });
 
   useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["chequeBookCfm"]);
+    };
+  }, []);
+  // useEffect(() => {
+  //   if (buttonRef.current) {
+  //     buttonRef.current.focus();
+  //   }
+  // }, [buttonRef]);
+
+  useEffect(() => {
     if (rows?.[0]?.data) {
-      confirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      confirmFormMetaData.form.label = `${t("ConfirmationDetail")} \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -67,6 +77,30 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       ).replace(/\s/g, "")}   \u00A0\u00A0   ${rows?.[0]?.data?.ACCT_NM}   `;
     }
   }, [rows?.[0]?.data]);
+
+  const handelChange = async (isConfirm) => {
+    let apiReq = {
+      IS_CONFIMED: isConfirm === "C" ? true : false,
+      FLAG: rows?.[0]?.data?.REQ_FLAG,
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
+      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+    };
+    let res = await MessageBox({
+      messageTitle: t("confirmation"),
+      message:
+        isConfirm === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
+      buttonNames: ["No", "Yes"],
+      defFocusBtnName: "Yes",
+      loadingBtnName: "Yes",
+    });
+
+    if (res === "Yes") {
+      chequeBkCfm.mutate(apiReq);
+    }
+  };
 
   return (
     <Dialog
@@ -92,8 +126,8 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
 
         <FormWrapper
           key={"confirmation-Form"}
-          metaData={confirmFormMetaData}
-          initialValues={rows?.[0]?.data ?? []}
+          metaData={confirmFormMetaData as MetaDataType}
+          initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
@@ -106,55 +140,27 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setIsOpenSave(true);
-                    setIsConfirm("C");
-                  }}
-                >
-                  Confirm
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setIsOpenSave(true);
-                    setIsConfirm("R");
-                  }}
-                >
-                  Reject
-                </Button>
+                {rows?.[0]?.data?.CONFIRMED !== "N" && (
+                  <>
+                    <Button
+                      color="primary"
+                      ref={buttonRef}
+                      onClick={() => handelChange("C")}
+                    >
+                      {t("Confirm")}
+                    </Button>
+                    <Button color="primary" onClick={() => handelChange("R")}>
+                      {t("Reject")}
+                    </Button>
+                  </>
+                )}
                 <Button color="primary" onClick={closeDialog}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );
           }}
         </FormWrapper>
-
-        {isOpenSave && (
-          <PopupMessageAPIWrapper
-            MessageTitle={"Confirmation"}
-            Message={`Are you sure to  ${
-              isConfirm === "C" ? "Confirm" : "Reject"
-            } `}
-            onActionYes={(rows) => {
-              chequeBkCfm.mutate({
-                IS_CONFIMED: isConfirm === "C" ? true : false,
-                FLAG: rows?.REQ_FLAG,
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: rows?.BRANCH_CD,
-                TRAN_CD: rows?.TRAN_CD,
-                AUTO_CHQBK_PRINT_FLAG: rows?.AUTO_CHQBK_PRINT_FLAG,
-                ENTERED_BY: rows?.ENTERED_BY,
-              });
-            }}
-            onActionNo={() => setIsOpenSave(false)}
-            rows={rows?.[0]?.data}
-            open={isOpenSave}
-            loading={chequeBkCfm.isLoading}
-          />
-        )}
       </>
     </Dialog>
   );
