@@ -45,6 +45,32 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 4,
       autoComplete: "off",
       isFieldFocused: true,
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.5, xl: 1.5 },
     },
 
@@ -58,6 +84,32 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 50,
       type: "text",
       autoComplete: "off",
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 8, md: 4, lg: 4.5, xl: 4.5 },
     },
 
@@ -68,7 +120,7 @@ export const ActionTakenMasterFormMetaData = {
       options: API.getSuitFldStdMstData,
       _optionsKey: "getSuitFldStdMstData",
       __VIEW__: { isReadOnly: true },
-      defaultValue: "A ",
+      __NEW__: { defaultValue: "A " },
       GridProps: { xs: 12, sm: 6, md: 4, lg: 4.5, xl: 4.5 },
     },
 
