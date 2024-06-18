@@ -139,6 +139,7 @@ const BankIfscCodeMaasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               defaultView={"add"}
+              gridData={data}
             />
           }
         />
@@ -149,6 +150,7 @@ const BankIfscCodeMaasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />
@@ -157,6 +159,7 @@ const BankIfscCodeMaasterGrid = () => {
           element={
             <ImportData
               CloseFileUpload={ClosedEventCall}
+              refetchData={() => refetch()}
             />
           }
         />
