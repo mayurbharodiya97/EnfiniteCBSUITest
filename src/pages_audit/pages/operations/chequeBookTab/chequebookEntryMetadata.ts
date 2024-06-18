@@ -1,11 +1,13 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { utilFunction } from "components/utils";
 import * as API from "./api";
+import { t } from "i18next";
+import { isValid } from "date-fns";
 
 export const ChequeBookEntryMetaData = {
   form: {
     name: "Cheque-book-entry",
-    label: "Cheque Book Issue",
+    label: "ChequeBookIssue",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -44,22 +46,43 @@ export const ChequeBookEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async () => {
-          return {
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
-            ACCT_NM: { value: "" },
-            ACCT_BAL: { value: "" },
-            CHEQUE_FROM: { value: "" },
-            CHEQUE_TO: { value: "" },
-            SERVICE_TAX: { value: "" },
-            GST: { value: "" },
-            CHEQUE_TOTAL: { value: "" },
-            AMOUNT: { value: "" },
-            TOOLBAR_DTL: { value: "" },
-            SR_CD: { value: "" },
-          };
+        postValidationSetCrossFieldValues: (field, formState) => {
+          if (field.value) {
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              SERVICE_TAX: { value: "" },
+              GST: { value: "" },
+              CHEQUE_TOTAL: { value: "" },
+              AMOUNT: { value: "" },
+              TOOLBAR_DTL: { value: "" },
+              SR_CD: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
+            };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              SERVICE_TAX: { value: "" },
+              GST: { value: "" },
+              CHEQUE_TOTAL: { value: "" },
+              AMOUNT: { value: "" },
+              TOOLBAR_DTL: { value: "" },
+              SR_CD: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
+            };
+          }
         },
+
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
@@ -69,11 +92,13 @@ export const ChequeBookEntryMetaData = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/045",
+            DOC_CD: "TRN/045",
           });
         },
         _optionsKey: "securityDropDownListType",
-        postValidationSetCrossFieldValues: async () => {
+        postValidationSetCrossFieldValues: (field, formState) => {
+          formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
+
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -86,6 +111,7 @@ export const ChequeBookEntryMetaData = {
             AMOUNT: { value: "" },
             TOOLBAR_DTL: { value: "" },
             SR_CD: { value: "" },
+            NEW_LEAF_ARR: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
@@ -117,6 +143,10 @@ export const ChequeBookEntryMetaData = {
             postData = postData.sort(
               (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
             );
+            formState.setDataOnFieldChange("DTL_TAB", {
+              DTL_TAB:
+                postData.some((item) => item["O_STATUS"] === "0") ?? false,
+            });
 
             let btn99, returnVal;
 
@@ -124,20 +154,17 @@ export const ChequeBookEntryMetaData = {
               let btnName = await formState.MessageBox(obj);
               return { btnName, obj };
             };
-            for (let i = 0; i < postData.length; i++) {
-              formState.setDataOnFieldChange("DTL_TAB", {
-                DTL_TAB: postData[i]?.O_STATUS === "0" ? true : false,
-              });
 
+            for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Account Validation Failed",
+                  messageTitle: "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Risk Category Alert",
+                  messageTitle: "RiskCategoryAlert",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                 });
@@ -148,7 +175,7 @@ export const ChequeBookEntryMetaData = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNI Alert",
+                    messageTitle: "HNIAlert",
                     message: postData[i]?.O_MESSAGE,
                   });
                 }
@@ -163,13 +190,22 @@ export const ChequeBookEntryMetaData = {
             }
             btn99 = 0;
             return {
-              ACCT_CD: {
-                value:
-                  returnVal !== ""
-                    ? field?.value.padStart(6, "0")?.padEnd(20, " ")
-                    : "",
-                ignoreUpdate: true,
-              },
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: utilFunction.getPadAccountNumber(
+                        field?.value,
+                        dependentValue?.ACCT_TYPE?.optionData
+                      ),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -197,7 +233,21 @@ export const ChequeBookEntryMetaData = {
               TOOLBAR_DTL: {
                 value:
                   returnVal !== ""
-                    ? `No. of chequebook issued = ${returnVal?.NO_CHEQUEBOOK_ISSUE} \u00A0\u00A0\u00A0\u00A0 Total cheque issued = ${returnVal?.TOTAL_NO_CHEQUE_ISSUED} \u00A0\u00A0\u00A0\u00A0 No. of cheque used = ${returnVal?.NO_CHEQUE_USED} \u00A0\u00A0\u00A0\u00A0 No. of cheque stop = ${returnVal?.NO_CHEQUE_STOP} \u00A0\u00A0\u00A0\u00A0 No. of cheque surrender = ${returnVal?.NO_CHEQUE_SURRENDER} \u00A0\u00A0\u00A0\u00A0 No. of unused cheque = ${returnVal?.NO_OF_CHEQUE_UNUSED}`
+                    ? `${t("NoOfchequebookIssued")} = ${
+                        returnVal?.NO_CHEQUEBOOK_ISSUE
+                      } \u00A0\u00A0\u00A0\u00A0 ${t("TotalChequeIssued")} = ${
+                        returnVal?.TOTAL_NO_CHEQUE_ISSUED
+                      } \u00A0\u00A0\u00A0\u00A0 ${t("NoOfChequeUsed")} = ${
+                        returnVal?.NO_CHEQUE_USED
+                      } \u00A0\u00A0\u00A0\u00A0 ${t("NoOfChequeStop")} = ${
+                        returnVal?.NO_CHEQUE_STOP
+                      } \u00A0\u00A0\u00A0\u00A0 ${t(
+                        "NoOfChequeSurrender"
+                      )} = ${
+                        returnVal?.NO_CHEQUE_SURRENDER
+                      } \u00A0\u00A0\u00A0\u00A0 ${t("NoOfUnusedCheque")} = ${
+                        returnVal?.NO_OF_CHEQUE_UNUSED
+                      }`
                     : "",
               },
             };
@@ -214,6 +264,7 @@ export const ChequeBookEntryMetaData = {
               TOOLBAR_DTL: { value: "" },
               JOINT_NAME_1: { value: "" },
               JOINT_NAME_2: { value: "" },
+              NEW_LEAF_ARR: { value: "" },
             };
           }
 
@@ -228,7 +279,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       type: "text",
       isReadOnly: true,
       GridProps: {
@@ -257,7 +308,7 @@ export const ChequeBookEntryMetaData = {
             Number(dependentFields.CHEQUE_BK_TOTAL.value) >
           Number(currentField.value)
         ) {
-          return "balance is less than service-charge";
+          return t("BalanceIsLesThanServicecharge");
         }
         return "";
       },
@@ -274,7 +325,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "textField",
       },
       name: "CHEQUE_FROM",
-      label: "From Cheque No.",
+      label: "FromChequeNo",
       required: true,
       type: "text",
       textFieldStyle: {
@@ -297,8 +348,8 @@ export const ChequeBookEntryMetaData = {
         componentType: "autocomplete",
       },
       name: "CHEQUE_TOTAL",
-      label: "No. of Cheque(s)",
-      placeholder: "Enter no of Cheque book",
+      label: "NoOfCheques",
+      placeholder: "SelectNoOfChequeBook",
       required: true,
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -314,7 +365,7 @@ export const ChequeBookEntryMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["No. of cheque is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       dependentFields: [
         "CHEQUE_FROM",
@@ -343,7 +394,7 @@ export const ChequeBookEntryMetaData = {
         auth,
         dependentFieldsValues
       ) => {
-        if (field.value) {
+        if (field.value && dependentFieldsValues.ACCT_CD.value) {
           let Apireq = {
             BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
             ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,
@@ -386,7 +437,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "textField",
       },
       name: "CHEQUE_TO",
-      label: "To Cheque No.",
+      label: "ToChequeNo",
       type: "text",
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -402,10 +453,6 @@ export const ChequeBookEntryMetaData = {
         lg: 2,
         xl: 2,
       },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["To cheque no. is required."] }],
-      // },
     },
 
     {
@@ -413,8 +460,8 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "Service Charge",
-      placeholder: "Service Charge",
+      label: "ServiceCharge",
+      placeholder: "ServiceCharge",
       GridProps: {
         xs: 12,
         md: 2,
@@ -439,7 +486,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GST-Amount",
+      label: "GSTAmount",
       type: "text",
       isReadOnly: true,
       dependentFields: ["SERVICE_TAX", "GST", "ROUND_OFF_FLAG"],
@@ -485,13 +532,12 @@ export const ChequeBookEntryMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_BK_TOTAL",
-      label: "No of ChequeBooks",
+      label: "NoOfChequeBooks",
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
         },
       },
-      placeholder: "Enter no of Cheque book",
       type: "text",
       defaultValue: "1",
       FormatProps: {
@@ -516,8 +562,8 @@ export const ChequeBookEntryMetaData = {
         componentType: "select",
       },
       name: "PAYABLE_AT_PAR",
-      label: "Payable At PAR",
-      placeholder: '"Payable At PAR',
+      label: "PayableAtPAR",
+      placeholder: "PayableAtPAR",
       defaultValue: "Y",
       options: () => {
         return [
@@ -565,9 +611,20 @@ export const ChequeBookEntryMetaData = {
         componentType: "datePicker",
       },
       name: "REQUISITION_DT",
-      label: "Requisition Date",
+      label: "RequisitionDate",
       isMaxWorkingDate: true,
       isWorkingDate: true,
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "ThisFieldisrequired";
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 2,
@@ -581,8 +638,8 @@ export const ChequeBookEntryMetaData = {
         componentType: "Remark",
       },
       name: "REMARKS",
-      label: "Remark",
-      placeholder: "Enter remark",
+      label: "Remarks",
+      placeholder: "EnterRemarks",
       GridProps: {
         xs: 12,
         md: 4,
@@ -597,7 +654,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "TOTAL_SEVICE_TAX",
-      label: "Total Service Charge",
+      label: "TotalServiceCharge",
       isReadOnly: true,
       dependentFields: ["SERVICE_TAX", "CHEQUE_BK_TOTAL"],
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -627,7 +684,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "TOTAL_AMOUNT",
-      label: "Total GST-Amount",
+      label: "TotalGSTAmount",
       isReadOnly: true,
       dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -658,7 +715,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "textField",
       },
       name: "JOINT_NAME_1",
-      label: "Joint Account Name - 1",
+      label: "JointAccountName1",
       isReadOnly: true,
       type: "text",
       shouldExclude(fieldData) {
@@ -681,7 +738,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "textField",
       },
       name: "JOINT_NAME_2",
-      label: "Joint Account Name - 2",
+      label: "JointAccountName2",
       isReadOnly: true,
       type: "text",
       shouldExclude(fieldData) {

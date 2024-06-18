@@ -1,7 +1,7 @@
 export const limitconfirmFormMetaData = {
   form: {
     name: "limit-confirmation-form",
-    label: "Confirmation Detail",
+    label: "ConfirmationDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -50,7 +50,7 @@ export const limitconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "AD_HOC_LIMIT_FLG",
-      label: "Limit Type",
+      label: "LimitType",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -79,72 +79,11 @@ export const limitconfirmFormMetaData = {
 
     {
       render: {
-        componentType: "textField",
-      },
-      name: "FD_BRANCH_CD",
-      label: "FD-Branch Code",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_TYPE",
-      fullWidth: true,
-      label: "FD-Type",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_ACCT_CD",
-      fullWidth: true,
-      label: "FD-Account No",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "FD_NO",
-      label: "FD Number",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
         componentType: "datePicker",
       },
       name: "ENTRY_DT",
       fullWidth: true,
-      label: "Entry Date",
+      label: "EntryDate",
       GridProps: {
         xs: 12,
         md: 2,
@@ -158,7 +97,7 @@ export const limitconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Effective Date",
+      label: "EffectiveDate",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -174,7 +113,7 @@ export const limitconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "EXPIRY_DT",
-      label: "Expiry Date",
+      label: "ExpiryDate",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -190,7 +129,7 @@ export const limitconfirmFormMetaData = {
       },
       name: "RESOLUTION_DATE",
       fullWidth: true,
-      label: "Resolution Date",
+      label: "ResolutionDate",
       GridProps: {
         xs: 12,
         md: 2,
@@ -204,7 +143,7 @@ export const limitconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "SECURITY_VALUE",
-      label: "Security Value",
+      label: "SecurityValue",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -235,23 +174,8 @@ export const limitconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "SEC_AMOUNT",
-      label: "Security Amount",
+      label: "SecurityAmount",
       fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "PENAL_RATE",
-      fullWidth: true,
-      label: "Over Drawn%",
       GridProps: {
         xs: 12,
         md: 2,
@@ -266,7 +190,7 @@ export const limitconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "INT_AMT",
-      label: "Intrest Amount",
+      label: "IntrestAmount",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -282,7 +206,7 @@ export const limitconfirmFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "INT_MARGIN",
-      label: "Intrest Margin%",
+      label: "IntrestMargin",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -297,8 +221,23 @@ export const limitconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "INT_SEC_AMOUNT",
-      label: "Security Interst Amount",
+      label: "SecurityInterstAmount",
       fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "PENAL_RATE",
+      fullWidth: true,
+      label: "OverDrawn",
       GridProps: {
         xs: 12,
         md: 2,
@@ -312,7 +251,7 @@ export const limitconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
-      label: "Limit Amount",
+      label: "LimitAmount",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -329,7 +268,7 @@ export const limitconfirmFormMetaData = {
       },
       name: "INT_RATE",
       fullWidth: true,
-      label: "Int. Rate",
+      label: "IntRate",
       GridProps: {
         xs: 12,
         md: 2,
@@ -373,7 +312,7 @@ export const limitconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "DOCKET_NO",
-      label: "Docket No.",
+      label: "DocketNumber",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -418,7 +357,7 @@ export const limitconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "FORCE_EXP_DT",
-      label: "Actual Expired Date",
+      label: "ActualExpiredDate",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -433,7 +372,7 @@ export const limitconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "RESOLUTION_NO",
-      label: "Resolution No.",
+      label: "ResolutionNumber",
       fullWidth: true,
       GridProps: {
         xs: 12,

@@ -67,7 +67,7 @@ export const MessageDescriptionMetadata = {
         componentType: "textField",
       },
       name: "IDENTITY_NO",
-      label: "No",
+      label: "Number",
       placeholder: "",
       // isReadOnly: true,
       fullWidth: true,

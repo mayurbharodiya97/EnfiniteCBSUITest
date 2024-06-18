@@ -1,15 +1,46 @@
-import { Button, Dialog } from "@mui/material";
-import React, { useEffect } from "react";
-
+import { AppBar, Button, Dialog } from "@mui/material";
+import React, { useContext, useEffect } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { lienconfirmFormMetaData } from "./confirmFormMetadata";
+import { lienConfirmation } from "../api";
+import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 
-export const LienConfirmationForm = ({ closeDialog }) => {
+export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
+  const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
+
+  const lienConfirm: any = useMutation("lienConfirmation", lienConfirmation, {
+    onError: () => {
+      CloseMessageBox();
+    },
+    onSuccess: () => {
+      CloseMessageBox();
+      closeDialog();
+      result.mutate({
+        screenFlag: "lienCFM",
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+      });
+      enqueueSnackbar(t("DataConfirmMessage"), {
+        variant: "success",
+      });
+    },
+  });
+
+  //account number and name set to inside the header
   useEffect(() => {
     if (rows?.[0]?.data) {
-      lienconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      lienconfirmFormMetaData.form.label = `${t(
+        "ConfirmationDetail"
+      )} \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -30,9 +61,19 @@ export const LienConfirmationForm = ({ closeDialog }) => {
       }}
     >
       <>
+        {lienConfirm.isError && (
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={lienConfirm?.error?.error_msg ?? "Unknow Error"}
+              errorDetail={lienConfirm?.error?.error_detail ?? ""}
+              color="error"
+            />
+          </AppBar>
+        )}
         <FormWrapper
           key={"lien-confirmation-Form"}
-          metaData={lienconfirmFormMetaData}
+          metaData={lienconfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? []}
           displayMode="view"
           hideDisplayModeInTitle={true}
@@ -44,17 +85,39 @@ export const LienConfirmationForm = ({ closeDialog }) => {
           }}
         >
           {({ isSubmitting, handleSubmit }) => {
-            console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                <Button color="primary" onClick={handleSubmit}>
-                  Confirm
+                <Button
+                  color="primary"
+                  onClick={async () => {
+                    let buttonName = await MessageBox({
+                      messageTitle: t("confirmation"),
+                      message: t("AreYouSureToConfirm"),
+                      buttonNames: ["No", "Yes"],
+                      defFocusBtnName: "Yes",
+                      loadingBtnName: "Yes",
+                    });
+                    if (buttonName === "Yes") {
+                      lienConfirm.mutate({
+                        IS_CONFIMED: true,
+                        COMP_CD: authState?.companyID,
+                        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+                        ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+                        LIEN_STATUS: rows?.[0]?.data?.LIEN_STATUS,
+                        ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+                        SR_CD: rows?.[0]?.data?.SR_CD,
+                      });
+                    }
+                  }}
+                >
+                  {t("Confirm")}
                 </Button>
                 <Button color="primary" onClick={() => closeDialog()}>
-                  Reject
+                  {t("Reject")}
                 </Button>
                 <Button color="primary" onClick={() => closeDialog()}>
-                  close
+                  {t("Close")}
                 </Button>
               </>
             );
