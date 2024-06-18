@@ -1,4 +1,27 @@
 export const guj_language_data = {
+
+
+  // Priority master main
+  Code:"કોડ",
+  Add:"ઉમેરો",
+  ParentGroup:"પિતૃ જૂથ",
+  SubPriority:"સબ પ્રાયોરિટી",
+  Description:"વર્ણન",
+  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
+  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
+  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
+  Active:"સક્રિય",
+  ViewDetail:"વિગત જુઓ",
+  Delete:"કાઢી નાખો",
+  ParentWeaker:"પેરેંટ વેકર",
+  CKYCGroup:"C-KYC ગ્રુપ",
+  Constitution:"બંધારણ",
+  PinCode:"પીન કોડ",
+  City:"શહેર",
+  ParentArea:"પિતૃ વિસ્તાર",
+  //
+ 
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:
@@ -202,42 +225,50 @@ export const guj_language_data = {
     Role: "ભૂમિકા",
     LastUnsuccessfulLogin: "છેલ્લું અસફળ લૉગિન",
   },
-  // Account Inquiry
+
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "ખાતા તપાસ",
+  AccountDetails: "ખાતાની વિગતો",
   CustomerDetail: "ગ્રાહક વિગતો",
-  AccountNo: "ખાતા નં.",
-  PanNo: "પાન નં.",
+  AccountNo: "ખાતા નંબર",
+  PAN_NO: "પાન નં",
+  Account_Name: "ખાતાનું નામ",
   Retrieve: "મેળવો",
-  AccountPersonName: "ખાતા/વ્યક્તિનું નામ",
+  AcctHolderType: "ખાતા ધારકનો પ્રકાર",
   OpeningDate: "ખુલવાની તારીખ",
   CloseDate: "બંધ તારીખ",
+  WithdrawBalance: "ખેંચી શકાય બેલેન્સ",
+  SearchCriteriaData: "શોધ માપદંડ ડેટા",
+  PleaseEnterAnyValue: "કૃપા કરીને કોઈપણ મૂલ્ય દાખલ કરો",
+  TotalNoOfRecords: "કુલ રેકોર્ડની સંખ્યા:",
+  //Account Inquiry => Passbook/Statement Print Option
 
-  // Passbook/Statement Print Option
-
-  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિન્ટ વિકલ્પ",
+  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
   ToDate: "તારીખ સુધી",
   FromDate: "તારીખ થી",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
-  FirstPage: "પહેલું પાનું",
+  FirstPage: "પ્રથમ પાનું",
   Detail: "વિગત",
-  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે.",
+  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે",
   newPasswordCantbeSameasOldPassword:
-    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ.",
+    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ",
   NewPasswordandConfirmPassworddidnotmatched:
-    " નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
-
+    "નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
   CustomerIDisrequired: "ગ્રાહક આઈડી જરૂરી છે",
   CustomerIDShouldNotBeLessThan12Digits:
     "ગ્રાહક આઈડી 12 અંક કરતા ઓછો ન હોવો જોઈએ",
-
-  EnterAccountType: "એકાઉન્ટ પ્રકાર દાખલ કરો.",
+  EnterAccountType: "ખાતા પ્રકાર દાખલ કરો.",
   ModeOfOperation: "ઓપરેશન મોડ",
   GetDetails: "વિગતો મેળવો",
+  EnterAcNo: "ખાતા નં. દાખલ કરો",
 
-  EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
+  Account_Status: "ખાતા સ્થિતિ",
 
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
@@ -412,11 +443,13 @@ export const guj_language_data = {
   DepositeDate: "જમા તારીખ",
   CertificateNumber: "પ્રમાણપત્ર નંબર",
   CollateralName: "કોલેટરલ નામ",
+  EnterCollateralName: "કોલેટરલ નામ દાખલ કરો",
   CollateralAmount: "કોલેટરલ રકમ",
   CollateralRate: "કોલેટરલ દર%",
   IssueCompany: "ઇશ્યુ કંપની",
   MaturedAmount: "પરિપક્વ રકમ",
   PeriodNumber: "પીરિયડ નંબર",
+  Period: "પીરિયડ",
   RegistrationNumber: "નોંધણી નંબર",
   LienYesNo: "લિયન હા ના",
   RemovalRemarksLimit: "લિમિટ એન્ટ્રી (ETRN/046) માટે રીમુવલ રીમાર્કસ દાખલ કરો",
@@ -432,6 +465,10 @@ export const guj_language_data = {
   OtherDescription: "અન્ય વર્ણન",
   ExpiredFlag: "સમાપ્ત થયેલ ફ્લેગ",
   ResolutionNumber: "રિઝોલ્યુશન નંબર",
+  SecurityDetail: "સુરક્ષા વિગતો",
+  SecurityType: "સુરક્ષા પ્રકાર",
+  CollateralRemarks: "કોલેટરલ ટિપ્પણી",
+  AreYouSureToFutureLimit: "શું તમે ભવિષ્યની મર્યાદા દાખલ કરવા માટે ચોક્કસ છો?",
 
   // stop payment
 
@@ -496,6 +533,7 @@ export const guj_language_data = {
   StockAsonDate: "સ્ટોક એસોન તારીખ",
   Active: "સક્રિય",
   InvalidDeleteOperation: "અમાન્ય ડિલીટ ઓપરેશન",
+  AreYouSureToWithdrawShare: "શું તમે શેરો પાછા ખેંચવા માટે ચોક્કસ છો ?",
 
   // lien Entry
 
@@ -542,7 +580,10 @@ export const guj_language_data = {
   CodeDecription: "કોડ વર્ણન",
   ForceExpDate: "ફોર્સ એક્સપાયર તારીખ",
   ForceExpBy: "દ્વારા ફોર્સ એક્સપાયર",
-  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસ",
+  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+
+  TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
+  Defination: "વ્યાખ્યા",
 };

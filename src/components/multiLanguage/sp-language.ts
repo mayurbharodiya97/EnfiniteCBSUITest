@@ -36,6 +36,21 @@ export const sp_language_data = {
     Back: "Atrás",
     VerifyOTP: "Verificar OTP",
   },
+  //priority master main
+  ParentGroup:"GGrupo de padres",
+  SubPriority:"Subprioridad",
+  Description:"Descripción",
+  SanctionFromLimit:"Sanción desde límite",
+  SanctionToLimit:"Sanción para limitar",
+  ProvisionSecured:"Provisión % asegurada",
+  ProvisionUnSecured:"Provisión % no garantizada",
+  ViewDetail:"Ver Detalle",
+  ParentWeaker:"Padre más débil",
+  CKYCGroup:"Grupo C-KYC",
+  Constitution:"Constitución",
+  PinCode:"Código PIN",
+  Add:"Agregar",
+  Delete:"Borrar",
   // For Biometric
   Biometric: {
     BiometrixAuthentication: "Autenticación Biometrix",
@@ -188,42 +203,52 @@ export const sp_language_data = {
     Role: "Role",
     LastUnsuccessfulLogin: "Último inicio de sesión fallido",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Consulta de cuenta",
+  AccountDetails: "Detalles de la cuenta",
   CustomerDetail: "Detalle del cliente",
   AccountNo: "Número de cuenta",
-  PanNo: "Pan No.",
+  PAN_NO: "PAN",
+  Account_Name: "Nombre de la cuenta",
   Retrieve: "Recuperar",
-  AccountPersonName: "Nombre de cuenta/persona",
+  AcctHolderType: "Tipo de titular de la cuenta",
   OpeningDate: "Fecha de apertura",
   CloseDate: "Fecha de cierre",
-
-  // Passbook/Statement Print Option
+  WithdrawBalance: "Retirar saldo",
+  SearchCriteriaData: "Datos de criterios de búsqueda",
+  PleaseEnterAnyValue: "Por favor, introduzca cualquier valor",
+  TotalNoOfRecords: "Número total de registros:",
+  //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption:
-    "Opción de impresión de libreta de ahorros/estado de cuenta",
+    "Opción de impresión de libreta/estado de cuenta",
   Template: "Plantilla",
   ToDate: "Hasta la fecha :-",
-  FromDate: "Partir de la fecha :-",
-  passbook: "libreta de depósitos",
+  FromDate: "Desde la fecha :-",
+  passbook: "libreta",
   Statement: "Declaración",
-  FrontPage: "Página delantera",
+  FrontPage: "Portada",
   FirstPage: "Primera página",
   Detail: "Detalle",
-  ThisFieldisrequired: "Este campo es obligatorio",
+  ThisFieldisrequired: "Este campo es requerido",
   newPasswordCantbeSameasOldPassword:
     "La nueva contraseña no puede ser la misma que la antigua",
   NewPasswordandConfirmPassworddidnotmatched:
-    "Nueva contraseña y Confirmar contraseña no coinciden",
-  CustomerIDisrequired: "Se requiere ID de cliente",
+    "La nueva contraseña y la confirmación de la contraseña no coinciden",
+  CustomerIDisrequired: "Se requiere ID del cliente",
   CustomerIDShouldNotBeLessThan12Digits:
     "El ID del cliente no debe tener menos de 12 dígitos",
 
-  EnterAccountType: "Ingrese el tipo de cuenta.",
+  EnterAccountType: "Introduzca el tipo de cuenta.",
   ModeOfOperation: "Modo de operación",
-  GetDetails: "Obtén detalles",
-  EnterAcNo: "Ingrese el número de aire acondicionado",
+  GetDetails: "Obtener detalles",
+  EnterAcNo: "Introduzca el número de cuenta.",
 
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "Activos y pasivos",
+  Account_Status: "Estado de la cuenta",
+  DependenciesOfCustomer_id: "Dependencias del ID del cliente",
   //  ckyc
   EmailId: "Identificación de correo",
   CustomerName: "Nombre del cliente",

@@ -349,7 +349,7 @@ export const forceExpireMetaData = {
       required: true,
 
       schemaValidation: {
-        type: "date",
+        type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {

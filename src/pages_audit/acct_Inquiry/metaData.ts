@@ -4,7 +4,7 @@ import { getPassBookTemplate } from "./api";
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
-    label: "Account Inquiry",
+    label: "AccountInquiry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -51,8 +51,8 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "ACCOUNT",
-      label: "Account No.",
-      placeholder: "Account Number",
+      label: "AccountNo",
+      placeholder: "AccountNo",
       defaultValue: "",
       type: "text",
       maxLength: 20,
@@ -90,12 +90,12 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "CUSTOMER",
-      label: "Customer Id",
+      label: "CustomerId",
       maxLength: 12,
       schemaValidation: {
         type: "string",
       },
-      placeholder: "Customer Id",
+      placeholder: "CustomerId",
       type: "text",
       startsIcon: "PortraitSharp",
       iconStyle: {
@@ -127,9 +127,9 @@ export const AccountInquiryMetadata = {
         componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
-      label: "Mobile No.",
+      label: "MobileNo",
       maxLength: 10,
-      placeholder: "Mobile Number",
+      placeholder: "MobileNo",
       type: "string",
       // startsIcon: Mobile_Number_Svg,
       startsIcon: "PhoneAndroidSharp",
@@ -161,8 +161,8 @@ export const AccountInquiryMetadata = {
         componentType: "panCardOptional",
       },
       name: "PAN",
-      label: "Pan No.",
-      placeholder: "PanCard Number",
+      label: "PAN_NO",
+      placeholder: "PAN_NO",
       maxLength: 10,
       type: "text",
       schemaValidation: {
@@ -199,8 +199,8 @@ export const AccountInquiryMetadata = {
         componentType: "textField",
       },
       name: "NAME",
-      label: "Account Name",
-      placeholder: "Enter Name",
+      label: "Account_Name",
+      placeholder: "Account_Name",
       type: "text",
       GridProps: {
         xs: 12,
@@ -272,7 +272,7 @@ export const AccountInquiryMetadata = {
 export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Search Criteria Data",
+    gridLabel: "SearchCriteriaData",
     rowIdColumn: "ACCT_NO",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
@@ -298,9 +298,19 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   // filters: [],
   columns: [
     {
+      columnName: "AcctHolderType",
+      accessor: "ACCT_STATUS",
+      sequence: 1,
+      componentType: "default",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 160,
+      alignment: "left",
+    },
+    {
       accessor: "ACCT_NO",
-      columnName: "Account No.",
-      sequence: 3,
+      columnName: "AccountNo",
+      sequence: 2,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -309,8 +319,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account/Person Name",
-      sequence: 4,
+      columnName: "Account_Name",
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 280,
@@ -320,8 +330,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "Customer Id",
-      sequence: 5,
+      columnName: "CustomerId",
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 100,
@@ -330,8 +340,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT2",
-      columnName: "Mobile No.",
-      sequence: 6,
+      columnName: "MobileNo",
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -340,8 +350,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "Pan No.",
-      sequence: 7,
+      columnName: "PAN_NO",
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -350,7 +360,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WITHDRAW_BAL",
-      columnName: "Withdraw Balance",
+      columnName: "WithdrawBalance",
       sequence: 7,
       color: "red",
       alignment: "left",
@@ -361,8 +371,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "E_MAIL_ID",
-      columnName: "Email Id",
-      sequence: 7,
+      columnName: "EmailID",
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -372,9 +382,9 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "OP_DATE",
-      columnName: "Opening Date",
-      sequence: 8,
-      alignment: "center",
+      columnName: "OpeningDate",
+      sequence: 9,
+      alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
       isReadOnly: true,
@@ -384,8 +394,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISPLAY_STATUS",
-      columnName: "Status",
-      sequence: 9,
+      columnName: "STATUS",
+      sequence: 10,
       alignment: "left",
       componentType: "default",
       isReadOnly: true,
@@ -395,8 +405,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CLOSE_DT",
-      columnName: "Close Date",
-      sequence: 10,
+      columnName: "CloseDate",
+      sequence: 11,
       alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
@@ -437,32 +447,32 @@ export const DependenciesData = {
   // ],
   columns: [
     {
-      columnName: "Assets & Liabilities",
+      columnName: "Assets_Liabilities",
       accessor: "ASS_LIB",
       width: 170,
     },
     {
-      columnName: " Account Status",
+      columnName: "Account_Status",
       accessor: "ACCT_STATUS",
       width: 150,
     },
     {
-      columnName: "Customer Id",
+      columnName: "CustomerID",
       accessor: "CUSTOMER_ID",
       width: 130,
     },
     {
-      columnName: "Account Number",
+      columnName: "AccountNo",
       accessor: "AC_CD",
       width: 170,
     },
     {
-      columnName: "Account Name",
+      columnName: "Account_Name",
       accessor: "ACCT_NM",
       width: 380,
     },
     {
-      columnName: "Opening Date",
+      columnName: "OpeningDate",
       accessor: "OP_DATE",
       width: 180,
     },

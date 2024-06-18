@@ -675,6 +675,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATECHQDATE",
     packageName: "",
   },
+  VALIDATECONFRIMEDDATA: {
+    url: "/transactionServiceAPI/VALIDATECONFRIMEDDATA",
+    packageName: "",
+  },
+  VALIDATECREDITDEBITAMT: {
+    url: "/transactionServiceAPI/VALIDATECREDITDEBITAMT",
+    packageName: "",
+  },
   GETDAILYTRNLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
@@ -1255,52 +1263,108 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTPRIORITYMAINDDW",
     packageName: "",
   },
+  GETPRIORITYMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTDATADISP",
+    packageName: "",
+  },
   GETACTWEAKERSUBPRIODDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTWEAKERSUBPRIODDW",
+    packageName: "",
+  },
+  GETPRIORITYMSTPARENTGRPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTPARENTGRPDDW",
     packageName: "",
   },
   GETACCTMSTCATEGORYDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTCATEGORYDDW",
     packageName: "",
   },
+  GETPRIORITYMSTSUBPRIOGRPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTSUBPRIOGRPDDW",
+    packageName: "",
+  },
   GETACCTMSTAGENTDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTAGENTDDW",
+    packageName: "",
+  },
+  GETSUBPRIOMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETSUBPRIOMSTDATADISP",
     packageName: "",
   },
   GETACTRISKCLASSDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTRISKCLASSDDW",
     packageName: "",
   },
+  GETTRADEMSTDATADISP:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMSTDATADISP",
+    packageName: "",
+  },
   GETACCTMSTINDUSTRYDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTINDUSTRYDDW",
+    packageName: "",
+  },
+  DOTRADEMSTDML:{
+    url: "/commonMasterServiceAPI/DOTRADEMSTDML",
     packageName: "",
   },
   GETACCTMSTRECREDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTRECREDDW",
     packageName: "",
   },
+  DOSUBPRIORITYMST:{
+    url: "/commonMasterServiceAPI/DOSUBPRIORITYMST",
+    packageName: "",
+  },
   GETACCTMSTBUSINESSDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
+    packageName: "",
+  },
+  PRIORITYMASTERMAINDML:{
+    url: "/commonMasterServiceAPI/PRIORITYMASTERMAINDML",
     packageName: "",
   },
   DOOVERDRAWNDML: {
     url: "accountServiceAPI/DOOVERDRAWNDML",
     packageName: "",
   },
+  DOTEMPODDML: {
+    url: "accountServiceAPI/DOTEMPODDML",
+    packageName: "",
+  },
+  GETAREAMSTRETRIVEGRID:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTRETRIVEGRID",
+    packageName: "",
+  },
   GETRETRIVECHQBKFLAG: {
     url: "chequeServiceAPI/GETRETRIVECHQBKFLAG",
+    packageName: "",
+  },
+  GETAREAMSTCITYDDW:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTCITYDDW",
     packageName: "",
   },
   GETCHQCNFDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQCNFDATADISP",
     packageName: "",
   },
+  GETAREAMSTPARENTDDW:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTPARENTDDW",
+    packageName: "",
+  },
   GETLMTCNFDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLMTCNFDATADISP",
     packageName: "",
   },
+  GETMISCTABLECONFIG:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETMISCTABLECONFIG",
+    packageName: "",
+  },
   GETSTOCKCNFDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKCNFDATADISP",
+    packageName: "",
+  },
+  DOAREAMST:{
+    url: "commonMasterServiceAPI/DOAREAMST",
     packageName: "",
   },
   GETSTOPCNFDATADISP: {
@@ -1525,6 +1589,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETRTGSCHARGES: {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
+    packageName: "",
+  },
+  GETTEMPODAGCNFDATAGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTEMPODAGCNFDATAGRID",
+    packageName: "",
+  },
+  DOTEMPODCONFIRMATION: {
+    url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
 };

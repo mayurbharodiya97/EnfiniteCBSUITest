@@ -60,7 +60,7 @@ export const multipleChequebookGridData: GridMetaDataType = {
     },
 
     {
-      accessor: "SERVICE_TAX",
+      accessor: "AMOUNT",
       columnName: "ServiceCharge",
       sequence: 7,
       alignment: "right",
@@ -70,7 +70,7 @@ export const multipleChequebookGridData: GridMetaDataType = {
       maxWidth: 120,
     },
     {
-      accessor: "AMOUNT",
+      accessor: "SERVICE_TAX",
       columnName: "GSTAmount",
       sequence: 8,
       alignment: "right",

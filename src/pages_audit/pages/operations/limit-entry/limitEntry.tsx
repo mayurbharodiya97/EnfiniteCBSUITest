@@ -4,7 +4,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -37,6 +36,8 @@ import * as API from "./api";
 import { FdDetails } from "./fdDetail/fdDetails";
 import { NscDetails } from "./nscDetail/nscDetails";
 import { useTranslation } from "react-i18next";
+import { SecurityDetailForm } from "./securityDetail/securityDetail";
+import { use } from "i18next";
 
 const LimitEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -48,12 +49,14 @@ const LimitEntryCustom = () => {
     },
   ];
 
-  const [isData, setIsData] = useState({
+  const [isData, setIsData] = useState<any>({
     isDelete: false,
     isVisible: false,
     value: "tab1",
     newFormMTdata: limitEntryMetaData,
     closeAlert: true,
+    formRefresh: 0,
+    gridRefresh: 0,
   });
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -147,7 +150,7 @@ const LimitEntryCustom = () => {
     "validateDelete",
     API.validateDelete,
     {
-      onSuccess: async (data) => {
+      onSuccess: async (data, variables) => {
         if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_RESTRICT) {
           MessageBox({
             messageTitle: "InvalidDeleteOperation",
@@ -157,6 +160,7 @@ const LimitEntryCustom = () => {
           data?.[0]?.O_STATUS === "0" &&
           data?.[0]?.O_RESTRICT === "SUCCESS"
         ) {
+          reqDataRef.current.deleteReq = variables;
           setIsData((old) => {
             return { ...old, isDelete: true };
           });
@@ -177,7 +181,7 @@ const LimitEntryCustom = () => {
           setIsData((old) => ({ ...old, isDelete: false }));
           getLimitDetail.mutate({
             COMP_CD: authState?.companyID,
-            ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+            ACCT_CD: variables?.ACCT_CD,
             ACCT_TYPE: variables?.ACCT_TYPE,
             BRANCH_CD: variables?.BRANCH_CD,
             GD_TODAY_DT: authState?.workingDate,
@@ -185,7 +189,12 @@ const LimitEntryCustom = () => {
           });
           enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
         } else if (variables?._isNewRow) {
-          setIsData((old) => ({ ...old, isVisible: false }));
+          setIsData((old) => ({
+            ...old,
+            isVisible: false,
+            newFormMTdata: limitEntryMetaData,
+            formRefresh: old.formRefresh + 1,
+          }));
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           CloseMessageBox();
           enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
@@ -236,11 +245,6 @@ const LimitEntryCustom = () => {
     },
     [navigate]
   );
-
-  useEffect(() => {
-    console.log("<<<rrrr", isData);
-  }, [isData]);
-
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -257,9 +261,7 @@ const LimitEntryCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  limitEntryGridMetaData.gridConfig.gridLabel = `${t(
-                    "LimitDetail"
-                  )} \u00A0\u00A0 ${(
+                  limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
@@ -274,6 +276,7 @@ const LimitEntryCustom = () => {
                     GD_TODAY_DT: authState?.workingDate,
                     USER_LEVEL: authState?.role,
                   };
+
                   getLimitDetail.mutate(limitDTLRequestPara);
                 }
               });
@@ -339,24 +342,31 @@ const LimitEntryCustom = () => {
             style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
           >
             <FormWrapper
-              key={"limitEntryForm"}
+              key={"limitEntryForm" + isData.formRefresh}
               metaData={isData.newFormMTdata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
-                validateInsertData.mutate(data);
+                let apiReq = {
+                  ...data,
+                  ...reqDataRef.current.securityDetails,
+                };
+                validateInsertData.mutate(apiReq);
                 //@ts-ignore
                 endSubmit(true);
               }}
               hideHeader={false}
               ref={myMasterRef}
               formState={{ MessageBox: MessageBox }}
+              onFormButtonClickHandel={() => {
+                navigate("security-detail/");
+              }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "SECURITY_CODE") {
                   setIsData((old) => ({
                     ...old,
+                    closeAlert: false,
                     newFormMTdata: limitEntryMetaData,
                   }));
-                  reqDataRef.current.closeAlert = false;
                   securityLimitData.mutate({
                     ...payload,
                     ...acctValidData,
@@ -382,7 +392,6 @@ const LimitEntryCustom = () => {
                       <>
                         <Button
                           color="primary"
-                          // disabled={isSubmitting}
                           onClick={() => navigate("fd-detail/")}
                         >
                           {t("FDDetail")}
@@ -425,6 +434,16 @@ const LimitEntryCustom = () => {
                   <NscDetails navigate={navigate} myMasterRef={myMasterRef} />
                 }
               />
+              <Route
+                path="security-detail/*"
+                element={
+                  <SecurityDetailForm
+                    navigate={navigate}
+                    myMasterRef={myMasterRef}
+                    reqDataRef={reqDataRef}
+                  />
+                }
+              />
             </Routes>
           </div>
 
@@ -432,7 +451,11 @@ const LimitEntryCustom = () => {
             style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
           >
             <GridWrapper
-              key={`limitentrygridMetaData` + getLimitDetail.isSuccess}
+              key={
+                `limitentrygridMetaData` +
+                getLimitDetail.isSuccess +
+                isData.gridRefresh
+              }
               finalMetaData={limitEntryGridMetaData as GridMetaDataType}
               data={getLimitDetail.data ?? []}
               loading={
@@ -470,6 +493,7 @@ const LimitEntryCustom = () => {
             }))
           }
           onActionYes={(val, rows) => {
+            console.log("<<<delde", val, rows);
             let deleteReqPara = {
               _isNewRow: false,
               _isDeleteRow: true,
@@ -506,5 +530,20 @@ export const LimitEntry = () => {
     <ClearCacheProvider>
       <LimitEntryCustom />
     </ClearCacheProvider>
+  );
+};
+
+export const PinkColor: any = () => {
+  return (
+    <>
+      <div
+        style={{
+          background: "red",
+          borderRadius: "50%",
+          height: "15px",
+          width: "15px",
+        }}
+      ></div>
+    </>
   );
 };
