@@ -46,10 +46,29 @@ export const OrnamentTypeMasterFormMetaData = {
         rules: [{ name: "required", params: ["Code is required."] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3 },
-      validate: (columnValue) => {
+      validate: (columnValue, ...rest) => {
         let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
-          return "Special character '!' and '&' not allowed";
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
         }
         return "";
       },
@@ -71,10 +90,29 @@ export const OrnamentTypeMasterFormMetaData = {
         rules: [{ name: "required", params: ["Description is required."] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 6 },
-      validate: (columnValue) => {
+      validate: (columnValue, ...rest) => {
         let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
-          return "Special character '!' and '&' not allowed";
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
         }
         return "";
       },

@@ -1,8 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const OrnamentTypeMasterMetaData: GridMetaDataType = {
+export const OrnamentTypeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Ornament Type Master (EMST/247)",
+    gridLabel: "Ornament Type Master (MST/247)",
     rowIdColumn: "CODE",
     defaultColumnConfig: {
       width: 400,
