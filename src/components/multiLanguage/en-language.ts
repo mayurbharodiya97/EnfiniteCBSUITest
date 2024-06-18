@@ -432,6 +432,22 @@ export const en_language_data = {
     newAcct: "New Account",
   },
 
+  // Auditor Master
+  AuditorMaster: "Auditor Master",
+  AuditorName: "Auditor Name",
+  Address1: "Address1",
+  Address2: "Address2",
+  PhoneNo: "Phone Number",
+  Designation: "Designation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Reason Master",
+  Code: "Code",
+  Description: "Description",
+  EnterDescription: "Enter Description",
+  EnterCode: "Enter Code",
+
+  //
   sidebar: {
     Dashboard: "Dashboard",
 

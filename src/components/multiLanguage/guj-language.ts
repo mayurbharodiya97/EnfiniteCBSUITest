@@ -239,6 +239,21 @@ export const guj_language_data = {
 
   EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
 
+  // Auditor Master
+  AuditorMaster: "ઓડિટર માસ્ટર",
+  AuditorName: "ઓડિટરનું નામ",
+  Address1: "સરનામું 1",
+  Address2: "સરનામું 2",
+  PhoneNo: "ફોન નંબર",
+  Designation: "હોદ્દો",
+
+  // Lien reason master
+  LienReasonMaster: "પૂર્વાધિકાર કારણ માસ્ટર",
+  Code: "કોડ",
+  Description: "વર્ણન",
+  EnterDescription: "વર્ણન દાખલ કરો",
+  EnterCode: "કોડ દાખલ કરો",
+
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 
