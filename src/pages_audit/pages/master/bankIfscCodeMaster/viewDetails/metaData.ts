@@ -2,8 +2,8 @@ import { textTransform } from "@mui/system";
 
 export const metaData = {
   form: {
-    name: "Bank Ifsc Code Master(EMST/142)",
-    label: "Bank Ifsc Code Master(EMST/142)",
+    name: "Bank Ifsc Code Master(MST/142)",
+    label: "Bank Ifsc Code Master(MST/142)",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -49,7 +49,7 @@ export const metaData = {
         componentType: "textField",
       },
       name: "IFSC_CODE",
-      label: "IFSC Code",
+      label: "IFSCCode",
       placeholder: "IFSC Code",
 
       txtTransform: "uppercase",
@@ -59,23 +59,26 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["IFSC Code is Required"] }],
       },
-      validate: (columnValue) => {
-
-
+      validate: (columnValue, ...rest) => {
         const IFSC = columnValue.value;
         console.log(IFSC);
         if (IFSC.length < 11 || IFSC.length > 11) {
           return "IFSC code should be of eleven digits"
         }
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+        return "";
       },
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 3, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "BANK_NM",
-      label: "Bank Name",
+      label: "BankName",
       txtTransform: "uppercase",
       placeholder: "Bank Name",
       type: "text",
@@ -84,7 +87,7 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["Bank Name is Required"] }],
       },
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     },
     {
       render: { componentType: "select" },
@@ -99,7 +102,7 @@ export const metaData = {
       ],
       defaultValue: "Y",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 3, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
       fullWidth: true,
     },
     {
@@ -107,73 +110,73 @@ export const metaData = {
         componentType: "textField",
       },
       name: "MICR_CODE",
-      label: "MICR Code",
+      label: "MICRCode",
       placeholder: "MICR Code",
       maxLength: 16,
       type: "text",
       txtTransform: "uppercase",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 3, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "BRANCH_NM",
-      label: "Branch Name",
+      label: "BranchName",
       txtTransform: "uppercase",
       placeholder: "Branch Name",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 3, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "ADD1",
-      label: "Add 1",
+      label: "Add1",
       txtTransform: "uppercase",
       placeholder: "Adddress 1",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "CONTACT_DTL",
-      label: "Contact Detail",
+      label: "ContactDetail",
       txtTransform: "uppercase",
       placeholder: "Contact Detail",
       maxLength: 10,
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "CENTRE_NM",
-      label: "Centre Name",
+      label: "CentreName",
       placeholder: "Centre Name",
       txtTransform: "uppercase",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "DISTRICT_NM",
-      label: "District Name",
+      label: "DistrictName",
       placeholder: "District Name",
       txtTransform: "uppercase",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
       render: {
         componentType: "textField",
       },
       name: "STATE_NM",
-      label: "State Name",
+      label: "StateName",
       txtTransform: "uppercase",
       placeholder: "State Name",
       type: "text",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 12 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     },
   ],
 };

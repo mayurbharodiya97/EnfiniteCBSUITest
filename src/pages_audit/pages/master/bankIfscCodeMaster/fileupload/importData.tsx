@@ -37,7 +37,7 @@ const actions: ActionTypes[] = [
 ];
 
 
-export default function ImportData({ CloseFileUpload }) {
+export default function ImportData({ CloseFileUpload, refetchData }) {
   const [isFileUploadopen, setFileUpload] = useState(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.uploadFileData,
@@ -57,6 +57,7 @@ export default function ImportData({ CloseFileUpload }) {
         enqueueSnackbar("data imported successfully", {
           variant: "success",
         });
+        refetchData();
         CloseFileUpload();
         CloseMessageBox();
       },
@@ -94,6 +95,9 @@ export default function ImportData({ CloseFileUpload }) {
               const TRAN_CD = base64Object[0].DESCRIPTION[1];
               const FILEBLOB = base64Object;
               mutation.mutate({ FILE_FORMAT, TRAN_CD, FILEBLOB });
+            }
+            else if (btnName === "No") {
+              CloseFileUpload();
             }
 
           }}

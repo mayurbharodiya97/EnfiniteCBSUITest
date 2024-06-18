@@ -98,6 +98,7 @@ const BankIfscCdMasterForm = ({
 
   return (
     <>
+
       <FormWrapper
         key={"bankifsccodeMasterForm" + formMode}
         metaData={
@@ -108,6 +109,10 @@ const BankIfscCdMasterForm = ({
         }
         initialValues={{
           ...(rows?.[0]?.data ?? {}),
+        }}
+        formState={{
+          gridData: gridData,
+          rows: rows?.[0]?.data,
         }}
         displayMode={formMode}
         onSubmitHandler={onSubmitHandler}
@@ -181,7 +186,7 @@ export const BankIfscCdMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog
