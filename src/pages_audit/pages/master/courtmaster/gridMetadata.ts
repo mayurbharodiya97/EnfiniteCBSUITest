@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const CourtMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Court Master (EMST/146)",
+    gridLabel: "CourtMaster",
     rowIdColumn: "COURT_CD",
     defaultColumnConfig: {
       width: 400,
@@ -29,12 +29,12 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "Sr_No",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 80,
-      minWidth: 60,
+      width: 70,
+      minWidth: 50,
       maxWidth: 100,
       isAutoSequence: true,
     },
@@ -50,7 +50,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "COURT_NAME",
-      columnName: "Court Name",
+      columnName: "CourtName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -69,8 +69,8 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "DIST_NM",
-      columnName: "District",
+      accessor: "CITY_NM",
+      columnName: "City",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -79,14 +79,14 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "PIN_CODE",
-      columnName: "Pin",
+      accessor: "DIST_NM",
+      columnName: "District",
       sequence: 6,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 80,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 100,
+      maxWidth: 200,
     },
     {
       accessor: "STATE_NM",
@@ -99,19 +99,9 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      accessor: "CITY_NM",
-      columnName: "City",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
       accessor: "COUNTRY_NM",
       columnName: "Country",
-      sequence: 9,
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 130,
@@ -119,8 +109,18 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
+      accessor: "PIN_CODE",
+      columnName: "PinCode",
+      sequence: 9,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 80,
+      maxWidth: 150,
+    },
+    {
       accessor: "ADD1",
-      columnName: "Address 1",
+      columnName: "Address1",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -140,7 +140,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT1",
-      columnName: "Contact 1",
+      columnName: "Contact1",
       sequence: 12,
       alignment: "left",
       componentType: "default",
@@ -150,7 +150,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT2",
-      columnName: "Contact 2",
+      columnName: "Contact2",
       sequence: 13,
       alignment: "left",
       componentType: "default",
@@ -160,7 +160,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT3",
-      columnName: "Contact 3",
+      columnName: "Contact3",
       sequence: 14,
       alignment: "left",
       componentType: "default",

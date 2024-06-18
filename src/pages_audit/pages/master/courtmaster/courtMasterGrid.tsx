@@ -23,7 +23,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -68,14 +68,15 @@ export const CourtMasterGrid = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
-            data: { ...isDeleteDataRef.current?.data, _isDeleteRow: true },
+            ...isDeleteDataRef.current?.data,
+            _isDeleteRow: true,
           });
         }
       } else if (data?.name === "add") {
@@ -147,6 +148,7 @@ export const CourtMasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
+              gridData={data}
             />
           }
         />
@@ -157,6 +159,7 @@ export const CourtMasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />
