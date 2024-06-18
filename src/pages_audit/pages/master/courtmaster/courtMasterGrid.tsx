@@ -71,7 +71,7 @@ export const CourtMasterGrid = () => {
           message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({

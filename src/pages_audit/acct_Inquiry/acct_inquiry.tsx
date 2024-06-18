@@ -18,6 +18,7 @@ import * as CommonApi from "../pages/operations/DailyTransaction/TRNCommon/api";
 import { enqueueSnackbar } from "notistack";
 import { DailyTransTabsWithDialog } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 import { queryClient } from "cache";
+import { t } from "i18next";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -50,6 +51,7 @@ export const Accountinquiry = ({ open, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [rowsData, setRowsData] = useState<any>([]);
+  const [selectedRowsData, setSelectedRowsData] = useState<any>([]);
   const [acctOpen, setAcctOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
   const [showGridData, setShowGridData] = useState(false);
@@ -90,6 +92,7 @@ export const Accountinquiry = ({ open, onClose }) => {
         setComponentToShow("ViewDetail");
         setAcctOpen(true);
         setRowsData(data?.rows);
+        setSelectedRowsData(data?.rows);
         rowsDataRef.current = data?.rows?.[0]?.data;
         // openInNewWindow();
       } else if (data.name === "dependencies") {
@@ -179,7 +182,7 @@ export const Accountinquiry = ({ open, onClose }) => {
       !Boolean(data?.NAME)
     ) {
       //@ts-ignore
-      endSubmit(true, "Please enter any value");
+      endSubmit(true, t("PleaseEnterAnyValue"));
       setShowGridData(true);
     } else {
       //@ts-ignore
@@ -275,7 +278,7 @@ export const Accountinquiry = ({ open, onClose }) => {
                     },
                   }}
                 >
-                  close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}

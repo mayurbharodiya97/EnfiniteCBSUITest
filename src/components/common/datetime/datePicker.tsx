@@ -117,7 +117,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
-    //chnages for min-max date is not edit
+    // chnages for min-max date is not edit
     if (value) {
       const selectedDate = new Date(value).toLocaleDateString();
       const maxDate = new Date(others.maxDate).toLocaleDateString();
@@ -140,22 +140,26 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }
     }
   }, [value, handleChange]);
-  const focusRef = useRef();
-  // console.log("<<focusRef", isFieldFocused);
+  const focusRef = useRef<any>();
+  const getFocus = () => {
+    setTimeout(() => {
+      focusRef?.current?.focus?.();
+    }, 50);
+  };
 
   useEffect(() => {
-    // console.log("<<isFieldFocused", isFieldFocused);
     if (isFieldFocused) {
-      //@ts-ignore
       setTimeout(() => {
-        //@ts-ignore
         focusRef?.current?.focus?.();
       }, 1);
     }
   }, [isFieldFocused]);
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { isFieldFocused, value } = incomingMessage;
+      if (isFieldFocused) {
+        getFocus();
+      }
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (whenToRunValidation === "onBlur") {

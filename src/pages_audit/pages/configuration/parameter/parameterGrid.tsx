@@ -77,7 +77,6 @@ const Parameters = () => {
         comp_cd: authState?.companyID, 
         branch_cd: authState.user.branchCode,
         conf_type: "A",
-        remark: "",
       })
   );
   const validation = ()=>{

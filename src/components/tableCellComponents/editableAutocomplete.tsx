@@ -1,6 +1,8 @@
 import { AutoCompleteGrid } from "components/common/autocomplete/autocompleteGrid";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
+import { FormHelperText } from "@mui/material";
+import { t } from "i18next";
 
 export const EditableAutocomplete = (props) => {
   const {
@@ -61,6 +63,11 @@ export const EditableAutocomplete = (props) => {
         showCheckbox={false}
         renderInput={() => null}
       />
+      {Boolean(externalTouched) && Boolean(externalError) ? (
+        <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>
+          {t(externalError)}
+        </FormHelperText>
+      ) : null}
     </CellWrapper>
   );
 };

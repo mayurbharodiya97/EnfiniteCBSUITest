@@ -87,7 +87,7 @@ const CourtMasterForm = ({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({

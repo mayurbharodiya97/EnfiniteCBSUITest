@@ -1,7 +1,7 @@
 export const lienconfirmFormMetaData = {
   form: {
     name: "lien-confirmation-form",
-    label: "Confirmation Detail",
+    label: "ConfirmationDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -50,7 +50,7 @@ export const lienconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "LIEN_CD",
-      label: "Lien Code",
+      label: "LienCode",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -65,7 +65,7 @@ export const lienconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "LIEN_AMOUNT",
-      label: "Lien Amount",
+      label: "LienAmount",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -79,7 +79,7 @@ export const lienconfirmFormMetaData = {
         componentType: "autocomplete",
       },
       name: "LIEN_STATUS",
-      label: "Lien Status",
+      label: "LienStatus",
       options: () => {
         return [
           { value: "A", label: "Active" },
@@ -100,7 +100,7 @@ export const lienconfirmFormMetaData = {
         componentType: "textField",
       },
       name: "PARENT_CD_NM",
-      label: "Parent Code/Name",
+      label: "ParentCodeName",
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -114,7 +114,7 @@ export const lienconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "EFECTIVE_DT",
-      label: "Effective Date",
+      label: "EffectiveDate",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -128,7 +128,7 @@ export const lienconfirmFormMetaData = {
         componentType: "datePicker",
       },
       name: "REMOVAL_DT",
-      label: "Removal Date",
+      label: "RemovalDate",
       GridProps: {
         xs: 12,
         md: 2.4,
