@@ -3,17 +3,12 @@ export const guj_language_data = {
 
   // Priority master main
   Code:"કોડ",
-  // Add:"ઉમેરો",
   ParentGroup:"પિતૃ જૂથ",
   SubPriority:"સબ પ્રાયોરિટી",
-  // Description:"વર્ણન",
   SanctionFromLimit:"મર્યાદાથી મંજૂરી",
   SanctionToLimit:"મર્યાદા માટે મંજૂરી",
   ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
   ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
-  // Active:"સક્રિય",
-  // ViewDetail:"વિગત જુઓ",
-  // Delete:"કાઢી નાખો",
   ParentWeaker:"પેરેંટ વેકર",
   CKYCGroup:"C-KYC ગ્રુપ",
   Constitution:"બંધારણ",
