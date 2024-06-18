@@ -1323,6 +1323,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRANTYPEDDW",
     packageName: "",
   },
+  GETAGENTMSTRETRIVE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTRETRIVE",
+    packageName: "",
+  },
   GETCOMMTYPEDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEDDDW",
     packageName: "",
@@ -1337,6 +1341,74 @@ export const ActionWiseAPIConfiguration = {
   },
   GETACCOUNTDETAIL: {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
+    packageName: "",
+  },
+  GETAGENTMSTCONFIGPIGMYDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
+    packageName: "",
+  },
+  AGENTMASTERDML: {
+    url: "/commonMasterServiceAPI/AGENTMASTERDML",
+    packageName: "",
+  },
+  GETRECURPAYMENTMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTMST",
+    packageName: "",
+  },
+  GETRECURRINGVALIDATEACCTDTL: {
+    url: "/transactionServiceAPI/GETRECURRINGVALIDATEACCTDTL",
+    packageName: "",
+  },
+  GETRECURRINGACCTDATA: {
+    url: "/transactionServiceAPI/GETRECURRINGACCTDATA",
+    packageName: "",
+  },
+  GETRECURRINGADVICEDTL: {
+    url: "/transactionServiceAPI/GETRECURRINGADVICEDTL",
+    packageName: "",
+  },
+  GETPAYSLIPINFAVOURDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPINFAVOURDDW",
+    packageName: "",
+  },
+  GETPAYSLIPREGIONDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREGIONDDW",
+    packageName: "",
+  },
+  GETPAYSLIPBANKCODEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBANKCODEDDW",
+    packageName: "",
+  },
+  GETPAYSLIPSIGNATUREDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSIGNATUREDDW",
+    packageName: "",
+  },
+  CHECKTOKENVALIDATE: {
+    url: "/transactionServiceAPI/CHECKTOKENVALIDATE",
+    packageName: "",
+  },
+  SAVERECURRINGENTRYVALIDATION: {
+    url: "/transactionServiceAPI/SAVERECURRINGENTRYVALIDATION",
+    packageName: "",
+  },
+  GETCALCULATEGSTCOMM: {
+    url: "/transactionServiceAPI/GETCALCULATEGSTCOMM",
+    packageName: "",
+  },
+  VALIDATEPAYSLIPNO: {
+    url: "/transactionServiceAPI/VALIDATEPAYSLIPNO",
+    packageName: "",
+  },
+  GETRTGSBNFCRYDTL: {
+    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
+    packageName: "",
+  },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEACWISE: {
+    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
     packageName: "",
   },
 };
