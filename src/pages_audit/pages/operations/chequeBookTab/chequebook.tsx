@@ -173,7 +173,7 @@ const ChequebookTabCustom = () => {
       message: t("AreYouSureToProceed"),
       buttonNames: ["No", "Yes"],
       defFocusBtnName: "Yes",
-      loadingBtnName: "Yes",
+      loadingBtnName: ["Yes"],
     });
     if (res === "Yes") {
       crudChequeData.mutate(apiReq);

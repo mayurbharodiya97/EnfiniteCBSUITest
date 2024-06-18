@@ -138,7 +138,7 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                       message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
-                      loadingBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
                     });
                     if (buttonName === "Yes") {
                       stockCfm.mutate({
