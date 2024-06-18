@@ -6,7 +6,7 @@ import { GradientButton } from "components/styledComponent/button";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { extractMetaData, utilFunction } from "components/utils";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { OrnamentTypeMasterFormMetaData } from "./metadata";
+import { OrnamentTypeMasterFormMetaData } from "./metaData";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";

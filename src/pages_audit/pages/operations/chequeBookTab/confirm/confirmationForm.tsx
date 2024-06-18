@@ -94,7 +94,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
         isConfirm === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
       buttonNames: ["No", "Yes"],
       defFocusBtnName: "Yes",
-      loadingBtnName: "Yes",
+      loadingBtnName: ["Yes"],
     });
 
     if (res === "Yes") {

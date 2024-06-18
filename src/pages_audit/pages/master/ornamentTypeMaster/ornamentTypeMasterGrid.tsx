@@ -15,9 +15,9 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { OrnamentTypeMasterMetaData } from "./gridMetaData";
 import { OrnamentTypeMasterFormWrapper } from "./ornamentTypeMasterForm/ornamentTypeMasterForm";
 import { ClearCacheContext, queryClient } from "cache";
+import { OrnamentTypeMasterMetaData } from "./gridMetadata";
 
 const actions: ActionTypes[] = [
   {
