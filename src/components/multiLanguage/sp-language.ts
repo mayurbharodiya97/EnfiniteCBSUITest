@@ -359,5 +359,17 @@ export const sp_language_data = {
   // Ac period Mater
   PeriodName: "Nombre del período",
   InstNo: "número de pago",
-  InstallmentPeriod: "Período de pago"
+  InstallmentPeriod: "Período de pago",
+  //bank ifsc code master
+  IFSCCode: "Código IFSC",
+  BankName: "Nombre del banco",
+  Facility: "Facilidad",
+  MICRCode: "Código MICR",
+  BranchName: "Nombre de la sucursal",
+  Add1: "Dirección 1",
+  ContactDetail: "Detalles de contacto",
+  DistrictName: "Nombre del distrito",
+  StateName: "Nombre del estado",
+  Import: "Importación",
+  CentreName: "Nombre del centro"
 };

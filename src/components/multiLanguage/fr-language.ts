@@ -375,5 +375,18 @@ export const fr_language_data = {
   // Ac period Mater
   PeriodName: "Nom de la période",
   InstNo: "numéro de versement",
-  InstallmentPeriod: "Période de versement"
+  InstallmentPeriod: "Période de versement",
+  //bank ifsc code master
+  IFSCCode: "Code IFSC",
+  BankName: "Nom de la banque",
+  Facility: "Facilité",
+  MICRCode: "Code MICR",
+  BranchName: "Nom de la succursale",
+  Add1: "Adresse 1",
+  ContactDetail: "Coordonnées de contact",
+  DistrictName: "Nom du district",
+  StateName: "Nom de l'état",
+  Import: "Importation",
+  CentreName: "Nom du centre"
+
 };

@@ -552,9 +552,22 @@ export const guj_language_data = {
   MinimumNoofJoints: "સાંધાઓની ન્યૂનતમ સંખ્યા",
   MaximumNoofJoints: "સાંધાઓની મહત્તમ સંખ્યા",
   // Ac period Mater
-  PeriodName:"પીરિયડનું નામ",
-  InstNo:"હપ્તા નં.",
-  InstallmentPeriod:"હપ્તાનો સમયગાળો"
+  PeriodName: "પીરિયડનું નામ",
+  InstNo: "હપ્તા નં.",
+  InstallmentPeriod: "હપ્તાનો સમયગાળો",
+  // Bank ifsc code master
+  IFSCCode: "IFSC કોડ",
+  BankName: "બેંકનું નામ",
+  Facility: "સુવિધા",
+  MICRCode: "MICR કોડ",
+  BranchName: "શાખાનું નામ",
+  Add1: "સરનામું 1",
+  ContactDetail: "સંપર્ક વિગતો",
+  DistrictName: "જિલ્લાનું નામ",
+  StateName: "રાજ્યનું નામ",
+  Import: "આયાત",
+  CentreName: "કેન્દ્રનું નામ"
+
 };
 
 
