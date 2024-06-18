@@ -599,7 +599,7 @@ export const guj_language_data = {
   DistrictName: "જિલ્લાનું નામ",
   StateName: "રાજ્યનું નામ",
   Import: "આયાત",
-  CentreName: "કેન્દ્રનું નામ"
+  CentreName: "કેન્દ્રનું નામ",
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
 };

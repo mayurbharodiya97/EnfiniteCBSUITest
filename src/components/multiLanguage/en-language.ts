@@ -784,7 +784,7 @@ export const en_language_data = {
   DistrictName: "District Name",
   StateName: "State Name",
   Import: "Import",
-  CentreName: "Centre Name"
+  CentreName: "Centre Name",
   TempODAgainstConfirmation: "Temporary OD Against Confirmation",
   Defination: "Defination",
 };

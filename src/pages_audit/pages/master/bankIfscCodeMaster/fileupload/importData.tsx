@@ -87,7 +87,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               message: "Are you sure to Insert the File Data ?",
               messageTitle: "Confirmation",
               buttonNames: ["Yes", "No"],
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
 
             if (btnName === "Yes") {
