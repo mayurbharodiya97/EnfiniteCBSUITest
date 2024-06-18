@@ -131,6 +131,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
             {...others}
             readOnly={readOnly}
             tabIndex={readOnly ? -1 : undefined}
+            disabled={readOnly}
           />
         }
         onChange={handelChange}

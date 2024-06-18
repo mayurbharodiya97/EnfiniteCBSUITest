@@ -5,6 +5,10 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
+import {
+  RecurringContext,
+  RecurringContextWrapper,
+} from "./recurringPaymentEntry/context/recurringPaymentContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -27,6 +31,9 @@ const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
+);
+const RecurringPaymentEntryFormWrapper = lazy(
+  () => import("./recurringPaymentEntry")
 );
 
 export const OperationsMenu = () => (
@@ -121,6 +128,14 @@ export const OperationsMenu = () => (
         <FixDepositProvider>
           <FixDepositForm />
         </FixDepositProvider>
+      }
+    />
+    <Route
+      path="recurring-payment-entry/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryFormWrapper />
+        </RecurringContextWrapper>
       }
     />
   </Routes>
