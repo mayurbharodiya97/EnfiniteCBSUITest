@@ -100,6 +100,7 @@ export interface UseFieldHookProps {
     alwaysRun?: any;
     touchAndValidate?: any;
   };
+  preventSpecialCharInput?: boolean;
 }
 
 export interface UseFieldArrayHookProps {
