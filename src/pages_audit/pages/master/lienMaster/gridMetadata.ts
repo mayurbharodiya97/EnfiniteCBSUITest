@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const gridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Lien-Master (EMST/066)",
+    gridLabel: "Lien-Master MST/066",
     rowIdColumn: "LEAN_CD",
     defaultColumnConfig: {
       width: 400,
