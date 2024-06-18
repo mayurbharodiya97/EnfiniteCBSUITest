@@ -92,12 +92,7 @@ export const limitEntryMetaData = {
           });
         },
         // _optionsKey: "get_Account_Type",
-        postValidationSetCrossFieldValues: async (
-          field,
-          formState,
-          authState,
-          dependentValue
-        ) => {
+        postValidationSetCrossFieldValues: async (field, formState) => {
           formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
           return {
             PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
@@ -223,7 +218,6 @@ export const limitEntryMetaData = {
         runPostValidationHookAlways: true,
       },
     },
-
     {
       render: {
         componentType: "textField",
@@ -328,40 +322,47 @@ export const limitEntryMetaData = {
             SECURITY_CD: field?.value,
             SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
           });
+          return {
+            SECURITY_TYPE_DISPLAY: {
+              value: field?.optionData?.[0]?.DISPLAY_NM,
+            },
+          };
         }
-
-        return {
-          // FD_BRANCH_CD: { error: "" },
-          // FD_TYPE: { error: "" },
-          // FD_ACCT_CD: { value: "" },
-          // FD_NO: { value: "" },
-          // EXPIRY_DT: { value: "" },
-          // SEC_AMT: { value: "" },
-          // SEC_INT_AMT: { value: "" },
-          // SECURITY_VALUE: { value: "" },
-          // INT_AMT: { value: "" },
-          // INT_RATE: { value: "" },
-          // PENAL_RATE: { value: "" },
-        };
       },
-
-      // validate: (currField) => {
-      //   if (!Boolean(currField?.value)) {
-      //     return "Security Code is required.";
-      //   }
-      //   return "";
-      // },
-
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
-        lg: 4,
-        xl: 4,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "SECURITY_DETAIL",
+      label: "SecurityDetail",
+      dependentFields: ["SECURITY_CD"],
+      shouldExclude(fieldData, dependentFields) {
+        let value =
+          dependentFields?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim();
+        if (value === "OTH") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        sm: 3,
+        md: 1,
+        lg: 1,
+        xl: 1,
       },
     },
     {
@@ -369,6 +370,18 @@ export const limitEntryMetaData = {
         componentType: "hidden",
       },
       name: "PARENT_TYPE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SECURITY_TYPE_DISPLAY",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "GET_LIMIT_RATE",
     },
   ],
 };

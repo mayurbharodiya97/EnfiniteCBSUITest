@@ -54,6 +54,12 @@ export const EntryDescMasterFormMetadata = {
         if (columnValue?.value && !specialChar.test(columnValue.value)) {
           return "'!' and '&' not allowed";
         }
+
+        // const duplicate = utilFunction.checkDupliCateValue(
+        //   columnValue,
+        //   ...rest
+        // );
+        // return duplicate || "";
       },
       schemaValidation: {
         type: "string",

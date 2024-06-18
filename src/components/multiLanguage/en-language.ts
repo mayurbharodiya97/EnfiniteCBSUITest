@@ -1,4 +1,21 @@
+import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
+
 export const en_language_data = {
+  //for priority master main
+  ParentGroup:"Parent Group",
+  SubPriority:"Sub Priority",
+  SanctionFromLimit:"Sanction From Limit",
+  SanctionToLimit:"Sanction To Limit",
+  ProvisionSecured:"Provision Secured %",
+  ProvisionUnSecured:"Provision Unsecured %",
+  ParentWeaker:"Parent Weaker",
+  CKYCGroup:"C-KYC Group",
+  Constitution:"Constitution",
+  PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
+  
+  //
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
@@ -206,17 +223,22 @@ export const en_language_data = {
     Role: "Role",
     LastUnsuccessfulLogin: "Last Unsuccessful Login",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Account Inquiry",
+  AccountDetails: "Account Details",
   CustomerDetail: "Customer Detail",
-  AccountNo: "Account No.",
-  PanNo: "Pan No.",
+  AccountNo: "A/c Number",
+  PAN_NO: "PAN",
+  Account_Name: "A/c Name",
   Retrieve: "Retrieve",
-  AccountPersonName: "Account/Person Name",
+  AcctHolderType: "A/C Holder Type",
   OpeningDate: "Opening Date",
   CloseDate: "Close Date",
-
-  // Passbook/Statement Print Option
+  WithdrawBalance: "Withdraw Balance",
+  SearchCriteriaData: "Search Criteria Data",
+  PleaseEnterAnyValue: "Please enter any value",
+  TotalNoOfRecords: "Total No Of Records:",
+  //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption: "Passbook/Statement Print Option",
   Template: "Template",
@@ -240,6 +262,12 @@ export const en_language_data = {
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
+
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "Assets & Liabilities",
+  Account_Status: "A/C Status",
+  DependenciesOfCustomer_id: "Dependencies Of Customer ID",
 
   //  ckyc
   EmailId: "Email-Id",
@@ -616,11 +644,13 @@ export const en_language_data = {
   DepositeDate: "Deposite Date",
   CertificateNumber: "Cetificate No.",
   CollateralName: "Collateral Name",
+  EnterCollateralName: "Enter Collateral Name",
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
+  Period: "Period",
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
@@ -636,6 +666,10 @@ export const en_language_data = {
   OtherDescription: "Other Description",
   ExpiredFlag: "Expired Flag",
   ResolutionNumber: "Resolution Number",
+  SecurityDetail: "Security Detail",
+  SecurityType: "Security Type",
+  CollateralRemarks: "Collateral Remarks",
+  AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
 
   // stop payment
 
@@ -697,6 +731,7 @@ export const en_language_data = {
   LimitAmount: "LimitAmount",
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
+  AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
 
   // Lien Entry
 
@@ -738,11 +773,13 @@ export const en_language_data = {
   Flag: "Flag",
   Submit: "Submit",
   ValidTillDate: "Valid Till Date",
-  TemporaryODTodayDetail: "Temporary-OD Today Detail",
+  TemporaryODTodayDetail: "Temporary-OD Today(s) Detail",
   CodeDecription: "Code Decription",
   ForceExpDate: "Force Exp Date",
   ForceExpBy: "Force Exp By",
-  TemporaryODHistory: "Temporary-OD History",
+  TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  TempODAgainstConfirmation: "Temporary OD Against Confirmation",
+  Defination: "Defination",
 };

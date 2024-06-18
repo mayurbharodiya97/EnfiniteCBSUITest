@@ -1,6 +1,5 @@
-import { TableCell } from "@mui/material";
-
-export const HeaderCellWrapper = ({ column, children }) => {
+import { Checkbox, TableCell } from "@mui/material";
+export const HeaderCellWrapper = ({ column, children,SelectAllColumn = false,rows=[],updateGridData=(rowIndex: number, id: any, isChecked: any, p0: boolean, p1: string)=>{}}) => {
   const stickyHeaderCell =
     column.sticky === true
       ? {
@@ -10,6 +9,14 @@ export const HeaderCellWrapper = ({ column, children }) => {
           zIndex: 12,
         }
       : {};
+      const handleSelectAll = (e) => {
+        const isChecked = e.target.checked;
+        if (column?.Cell?.name === "EditableCheckbox") {
+          rows.forEach((row:any,rowIndex) => {
+            updateGridData(rowIndex,column?.id,isChecked,true,"");
+          });
+        }
+      };
   return (
     <TableCell
       component="div"
@@ -31,6 +38,12 @@ export const HeaderCellWrapper = ({ column, children }) => {
         },
       ])}
     >
+       {SelectAllColumn ? (
+        <Checkbox
+          style={{ color: "var(--theme-color1)" }}
+          onChange={handleSelectAll}
+        />
+      ) :null}
       {children}
       {/* {console.log(children)} */}
     </TableCell>
