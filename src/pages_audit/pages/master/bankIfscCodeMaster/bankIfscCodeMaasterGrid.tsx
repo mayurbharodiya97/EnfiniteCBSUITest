@@ -58,7 +58,7 @@ const BankIfscCodeMaasterGrid = () => {
           message: "Are you sure to delete selected row?",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({

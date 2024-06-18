@@ -214,7 +214,7 @@ const RtgsEntryForm: FC<{}> = () => {
         messageTitle: "Confirmation",
         message: " Proceed ?",
         buttonNames: ["No", "Yes"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (buttonName === "Yes") {
         // mutationOutward.mutate(finalReqDataRef.current);

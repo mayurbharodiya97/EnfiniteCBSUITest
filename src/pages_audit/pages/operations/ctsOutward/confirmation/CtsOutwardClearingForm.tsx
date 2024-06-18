@@ -290,11 +290,39 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                           : null}
                   </Typography>
 
-                  <>
-                    <DialogActions
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end", // Align items to the end
+                <>
+                  <DialogActions
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end", // Align items to the end
+                    }}
+                  >
+                    <GradientButton
+                      onClick={async () => {
+                        const buttonName = await MessageBox({
+                          messageTitle: "Confirmation",
+                          message: " Proceed ?",
+                          buttonNames: ["No", "Yes"],
+                          loadingBtnName: ["Yes"],
+                        });
+                        if (buttonName === "Yes") {
+                          confirmation.mutate({
+                            ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
+                            ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
+                            TRAN_CD: data?.[0]?.TRAN_CD,
+                            ACCT_TYPE: data?.[0]?.ACCT_TYPE,
+                            ACCT_CD: data?.[0]?.ACCT_CD,
+                            CONFIRMED: "N",
+                            ENTERED_BY: data?.[0]?.ENTERED_BY,
+                            AMOUNT: data?.[0]?.AMOUNT,
+                            SCREEN_REF:
+                              zoneTranType === "S"
+                                ? "ETRN/560"
+                                : zoneTranType === "R"
+                                ? "ETRN/029"
+                                : "ETRN/346",
+                          });
+                        }
                       }}
                     >
                       <GradientButton
@@ -538,19 +566,28 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                           _isDeleteRow: true,
                         });
 
-                        deleteMutation.mutate({
-                          DAILY_CLEARING: {
-                            TRAN_CD: rowsData?.TRAN_CD,
-                          },
-                          DETAILS_DATA: {
-                            isNewRow: [],
-                            isDeleteRow: [
-                              {
-                                TRAN_CD: rowsData?.TRAN_CD,
-                              },
-                            ],
-                            isUpdatedRow: [],
-                          },
+              {isDeleteRemark && (
+                <RemarksAPIWrapper
+                  TitleText={
+                    zoneTranType === "S"
+                      ? "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)"
+                      : zoneTranType === "R"
+                      ? "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)"
+                      : "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)"
+                  }
+                  onActionNo={() => SetDeleteRemark(false)}
+                  onActionYes={async (val, rows) => {
+                    const buttonName = await MessageBox({
+                      messageTitle: "Confirmation",
+                      message: "Do You Want to delete this row?",
+                      buttonNames: ["No", "Yes"],
+                      defFocusBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
+                    });
+                    if (buttonName === "Yes") {
+                      deleteMutation.mutate({
+                        DAILY_CLEARING: {
+                          _isNewRow: false,
                           _isDeleteRow: true,
                         });
                       }

@@ -10,11 +10,11 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
 import { chequeBKRetrievalMetadata } from "./retrieveMetadata";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-const RetrieveDataCustom = ({ closeDialog, result, isOpen }) => {
+const RetrieveDataCustom = ({ closeDialog, result }) => {
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
-
   const {
     data: chequeBookFlag,
     isError,
@@ -112,11 +112,7 @@ export const RetrieveData = ({ closeDialog, result, isOpen }) => {
         }}
         maxWidth="sm"
       >
-        <RetrieveDataCustom
-          closeDialog={closeDialog}
-          result={result}
-          isOpen={isOpen}
-        />
+        <RetrieveDataCustom closeDialog={closeDialog} result={result} />
       </Dialog>
     </>
   );

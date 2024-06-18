@@ -16,8 +16,7 @@ import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
-import SingleDeno from "./singleDeno";
-import { Dialog, Grid, Paper, Typography } from "@mui/material";
+import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { cashReportMetaData } from "./metadataTeller";
 import { ActionTypes } from "components/dataTable/types";
 import { format, parse } from "date-fns";
@@ -25,7 +24,7 @@ import Report from "components/report";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
-import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
+// import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
 // import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
 import {
   SingleTableDataReducer,
@@ -35,8 +34,14 @@ import {
 import { usePopupContext } from "components/custom/popupContext";
 import DualPartTable from "./dualPartTable";
 import DualTableCalc from "./dualTableCalc";
+import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
+import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import { padding } from "@mui/system";
+import { FocusTrap } from "@mui/base";
 const TellerScreen = () => {
   const formRef: any = useRef(null);
+  const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
   const textFieldRef: any = useRef(null);
   const popupReqWrapperRef: any = useRef(null);
@@ -45,27 +50,103 @@ const TellerScreen = () => {
     SingleTableInititalState
   );
   const [cardDetails, setCardDetails] = useState([]);
-  const [extraAccDtl, setExtraAccDtl] = useState({});
+  const [cardTabsReq, setCardTabsReq] = useState({});
+  const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const { authState }: any = useContext(AuthContext);
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
-  const { MessageBox } = usePopupContext();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const { denoTableType } = customParameter;
+  // const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [btnLoading, setBtnLoading] = useState({
     table1: false,
     table2: false,
   });
+  const {
+    clearCache: clearTabsCache,
+    error: tabsErorr,
+    data: tabsDetails,
+    setData: setTabsDetails,
+    fetchData: fetchTabsData,
+    isError: isTabsError,
+    isLoading: isTabsLoading,
+  } = useCacheWithMutation(
+    "getTabsByParentTypeKeyTrn001",
+    CommonApi.getTabsByParentType
+  );
 
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
-    if (cardStore?.cardsInfo && Array.isArray(cardStore.cardsInfo)) {
-      const extraAccDtl = cardStore.cardsInfo.reduce((result, details) => {
-        if (details?.COL_LABEL === "Name") {
-          result[details.COL_LABEL] = details.COL_VALUE;
+    if (cardDetails?.length > 0 && Array.isArray(cardDetails)) {
+      // console.log(cardDetails, "cardDetailscardDetailscardDetails58586316352");
+      const extraAccDtl = cardDetails.reduce((result, details: any) => {
+        if (
+          details?.COL_LABEL === "Name" ||
+          details?.COL_LABEL === "A/c Number"
+        ) {
+          result[details.COL_LABEL] = details.COL_VALUE ?? "";
         }
         return result;
       }, {});
+
       setExtraAccDtl(extraAccDtl);
     }
-  }, [cardStore?.cardsInfo]);
+  }, [cardDetails]);
+
+  const getData: any = useMutation(API.CashReceiptEntrysData, {
+    onSuccess: (response: any, variables?: any) => {
+      // console.log(variables, "variables");
+      CloseMessageBox();
+      if (variables?.FLAG === "TABLE1") {
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE,
+          payload: true,
+        });
+        setBtnLoading((pre) => ({ ...pre, table1: false }));
+      } else if (variables?.FLAG === "TABLE2") {
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+          payload: true,
+        });
+        setBtnLoading((pre) => ({ ...pre, table2: false }));
+      }
+    },
+    onError: (error: any, variables?: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+      if (variables?.FLAG === "TABLE1") {
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE,
+          payload: false,
+        });
+        setBtnLoading((pre) => ({ ...pre, table1: false }));
+      } else if (variables?.FLAG === "TABLE2") {
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+          payload: false,
+        });
+        setBtnLoading((pre) => ({ ...pre, table2: false }));
+      }
+    },
+  });
+
+  const data: any = useMemo(() => {
+    if (Array.isArray(getData.data)) {
+      endSubmitRef?.current?.endSubmit(true);
+      return [...getData.data];
+    }
+  }, [getData.data]);
+
+  useEffect(() => {
+    if (data?.length > 0) {
+      // console.log(data?.[0]?.PAYMENT_LIMIT, "data?.[0]?.PAYMENT_LIMIT");
+      setExtraAccDtl((prevExtraAccDtl) => ({
+        ...prevExtraAccDtl,
+        ...extraAccDtl,
+        LIMIT: data?.[0]?.PAYMENT_LIMIT ?? "",
+      }));
+    }
+  }, [data]);
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -74,7 +155,7 @@ const TellerScreen = () => {
     setFieldError,
     actionFlag
   ) => {
-    endSubmit(true);
+    // endSubmit(true);
     endSubmitRef.current = {
       data: { data },
       displayData,
@@ -87,58 +168,24 @@ const TellerScreen = () => {
           type: SingleTableActionTypes?.SET_FIELDS_DATA,
           payload: data,
         });
-        dispatch({
-          type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-          payload: true,
-        });
+        // dispatch({
+        //   type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
+        //   payload: true,
+        // });
+
+        setExtraAccDtl((prevExtraAccDtl) => ({
+          ...prevExtraAccDtl,
+          ...extraAccDtl,
+          TRN_TYPE: data?.TRN === "R" ? `1` : `4` ?? "",
+          REMARKS: data?.REMARK ?? "",
+        }));
       }
     }
   };
 
-  const getData: any = useMutation(API.CashReceiptEntrysData, {
-    onSuccess: (response: any, variables?: any) => {
-      // console.log(variables, "variables");
-      dispatch({ type: SingleTableActionTypes?.SET_OPEN_DENO, payload: false });
-      if (variables?.FLAG === "TABLE1") {
-        setBtnLoading((pre) => ({ ...pre, table1: false }));
-        dispatch({
-          type: SingleTableActionTypes?.SET_DISP_TABLE,
-          payload: true,
-        });
-      } else if (variables?.FLAG === "TABLE2") {
-        setBtnLoading((pre) => ({ ...pre, table2: false }));
-
-        dispatch({
-          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
-          payload: true,
-        });
-      }
-    },
-    onError: (error: any, variables?: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      if (variables?.FLAG === "TABLE1") {
-        setBtnLoading((pre) => ({ ...pre, table1: false }));
-        dispatch({
-          type: SingleTableActionTypes?.SET_DISP_TABLE,
-          payload: false,
-        });
-      } else if (variables?.FLAG === "TABLE2") {
-        setBtnLoading((pre) => ({ ...pre, table2: false }));
-        dispatch({
-          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
-          payload: true,
-        });
-      }
-    },
-  });
-
-  const data: any = useMemo(() => {
-    if (Array.isArray(getData.data)) {
-      return [...getData.data];
-    }
-  }, [getData.data]);
+  // useEffect(() => {
+  //   console.log(extraAccDtl, "52143215145145");
+  // }, [extraAccDtl]);
 
   //initial value set in available note and balance column
   useEffect(() => {
@@ -293,17 +340,32 @@ const TellerScreen = () => {
       payload: newValue,
     });
 
-    if (state?.remainExcess === 0) {
-      dispatch({
-        type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-        payload: true,
-      });
-    } else {
-      dispatch({
-        type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-        payload: false,
-      });
-    }
+    // if (state?.remainExcess === 0) {
+    //   // dispatch({
+    //   //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
+    //   //   payload: true,
+    //   // });
+    //   const res = await MessageBox({
+    //     messageTitle: "Confirmation",
+    //     message: "All Transaction are Completed Want to Proceed ?",
+    //     //@ts-ignore
+    //     buttonNames: ["Yes", "No"],
+    //     defFocusBtnName: "Yes",
+    //     // loadingBtnName: ["Yes"],
+    //     icon: "INFO",
+    //   });
+    //   if (res === "Yes") {
+    //     console.log("form Submitted");
+    //   } else if (res === "No") {
+    //     CloseMessageBox();
+    //   }
+    // } else {
+    //   // dispatch({
+    //   //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
+    //   //   payload: false,
+    //   // });
+    //   CloseMessageBox();
+    // }
 
     if (
       state?.fieldsData?.TRN === "R" &&
@@ -408,17 +470,32 @@ const TellerScreen = () => {
   }, [state?.columnTotal?.amount, data, haveerror]);
 
   useEffect(() => {
-    if (state?.remainExcess === 0) {
-      dispatch({
-        type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-        payload: true,
-      });
-    } else {
-      dispatch({
-        type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
-        payload: false,
-      });
-    }
+    const fetchData = async () => {
+      if (state?.remainExcess === 0) {
+        // dispatch({
+        //   type: SingleTableActionTypes?.SET_CONFIRMATION_VAL,
+        //   payload: true,
+        // });
+        const res = await MessageBox({
+          messageTitle: "Confirmation",
+          message: "All Transactions are Completed. Do you want to proceed?",
+          //@ts-ignore
+          buttonNames: ["Yes", "No"],
+          defFocusBtnName: "Yes",
+          // loadingBtnName: ["Yes"],
+          icon: "INFO",
+        });
+        if (res === "Yes") {
+          console.log("Form Submitted");
+        } else if (res === "No") {
+          CloseMessageBox();
+        }
+      } else {
+        CloseMessageBox();
+      }
+    };
+
+    fetchData();
   }, [state?.remainExcess]);
 
   const onCloseTable = (newVal, flag) => {
@@ -438,76 +515,71 @@ const TellerScreen = () => {
     // }
   };
 
-  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
-    onSuccess: (data) => {
-      setCardStore({ ...cardStore, cardsInfo: data });
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setCardStore({ ...cardStore, cardsInfo: [] });
-    },
-  });
-
   let finalScreenRef = "";
+
+  useEffect(() => {
+    dispatch({
+      type: SingleTableActionTypes?.SET_INPUT_VAL,
+      payload: {},
+    });
+    dispatch({ type: SingleTableActionTypes?.SET_AMOUNT_VAL, payload: [] });
+    dispatch({
+      type: SingleTableActionTypes?.SET_REMAINEXCESS_VAL,
+      payload: "",
+    });
+  }, []);
+
+  var receiptInput = document.getElementsByName(
+    "TellerOperation/RECEIPT"
+  )[0] as HTMLInputElement;
+
+  const textField = document.getElementsByName(
+    "TellerOperation/RECEIPT"
+  )[0] as HTMLInputElement;
+
+  const trnField = document.getElementsByName(
+    "TellerOperation/TRN"
+  )[0] as HTMLInputElement;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab" && viewTrnRef.current) {
+        // console.log(viewTrnRef.current, "viewTrnRef.current");
+        // viewTrnRef.current.focus();
+        trnField.focus();
+        // event.preventDefault();
+      }
+    };
+
+    if (textField) {
+      textField.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (textField) {
+        textField.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [textField, viewTrnRef]);
+  // useEffect(() => {
+  //   console.log(cardTabsReq, "cardTabsReq");
+  // }, [cardTabsReq]);
 
   return (
     <>
-      <Paper
-        sx={{
-          margin: "4.7rem 010px 1vh 10px",
-          minHeight: "18rem",
-          display: !Boolean(state?.openAcctDtl) ? "flex" : "block",
-          justifyContent: !Boolean(state?.openAcctDtl) ? "center" : "none",
-          alignItems: !Boolean(state?.openAcctDtl) ? "center" : "none",
-          boxShadow: "none",
-        }}
-      >
-        {Boolean(state?.openAcctDtl) ? (
-          Boolean(getCarousalCards?.isLoading) ? (
-            // <Box
-            //   display={"flex"}
-            //   // justifyContent={"space-evenly"}
-            //   // width={"100vw"}
-            //   marginTop={"15px"}
-            // >
-            <Grid
-              container
-              sx={
-                {
-                  // display: "flex",
-                  // justifyContent: "space-evenly",
-                }
-              }
-            >
-              <Grid xs={12} sm={6} md={4} lg={4} xl={4}>
-                <AccDtlCardSkeleton />
-              </Grid>
-              <Grid xs={12} sm={6} md={4} lg={4} xl={4}>
-                <AccDtlCardSkeleton />
-              </Grid>
-              <Grid xs={12} sm={6} md={4} lg={4} xl={4}>
-                <AccDtlCardSkeleton />
-              </Grid>
-            </Grid>
-          ) : (
-            // </Box>
-            <AccDetails cardsData={cardDetails} />
-          )
-        ) : (
-          <Typography
-            variant="body1"
-            sx={{
-              fontStyle: "italic",
-              color: "var(--theme-color6)",
-              fontWeight: "bold",
-            }}
-          >
-            Please enter account number to get account details.....
-          </Typography>
-        )}
-      </Paper>
+      <DailyTransTabs
+        heading="Teller Transaction (Maker) (ETRN/039)"
+        tabsData={tabsDetails}
+        cardsData={cardDetails}
+        reqData={cardTabsReq}
+      />
+
+      {(isTabsLoading || getData?.isLoading) && (
+        <LinearProgress
+          color="secondary"
+          sx={{ margin: "0px 10px 0px 10px" }}
+        />
+      )}
       <FormWrapper
         key={`TellerScreen`}
         metaData={TellerScreenMetadata as MetaDataType}
@@ -515,24 +587,45 @@ const TellerScreen = () => {
         onSubmitHandler={onSubmitHandler}
         formStyle={{
           background: "white",
+          padding: "0px 10px 10px 10px !important",
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox }}
-        setDataOnFieldChange={(action, payload) => {
+        formState={{ MessageBox: MessageBox, setCardDetails }}
+        setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
-            // popupReqWrapperRef?.current?.focus?.();
-            dispatch({
-              type: SingleTableActionTypes?.SET_OPEN_DENO,
-              payload: true,
-            });
             let event: any = { preventDefault: () => {} };
             formRef?.current?.handleSubmit(event, "SAVE");
+            if (denoTableType === "single") {
+              const formattedDate = format(
+                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                "dd/MMM/yyyy"
+              ).toUpperCase();
+              setBtnLoading((pre) => ({ ...pre, table1: true }));
+              getData.mutate({
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: authState?.user?.branchCode,
+                USER_NAME: authState?.user?.id,
+                // TRAN_DT: "03/FEB/2024",
+                TRAN_DT: formattedDate,
+                FLAG: "TABLE1",
+              });
+            } else if (denoTableType === "dual") {
+              const formattedDate = format(
+                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                "dd/MMM/yyyy"
+              ).toUpperCase();
+              setBtnLoading((pre) => ({ ...pre, table2: true }));
+              getData.mutate({
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: authState?.user?.branchCode,
+                USER_NAME: authState?.user?.id,
+                // TRAN_DT: "03/FEB/2024",
+                TRAN_DT: formattedDate,
+                FLAG: "TABLE2",
+              });
+            }
           } else if (action === "TRN") {
-            dispatch({
-              type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-              payload: false,
-            });
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({
                   type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
@@ -555,54 +648,41 @@ const TellerScreen = () => {
               Boolean(payload?.carousalCardData) &&
               Boolean(payload?.carousalCardData.length)
             ) {
-              setCardStore({
-                ...cardStore,
-                cardsInfo: payload?.carousalCardData,
-              });
               setCardDetails(payload?.carousalCardData);
-              dispatch({
-                type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-                payload: true,
+            }
+            if (payload) {
+              // console.log(payload, "payload");
+              const { dependentFieldValues, paddedAcctcode } = payload;
+              setCardTabsReq({
+                COMP_CD: authState?.companyID,
+                ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                ACCT_CD: paddedAcctcode,
+                PARENT_TYPE:
+                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE,
+                PARENT_CODE:
+                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_CODE,
+                BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+                SCREEN_REF: "ETRN/039",
               });
             }
-
-            // if (postData.RESTRICTION || postData.MESSAGE1) {
-            //   let acctValidateMsg = postData.RESTRICTION || postData.MESSAGE1;
-            //   dispatch({
-            //     type: SingleTableActionTypes?.SET_ACCTVALIDMSG_VAL,
-            //     payload: acctValidateMsg,
-            //   });
-            //   dispatch({
-            //     type: SingleTableActionTypes?.SET_ACCTVALIDMSGBOX_VAL,
-            //     payload: true,
-            //   });
-            // }
-            // if (
-            //   Boolean(data) &&
-            //   Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
-            //   Boolean(dependentFieldValues?.ACCT_TYPE?.value)
-            // ) {
-            //   if (!Boolean(postData.RESTRICTION)) {
-            //     getCarousalCards.mutate({
-            //       COMP_CD: authState?.companyID,
-            //       ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
-            //       ACCT_CD: data,
-            //       PARENT_TYPE:
-            //         dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
-            //           ?.PARENT_TYPE ?? "",
-            //     });
-            //   } else {
-            //     dispatch({
-            //       type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-            //       payload: false,
-            //     });
-            //   }
-            // }
-          } else if (action === "BRANCH_CD" || action === "ACCT_TYPE") {
-            dispatch({
-              type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
-              payload: false,
-            });
+          } else if (action === "ACCT_TYPE") {
+            setTabsDetails([]);
+            setCardDetails([]);
+            if (Boolean(payload?.currentField?.value)) {
+              const tabApiReqPara = {
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: payload?.branch_cd,
+                ACCT_TYPE: payload?.currentField?.value,
+              };
+              fetchTabsData({
+                cacheId: tabApiReqPara,
+                reqData: tabApiReqPara,
+              });
+            }
+          } else if (action === "BRANCH_CD") {
+            // console.log("csdkjbnvcdiojv");
+            // setTabsDetails([]);
+            // setCardDetails([]);
           }
         }}
         ref={formRef}
@@ -620,31 +700,14 @@ const TellerScreen = () => {
               }}
               color={"primary"}
               disabled={false}
+              ref={viewTrnRef}
             >
               View Trn
             </GradientButton>
-            {/* {Boolean(state?.displayTable) ? (
-              <GradientButton
-                // ref={buttonRef}
-                style={{ marginRight: "5px" }}
-                onClick={(event) => {
-                  if (Boolean(endSubmitRef.current?.endSubmit)) {
-                    endSubmitRef.current?.endSubmit(true);
-                  }
-                  dispatch({
-                    type: SingleTableActionTypes?.SET_DISP_TABLE,
-                    payload: false,
-                  });
-                }}
-                color={"primary"}
-              >
-                Reset
-              </GradientButton>
-            ) : null} */}
           </>
         )}
       </FormWrapper>
-      {Boolean(state?.confirmation) && !Boolean(haveerror) ? (
+      {/* {Boolean(state?.confirmation) && !Boolean(haveerror) ? (
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}
           Message={"All Transaction are Completed Want to Proceed"}
@@ -663,8 +726,8 @@ const TellerScreen = () => {
           loading={{ Yes: getData?.isLoading, No: false }}
           open={Boolean(state?.confirmation)}
         />
-      ) : null}
-      {Boolean(state?.openDeno) ? (
+      ) : null} */}
+      {/* {Boolean(state?.openDeno) ? (
         <PopupRequestWrapper
           MessageTitle={"Denomination confirmation"}
           Message={"Are you sure to open denomination"}
@@ -697,9 +760,14 @@ const TellerScreen = () => {
                 TRAN_DT: formattedDate,
                 FLAG: "TABLE2",
               });
+            } else if (Boolean(buttonNames === "Close")) {
+              dispatch({
+                type: SingleTableActionTypes?.SET_OPEN_DENO,
+                payload: false,
+              });
             }
           }}
-          buttonNames={["Table 1", "Table 2"]}
+          buttonNames={["Table 1", "Table 2", "Close"]}
           rows={[]}
           loading={{
             "Table 1": btnLoading?.table1,
@@ -707,43 +775,56 @@ const TellerScreen = () => {
           }}
           open={Boolean(state?.openDeno)}
         />
+      ) : null} */}
+      {state?.displayTable ? (
+        <TellerDenoTable
+          displayTable={state?.displayTable}
+          data={data ?? []}
+          handleChange={handleChange}
+          inputValue={state?.inputVal}
+          amount={state?.amount}
+          availNotes={state?.availNote}
+          balance={state?.balance}
+          handleonBlur={handleonBlur}
+          noteCntTotal={state?.columnTotal?.inputVal}
+          amountTotal={state?.columnTotal?.amount}
+          availNoteTotal={state?.columnTotal?.availNote}
+          balanceTotal={state?.columnTotal?.balance}
+          remainExcessBal={state?.remainExcess}
+          finalLable={state?.remainExcess >= 0 ? "Remaining " : "Excess "}
+          onCloseTable={onCloseTable}
+          textFieldRef={textFieldRef}
+          // openAcctDtl={state?.openAcctDtl}
+          displayError={state?.displayError}
+          // handleonFocus={handleonFocus}
+          gridLable={
+            state?.fieldsData?.TRN === "R"
+              ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
+              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
+          }
+        />
       ) : null}
-      <TellerDenoTable
-        displayTable={state?.displayTable}
-        data={data ?? []}
-        handleChange={handleChange}
-        inputValue={state?.inputVal}
-        amount={state?.amount}
-        availNotes={state?.availNote}
-        balance={state?.balance}
-        handleonBlur={handleonBlur}
-        noteCntTotal={state?.columnTotal?.inputVal}
-        amountTotal={state?.columnTotal?.amount}
-        availNoteTotal={state?.columnTotal?.availNote}
-        balanceTotal={state?.columnTotal?.balance}
-        remainExcessBal={state?.remainExcess}
-        finalLable={state?.remainExcess >= 0 ? "Remaining " : "Excess "}
-        onCloseTable={onCloseTable}
-        textFieldRef={textFieldRef}
-        openAcctDtl={state?.openAcctDtl}
-        displayError={state?.displayError}
-        handleonFocus={handleonFocus}
-        extraAccDtl={extraAccDtl}
-      />
+
       {/* <DualTableCalc data={data ?? []} /> */}
-      <DualTableCalc
-        // columnDefinitions={columnDefinitions}
-        // isLoading={false}
-        // formData={state?.fieldsData}
-        displayTableDual={state?.displayTableDual}
-        openAcctDtl={state?.openAcctDtl}
-        formData={state?.fieldsData}
-        data={data ?? []}
-        isLoading={getData?.isLoading}
-        onCloseTable={onCloseTable}
-        extraAccDtl={extraAccDtl}
-      />
-      {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null}
+      {state?.displayTableDual ? (
+        <DualTableCalc
+          // columnDefinitions={columnDefinitions}
+          // isLoading={false}
+          // formData={state?.fieldsData}
+          displayTableDual={state?.displayTableDual}
+          // openAcctDtl={state?.openAcctDtl}
+          formData={state?.fieldsData}
+          data={data ?? []}
+          isLoading={getData?.isLoading}
+          onCloseTable={onCloseTable}
+          gridLable={
+            state?.fieldsData?.TRN === "R"
+              ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
+              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
+          }
+        />
+      ) : null}
+      {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}
       {state?.viewAcctDetails ? (
         <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>
           <Report

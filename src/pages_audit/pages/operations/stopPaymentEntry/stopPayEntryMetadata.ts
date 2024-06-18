@@ -336,7 +336,7 @@ export const StopPayEntryMetadata = {
       name: "CHEQUE_FROM",
       label: "FromChequeNo",
       placeholder: "EnterFromChequeNo",
-      dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG"],
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG", "TYPE_CD"],
       FormatProps: {
         isAllowed: (values, dependentFields, formState) => {
           if (values.floatValue === 0 || values.value === "-") {
@@ -351,6 +351,7 @@ export const StopPayEntryMetadata = {
         authState,
         dependentValue
       ) => {
+        console.log("<<<authState", authState);
         if (
           field?.value &&
           dependentValue?.BRANCH_CD?.value &&
@@ -358,7 +359,6 @@ export const StopPayEntryMetadata = {
           dependentValue?.ACCT_CD?.value
         ) {
           let apiReq = {
-            COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
             ACCT_CD: dependentValue?.ACCT_CD?.value,
@@ -368,20 +368,28 @@ export const StopPayEntryMetadata = {
             CHQ_SERIES: true,
             CHRG_CAL: false,
             FLAG: dependentValue?.FLAG?.value,
+            TYPE_CD: dependentValue?.TYPE_CD?.value,
+            ENTERED_COMP_CD: authState?.companyID,
+            ENTERED_BRANCH_CD: authState?.user?.branchCode,
           };
           let postData = await API.chequeValidate(apiReq);
 
           if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
-            formState.MessageBox({
+            let res = await formState.MessageBox({
               messageTitle: "ChequeValidationFailed",
               message: postData?.[0]?.ERR_MSG,
             });
-            return {
-              CHEQUE_FROM: { value: "" },
-              SERVICE_TAX: { value: "" },
-              AMOUNT: { value: "" },
-              CHEQUE_TO: { value: "" },
-            };
+            if (res === "Ok") {
+              return {
+                CHEQUE_FROM: { value: "", isFieldFocused: true },
+                SERVICE_TAX: { value: "" },
+                AMOUNT: { value: "" },
+                CHEQUE_TO: {
+                  value: "",
+                  isFieldFocused: false,
+                },
+              };
+            }
           } else {
             return {
               CHEQUE_TO: { value: field?.value },
@@ -421,11 +429,13 @@ export const StopPayEntryMetadata = {
         "ACCT_CD",
         "FLAG",
         "CHEQUE_FROM",
+        "TYPE_CD",
       ],
-      validate: (field, dependentFields, formState) => {
+      validate: (field, dependentFields) => {
+        console.log("<<<", field);
         if (
-          field?.value.length <= 0 ||
-          dependentFields?.CHEQUE_FROM?.value < field?.value
+          Number(field?.value) &&
+          dependentFields?.CHEQUE_FROM?.value < Number(field?.value)
         ) {
           return "";
         } else if (
@@ -457,7 +467,6 @@ export const StopPayEntryMetadata = {
           // && field?.value !== dependentValue?.CHEQUE_FROM?.value
         ) {
           let apiReq = {
-            COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
             ACCT_CD: dependentValue?.ACCT_CD?.value,
@@ -467,19 +476,25 @@ export const StopPayEntryMetadata = {
             CHQ_SERIES: true,
             CHRG_CAL: true,
             FLAG: dependentValue?.FLAG?.value,
+            TYPE_CD: dependentValue?.TYPE_CD?.value,
+            ENTERED_COMP_CD: authState?.companyID,
+            ENTERED_BRANCH_CD: authState?.user?.branchCode,
           };
           let postData = await API.chequeValidate(apiReq);
 
           if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
-            formState.MessageBox({
+            let res = await formState.MessageBox({
               messageTitle: "ChequeValidationFailed",
               message: postData?.[0]?.ERR_MSG,
             });
-            return {
-              CHEQUE_TO: { value: "" },
-              SERVICE_TAX: { value: "" },
-              AMOUNT: { value: "" },
-            };
+
+            if (res === "Ok") {
+              return {
+                CHEQUE_TO: { value: "", isFieldFocused: true },
+                SERVICE_TAX: { value: "" },
+                AMOUNT: { value: "" },
+              };
+            }
           } else {
             return {
               SERVICE_C_FLAG: {
@@ -492,10 +507,10 @@ export const StopPayEntryMetadata = {
                 value: postData?.[0]?.TAX_RATE ?? "",
               },
               SERVICE_TAX: {
-                value: postData?.[0]?.CHRG_AMT ?? "",
+                value: postData?.[0]?.GST_AMT ?? "",
               },
               AMOUNT: {
-                value: postData?.[0]?.GST_AMT,
+                value: postData?.[0]?.CHRG_AMT ?? "",
               },
             };
           }
@@ -561,7 +576,8 @@ export const StopPayEntryMetadata = {
       render: {
         componentType: "amountField",
       },
-      name: "SERVICE_TAX",
+      name: "AMOUNT",
+
       label: "ChargeAmount",
       dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -579,7 +595,7 @@ export const StopPayEntryMetadata = {
       ) => {
         if (field?.value) {
           return {
-            AMOUNT: {
+            SERVICE_TAX: {
               value:
                 dependentValue?.ROUND_OFF_FLAG?.value === "3"
                   ? Math.floor(
@@ -626,7 +642,7 @@ export const StopPayEntryMetadata = {
       render: {
         componentType: "amountField",
       },
-      name: "AMOUNT",
+      name: "SERVICE_TAX",
       label: "GSTAmount",
       isReadOnly: true,
       dependentFields: ["FLAG"],
@@ -733,6 +749,12 @@ export const StopPayEntryMetadata = {
         componentType: "hidden",
       },
       name: "ROUND_OFF_FLAG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TYPE_CD",
     },
   ],
 };
