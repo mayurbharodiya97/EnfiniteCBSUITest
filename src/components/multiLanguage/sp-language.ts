@@ -2,10 +2,8 @@ export const sp_language_data = {
   // GridWrapper
   Search: "Buscar",
   NoDataFound: "  Datos no encontrados..!",
-  Add: "Agregar",
   export: "exportar",
   Export: "Exportar",
-  Delete: "Borrar",
 
   // Message box
   DeleteData: "¿Está seguro de eliminar la fila seleccionada...?",
@@ -27,7 +25,6 @@ export const sp_language_data = {
   Code: "Código",
   EntryDescriptionMaster: "Entrada Descripción Maestro MST/067",
   ParentType: "Tipo de padre",
-  Description: "Descripción",
   EnterDescription: "Ingresar descripción",
 
   // MST/097
@@ -46,7 +43,6 @@ export const sp_language_data = {
   // MST/146
   CourtMaster: "Maestro de la Corte (MST/146)",
   CourtName: "Nombre del tribunal",
-  PinCode: "Código PIN",
   Address1: "Dirección 1",
   Address2: "Dirección 2",
   Contact1: "Contacto 1",

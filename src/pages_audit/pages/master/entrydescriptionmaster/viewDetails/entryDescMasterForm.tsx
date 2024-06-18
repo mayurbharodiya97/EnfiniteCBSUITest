@@ -83,7 +83,7 @@ const EntryDescriptionMasterForm = ({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: [t("Yes"), t("NO")],
-        loadingBtnName: t("Yes"),
+        loadingBtnName: ["Yes"],
       });
       if (btnName === t("Yes")) {
         mutation.mutate({

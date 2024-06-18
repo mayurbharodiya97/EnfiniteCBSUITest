@@ -73,7 +73,7 @@ export const InsuTypeMasterGrid = () => {
           message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: [t("Yes"), t("NO")],
-          loadingBtnName: t("Yes"),
+          loadingBtnName: ["Yes"],
         });
         if (btnName === t("Yes")) {
           deleteMutation.mutate({
