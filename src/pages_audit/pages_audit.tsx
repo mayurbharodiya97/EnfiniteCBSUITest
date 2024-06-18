@@ -14,11 +14,11 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
-// import { AccDetailContext } from "./auth";
 import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
-import Master from "./pages/master/master";
-
-// import { AccDetailContext } from "./auth";
+import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
+import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
+import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
+const Master = lazy(() => import('./pages/master/master'));
 
 export const PagesAudit = (props, { columns }) => {
   const location = useLocation();
@@ -65,7 +65,7 @@ export const PagesAudit = (props, { columns }) => {
           open={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           handleDrawerOpen={handleDrawerOpen}
-        >
+        > 
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>
@@ -99,6 +99,9 @@ export const PagesAudit = (props, { columns }) => {
               path="*"
               element={<RedirectComponent isValidURL={isValidURL} />}
             />
+            <Route path="cash/368" element={<TRN368 />} />
+            <Route path="cash/043" element={<TRN043 />} />
+            <Route path="cash/044" element={<TRN044 />} />
           </Routes>
           {/* <div
             style={{

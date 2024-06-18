@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+
 const EntryDescription = lazy(() => import("./entrydescriptionmaster/"));
 const InsuranceType = lazy(() => import("./insurancetypemaster/"));
 const NpaCategory = lazy(() => import("./npaCateMast/"));
@@ -11,6 +12,14 @@ const LienMasterGrid = lazy(()=> import('./lienMaster/lienMasterGrid'))
 const AcPeriodMasterGrid = lazy(()=> import('./ACperiodMaster/ACperiodMasterGrid'))
 const ModeMasterGrid = lazy(()=> import('./modeMaster/modeMasterGrid'));
 const BankIfscCodeMaster = lazy(()=> import('./bankIfscCodeMaster/bankIfscCodeMaasterGrid'));
+const CategoryMasterGrid = lazy(() => import("./categoryMaster"));
+const OrnamentTypeMasterGrid = lazy(() => import("./ornamentTypeMaster"));
+const ActionTakenMasterGrid = lazy(() => import("./actionTakenMaster"));
+const Prioritymain = lazy(() => import('./priorityMasterMain/priorityMasterMainGrid'));
+const Prioritymastersub = lazy(()=> import('./priorityMasterSub/priorityMasterSubGrid'))
+const TradeMaster = lazy(()=> import('./tradeMaster/tradeMasterGrid'))
+const AreaMaster = lazy(()=> import('./areaMaster/areaMasterGrid'))
+
 
 
 const Master = () => {
@@ -21,6 +30,12 @@ const Master = () => {
           path="entry-description-master/*"
           element={<EntryDescription />}
         />
+        <Route path="category-master/*" element={<CategoryMasterGrid />} />
+        <Route
+          path="ornament-type-master/*"
+          element={<OrnamentTypeMasterGrid />}
+        />
+        <Route path="action-taken-master/*" element={<ActionTakenMasterGrid />} />
         <Route path="lien-master/*" element={<LienMasterGrid />} />
         <Route path="a/c-period-master/*" element={<AcPeriodMasterGrid />} />
         <Route path="mode-master/*" element={<ModeMasterGrid />} />
@@ -31,7 +46,10 @@ const Master = () => {
         <Route path="clearing-bank-master/*" element={<ClearingBankMst />} />
         <Route path="lien-reason-master/*" element={<LienReasonMst />} />
         <Route path="advocate-master/*" element={<AdvocateMstGrid />} />
-
+        <Route path="priority-master-main/*" element={<Prioritymain />} />
+        <Route path="priority-master-sub/*" element={<Prioritymastersub />} />
+        <Route path="trade-master/*" element={<TradeMaster />} />
+        <Route path="area-master/*" element={<AreaMaster />} />
       </Routes>
     </>
   );

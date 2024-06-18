@@ -92,7 +92,7 @@ const AcPeriodMasterForm = ({
         message: "Are you sure to Save the record?",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({

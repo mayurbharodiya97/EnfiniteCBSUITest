@@ -255,6 +255,13 @@ export const forceExpireStockMetaData = {
       name: "MARGIN",
       fullWidth: true,
       label: "Margin%",
+      dependentFields: ["PARENT_TYPE"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const newValue = dependentFields.PARENT_TYPE.value.trim();
+        if (newValue === "SOD") {
+          return 100;
+        }
+      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -286,6 +293,15 @@ export const forceExpireStockMetaData = {
       },
       name: "STOCK_DESC",
       label: "StockDescription",
+      // defaultValue: "STOCK FORCEFULLY EXPIRED",
+
+      dependentFields: ["PARENT_TYPE"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const newValue = dependentFields.PARENT_TYPE.value.trim();
+        if (newValue !== "SOD") {
+          return "STOCK FORCEFULLY EXPIRED";
+        }
+      },
       isReadOnly: true,
       fullWidth: true,
       GridProps: {
@@ -320,6 +336,14 @@ export const forceExpireStockMetaData = {
       fullWidth: true,
       name: "DRAWING_POWER",
       label: "DrawingPower",
+      DefaultValue: "0",
+      dependentFields: ["PARENT_TYPE"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        // const newValue = dependentFields.PARENT_TYPE.value.trim();
+        // if (newValue === "SOD") {
+        // }
+        return 0;
+      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -347,11 +371,11 @@ export const forceExpireStockMetaData = {
       },
     },
 
-    // {
-    //   render: {
-    //     componentType: "hidden",
-    //   },
-    //   name: "ALLOW_FORCE_EXPIRE_FLAG",
-    // },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_TYPE",
+    },
   ],
 };

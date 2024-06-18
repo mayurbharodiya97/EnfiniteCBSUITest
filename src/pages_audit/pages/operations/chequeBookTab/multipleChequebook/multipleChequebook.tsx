@@ -42,9 +42,7 @@ export const MultipleChequebook = ({ navigate, insertData }) => {
     multipleChequebookGridData.gridConfig.footerNote = `${t("TotalCheque")} : ${
       rows?.[0]?.CHEQUE_BK_TOTAL * rows?.[0]?.CHEQUE_TOTAL
     }  \u00A0\u00A0  ${t("TotalCharge")} : ₹
-        ${(rows?.[0]?.CHEQUE_BK_TOTAL * rows?.[0]?.SERVICE_TAX).toFixed(
-          2
-        )}     `;
+        ${(rows?.[0]?.CHEQUE_BK_TOTAL * rows?.[0]?.AMOUNT).toFixed(2)}     `;
   }, [rows]);
 
   return (

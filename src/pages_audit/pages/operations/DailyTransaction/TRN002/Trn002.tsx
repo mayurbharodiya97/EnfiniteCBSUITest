@@ -96,43 +96,6 @@ export const Trn002 = () => {
     BRANCH_CD: authState?.user?.branchCode,
   };
 
-  const subjectOptions = [
-    { value: "science", label: "science" },
-    { value: "maths", label: "maths" },
-  ];
-
-  const formMetaData: any = [
-    {
-      value: "",
-      label: "Name",
-      type: "text",
-      component: "textField",
-    },
-    {
-      value: "0",
-      label: "Age",
-      type: "Number",
-      component: "textField",
-    },
-    {
-      value: "",
-      label: "subjects",
-      type: "text",
-      component: "autoComplete",
-      options: subjectOptions,
-    },
-    {
-      value: "",
-      label: "X",
-      type: "",
-      component: "clearBtn",
-    },
-  ];
-
-  // const handleFormSave = (obj) => {
-
-  // };
-
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
@@ -177,7 +140,7 @@ export const Trn002 = () => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
-      arr.map((a, i) => (a.index = i));
+      arr.map((a, i) => (a.index = i)); /// /// /// /// ///
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
@@ -193,6 +156,14 @@ export const Trn002 = () => {
     },
     onError: (error) => {},
   });
+  const getConfirmDataValidation = useMutation(
+    trn2Api.getConfirmDataValidation,
+    {
+      onSuccess: (data) => {
+      },
+      onError: (error) => {},
+    }
+  );
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
@@ -250,13 +221,14 @@ export const Trn002 = () => {
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setDataRow(row);
+    // getConfirmDataValidation.mutate(row);
     if (data.name === "_rowChanged") {
       let obj: any = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
         PARENT_TYPE: row?.PARENT_TYPE ?? "",
-
+        PARENT_CODE: row?.PARENT_CODE ?? "",
         BRANCH_CD: row?.BRANCH_CD,
         // authState: authState,
       };
@@ -286,6 +258,7 @@ export const Trn002 = () => {
 
     if (data.name === "view") {
       if (row.CONFIRMED == "0") {
+        getConfirmDataValidation.mutate(row);
         setConfirmDialog(true);
       } else {
         enqueueSnackbar("Transaction Already Confirmed", {
@@ -427,7 +400,7 @@ export const Trn002 = () => {
           }
           ref={myGridRef}
           refetchData={() => handleGetTRN002List()}
-          actions={actions}
+          actions={actions} /// /// /// /// ///
           setAction={setCurrentAction}
           onlySingleSelectionAllow={true}
           isNewRowStyle={true}
@@ -474,7 +447,7 @@ export const Trn002 = () => {
         </Grid>
       </Card>
       <CommonFooter
-        viewOnly={true}
+        viewOnly={true} /// /// /// /// ///
         filteredRows={filteredRows}
         handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}

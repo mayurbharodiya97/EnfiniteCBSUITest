@@ -15,7 +15,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { usePopupContext } from "components/custom/popupContext";
@@ -82,10 +81,11 @@ const StopPaymentEntryCustom = () => {
               message: "InsertStopPaymentMsg",
               buttonNames: ["No", "Yes"],
               defFocusBtnName: "Yes",
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
-              crudStopPay.mutate({ ...insertReq });
+              console.log("<<<insertReq", insertReq, reqDataRef);
+              crudStopPay.mutate({ ...reqDataRef?.current?.insertReq });
             }
           } else {
             MessageBox({
@@ -108,7 +108,7 @@ const StopPaymentEntryCustom = () => {
         setIsData((old) => ({ ...old, isDelete: false }));
         getStopPayDetail.mutate({
           COMP_CD: authState?.companyID,
-          ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+          ACCT_CD: variables?.ACCT_CD,
           ACCT_TYPE: variables?.ACCT_TYPE,
           BRANCH_CD: variables?.BRANCH_CD,
           GD_TODAY: authState?.workingDate,
@@ -189,9 +189,7 @@ const StopPaymentEntryCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  StopPayGridMetaData.gridConfig.gridLabel = `${t(
-                    "ChequeStopDetail"
-                  )} \u00A0\u00A0 ${(
+                  StopPayGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
@@ -274,6 +272,7 @@ const StopPaymentEntryCustom = () => {
                   TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
                   _isNewRow: true,
                 };
+                console.log("<<<onsub", data, reqDataRef);
 
                 validateInsertData.mutate({
                   BRANCH_CD: data?.BRANCH_CD,

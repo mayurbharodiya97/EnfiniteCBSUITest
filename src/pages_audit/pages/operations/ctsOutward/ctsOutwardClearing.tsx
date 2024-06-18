@@ -220,7 +220,7 @@ const CtsOutwardClearingForm: FC<{
         messageTitle: "Confirmation",
         message: " Proceed ?",
         buttonNames: ["No", "Yes"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (buttonName === "Yes") {
         mutationOutward.mutate(finalReqDataRef.current);
@@ -718,7 +718,7 @@ const CtsOutwardClearingForm: FC<{
                   message: "Do You Want to delete this row?",
                   buttonNames: ["No", "Yes"],
                   defFocusBtnName: "Yes",
-                  loadingBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "Yes") {
                   deleteMutation.mutate({

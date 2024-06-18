@@ -775,6 +775,7 @@ export const useField = ({
     handleOptionValueExtraData,
     validationAPIResult: t(fieldData?.validationAPIResult ?? ""),
     error: t(fieldData?.error ?? ""),
+    fieldDataOnBlr: fieldDataRef.current,
   };
 };
 

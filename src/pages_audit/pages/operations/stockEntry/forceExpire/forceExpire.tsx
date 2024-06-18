@@ -25,6 +25,14 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
 
+  let newInitialData = {
+    ...rows?.[0]?.data,
+    WITHDRAW_DT:
+      rows?.[0]?.data?.ASON_DT === ""
+        ? authState?.workingDate
+        : rows?.[0]?.data?.ASON_DT,
+  };
+
   const forceExpire: any = useMutation("crudStockData", crudStockData, {
     onSuccess: () => {
       navigate(".");
@@ -90,7 +98,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           displayMode={
             rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y" ? "view" : null
           }
-          initialValues={rows?.[0]?.data ?? []}
+          initialValues={newInitialData ?? {}}
           onSubmitHandler={(data: any, displayData, endSubmit) => {
             const filteredData = Object.fromEntries(
               Object.entries(data).filter(([_, value]) => value !== "")
@@ -107,8 +115,14 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
               TRAN_CD: rows?.[0]?.data?.TRAN_CD,
               WITHDRAW_DT: format(new Date(data?.WITHDRAW_DT), "dd-MMM-yyyy"),
               REMARKS: data?.REMARKS,
+              DRAWING_POWER: data?.DRAWING_POWER,
+              ASON_DT: rows?.[0]?.data?.ASON_DT,
+              ...(data?.PARENT_TYPE === "SOD "
+                ? { MARGIN: data?.MARGIN }
+                : { STOCK_DESC: data?.STOCK_DESC }),
               ...upd,
             };
+
             forceExpire.mutate(apiReq);
 
             //@ts-ignore

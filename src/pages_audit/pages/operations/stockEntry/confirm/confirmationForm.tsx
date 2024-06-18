@@ -24,7 +24,13 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
     onError: () => {
       CloseMessageBox();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data?.[0]?.STATUS === "9") {
+        MessageBox({
+          messageTitle: "Alert",
+          message: data?.[0]?.MESSAGE,
+        });
+      }
       CloseMessageBox();
       closeDialog();
       result.mutate({
@@ -39,7 +45,7 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
   });
 
   const stockDataCRUD: any = useMutation("crudStockData", crudStockData, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       closeDialog();
       setDeletePopup(false);
       result.mutate({
@@ -132,15 +138,18 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                       message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
-                      loadingBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
                     });
                     if (buttonName === "Yes") {
                       stockCfm.mutate({
                         IS_CONFIMED: true,
                         COMP_CD: authState?.companyID,
                         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+                        ACCT_CD: rows?.[0]?.data?.ACCT_CD,
                         TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+                        LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
+                        ASON_DT: rows?.[0]?.data?.ASON_DT,
                       });
                     }
                   }}
@@ -170,16 +179,16 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                 TRAN_CD: rows.TRAN_CD,
                 ACCT_TYPE: rows.ACCT_TYPE,
                 ACCT_CD: rows.ACCT_CD,
-                TRAN_AMOUNT: rows.TRAN_BAL,
                 TRAN_DT: rows.TRAN_DT,
                 CONFIRMED: rows.CONFIRMED,
                 USER_DEF_REMARKS: val
                   ? val
                   : "WRONG ENTRY FROM STOCK CONFIRMATION (ETRN/377)",
 
-                ACTIVITY_TYPE: "STOCK ENTRY SCREEN",
+                ACTIVITY_TYPE: "STOCK CONFIRMATION SCREEN",
                 ENTERED_BY: rows.ENTERED_BY,
-                ACCT_MST_LIMIT: rows?.ACCT_MST_LIMIT,
+                STOCK_VALUE: rows?.STOCK_VALUE,
+                ASON_DT: rows.ASON_DT,
               };
               stockDataCRUD.mutate(deleteReqPara);
             }}

@@ -65,8 +65,8 @@ export const Trn001 = () => {
   const [defBranch, setDefBranch] = useState<any>({});
   const [withdraw, setWithdraw] = useState<any>({});
   var defTableValue = {
-    branch: { label: "", value: "", info: "" },
-    accType: { label: " ", value: "  ", info: "  " },
+    branch: { label: "", value: "", info: {} },
+    accType: { label: " ", value: "  ", info: {} },
     bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,
@@ -74,7 +74,8 @@ export const Trn001 = () => {
     trx: { label: "", value: "", code: "" }, //TYPE_CD
     bugMsgTrx: "",
     scroll: "", //token
-    sdc: { label: "", value: "", info: "" },
+    bugMsgScroll: "",
+    sdc: { label: "", value: "", info: {} },
     remark: "",
     cNo: "",
     bugCNo: false,
@@ -115,6 +116,8 @@ export const Trn001 = () => {
   const [scrollSaveDialog, setScrollSaveDialog] = useState<any>(false);
   const [accValidDialog, setAccValidDialog] = useState<any>(false);
   const [accValidMsg, setAccValidMsg] = useState<any>("");
+  const [amountValidDialog, setAmountValidDialog] = useState<any>(false);
+  const [amountValidMsg, setAmountValidMsg] = useState<any>([]);
   const [cardsData, setCardsData] = useState<any>([]);
   const [reqData, setReqData] = useState<any>([]);
 
@@ -157,37 +160,8 @@ export const Trn001 = () => {
 
   useEffect(() => {
     //bug checker on row change
-    let i = 0;
-    rows[i].bug = false;
-    if (rows.length > 0) {
-      i = rows.length - 1;
-    }
-    if (
-      !rows[i].trx?.code ||
-      !rows[i].branch ||
-      !rows[i].accType ||
-      !rows[i].accNo
-    ) {
-      rows[i].bug = true;
-    }
-    if (rows[i]?.bugAccNo || rows[i]?.bugCNo) {
-      rows[i].bug = true;
-    }
 
-    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
-      //credit true
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
-      //debit true
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
-      rows[i].bug = true;
-    }
-
-    let result = rows && rows.some((a) => a?.bug);
+    let result = rows && rows.some((a) => a?.bug || a?.bugAccNo || a?.bugCNo); /// /// /// /// ///
     setIsSave(!result);
   }, [rows]);
 
@@ -321,6 +295,21 @@ export const Trn001 = () => {
       });
     },
   });
+
+  const getAmountValidation = useMutation(API.getAmountValidation, {
+    onSuccess: (data) => {
+      setLoading(false);
+      setAmountValidMsg(data);
+      setAmountValidDialog(true);
+    },
+    onError: (error: any) => {
+      setLoading(false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
   const getDateValidation = useMutation(API.getChqDateValidation, {
     onSuccess: (data) => {
       const obj = [...rows];
@@ -328,7 +317,7 @@ export const Trn001 = () => {
       //   enqueueSnackbar(data?.ERR_MSG, {
       //     variant: "error",
       //   });
-      //   obj[index].bug = true;
+      //   obj[index].bug = true; /// /// /// /// ///
       //   obj[index].bugCNo = true;
       //   obj[index].bugMsgCNo = data?.ERR_MSG;
       // } else {
@@ -476,14 +465,18 @@ export const Trn001 = () => {
     } else {
       setIsArray(false);
     }
+
+    if (value?.code == "4") {
+      obj[i].bugMsgScroll = "token is required";
+    }
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleScrollBlur = (e, i) => {
     const obj = [...rows];
-    if (!obj[i].scroll) {
-      obj[i].bugMsgScroll = "scroll Required";
+    if (!obj[i].scroll && obj[i].trx.code == "4") {
+      obj[i].bugMsgScroll = "token Required";
     } else {
       obj[i].bugMsgScroll = "";
     }
@@ -527,10 +520,10 @@ export const Trn001 = () => {
         obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
-      obj[i].bug = false;
-      obj[i].bugCNo = false;
-      obj[i].bugMsgCNo = "";
-    }
+      obj[i].bug = false; /// /// /// /// ///
+      obj[i].bugCNo = false; /// /// /// /// ///
+      obj[i].bugMsgCNo = ""; /// /// /// /// ///
+    } /// /// /// /// ///
     setRows(obj);
   };
 
@@ -588,7 +581,7 @@ export const Trn001 = () => {
 
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
-    setRows(obj);
+    // setRows(obj);
     if (Number(totalDebit) <= Number(withdraw?.COL_VALUE)) {
       obj[i].debit = Number(e.target.value)?.toFixed(2);
       totalDebit != totalCredit &&
@@ -600,17 +593,24 @@ export const Trn001 = () => {
         variant: "error",
       });
       obj[i].debit = Number(0)?.toFixed(2);
+      setRows(obj);
     }
+    obj[i].withdraw = withdraw?.COL_VALUE;
+    setLoading(true);
+    getAmountValidation.mutate(obj[i]);
   };
 
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
     obj[i].credit = Number(e.target.value)?.toFixed(2);
-    setRows(obj);
+    // setRows(obj);
     totalDebit != totalCredit &&
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
+    obj[i].withdraw = withdraw?.COL_VALUE;
+    setLoading(true);
+    getAmountValidation.mutate(obj[i]);
   };
 
   //fns > logic> Table=====================================================================
@@ -619,7 +619,7 @@ export const Trn001 = () => {
     let cred = 0;
     let deb = 0;
     let trxx: any = {};
-    let isCred = true;
+    let isCred = true; /// /// /// /// ///
     let trx3 = trxOptions2.find((a) => a.code == "3");
     let trx6 = trxOptions2.find((a) => a.code == "6");
 
@@ -637,12 +637,12 @@ export const Trn001 = () => {
 
     let defTableValue2 = {
       branch: defBranch,
-      accType: { label: "", value: "", info: "" },
+      accType: { label: "", value: "", info: {} },
       bugMsgAccType: "",
       accNo: "",
       trx: trxx,
       bugMsgTrx: "",
-      scroll: "", //token
+      scroll: "", //token /// /// /// /// ///
       sdc: defSdc,
       remark: defSdc?.label,
       cNo: "",
@@ -687,7 +687,7 @@ export const Trn001 = () => {
       sumCredit += Number(a.credit);
     });
 
-    setAmountDiff(sumDebit - sumCredit);
+    setAmountDiff(sumDebit - sumCredit); /// /// /// /// ///
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
@@ -699,7 +699,7 @@ export const Trn001 = () => {
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
-    setViewOnly(false);
+    setViewOnly(false); /// /// /// /// ///
     // setTempStore({ ...tempStore, accInfo: {} });
     // setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsDetails([]);
@@ -720,6 +720,7 @@ export const Trn001 = () => {
       ACCT_TYPE: rows[i]?.accType?.value,
       ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
       PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
+      PARENT_CODE: rows[i]?.accType?.info?.PARENT_CODE ?? "",
       BRANCH_CD: rows[i]?.branch?.value,
       SCREEN_REF: "ETRN/001",
       // authState: authState,
@@ -744,6 +745,7 @@ export const Trn001 = () => {
     let isErrTrx = false;
     let isErrCNo = false;
     let isErrDate = false;
+    let isErrToken = false;
 
     rows.map((a) => {
       if (a.bugDate) {
@@ -758,12 +760,19 @@ export const Trn001 = () => {
       if (a.bugMsgAccType) {
         isErrAccType = true;
       }
+      if (a.bugMsgScroll) {
+        isErrToken = true;
+      }
 
       if (a.bugAccNo || a.bugMsgAccNo) {
         isErrAccNo = true;
       }
     });
-
+    if (isErrToken) {
+      enqueueSnackbar("Kindly Check, Error in Token", {
+        variant: "error",
+      });
+    }
     if (isErrTrx) {
       enqueueSnackbar("Kindly Check, Error in Trx", {
         variant: "error",
@@ -779,6 +788,7 @@ export const Trn001 = () => {
         variant: "error",
       });
     } else if ((!isArray && amountDiff == 0) || (isArray && rows.length == 1)) {
+      /// /// /// /// ///
       enqueueSnackbar("Amount cant be Zero", {
         variant: "error",
       });
@@ -804,7 +814,9 @@ export const Trn001 = () => {
       (!isArray && amountDiff == 0) ||
       (isArray && amountDiff != 0) ||
       isErrAccNo ||
-      isErrCNo
+      isErrCNo ||
+      isErrAccType || /// /// /// /// ///
+      isErrToken
     ) {
     } else {
       cardsData?.length > 0 && setSaveDialog(true);
@@ -847,10 +859,12 @@ export const Trn001 = () => {
   };
 
   const handleFilterByScroll = (scrollNo) => {
+    //***********
     setSearchScrollNo(scrollNo);
   };
 
   const handleFilteredRows = (rows) => {
+    //***********
     //sending back to commonfooter
     setFilteredRows(rows);
   };
@@ -865,12 +879,29 @@ export const Trn001 = () => {
         )}
         <div>
           <h4 style={{ textAlign: "center" }}>Voucher No. </h4>
-
           {scrollSaveRes &&
             scrollSaveRes?.map((a) => {
               return <h4 style={{ textAlign: "center" }}>{a?.TRAN_CD} </h4>;
             })}
         </div>
+      </>
+    );
+  };
+
+  const amountValidHtml = () => {
+    return (
+      <>
+        {amountValidMsg &&
+          amountValidMsg?.map((a, i) => {
+            return (
+              <>
+                <div style={{ minWidth: "300px", textAlign: "center" }}>
+                  {a?.O_MESSAGE}
+                </div>
+                <br />
+              </>
+            );
+          })}
       </>
     );
   };
@@ -891,13 +922,15 @@ export const Trn001 = () => {
   };
 
   const handleResetMsg = () => {
-    return <div> hello world</div>;
+    return <div> Are you sure to reset ?</div>;
   };
 
   const handleSetCards = (row) => {
+    //***********
     setCardsData(row);
   };
   const handleSetAccInfo = (row) => {
+    //***********
     setReqData(row);
   };
 
@@ -1027,7 +1060,7 @@ export const Trn001 = () => {
                                 <TextField
                                   {...params}
                                   style={{ width: "120px" }}
-                                  error={a.branch?.value ? false : true}
+                                  error={a.branch?.value ? false : true} /// /// /// /// /// ///
                                 />
                               )}
                             />
@@ -1036,7 +1069,7 @@ export const Trn001 = () => {
                         <Tooltip
                           disableInteractive={true}
                           title={
-                            a?.accType?.label && (
+                            a?.accType?.info?.TYPE_NM && (
                               <h3>{a?.accType?.info?.TYPE_NM}</h3>
                             )
                           }
@@ -1109,24 +1142,29 @@ export const Trn001 = () => {
                             />{" "}
                           </TableCell>
                         </Tooltip>
-                        <TableCell sx={{ minWidth: 60 }}>
-                          <TextField
-                            value={a.scroll}
-                            fullWidth={true}
-                            type="number"
-                            disabled={
-                              a.trx?.code == "3" ||
-                              a.trx?.code == "6" ||
-                              !a.trx?.code
-                                ? true
-                                : false
-                            }
-                            size="small"
-                            onChange={(e) => handleScroll(e, i)}
-                            onBlur={(e) => handleScrollBlur(e, i)}
-                            error={a?.bugMsgScroll ? true : false}
-                          />
-                        </TableCell>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgScroll && <h3>{a?.bugMsgScroll}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 60 }}>
+                            <TextField
+                              value={a.scroll}
+                              fullWidth={true}
+                              type="number"
+                              disabled={
+                                a.trx?.code == "3" ||
+                                a.trx?.code == "6" ||
+                                !a.trx?.code
+                                  ? true
+                                  : false
+                              }
+                              size="small"
+                              onChange={(e) => handleScroll(e, i)}
+                              onBlur={(e) => handleScrollBlur(e, i)}
+                              error={a?.bugMsgScroll ? true : false}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
                         <Tooltip
                           disableInteractive={true}
                           title={
@@ -1215,7 +1253,7 @@ export const Trn001 = () => {
                           disableInteractive={true}
                           title={
                             Number(a.debit) <= 0 &&
-                            !a?.isCredit &&
+                            !a?.isCredit && /// /// /// /// ///
                             a.branch &&
                             a.trx?.code && <h3>Amount can't be zero</h3>
                           }
@@ -1232,7 +1270,7 @@ export const Trn001 = () => {
                                 !a.branch ||
                                 !a.trx?.code ||
                                 a?.bugAccNo ||
-                                viewOnly
+                                viewOnly /// /// /// /// ///
                                   ? true
                                   : false
                               }
@@ -1332,6 +1370,8 @@ export const Trn001 = () => {
       )}
 
       <br />
+
+      {/* Pending CommonFooter */}
       <CommonFooter
         viewOnly={viewOnly}
         filteredRows={filteredRows}
@@ -1344,7 +1384,7 @@ export const Trn001 = () => {
         {Boolean(resetDialog) ? (
           <PopupMessageAPIWrapper
             MessageTitle="Table Reset"
-            Message={handleResetMsg}
+            Message={handleResetMsg()}
             onActionYes={() => handleReset()}
             onActionNo={() => setResetDialog(false)}
             rows={[]}
@@ -1392,6 +1432,22 @@ export const Trn001 = () => {
             }}
             rows={[]}
             open={accValidDialog}
+          />
+        ) : (
+          <></>
+        )}
+
+        {amountValidDialog ? (
+          <MessageBoxWrapper
+            MessageTitle="Amount Info"
+            Message={amountValidHtml()}
+            buttonNames={["Ok"]}
+            onClickButton={() => {
+              setAmountValidDialog(false);
+              setAmountValidMsg([]);
+            }}
+            rows={[]}
+            open={amountValidDialog}
           />
         ) : (
           <></>
