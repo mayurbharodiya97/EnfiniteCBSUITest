@@ -14,7 +14,6 @@ export const chequeReturnPostFormMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -174,10 +173,6 @@ export const chequeReturnPostFormMetaData = {
 
       maxLength: 6,
 
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Cheque Date is required."] }],
-      // },
       GridProps: { xs: 12, sm: 2, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
@@ -214,16 +209,14 @@ export const chequeReturnPostFormMetaData = {
         },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (field, formState) => {
-          if (!field?.value.trim()) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_TYPE: { value: "" },
-              ACCT_NM: { value: "" },
-              WIDTH_BAL: { value: "" },
-              OTHER_REMARKS: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_NM: { value: "" },
+            WIDTH_BAL: { value: "" },
+            OTHER_REMARKS: { value: "" },
+          };
         },
       },
       accountTypeMetadata: {
@@ -246,15 +239,13 @@ export const chequeReturnPostFormMetaData = {
           rules: [{ name: "", params: "" }],
         },
         postValidationSetCrossFieldValues: (field, formState) => {
-          if (!field?.value) {
-            formState.setDataOnFieldChange("ACCT_CD_BLANK");
-            return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              WIDTH_BAL: { value: "" },
-              OTHER_REMARKS: { value: "" },
-            };
-          }
+          formState.setDataOnFieldChange("ACCT_CD_BLANK");
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            WIDTH_BAL: { value: "" },
+            OTHER_REMARKS: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -271,10 +262,6 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "", params: "" }],
-        // },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -284,7 +271,6 @@ export const chequeReturnPostFormMetaData = {
           }
         },
 
-        // disableCaching: false,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -294,8 +280,6 @@ export const chequeReturnPostFormMetaData = {
           if (formState?.isSubmitting) return {};
           if (
             field.value &&
-            // dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            // dependentFieldsValues?.["BRANCH_CD"]?.value
             dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
             dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
           ) {
@@ -514,14 +498,6 @@ export const chequeReturnPostFormMetaData = {
         return API.getInwardZoneTypeList(ApiReq);
       },
       _optionsKey: "getInwardZoneTypeList",
-
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       postValidationSetCrossFieldValues: (
         field,
         __,
@@ -575,13 +551,6 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
     },
     {
       render: {
@@ -602,14 +571,6 @@ export const chequeReturnPostFormMetaData = {
       },
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
-
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
     },
     {
       render: {
@@ -620,13 +581,6 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       required: true,
       dependentFields: ["DISABLE_RET_AC"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 6) {
@@ -661,15 +615,6 @@ export const chequeReturnPostFormMetaData = {
         return API.getInwardReasonTypeList(ApiReq);
       },
       _optionsKey: "getInwardReasonTypeList",
-      // disableCaching: true,
-      // dependentFields: ["RETURN"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
     },
 
     {
@@ -687,14 +632,6 @@ export const chequeReturnPostFormMetaData = {
         }
         return "";
       },
-      // dependentFields: ["RETURN"],
-      // shouldExclude: (_, dependentFieldsValues, __) => {
-      //   if (dependentFieldsValues?.RETURN?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
@@ -902,7 +839,6 @@ export const positivePayFormMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1117,7 +1053,6 @@ export const shareDividendMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1172,7 +1107,13 @@ export const shareDividendMetaData = {
       name: "YEAR_CD",
       label: "Year",
       type: "text",
-
+      postValidationSetCrossFieldValues: (field) => {
+        return {
+          WARRANT_NO: { value: "" },
+          DIVIDEND_AMOUNT: { value: "" },
+          ACCT_CD: { value: "", isFieldFocused: true },
+        };
+      },
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -1185,12 +1126,11 @@ export const shareDividendMetaData = {
         GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
 
         postValidationSetCrossFieldValues: (field) => {
-          if (!field?.value.trim()) {
-            return {
-              WARRANT_NO: { value: "" },
-              DIVIDEND_AMOUNT: { value: "" },
-            };
-          }
+          return {
+            WARRANT_NO: { value: "" },
+            DIVIDEND_AMOUNT: { value: "" },
+            ACCT_CD: { value: "" },
+          };
         },
       },
       accountTypeMetadata: {
@@ -1210,12 +1150,11 @@ export const shareDividendMetaData = {
         },
         _optionsKey: "getInwardDividendTypeList",
         postValidationSetCrossFieldValues: (field) => {
-          if (!field?.value) {
-            return {
-              WARRANT_NO: { value: "" },
-              DIVIDEND_AMOUNT: { value: "" },
-            };
-          }
+          return {
+            WARRANT_NO: { value: "" },
+            DIVIDEND_AMOUNT: { value: "" },
+            ACCT_CD: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -1260,30 +1199,62 @@ export const shareDividendMetaData = {
 
             let postData = await getDividendAccountDetail(Apireq);
             formState.setDataOnFieldChange("POST_DATA", postData);
-            // First, handle "999" status
-            let validationFailedMessageShown = false; // Flag to prevent showing multiple "Account Validation Failed" messages
-            postData = postData?.map((item) => {
-              if (item?.O_STATUS === "999" && !validationFailedMessageShown) {
-                validationFailedMessageShown = true;
-                formState?.MessageBox({
+            postData = postData.sort(
+              (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
+            );
+
+            let btn99, returnVal;
+
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.O_STATUS === "999") {
+                const { btnName, obj } = await getButtonName({
                   messageTitle: "Account Validation Failed",
-                  message: item?.O_MESSAGE,
+                  message: postData[i]?.O_MESSAGE,
                 });
-              }
-              return item; // Return the item in the map function
-            });
-
-            // Then, handle "99" status
-            if (postData && postData?.[0]?.O_STATUS === "99") {
-              if (!validationFailedMessageShown) {
-                // Check if "999" message is not shown yet
-                formState?.MessageBox({
-                  messageTitle: "Information",
-                  message: postData?.[0]?.O_MESSAGE,
-                  buttonNames: ["Ok"],
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "99") {
+                formState.setDataOnFieldChange("TAB_CHANGED");
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Risk Category Alert",
+                  message: postData[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
                 });
-
-                if (postData?.[0]?.RET_FLAG === "Y") {
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData[i]?.O_STATUS === "9") {
+                formState.setDataOnFieldChange("TAB_CHANGED");
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "HNI Alert",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData[i];
+                } else {
+                  returnVal = "";
+                }
+                if (postData[i]?.DIVIDEND_AMOUNT) {
+                  if (
+                    postData[i]?.DIVIDEND_AMOUNT !==
+                    dependentFieldsValues?.["AMOUNT"]?.value
+                  ) {
+                    formState?.MessageBox({
+                      messageTitle: "Validation Failed",
+                      message: "Dividend Amount not match ",
+                      buttonNames: ["Ok"],
+                    });
+                  }
+                }
+                if (postData[i]?.RET_FLAG === "Y") {
                   let viewMasterData = await getDividendViewMasterData({
                     ...Apireq,
                     A_ASON_DT: auth?.workingDate,
@@ -1292,31 +1263,28 @@ export const shareDividendMetaData = {
                   formState.setDataOnFieldChange("VIEW_MASTER", viewMasterData);
                 }
               }
-              if (postData?.[0]?.DIVIDEND_AMOUNT) {
-                if (
-                  postData?.[0]?.DIVIDEND_AMOUNT !==
-                  dependentFieldsValues?.["AMOUNT"]?.value
-                ) {
-                  formState?.MessageBox({
-                    messageTitle: "Validation Failed",
-                    message: "Dividend Amount not match ",
-                    buttonNames: ["Ok"],
-                  });
-                }
-              }
-              return {
-                ACCT_CD: {
-                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                WARRANT_NO: {
-                  value: postData?.[0]?.WARRANT_NO ?? "",
-                },
-                DIVIDEND_AMOUNT: {
-                  value: postData?.[0]?.DIVIDEND_AMOUNT ?? "",
-                },
-              };
             }
+            btn99 = 0;
+            return {
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+              WARRANT_NO: {
+                value: returnVal?.WARRANT_NO ?? "",
+              },
+              DIVIDEND_AMOUNT: {
+                value: returnVal?.DIVIDEND_AMOUNT ?? "",
+              },
+            };
           } else if (!field?.value) {
             return {
               WARRANT_NO: { value: "" },

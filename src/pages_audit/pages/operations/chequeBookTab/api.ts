@@ -23,11 +23,12 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
     return data.map((item) => {
       if (item?.CONFIRMED === "Y") {
         item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED = "Confirm";
+        item.CONFIRMED_DISPLAY = "Confirm";
       } else {
-        item.CONFIRMED = "Pending";
+        item.CONFIRMED_DISPLAY = "Pending";
       }
-      item.AUTO_CHQBK_FLAG = item.AUTO_CHQBK_FLAG === "Y" ? "Yes" : "No";
+      item.AUTO_CHQBK_FLAG_DISPLAY =
+        item.AUTO_CHQBK_FLAG === "Y" ? "Yes" : "No";
       return item;
     });
   } else {

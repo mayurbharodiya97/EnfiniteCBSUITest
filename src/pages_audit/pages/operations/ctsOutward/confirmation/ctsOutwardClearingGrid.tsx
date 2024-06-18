@@ -41,6 +41,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const isDataChangedRef = useRef(false);
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
+
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
     () => API.getBussinessDate()
@@ -163,18 +164,19 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     }, 0);
   }, [mutation?.data]);
 
-  if (zoneTranType === "R") {
-    RetrieveFormConfigMetaData.fields[2].defaultValue = "10  ";
-    RetrieveFormConfigMetaData.form.label =
-      "Inward Return Retrieve Information";
-  } else if (zoneTranType === "S") {
-    RetrieveFormConfigMetaData.fields[2].defaultValue = "0   ";
-    RetrieveFormConfigMetaData.form.label = "CTS O/W Retrieve Information";
-  } else if (zoneTranType === "W") {
-    RetrieveFormConfigMetaData.fields[2].defaultValue = "18  ";
-    RetrieveFormConfigMetaData.form.label =
-      "Outward Return Retrieve Information";
+  const typeDefaults = {
+    R: { defaultValue: "10  ", label: "Inward Return Retrieve Information" },
+    S: { defaultValue: "0   ", label: "CTS O/W Retrieve Information" },
+    W: { defaultValue: "18  ", label: "Outward Return Retrieve Information" },
+  };
+
+  const defaultValues = typeDefaults[zoneTranType];
+  if (defaultValues) {
+    RetrieveFormConfigMetaData.fields[2].defaultValue =
+      defaultValues.defaultValue;
+    RetrieveFormConfigMetaData.form.label = defaultValues.label;
   }
+
   return (
     <Fragment>
       {isLoading ? (

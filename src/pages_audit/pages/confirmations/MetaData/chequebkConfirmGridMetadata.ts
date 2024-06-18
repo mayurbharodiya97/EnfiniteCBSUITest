@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const chequeBkConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ChequeBook Confirmation",
+    gridLabel: "ChequeBookConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -15,11 +15,11 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: true,
     hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 12,
+    pageSizes: [15, 25, 50],
+    defaultPageSize: 15,
     containerHeight: {
-      min: "66vh",
-      max: "66vh",
+      min: "73vh",
+      max: "73vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -31,7 +31,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -55,7 +55,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "Account No.",
+      columnName: "AccountNumber",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +65,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Holder Name",
+      columnName: "AccountName",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -76,7 +76,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_SERIES",
-      columnName: "Cheque Series",
+      columnName: "ChequeSeries",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -87,7 +87,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_TOTAL",
-      columnName: "No. of Cheque(s)",
+      columnName: "NoOfCheques",
       sequence: 8,
       alignment: "center",
       componentType: "default",
@@ -98,22 +98,21 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
+      columnName: "LastEnteredBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
-      width: 103,
+      width: 131,
       minWidth: 80,
       maxWidth: 150,
     },
-
     {
       accessor: "SERVICE_TAX",
       columnName: "GST",
       sequence: 9,
       alignment: "right",
       componentType: "default",
-      width: 65,
+      width: 76,
       minWidth: 50,
       maxWidth: 100,
     },
@@ -129,7 +128,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "AUTO_CHQBK_FLAG",
-      columnName: "Auto Issue Flag",
+      columnName: "AutoIssueFlag",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -139,7 +138,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "VERIFIED_BY",
-      columnName: "Verified By",
+      columnName: "VerifiedBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",

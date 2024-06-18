@@ -95,23 +95,6 @@ export const InwardClearingRetrievalMetadata = {
         xl: 5,
       },
     },
-    // {
-    //   render: {
-    //     componentType: "typography",
-    //   },
-    //   name: "NOTE",
-    //   label: "",
-    //   defaultValue: "Note :Below one item is selected. Please scroll to view.",
-    //   TypographyProps: {
-    //     style: {
-    //       color: "red",
-    //       whiteSpace: "pre-line",
-    //       fontSize: "1.1rem",
-    //       marginTop: "8px",
-    //     },
-    //   },
-    //   GridProps: { xs: 12, sm: 7, md: 7, lg: 7, xl: 7 },
-    // },
   ],
 };
 

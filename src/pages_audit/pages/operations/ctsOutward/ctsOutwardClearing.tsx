@@ -96,15 +96,15 @@ const CtsOutwardClearingForm: FC<{
       // setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
     }
   }, []);
-  const { data, isLoading, isError, error, refetch } = useQuery<any, any>(
-    ["getBussinessDate", formMode, zoneTranType],
-    () => API.getBussinessDate()
-  );
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getBussinessDate", formMode, zoneTranType], () => API.getBussinessDate());
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getBussinessDate", formMode]);
     };
-  }, []);
+  }, [formMode]);
   const getOutwardClearingData: any = useMutation(
     API.getOutwardClearingConfigData,
     {
@@ -267,8 +267,8 @@ const CtsOutwardClearingForm: FC<{
       setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Check Amount",
+        message: "Please Check Amount",
+        messageTitle: "Validation Failed",
       });
     }
   };
@@ -322,7 +322,7 @@ const CtsOutwardClearingForm: FC<{
 
   return (
     <Fragment>
-      {isLoading || getOutwardClearingData.isLoading ? (
+      {isLoading || isFetching || getOutwardClearingData.isLoading ? (
         <div style={{ height: 100, paddingTop: 10 }}>
           <div style={{ padding: 10 }}>
             <LoaderPaperComponent />
@@ -475,6 +475,15 @@ const CtsOutwardClearingForm: FC<{
                     <GradientButton
                       onClick={() => {
                         setFormMode("new");
+                        setChequeDetailData(() => ({
+                          chequeDetails: [
+                            {
+                              ECS_USER_NO: "",
+                              CHEQUE_DATE: authState?.workingDate ?? "",
+                            },
+                          ],
+                          SLIP_AMOUNT: "0",
+                        }));
                         refetch();
                       }}
                     >
@@ -687,7 +696,7 @@ const CtsOutwardClearingForm: FC<{
                     ENTERED_COMP_CD: rowsData?.[0]?.data?.ENTERED_COMP_CD ?? "",
                     ENTERED_BRANCH_CD:
                       rowsData?.[0]?.data?.ENTERED_BRANCH_CD ?? "",
-                    TRAN_TYPE: zoneTranType,
+                    // TRAN_TYPE: zoneTranType,
                   });
                   setFormMode("view");
                 }

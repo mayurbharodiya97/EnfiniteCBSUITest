@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const stockConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stock Confirmation",
+    gridLabel: "StockConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -15,23 +15,23 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: true,
     hideFooter: false,
-    pageSizes: [12, 20, 30],
-    defaultPageSize: 12,
+    pageSizes: [15, 25, 50],
+    defaultPageSize: 15,
     containerHeight: {
-      min: "66vh",
-      max: "66vh",
+      min: "73vh",
+      max: "73vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Stock Confirmation",
+    searchPlaceholder: "Stock Confirmation",
   },
   filters: [],
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -55,7 +55,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "Account No.",
+      columnName: "AccountNumber",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +65,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Holder Name",
+      columnName: "AccountName",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -76,19 +76,19 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "ASON_DT",
-      columnName: "Stock Ason Date",
+      columnName: "StockAsonDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 136,
+      width: 145,
       minWidth: 70,
       maxWidth: 150,
     },
 
     {
       accessor: "STOCK_DESC",
-      columnName: "Stock Description",
+      columnName: "StockDescription",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -99,7 +99,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "STOCK_VALUE",
-      columnName: "Stock Value",
+      columnName: "StockValue",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -109,18 +109,18 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "MARGIN",
-      columnName: "Margin",
+      columnName: "Margin%",
       sequence: 8,
       alignment: "right",
       componentType: "default",
-      width: 62,
+      width: 69,
       minWidth: 50,
       maxWidth: 100,
     },
 
     {
       accessor: "DRAWING_POWER",
-      columnName: "Drawing Power",
+      columnName: "DrawingPower",
       sequence: 9,
       alignment: "right",
       componentType: "default",
@@ -131,7 +131,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
+      columnName: "LastEnteredBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -162,7 +162,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "VERIFIED_BY",
-      columnName: "Verified By",
+      columnName: "VerifiedBy",
       sequence: 9,
       alignment: "center",
       componentType: "default",
