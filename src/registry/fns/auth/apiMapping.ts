@@ -1615,28 +1615,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDDDATADISP",
     packageName: "",
   },
-  GETPAYSLIPINFAVOURDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPINFAVOURDDW",
-    packageName: "",
-  },
-  GETPAYSLIPREGIONDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREGIONDDW",
-    packageName: "",
-  },
   GETPAYSLIPNOHDR: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPNOHDR",
-    packageName: "",
-  },
-  GETCALCULATEGSTCOMM: {
-    url: "/transactionServiceAPI/GETCALCULATEGSTCOMM",
-    packageName: "",
-  },
-  GETPAYSLIPBANKCODEDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBANKCODEDDW",
-    packageName: "",
-  },
-  GETPAYSLIPSIGNATUREDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSIGNATUREDDW",
     packageName: "",
   },
   GETPAYSLIPTRANCD: {
@@ -1653,10 +1633,6 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCOMMTYPEMSTDDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEMSTDDDW  ",
-    packageName: "",
-  },
-  VALIDATEPAYSLIPNO: {
-    url: "transactionServiceAPI/VALIDATEPAYSLIPNO  ",
     packageName: "",
   },
   GETTEMPODAGCNFDATAGRID: {
