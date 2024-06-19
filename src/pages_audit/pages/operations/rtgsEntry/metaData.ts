@@ -4,7 +4,6 @@ import {
   getIfscBankDetail,
   getIfscBenDetail,
   getJointDetailsList,
-  getRtgsTransactionTypeList,
 } from "./api";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
@@ -67,6 +66,7 @@ export const RtgsEntryFormMetaData = {
       },
       _optionsKey: "getEntryType",
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+      __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
     },
     {
       render: {
@@ -100,6 +100,18 @@ export const RtgsEntryFormMetaData = {
           { name: "required", params: ["Please Select the Transaction Type"] },
         ],
       },
+      __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "BR_CONFIRMED",
+      label: "",
+      type: "text",
+
+      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -108,6 +120,18 @@ export const RtgsEntryFormMetaData = {
       name: "SLIP_NO",
       label: "Slip No.",
       type: "text",
+      __EDIT__: {
+        isFieldFocused: true,
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
+
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -125,6 +149,7 @@ export const RtgsEntryFormMetaData = {
           CODE: "RTGSO",
         });
       },
+      __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
       _optionsKey: "getCommTypeList",
       disableCaching: true,
       schemaValidation: {
@@ -163,236 +188,41 @@ export const RtgsEntryFormMetaData = {
           },
         ],
       },
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
     },
     {
       render: {
         componentType: "_accountNumber",
       },
-      branchCodeMetadata: {
-        // defaultValue: "099 ",
-        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
-        runPostValidationHookAlways: true,
-        schemaValidation: {
-          type: "string",
-          rules: [
-            {
-              name: "required",
-              params: [" Please Enter Ordering A/c Branch"],
-            },
-          ],
-        },
 
-        postValidationSetCrossFieldValues: (
-          field,
-          formState,
-          auth,
-          dependentFieldsValues
-        ) => {
-          formState.setDataOnFieldChange("ACCT_CD_BLANK");
-          return {
-            ACCT_NM: { value: "" },
-            LIMIT_AMOUNT: { value: "" },
-            ACCT_NAME: { value: "" },
-            CONTACT_INFO: { value: "" },
-            ACCT_MODE: { value: "" },
-            ADD1: { value: "" },
-            TRAN_BAL: { value: "" },
-            ACCT_CD: { value: "" },
-          };
-        },
-      },
-
-      accountTypeMetadata: {
-        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
-        isFieldFocused: true,
-        defaultfocus: true,
-        defaultValue: "",
-        runPostValidationHookAlways: true,
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "MST/552",
-          });
-        },
-        schemaValidation: {
-          type: "string",
-          rules: [
-            {
-              name: "required",
-              params: [" Please Enter Ordering A/c Type"],
-            },
-          ],
-        },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "", params: [""] }],
-        // },
-        _optionsKey: "get_Account_Type",
-        // postValidationSetCrossFieldValues: (
-        //   field,
-        //   formState,
-        //   auth,
-        //   dependentFieldsValues
-        // ) => {
-        //   if (formState?.isSubmitting) return {};
-        //   if (Boolean(formState?.isBackButton)) return {};
-        //   // formState.setDataOnFieldChange("ACCT_CD_BLANK");
-        //   return {
-        //     ACCT_CD: { value: "" },
-        //     ACCT_NM: { value: "" },
-        //     LIMIT_AMOUNT: { value: "" },
-        //     ACCT_NAME: { value: "" },
-        //     CONTACT_INFO: { value: "" },
-        //     ACCT_MODE: { value: "" },
-        //     ADD1: { value: "" },
-        //     TRAN_BAL: { value: "" },
-        //   };
-        // },
-      },
-      accountCodeMetadata: {
-        fullWidth: true,
-        FormatProps: {
-          allowNegative: false,
-          isAllowed: (values) => {
-            if (values?.value?.length > 6) {
-              return false;
-            }
-            return true;
+      __NEW__: {
+        branchCodeMetadata: {
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          schemaValidation: {
+            type: "string",
+            rules: [
+              {
+                name: "required",
+                params: [" Please Enter Ordering A/c Branch"],
+              },
+            ],
           },
-        },
-        disableCaching: false,
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "", params: [""] }],
-        // },
-        schemaValidation: {
-          type: "string",
-          rules: [
-            {
-              name: "required",
-              params: [" Please Enter Ordering A/c Number"],
-            },
-          ],
-        },
-        postValidationSetCrossFieldValues: async (
-          field,
-          formState,
-          auth,
-          dependentFieldsValues
-        ) => {
-          if (formState?.isSubmitting) return {};
-          if (Boolean(formState?.isBackButton)) return {};
-          if (
-            field.value &&
-            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            dependentFieldsValues?.["BRANCH_CD"]?.value
-          ) {
-            let Apireq = {
-              COMP_CD: auth?.companyID,
-              ACCT_CD: utilFunction.getPadAccountNumber(
-                field?.value,
-                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-              ),
-              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-              AMOUNT: "",
-              SCREEN_REF: "EMST/552",
-            };
-            formState.setDataOnFieldChange("API_REQ", Apireq);
-            let postData = await getAccountDetail(Apireq);
-
-            let btn99, returnVal;
-
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
-            for (let i = 0; i < postData.length; i++) {
-              if (postData[i]?.O_STATUS === "999") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Account Validation Failed",
-                  message: postData[i]?.O_MESSAGE,
-                });
-                returnVal = "";
-              } else if (postData[i]?.O_STATUS === "9") {
-                if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNI Alert",
-                    message: postData[i]?.O_MESSAGE,
-                  });
-                }
-                returnVal = "";
-              } else if (postData[i]?.O_STATUS === "99") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Risk Category Alert",
-                  message: postData[i]?.O_MESSAGE,
-                  buttonNames: ["Yes", "No"],
-                });
-
-                btn99 = btnName;
-                if (btnName === "No") {
-                  returnVal = "";
-                }
-              } else if (postData[i]?.O_STATUS === "0") {
-                if (btn99 !== "No") {
-                  returnVal = postData[i];
-                } else {
-                  returnVal = "";
-                }
-                let jointDetail = await getJointDetailsList({
-                  COMP_CD: auth?.companyID,
-                  BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    field?.value,
-                    dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                  ),
-                  ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                });
-                formState.setDataOnFieldChange("JOINT_DETAIL", jointDetail);
-              }
-            }
-            btn99 = 0;
-            return {
-              ACCT_CD:
-                returnVal !== ""
-                  ? {
-                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
-                  : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-              TRAN_BAL: {
-                value: returnVal?.TRAN_BAL ?? "",
-              },
-              ACCT_NM: {
-                value: returnVal?.ACCT_NM ?? "",
-              },
-              ACCT_NAME: {
-                value: returnVal?.ACCT_NAME ?? "",
-              },
-              ADD1: {
-                value: returnVal?.ADD1 ?? "",
-              },
-              LIMIT_AMOUNT: {
-                value: returnVal?.LIMIT_AMOUNT ?? "",
-              },
-              CONTACT_INFO: {
-                value: returnVal?.CONTACT_INFO ?? "",
-              },
-              ACCT_MODE: {
-                value: returnVal?.ACCT_MODE ?? "",
-              },
-              PARA_BNFCRY: {
-                value: returnVal?.PARA_BNFCRY ?? "",
-              },
-            };
-          } else if (!field?.value) {
+          postValidationSetCrossFieldValues: (
+            field,
+            formState,
+            auth,
+            dependentFieldsValues
+          ) => {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
               ACCT_NM: { value: "" },
               LIMIT_AMOUNT: { value: "" },
@@ -401,25 +231,257 @@ export const RtgsEntryFormMetaData = {
               ACCT_MODE: { value: "" },
               ADD1: { value: "" },
               TRAN_BAL: { value: "" },
-              PARA_BNFCRY: { value: "" },
+              ACCT_CD: { value: "" },
             };
           }
-
-          return {};
         },
-        runPostValidationHookAlways: true,
-        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
+        accountTypeMetadata: {
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          isFieldFocused: true,
+          defaultfocus: true,
+          defaultValue: "",
+
+          runPostValidationHookAlways: true,
+          options: (dependentValue, formState, _, authState) => {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: authState?.user?.branchCode,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "MST/552",
+            });
+          },
+          schemaValidation: {
+            type: "string",
+            rules: [
+              {
+                name: "required",
+                params: [" Please Enter Ordering A/c Type"],
+              },
+            ],
+          },
+          _optionsKey: "get_Account_Type",
+
+        },
+        accountCodeMetadata: {
+          fullWidth: true,
+          FormatProps: {
+            allowNegative: false,
+            isAllowed: (values) => {
+              if (values?.value?.length > 6) {
+                return false;
+              }
+              return true;
+            },
+          },
+          disableCaching: false,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              {
+                name: "required",
+                params: [" Please Enter Ordering A/c Number"],
+              },
+            ],
+          },
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            auth,
+            dependentFieldsValues
+          ) => {
+            if (formState?.isSubmitting) return {};
+            if (Boolean(formState?.isBackButton)) return {};
+            if (
+              field.value &&
+              dependentFieldsValues?.["ACCT_TYPE"]?.value &&
+              dependentFieldsValues?.["BRANCH_CD"]?.value
+            ) {
+              let Apireq = {
+                COMP_CD: auth?.companyID,
+                ACCT_CD: utilFunction.getPadAccountNumber(
+                  field?.value,
+                  dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                ),
+                ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+                BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+                AMOUNT: "",
+                SCREEN_REF: "MST/552",
+              };
+              formState.setDataOnFieldChange("API_REQ", Apireq);
+              let postData = await getAccountDetail(Apireq);
+
+              let btn99, returnVal;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Account Validation Failed",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: "HNI Alert",
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Risk Category Alert",
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    returnVal = "";
+                  }
+                } else if (postData[i]?.O_STATUS === "0") {
+                  if (btn99 !== "No") {
+                    returnVal = postData[i];
+                  } else {
+                    returnVal = "";
+                  }
+                  let jointDetail = await getJointDetailsList({
+                    COMP_CD: auth?.companyID,
+                    BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+                    ACCT_CD: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                    ),
+                    ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+                  });
+                  formState.setDataOnFieldChange("JOINT_DETAIL", jointDetail);
+                }
+              }
+              btn99 = 0;
+              return {
+                ACCT_CD:
+                  returnVal !== ""
+                    ? {
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
+                    : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                TRAN_BAL: {
+                  value: returnVal?.TRAN_BAL ?? "",
+                },
+                ACCT_NM: {
+                  value: returnVal?.ACCT_NM ?? "",
+                },
+                ACCT_NAME: {
+                  value: returnVal?.ACCT_NAME ?? "",
+                },
+                ADD1: {
+                  value: returnVal?.ADD1 ?? "",
+                },
+                LIMIT_AMOUNT: {
+                  value: returnVal?.LIMIT_AMOUNT ?? "",
+                },
+                CONTACT_INFO: {
+                  value: returnVal?.CONTACT_INFO ?? "",
+                },
+                ACCT_MODE: {
+                  value: returnVal?.ACCT_MODE ?? "",
+                },
+                PARA_BNFCRY: {
+                  value: returnVal?.PARA_BNFCRY ?? "",
+                },
+                TYPE_CD: {
+                  value: returnVal?.TYPE_CD ?? "",
+                }
+              };
+            } else if (!field?.value) {
+              return {
+                ACCT_NM: { value: "" },
+                LIMIT_AMOUNT: { value: "" },
+                ACCT_NAME: { value: "" },
+                CONTACT_INFO: { value: "" },
+                ACCT_MODE: { value: "" },
+                ADD1: { value: "" },
+                TRAN_BAL: { value: "" },
+                PARA_BNFCRY: { value: "" },
+                TYPE_CD: { value: "" },
+              };
+            }
+
+            return {};
+          },
+          runPostValidationHookAlways: true,
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+        },
+      },
+      __VIEW__: {
+        branchCodeMetadata: {
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+        },
+        accountTypeMetadata: {
+          GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+        },
+        accountCodeMetadata: {
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          postValidationSetCrossFieldValues: (
+            field,
+            formState,
+            auth,
+            dependentFieldsValues
+          ) => { }
+        },
+      },
+      __EDIT__: {
+        branchCodeMetadata: {
+          render: {
+            componentType: "textField",
+          },
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+        },
+        accountTypeMetadata: {
+          render: {
+            componentType: "textField",
+          },
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+        },
+        accountCodeMetadata: {
+          render: {
+            componentType: "textField",
+          },
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          postValidationSetCrossFieldValues: (
+            field,
+            formState,
+            auth,
+            dependentFieldsValues
+          ) => { }
+        },
       },
     },
-
     {
       render: {
         componentType: "hidden",
       },
       name: "PARA_BNFCRY",
       label: "",
-      type: "text",
-      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TYPE_CD",
+      label: "",
     },
     {
       render: {
@@ -473,7 +535,6 @@ export const RtgsEntryFormMetaData = {
       label: "Ord.A/C Name",
       type: "text",
       fullWidth: true,
-      // isReadOnly: true,
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
       required: true,
       schemaValidation: {
@@ -485,6 +546,16 @@ export const RtgsEntryFormMetaData = {
           },
         ],
       },
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
     },
     {
       render: {
@@ -494,7 +565,16 @@ export const RtgsEntryFormMetaData = {
       label: "A/C Address",
       type: "text",
       fullWidth: true,
-      // isReadOnly: true,
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
       required: true,
       schemaValidation: {
@@ -510,8 +590,7 @@ export const RtgsEntryFormMetaData = {
 
     {
       render: {
-        componentType: "textField",
-        // componentType: "phoneNumber",
+        componentType: "phoneNumber",
       },
       name: "CONTACT_INFO",
       label: "Contact Number",
@@ -528,6 +607,16 @@ export const RtgsEntryFormMetaData = {
           },
         ],
       },
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
     },
     {
       render: {
@@ -537,143 +626,145 @@ export const RtgsEntryFormMetaData = {
       label: "Cheque No.",
       placeholder: "Cheque No.",
       type: "text",
-      // required: true,
       autoComplete: "off",
-      // isFieldFocused: true,
-      // defaultfocus: true,
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        isAllowed: (values) => {
-          if (values?.value?.length > 10) {
-            return false;
-          }
+      __EDIT__: { isReadOnly: true, },
+      __NEW__: {
+        FormatProps: {
+          allowNegative: false,
+          allowLeadingZeros: true,
+          isAllowed: (values) => {
+            if (values?.value?.length > 10) {
+              return false;
+            }
 
-          return true;
+            return true;
+          },
         },
-      },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     {
-      //       name: "required",
-      //       params: ["Please enter Cheque Number"],
-      //     },
-      //   ],
-      // },
-      dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
-        if (
-          field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value.length === 0
-        ) {
-          let buttonName = await formState?.MessageBox({
-            messageTitle: "Information",
-            message: "Enter Account Information",
-            buttonNames: ["Ok"],
-          });
+        schemaValidation: {
+          type: "string",
+          rules: [
+            {
+              name: "required",
+              params: ["Please enter Cheque Number"],
+            },
+          ],
+        },
+        dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD", "TYPE_CD"],
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (
+            field.value &&
+            dependentFieldsValues?.["ACCT_CD"]?.value.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Information",
+              message: "Enter Account Information",
+              buttonNames: ["Ok"],
+            });
 
-          if (buttonName === "Ok") {
-            return {
-              CHEQUE_NO: {
-                value: "",
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
-              ACCT_TYPE: {
-                value: "",
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-            };
-          }
-        } else if (
-          field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value?.length
-        ) {
-          if (formState?.isSubmitting) return {};
-          let postData = await API.getRtgsChequeNoValidation({
-            BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-            ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-            ACCT_CD: utilFunction.getPadAccountNumber(
-              dependentFieldsValues?.["ACCT_CD"]?.value,
-              dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-            ),
-            CHQ_NO: field.value,
-          });
-          let btn99;
-
-          const getButtonName = async (obj) => {
-            let btnName = await formState.MessageBox(obj);
-            return { btnName, obj };
-          };
-          for (let i = 0; i < postData.length; i++) {
-            if (postData[i]?.ERR_CODE === "999") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "Account Validation Failed",
-                message: postData[i]?.ERR_MSG,
-              });
-              if (btnName === "Ok") {
-                return {
-                  CHEQUE_NO: {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
-                  CHEQUE_DT: {
-                    value: "",
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                };
-              }
-            } else if (postData[i]?.ERR_CODE === "9") {
-              if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "HNI Alert",
-                  message: postData[i]?.ERR_MSG,
-                });
-              }
-            } else if (postData[i]?.ERR_CODE === "99") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "Risk Category Alert",
-                message: postData[i]?.ERR_MSG,
-                buttonNames: ["Yes", "No"],
-              });
-
-              btn99 = btnName;
-              if (btnName === "No") {
-                return {
-                  CHEQUE_NO: {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
-                  CHEQUE_DT: {
-                    value: "",
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                };
-              }
-            } else if (postData[i]?.ERR_CODE === "0") {
+            if (buttonName === "Ok") {
               return {
                 CHEQUE_NO: {
-                  value: field?.value,
+                  value: "",
                   isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
                   ignoreUpdate: true,
                 },
               };
             }
-          }
-        }
-      },
+          } else if (
+            field.value &&
+            dependentFieldsValues?.["ACCT_CD"]?.value?.length
+          ) {
+            if (formState?.isSubmitting) return {};
+            let postData = await API.getRtgsChequeNoValidation({
+              COMP_CD: auth?.companyID,
+              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                dependentFieldsValues?.["ACCT_CD"]?.value,
+                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+              ),
+              CHEQUE_NO: field.value,
+              TYPE_CD: dependentFieldsValues?.["TYPE_CD"],
+              SCREEN_REF: "MST/552"
+            });
+            let btn99;
 
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.ERR_CODE === "999") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Account Validation Failed",
+                  message: postData[i]?.ERR_MSG,
+                });
+                if (btnName === "Ok") {
+                  return {
+                    CHEQUE_NO: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                    CHEQUE_DT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (postData[i]?.ERR_CODE === "9") {
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "HNI Alert",
+                    message: postData[i]?.ERR_MSG,
+                  });
+                }
+              } else if (postData[i]?.ERR_CODE === "99") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Risk Category Alert",
+                  message: postData[i]?.ERR_MSG,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  return {
+                    CHEQUE_NO: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                    CHEQUE_DT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (postData[i]?.ERR_CODE === "0") {
+                return {
+                  CHEQUE_NO: {
+                    value: field?.value,
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            }
+          }
+        },
+      },
       GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
@@ -686,6 +777,16 @@ export const RtgsEntryFormMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
       GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
     },
     {
@@ -696,7 +797,16 @@ export const RtgsEntryFormMetaData = {
       label: "Remarks",
       type: "text",
       fullWidth: true,
-      // isReadOnly: true,
+      __EDIT__: {
+        dependentFields: ["BR_CONFIRMED"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.BR_CONFIRMED?.value === "0") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
       GridProps: { xs: 12, sm: 4.4, md: 4.4, lg: 4.4, xl: 4.4 },
     },
     {
@@ -708,189 +818,186 @@ export const RtgsEntryFormMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      FormatProps: {
-        allowNegative: false,
-      },
-      dependentFields: [
-        "ACCT_CD",
-        "ACCT_TYPE",
-        "BRANCH_CD",
-        "ENTRY_TYPE",
-        "DEF_TRAN_CD",
-      ],
-      schemaValidation: {
-        type: "string",
-        rules: [
-          {
-            name: "required",
-            params: ["Please Enter RTGS/NEFT Ordering Amount"],
-          },
-        ],
-      },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
-        if (formState?.isSubmitting) return {};
-        if (
-          field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value.length === 0
-        ) {
-          let buttonName = await formState?.MessageBox({
-            messageTitle: "Information",
-            message: "Enter Account Information",
-            buttonNames: ["Ok"],
-          });
 
-          if (buttonName === "Ok") {
-            return {
-              AMOUNT: {
-                value: "",
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
-              ACCT_TYPE: {
-                value: "",
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-            };
-          }
-        } else if (
-          field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value &&
-          dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-          dependentFieldsValues?.["BRANCH_CD"]?.value &&
-          dependentFieldsValues?.["ENTRY_TYPE"]?.value &&
-          dependentFieldsValues?.["DEF_TRAN_CD"]?.value
-        ) {
-          console.log(
-            "test",
-            field.value,
-            field.value <
-              dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT
-          );
+      __EDIT__: { isReadOnly: true },
+      __NEW__: {
+        FormatProps: {
+          allowNegative: false,
+        },
+        dependentFields: [
+          "ACCT_CD",
+          "ACCT_TYPE",
+          "BRANCH_CD",
+          "ENTRY_TYPE",
+          "DEF_TRAN_CD",
+        ],
+        schemaValidation: {
+          type: "string",
+          rules: [
+            {
+              name: "required",
+              params: ["Please Enter RTGS/NEFT Ordering Amount"],
+            },
+          ],
+        },
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (formState?.isSubmitting) return {};
           if (
-            field.value <
-            dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT
+            field.value &&
+            dependentFieldsValues?.["ACCT_CD"]?.value.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Validation Failed",
-              message: `Amount can't be less than ${dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT} (RTGS Minimum Limit)`,
+              messageTitle: "Information",
+              message: "Enter Account Information",
               buttonNames: ["Ok"],
             });
+
             if (buttonName === "Ok") {
               return {
                 AMOUNT: {
                   value: "",
-                  isFieldFocused: true,
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
-                COMM_AMT: {
+                ACCT_TYPE: {
                   value: "",
-                  isFieldFocused: false,
+                  isFieldFocused: true,
                   ignoreUpdate: true,
                 },
               };
             }
-          } else {
-            let Validate = await API.validateAmount({
-              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-              ACCT_CD: utilFunction.getPadAccountNumber(
-                dependentFieldsValues?.["ACCT_CD"]?.value,
-                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-              ),
-              AMOUNT: field.value,
-              DOC_CD: "MST/552",
-            });
-            let btn99;
-
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
-            for (let i = 0; i < Validate.length; i++) {
-              if (Validate[i]?.O_STATUS === "999") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Account Validation Failed",
-                  message: Validate[i]?.O_MESSAGE,
-                });
-                if (btnName === "Ok") {
-                  return {
-                    AMOUNT: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-                    COMM_AMT: {
-                      value: "",
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-              } else if (Validate[i]?.O_STATUS === "9") {
-                if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNI Alert",
-                    message: Validate[i]?.O_MESSAGE,
-                  });
-                }
-              } else if (Validate[i]?.O_STATUS === "99") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Risk Category Alert",
-                  message: Validate[i]?.O_MESSAGE,
-                  buttonNames: ["Yes", "No"],
-                });
-
-                btn99 = btnName;
-                if (btnName === "No") {
-                  return {
-                    COMM_AMT: {
-                      value: "",
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    },
-                    AMOUNT: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-              } else if (Validate[i]?.O_STATUS === "0") {
-                let postData = await API.getRtgsAmountChargeValidation({
-                  COMP_CD: auth?.companyID,
-                  BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                  ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    dependentFieldsValues?.["ACCT_CD"]?.value,
-                    dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                  ),
-                  DEF_TRAN_CD: dependentFieldsValues?.["DEF_TRAN_CD"]?.value,
-                  ENTRY_TYPE: dependentFieldsValues?.["ENTRY_TYPE"]?.value,
-                  AMOUNT: field.value,
-                });
+          } else if (
+            field.value &&
+            dependentFieldsValues?.["ACCT_CD"]?.value &&
+            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
+            dependentFieldsValues?.["BRANCH_CD"]?.value &&
+            dependentFieldsValues?.["ENTRY_TYPE"]?.value &&
+            dependentFieldsValues?.["DEF_TRAN_CD"]?.value
+          ) {
+            if (
+              field.value <
+              dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Validation Failed",
+                message: `Amount can't be less than ${dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT} (RTGS Minimum Limit)`,
+                buttonNames: ["Ok"],
+              });
+              if (buttonName === "Ok") {
                 return {
-                  COMM_AMT: { value: postData?.[0]?.CHRG_AMT },
-                  SERVICE_CHARGE: { value: postData?.[0]?.GST_AMT },
-                  ENABLE_DISABLE: { value: postData?.[0]?.ENABLE_DISABLE },
+                  AMOUNT: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  COMM_AMT: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
                 };
               }
-            }
-          }
-        } else if (!field?.value) {
-          return {
-            SERVICE_CHARGE: { value: "" },
-            COMM_AMT: { value: "" },
-            ENABLE_DISABLE: { value: "" },
-          };
-        }
-      },
+            } else {
+              let Validate = await API.validateAmount({
+                BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+                ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+                ACCT_CD: utilFunction.getPadAccountNumber(
+                  dependentFieldsValues?.["ACCT_CD"]?.value,
+                  dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                ),
+                AMOUNT: field.value,
+                DOC_CD: "MST/552",
+              });
+              let btn99;
 
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < Validate.length; i++) {
+                if (Validate[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Account Validation Failed",
+                    message: Validate[i]?.O_MESSAGE,
+                  });
+                  if (btnName === "Ok") {
+                    return {
+                      AMOUNT: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                      COMM_AMT: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (Validate[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: "HNI Alert",
+                      message: Validate[i]?.O_MESSAGE,
+                    });
+                  }
+                } else if (Validate[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Risk Category Alert",
+                    message: Validate[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    return {
+                      COMM_AMT: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                      AMOUNT: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (Validate[i]?.O_STATUS === "0") {
+                  let postData = await API.getRtgsAmountChargeValidation({
+                    COMP_CD: auth?.companyID,
+                    BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+                    ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+                    ACCT_CD: utilFunction.getPadAccountNumber(
+                      dependentFieldsValues?.["ACCT_CD"]?.value,
+                      dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                    ),
+                    DEF_TRAN_CD: dependentFieldsValues?.["DEF_TRAN_CD"]?.value,
+                    ENTRY_TYPE: dependentFieldsValues?.["ENTRY_TYPE"]?.value,
+                    AMOUNT: field.value,
+                  });
+                  return {
+                    COMM_AMT: { value: postData?.[0]?.CHRG_AMT },
+                    SER_CHRG_AMT: { value: postData?.[0]?.GST_AMT },
+                    ENABLE_DISABLE: { value: postData?.[0]?.ENABLE_DISABLE },
+                  };
+                }
+              }
+            }
+          } else if (!field?.value) {
+            return {
+              SER_CHRG_AMT: { value: "" },
+              COMM_AMT: { value: "" },
+              ENABLE_DISABLE: { value: "" },
+            };
+          }
+        },
+      },
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
     {
@@ -901,13 +1008,22 @@ export const RtgsEntryFormMetaData = {
       label: "Comm.",
       placeholder: "",
       type: "text",
-
+      __EDIT__: { isReadOnly: true },
       GridProps: {
         xs: 12,
         md: 1.4,
         sm: 1.4,
         lg: 1.4,
         xl: 1.4,
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["Please Enter Comm. Amount"],
+          },
+        ],
       },
       dependentFields: ["ENABLE_DISABLE"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -939,7 +1055,7 @@ export const RtgsEntryFormMetaData = {
       render: {
         componentType: "amountField",
       },
-      name: "SERVICE_CHARGE",
+      name: "SER_CHRG_AMT",
       label: "GST",
       placeholder: "",
       type: "text",
@@ -967,57 +1083,60 @@ export const RtgsEntryFormMetaData = {
       isReadOnly: true,
       GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2 },
 
-      dependentFields: ["AMOUNT", "SERVICE_CHARGE", "COMM_AMT"],
+      dependentFields: ["AMOUNT", "SER_CHRG_AMT", "COMM_AMT"],
 
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
-          parseInt(dependentFields?.SERVICE_CHARGE?.value) +
+          parseInt(dependentFields?.SER_CHRG_AMT?.value) +
           parseInt(dependentFields?.AMOUNT?.value) +
           parseInt(dependentFields?.COMM_AMT?.value);
         return value ?? "--";
       },
     },
-    // {
-    //   render: {
-    //     componentType: "hidden",
-    //   },
-    //   name: "ENTERED_BY",
-    //   label: "Maker",
-    //   placeholder: "",
-    //   type: "text",
-    //   fullWidth: true,
-    //   isReadOnly: true,
-    //   __VIEW__: { render: { componentType: "textField" } },
-    //   GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
-    // },
-    // {
-    //   render: {
-    //     componentType: "hidden",
-    //   },
-    //   name: "ENTERED_DATE",
-    //   label: "Maker Time",
-    //   placeholder: "",
-    //   type: "text",
-    //   format: "dd/MM/yyyy HH:mm:ss",
-    //   __VIEW__: { render: { componentType: "datetimePicker" } },
-    //   fullWidth: true,
-    //   isReadOnly: true,
-    //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-    // },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BY",
+      label: "Maker",
+      placeholder: "",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      __VIEW__: { render: { componentType: "textField" } },
+      __EDIT__: { render: { componentType: "textField" } },
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_DATE",
+      label: "Maker Time",
+      placeholder: "",
+      type: "text",
+      format: "dd/MM/yyyy HH:mm:ss",
+      __VIEW__: { render: { componentType: "datetimePicker" } },
+      __EDIT__: { render: { componentType: "datetimePicker" } },
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+    },
 
-    // {
-    //   render: {
-    //     componentType: "hidden",
-    //   },
-    //   name: "CONFIRMED",
-    //   label: "Confirm status",
-    //   placeholder: "",
-    //   type: "text",
-    //   fullWidth: true,
-    //   isReadOnly: true,
-    //   __VIEW__: { render: { componentType: "textField" } },
-    //   GridProps: { xs: 12, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
-    // },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CONF_STATUS",
+      label: "Confirm status",
+      placeholder: "",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      __VIEW__: { render: { componentType: "textField" } },
+      __EDIT__: { render: { componentType: "textField" } },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+    },
     // {
     //   render: {
     //     componentType: "hidden",
@@ -1069,7 +1188,6 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Joint Detail",
     rowIdColumn: "index",
-    // rowIdColumn: "J_TYPE",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -1337,6 +1455,8 @@ export const rtgsAccountDetailFormMetaData: any = {
     },
   },
   fields: [
+
+
     {
       render: {
         componentType: "spacer",
@@ -1347,8 +1467,8 @@ export const rtgsAccountDetailFormMetaData: any = {
       render: {
         componentType: "hidden",
       },
-      name: "SLIP_AMOUNT",
-      label: "Total Amount",
+      name: "ORDERING_AMOUNT",
+      label: "Ordering Amount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -1372,10 +1492,10 @@ export const rtgsAccountDetailFormMetaData: any = {
     },
     {
       render: {
-        componentType: "hidden",
+        componentType: "amountField",
       },
-      name: "FINALAMOUNT",
-      label: "Total Cheque Amount",
+      name: "BENIFICIARY_AMOUNT",
+      label: "Total Benificiary Amount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -1398,46 +1518,21 @@ export const rtgsAccountDetailFormMetaData: any = {
       __VIEW__: { render: { componentType: "hidden" } },
 
       dependentFields: ["beneficiaryAcDetails"],
-
-      postValidationSetCrossFieldValues: async (
-        currentFieldState,
-        formState,
-        auth,
-        dependentFieldState
-      ) => {
+      setValueOnDependentFieldsChange: (dependentFieldState) => {
         let accumulatedTakeoverLoanAmount = (
           Array.isArray(dependentFieldState?.["beneficiaryAcDetails"])
             ? dependentFieldState?.["beneficiaryAcDetails"]
             : []
         ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
 
-        if (
-          Number(currentFieldState.value) ===
-          Number(accumulatedTakeoverLoanAmount)
-        ) {
-          return {};
-        }
-        if (accumulatedTakeoverLoanAmount) {
-          return {
-            FINALAMOUNT: {
-              value: accumulatedTakeoverLoanAmount ?? 0,
-            },
-          };
-        } else {
-          return {
-            FINALAMOUNT: {
-              value: "",
-            },
-          };
-        }
+        return accumulatedTakeoverLoanAmount;
       },
-
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
 
     {
       render: {
-        componentType: "amountField",
+        componentType: "hidden",
       },
       name: "TOTAL_AMOUNT",
       label: "Total Amount",
@@ -1445,16 +1540,15 @@ export const rtgsAccountDetailFormMetaData: any = {
       isReadOnly: true,
       type: "text",
       validationRun: "onBlur",
-      dependentFields: ["SLIP_AMOUNT", "FINALAMOUNT"],
+      dependentFields: ["ORDERING_AMOUNT", "BENIFICIARY_AMOUNT"],
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
       },
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
-          Number(dependentFields?.SLIP_AMOUNT?.value) -
-          Number(dependentFields?.FINALAMOUNT?.value);
-        console.log("value", value);
+          Number(dependentFields?.ORDERING_AMOUNT?.value) -
+          Number(dependentFields?.BENIFICIARY_AMOUNT?.value);
         return value ?? "0";
       },
       textFieldStyle: {
@@ -1508,17 +1602,44 @@ export const rtgsAccountDetailFormMetaData: any = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD"
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TRAN_CD"
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FILED_HIDDEN"
+        },
+        {
+          render: {
             componentType: "autocomplete",
           },
           name: "TO_ACCT_NO",
           label: "A/C No",
           defaultValue: "",
-          // isFieldFocused: true,
-          // defaultfocus: true,
-
           GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
+          __EDIT__: {
+            dependentFields: ["FILED_HIDDEN"],
+            isReadOnly: (field, dependentField, formState) => {
+              if (dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value === "Y"
+              ) {
+                return true;
+
+              } else {
+                return false
+              }
+            }
+          },
           options: async (dependentValue, formState, _, authState) => {
-            console.log("formState", formState);
             return API.getRtgsBenfDtlList({
               COMP_CD: authState?.companyID,
               BRANCH_CD:
@@ -1533,14 +1654,8 @@ export const rtgsAccountDetailFormMetaData: any = {
                 formState?.rtgsAcData?.PARA_BNFCRY === "Y"
                   ? formState?.rtgsAcData?.ACCT_CD ?? ""
                   : "",
-              FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
-              // formState?.rtgsAcData?.PARA_BNFCRY === "Y"
-              //   ? formState?.rtgsAcData?.PARA_BNFCRY
-              //   : "",
-              // FLAG:
-              //   formState?.rtgsAcData?.PARA_BNFCRY !== null
-              //     ? "N"
-              //     : formState?.rtgsAcData?.PARA_BNFCRY,
+              FLAG:
+                formState?.rtgsAcData?.PARA_BNFCRY,
             });
           },
           _optionsKey: "getRtgsBenfDtlList",
@@ -1587,7 +1702,7 @@ export const rtgsAccountDetailFormMetaData: any = {
                     BANK_NM: { value: "" },
                     BRANCH_NM: { value: "" },
                     CONTACT_DTL: { value: "" },
-                    CENTER_NM: { value: "" },
+                    CENTRE_NM: { value: "" },
                     ADDR: { value: "" },
                     DISTRICT_NM: { value: "" },
                     STATE_NM: { value: "" },
@@ -1617,7 +1732,7 @@ export const rtgsAccountDetailFormMetaData: any = {
                   BANK_NM: { value: postData?.[0].BANK_NM ?? "" },
                   BRANCH_NM: { value: postData?.[0].BRANCH_NM ?? "" },
                   CONTACT_DTL: { value: postData?.[0].CONTACT_DTL ?? "" },
-                  CENTER_NM: { value: postData?.[0].CENTRE_NM ?? "" },
+                  CENTRE_NM: { value: postData?.[0].CENTRE_NM ?? "" },
                   ADDR: { value: postData?.[0].ADD1 ?? "" },
                   DISTRICT_NM: { value: postData?.[0].DISTRICT_NM ?? "" },
                   STATE_NM: { value: postData?.[0].STATE_NM ?? "" },
@@ -1635,24 +1750,22 @@ export const rtgsAccountDetailFormMetaData: any = {
                 BANK_NM: { value: "" },
                 BRANCH_NM: { value: "" },
                 CONTACT_DTL: { value: "" },
-                CENTER_NM: { value: "" },
+                CENTRE_NM: { value: "" },
                 ADDR: { value: "" },
                 DISTRICT_NM: { value: "" },
                 STATE_NM: { value: "" },
               };
             }
           },
-          // runPostValidationHookAlways: true,
           disableCaching: true,
+
         },
         {
           render: {
             componentType: "formbutton",
           },
           name: "BENEFICIARY",
-          label: "...",
-          // endsIcon: "AddCircleOutlineRounded",
-          // rotateIcon: "scale(2)",
+          label: "Audit Trail",
           placeholder: "",
           type: "text",
           tabIndex: "-1",
@@ -1679,8 +1792,6 @@ export const rtgsAccountDetailFormMetaData: any = {
           fullWidth: true,
           required: true,
           isReadOnly: true,
-          // maxLength: 20,
-
           GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
         },
         {
@@ -1710,24 +1821,7 @@ export const rtgsAccountDetailFormMetaData: any = {
           // defaultValue: "0123456789",
           GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
         },
-        // {
-        //   render: {
-        //     componentType: "textField",
-        //   },
-        //   name: "BRANCH",
-        //   label: "Description",
-        //   // placeholder: "EnterAcNo",
-        //   type: "text",
-        //   fullWidth: true,
-        //   required: true,
-        //   isReadOnly: true,
-        //   // maxLength: 20,
-        //   // schemaValidation: {
-        //   //   type: "string",
-        //   //   rules: [{ name: "required", params: ["Description is required."] }],
-        //   // },
-        //   GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
-        // },
+
         {
           render: {
             componentType: "textField",
@@ -1752,6 +1846,12 @@ export const rtgsAccountDetailFormMetaData: any = {
           isReadOnly: true,
           GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
         },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "BENEF_REM_EDIT",
+        },
 
         {
           render: {
@@ -1761,7 +1861,14 @@ export const rtgsAccountDetailFormMetaData: any = {
           label: "Remarks",
           type: "text",
           fullWidth: true,
-
+          dependentFields: ["BENEF_REM_EDIT"],
+          isReadOnly(fieldData, dependentFieldsValues, formState) {
+            if (dependentFieldsValues?.BENEF_REM_EDIT?.value === "Y") {
+              return true;
+            } else {
+              return false;
+            }
+          },
           GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
         },
         {
@@ -1773,6 +1880,14 @@ export const rtgsAccountDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
+          dependentFields: ["BENEF_REM_EDIT"],
+          isReadOnly(fieldData, dependentFieldsValues, formState) {
+            if (dependentFieldsValues?.BENEF_REM_EDIT?.value === "Y") {
+              return true;
+            } else {
+              return false;
+            }
+          },
         },
         {
           render: {
@@ -1782,19 +1897,46 @@ export const rtgsAccountDetailFormMetaData: any = {
           label: "Amount",
           placeholder: "",
           type: "text",
+          __EDIT__: {
+            dependentFields: ["FILED_HIDDEN"],
+            isReadOnly: (field, dependentField, formState) => {
+              if (dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value === "Y"
+              ) {
+                return true;
+
+              } else {
+                return false
+              }
+            }
+          },
           FormatProps: {
             allowNegative: false,
           },
-          validationRun: "all",
+          // postValidationSetCrossFieldValues: async (...arr) => {
+          //   if (arr[0].value) {
+          //     return {
+          //       BENIFICIARY_AMOUNT: { value: arr[0].value ?? "0" },
+          //     };
+          //   } else {
+          //     return {
+          //       BENIFICIARY_AMOUNT: { value: "" },
+          //     };
+          //   }
+          // },
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
           postValidationSetCrossFieldValues: async (...arr) => {
             if (arr[0].value) {
-              return {
-                FINALAMOUNT: { value: arr[0].value ?? "0" },
-              };
+              arr?.[1].setDataOnFieldChange("AMOUNT", "");
+              // return {
+              //   TOTAL_DR_AMOUNT: { value: arr[0].value ?? "0" },
+              // };
             } else {
-              return {
-                FINALAMOUNT: { value: "" },
-              };
+              // return {
+              //   TOTAL_DR_AMOUNT: { value: "" },
+              // };
             }
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1833,9 +1975,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             componentType: "formbutton",
           },
           name: "IFSC",
-          label: "...",
-          // endsIcon: "AddCircleOutlineRounded",
-          // rotateIcon: "scale(2)",
+          label: "Ifsc Detail",
           placeholder: "",
           type: "text",
           tabIndex: "-1",
@@ -1882,7 +2022,7 @@ export const rtgsAccountDetailFormMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "CENTER_NM",
+          name: "CENTRE_NM",
           label: "Center",
           placeholder: "",
           type: "text",
@@ -1943,7 +2083,7 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
     enablePagination: false,
     disableGlobalFilter: true,
     hideFooter: false,
-    hideHeader: true,
+    hideHeader: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -1960,7 +2100,6 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "Sr. No.",
       sequence: 1,
-      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1972,7 +2111,6 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "TO_IFSCCODE",
       columnName: "IFSC Code",
       sequence: 2,
-      alignment: "center",
       componentType: "default",
       width: 120,
       minWidth: 100,
@@ -1983,18 +2121,17 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "TO_ACCT_TYPE",
       columnName: "A/C Type",
       sequence: 3,
-      alignment: "center",
       componentType: "default",
       width: 120,
       minWidth: 100,
       maxWidth: 200,
       isVisible: true,
     },
+
     {
       accessor: "TO_ACCT_NO",
       columnName: "A/C Number",
       sequence: 4,
-      alignment: "center",
       componentType: "default",
       width: 300,
       minWidth: 300,
@@ -2004,7 +2141,6 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "TO_ACCT_NM",
       columnName: "A/C Name",
       sequence: 5,
-      alignment: "center",
       componentType: "default",
       width: 200,
       minWidth: 200,
@@ -2015,17 +2151,15 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "TO_ADD1",
       columnName: "Address",
       sequence: 6,
-      alignment: "center",
       componentType: "default",
-      width: 150,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 400,
+      minWidth: 400,
+      maxWidth: 450,
     },
     {
       accessor: "TO_CONTACT_NO",
       columnName: "Mobile Number",
       sequence: 7,
-      alignment: "center",
       componentType: "default",
       width: 120,
       minWidth: 120,
@@ -2035,18 +2169,16 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "TO_EMAIL_ID",
       columnName: "Email Id",
       sequence: 8,
-      alignment: "center",
       componentType: "default",
-      width: 150,
-      minWidth: 160,
-      maxWidth: 200,
+      width: 200,
+      minWidth: 200,
+      maxWidth: 250,
     },
     {
       accessor: "ACTIVE_FLAG",
       columnName: "Active",
       sequence: 9,
-      alignment: "center",
-      componentType: "editableCheckbox",
+      componentType: "default",
       width: 150,
       minWidth: 160,
       maxWidth: 200,
@@ -2055,29 +2187,26 @@ export const AddNewBenfiDetailGridMetadata: GridMetaDataType = {
       accessor: "REMARKS",
       columnName: "Reamrks",
       sequence: 10,
-      alignment: "center",
       componentType: "default",
-      width: 180,
-      minWidth: 200,
-      maxWidth: 220,
+      width: 250,
+      minWidth: 250,
+      maxWidth: 300,
     },
     {
       accessor: "TO_LEI_NO",
       columnName: "LEI No.",
       sequence: 11,
-      alignment: "center",
       componentType: "default",
-      width: 180,
-      minWidth: 200,
-      maxWidth: 220,
+      width: 250,
+      minWidth: 250,
+      maxWidth: 300,
     },
   ],
 };
-
-export const AddNewBenfiDetailFormMetadata = {
+export const AuditBenfiDetailFormMetadata = {
   form: {
-    name: "ClearingBankMasterForm",
-    label: "Clearing Bank Master",
+    name: "BeneficiaryAccountAuditTrail",
+    label: "Beneficiary Account Audit Trail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -2118,6 +2247,310 @@ export const AddNewBenfiDetailFormMetadata = {
     },
   },
   fields: [
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_IFSCCODE",
+      label: "IFSC Code",
+      placeholder: "",
+      type: "text",
+
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary IFSC Code"] },
+          ],
+        },
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            field?.value
+          ) {
+            let postData = await getIfscBenDetail({
+              IFSC_CODE: field?.value ?? "",
+              ENTRY_TYPE: "",
+            });
+            return {
+              BANK_NM: { value: postData?.[0].BANK_NM ?? "" },
+              BRANCH_NM: { value: postData?.[0].BRANCH_NM ?? "" },
+              CONTACT_DTL: { value: postData?.[0].CONTACT_DTL ?? "" },
+              CENTRE_NM: { value: postData?.[0].CENTRE_NM ?? "" },
+              ADDR: { value: postData?.[0].ADDR ?? "" },
+              DISTRICT_NM: { value: postData?.[0].DISTRICT_NM ?? "" },
+              STATE_NM: { value: postData?.[0].STATE_NM ?? "" },
+              MICR_CODE: { value: postData?.[0].MICR_CODE ?? "" },
+            };
+          }
+          else if (!field?.value) {
+            return {
+              MICR_CODE: { value: "" },
+              BANK_NM: { value: "" },
+              BRANCH_NM: { value: "" },
+              CONTACT_DTL: { value: "" },
+              CENTRE_NM: { value: "" },
+              ADDR: { value: "" },
+              DISTRICT_NM: { value: "" },
+              STATE_NM: { value: "" },
+            };
+          }
+        },
+
+      },
+      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "TO_ACCT_TYPE",
+      label: "A/C Type",
+      placeholder: "",
+      type: "text",
+      options: [
+        { label: "SAVING", value: "SB" },
+        { label: "CURRENT", value: "CA" },
+        { label: "CC", value: "CC" },
+      ],
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "TO_ACCT_NO",
+      label: "A/C Number",
+      placeholder: "",
+      type: "text",
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary A/c Number"] },
+          ],
+        },
+      },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+      __EDIT__: {
+        isReadOnly: true,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_ACCT_NM",
+      label: "A/C Name",
+      placeholder: "",
+      type: "text",
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary A/c Name"] },
+          ],
+        },
+      },
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      GridProps: { xs: 12, sm: 5, md: 5, lg: 5, xl: 5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_ADD1",
+      label: "Address",
+      placeholder: "",
+      type: "text",
+      txtTransform: "uppercase",
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary A/c Address"] },
+          ],
+        },
+      },
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
+    },
+
+    {
+      render: {
+        componentType: "phoneNumber",
+      },
+      name: "TO_CONTACT_NO",
+      label: "Mobile Number",
+      placeholder: "",
+      type: "text",
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary A/c Mobile No."] },
+          ],
+        },
+      },
+      __EDIT__: {
+        isReadOnly: true,
+        render: {
+          componentType: "textField",
+        },
+      },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_EMAIL_ID",
+      label: "Email Id",
+      placeholder: "",
+      type: "text",
+      __NEW__: {
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Please enter the Beneficiary A/c Email ID"] },
+          ],
+        },
+        validate: (columnValue, allField, flag) => {
+          let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          if (columnValue.value && !emailRegex.test(columnValue.value)) {
+            return "Please enter valid Email ID"
+          }
+          return "";
+        },
+      },
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      label: "Reamrks",
+      placeholder: "",
+      type: "text",
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_LEI_NO",
+      label: "LEI No.",
+      placeholder: "",
+      type: "text",
+      maxLength: 20,
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 20) {
+            return false;
+          }
+          return true;
+        },
+      },
+      __EDIT__: {
+        isReadOnly: true,
+      },
+      txtTransform: "uppercase",
+      __NEW__: {
+        validate: (columnValue, allField, flag) => {
+          let regex = /^[a-zA-Z0-9]*$/;
+          if (!columnValue?.value) {
+            return "Please enter the Beneficiary LEI No.";
+          } else if (!regex.test(columnValue.value)) {
+            return "LEI No. should be Alpha-numeric";
+          } else if (columnValue.value.length < 20) {
+            return "LEI No. should be exactly 20 characters";
+          } else {
+            return "";
+          }
+        },
+      },
+      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "INACTIVE",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      defaultValue: true,
+      name: "FLAG",
+      label: "Flag",
+      __NEW__: {
+
+        render: {
+          componentType: "checkbox",
+        },
+      },
+      postValidationSetCrossFieldValues: (
+        field,
+        formState,
+        auth,
+        dependentFieldsValues
+      ) => {
+        if (field.value === false) {
+          formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "This Record will not save in Beneficiary Master",
+          });
+        }
+        return {}
+      },
+      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: { componentType: "spacer" },
+      defaultValue: true,
+      name: "ACTIVE_FLAG",
+      label: "Active",
+      __EDIT__: {
+        render: {
+          componentType: "checkbox",
+        },
+        dependentFields: ["INACTIVE"],
+        isReadOnly(fieldData, dependentFieldsValues, formState) {
+          if (dependentFieldsValues?.INACTIVE?.value === "Y") {
+            return false;
+          } else {
+            return true;
+          }
+        },
+
+      },
+      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
+    },
     {
       render: {
         componentType: "Divider",
@@ -2186,7 +2619,7 @@ export const AddNewBenfiDetailFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CENTER_NM",
+      name: "CENTRE_NM",
       label: "Center",
       placeholder: "",
       type: "text",
@@ -2197,7 +2630,7 @@ export const AddNewBenfiDetailFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "MICR_CD",
+      name: "MICR_CODE",
       label: "MICR Code",
       placeholder: "",
       type: "text",
@@ -2217,14 +2650,14 @@ export const AddNewBenfiDetailFormMetadata = {
     },
   ],
 };
+
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "Retrieve CTS O/W Clearing Data",
+    label: "RTGS/NEFT Retrieve Information",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -2262,11 +2695,26 @@ export const RetrieveFormConfigMetaData = {
     },
   },
   fields: [
+
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+
+      GridProps: {
+        xs: 0,
+        md: 1,
+        sm: 3.9,
+        lg: 3.9,
+        xl: 3.9,
+      },
+    },
     {
       render: {
         componentType: "datePicker",
       },
-      name: "FROM_TRAN_DT",
+      name: "FROM_DT",
       label: "From Date",
       placeholder: "",
       fullWidth: true,
@@ -2290,7 +2738,7 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "TO_TRAN_DT",
+      name: "TO_DT",
       label: "To Date",
       placeholder: "",
       fullWidth: true,
@@ -2305,7 +2753,7 @@ export const RetrieveFormConfigMetaData = {
         }
         if (
           new Date(currentField?.value) <
-          new Date(dependentField?.FROM_TRAN_DT?.value)
+          new Date(dependentField?.FROM_DT?.value)
         ) {
           return "To Date should be greater than or equal to From Date.";
         }
@@ -2314,81 +2762,28 @@ export const RetrieveFormConfigMetaData = {
       onFocus: (date) => {
         date.target.select();
       },
-      dependentFields: ["FROM_TRAN_DT"],
+      dependentFields: ["FROM_DT"],
       runValidationOnDependentFieldsChange: true,
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
     },
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "ZONE",
-      label: "Zone",
-      defaultValue: "0   ",
-      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      skipDefaultOption: true,
-      options: "getZoneListData",
-      _optionsKey: "getZoneListData",
-      disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "SLIP_NO",
-      label: "Slip No.",
-      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
-    },
-
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "CHEQUE_NO",
-      label: "Cheque No.",
-
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        isAllowed: (values) => {
-          if (values?.value?.length > 6) {
-            return false;
-          }
-          return true;
-        },
-      },
-      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
-      // maxLength: 50,
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "BANK_CD",
-      label: "Bank Code",
-
-      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.7, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "CHEQUE_AMOUNT",
-      label: "Cheque Amount",
-      type: "text",
-      FormatProps: {
-        allowNegative: false,
-      },
-      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
-    },
-
     {
       render: {
         componentType: "formbutton",
       },
       name: "RETRIEVE",
       label: "Retrieve",
+      endsIcon: "YoutubeSearchedFor",
+      rotateIcon: "scale(1.5)",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 1.2, sm: 1.2, md: 1.2, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "VIEW_ALL",
+      label: "View All",
       endsIcon: "YoutubeSearchedFor",
       rotateIcon: "scale(1.5)",
       placeholder: "",
@@ -2402,7 +2797,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Retrieve Grid",
-    rowIdColumn: "SR_NO",
+    rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -2427,20 +2822,20 @@ export const RetrieveGridMetaData: GridMetaDataType = {
   },
   filters: [],
   columns: [
-    // {
-    //   accessor: "SR_NO",
-    //   columnName: "Sr.No.",
-    //   sequence: 1,
-    //   alignment: "rigth",
-    //   componentType: "default",
-    //   width: 70,
-    //   minWidth: 60,
-    //   maxWidth: 120,
-    //   isAutoSequence: true,
-    // },
     {
-      accessor: "SLIP_CD",
-      columnName: "Slip No.",
+      accessor: "SR_NO",
+      columnName: "Sr.No.",
+      sequence: 1,
+      alignment: "rigth",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 120,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "TRAN_TYPE",
+      columnName: "Entry Type",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -2450,8 +2845,8 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      accessor: "CHQ_CNT",
-      columnName: "Cheque Count",
+      accessor: "MSG_FLOW",
+      columnName: "Msg Flow",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -2459,33 +2854,10 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 100,
       maxWidth: 150,
-    },
-    {
-      accessor: "CHQ_LIST",
-      columnName: "Cheque No. List",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      placeholder: "",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 150,
-    },
-    {
-      accessor: "CHQ_AMT_LIST",
-      columnName: "Cheque Amount List",
-      sequence: 5,
-      alignment: "left",
-      componentType: "default",
-      placeholder: "",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
-    },
-    {
+    }, {
       accessor: "TRAN_DT",
-      columnName: "CLG Date",
-      sequence: 6,
+      columnName: "Tran Date",
+      sequence: 4,
       alignment: "left",
       componentType: "date",
       placeholder: "",
@@ -2495,8 +2867,32 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "CONFIRMED",
-      columnName: "Confirm Status",
+      accessor: "SLIP_NO",
+      columnName: "Slip No.",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+    {
+      accessor: "BR_IFSCCODE",
+      columnName: "Br Ifsc Code",
+      sequence: 6,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 200,
+      minWidth: 150,
+      maxWidth: 250,
+    },
+
+
+    {
+      accessor: "COMP_CD",
+      columnName: "Bank",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -2506,8 +2902,8 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      accessor: "THROUGH_CHANNEL",
-      columnName: "Entry From",
+      accessor: "BRANCH_CD",
+      columnName: "Branch",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -2516,22 +2912,43 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
     },
-
     {
-      accessor: "ENTERED_BY",
-      columnName: "Entered By",
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
       sequence: 9,
       alignment: "left",
       componentType: "default",
       placeholder: "",
-      width: 110,
-      minWidth: 80,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
     },
     {
-      accessor: "ENTERED_DATE",
-      columnName: "Entered Date",
+      accessor: "ACCT_CD",
+      columnName: "A/C No.",
       sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 200,
+      minWidth: 150,
+      maxWidth: 250,
+    },
+    {
+      accessor: "ACCT_NM",
+      columnName: "Name",
+      sequence: 11,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 350,
+      minWidth: 380,
+      maxWidth: 400,
+    },
+    {
+      accessor: "CHEQUE_NO",
+      columnName: "Cheque",
+      sequence: 12,
       alignment: "left",
       componentType: "date",
       placeholder: "",
@@ -2541,9 +2958,66 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       dateFormat: "dd/MM/yyyy HH:mm:ss",
     },
     {
+      accessor: "AMOUNT",
+      columnName: "Amount",
+      sequence: 13,
+      alignment: "left",
+      componentType: "currency",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "COMM_AMT",
+      columnName: "Comm. Amount",
+      sequence: 14,
+      alignment: "left",
+      componentType: "currency",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "SER_CHRG_AMT",
+      columnName: "Service Charge Amount",
+      sequence: 15,
+      alignment: "left",
+      componentType: "currency",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+
+    {
+      accessor: "ENTERED_BY",
+      columnName: "User",
+      sequence: 16,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "BR_CONFIRMED",
+      columnName: "Br Confirmed",
+      sequence: 17,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+
+    {
       accessor: "VERIFIED_BY",
       columnName: "Verified By",
-      sequence: 11,
+      sequence: 18,
       alignment: "left",
       componentType: "default",
       placeholder: "",
@@ -2554,7 +3028,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     {
       accessor: "VERIFIED_DATE",
       columnName: "Verified Date",
-      sequence: 12,
+      sequence: 19,
       alignment: "left",
       componentType: "date",
       placeholder: "",
@@ -2562,6 +3036,50 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 200,
       dateFormat: "dd/MM/yyyy HH:mm:ss",
+    },
+    {
+      accessor: "HO_CONFIRMED",
+      columnName: "Ho Confirmed",
+      sequence: 20,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "HO_VERIFIED_BY",
+      columnName: "Ho. Verified By",
+      sequence: 21,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "MSG_RELEASE",
+      columnName: "Msg Release",
+      sequence: 22,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
+    },
+    {
+      accessor: "DEF_TRAN_CD",
+      columnName: "Def.Tran Cd",
+      sequence: 23,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 110,
+      minWidth: 80,
+      maxWidth: 200,
     },
   ],
 };

@@ -1411,10 +1411,27 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOSAVERTGSENTRY",
     packageName: "",
   },
+  DOBENEFICIARYACCTAUDITENTRY: {
+    url: "/transactionServiceAPI/DOBENEFICIARYACCTAUDITENTRY",
+    packageName: "",
+  },
   GETRTGSENTRYTYPEDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSENTRYTYPEDDDW",
     packageName: "",
   },
+  GETRTGSRTRIVEFRMDTTODTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSRTRIVEFRMDTTODTGRID",
+    packageName: "",
+  },
+  GETRTGSTRNHDRDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNHDRDATADISP",
+    packageName: "",
+  },
+  GETRTGSTRNDTLDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNDTLDATADISP",
+    packageName: "",
+  },
+
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -1430,17 +1447,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

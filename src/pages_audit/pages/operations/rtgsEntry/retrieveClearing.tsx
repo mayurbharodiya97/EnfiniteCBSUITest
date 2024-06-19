@@ -24,9 +24,7 @@ const actions: ActionTypes[] = [
 ];
 export const RetrieveClearing: FC<{
   onClose?: any;
-  zoneTranType?: any;
-  tranDate?: any;
-}> = ({ onClose, zoneTranType, tranDate }) => {
+}> = ({ onClose }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
 
@@ -34,14 +32,14 @@ export const RetrieveClearing: FC<{
     onClose("action", data?.rows);
   }, []);
 
-  // const mutation: any = useMutation(
-  //   "getRetrievalClearingData",
-  //   API.getRetrievalClearingData,
-  //   {
-  //     onSuccess: (data) => {},
-  //     onError: (error: any) => {},
-  //   }
-  // );
+  const mutation: any = useMutation(
+    "getRtgsRetrieveData",
+    API.getRtgsRetrieveData,
+    {
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
+    }
+  );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -51,38 +49,33 @@ export const RetrieveClearing: FC<{
     actionFlag
   ) => {
     delete data["RETRIEVE"];
-    if (actionFlag === "RETRIEVE") {
-      data["COMP_CD"] = authState.companyID;
-      data["BRANCH_CD"] = authState.user.branchCode;
-      if (Boolean(data["FROM_TRAN_DT"])) {
-        data["FROM_TRAN_DT"] = format(
-          new Date(data["FROM_TRAN_DT"]),
-          "dd/MMM/yyyy"
-        );
-      }
-      if (Boolean(data["TO_TRAN_DT"])) {
-        data["TO_TRAN_DT"] = format(
-          new Date(data["TO_TRAN_DT"]),
-          "dd/MMM/yyyy"
-        );
-      }
-      data["BANK_CD"] = data["BANK_CD"].padEnd(10, " ");
-      data = {
-        ...data,
-        TRAN_TYPE: zoneTranType,
-        CONFIRMED: "0",
-      };
-      // mutation.mutate(data);
-      endSubmit(true);
+    delete data["VIEW_ALL"];
+    if (Boolean(data["FROM_DT"])) {
+      data["FROM_DT"] = format(
+        new Date(data["FROM_DT"]),
+        "dd/MMM/yyyy"
+      );
     }
+    if (Boolean(data["TO_DT"])) {
+      data["TO_DT"] = format(
+        new Date(data["TO_DT"]),
+        "dd/MMM/yyyy"
+      );
+    }
+    data = {
+      ...data,
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      FLAG: actionFlag === "RETRIEVE" ? "P" : "A",
+      FLAG_RTGSC: ""
+    };
+    mutation.mutate(data);
+    endSubmit(true);
+
+
   };
 
-  if (zoneTranType === "S") {
-    RetrieveFormConfigMetaData.form.label = "Retrieve CTS O/W Clearing Data";
-  } else if (zoneTranType === "R") {
-    RetrieveFormConfigMetaData.form.label = "Retrieve Inward Return Entry Data";
-    RetrieveFormConfigMetaData.fields[2].defaultValue = "10  ";
-  }
+
   return (
     <>
       <>
@@ -99,23 +92,25 @@ export const RetrieveClearing: FC<{
             key={`retrieveForm`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
             initialValues={{
-              FROM_TRAN_DT:
-                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
-              TO_TRAN_DT:
-                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
-              ZONE_TRAN_TYPE: zoneTranType,
+              FROM_DT:
+                authState?.workingDate ?? "",
+              TO_DT:
+                authState?.workingDate ?? "",
+
             }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
             }}
-            onFormButtonClickHandel={() => {
-              let event: any = { preventDefault: () => {} };
-              // if (mutation?.isLoading) {
-              formRef?.current?.handleSubmit(event, "RETRIEVE");
-              // }
+            onFormButtonClickHandel={(id) => {
+              let event: any = { preventDefault: () => { } };
+              if (id === "RETRIEVE") {
+                formRef?.current?.handleSubmit(event, "RETRIEVE");
+              } else if (id === "VIEW_ALL") {
+                formRef?.current?.handleSubmit(event, "VIEW_ALL");
+              }
+
             }}
-            formState={{ ZONE_TRAN_TYPE: zoneTranType }}
             ref={formRef}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -131,7 +126,7 @@ export const RetrieveClearing: FC<{
             )}
           </FormWrapper>
           <Fragment>
-            {/* {mutation.isError && (
+            {mutation.isError && (
               <Alert
                 severity="error"
                 errorMsg={
@@ -140,18 +135,16 @@ export const RetrieveClearing: FC<{
                 errorDetail={mutation.error?.error_detail}
                 color="error"
               />
-            )} */}
-            {/* {mutation?.data ? ( */}
+            )}
             <GridWrapper
               key={"RetrieveGridMetaData"}
               finalMetaData={RetrieveGridMetaData}
-              data={[]}
+              data={mutation?.data ?? []}
               setData={() => null}
-              // loading={mutation.isLoading || mutation.isFetching}
+              loading={mutation.isLoading || mutation.isFetching}
               actions={actions}
               setAction={setCurrentAction}
             />
-            {/* ) : null} */}
           </Fragment>
         </Dialog>
       </>
@@ -159,13 +152,11 @@ export const RetrieveClearing: FC<{
   );
 };
 
-export const RetrieveClearingForm = ({ zoneTranType, onClose, tranDate }) => {
+export const RetrieveClearingForm = ({ onClose }) => {
   return (
     <ClearCacheProvider>
       <RetrieveClearing
-        zoneTranType={zoneTranType}
         onClose={onClose}
-        tranDate={tranDate}
       />
     </ClearCacheProvider>
   );

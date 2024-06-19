@@ -167,10 +167,10 @@ export const CTSOutwardClearingFormMetaData = {
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               GD_TODAY_DT: auth?.workingDate,
-              SCREEN_REF: "ETRN/559",
+              SCREEN_REF: formState?.ZONE_TRAN_TYPE === "S" ? "ETRN/559" : "ETRN/028",
             };
-            formState.setDataOnFieldChange("API_REQ", Apireq);
             let postData = await getAccountSlipJoinDetail(Apireq);
+            formState.setDataOnFieldChange("API_REQ", { ...Apireq, ...postData });
 
             if (postData?.[0]?.MESSAGE1) {
               formState?.MessageBox({
@@ -252,6 +252,7 @@ export const CTSOutwardClearingFormMetaData = {
       FormatProps: {
         allowNegative: false,
       },
+
       postValidationSetCrossFieldValues: async (
         currentFieldState,
         formState
@@ -260,6 +261,11 @@ export const CTSOutwardClearingFormMetaData = {
           formState.setDataOnFieldChange(
             "AMOUNT",
             currentFieldState?.value ?? "0"
+          );
+        } else {
+          formState.setDataOnFieldChange(
+            "AMOUNT",
+            ""
           );
         }
       },
@@ -1482,7 +1488,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
               dependentFieldsValues?.["chequeDetails.BANK_CD"]?.value &&
               field.value
             ) {
-              let data = await getBankChequeAlert({
+              let postData = await getBankChequeAlert({
                 ENTERED_COMP_CD: auth.companyID ?? "",
                 ENTERED_BRANCH_CD:
                   formState?.REQ_DATA?.BRANCH_CD ?? auth.user.branchCode ?? "",
@@ -1496,79 +1502,81 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                   dependentFieldsValues?.["chequeDetails.BANK_CD"]?.value,
               });
 
-              if (data?.[0]?.O_STATUS === "99") {
-                let buttonNames = await formState?.MessageBox({
-                  messageTitle: "Information",
-                  message: data?.[0]?.O_MESSAGE,
-                  buttonNames: ["Yes", "No"],
+              let btn99, returnVal;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              async function handleChequeValidationAndMessages(formState, field) {
+                let postData = await GeneralAPI.getChequeNoValidation({
+                  COMP_CD: formState?.REQ_DATA?.COMP_CD,
+                  BRANCH_CD: formState?.REQ_DATA?.BRANCH_CD,
+                  ACCT_TYPE: formState?.REQ_DATA?.ACCT_TYPE,
+                  ACCT_CD: formState?.REQ_DATA?.ACCT_CD,
+                  CHEQUE_NO: field.value,
+                  SCREEN_REF: "TRN/028",
+                  TYPE_CD: formState?.REQ_DATA?.[0]?.TYPE_CD,
                 });
-                if (buttonNames === "Yes") {
-                  if (
-                    field.value &&
-                    Object.keys(formState?.REQ_DATA).length === 0
-                  ) {
-                    formState?.MessageBox({
-                      messageTitle: "Information",
-                      message: "Enter Account Information",
-                      buttonNames: ["Ok"],
-                    });
-                  } else if (
-                    field.value &&
-                    Object.keys(formState?.REQ_DATA).length
-                  ) {
-                    let postData = await GeneralAPI.getChequeNoValidation({
-                      COMP_CD: formState?.REQ_DATA?.COMP_CD,
-                      BRANCH_CD: formState?.REQ_DATA?.BRANCH_CD,
-                      ACCT_TYPE: formState?.REQ_DATA?.ACCT_TYPE,
-                      ACCT_CD: formState?.REQ_DATA?.ACCT_CD,
-                      CHEQUE_NO: field.value,
-                    });
-                    const buttonName = await formState?.MessageBox({
-                      messageTitle: "Information",
-                      message: postData?.[0]?.ERR_MSG,
-                      buttonNames: ["Ok"],
-                    });
-                    if (buttonName === "Ok") {
-                      let continueButtonName = await formState?.MessageBox({
-                        messageTitle: "Confirmation",
-                        message: "Are you sure to continue!",
-                        buttonNames: ["Yes", "No"],
-                      });
-                      if (continueButtonName === "Yes") {
-                        return {
-                          CHEQUE_NO: {
-                            value: field.value,
-                            ignoreUpdate: true,
-                            isFieldFocused: false,
-                          },
-                          AMOUNT: { isFieldFocused: true },
-                        };
-                      } else {
-                        return {
-                          CHEQUE_NO: {
-                            value: "",
-                            isFieldFocused: true,
-                            ignoreUpdate: true,
-                          },
-                        };
-                      }
-                    }
+                const buttonName = await formState?.MessageBox({
+                  messageTitle: "Information",
+                  message: postData?.[0]?.ERR_MSG,
+                  buttonNames: ["Ok"],
+                });
+                if (buttonName === "Ok") {
+                  let continueButtonName = await formState?.MessageBox({
+                    messageTitle: "Confirmation",
+                    message: "Are you sure to continue!",
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (continueButtonName === "Yes") {
+                    return {
+                      CHEQUE_NO: {
+                        value: field.value,
+                        ignoreUpdate: true,
+                        isFieldFocused: false,
+                      },
+                      AMOUNT: { isFieldFocused: true },
+                    };
+                  } else {
+                    return {
+                      CHEQUE_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                    };
                   }
-                  return {
-                    CHEQUE_NO: {
-                      value: field?.value ?? "",
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    },
-                  };
-                } else {
-                  return {
-                    CHEQUE_NO: {
-                      value: "",
-                      ignoreUpdate: true,
-                      isFieldFocused: true,
-                    },
-                  };
+                }
+              }
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Account Validation Failed",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: "HNI Alert",
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Risk Category Alert",
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+
+                  btn99 = btnName;
+                  if (btnName === "Yes") {
+                    return await handleChequeValidationAndMessages(formState, field);
+                  }
+                } else if (postData[i]?.O_STATUS === "0") {
+                  return await handleChequeValidationAndMessages(formState, field);
                 }
               }
             }

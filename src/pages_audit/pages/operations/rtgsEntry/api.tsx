@@ -180,7 +180,7 @@ export const getIfscBankGridData = async (ApiReq) => {
 };
 export const getRtgsChequeNoValidation = async (ApiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOCHEQUEVALIDATE", {
+    await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
       ...ApiReq,
     });
   if (status === "0") {
@@ -207,6 +207,17 @@ export const getIfscBenDetail = async (ApiReq) => {
     });
   if (status === "0") {
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getAuditDml = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOBENEFICIARYACCTAUDITENTRY", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -239,7 +250,46 @@ export const getRtgsEntryDML = async (ApiReq) => {
       ...ApiReq,
     });
   if (status === "0") {
-    return message;
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsRetrieveData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSRTRIVEFRMDTTODTGRID", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        HO_CONFIRMED: item.HO_CONFIRMED === "0" ? "Pending"
+          : item.HO_CONFIRMED === "Y" ? "Confirm" : item.HO_CONFIRMED,
+      };
+    });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsOrderingData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSTRNHDRDATADISP", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsBenDetailData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSTRNDTLDATADISP", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
