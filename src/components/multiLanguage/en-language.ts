@@ -83,19 +83,19 @@ export const en_language_data = {
   PendingCount: "Pending Count",
 
   //for priority master main
-  ParentGroup:"Parent Group",
-  SubPriority:"Sub Priority",
-  SanctionFromLimit:"Sanction From Limit",
-  SanctionToLimit:"Sanction To Limit",
-  ProvisionSecured:"Provision Secured %",
-  ProvisionUnSecured:"Provision Unsecured %",
-  ParentWeaker:"Parent Weaker",
-  CKYCGroup:"C-KYC Group",
-  Constitution:"Constitution",
-  PinCode:"Pin Code",
-  FROMLIMIT:"FROM LIMIT",
-  TOLIMIT:"TO LIMIT",
-  
+  ParentGroup: "Parent Group",
+  SubPriority: "Sub Priority",
+  SanctionFromLimit: "Sanction From Limit",
+  SanctionToLimit: "Sanction To Limit",
+  ProvisionSecured: "Provision Secured %",
+  ProvisionUnSecured: "Provision Unsecured %",
+  ParentWeaker: "Parent Weaker",
+  CKYCGroup: "C-KYC Group",
+  Constitution: "Constitution",
+  PinCode: "Pin Code",
+  FROMLIMIT: "FROM LIMIT",
+  TOLIMIT: "TO LIMIT",
+
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
@@ -845,7 +845,6 @@ export const en_language_data = {
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
   // lien Mater
-  ParentType: "Parent_Type",
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
   // Ac period Mater
@@ -857,7 +856,6 @@ export const en_language_data = {
   BankName: "Bank Name",
   Facility: "Facility",
   MICRCode: "MICR Code",
-  BranchName: "Branch Name",
   Add1: "Add 1",
   ContactDetail: "Contact Detail",
   DistrictName: "District Name",
