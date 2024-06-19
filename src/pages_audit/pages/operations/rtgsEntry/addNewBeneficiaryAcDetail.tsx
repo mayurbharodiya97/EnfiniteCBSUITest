@@ -219,7 +219,7 @@ export const AddNewBeneficiaryDetail: FC<{
       messageTitle: "Confirmation",
       message: formMode === "new" ? "Are You sure to Save this record?" : "Are You Sure to inactive this record?",
       buttonNames: ["No", "Yes"],
-      loadingBtnName: "Yes",
+      loadingBtnName: ["Yes"],
     });
     if (buttonName === "Yes") {
       getAuditDml.mutate(isErrorFuncRef?.current?.data);

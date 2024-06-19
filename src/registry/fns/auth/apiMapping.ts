@@ -1595,10 +1595,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
     packageName: "",
   },
-  GETIFSCDETAILS: {
-    url: "/transactionServiceAPI/GETIFSCDETAILS",
-    packageName: "",
-  },
   VALIDATERTGSDTL: {
     url: "/transactionServiceAPI/VALIDATERTGSDTL",
     packageName: "",

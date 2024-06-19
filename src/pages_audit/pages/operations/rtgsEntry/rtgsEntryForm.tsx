@@ -381,7 +381,7 @@ const RtgsEntryForm: FC<{}> = () => {
                   messageTitle: "Confirmation",
                   message: " Proceed ?",
                   buttonNames: ["No", "Yes"],
-                  loadingBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
                 });
 
                 if (buttonName === "Yes") {
@@ -1089,7 +1089,7 @@ const RtgsEntryForm: FC<{}> = () => {
                       message: "Do You Want to delete this row?",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
-                      loadingBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
                     });
                     if (buttonName === "Yes") {
                       deleteMutation.mutate({
