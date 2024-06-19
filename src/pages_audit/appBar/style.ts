@@ -80,12 +80,17 @@ export const useStyles = makeStyles((theme: any) => ({
     borderRadius: "50%",
     padding: "4px",
   },
-  toolbar: (props?: StylesProps) => ({
-    minHeight: props?.isNewStyle ? "57px" : "80px",
+  // toolbar: (props?: StylesProps) => ({
+  //   minHeight: props?.isNewStyle ? "57px" : "80px",
+  //   paddingLeft: "0px",
+  //   height: props?.isNewStyle ? "57px" : "80px",
+  //   // Add other toolbar styles as needed...
+  // }),
+  toolbar: {
+    minHeight: "80px",
     paddingLeft: "0px",
-    height: props?.isNewStyle ? "57px" : "80px",
-    // Add other toolbar styles as needed...
-  }),
+    height: "80px",
+  },
   title: {
     flexGrow: 1,
     padding: theme.spacing(0.5, 0),
