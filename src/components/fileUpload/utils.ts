@@ -48,12 +48,9 @@ export const detectMimeType = async (
   return mime;
 };
 
-export const isMimeTypeValid = (ext, whiteListExtension: string[] | string) => {
- console.log("ext", ext)
- console.log("whilelist", whiteListExtension)
- return whiteListExtension === "all" ||
+export const isMimeTypeValid = (ext, whiteListExtension: string[] | string) =>
+  whiteListExtension === "all" ||
   (Array.isArray(whiteListExtension) && whiteListExtension.indexOf(ext) > -1);
-}
 
 export const isDuplicate = (file: FileObjectType, fileIDs: string[]) => {
   return Array.isArray(fileIDs) && fileIDs.indexOf(file.id) > -1;
@@ -120,9 +117,8 @@ export const validateFilesAndAddToList =
   async (newFiles: File[], existingFiles: FileObjectType[] | undefined) => {
     let failedFiles: any = [];
     let result = newFiles.map((one) => customTransformFileObj(one));
-    
+
     let filesObj = await Promise.all(result);
-    console.log("filesObj", filesObj)
     let existingFileIds: string[] = [];
     if (Array.isArray(existingFiles)) {
       existingFileIds = existingFiles.map((one) => one.id);
@@ -135,7 +131,7 @@ export const validateFilesAndAddToList =
         });
         return false;
       }
-      if (!isMimeTypeValid(one.fileExt, allowedExtensions)) {
+      if (!isMimeTypeValid(one.ext, allowedExtensions)) {
         failedFiles.push({
           ...one,
           failedReason: "File type is not allowed",

@@ -19,7 +19,7 @@ const isValidDate = (dat) => {
 };
 
 // get retrieval param dates
-const getRetrievalPara = (retrievalParams) => {
+const getRetrievalParaDate = (retrievalParams) => {
   const from_to_date = retrievalParams.filter(
     (item) => item.id === "A_FROM_DT" || item.id === "A_TO_DT"
   );

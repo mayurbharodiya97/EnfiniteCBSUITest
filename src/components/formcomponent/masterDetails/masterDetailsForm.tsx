@@ -46,12 +46,12 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
   (
     {
       metaData,
-      children = () => { },
+      children = () => {},
       actions = [],
       initialData = {},
       isError = false,
       errorObj = {},
-      handelActionEvent = () => { },
+      handelActionEvent = () => {},
       formStyle = {
         background: "white",
         height: "calc(100vh - 650px)",
@@ -60,13 +60,13 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       },
       isNewRow = null,
       isLoading = false,
-      onSubmitData = () => { },
+      onSubmitData = () => {},
       displayMode = null,
       containerstyle = { padding: "10px" },
       formName = "",
       formNameMaster = "",
-      onFormButtonClickHandel = (id) => { },
-      onClickActionEvent = () => { },
+      onFormButtonClickHandel = (id) => {},
+      onClickActionEvent = () => {},
       hideHeader = false,
       formState,
       setDataOnFieldChange,
@@ -281,8 +281,8 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
               "masterDetails-Master" + Boolean(formNameMaster)
                 ? formNameMaster
                 : Boolean(formName)
-                  ? formName
-                  : ""
+                ? formName
+                : ""
             }
             metaData={masterMetadata}
             initialValues={intialValueMaster}
