@@ -107,7 +107,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
     return null;
   }
   // console.log(value, "value");
-  // console.log(!readOnly, "readOnly");
+  // console.log(readOnly, "readOnly");
   const isError = touched && (error ?? "") !== "";
 
   const result = (
@@ -116,7 +116,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       {...FormControlProps}
       key={fieldKey}
       component="fieldset"
-      disabled={isSubmitting}
+      disabled={isSubmitting || readOnly}
       error={!isSubmitting && isError}
       onBlur={handleBlur}
       style={{

@@ -1595,6 +1595,42 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
     packageName: "",
   },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
+    packageName: "",
+  },
+  VALIDATERTGSDTL: {
+    url: "/transactionServiceAPI/VALIDATERTGSDTL",
+    packageName: "",
+  },
+  VALIDATEAMOUNT: {
+    url: "/transactionServiceAPI/VALIDATEAMOUNT",
+    packageName: "",
+  },
+  DOSAVERTGSENTRY: {
+    url: "/transactionServiceAPI/DOSAVERTGSENTRY",
+    packageName: "",
+  },
+  DOBENEFICIARYACCTAUDITENTRY: {
+    url: "/transactionServiceAPI/DOBENEFICIARYACCTAUDITENTRY",
+    packageName: "",
+  },
+  GETRTGSENTRYTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSENTRYTYPEDDDW",
+    packageName: "",
+  },
+  GETRTGSRTRIVEFRMDTTODTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSRTRIVEFRMDTTODTGRID",
+    packageName: "",
+  },
+  GETRTGSTRNHDRDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNHDRDATADISP",
+    packageName: "",
+  },
+  GETRTGSTRNDTLDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNDTLDATADISP",
+    packageName: "",
+  },
   GETPAYSLIPBILLTYPDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBILLTYPDDW",
     packageName: "",

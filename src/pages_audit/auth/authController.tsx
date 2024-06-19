@@ -17,6 +17,7 @@ import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { MultiLanguages } from "./multiLanguages";
 import { useTranslation } from "react-i18next";
+import { usePopupContext } from "components/custom/popupContext";
 
 const inititalState = {
   username: "",
@@ -230,6 +231,7 @@ export const AuthLoginController = () => {
   const urlObj = useRef<any>(null);
   const { t } = useTranslation();
   const otpResendRef = useRef(1);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -306,6 +308,15 @@ export const AuthLoginController = () => {
             otpValidFor: data?.OTP_VALID,
           },
         });
+        if (data?.STATUS === "0") {
+          let messageData = JSON.parse(data?.ALERT_MSG_LIST || '[]')
+          for (let i = 0; i < messageData.length; i++) {
+            await MessageBox({
+              messageTitle: "Password Alert",
+              message: messageData[i],
+            });
+          }
+        }
       } else {
         dispath({
           type: "passwordVerificationFailure",
