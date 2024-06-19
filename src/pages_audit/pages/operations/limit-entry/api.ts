@@ -136,12 +136,10 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "FD_ACCT_CD") {
-            // item.schemaValidation = {
-            //   type: "string",
-            //   rules: [
-            //     { name: "required", params: ["FD-Account No. is required."] },
-            //   ],
-            // };
+            item.isFieldFocused =
+              apiReqPara?.SECURITY_TYPE !== "BFD" &&
+              apiReqPara?.SECURITY_TYPE !== "BRD";
+
             item.dependentFields = [
               "FD_TYPE",
               "SECURITY_CD",
@@ -545,6 +543,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                 });
                 if (buttonName === "Yes") {
                   return {
+                    EXPIRED_FLAG: { value: "P" },
                     EXPIRY_DT: { value: field?.value, isFieldFocused: true },
                   };
                 } else if (buttonName === "No") {

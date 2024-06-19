@@ -369,7 +369,7 @@ const LimitEntryCustom = () => {
                   }));
                   securityLimitData.mutate({
                     ...payload,
-                    ...acctValidData,
+                    ...reqDataRef.current.acctValidData,
                     COMP_CD: authState?.companyID,
                     BRANCH_CD: authState?.user?.branchCode,
                     WORKING_DATE: authState?.workingDate,

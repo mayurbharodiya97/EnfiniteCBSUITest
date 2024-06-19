@@ -191,8 +191,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
-  GETQUICKVIEWSCREEN: {
-    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+  DOQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/DOQUICKVIEWSCREEN",
     packageName: "",
   },
   GETPASSBKTEMPL: {

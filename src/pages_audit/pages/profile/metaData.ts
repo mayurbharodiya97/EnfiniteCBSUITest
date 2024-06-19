@@ -640,7 +640,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DOC_CD",
-      columnName: "",
+      columnName: "Screen Name List",
       sequence: 2,
       alignment: "left",
       componentType: "editableAutocomplete",
@@ -716,7 +716,7 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
     },
     {
       accessor: "DASH_TRAN_CD",
-      columnName: "",
+      columnName: "Dashbox Card",
       sequence: 2,
       alignment: "left",
       componentType: "editableAutocomplete",
