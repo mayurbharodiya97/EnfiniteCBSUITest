@@ -8,7 +8,6 @@ import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
-const PaySlipIsuueEntry = lazy(() => import("./payslip-issue-entry"));
 const StockEntry = lazy(() => import("./stockEntry"));
 const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
@@ -34,7 +33,6 @@ export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
-    <Route path="payslip-issue-entry/*" element={<PaySlipIsuueEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
