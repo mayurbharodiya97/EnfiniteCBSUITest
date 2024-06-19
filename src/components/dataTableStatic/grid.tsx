@@ -101,6 +101,7 @@ export const DataGrid = ({
   footerNote,
   finalMetaData,
   subGridLabel,
+  hideActionBar,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -400,6 +401,7 @@ export const DataGrid = ({
             singleActions={singleActions}
             setGridAction={setGridAction} //for single/multiple actions
             submitButtonRef={submitButtonRef}
+            hideActionBar={hideActionBar}
           />
         )}
         <ActionContextMenu
@@ -464,6 +466,9 @@ export const DataGrid = ({
                         <HeaderCellWrapper
                           column={column}
                           key={column.getHeaderProps().key}
+                          SelectAllColumn={column.SelectAllColumn}
+                          rows={rowsToDisplay}
+                          updateGridData = {updateGridData}
                         >
                           {column.render("Header")}
                         </HeaderCellWrapper>

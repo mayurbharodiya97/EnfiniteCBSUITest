@@ -116,6 +116,7 @@ export interface TableActionType {
   handleClose?: any;
   authState?: any;
   submitButtonRef?: any;
+  hideActionBar?: boolean;
 }
 
 export interface GridContextType {

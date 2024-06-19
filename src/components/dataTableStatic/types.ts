@@ -52,6 +52,7 @@ export interface GridColumnType {
   isColumnName?: any;
   isDisplayTotal?: Boolean;
   totalDecimalCount?: number;
+  SelectAllColumn?: Boolean;
 }
 
 export interface GridConfigType {
@@ -119,6 +120,7 @@ export interface GridWrapperPropTypes {
   isNewRowStyle?: boolean;
   defaultSelectedRowId?: any;
   ReportExportButton?: boolean;
+  hideActionBar?: boolean;
 }
 
 export interface YupSchemaMetaDataType {

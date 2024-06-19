@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
-import SingleDeno from "../dashboard/noteDenomination/singleDeno";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 
@@ -15,9 +14,6 @@ const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
-const CashReceiptEntry = lazy(
-  () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
-);
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -27,10 +23,11 @@ const ClearingDateTransferGridWrapper = lazy(
   () => import("./clearingDateTransfer")
 );
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
-const TellerScreen = lazy(
-  () => import("../dashboard/noteDenomination/tellerScreen")
-);
+const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
+const SingleDenomination = lazy(
+  () => import("./denomination/singleDenomination/index")
+);
 
 export const OperationsMenu = () => (
   <Routes>
@@ -65,7 +62,7 @@ export const OperationsMenu = () => (
       element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
-    {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
+    <Route path="single-denomination/*" element={<SingleDenomination />} />
     <Route
       path="confirm-ckyc/*"
       element={
@@ -82,7 +79,7 @@ export const OperationsMenu = () => (
         </AcctMSTProvider>
       }
     />
-    <Route path="single-deno/*" element={<SingleDeno />} />
+    {/* <Route path="single-deno/*" element={<SingleDeno />} /> */}
 
     <Route
       path="ckyc/*"

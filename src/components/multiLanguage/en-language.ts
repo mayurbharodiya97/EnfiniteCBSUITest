@@ -208,17 +208,22 @@ export const en_language_data = {
     Role: "Role",
     LastUnsuccessfulLogin: "Last Unsuccessful Login",
   },
-  // Account Inquiry
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "Account Inquiry",
+  AccountDetails: "Account Details",
   CustomerDetail: "Customer Detail",
-  AccountNo: "Account No.",
-  PanNo: "Pan No.",
+  AccountNo: "A/c Number",
+  PAN_NO: "PAN",
+  Account_Name: "A/c Name",
   Retrieve: "Retrieve",
-  AccountPersonName: "Account/Person Name",
+  AcctHolderType: "A/C Holder Type",
   OpeningDate: "Opening Date",
   CloseDate: "Close Date",
-
-  // Passbook/Statement Print Option
+  WithdrawBalance: "Withdraw Balance",
+  SearchCriteriaData: "Search Criteria Data",
+  PleaseEnterAnyValue: "Please enter any value",
+  TotalNoOfRecords: "Total No Of Records:",
+  //Account Inquiry => Passbook/Statement Print Option
 
   PassbookStatementPrintOption: "Passbook/Statement Print Option",
   Template: "Template",
@@ -242,6 +247,12 @@ export const en_language_data = {
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
+
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "Assets & Liabilities",
+  Account_Status: "A/C Status",
+  DependenciesOfCustomer_id: "Dependencies Of Customer ID",
 
   //  ckyc
   EmailId: "Email-Id",
