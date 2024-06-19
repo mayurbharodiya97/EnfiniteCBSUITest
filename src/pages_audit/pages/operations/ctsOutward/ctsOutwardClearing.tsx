@@ -111,7 +111,7 @@ const CtsOutwardClearingForm: FC<{
       onSuccess: (data) => {
         // isDataChangedRef.current = true;
       },
-      onError: (error: any) => {},
+      onError: (error: any) => { },
     }
   );
 
@@ -136,8 +136,8 @@ const CtsOutwardClearingForm: FC<{
         SLIP_AMOUNT: "0",
       });
       setChequeDtlRefresh(0);
-      myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
+      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => { } });
       CloseMessageBox();
     },
   });
@@ -246,7 +246,7 @@ const CtsOutwardClearingForm: FC<{
       setChequeDtlRefresh((old) => old + 1);
     } else if (
       (parseFloat(data?.TOTAL_AMOUNT) > 0 || newData?.length,
-      newData.length === 0)
+        newData.length === 0)
     ) {
       setChequeDetailData((old) => ({
         chequeDetails: [
@@ -368,15 +368,15 @@ const CtsOutwardClearingForm: FC<{
             initialValues={
               formMode === "new"
                 ? {
-                    TRAN_DT:
-                      zoneTranType === "S"
-                        ? data?.[0]?.TRAN_DATE
-                        : authState?.workingDate ?? "",
-                    ZONE_TRAN_TYPE: zoneTranType,
-                  }
+                  TRAN_DT:
+                    zoneTranType === "S"
+                      ? data?.[0]?.TRAN_DATE
+                      : authState?.workingDate ?? "",
+                  ZONE_TRAN_TYPE: zoneTranType,
+                }
                 : {
-                    ...getOutwardClearingData.data?.[0],
-                  }
+                  ...getOutwardClearingData.data?.[0],
+                }
             }
             onSubmitHandler={async (
               data: any,
@@ -389,7 +389,7 @@ const CtsOutwardClearingForm: FC<{
               endSubmit(true);
               slipFormDataRef.current = data;
               if (action === "CHEQUEDTL") {
-                let event: any = { preventDefault: () => {} };
+                let event: any = { preventDefault: () => { } };
                 myChequeFormRef?.current?.handleSubmit(event, "FINAL");
               }
             }}
@@ -433,7 +433,7 @@ const CtsOutwardClearingForm: FC<{
                   SLIP_AMOUNT: payload,
                 }));
                 setChequeDtlRefresh((old) => old + 1);
-                let event: any = { preventDefault: () => {} };
+                let event: any = { preventDefault: () => { } };
                 myFormRef?.current?.handleSubmit(event);
               }
             }}
@@ -538,7 +538,7 @@ const CtsOutwardClearingForm: FC<{
                 margin: "0px 0px 0px 10px",
                 padding:
                   gridData?.ACCT_JOIN_DETAILS &&
-                  gridData?.ACCT_JOIN_DETAILS?.length > 0
+                    gridData?.ACCT_JOIN_DETAILS?.length > 0
                     ? isJointDtlExpand
                       ? "10px"
                       : "0px"
@@ -576,7 +576,7 @@ const CtsOutwardClearingForm: FC<{
               <Collapse in={isJointDtlExpand}>
                 <Grid item>
                   {gridData?.ACCT_JOIN_DETAILS &&
-                  gridData?.ACCT_JOIN_DETAILS?.length > 0 ? (
+                    gridData?.ACCT_JOIN_DETAILS?.length > 0 ? (
                     <GridWrapper
                       key={
                         "JoinDetailGridMetaData" + mutationOutward?.isSuccess
@@ -608,12 +608,12 @@ const CtsOutwardClearingForm: FC<{
                 if (
                   (target?.name ?? "") ===
                   metaData.form.name +
-                    "/" +
-                    metaData.fields[7].name +
-                    `[${charAtIndex}]` +
-                    ".AMOUNT"
+                  "/" +
+                  metaData.fields[7].name +
+                  `[${charAtIndex}]` +
+                  ".AMOUNT"
                 ) {
-                  let event: any = { preventDefault: () => {} };
+                  let event: any = { preventDefault: () => { } };
                   myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
                 }
               }
@@ -626,8 +626,8 @@ const CtsOutwardClearingForm: FC<{
                   zoneTranType === "S"
                     ? ctsOutwardChequeDetailFormMetaData
                     : zoneTranType === "R"
-                    ? inwardReturnChequeDetailFormMetaData
-                    : inwardReturnChequeDetailFormMetaData,
+                      ? inwardReturnChequeDetailFormMetaData
+                      : inwardReturnChequeDetailFormMetaData,
                   formMode
                 ) as MetaDataType
               }
@@ -636,14 +636,14 @@ const CtsOutwardClearingForm: FC<{
               initialValues={
                 formMode === "new"
                   ? {
-                      ...chequeDetailData,
-                      TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
-                    }
+                    ...chequeDetailData,
+                    TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
+                    RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
+                  }
                   : {
-                      chequeDetails:
-                        getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL ?? "",
-                    }
+                    chequeDetails:
+                      getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL ?? "",
+                  }
               }
               hideHeader={true}
               containerstyle={{ padding: "0px !important" }}
@@ -662,7 +662,7 @@ const CtsOutwardClearingForm: FC<{
                 }
               }}
               onFormButtonClickHandel={() => {
-                let event: any = { preventDefault: () => {} };
+                let event: any = { preventDefault: () => { } };
                 myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
               }}
               ref={myChequeFormRef}
@@ -745,8 +745,8 @@ const CtsOutwardClearingForm: FC<{
                     USER_DEF_REMARKS: val
                       ? val
                       : zoneTranType === "S"
-                      ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
-                      : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)",
+                        ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
+                        : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)",
 
                     ACTIVITY_TYPE:
                       zoneTranType === "S"
@@ -755,6 +755,7 @@ const CtsOutwardClearingForm: FC<{
                     DETAILS_DATA: {
                       isNewRow: [],
                       isDeleteRow: [
+                        
                         {
                           TRAN_CD: retrieveDataRef.current?.TRAN_CD,
                         },

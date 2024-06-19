@@ -3,13 +3,9 @@ import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
 export const fr_language_data = {
   // Ornament Type Master
   "Margin%": "Marge%",
-  Code: "Code",
   OrnamentTypeMaster: "Maître du type d’ornement (MST/247)",
   OrnamentTypeMasterForm: "Maître du type d’ornement",
   CodeisRequired: "Le code est requis",
-  EnterCode: "Entrez le code",
-  Edit: "Modifier",
-  EnterDescription: "Entrez la description",
   DescriptionisRequired: "Une description est requise",
   MarginisRequired: "Une marge est requise",
 
@@ -17,6 +13,94 @@ export const fr_language_data = {
   ActionTakenMaster: "Action entreprise Maître (MST/145)",
   ActionTakenMasterForm: "Action entreprise Maître",
   LegalProcess: "Procédure légale",
+  // GridWrapper
+  Search: "Recherche",
+  NoDataFound: " Aucune donnée disponible..!",
+  export: "exporter",
+  Export: "Exporter",
+
+  // Message box
+  DeleteData: "Êtes-vous sûr de supprimer la ligne sélectionnée... ?",
+  SaveData: "Voulez-vous enregistrer cette demande... ?",
+  Confirmation: "Confirmation",
+  Ok: "D'accord",
+  Yes: "Oui",
+  NO: "Non",
+  Accept: "Accepter",
+  Decline: "Déclin",
+
+  // FormWrapper
+  mode: "mode",
+  edit: "modifier",
+  view: "voir",
+  new: "nouvelle",
+
+  // MST/067
+  Code: "Code",
+  EntryDescriptionMaster: "Entrée Description Maître MST/067",
+  ParentType: "Type de parent",
+  EnterDescription: "Entrez la description",
+
+  // MST/097
+  SecurityType: "Type de sécurité",
+  InsuranceTypeMaster: "Type d'assurance Maître (MST/097)",
+
+  // MST/052
+  NPACategoryMaster: "Maître de catégorie NPA (MST/052)",
+  Parent: "Parente",
+  ProvisionSecureRate: "Tarif sécurisé de mise à disposition",
+  ProvisionUnSecureRate: "Taux de fourniture non sécurisé",
+  AssetClassificationCode: "Code de classification des actifs A5",
+  CalculatePenalInterestOn: "Calculer les intérêts pénalisés sur",
+  EnterName: "Enter Name",
+
+  // MST/146
+  CourtMaster: "Maître de cour (MST/146)",
+  CourtName: "Nom du tribunal",
+  Address1: "Adresse 1",
+  Address2: "Adresse 2",
+  Contact1: "Contact 1",
+  Contact2: "Contact 2",
+  Contact3: "Contact 3",
+  EnterCode: "Entrez le code",
+  EnterCourtName: "Entrez le nom du tribunal",
+  EnterPinCode: "Entrez le code PIN",
+  EnterAddress: "Entrer l'adresse",
+  EnterContactNumber: "Entrez le numéro de contact",
+
+  // Report
+  CreditCount: "Compte de crédits",
+  DebitCount: "Nombre de débits",
+  ACNumber: "Numéro de compte",
+  ACHolder: "Titulaire de compte",
+  ChequeNo: "N° de chèque.",
+  Debit: "Débit",
+  Credit: "Crédit",
+  TrBranch: "Tr.Branche",
+  EntryTime: "Heure d'entrée",
+  ExpandRows: "Développer les lignes",
+  showFilters: "afficher les filtres",
+  ClearFilter: "Effacer les filtres",
+
+  // Branch Selection screen
+  Back: "Dos",
+  Proceed: "Procéder",
+  AccessBranchList: "Accéder à la liste des succursales",
+  BranchCode: "Code de succursale",
+  BranchName: "Nom de la filiale",
+  Status: "Statut",
+  BeginTime: "Heure de début",
+  EndTime: "Heure de fin",
+
+  // General
+  ViewDetails: "Voir les détails",
+  Searchscreen: "Écran de recherche",
+  records: " enregistrements",
+  searchPlaceholder: "enregistrements",
+  Edit: "Modifier",
+  ConfirmedCount: "Nombre confirmé",
+  RejectedCount: "Nombre de rejets",
+  PendingCount: "Décompte en attente",
 
   //Parent master main
   ParentGroup: "Groupe de parents",
@@ -34,7 +118,6 @@ export const fr_language_data = {
   Add: "Ajouter",
   Delete: "Supprimer",
 
-  //
   Loading: "Chargement..",
   SignIn: "S'identifier",
   SignInWithUserIDandPassword:
@@ -413,4 +496,25 @@ export const fr_language_data = {
     "Stock Entry": "Entrée de stock",
     "Inward Clearing Process": "Processus de compensation entrante",
   },
+  // lien Mater
+  // Mode Master
+  Mode: "Mode",
+  MinimumNoofJoints: "Nombre minimum de joints",
+  MaximumNoofJoints: "Nombre maximum de joints",
+  // Ac period Mater
+  PeriodName: "Nom de la période",
+  InstNo: "numéro de versement",
+  InstallmentPeriod: "Période de versement",
+  //bank ifsc code master
+  IFSCCode: "Code IFSC",
+  BankName: "Nom de la banque",
+  Facility: "Facilité",
+  MICRCode: "Code MICR",
+  Add1: "Adresse 1",
+  ContactDetail: "Coordonnées de contact",
+  DistrictName: "Nom du district",
+  StateName: "Nom de l'état",
+  Import: "Importation",
+  CentreName: "Nom du centre"
+
 };

@@ -1555,6 +1555,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETFILETOJSON",
     packageName: "",
   },
+  IMPORTFILE: {
+    url: "enfinityCommonServiceAPI/IMPORTFILE",
+    packageName: "",
+  },
   DOSPECIALINSTMST: {
     url: "commonMasterServiceAPI/DOSPECIALINSTMST",
     packageName: "",
@@ -1591,6 +1595,70 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
     packageName: "",
   },
+  GETPAYSLIPBILLTYPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBILLTYPDDW",
+    packageName: "",
+  },
+  GETPAYSLIPRETRIVEGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPRETRIVEGRID",
+    packageName: "",
+  },
+  GETPAYSLIPTODAYGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPTODAYGRID",
+    packageName: "",
+  },
+  GETPAYSLIPACCTDTLDISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPACCTDTLDISP",
+    packageName: "",
+  },
+  GETPAYSLIPDDDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDDDATADISP",
+    packageName: "",
+  },
+  GETPAYSLIPINFAVOURDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPINFAVOURDDW",
+    packageName: "",
+  },
+  GETPAYSLIPREGIONDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREGIONDDW",
+    packageName: "",
+  },
+  GETPAYSLIPNOHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPNOHDR",
+    packageName: "",
+  },
+  GETCALCULATEGSTCOMM: {
+    url: "/transactionServiceAPI/GETCALCULATEGSTCOMM",
+    packageName: "",
+  },
+  GETPAYSLIPBANKCODEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBANKCODEDDW",
+    packageName: "",
+  },
+  GETPAYSLIPSIGNATUREDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSIGNATUREDDW",
+    packageName: "",
+  },
+  GETPAYSLIPTRANCD: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPTRANCD",
+    packageName: "",
+  },
+  DOSAVEREGIONMST: {
+    url: "transactionServiceAPI/DOSAVEREGIONMST",
+    packageName: "",
+  },
+  VALIDATEPAYSLIPISSUEENTRY: {
+    url: "transactionServiceAPI/VALIDATEPAYSLIPISSUEENTRY",
+    packageName: "",
+  },
+  GETCOMMTYPEMSTDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEMSTDDDW  ",
+    packageName: "",
+  },
+  VALIDATEPAYSLIPNO: {
+    url: "transactionServiceAPI/VALIDATEPAYSLIPNO  ",
+    packageName: "",
+  },
   GETTEMPODAGCNFDATAGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTEMPODAGCNFDATAGRID",
     packageName: "",
@@ -1614,17 +1682,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

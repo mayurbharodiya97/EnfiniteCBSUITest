@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const InsuTypeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Insurance Type Master (EMST/097)",
+    gridLabel: "InsuranceTypeMaster",
     rowIdColumn: "INSURANCE_TYPE_CD",
     defaultColumnConfig: {
       width: 400,
@@ -60,7 +60,7 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISP_DATA",
-      columnName: "Security Type",
+      columnName: "SecurityType",
       sequence: 4,
       alignment: "left",
       componentType: "default",
