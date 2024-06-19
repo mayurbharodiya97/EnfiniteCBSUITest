@@ -1,18 +1,16 @@
-import { ClearCacheContext, queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { enqueueSnackbar } from "notistack";
-import { AuthContext } from "pages_audit/auth";
-import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useRef, useCallback, useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
+import { AgentMasterGridMetaData } from "./gridMetadata";
+import { Alert } from "components/common/alert";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { NpaCategoryMasterGridMetaData } from "./gridMetadata";
-import { NpaCategoryMasterWrapper } from "./viewDetails/npaCategoryMasterForm";
-import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { ClearCacheContext, queryClient } from "cache";
+import { enqueueSnackbar } from "notistack";
+import { AgentMasterFormWrapper } from "./agentMasterForm";
+import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
   {
@@ -24,7 +22,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetails",
+    actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -36,16 +34,15 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const NpaCategoryMasterGrid = () => {
-  const { getEntries } = useContext(ClearCacheContext);
-  const { authState } = useContext(AuthContext);
-  const { MessageBox, CloseMessageBox } = usePopupContext();
+export const AgentMasterGrid = () => {
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
+  const { getEntries } = useContext(ClearCacheContext);
   const isDeleteDataRef = useRef<any>(null);
-  const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const deleteMutation = useMutation(API.updateNpaCategoryMasterData, {
+  const deleteMutation = useMutation(API.agentMasterDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -56,8 +53,8 @@ export const NpaCategoryMasterGrid = () => {
       });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+    onSuccess: () => {
+      enqueueSnackbar("Record successfully deleted", {
         variant: "success",
       });
       CloseMessageBox();
@@ -70,14 +67,15 @@ export const NpaCategoryMasterGrid = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
+          message: "Are you sure to delete selected row?",
           messageTitle: "Confirmation",
-          buttonNames: [t("Yes"), t("NO")],
+          buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
-        if (btnName === t("Yes")) {
+        if (btnName === "Yes") {
           deleteMutation.mutate({
-            data: { ...isDeleteDataRef.current?.data, _isDeleteRow: true },
+            ...isDeleteDataRef.current?.data,
+            _isDeleteRow: true,
           });
         }
       } else if (data?.name === "add") {
@@ -92,11 +90,12 @@ export const NpaCategoryMasterGrid = () => {
     },
     [navigate]
   );
+
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getNpaCategoryMasterGridData", authState?.user?.branchCode], () =>
-    API.getNpaCategoryMasterGridData({
+  >(["getCategoryMasterGridData", authState?.user?.branchCode], () =>
+    API.getAgentMasterGirdData({
       companyID: authState?.companyID ?? "",
       branchCode: authState?.user?.branchCode ?? "",
     })
@@ -104,8 +103,14 @@ export const NpaCategoryMasterGrid = () => {
 
   useEffect(() => {
     return () => {
+      let entries = getEntries() as any[];
+      if (Array.isArray(entries) && entries.length > 0) {
+        entries.forEach((one) => {
+          queryClient.removeQueries(one);
+        });
+      }
       queryClient.removeQueries([
-        "getNpaCategoryMasterGridData",
+        "getCategoryMasterGridData",
         authState?.user?.branchCode,
       ]);
     };
@@ -114,14 +119,13 @@ export const NpaCategoryMasterGrid = () => {
   const handleDialogClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      isDataChangedRef.current = true;
       refetch();
       isDataChangedRef.current = false;
     }
   }, [navigate]);
 
   return (
-    <Fragment>
+    <>
       {isError && (
         <Alert
           severity="error"
@@ -130,10 +134,9 @@ export const NpaCategoryMasterGrid = () => {
           color="error"
         />
       )}
-
       <GridWrapper
-        key={"npaCategoryMasterGrid"}
-        finalMetaData={NpaCategoryMasterGridMetaData as GridMetaDataType}
+        key={"agentMasterGrid"}
+        finalMetaData={AgentMasterGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
@@ -143,9 +146,9 @@ export const NpaCategoryMasterGrid = () => {
       />
       <Routes>
         <Route
-          path="add"
+          path="add/*"
           element={
-            <NpaCategoryMasterWrapper
+            <AgentMasterFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
@@ -154,9 +157,9 @@ export const NpaCategoryMasterGrid = () => {
           }
         />
         <Route
-          path="view-details"
+          path="view-details/*"
           element={
-            <NpaCategoryMasterWrapper
+            <AgentMasterFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
@@ -165,6 +168,6 @@ export const NpaCategoryMasterGrid = () => {
           }
         />
       </Routes>
-    </Fragment>
+    </>
   );
 };

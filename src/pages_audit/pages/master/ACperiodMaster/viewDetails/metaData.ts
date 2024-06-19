@@ -13,7 +13,7 @@ export const metaData = {
           xs: 12,
           sm: 12,
           md: 12,
-        },  
+        },
         container: {
           direction: "row",
           spacing: 1,
@@ -48,7 +48,7 @@ export const metaData = {
       },
       name: "PERIOD_CD",
       label: "Code",
-      placeholder: "Code",  
+      placeholder: "Code",
       maxLength: 4,
       type: "text",
       required: true,
@@ -57,14 +57,42 @@ export const metaData = {
         rules: [{ name: "required", params: ["code is Required"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
-      __EDIT__: {isReadOnly:true},
-    },  
+      __EDIT__: { isReadOnly: true },
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
+    },
     {
       render: {
         componentType: "textField",
       },
       name: "PERIOD_NM",
-      label: "Period Name",
+      label: "PeriodName",
       placeholder: "Period Name",
       maxLength: 40,
       type: "text",
@@ -73,8 +101,8 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["Period Name is Required"] }],
       },
-      GridProps: {  xs: 12, sm: 12, md: 12, lg: 6, xl:6 },
-     
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
+
     },
     {
       render: {
@@ -82,7 +110,7 @@ export const metaData = {
       },
       className: "textInputFromLeft",
       name: "INST_NO",
-      label: "Inst. No.",
+      label: "InstNo",
       placeholder: "Inst. No.",
       FormatProps: {
         allowNegative: false,
@@ -98,34 +126,62 @@ export const metaData = {
           return true;
         },
       },
-      GridProps: {  xs: 12, sm: 12, md: 12, lg: 6, xl:6 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       schemaValidation: {
         type: "string",
         rules: [
           { name: "required", params: ["Inst. No. is Required"] },
-          // { name: "max", params: [10, "Inst. No. should be 5 digit."] },
         ],
+
+      },
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
       },
     },
     {
       render: { componentType: "select" },
       name: "INSTALLMENT_TYPE",
+      label: "InstallmentPeriod",
       placeholder: "Select Installment Period",
-      label: "Installment Period",
       options: [
-        { label: "Daily ", value: "D"},
-        { label: "Monthly", value: "M"},
-        { label: "Quarterly", value: "Q"},
-        { label: "Half-Yearly", value: "H"},
-        { label: "Yearly", value: "Y"},
-        { label: "On Expiry", value: "E"},
+        { label: "Daily ", value: "D" },
+        { label: "Monthly", value: "M" },
+        { label: "Quarterly", value: "Q" },
+        { label: "Half-Yearly", value: "H" },
+        { label: "Yearly", value: "Y" },
+        { label: "On Expiry", value: "E" },
       ],
       _optionsKey: "Installment_period",
       defaultOptionLabel: "Select Installment Period",
-      defaultValue:"M",
+      defaultValue: "M",
       required: true,
       type: "text",
-      GridProps: {  xs: 12, sm: 12, md: 12, lg: 6, xl:6 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       fullWidth: true,
       autoComplete: "on",
       //@ts-ignore
@@ -135,7 +191,7 @@ export const metaData = {
         rules: [
           { name: "required", params: ["Please Select Installment Period"] },
         ],
-      
+
       },
     },
   ],

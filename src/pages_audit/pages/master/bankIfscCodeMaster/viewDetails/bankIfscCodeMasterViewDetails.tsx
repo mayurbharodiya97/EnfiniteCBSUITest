@@ -3,7 +3,7 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import {metaData  } from "./metaData";
+import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
@@ -48,9 +48,9 @@ const BankIfscCdMasterForm = ({
     }
   );
 
- 
 
-  const onSubmitHandler: SubmitFnType =async  (
+
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
     endSubmit,
@@ -60,10 +60,10 @@ const BankIfscCdMasterForm = ({
 
     let newData = {
       ...data,
-       };
+    };
     let oldData = {
       ...rows?.[0]?.data,
-     };
+    };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
     isErrorFuncRef.current = {
@@ -90,7 +90,7 @@ const BankIfscCdMasterForm = ({
       });
       if (btnName === "Yes") {
         mutation.mutate({
-          data: {...isErrorFuncRef.current?.data },
+          data: { ...isErrorFuncRef.current?.data },
         });
       }
     }
@@ -98,6 +98,7 @@ const BankIfscCdMasterForm = ({
 
   return (
     <>
+
       <FormWrapper
         key={"bankifsccodeMasterForm" + formMode}
         metaData={
@@ -108,6 +109,10 @@ const BankIfscCdMasterForm = ({
         }
         initialValues={{
           ...(rows?.[0]?.data ?? {}),
+        }}
+        formState={{
+          gridData: gridData,
+          rows: rows?.[0]?.data,
         }}
         displayMode={formMode}
         onSubmitHandler={onSubmitHandler}
@@ -172,7 +177,7 @@ const BankIfscCdMasterForm = ({
           </>
         )}
       </FormWrapper>
-    
+
     </>
   );
 };
@@ -181,7 +186,7 @@ export const BankIfscCdMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog

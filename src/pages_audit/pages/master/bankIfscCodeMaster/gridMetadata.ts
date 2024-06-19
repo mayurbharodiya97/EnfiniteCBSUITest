@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const gridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Bank Ifsc Code Master(EMST/142)",
+    gridLabel: "Bank Ifsc Code Master MST/142",
     rowIdColumn: "IFSC_CODE",
     defaultColumnConfig: {
       width: 400,
@@ -13,7 +13,7 @@ export const gridMetadata: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true, 
+    enablePagination: true,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
@@ -28,8 +28,8 @@ export const gridMetadata: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
-      // isAutoSequence:true,
+      columnName: "SrNo",
+      isAutoSequence: true,
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -37,9 +37,9 @@ export const gridMetadata: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 100,
     },
-    { 
+    {
       accessor: "IFSC_CODE",
-      columnName: "IFSC Code",
+      columnName: "IFSCCode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -49,7 +49,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "BANK_NM",
-      columnName: "Bank Name",
+      columnName: "BankName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -69,7 +69,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "MICR_CODE",
-      columnName: "MICR Code",
+      columnName: "MICRCode",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -79,7 +79,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_NM",
-      columnName: "Branch Name",
+      columnName: "BranchName",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -89,7 +89,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "ADD1",
-      columnName: "Add 1",
+      columnName: "Add1",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -99,7 +99,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "CONTACT_DTL",
-      columnName: "Contact Detail",
+      columnName: "ContactDetail",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -109,7 +109,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "CENTRE_NM",
-      columnName: "Centre Name",
+      columnName: "CentreName",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -119,7 +119,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "DISTRICT_NM",
-      columnName: "District Name",
+      columnName: "DistrictName",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -129,7 +129,7 @@ export const gridMetadata: GridMetaDataType = {
     },
     {
       accessor: "STATE_NM",
-      columnName: "State Name",
+      columnName: "StateName",
       sequence: 11,
       alignment: "left",
       componentType: "default",

@@ -1,11 +1,4 @@
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
 import { ActionTakenMasterGridMetaData } from "./gridMetadata";
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
@@ -17,7 +10,7 @@ import * as API from "./api";
 import { ClearCacheContext, queryClient } from "cache";
 import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
   {
@@ -44,16 +37,47 @@ const actions: ActionTypes[] = [
 export const ActionTakenMasterGrid = () => {
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
-  const [isDelete, setDelete] = useState(false);
   const { getEntries } = useContext(ClearCacheContext);
   const isDeleteDataRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+
+  const deleteMutation = useMutation(API.actionTakenMasterDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: () => {
+      enqueueSnackbar("Record successfully deleted", {
+        variant: "success",
+      });
+      CloseMessageBox();
+      refetch();
+    },
+  });
 
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
-        setDelete(true);
+        const btnName = await MessageBox({
+          message: "Are you sure to delete selected row?",
+          messageTitle: "Confirmation",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (btnName === "Yes") {
+          deleteMutation.mutate({
+            ...isDeleteDataRef.current?.data,
+            _isDeleteRow: true,
+          });
+        }
       } else if (data?.name === "add") {
         navigate(data?.name, {
           state: [],
@@ -100,24 +124,6 @@ export const ActionTakenMasterGrid = () => {
     }
   }, [navigate]);
 
-  const deleteMutation = useMutation(API.deleteActionTakenMasterData, {
-    onError: (error: any) => {},
-    onSuccess: () => {
-      enqueueSnackbar("Record successfully deleted", {
-        variant: "success",
-      });
-      refetch();
-      setDelete(false);
-    },
-  });
-
-  const onDeleteYes = (rows) => {
-    deleteMutation.mutate({
-      ...rows?.data,
-      _isDeleteRow: true,
-    });
-  };
-
   return (
     <Fragment>
       {isError && (
@@ -157,22 +163,11 @@ export const ActionTakenMasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />
       </Routes>
-
-      {isDelete ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Are you sure to delete selected row?"
-          onActionYes={(rows) => onDeleteYes(rows)}
-          onActionNo={() => setDelete(false)}
-          rows={isDeleteDataRef.current}
-          open={isDelete}
-          loading={deleteMutation.isLoading}
-        />
-      ) : null}
     </Fragment>
   );
 };
