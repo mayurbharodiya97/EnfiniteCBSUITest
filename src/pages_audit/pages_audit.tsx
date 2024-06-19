@@ -88,7 +88,6 @@ export const PagesAudit = (props, { columns }) => {
                   path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
-                <Route path="master/*" element={<Master />} />
 
                 {/* <Route
                   path="branch-selection/*"

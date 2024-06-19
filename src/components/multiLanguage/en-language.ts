@@ -844,6 +844,26 @@ export const en_language_data = {
   TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  // lien Mater
+  ParentType: "Parent_Type",
+  MinimumNoofJoints: "Minimum No. of Joints",
+  MaximumNoofJoints: "Maximum No. of Joints",
+  // Ac period Mater
+  PeriodName: "Period-Name",
+  InstNo: "Inst. No.",
+  InstallmentPeriod: "Installment Period",
+  // Bank ifsc code master
+  IFSCCode: "IFS CCode",
+  BankName: "Bank Name",
+  Facility: "Facility",
+  MICRCode: "MICR Code",
+  BranchName: "Branch Name",
+  Add1: "Add 1",
+  ContactDetail: "Contact Detail",
+  DistrictName: "District Name",
+  StateName: "State Name",
+  Import: "Import",
+  CentreName: "Centre Name",
   TempODAgainstConfirmation: "Temporary OD Against Confirmation",
   Defination: "Defination",
 };

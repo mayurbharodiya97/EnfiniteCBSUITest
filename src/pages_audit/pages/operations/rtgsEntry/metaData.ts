@@ -304,15 +304,15 @@ export const RtgsEntryFormMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
+                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  }
                   : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               TRAN_BAL: {
                 value: returnVal?.TRAN_BAL ?? "",
               },

@@ -468,4 +468,26 @@ export const sp_language_data = {
     "Stock Entry": "Entrada de stock",
     "Inward Clearing Process": "Proceso de compensación interna",
   },
+  // lien Mater
+  ParentType: "Tipo de padre",
+  // Mode Master
+  Mode: "Modo",
+  MinimumNoofJoints: "Número mínimo de juntas",
+  MaximumNoofJoints: "Número mínimo de juntas",
+  // Ac period Mater
+  PeriodName: "Nombre del período",
+  InstNo: "número de pago",
+  InstallmentPeriod: "Período de pago",
+  //bank ifsc code master
+  IFSCCode: "Código IFSC",
+  BankName: "Nombre del banco",
+  Facility: "Facilidad",
+  MICRCode: "Código MICR",
+  BranchName: "Nombre de la sucursal",
+  Add1: "Dirección 1",
+  ContactDetail: "Detalles de contacto",
+  DistrictName: "Nombre del distrito",
+  StateName: "Nombre del estado",
+  Import: "Importación",
+  CentreName: "Nombre del centro"
 };
