@@ -1,4 +1,15 @@
 export const guj_language_data = {
+  //Ornament Type Master
+  OrnamentTypeMaster: "આભૂષણ પ્રકાર માસ્ટર (MST/247)",
+  OrnamentTypeMasterForm: "આભૂષણ પ્રકાર માસ્ટર",
+  CodeisRequired: "કોડ જરૂરી છે",
+  DescriptionisRequired: "વર્ણન જરૂરી છે",
+  MarginisRequired: "માર્જિન જરૂરી છે",
+
+  //Action Taken Master
+  ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
+  ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
+  LegalProcess: "કાનૂની પ્રક્રિયા",
   // GridWrapper
   Search: "શોધો",
   NoDataFound: "કોઈ ડેટા મળ્યો નથી..!",

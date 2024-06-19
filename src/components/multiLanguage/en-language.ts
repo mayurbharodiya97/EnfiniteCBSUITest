@@ -1,6 +1,17 @@
 import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
 
 export const en_language_data = {
+  //For Ornament Type master
+  OrnamentTypeMaster: "Ornament Type Master (MST/247)",
+  OrnamentTypeMasterForm: "Ornament Type Master",
+  CodeisRequired: "Code is Required",
+  DescriptionisRequired: "Description is required",
+  MarginisRequired: "Margin is required",
+
+  //Action Taken Master
+  ActionTakenMaster: "Action Taken Master (MST/145)",
+  ActionTakenMasterForm: "Action Taken Master",
+  LegalProcess: "Legal Process",
   // GridWrapper
   Search: "Search",
   NoDataFound: " No data found..!",

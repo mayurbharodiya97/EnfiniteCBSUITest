@@ -47,28 +47,14 @@ export const getSuitFldStdMstData = async (...reqdata) => {
   }
 };
 
-export const updateActionTakenMasterData = async ({ data: reqdata }) => {
+export const actionTakenMasterDML = async (formdata: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOACTIONTAKENDML",
-    {
-      ...reqdata,
-    }
+    formdata
   );
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const deleteActionTakenMasterData = async (data) => {
-  const { status, message } = await AuthSDK.internalFetcher(
-    "DOACTIONTAKENDML",
-    data
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message);
   }
 };

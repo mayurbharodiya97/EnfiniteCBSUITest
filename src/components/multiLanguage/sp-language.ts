@@ -1,11 +1,20 @@
 export const sp_language_data = {
+  "Margin%": "Margen%",
+  OrnamentTypeMaster: "Maestro de tipos de ornamentos (MST/247)",
+  OrnamentTypeMasterForm: "Maestro de tipos de ornamentos",
+  CodeisRequired: "El código es obligatorio",
+  DescriptionisRequired: "Se requiere descripción",
+  MarginisRequired: "Se requiere margen",
+
+  //Action Taken Master
+  ActionTakenMaster: "Maestro de acción tomada (MST/145)",
+  ActionTakenMasterForm: "Maestro de acción tomada",
+  LegalProcess: "Proceso legal",
   // GridWrapper
   Search: "Buscar",
   NoDataFound: "  Datos no encontrados..!",
-  Add: "Agregar",
   export: "exportar",
   Export: "Exportar",
-  Delete: "Borrar",
 
   // Message box
   DeleteData: "¿Está seguro de eliminar la fila seleccionada...?",
@@ -27,7 +36,6 @@ export const sp_language_data = {
   Code: "Código",
   EntryDescriptionMaster: "Entrada Descripción Maestro MST/067",
   ParentType: "Tipo de padre",
-  Description: "Descripción",
   EnterDescription: "Ingresar descripción",
 
   // MST/097
@@ -46,7 +54,6 @@ export const sp_language_data = {
   // MST/146
   CourtMaster: "Maestro de la Corte (MST/146)",
   CourtName: "Nombre del tribunal",
-  PinCode: "Código PIN",
   Address1: "Dirección 1",
   Address2: "Dirección 2",
   Contact1: "Contacto 1",
@@ -132,6 +139,7 @@ export const sp_language_data = {
   //priority master main
   ParentGroup: "GGrupo de padres",
   SubPriority: "Subprioridad",
+  Description: "Descripción",
   SanctionFromLimit: "Sanción desde límite",
   SanctionToLimit: "Sanción para limitar",
   ProvisionSecured: "Provisión % asegurada",
@@ -140,6 +148,9 @@ export const sp_language_data = {
   ParentWeaker: "Padre más débil",
   CKYCGroup: "Grupo C-KYC",
   Constitution: "Constitución",
+  PinCode: "Código PIN",
+  Add: "Agregar",
+  Delete: "Borrar",
   // For Biometric
   Biometric: {
     BiometrixAuthentication: "Autenticación Biometrix",

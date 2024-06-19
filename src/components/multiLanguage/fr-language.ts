@@ -1,6 +1,18 @@
 import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
 
 export const fr_language_data = {
+  // Ornament Type Master
+  "Margin%": "Marge%",
+  OrnamentTypeMaster: "Maître du type d’ornement (MST/247)",
+  OrnamentTypeMasterForm: "Maître du type d’ornement",
+  CodeisRequired: "Le code est requis",
+  DescriptionisRequired: "Une description est requise",
+  MarginisRequired: "Une marge est requise",
+
+  //Action Taken Master
+  ActionTakenMaster: "Action entreprise Maître (MST/145)",
+  ActionTakenMasterForm: "Action entreprise Maître",
+  LegalProcess: "Procédure légale",
   // GridWrapper
   Search: "Recherche",
   NoDataFound: " Aucune donnée disponible..!",

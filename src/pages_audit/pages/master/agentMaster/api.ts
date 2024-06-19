@@ -1,9 +1,9 @@
 import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getCategoryMasterGridData = async ({ companyID, branchCode }) => {
+export const getAgentMasterGirdData = async ({ companyID, branchCode }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCATMSTGENDATADISP", {
+    await AuthSDK.internalFetcher("GETAGENTMSTRETRIVE", {
       COMP_CD: companyID,
       BRANCH_CD: branchCode,
     });
@@ -14,10 +14,10 @@ export const getCategoryMasterGridData = async ({ companyID, branchCode }) => {
   }
 };
 
-export const getPMISCData = async (CKYC_CONST_TYPE) => {
+export const getPMISCData = async (AGENT_GROUP) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPMISCDATA", {
-      CATEGORY_CD: CKYC_CONST_TYPE,
+      CATEGORY_CD: AGENT_GROUP,
     });
   if (status === "0") {
     let responseData = data;
@@ -38,24 +38,25 @@ export const getPMISCData = async (CKYC_CONST_TYPE) => {
   }
 };
 
-export const getDDDWAcctType = async (...reqData) => {
+export const getAgentMstConfigDDW = async (...reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDDDWACCTTYPE", {
+    await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
       COMP_CD: reqData?.[3]?.companyID,
       BRANCH_CD: reqData?.[3]?.user?.branchCode,
-      DOC_CD: "MST/050",
-      USER_NAME: reqData?.[3]?.user?.id,
+      CODE: "OTH",
     });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
-        return {
-          ...others,
-          value: ACCT_TYPE,
-          label: ACCT_TYPE + " - " + TYPE_NM,
-        };
-      });
+      responseData = responseData?.map(
+        ({ TRAN_CD, DESCRIPTION, ...others }) => {
+          return {
+            ...others,
+            value: TRAN_CD,
+            label: DESCRIPTION,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -63,9 +64,34 @@ export const getDDDWAcctType = async (...reqData) => {
   }
 };
 
-export const categoryMasterDML = async (formData: any) => {
+export const getAgentMstConfigPigmyDDW = async (...reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAGENTMSTCONFIGPIGMYDDW", {
+      COMP_CD: reqData?.[3]?.companyID,
+      BRANCH_CD: reqData?.[3]?.user?.branchCode,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData?.map(
+        ({ DESCRIPTION, TRAN_CD, ...others }) => {
+          return {
+            ...others,
+            value: TRAN_CD,
+            label: DESCRIPTION,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const agentMasterDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "CATEGORYMASTERDML",
+    "AGENTMASTERDML",
     formData
   );
   if (status === "0") {

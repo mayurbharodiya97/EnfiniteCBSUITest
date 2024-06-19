@@ -1,15 +1,15 @@
-import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
-import { ActionTakenMasterGridMetaData } from "./gridMetadata";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
+import { useRef, useCallback, useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTakenMasterFormWrapper } from "./actionTakenMasterForm";
-import { AuthContext } from "pages_audit/auth";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
+import { AgentMasterGridMetaData } from "./gridMetadata";
+import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
 import { ClearCacheContext, queryClient } from "cache";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
+import { AgentMasterFormWrapper } from "./agentMasterForm";
 import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
@@ -17,8 +17,8 @@ const actions: ActionTypes[] = [
     actionName: "add",
     actionLabel: "Add",
     multiple: undefined,
-    alwaysAvailable: true,
     rowDoubleClick: false,
+    alwaysAvailable: true,
   },
   {
     actionName: "view-details",
@@ -34,7 +34,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const ActionTakenMasterGrid = () => {
+export const AgentMasterGrid = () => {
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
   const { getEntries } = useContext(ClearCacheContext);
@@ -42,7 +42,7 @@ export const ActionTakenMasterGrid = () => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const deleteMutation = useMutation(API.actionTakenMasterDML, {
+  const deleteMutation = useMutation(API.agentMasterDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -94,8 +94,8 @@ export const ActionTakenMasterGrid = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getActionTakenMasterGridData", authState?.user?.branchCode], () =>
-    API.getActionTakenMasterGridData({
+  >(["getCategoryMasterGridData", authState?.user?.branchCode], () =>
+    API.getAgentMasterGirdData({
       companyID: authState?.companyID ?? "",
       branchCode: authState?.user?.branchCode ?? "",
     })
@@ -110,7 +110,7 @@ export const ActionTakenMasterGrid = () => {
         });
       }
       queryClient.removeQueries([
-        "getActionTakenMasterGridData",
+        "getCategoryMasterGridData",
         authState?.user?.branchCode,
       ]);
     };
@@ -125,7 +125,7 @@ export const ActionTakenMasterGrid = () => {
   }, [navigate]);
 
   return (
-    <Fragment>
+    <>
       {isError && (
         <Alert
           severity="error"
@@ -135,8 +135,8 @@ export const ActionTakenMasterGrid = () => {
         />
       )}
       <GridWrapper
-        key={"actionTakenMasterGrid"}
-        finalMetaData={ActionTakenMasterGridMetaData as GridMetaDataType}
+        key={"agentMasterGrid"}
+        finalMetaData={AgentMasterGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
@@ -148,7 +148,7 @@ export const ActionTakenMasterGrid = () => {
         <Route
           path="add/*"
           element={
-            <ActionTakenMasterFormWrapper
+            <AgentMasterFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
@@ -159,7 +159,7 @@ export const ActionTakenMasterGrid = () => {
         <Route
           path="view-details/*"
           element={
-            <ActionTakenMasterFormWrapper
+            <AgentMasterFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
@@ -168,6 +168,6 @@ export const ActionTakenMasterGrid = () => {
           }
         />
       </Routes>
-    </Fragment>
+    </>
   );
 };
