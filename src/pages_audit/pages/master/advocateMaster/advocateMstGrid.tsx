@@ -50,7 +50,7 @@ export const AdvocateMstGrid = () => {
           message: "Are you sure to delete selected row?",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -152,6 +152,7 @@ export const AdvocateMstGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />

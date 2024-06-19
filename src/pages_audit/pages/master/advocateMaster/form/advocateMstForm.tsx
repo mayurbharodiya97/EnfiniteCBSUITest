@@ -11,6 +11,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 export const AdvocateMstForm = ({
   isDataChangedRef,
@@ -80,7 +81,7 @@ export const AdvocateMstForm = ({
         message: "Do you want to save this Request?",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({
@@ -91,85 +92,94 @@ export const AdvocateMstForm = ({
   };
 
   const gridValue = gridData?.map((val: any) => val.CODE);
-  const gridCode = gridValue?.filter((val) => !isNaN(val));
-  const incrementCode = gridCode?.length > 0 ? Math.max(...gridCode) + 1 : "";
+  const filterCode = gridValue?.filter((val) => !isNaN(val));
+  const incrementCode =
+    filterCode?.length > 0 ? Math.max(...filterCode) + 1 : "";
   const incrementCodeByOne =
     String(incrementCode)?.length < 5 ? String(incrementCode) : "";
 
   return (
     <>
-      <FormWrapper
-        key={"advocateMstForm" + formMode}
-        metaData={
-          extractMetaData(AdvocateMstFormMetaData, formMode) as MetaDataType
-        }
-        displayMode={formMode}
-        onSubmitHandler={onSubmitHandler}
-        initialValues={
-          formMode === "new"
-            ? { ...rows?.[0]?.data, CODE: incrementCodeByOne }
-            : { ...(rows?.[0]?.data as InitialValuesType) }
-        }
-        formStyle={{
-          background: "white",
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            {formMode === "edit" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("view");
-                  }}
-                  color={"primary"}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            ) : formMode === "new" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            ) : (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("edit");
-                  }}
-                  color={"primary"}
-                >
-                  Edit
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            )}
-          </>
-        )}
-      </FormWrapper>
+      {gridData ? (
+        <FormWrapper
+          key={"advocateMstForm" + formMode}
+          metaData={
+            extractMetaData(AdvocateMstFormMetaData, formMode) as MetaDataType
+          }
+          displayMode={formMode}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={
+            formMode === "new"
+              ? { ...rows?.[0]?.data, CODE: incrementCodeByOne }
+              : { ...(rows?.[0]?.data as InitialValuesType) }
+          }
+          formStyle={{
+            background: "white",
+          }}
+          formState={{
+            gridData: gridData,
+            rows: rows?.[0]?.data,
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              ) : formMode === "new" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    Edit
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
+        </FormWrapper>
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </>
   );
 };
