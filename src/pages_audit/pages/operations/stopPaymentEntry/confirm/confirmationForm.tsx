@@ -126,7 +126,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                       message: "AreYouSureToConfirm",
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
-                      loadingBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
                     });
                     if (buttonName === "Yes") {
                       stopPaymentCfm.mutate({
@@ -153,7 +153,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                         message: "AreYouSureToConfirm",
                         buttonNames: ["No", "Yes"],
                         defFocusBtnName: "Yes",
-                        loadingBtnName: "Yes",
+                        loadingBtnName: ["Yes"],
                       });
                       if (buttonName === "Yes") {
                         stopPaymentCfm.mutate({

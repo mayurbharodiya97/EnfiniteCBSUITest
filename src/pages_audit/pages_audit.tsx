@@ -18,7 +18,8 @@ import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TR
 import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
-const Master = lazy(() => import('./pages/master/master'));
+import Master from "./pages/master/master";
+// import { AccDetailContext } from "./auth";
 
 export const PagesAudit = (props, { columns }) => {
   const location = useLocation();
@@ -88,7 +89,6 @@ export const PagesAudit = (props, { columns }) => {
                   path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
-                <Route path="master/*" element={<Master />} />
 
                 {/* <Route
                   path="branch-selection/*"

@@ -110,7 +110,7 @@ const StockEntryCustom = () => {
               message: t("insertMessage"),
               buttonNames: ["No", "Yes"],
               defFocusBtnName: "Yes",
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
 
             if (res === "Yes") {

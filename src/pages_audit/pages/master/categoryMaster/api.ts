@@ -43,21 +43,19 @@ export const getDDDWAcctType = async (...reqData) => {
     await AuthSDK.internalFetcher("GETDDDWACCTTYPE", {
       COMP_CD: reqData?.[3]?.companyID,
       BRANCH_CD: reqData?.[3]?.user?.branchCode,
-      DOC_CD: "EMST/050",
+      DOC_CD: "MST/050",
       USER_NAME: reqData?.[3]?.user?.id,
     });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData?.map(
-        ({ ACCT_TYPE, DESCRIPTION, ...others }) => {
-          return {
-            ...others,
-            value: ACCT_TYPE,
-            label: ACCT_TYPE,
-          };
-        }
-      );
+      responseData = responseData?.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
+        return {
+          ...others,
+          value: ACCT_TYPE,
+          label: ACCT_TYPE + " - " + TYPE_NM,
+        };
+      });
     }
     return responseData;
   } else {
@@ -65,28 +63,14 @@ export const getDDDWAcctType = async (...reqData) => {
   }
 };
 
-export const updateCategoryMasterData = async ({ data: reqdata }) => {
+export const categoryMasterDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "CATEGORYMASTERDML",
-    {
-      ...reqdata,
-    }
+    formData
   );
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const deleteCategoryMasterData = async (data) => {
-  const { status, message } = await AuthSDK.internalFetcher(
-    "CATEGORYMASTERDML",
-    data
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message);
   }
 };

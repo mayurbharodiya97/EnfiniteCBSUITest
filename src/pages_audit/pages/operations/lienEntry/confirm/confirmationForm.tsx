@@ -98,7 +98,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                       message: t("AreYouSureToConfirm"),
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
-                      loadingBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
                     });
                     if (buttonName === "Yes") {
                       lienConfirm.mutate({
@@ -134,7 +134,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                     //     message: t("AreYouSureToConfirm"),
                     //     buttonNames: ["No", "Yes"],
                     //     defFocusBtnName: "Yes",
-                    //     loadingBtnName: "Yes",
+                    //     loadingBtnName: ["Yes"],
                     //   });
                     //   if (buttonName === "Yes") {
                     //     lienConfirm.mutate({

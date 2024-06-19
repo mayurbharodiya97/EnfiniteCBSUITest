@@ -17,29 +17,14 @@ export const getOrnamentTypeMasterGirdData = async ({
   }
 };
 
-export const updateOrnamentTypeMasterData = async ({ data: reqdata }) => {
+export const ornamentTypeMasterDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOORNAMTYPMSTDATA",
-    {
-      ...reqdata,
-    }
+    formData
   );
-
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const deleteOrnamentTypeMasterData = async (data) => {
-  const { status, message } = await AuthSDK.internalFetcher(
-    "DOORNAMTYPMSTDATA",
-    data
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message);
   }
 };

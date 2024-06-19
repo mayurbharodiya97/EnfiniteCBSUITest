@@ -81,7 +81,7 @@ const StopPaymentEntryCustom = () => {
               message: "InsertStopPaymentMsg",
               buttonNames: ["No", "Yes"],
               defFocusBtnName: "Yes",
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
               console.log("<<<insertReq", insertReq, reqDataRef);

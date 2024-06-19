@@ -68,7 +68,7 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
         Flag === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
       buttonNames: ["No", "Yes"],
       defFocusBtnName: "Yes",
-      loadingBtnName: "Yes",
+      loadingBtnName: ["Yes"],
     });
     if (buttonName === "Yes") {
       tempODConfirm.mutate({

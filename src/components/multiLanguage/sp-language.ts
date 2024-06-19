@@ -1,4 +1,104 @@
 export const sp_language_data = {
+  "Margin%": "Margen%",
+  OrnamentTypeMaster: "Maestro de tipos de ornamentos (MST/247)",
+  OrnamentTypeMasterForm: "Maestro de tipos de ornamentos",
+  CodeisRequired: "El código es obligatorio",
+  DescriptionisRequired: "Se requiere descripción",
+  MarginisRequired: "Se requiere margen",
+
+  //Action Taken Master
+  ActionTakenMaster: "Maestro de acción tomada (MST/145)",
+  ActionTakenMasterForm: "Maestro de acción tomada",
+  LegalProcess: "Proceso legal",
+  // GridWrapper
+  Search: "Buscar",
+  NoDataFound: "  Datos no encontrados..!",
+  export: "exportar",
+  Export: "Exportar",
+
+  // Message box
+  DeleteData: "¿Está seguro de eliminar la fila seleccionada...?",
+  SaveData: "¿Quieres guardar esta Solicitud...?",
+  Confirmation: "Confirmación",
+  Ok: "De acuerdo",
+  Yes: "Sí",
+  NO: "No",
+  Accept: "Aceptar",
+  Decline: "Rechazar",
+
+  // FormWrapper
+  mode: "modo",
+  edit: "editar",
+  view: "vista",
+  new: "nuevo",
+
+  // MST/067
+  Code: "Código",
+  EntryDescriptionMaster: "Entrada Descripción Maestro MST/067",
+  ParentType: "Tipo de padre",
+  EnterDescription: "Ingresar descripción",
+
+  // MST/097
+  SecurityType: "Tipo de seguridad",
+  InsuranceTypeMaster: "Maestro de tipos de seguro (MST/097)",
+
+  // MST/052
+  NPACategoryMaster: "Maestro de categoría NPA (MST/052)",
+  Parent: "Madre",
+  ProvisionSecureRate: "Provisión de tarifa segura",
+  ProvisionUnSecureRate: "Provisión de tarifa no segura",
+  AssetClassificationCode: "Código de clasificación de activos A5",
+  CalculatePenalInterestOn: "Calcular el interés penal",
+  EnterName: "Ingrese su nombre",
+
+  // MST/146
+  CourtMaster: "Maestro de la Corte (MST/146)",
+  CourtName: "Nombre del tribunal",
+  Address1: "Dirección 1",
+  Address2: "Dirección 2",
+  Contact1: "Contacto 1",
+  Contact2: "Contacto 2",
+  Contact3: "Contacto 3",
+  EnterCode: "Introduzca el código",
+  EnterCourtName: "Ingrese el nombre de la corte",
+  EnterPinCode: "Ingrese el código PIN",
+  EnterAddress: "Ingresa la direccion",
+  EnterContactNumber: "Ingrese el número de contacto",
+
+  // Report
+  CreditCount: "Recuento de créditos",
+  DebitCount: "Recuento de débitos",
+  ACNumber: "Número de cuenta",
+  ACHolder: "Titular de la cuenta",
+  ChequeNo: "Número de cheque",
+  Debit: "Débito",
+  Credit: "Crédito",
+  TrBranch: "Tr.Rama",
+  EntryTime: "Hora de entrada",
+  ExpandRows: "Ampliar filas",
+  showFilters: "mostrar filtros",
+  ClearFilter: "Filtro claro",
+
+  // Branch Selection screen
+  Back: "Atrás",
+  Proceed: "Proceder",
+  AccessBranchList: "Acceder a la lista de sucursales",
+  BranchCode: "Código de sucursal",
+  BranchName: "Nombre de la sucursal",
+  Status: "Estado",
+  BeginTime: "Hora de inicio",
+  EndTime: "Hora de finalización",
+
+  // General
+  ViewDetails: "Ver Detalle",
+  Searchscreen: "Pantalla de búsqueda",
+  records: " registros",
+  searchPlaceholder: "registros",
+  Edit: "Editar",
+  ConfirmedCount: "Recuento confirmado",
+  RejectedCount: "Recuento rechazado",
+  PendingCount: "Conteo Pendiente",
+
   Loading: "Cargando..",
   SignIn: "Iniciar sesión",
   SignInWithUserIDandPassword: "Proporcione su ID de usuario y contraseña",
@@ -36,6 +136,21 @@ export const sp_language_data = {
     Back: "Atrás",
     VerifyOTP: "Verificar OTP",
   },
+  //priority master main
+  ParentGroup: "GGrupo de padres",
+  SubPriority: "Subprioridad",
+  Description: "Descripción",
+  SanctionFromLimit: "Sanción desde límite",
+  SanctionToLimit: "Sanción para limitar",
+  ProvisionSecured: "Provisión % asegurada",
+  ProvisionUnSecured: "Provisión % no garantizada",
+  ViewDetail: "Ver Detalle",
+  ParentWeaker: "Padre más débil",
+  CKYCGroup: "Grupo C-KYC",
+  Constitution: "Constitución",
+  PinCode: "Código PIN",
+  Add: "Agregar",
+  Delete: "Borrar",
   // For Biometric
   Biometric: {
     BiometrixAuthentication: "Autenticación Biometrix",
@@ -360,4 +475,24 @@ export const sp_language_data = {
     "Stock Entry": "Entrada de stock",
     "Inward Clearing Process": "Proceso de compensación interna",
   },
+  // lien Mater
+  // Mode Master
+  Mode: "Modo",
+  MinimumNoofJoints: "Número mínimo de juntas",
+  MaximumNoofJoints: "Número mínimo de juntas",
+  // Ac period Mater
+  PeriodName: "Nombre del período",
+  InstNo: "número de pago",
+  InstallmentPeriod: "Período de pago",
+  //bank ifsc code master
+  IFSCCode: "Código IFSC",
+  BankName: "Nombre del banco",
+  Facility: "Facilidad",
+  MICRCode: "Código MICR",
+  Add1: "Dirección 1",
+  ContactDetail: "Detalles de contacto",
+  DistrictName: "Nombre del distrito",
+  StateName: "Nombre del estado",
+  Import: "Importación",
+  CentreName: "Nombre del centro"
 };

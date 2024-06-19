@@ -1,7 +1,7 @@
 export const NpaCategoryMasterFormMetadata = {
   form: {
     name: "npaCategoryMaster",
-    label: "NPA Category Master",
+    label: "NPACategoryMaster",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -46,13 +46,36 @@ export const NpaCategoryMasterFormMetadata = {
       label: "Code",
       required: true,
       maxLength: 4,
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       __EDIT__: { isReadOnly: true },
+      __NEW__: { isFieldFocused: true },
 
-      validate: (columnValue) => {
+      validate: (columnValue, ...rest) => {
         let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
           return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
         }
         return "";
       },
@@ -67,7 +90,6 @@ export const NpaCategoryMasterFormMetadata = {
           },
         ],
       },
-      isFieldFocused: true,
       GridProps: {
         xs: 12,
         sm: 6,
@@ -113,12 +135,35 @@ export const NpaCategoryMasterFormMetadata = {
       label: "Name",
       required: true,
       maxLength: 100,
-      placeholder: "Enter Name",
+      placeholder: "EnterName",
       txtTransform: "uppercase",
-      validate: (columnValue) => {
+      __EDIT__: { isFieldFocused: true },
+      validate: (columnValue, ...rest) => {
         let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
           return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
         }
         return "";
       },
@@ -140,7 +185,7 @@ export const NpaCategoryMasterFormMetadata = {
         componentType: "select",
       },
       name: "ASSET_CLS_CD",
-      label: "A5 asset Classification Code",
+      label: "AssetClassificationCode",
       defaultOptionLabel: "Select option",
       __VIEW__: {
         SelectProps: { IconComponent: () => null },
@@ -165,7 +210,7 @@ export const NpaCategoryMasterFormMetadata = {
         componentType: "select",
       },
       name: "PENAL_ON_OD_OS",
-      label: "Calculate Penal Interest On",
+      label: "CalculatePenalInterestOn",
       __VIEW__: {
         SelectProps: { IconComponent: () => null },
       },
@@ -187,7 +232,7 @@ export const NpaCategoryMasterFormMetadata = {
         componentType: "rateOfIntWithoutValidation",
       },
       name: "SECURE_PROV_PERC",
-      label: "Provision Secure Rate",
+      label: "ProvisionSecureRate",
       placeholder: "Enter Provision Secure Rate",
       defaultValue: "0",
       fullWidth: true,
@@ -201,7 +246,7 @@ export const NpaCategoryMasterFormMetadata = {
         componentType: "rateOfIntWithoutValidation",
       },
       name: "UNSECURE_PROV_PERC",
-      label: "Provision Un-Secure Rate",
+      label: "ProvisionUnSecureRate",
       placeholder: "Enter Provision Un-Secure Rate",
       defaultValue: "0",
       fullWidth: true,

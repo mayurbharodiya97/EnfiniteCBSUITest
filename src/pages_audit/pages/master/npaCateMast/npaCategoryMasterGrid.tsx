@@ -1,24 +1,18 @@
 import { ClearCacheContext, queryClient } from "cache";
 import { Alert } from "components/common/alert";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { usePopupContext } from "components/custom/popupContext";
 import { ActionTypes } from "components/dataTable";
 import { GridMetaDataType } from "components/dataTable/types";
 import GridWrapper from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useQuery } from "react-query";
+import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
+import { useMutation, useQuery } from "react-query";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { NpaCategoryMasterGridMetaData } from "./gridMetadata";
 import { NpaCategoryMasterWrapper } from "./viewDetails/npaCategoryMasterForm";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -30,7 +24,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -41,19 +35,51 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
   },
 ];
+
 export const NpaCategoryMasterGrid = () => {
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
   const isDeleteDataRef = useRef<any>(null);
-  const [isDelete, setDelete] = useState(false);
+  const { t } = useTranslation();
+
+  const deleteMutation = useMutation(API.updateNpaCategoryMasterData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar("Records successfully deleted", {
+        variant: "success",
+      });
+      CloseMessageBox();
+      refetch();
+    },
+  });
 
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
-        setDelete(true);
+        const btnName = await MessageBox({
+          message: "DeleteData",
+          messageTitle: "Confirmation",
+          buttonNames: [t("Yes"), t("NO")],
+          loadingBtnName: ["Yes"],
+        });
+        if (btnName === t("Yes")) {
+          deleteMutation.mutate({
+            data: { ...isDeleteDataRef.current?.data, _isDeleteRow: true },
+          });
+        }
       } else if (data?.name === "add") {
         navigate(data?.name, {
           state: [],
@@ -75,14 +101,9 @@ export const NpaCategoryMasterGrid = () => {
       branchCode: authState?.user?.branchCode ?? "",
     })
   );
+
   useEffect(() => {
     return () => {
-      let entries = getEntries() as any[];
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach((one) => {
-          queryClient.removeQueries(one);
-        });
-      }
       queryClient.removeQueries([
         "getNpaCategoryMasterGridData",
         authState?.user?.branchCode,
@@ -93,17 +114,11 @@ export const NpaCategoryMasterGrid = () => {
   const handleDialogClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
       refetch();
       isDataChangedRef.current = false;
     }
   }, [navigate]);
-
-  const onAcceptDelete = (rows) => {
-    setDelete(false);
-    enqueueSnackbar("Records successfully deleted", {
-      variant: "success",
-    });
-  };
 
   return (
     <Fragment>
@@ -134,6 +149,7 @@ export const NpaCategoryMasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
+              gridData={data}
             />
           }
         />
@@ -144,21 +160,11 @@ export const NpaCategoryMasterGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />
       </Routes>
-
-      {isDelete ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Are you sure to delete selected row?"
-          onActionYes={(rows) => onAcceptDelete(rows)}
-          onActionNo={() => setDelete(false)}
-          rows={isDeleteDataRef.current}
-          open={isDelete}
-        />
-      ) : null}
     </Fragment>
   );
 };

@@ -110,7 +110,7 @@ const LimitEntryCustom = () => {
               message: "DoYouWantToSaveThisData",
               buttonNames: ["No", "Yes"],
               defFocusBtnName: "Yes",
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
               crudLimitData.mutate(apiReq);
@@ -126,7 +126,7 @@ const LimitEntryCustom = () => {
               message: data?.[0]?.O_MESSAGE,
               buttonNames: ["No", "Yes"],
               defFocusBtnName: "Yes",
-              loadingBtnName: "Yes",
+              loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
               crudLimitData.mutate(apiReq);

@@ -744,6 +744,30 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
+  const getCommTypeList = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DESCRIPTION, TRAN_CD, ...other }) => {
+            return {
+              value: TRAN_CD,
+              label: DESCRIPTION,
+              ...other,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -774,6 +798,7 @@ const GeneralAPISDK = () => {
     getAccNoValidation,
     get_Account_Type,
     getChequeNoValidation,
+    getCommTypeList,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

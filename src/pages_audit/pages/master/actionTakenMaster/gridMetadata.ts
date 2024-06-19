@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ActionTakenMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "Action Taken Master (EMST/145)",
+    gridLabel: "ActionTakenMaster",
     rowIdColumn: "ACTION_TAKEN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -26,7 +26,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -54,7 +54,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LEGAL_PROCESS",
-      columnName: "Legal Process",
+      columnName: "LegalProcess",
       sequence: 4,
       alignment: "left",
       componentType: "editableCheckbox",

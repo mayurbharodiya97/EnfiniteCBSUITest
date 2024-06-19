@@ -53,7 +53,7 @@ export const MyAppBar = ({
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const logos = useLogoPics();
-  const classes = useStyles({ isNewStyle });
+  const classes = useStyles();
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<any>(false);
   const [acctInquiry, setAcctInquiry] = useState(false);
@@ -168,7 +168,7 @@ export const MyAppBar = ({
               display: "flex",
               justifyContent: "space-evenly",
               alignItems: "center",
-              height: isNewStyle ? "57px" : "80px",
+              height:  "80px",
               width: "227px",
             }}
           >
