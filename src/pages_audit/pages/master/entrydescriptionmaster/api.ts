@@ -13,3 +13,16 @@ export const getEntryDescMasterGridData = async (reqData: any) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const updateEntryDescMasterData = async ({ data: reqdata }) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOSPECIALINSTMST",
+    {
+      ...reqdata,
+    }
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

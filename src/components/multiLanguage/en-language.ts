@@ -1,6 +1,87 @@
 import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
 
 export const en_language_data = {
+  // GridWrapper
+  Search: "Search",
+  NoDataFound: " No data found..!",
+  export: "export",
+  Export: "Export",
+
+  // Message box
+  DeleteData: "Are you sure to delete selected row...?",
+  SaveData: "Do you want to save this Request...?",
+  Confirmation: "Confirmation",
+  NO: "No",
+  Accept: "Accept",
+  Decline: "Decline",
+
+  // FormWrapper
+  mode: "mode",
+  edit: "edit",
+  view: "view",
+  new: "new",
+
+  // MST/067
+  Code: "Code",
+  EntryDescriptionMaster: "Entry Description Master MST/067",
+  ParentType: "Parent Type",
+  EnterDescription: "Enter Description",
+
+  // MST/097
+  InsuranceTypeMaster: "Insurance Type Master (MST/097)",
+
+  // MST/052
+  NPACategoryMaster: "NPA Category Master (MST/052)",
+  ProvisionSecureRate: "Provision Secure Rate",
+  ProvisionUnSecureRate: "Provision Un-Secure Rate",
+  AssetClassificationCode: "A5 Asset Classification Code",
+  CalculatePenalInterestOn: "Calculate Penal Interest On",
+  EnterName: "Enter Name",
+
+  // MST/146
+  CourtMaster: "Court Master (MST/146)",
+  CourtName: "Court Name",
+  Address1: "Address 1",
+  Address2: "Address 2",
+  Contact1: "Contact 1",
+  Contact2: "Contact 2",
+  Contact3: "Contact 3",
+  EnterCode: "Enter Code",
+  EnterCourtName: "Enter Court Name",
+  EnterPinCode: "Enter Pin Code",
+  EnterAddress: "Enter Address",
+  EnterContactNumber: "Enter Contact Number",
+
+  // Report
+  CreditCount: "Credit Count",
+  DebitCount: "Debit Count",
+  ACNumber: "A/C Number",
+  ACHolder: "A/C Holder",
+  Debit: "Debit",
+  Credit: "Credit",
+  TrBranch: "Tr.Branch",
+  EntryTime: "Entry Time",
+  ExpandRows: "Expand Rows",
+  showFilters: "show Filters",
+  ClearFilter: "Clear Filter",
+
+  // Branch Selection screen
+  Back: "Back",
+  Proceed: "Proceed",
+  AccessBranchList: "Access Branch List",
+  BranchName: "Branch Name",
+  BeginTime: "Begin Time",
+  EndTime: "End Time",
+
+  // General
+  ViewDetails: "View Detail",
+  Searchscreen: "Search screen",
+  searchPlaceholder: "records",
+  Edit: "Edit",
+  ConfirmedCount: "Confirmed Count",
+  RejectedCount: "Rejected Count",
+  PendingCount: "Pending Count",
+
   //for priority master main
   ParentGroup:"Parent Group",
   SubPriority:"Sub Priority",
@@ -15,7 +96,6 @@ export const en_language_data = {
   FROMLIMIT:"FROM LIMIT",
   TOLIMIT:"TO LIMIT",
   
-  //
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
@@ -84,7 +164,6 @@ export const en_language_data = {
     Personalizedashboard: "Personalize dashboard",
     Searchin: "Search in",
     screens: "screens",
-    records: "records",
   },
   // For Profile in User Profile
   UserId: "User Id",
