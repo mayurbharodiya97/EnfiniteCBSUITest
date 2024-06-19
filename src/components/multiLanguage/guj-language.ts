@@ -1,4 +1,109 @@
 export const guj_language_data = {
+  //Ornament Type Master
+  OrnamentTypeMaster: "આભૂષણ પ્રકાર માસ્ટર (MST/247)",
+  OrnamentTypeMasterForm: "આભૂષણ પ્રકાર માસ્ટર",
+  CodeisRequired: "કોડ જરૂરી છે",
+  DescriptionisRequired: "વર્ણન જરૂરી છે",
+  MarginisRequired: "માર્જિન જરૂરી છે",
+
+  //Action Taken Master
+  ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
+  ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
+  LegalProcess: "કાનૂની પ્રક્રિયા",
+  // GridWrapper
+  Search: "શોધો",
+  NoDataFound: "કોઈ ડેટા મળ્યો નથી..!",
+  ViewDetails: "વિગતો જુઓ",
+  export: "નિકાસ કરો",
+  Export: "નિકાસ કરો",
+
+  // Message box
+  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો...?",
+  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો...?",
+  Confirmation: "પુષ્ટિકરણ",
+
+  // FormWrapper
+  mode: "મોડ",
+  edit: "સંપાદન / સુધારા",
+  view: "દૃશ્ય",
+  new: "નવો",
+
+  // MST/067
+  EntryDescriptionMaster: "પ્રવેશ વર્ણન માસ્ટર MST/067",
+  ParentType: "પિતૃ વર્ગ",
+  EnterDescription: "વર્ણન દાખલ કરો",
+
+  // MST/097
+  InsuranceTypeMaster: "વીમા પ્રકાર માસ્ટર MST/097",
+
+  // MST/052
+  NPACategoryMaster: "NPA કેટેગરી માસ્ટર MST/052",
+  Parent: "પિતૃ",
+  ProvisionSecureRate: "જોગવાઈ સુરક્ષિત દર",
+  ProvisionUnSecureRate: "જોગવાઈ અસુરક્ષિત દર",
+  AssetClassificationCode: "A5 સંપત્તિ વર્ગીકરણ કોડ",
+  CalculatePenalInterestOn: "દંડાત્મક વ્યાજની ગણત્રી",
+  EnterName: "નામ દાખલ કરો",
+
+  // MST/146
+  CourtMaster: "કોર્ટ માસ્ટર (MST/146)",
+  CourtName: "કોર્ટનું નામ",
+  Area: "વિસ્તાર",
+  District: "જિલ્લો",
+  State: "રાજ્ય",
+  Country: "દેશ",
+  Address1: "સરનામું 1",
+  Address2: "સરનામું 2",
+  Contact1: "સંપર્ક 1",
+  Contact2: "સંપર્ક 2",
+  Contact3: "સંપર્ક 3",
+  EnterCode: "કોડ દાખલ કરો",
+  EnterCourtName: "કોર્ટનું નામ દાખલ કરો",
+  EnterPinCode: "પિન કોડ દાખલ કરો",
+  EnterAddress: "સરનામું દાખલ કરો",
+  EnterContactNumber: "સંપર્ક નંબર દાખલ કરો",
+
+  // Report
+  CreditCount: "ક્રેડિટ ગણતરી",
+  DebitCount: "ડેબિટ ગણતરી",
+  ACNumber: "ખાતા નં.",
+  ACHolder: "ખાતા ધારક",
+  Debit: "ઉધાર",
+  Credit: "જમા",
+  TrBranch: "ટીઆર શાખા",
+  EntryTime: "પ્રવેશ સમય",
+  ExpandRows: "વિસ્તરણ",
+  showFilters: "ફિલ્ટર્સ બતાવો",
+  ClearFilter: "ફિલ્ટર સાફ કરો",
+
+  // Branch Selection screen
+  Back: "પાછા જાવ",
+  Proceed: "આગળ વધો",
+  AccessBranchList: "ઍક્સેસ શાખા યાદી",
+  BranchName: "શાખાનું નામ",
+  BeginTime: "શરૂઆતનો સમય",
+  EndTime: "સમાપ્તિ સમય",
+
+  // Common MessageBox popup
+  NO: "ના",
+  Accept: "સ્વીકારો",
+  Decline: "નકારો",
+
+  // Priority master main
+  Code: "કોડ",
+  ParentGroup: "પિતૃ જૂથ",
+  SubPriority: "સબ પ્રાયોરિટી",
+  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
+  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
+  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
+  ParentWeaker: "પેરેંટ વેકર",
+  CKYCGroup: "C-KYC ગ્રુપ",
+  Constitution: "બંધારણ",
+  PinCode: "પીન કોડ",
+  City: "શહેર",
+  ParentArea: "પિતૃ વિસ્તાર",
+
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:
@@ -24,6 +129,7 @@ export const guj_language_data = {
   Next: "આગળ",
   backtologin: "લોગિન પર પાછા",
   Save: "સાચવો",
+  Edit: "સુધારો",
 
   // For OTP Verify
   otp: {
@@ -143,6 +249,11 @@ export const guj_language_data = {
   SDC: "એસડીસી",
   Maker: "નિર્માતા",
   Checker: "તપાસનાર",
+
+  ConfirmedCount: "પુષ્ટિ થયેલ ગણતરી",
+  RejectedCount: "નકારવામાં આવેલ ગણતરી",
+  PendingCount: "બાકી ગણતરી",
+
   CircularType: "પરિપત્ર પ્રકાર",
   Number: "નં.",
   OpenDate: "તારીખ ખોલો",
@@ -202,42 +313,50 @@ export const guj_language_data = {
     Role: "ભૂમિકા",
     LastUnsuccessfulLogin: "છેલ્લું અસફળ લૉગિન",
   },
-  // Account Inquiry
+
+  // Account Inquiry AND cutomer/account searching (customer 360)
   AccountInquiry: "ખાતા તપાસ",
+  AccountDetails: "ખાતાની વિગતો",
   CustomerDetail: "ગ્રાહક વિગતો",
-  AccountNo: "ખાતા નં.",
-  PanNo: "પાન નં.",
+  AccountNo: "ખાતા નંબર",
+  PAN_NO: "પાન નં",
+  Account_Name: "ખાતાનું નામ",
   Retrieve: "મેળવો",
-  AccountPersonName: "ખાતા/વ્યક્તિનું નામ",
+  AcctHolderType: "ખાતા ધારકનો પ્રકાર",
   OpeningDate: "ખુલવાની તારીખ",
   CloseDate: "બંધ તારીખ",
+  WithdrawBalance: "ખેંચી શકાય બેલેન્સ",
+  SearchCriteriaData: "શોધ માપદંડ ડેટા",
+  PleaseEnterAnyValue: "કૃપા કરીને કોઈપણ મૂલ્ય દાખલ કરો",
+  TotalNoOfRecords: "કુલ રેકોર્ડની સંખ્યા:",
+  //Account Inquiry => Passbook/Statement Print Option
 
-  // Passbook/Statement Print Option
-
-  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિન્ટ વિકલ્પ",
+  PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
   ToDate: "તારીખ સુધી",
   FromDate: "તારીખ થી",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
-  FirstPage: "પહેલું પાનું",
+  FirstPage: "પ્રથમ પાનું",
   Detail: "વિગત",
-  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે.",
+  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે",
   newPasswordCantbeSameasOldPassword:
-    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ.",
+    "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ",
   NewPasswordandConfirmPassworddidnotmatched:
-    " નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
-
+    "નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
   CustomerIDisrequired: "ગ્રાહક આઈડી જરૂરી છે",
   CustomerIDShouldNotBeLessThan12Digits:
     "ગ્રાહક આઈડી 12 અંક કરતા ઓછો ન હોવો જોઈએ",
-
-  EnterAccountType: "એકાઉન્ટ પ્રકાર દાખલ કરો.",
+  EnterAccountType: "ખાતા પ્રકાર દાખલ કરો.",
   ModeOfOperation: "ઓપરેશન મોડ",
   GetDetails: "વિગતો મેળવો",
+  EnterAcNo: "ખાતા નં. દાખલ કરો",
 
-  EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
+  //Account Inquiry => Dependencies
+
+  Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
+  Account_Status: "ખાતા સ્થિતિ",
 
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
@@ -412,11 +531,13 @@ export const guj_language_data = {
   DepositeDate: "જમા તારીખ",
   CertificateNumber: "પ્રમાણપત્ર નંબર",
   CollateralName: "કોલેટરલ નામ",
+  EnterCollateralName: "કોલેટરલ નામ દાખલ કરો",
   CollateralAmount: "કોલેટરલ રકમ",
   CollateralRate: "કોલેટરલ દર%",
   IssueCompany: "ઇશ્યુ કંપની",
   MaturedAmount: "પરિપક્વ રકમ",
   PeriodNumber: "પીરિયડ નંબર",
+  Period: "પીરિયડ",
   RegistrationNumber: "નોંધણી નંબર",
   LienYesNo: "લિયન હા ના",
   RemovalRemarksLimit: "લિમિટ એન્ટ્રી (ETRN/046) માટે રીમુવલ રીમાર્કસ દાખલ કરો",
@@ -432,6 +553,10 @@ export const guj_language_data = {
   OtherDescription: "અન્ય વર્ણન",
   ExpiredFlag: "સમાપ્ત થયેલ ફ્લેગ",
   ResolutionNumber: "રિઝોલ્યુશન નંબર",
+  SecurityDetail: "સુરક્ષા વિગતો",
+  SecurityType: "સુરક્ષા પ્રકાર",
+  CollateralRemarks: "કોલેટરલ ટિપ્પણી",
+  AreYouSureToFutureLimit: "શું તમે ભવિષ્યની મર્યાદા દાખલ કરવા માટે ચોક્કસ છો?",
 
   // stop payment
 
@@ -496,6 +621,7 @@ export const guj_language_data = {
   StockAsonDate: "સ્ટોક એસોન તારીખ",
   Active: "સક્રિય",
   InvalidDeleteOperation: "અમાન્ય ડિલીટ ઓપરેશન",
+  AreYouSureToWithdrawShare: "શું તમે શેરો પાછા ખેંચવા માટે ચોક્કસ છો ?",
 
   // lien Entry
 
@@ -542,7 +668,31 @@ export const guj_language_data = {
   CodeDecription: "કોડ વર્ણન",
   ForceExpDate: "ફોર્સ એક્સપાયર તારીખ",
   ForceExpBy: "દ્વારા ફોર્સ એક્સપાયર",
-  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસ",
+  TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+  // lien Master
+  // Mode Master
+  Mode: "મોડ",
+  MinimumNoofJoints: "સાંધાઓની ન્યૂનતમ સંખ્યા",
+  MaximumNoofJoints: "સાંધાઓની મહત્તમ સંખ્યા",
+  // Ac period Mater
+  PeriodName: "પીરિયડનું નામ",
+  InstNo: "હપ્તા નં.",
+  InstallmentPeriod: "હપ્તાનો સમયગાળો",
+  // Bank ifsc code master
+  IFSCCode: "IFSC કોડ",
+  BankName: "બેંકનું નામ",
+  Facility: "સુવિધા",
+  MICRCode: "MICR કોડ",
+  Add1: "સરનામું 1",
+  ContactDetail: "સંપર્ક વિગતો",
+  DistrictName: "જિલ્લાનું નામ",
+  StateName: "રાજ્યનું નામ",
+  Import: "આયાત",
+  CentreName: "કેન્દ્રનું નામ",
+  TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
+  Defination: "વ્યાખ્યા",
 };
+
+

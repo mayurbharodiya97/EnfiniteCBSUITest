@@ -38,7 +38,7 @@ export const useStyles = makeStyles((theme: any) => ({
     position: "relative",
     boxShadow: theme.shadows[3],
     // marginBottom: "10px",
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
     // marginBottom: theme.spacing(3.5),
   },
 
@@ -136,4 +136,9 @@ export const useStyles = makeStyles((theme: any) => ({
       marginTop: "0px",
     },
   },
+  arrayFieldSelected: {
+    padding: "8px 0px 0px 8px",
+    background: "var(--theme-color4)",
+  },
+  arrayFieldUnselected: {},
 }));

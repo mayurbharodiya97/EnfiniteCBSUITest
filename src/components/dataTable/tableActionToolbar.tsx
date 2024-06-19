@@ -43,6 +43,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   singleActions,
   setGridAction,
   submitButtonRef,
+  hideActionBar,
 }) => {
   const classes = useStyles();
   const selectedCount = selectedFlatRows.length;
@@ -58,7 +59,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   if (typeof setGridAction !== "function") {
     setGridAction = () => {};
   }
-  return (
+  return !hideActionBar ? (
     <Toolbar
       className={clsx(classes.root, classes.highlight)}
       variant={dense ? "dense" : "regular"}
@@ -92,7 +93,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
         />
       ) : null}
     </Toolbar>
-  );
+  ) : null;
 };
 
 //@ts-ignore

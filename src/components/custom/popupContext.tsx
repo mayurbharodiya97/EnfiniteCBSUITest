@@ -19,7 +19,7 @@ type TMessage = {
   buttonNames: TButtonName[];
   callBack?: Function;
   defFocusBtnName?: string;
-  loadingBtnName?: string;
+  loadingBtnName?: string[];
 };
 
 type TMessageBoxParams = {
@@ -28,7 +28,7 @@ type TMessageBoxParams = {
   icon?: TIcon;
   buttonNames?: TButtonName[];
   defFocusBtnName?: string;
-  loadingBtnName?: string;
+  loadingBtnName?: string[];
 };
 
 type TPopupContextType = {
@@ -44,7 +44,7 @@ const initialMessage: TMessage = {
   icon: "INFO",
   buttonNames: ["Ok"],
   defFocusBtnName: "",
-  loadingBtnName: "",
+  loadingBtnName: [""],
 };
 
 const initialContext: TPopupContextType = {
@@ -60,14 +60,14 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [message, setMessage] = useState<TMessage>(initialMessage);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [loadingBtn, setLoadingBtn] = useState<any>();
   const MessageBox = ({
     messageTitle,
     message,
     icon = "INFO",
     buttonNames = ["Ok"],
     defFocusBtnName = "",
-    loadingBtnName = "",
+    loadingBtnName = [""],
   }: TMessageBoxParams) => {
     setIsLoading(false);
     return new Promise((resolve) => {
@@ -79,8 +79,13 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
         buttonNames,
         callBack: (buttonName: TButtonName) => {
           resolve(buttonName);
-          if (loadingBtnName === buttonName) {
+          const finalLoading = loadingBtnName?.find(
+            (btnNm) => btnNm === buttonName
+          );
+
+          if (finalLoading) {
             setIsLoading(true);
+            setLoadingBtn(finalLoading);
           } else {
             CloseMessageBox();
           }
@@ -111,7 +116,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
             icon={message.icon}
             defFocusBtnName={message.defFocusBtnName}
             loading={isLoading}
-            loadingBtnName={message.loadingBtnName}
+            loadingBtnName={loadingBtn}
           />
         ) : null}
       </>

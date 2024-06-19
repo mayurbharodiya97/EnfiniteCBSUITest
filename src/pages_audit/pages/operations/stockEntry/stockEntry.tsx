@@ -55,7 +55,7 @@ const StockEntryCustom = () => {
   const navigate = useNavigate();
   const myMasterRef = useRef<any>(null);
   const reqDataRef = useRef<any>({});
-  const { insertReq, deleteReq } = reqDataRef.current;
+  const { deleteReq } = reqDataRef.current;
 
   const detailActions: ActionTypes[] = [
     {
@@ -102,27 +102,31 @@ const StockEntryCustom = () => {
     "insertValidate",
     insertValidate,
     {
-      onSuccess: async (data) => {
-        if (data?.[0]?.O_STATUS === "0") {
-          let res = await MessageBox({
-            messageTitle: t("confirmation"),
-            message: t("insertMessage"),
-            buttonNames: ["No", "Yes"],
-            defFocusBtnName: "Yes",
-            loadingBtnName: "Yes",
-          });
+      onSuccess: (data) => {
+        async function insertData() {
+          if (data?.[0]?.O_STATUS === "0") {
+            let res = await MessageBox({
+              messageTitle: t("confirmation"),
+              message: t("insertMessage"),
+              buttonNames: ["No", "Yes"],
+              defFocusBtnName: "Yes",
+              loadingBtnName: ["Yes"],
+            });
 
-          if (res === "Yes") {
-            stockDataCRUD.mutate({
-              ...insertReq,
+            if (res === "Yes") {
+              stockDataCRUD.mutate({
+                ...reqDataRef.current?.insertReq,
+              });
+              CloseMessageBox();
+            }
+          } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
+            MessageBox({
+              messageTitle: t("validationAlert"),
+              message: data?.[0]?.O_MESSAGE,
             });
           }
-        } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
-          MessageBox({
-            messageTitle: t("validationAlert"),
-            message: data?.[0]?.O_MESSAGE,
-          });
         }
+        insertData();
       },
       onError: () => {
         setIsData((old) => ({ ...old, closeAlert: true }));
@@ -133,6 +137,12 @@ const StockEntryCustom = () => {
   const stockDataCRUD: any = useMutation("crudStockData", crudStockData, {
     onSuccess: (data, variables) => {
       if (variables?._isDeleteRow) {
+        if (data?.[0]?.STATUS === "9") {
+          MessageBox({
+            messageTitle: "Alert",
+            message: data?.[0]?.MESSAGE,
+          });
+        }
         setIsData((old) => ({ ...old, isDelete: false }));
         stockEntryGridData.mutate({
           COMP_CD: authState?.companyID,
@@ -146,7 +156,11 @@ const StockEntryCustom = () => {
       } else if (variables?._isNewRow) {
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
-        setIsData((old) => ({ ...old, newFormMTdata: StockEntryMetaData }));
+        setIsData((old) => ({
+          ...old,
+          newFormMTdata: StockEntryMetaData,
+          isVisible: false,
+        }));
       }
     },
     onError: () => {
@@ -171,12 +185,20 @@ const StockEntryCustom = () => {
           state: data?.rows,
         });
       } else if (data.name === "force-view-details") {
-        if (data?.rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y") {
+        let rowData = data?.rows?.[0]?.data;
+        if (rowData?.ALLOW_FORCE_EXPIRE_FLAG === "Y") {
           let res = await MessageBox({
-            messageTitle: t("confirmation"),
-            message: t("forceExpDrawingPowerMSG"),
+            messageTitle:
+              rowData?.PARENT_TYPE.trim() === "SOD"
+                ? t("Alert")
+                : t("confirmation"),
+            message:
+              rowData?.PARENT_TYPE.trim() === "SOD"
+                ? t("AreYouSureToWithdrawShare")
+                : t("forceExpDrawingPowerMSG"),
             buttonNames: ["Yes", "No"],
           });
+
           if (res === "Yes") {
             navigate(data?.name, {
               state: data?.rows,
@@ -209,9 +231,7 @@ const StockEntryCustom = () => {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  StockGridMetaData.gridConfig.gridLabel = `${t(
-                    "stockDetail"
-                  )} \u00A0\u00A0 ${(
+                  StockGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
@@ -332,7 +352,7 @@ const StockEntryCustom = () => {
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    // disabled={isSubmitting}
                     color={"primary"}
                   >
                     {t("Save")}
@@ -399,7 +419,6 @@ const StockEntryCustom = () => {
               TRAN_CD: rows.TRAN_CD,
               ACCT_TYPE: rows.ACCT_TYPE,
               ACCT_CD: rows.ACCT_CD,
-              TRAN_AMOUNT: rows.TRAN_BAL,
               TRAN_DT: rows.TRAN_DT,
               CONFIRMED: rows.CONFIRMED,
               USER_DEF_REMARKS: val
@@ -408,7 +427,8 @@ const StockEntryCustom = () => {
 
               ACTIVITY_TYPE: "STOCK ENTRY SCREEN",
               ENTERED_BY: rows.ENTERED_BY,
-              ACCT_MST_LIMIT: rows?.ACCT_MST_LIMIT,
+              STOCK_VALUE: rows?.STOCK_VALUE,
+              ASON_DT: rows.ASON_DT,
             };
             stockDataCRUD.mutate(deleteReqPara);
           }}

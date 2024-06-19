@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, useContext } from "react";
+import { useState, Fragment, useEffect, lazy, useContext } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { AppBar } from "./appBar";
 import { Drawer } from "./drawer";
@@ -14,9 +14,12 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
+import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
+import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
+import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
 // import { AccDetailContext } from "./auth";
-import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 
 export const PagesAudit = (props, { columns }) => {
   const location = useLocation();
@@ -76,6 +79,7 @@ export const PagesAudit = (props, { columns }) => {
                 /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                <Route path="master/*" element={<Master />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="configuration/*" element={<Configuration />} />
@@ -85,7 +89,6 @@ export const PagesAudit = (props, { columns }) => {
                   path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
-                <Route path="master/*" element={<Master />} />
 
                 {/* <Route
                   path="branch-selection/*"
@@ -97,6 +100,9 @@ export const PagesAudit = (props, { columns }) => {
               path="*"
               element={<RedirectComponent isValidURL={isValidURL} />}
             />
+            <Route path="cash/368" element={<TRN368 />} />
+            <Route path="cash/043" element={<TRN043 />} />
+            <Route path="cash/044" element={<TRN044 />} />
           </Routes>
           {/* <div
             style={{

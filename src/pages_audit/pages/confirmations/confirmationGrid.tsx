@@ -1,5 +1,3 @@
-import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
-import { useMutation } from "react-query";
 import {
   Fragment,
   useEffect,
@@ -9,26 +7,30 @@ import {
   StrictMode,
   useState,
 } from "react";
+import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { Alert } from "components/common/alert";
-import GridWrapper from "components/dataTableStatic";
+import { usePopupContext } from "components/custom/popupContext";
 import { GridMetaDataType } from "components/dataTable/types";
+import GridWrapper from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
-import * as API from "./api";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import * as API from "./api";
 import { chequeBkConfirmGridMetaData } from "./MetaData/chequebkConfirmGridMetadata";
 import { limitConfirmGridMetaData } from "./MetaData/limitConfirmGridMetadata";
+import { stockConfirmGridMetaData } from "./MetaData/stockConfirmGridMetadata";
+import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadata";
+import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
+import { tempODConfirmGridMetaData } from "./MetaData/temporaryODGridMetadata";
 import { RetrieveData } from "../operations/chequeBookTab/confirm/retrieveData";
 import { ChequebookCfmForm } from "../operations/chequeBookTab/confirm/confirmationForm";
 import { LimitConfirmationForm } from "../operations/limit-entry/confirm/confirmationForm";
-import { stockConfirmGridMetaData } from "./MetaData/stockConfirmGridMetadata";
 import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirmationForm";
-import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadata";
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
-import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmationForm";
-import { usePopupContext } from "components/custom/popupContext";
-import { useTranslation } from "react-i18next";
+import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confirmationForm";
 
 export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
@@ -109,6 +111,8 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = stopPayConfirmGridMetaData;
   } else if (screenFlag === "lienCFM") {
     gridMetaData = lienConfirmGridMetaData;
+  } else if (screenFlag === "tempOdCFM") {
+    gridMetaData = tempODConfirmGridMetaData;
   }
 
   return (
@@ -117,7 +121,7 @@ export const Confirmations = ({ screenFlag }) => {
         {result.isError && (
           <Alert
             severity="error"
-            errorMsg={result.error?.error_msg ?? "Something went to wrong.."}
+            errorMsg={result.error?.error_msg ?? "Something went to wrong."}
             errorDetail={result.error?.error_detail}
             color="error"
           />
@@ -166,6 +170,11 @@ export const Confirmations = ({ screenFlag }) => {
                 />
               ) : screenFlag === "lienCFM" ? (
                 <LienConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
+              ) : screenFlag === "tempOdCFM" ? (
+                <TempODConfirmationForm
                   closeDialog={ClosedEventCall}
                   result={result}
                 />

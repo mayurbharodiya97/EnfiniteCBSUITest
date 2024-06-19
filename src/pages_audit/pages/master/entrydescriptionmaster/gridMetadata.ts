@@ -1,9 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-
 export const EntryDescMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Entry Description Master (EMST/067)",
+    gridLabel: "EntryDescriptionMaster",
     rowIdColumn: "SP_CD",
     defaultColumnConfig: {
       width: 400,
@@ -49,7 +48,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISPLAY",
-      columnName: "Parent Type",
+      columnName: "ParentType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
