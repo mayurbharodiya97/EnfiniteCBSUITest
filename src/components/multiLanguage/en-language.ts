@@ -553,16 +553,11 @@ export const en_language_data = {
   // Auditor Master
   AuditorMaster: "Auditor Master",
   AuditorName: "Auditor Name",
-  Address1: "Address1",
-  Address2: "Address2",
   PhoneNo: "Phone Number",
   Designation: "Designation",
 
   // Lien reason master
   LienReasonMaster: "Lien Reason Master",
-  Code: "Code",
-  EnterDescription: "Enter Description",
-  EnterCode: "Enter Code",
 
   //
   sidebar: {

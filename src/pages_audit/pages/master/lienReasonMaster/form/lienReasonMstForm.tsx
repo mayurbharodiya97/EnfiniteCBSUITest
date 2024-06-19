@@ -79,7 +79,7 @@ export const LienReasonMstForm = ({
         message: "Do you want to save this Request?",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({

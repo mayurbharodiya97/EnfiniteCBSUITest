@@ -474,17 +474,11 @@ export const fr_language_data = {
   // Auditor Master
   AuditorMaster: "Maître auditeur",
   AuditorName: "Nom de l'auditeur",
-  Address1: "Adresse 1",
-  Address2: "Adresse 2",
   PhoneNo: "Numéro de téléphone",
   Designation: "Désignation",
 
   // Lien reason master
   LienReasonMaster: "Lien Raison Maître",
-  Code: "Code",
-  Description: "Description",
-  EnterDescription: "Entrez la description",
-  EnterCode: "Entrez le code",
 
   sidebar: {
     Dashboard: "Tableau de bord",
