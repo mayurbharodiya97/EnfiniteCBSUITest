@@ -1,7 +1,7 @@
 export const OrnamentTypeMasterFormMetaData = {
   form: {
     name: "ornamentTypeMaster",
-    label: "Ornament Type Master",
+    label: "OrnamentTypeMasterForm",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -35,7 +35,7 @@ export const OrnamentTypeMasterFormMetaData = {
       },
       name: "CODE",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       type: "text",
       maxLength: 4,
       isFieldFocused: true,
@@ -43,7 +43,7 @@ export const OrnamentTypeMasterFormMetaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required."] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3 },
       validate: (columnValue, ...rest) => {
@@ -80,14 +80,14 @@ export const OrnamentTypeMasterFormMetaData = {
       },
       name: "DESCRIPTION",
       label: "Description",
-      placeholder: "Enter Description",
+      placeholder: "EnterDescription",
       maxLength: 50,
       type: "text",
       autoComplete: "off",
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 6 },
       validate: (columnValue, ...rest) => {
@@ -123,13 +123,13 @@ export const OrnamentTypeMasterFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "ORN_MARGIN",
-      label: "Margin",
+      label: "Margin%",
       autoComplete: "off",
       required: true,
       fullWidth: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Margin is required."] }],
+        rules: [{ name: "required", params: ["MarginisRequired"] }],
       },
       GridProps: {
         xs: 12,

@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const OrnamentTypeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Ornament Type Master (MST/247)",
+    gridLabel: "OrnamentTypeMaster",
     rowIdColumn: "CODE",
     defaultColumnConfig: {
       width: 400,
@@ -25,7 +25,7 @@ export const OrnamentTypeMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -56,7 +56,7 @@ export const OrnamentTypeMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ORN_MARGIN",
-      columnName: "Margin",
+      columnName: "Margin%",
       sequence: 4,
       alignment: "right",
       componentType: "default",

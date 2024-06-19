@@ -12,6 +12,7 @@ import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 const ActionTakenMasterForm = ({
   isDataChangedRef,
@@ -24,6 +25,7 @@ const ActionTakenMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.actionTakenMasterDML, {
     onError: (error: any) => {
@@ -91,7 +93,7 @@ const ActionTakenMasterForm = ({
         message: "Do you want to save this Request?",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({
@@ -141,7 +143,7 @@ const ActionTakenMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -149,7 +151,7 @@ const ActionTakenMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </GradientButton>
                 </>
               ) : formMode === "new" ? (
@@ -164,10 +166,10 @@ const ActionTakenMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               ) : (
@@ -178,10 +180,10 @@ const ActionTakenMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("Edit")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               )}

@@ -12,6 +12,7 @@ import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 const OrnamentTypeMasterForm = ({
   isDataChangedRef,
@@ -24,6 +25,7 @@ const OrnamentTypeMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.ornamentTypeMasterDML, {
     onError: (error: any) => {
@@ -125,7 +127,7 @@ const OrnamentTypeMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -133,7 +135,7 @@ const OrnamentTypeMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </GradientButton>
                 </>
               ) : formMode === "new" ? (
@@ -148,11 +150,11 @@ const OrnamentTypeMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
 
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               ) : (
@@ -163,10 +165,10 @@ const OrnamentTypeMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("Edit")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               )}

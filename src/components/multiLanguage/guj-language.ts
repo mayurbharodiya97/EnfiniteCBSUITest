@@ -1,22 +1,35 @@
 export const guj_language_data = {
+  //Ornament Type Master
+  OrnamentTypeMaster: "આભૂષણ પ્રકાર માસ્ટર (MST/247)",
+  OrnamentTypeMasterForm: "આભૂષણ પ્રકાર માસ્ટર",
+  CodeisRequired: "કોડ જરૂરી છે",
+  EnterCode: "કોડ દાખલ કરો",
+  Edit: "સંપાદિત કરો",
+  EnterDescription: "વર્ણન દાખલ કરો",
+  DescriptionisRequired: "વર્ણન જરૂરી છે",
+  MarginisRequired: "માર્જિન જરૂરી છે",
 
+  //Action Taken Master
+  ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
+  ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
+  LegalProcess: "કાનૂની પ્રક્રિયા",
 
   // Priority master main
-  Code:"કોડ",
-  ParentGroup:"પિતૃ જૂથ",
-  SubPriority:"સબ પ્રાયોરિટી",
-  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
-  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
-  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
-  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
-  ParentWeaker:"પેરેંટ વેકર",
-  CKYCGroup:"C-KYC ગ્રુપ",
-  Constitution:"બંધારણ",
-  PinCode:"પીન કોડ",
-  City:"શહેર",
-  ParentArea:"પિતૃ વિસ્તાર",
+  Code: "કોડ",
+  ParentGroup: "પિતૃ જૂથ",
+  SubPriority: "સબ પ્રાયોરિટી",
+  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
+  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
+  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
+  ParentWeaker: "પેરેંટ વેકર",
+  CKYCGroup: "C-KYC ગ્રુપ",
+  Constitution: "બંધારણ",
+  PinCode: "પીન કોડ",
+  City: "શહેર",
+  ParentArea: "પિતૃ વિસ્તાર",
   //
- 
+
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:

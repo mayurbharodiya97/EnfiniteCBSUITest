@@ -3,7 +3,7 @@ import * as API from "../api";
 export const ActionTakenMasterFormMetaData = {
   form: {
     name: "actionTakenMaster",
-    label: "Action Taken Master",
+    label: "ActionTakenMasterForm",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -40,7 +40,7 @@ export const ActionTakenMasterFormMetaData = {
       },
       name: "ACTION_TAKEN_CD",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       type: "text",
       maxLength: 4,
       autoComplete: "off",
@@ -80,7 +80,7 @@ export const ActionTakenMasterFormMetaData = {
       },
       name: "DESCRIPTION",
       label: "Description",
-      placeholder: "Enter Description",
+      placeholder: "EnterDescription",
       maxLength: 50,
       type: "text",
       autoComplete: "off",
@@ -117,6 +117,7 @@ export const ActionTakenMasterFormMetaData = {
       render: { componentType: "autocomplete" },
       name: "SUIT_FILED_STATUS_CD",
       label: "A4 Suit File Status Code",
+      placeholder: "Select A4 Suit File Status Code",
       options: API.getSuitFldStdMstData,
       _optionsKey: "getSuitFldStdMstData",
       __VIEW__: { isReadOnly: true },
@@ -127,7 +128,7 @@ export const ActionTakenMasterFormMetaData = {
     {
       render: { componentType: "checkbox" },
       name: "LEGAL_PROCESS",
-      label: "Legal Process",
+      label: "LegalProcess",
       defaultValue: false,
       GridProps: { xs: 12, sm: 6, md: 2, lg: 1.5, xl: 1.5 },
     },

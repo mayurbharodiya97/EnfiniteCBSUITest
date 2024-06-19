@@ -1,21 +1,38 @@
 import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
 
 export const fr_language_data = {
+  // Ornament Type Master
+  "Margin%": "Marge%",
+  Code: "Code",
+  OrnamentTypeMaster: "Maître du type d’ornement (MST/247)",
+  OrnamentTypeMasterForm: "Maître du type d’ornement",
+  CodeisRequired: "Le code est requis",
+  EnterCode: "Entrez le code",
+  Edit: "Modifier",
+  EnterDescription: "Entrez la description",
+  DescriptionisRequired: "Une description est requise",
+  MarginisRequired: "Une marge est requise",
+
+  //Action Taken Master
+  ActionTakenMaster: "Action entreprise Maître (MST/145)",
+  ActionTakenMasterForm: "Action entreprise Maître",
+  LegalProcess: "Procédure légale",
+
   //Parent master main
-  ParentGroup:"Groupe de parents",
-  SubPriority:"Sous-priorité",
-  Description:"Description",
-  SanctionFromLimit:"Sanction de la limite",
-  SanctionToLimit:"Sanction à limiter",
-  ProvisionSecured:"Provision sécurisée %",
-  ProvisionUnSecured:"Provision non garantie %",
-  ViewDetail:"Voir les détails",
-  ParentWeaker:"Parent plus faible",
-  CKYCGroup:"Groupe C-KYC",
-  Constitution:"Constitution",
-  PinCode:"Code PIN",
-  Add:"Ajouter",
-  Delete:"Supprimer",
+  ParentGroup: "Groupe de parents",
+  SubPriority: "Sous-priorité",
+  Description: "Description",
+  SanctionFromLimit: "Sanction de la limite",
+  SanctionToLimit: "Sanction à limiter",
+  ProvisionSecured: "Provision sécurisée %",
+  ProvisionUnSecured: "Provision non garantie %",
+  ViewDetail: "Voir les détails",
+  ParentWeaker: "Parent plus faible",
+  CKYCGroup: "Groupe C-KYC",
+  Constitution: "Constitution",
+  PinCode: "Code PIN",
+  Add: "Ajouter",
+  Delete: "Supprimer",
 
   //
   Loading: "Chargement..",
