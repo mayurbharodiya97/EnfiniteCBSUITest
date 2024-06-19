@@ -188,11 +188,3 @@ export const checkFormDataExist =
       throw data?.error_data;
     }
   };
-
-export function getRetrievalDateWise(getRetrievalDateWise: any, arg1: { onSuccess: (data: unknown) => void; onError: () => void; }): any {
-  throw new Error('Function not implemented.');
-}
-export function headerDataRetrive(headerDataRetrive: any, arg1: { onSuccess: (data: unknown) => void; onError: () => void; }): any {
-  throw new Error('Function not implemented.');
-}
-

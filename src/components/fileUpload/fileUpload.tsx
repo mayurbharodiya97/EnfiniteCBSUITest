@@ -64,7 +64,7 @@ export const FileUploadControl = ({
   maxAllowedSize = 1024 * 1024 * 3,
   gridProps,
   defaultFileData = [],
-  onUpdateFileData = (files) => { },
+  onUpdateFileData = (files) => {},
 }: {
   additionalColumns?: GridColumnType[];
   editableFileName?: boolean;
