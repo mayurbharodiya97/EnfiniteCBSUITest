@@ -550,6 +550,16 @@ export const en_language_data = {
     newAcct: "New Account",
   },
 
+  // Auditor Master
+  AuditorMaster: "Auditor Master",
+  AuditorName: "Auditor Name",
+  PhoneNo: "Phone Number",
+  Designation: "Designation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Reason Master",
+
+  //
   sidebar: {
     Dashboard: "Dashboard",
 

@@ -37,6 +37,7 @@ export const LienReasonMstFormMetaData = {
       maxLength: 4,
       required: true,
       type: "text",
+      autoComplete: "off",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Code is required"] }],
@@ -53,6 +54,7 @@ export const LienReasonMstFormMetaData = {
       maxLength: 50,
       required: true,
       type: "text",
+      autoComplete: "off",
       txtTransform: "uppercase",
       schemaValidation: {
         type: "string",

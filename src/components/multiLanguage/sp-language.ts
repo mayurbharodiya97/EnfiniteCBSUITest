@@ -448,6 +448,15 @@ export const sp_language_data = {
   AttesDetailsIPVBy:
     "Detalles de la atestación [IPV-Prueba de identidad verificada por]",
 
+  // Auditor master
+  AuditorMaster: "Maestro Auditor",
+  AuditorName: "Nombre del auditor",
+  PhoneNo: "Número de teléfono",
+  Designation: "Designación",
+
+  // Lien reason master
+  LienReasonMaster: "Maestro de razón de gravamen",
+
   sidebar: {
     Dashboard: "Tablero de control",
 

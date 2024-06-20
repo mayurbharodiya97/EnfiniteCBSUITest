@@ -471,6 +471,15 @@ export const fr_language_data = {
   AttesDetailsIPVBy:
     "Détails de l'attestation [IPV-Identity Preuve vérifiée par]",
 
+  // Auditor Master
+  AuditorMaster: "Maître auditeur",
+  AuditorName: "Nom de l'auditeur",
+  PhoneNo: "Numéro de téléphone",
+  Designation: "Désignation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Raison Maître",
+
   sidebar: {
     Dashboard: "Tableau de bord",
 

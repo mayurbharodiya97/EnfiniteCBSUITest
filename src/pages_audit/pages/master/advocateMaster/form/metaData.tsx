@@ -1,7 +1,7 @@
 export const AdvocateMstFormMetaData = {
   form: {
     name: "advocateMaster",
-    label: "Advocate Master",
+    label: "AdvocateMaster",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -36,19 +36,38 @@ export const AdvocateMstFormMetaData = {
       },
       name: "CODE",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       type: "text",
       required: true,
       maxLength: 4,
+      autoComplete: "off",
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required"] }],
+        rules: [{ name: "required", params: ["Codeisrequired"] }],
       },
-      validate: (columnValue) => {
+      validate: (columnValue, ...rest) => {
         let regex = /^[^~`!@#$%^&*()\-+_=\\"';:?/<>,.{}[\]|]+$/;
         if (columnValue.value && !regex.test(columnValue.value)) {
-          return "Special character is not allowed";
+          return "Specialcharacterisnotallowed";
+        }
+        const gridData = rest[1]?.gridData;
+        console.log("grid", rest);
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
         }
         return "";
       },
@@ -59,14 +78,37 @@ export const AdvocateMstFormMetaData = {
         componentType: "textField",
       },
       name: "DESCRIPTION",
-      label: "Advocate Name",
-      placeholder: "Enter Advocate Name",
+      label: "AdvocateName",
+      placeholder: "EnterAdvocateName",
       type: "text",
+      autoComplete: "off",
       required: true,
       maxLength: 100,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Advocate Name is required"] }],
+        rules: [{ name: "required", params: ["AdvocateNameisrequired"] }],
+      },
+      validate: (columnValue, ...rest) => {
+        const gridData = rest[1]?.gridData;
+        console.log("grid", rest);
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
@@ -75,14 +117,15 @@ export const AdvocateMstFormMetaData = {
         componentType: "phoneNumberOptional",
       },
       name: "CONTACT1",
-      label: "Mobile No.",
-      placeholder: "Enter Mobile No.",
+      label: "MobileNo",
+      placeholder: "EnterMobileNo",
       required: true,
       maxLength: 10,
       fullWidth: true,
+      autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Mobile No. is required"] }],
+        rules: [{ name: "required", params: ["MobileNoisRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
@@ -92,8 +135,10 @@ export const AdvocateMstFormMetaData = {
       },
       name: "ADD1",
       label: "Address",
-      placeholder: "Enter Address",
+      placeholder: "EnterAddress",
+      autoComplete: "off",
       type: "text",
+      preventSpecialCharInput: true,
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },
     {
@@ -101,13 +146,14 @@ export const AdvocateMstFormMetaData = {
         componentType: "textField",
       },
       name: "EMAIL",
-      label: "Email ID",
-      placeholder: "Enter Email ID",
+      label: "EmailID",
+      placeholder: "EnterEmailID",
       type: "text",
-      autoComplete: false,
+      autoComplete: "off",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "email", params: ["Invalid Email ID"] }],
+        rules: [{ name: "email", params: ["InvalidEmailID"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },

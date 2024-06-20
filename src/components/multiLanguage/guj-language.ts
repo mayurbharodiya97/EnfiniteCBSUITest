@@ -358,6 +358,15 @@ export const guj_language_data = {
   Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
   Account_Status: "ખાતા સ્થિતિ",
 
+  // Auditor Master
+  AuditorMaster: "ઓડિટર માસ્ટર",
+  AuditorName: "ઓડિટરનું નામ",
+  PhoneNo: "ફોન નંબર",
+  Designation: "હોદ્દો",
+
+  // Lien reason master
+  LienReasonMaster: "પૂર્વાધિકાર કારણ માસ્ટર",
+
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 

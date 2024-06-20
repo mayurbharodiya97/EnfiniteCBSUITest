@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const LienReasonMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Lien Reason Master (EMST/809)",
+    gridLabel: "Lien Reason Master (MST/809)",
     rowIdColumn: "REASON_CD",
     defaultColumnConfig: {
       width: 350,
@@ -21,32 +21,8 @@ export const LienReasonMstGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowFilter: true,
-    allowColumnHiding: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "REASON_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "REASON_NM",
-      columnName: "Description",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "SR_NO",
