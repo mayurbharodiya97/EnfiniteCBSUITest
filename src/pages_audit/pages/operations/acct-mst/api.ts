@@ -112,40 +112,10 @@ export const isReadOnlyonParam320 = ({ formState }) => {
 };
 
 export const getAccountDetails = async (reqData) => {
-  // console.log("iuehfiwuehfwef", reqData)
-  // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
-  // const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
-  // let payload = {}
-  // // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
-  // if(CUSTOMER_ID) {
-  //   payload = {
-  //     COMP_CD: COMP_CD,
-  //     CUSTOMER_ID: CUSTOMER_ID
-  //   }
-  // } else {
-  //   payload = {
-  //     COMP_CD: COMP_CD,
-  //     REQUEST_CD: REQUEST_CD
-  //   }
-  // }
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", reqData);
+    await AuthSDK.internalFetcher("GETACCOUNTDETAILS", reqData);
   if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ CATEG_CD, CATEG_NM, ...other }) => {
-          return {
-            ...other,
-            CATEG_CD: CATEG_CD,
-            CATEG_NM: CATEG_NM,
-            value: CATEG_CD,
-            label: CATEG_NM,
-          };
-        }
-      );
-    }
-    return responseData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -119,11 +119,14 @@ export const AcctMSTContext = React.createContext<any>({
   handleFormLoading: () => {},
   handleFromFormModectx: () => {},
   handleFormModalClosectx: () => {},
+  handleFormModalOpenOnEditctx: () => {},
   handleSidebarExpansionctx: () => {},
   handleHeaderFormSubmit: () => {},
   handleApiRes: () => {},
   handleColTabChangectx: () => {},
+  handleFormModalOpenctx: () => {},
   handlecustomerIDctx: () => {},
+  handleFormDataonRetrievectx: () => {},
 });
   const AcctMSTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
@@ -259,6 +262,25 @@ export const AcctMSTContext = React.createContext<any>({
     })
   }, [])
 
+  const handleFormModalOpenOnEditctx = (recordData:any[]) => {
+    if(
+      Array.isArray(recordData) && 
+      recordData?.[0]?.data && 
+      Boolean(recordData?.[0]?.data?.REQUEST_ID)
+    ) {
+      let payload = {
+        req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
+        acctNumberctx: recordData[0].data?.ACCOUNT_NUMBER ?? "",
+        accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
+        isFormModalOpenctx: true, isFreshEntryctx: false
+      };
+      dispatch({
+        type: "handleCategoryChangectx",
+        payload: payload
+      })
+    }
+  }
+
   const handleFormLoading = useCallback((isloading:boolean) => {
     dispatch({
       type: "handle_formloading",
@@ -316,6 +338,16 @@ export const AcctMSTContext = React.createContext<any>({
         payload: {
             modifiedFormCols: {...tabModifiedCols}
         }
+    })
+  }
+
+  const handleFormDataonRetrievectx = (data) => {
+    let retrieveApiRes = data
+    let payload = {};
+    payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
+    dispatch({
+        type: "update_retrieveFormData",
+        payload: payload
     })
   }
 
@@ -473,6 +505,7 @@ export const AcctMSTContext = React.createContext<any>({
         handleFormLoading,
         handleFromFormModectx,
         handleFormModalClosectx,
+        handleFormModalOpenOnEditctx,
         handleSidebarExpansionctx,
         handleHeaderFormSubmit,
         handleApiRes,
@@ -483,6 +516,7 @@ export const AcctMSTContext = React.createContext<any>({
         handleFormDataonSavectx,
         handlecustomerIDctx,
         handleModifiedColsctx,
+        handleFormDataonRetrievectx,
         handleSavectx,
         handleUpdatectx,
       }}

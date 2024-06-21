@@ -51,6 +51,8 @@ const AcctModal = ({ onClose, formmode, from }) => {
   const {
     AcctMSTState,
     handleFromFormModectx,
+    handleFormModalOpenOnEditctx,
+    handleFormDataonRetrievectx,
     handleFormModalClosectx,
     handleSidebarExpansionctx,
     handleColTabChangectx,
@@ -74,10 +76,10 @@ const AcctModal = ({ onClose, formmode, from }) => {
     setAlertOnUpdate(false)
   }
 
-  // get customer form details  
+  // get account form details  
   const mutation: any = useMutation(API.getAccountDetails, {
     onSuccess: (data) => {
-      // handleFormDataonRetrievectx(data[0])
+      handleFormDataonRetrievectx(data[0])
       onClosePreventUpdateDialog()
     },
     onError: (error: any) => {},
@@ -86,6 +88,44 @@ const AcctModal = ({ onClose, formmode, from }) => {
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
   }, []);
+
+  useEffect(() => {
+    if(Boolean(location.state)) {
+      if(AcctMSTState?.formmodectx === "new") {
+        handleFormModalOpenctx()
+      } else {
+        handleColTabChangectx(0)
+        handleFormModalOpenOnEditctx(location?.state)
+  
+        if(Array.isArray(location.state) && location.state.length>0) {
+          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+          const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
+          const acctCD = location.state?.[0]?.data.ACCOUNT_NUMBER ?? "";
+          let payload: {
+            COMP_CD?: string, 
+            CUSTOMER_ID?:string,
+            BRANCH_CD: string, 
+            REQUEST_CD:string, 
+            J_TYPE: string, 
+            ACCT_TYPE: string, 
+            ACCT_CD: string
+          } = {
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+            REQUEST_CD: reqCD,  
+            J_TYPE: "J",
+            ACCT_TYPE: acctType,  
+            ACCT_CD: acctCD,
+          }
+          if(Object.keys(payload)?.length > 1) {
+            mutation.mutate(payload)
+          }
+        }
+      }
+    } else {
+      handleFormModalClosectx()
+      onClose()
+    }    
+  }, [AcctMSTState?.formmodectx])
 
   const closeForm = () => {
     handleFormModalClosectx();
@@ -142,44 +182,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
   }, [
     // updateDialog, actionDialog, 
     cancelDialog, alertOnUpdate])
-
-  useEffect(() => {
-    // console.log(state?.formmodectx,"asddsaasddsa", location?.state)
-    // setDisplayMode(formmode)
-    if (Boolean(location.state)) {
-      if (!AcctMSTState?.isDraftSavedctx) {
-        if (AcctMSTState?.formmodectx == "new") {
-          handleFormModalOpenctx();
-          // console.log("statess new", location.state);
-        }
-        // else {
-        //   handleColTabChangectx(0)
-        //   handleFormModalOpenOnEditctx(location?.state)
-
-        //   let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-        //     // COMP_CD: authState?.companyID ?? "",
-        //     BRANCH_CD: authState?.user?.branchCode ?? ""
-        //   }
-        //   if(Array.isArray(location.state) && location.state.length>0) {
-        //     const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-        //     const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-        //     if(Boolean(reqCD)) {
-        //       payload["REQUEST_CD"] = reqCD;
-        //     }
-        //     if(Boolean(custID)) {
-        //       payload["CUSTOMER_ID"] = custID;
-        //     }
-        //   }
-        //   if(Object.keys(payload)?.length > 1) {
-        //     mutation.mutate(payload)
-        //   }
-        // }
-      }
-    } else {
-      handleFormModalClosectx();
-      onClose();
-    }
-  }, [AcctMSTState?.formmodectx]);
 
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
@@ -339,7 +341,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           {/* for checker, view-only */}
           {/* {ActionBTNs} */}
           <GradientButton onClick={onCancelForm} color={"primary"}>
-            {t("Cancel")}
+            {t("Close")}
           </GradientButton>
         </Toolbar>
       </AppBar>
