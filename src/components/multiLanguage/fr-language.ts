@@ -476,9 +476,41 @@ export const fr_language_data = {
   AuditorName: "Nom de l'auditeur",
   PhoneNo: "Numéro de téléphone",
   Designation: "Désignation",
+  EnterAuditorName: "Entrez le nom de l'auditeur",
+  AuditorNameisrequired: "Le nom de l'auditeur est requis",
+  EnterAddress1: "Entrez l'adresse1",
+  EnterAddress2: "Entrez l'adresse2",
+  EnterPhoneNo: "Entrez le numéro de téléphone",
+  SelectDesignation: "Sélectionnez la désignation",
 
   // Lien reason master
   LienReasonMaster: "Lien Raison Maître",
+  Codeisrequired: "Le code est requis",
+  Descriptionisrequired: "Une description est requise",
+
+  // Advocate Master
+  AdvocateMaster: "Maître avocat",
+  SpecialCharacterIsNotAllowed:
+    "Les caractères spéciaux ne sont pas autorisés.",
+  AdvocateName: "Nom de l'avocat",
+  EnterAdvocateName: "Entrez le nom de l'avocat",
+  AdvocateNameisrequired: "Le nom de l'avocat est requis.",
+  Address: "Adresse",
+  EnterEmailID: "Entrez l'identifiant de messagerie",
+  InvalidEmailID: "Identifiant de messagerie invalide.",
+
+  // Clearing bank master
+  ClearingBankMaster: "Maître de banque de compensation",
+  RBICode: "Code RBI",
+  Exclude: "Exclure",
+  EnterRBICode: "Entrez le code RBI",
+  RBICodeIsRequired: "Le code RBI est requis.",
+  EnterBankName: "Entrez le nom de la banque",
+  BankNameIsRequired: "Le nom de la banque est requis.",
+  AtleastOneBranchShouldBeSelected:
+    "Au moins une branche doit être sélectionnée.",
+  Select: "Sélectionner",
+  DisplayName: "Afficher un nom",
 
   sidebar: {
     Dashboard: "Tableau de bord",
