@@ -4,47 +4,35 @@ import React, { useCallback, useReducer } from "react";
 
 const initialState: any = {
   acctModectx: "",
+  acctNumberctx: "",
   isLoading: false,
-  param320: null,
-  gparam155: null,
+  param320: "",
+  gparam155: "",
 
   // all customer-mst states
   isFormModalOpenctx: false,
-  handleFormModalOpenctx: () => {},
-  handleFormModalClosectx: () => {},
 
   fromctx: "",
   formmodectx: "",
   isDraftSavedctx: false,
 
   isSidebarExpandedctx: false,
-  setIsSidebarExpandedctx: () => {},
-  handleSidebarExpansionctx: () => {},
 
   colTabValuectx: 0,
-  setColTabValuectx: () => {},
-  handleColTabChangectx: () => {},
+  // handleColTabChangectx: () => {},
 
-  isLoadingDatactx: () => {},
-  setIsLoadingDatactx: () => {},
   isCustomerDatactx: false,
-  setIsCustomerDatactx: () => {},
 
   entityTypectx: null,
-  setEntityTypectx: () => {},
 
   tabsApiResctx: [],
   tabNameList: [],
-  setTabsApiRes: () => {},
   // customerCategoriesctx: [],
   categConstitutionValuectx: null,
   categoryValuectx: null,
   constitutionValuectx: null,
   accTypeValuectx: null,
   kycNoValuectx: null,
-  setCategoryValue: () => {},
-  setConstitutionValuectx: () => {},
-  setAccTypeValuectx: () => {},
   AccTypeOptionsctx: [],
 
   formDatactx: {},
@@ -125,8 +113,14 @@ export const AcctMSTContext = React.createContext<any>({
   handleApiRes: () => {},
   handleColTabChangectx: () => {},
   handleFormModalOpenctx: () => {},
+  handleCurrFormctx: () => {},
+  handleStepStatusctx: () => {},
+  handleFormDataonSavectx: () => {},
   handlecustomerIDctx: () => {},
+  handleModifiedColsctx: () => {},
   handleFormDataonRetrievectx: () => {},
+  handleSavectx: () => {},
+  handleUpdatectx: () => {},
 });
   const AcctMSTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
@@ -155,9 +149,10 @@ export const AcctMSTContext = React.createContext<any>({
       type: "handleFormModalClose",
       payload: {
         acctModectx: "",
+        acctNumberctx: "",
         isLoading: false,
-        param320: null,
-        gparam155: null,
+        param320: "",
+        gparam155: "",
 
         isFormModalOpenctx: false,
         entityTypectx: null,
@@ -165,7 +160,7 @@ export const AcctMSTContext = React.createContext<any>({
         categConstitutionValuectx: null,
         categoryValuectx: null,
         constitutionValuectx: null,
-        accTypeValuectx: "",
+        accTypeValuectx: null,
         tabsApiResctx: [],
         isFreshEntryctx: false,
         tabNameList: [],

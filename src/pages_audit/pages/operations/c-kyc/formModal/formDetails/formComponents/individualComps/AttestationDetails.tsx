@@ -414,7 +414,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                 open={saveSuccessDialog} 
                 onClose={onCloseSaveSuccessDialog} 
                 onFormClose={onFormClose}
-                reqCD={reqCD}
+                // reqCD={reqCD}
                 // data={historyData} 
                 // isLoading={!isUpdated} 
                 // setIsLoading={setIsUpdated}
