@@ -205,17 +205,17 @@ export const AcctMSTContext = React.createContext<any>({
     });
   }, [state.isSidebarExpandedctx]);
 
-  interface handleHeaderFormSubmit {
-    acctType?:any, 
-    acctMode?:any
+  interface handleHeaderFormSubmitType {
+    acctType:any, 
+    reqID: any
   }
-  const handleHeaderFormSubmit = useCallback((reqObj:handleHeaderFormSubmit) => {
+  const handleHeaderFormSubmit = useCallback((reqObj:handleHeaderFormSubmitType) => {
     let payload:any = {}
     if(Boolean(reqObj.acctType)) {
       payload.accTypeValuectx = reqObj.acctType; 
     }
-    if(Boolean(reqObj.acctMode)) {
-      payload.acctModectx = reqObj.acctMode; 
+    if(Boolean(reqObj.reqID)) {
+      payload.req_cd_ctx = reqObj.reqID; 
     }
     dispatch({
       type: "update_accTypeValuectx",
