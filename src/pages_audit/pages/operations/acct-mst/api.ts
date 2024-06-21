@@ -74,6 +74,24 @@ export const getCustomerData = async ({
   }
 };
 
+export const getPendingAcct = async ({
+  COMP_CD,
+  BRANCH_CD,
+  REQ_FLAG,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPENDINGACCTLIST", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      REQ_FLAG: REQ_FLAG
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const getTabsDetail = async ({
   COMP_CD,
   BRANCH_CD,

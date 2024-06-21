@@ -1195,6 +1195,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMODEDDW",
     packageName: "",
   },
+  GETCUSTOMERDATA: {
+    url: "accountServiceAPI/GETCUSTOMERDATA",
+    packageName: "",
+  },
+  GETPENDINGACCTLIST: {
+    url: "accountServiceAPI/GETPENDINGACCTLIST",
+    packageName: "",
+  },
+  GETACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETACCOUNTDETAILS",
+    packageName: "",
+  },
   GETACCTMSTMORTGAGEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMORTGAGEDDW",
     packageName: "",

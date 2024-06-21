@@ -5,6 +5,7 @@ import { CustomTabs } from "../c-kyc/Ckyc";
 import { t } from "i18next";
 import { TabPanel } from "../c-kyc/formModal/formModal";
 import RetrieveAcct from "./RetrieveAcct";
+import PendingAcct from "./PendingAcct";
 
 const AcctMST = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -27,6 +28,9 @@ const AcctMST = () => {
     </Grid>
     <TabPanel value={tabValue} index={0}>
       <RetrieveAcct />
+    </TabPanel>
+    <TabPanel value={tabValue} index={1}>
+      <PendingAcct />
     </TabPanel>
     </>
   );

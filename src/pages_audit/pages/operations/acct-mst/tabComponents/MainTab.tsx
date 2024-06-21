@@ -14,6 +14,20 @@ const MainTab = () => {
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const formRef = useRef<any>(null);
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes, 
+    AcctMSTState?.formDatactx["MAIN_DETAIL"]
+  ])
+
   const onSubmitPDHandler = (
     data: any,
     displayData,
