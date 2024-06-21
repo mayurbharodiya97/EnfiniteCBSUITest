@@ -11,19 +11,23 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 export const LienReasonMstForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData,
 }) => {
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
-  const mutation = useMutation(API.LienReasonMstDataDML, {
+  const mutation = useMutation(API.lienReasonMstDataDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -76,7 +80,7 @@ export const LienReasonMstForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -91,73 +95,81 @@ export const LienReasonMstForm = ({
 
   return (
     <>
-      <FormWrapper
-        key={"lienReasonMstForm" + formMode}
-        metaData={LienReasonMstFormMetaData as MetaDataType}
-        displayMode={formMode}
-        onSubmitHandler={onSubmitHandler}
-        initialValues={rows?.[0]?.data as InitialValuesType}
-        formStyle={{
-          background: "white",
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            {formMode === "edit" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("view");
-                  }}
-                  color={"primary"}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            ) : formMode === "new" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
+      {gridData ? (
+        <FormWrapper
+          key={"lienReasonMstForm" + formMode}
+          metaData={LienReasonMstFormMetaData as MetaDataType}
+          displayMode={formMode}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={rows?.[0]?.data as InitialValuesType}
+          formStyle={{
+            background: "white",
+          }}
+          formState={{
+            gridData: gridData,
+            rows: rows?.[0]?.data,
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    {t("Save")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                    disabled={isSubmitting}
+                  >
+                    {t("Cancel")}
+                  </GradientButton>
+                </>
+              ) : formMode === "new" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    {t("Save")}
+                  </GradientButton>
 
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            ) : (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("edit");
-                  }}
-                  color={"primary"}
-                >
-                  Edit
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            )}
-          </>
-        )}
-      </FormWrapper>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    {t("Close")}
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    {t("Edit")}
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    {t("Close")}
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
+        </FormWrapper>
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </>
   );
 };
@@ -166,6 +178,7 @@ export const LienReasonMstFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData,
 }) => {
   return (
     <Dialog
@@ -182,6 +195,7 @@ export const LienReasonMstFormWrapper = ({
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         defaultView={defaultView}
+        gridData={gridData}
       />
     </Dialog>
   );

@@ -22,7 +22,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Details",
+    actionLabel: "ViewDetail",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -47,10 +47,10 @@ export const LienReasonMstGrid = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
-          loadingBtnName:[ "Yes"],
+          loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -96,7 +96,7 @@ export const LienReasonMstGrid = () => {
     };
   }, [getEntries]);
 
-  const deleteMutation = useMutation(API.LienReasonMstDataDML, {
+  const deleteMutation = useMutation(API.lienReasonMstDataDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -152,6 +152,7 @@ export const LienReasonMstGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
+              gridData={data}
             />
           }
         />
@@ -162,6 +163,7 @@ export const LienReasonMstGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
+              gridData={data}
             />
           }
         />
