@@ -123,7 +123,7 @@ export const AcctMSTContext = React.createContext<any>({
   handleHeaderFormSubmit: () => {},
   handleApiRes: () => {},
   handleColTabChangectx: () => {},
-  handleFormModalOpenct: () => {},
+  handlecustomerIDctx: () => {},
 });
   const AcctMSTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
@@ -301,6 +301,15 @@ export const AcctMSTContext = React.createContext<any>({
     })
   }
 
+  const handlecustomerIDctx = (data) => {
+    dispatch({
+        type: "update_customerIDctx",
+        payload: {
+            customerIDctx: data
+        }
+    })
+  }
+
   const handleModifiedColsctx = (tabModifiedCols ) => {    
     dispatch({
         type: "modify_tabCols",
@@ -472,6 +481,7 @@ export const AcctMSTContext = React.createContext<any>({
         handleCurrFormctx,
         handleStepStatusctx,
         handleFormDataonSavectx,
+        handlecustomerIDctx,
         handleModifiedColsctx,
         handleSavectx,
         handleUpdatectx,

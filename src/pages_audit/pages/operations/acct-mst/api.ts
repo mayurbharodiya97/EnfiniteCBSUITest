@@ -52,6 +52,28 @@ export const getAcctModeOptions = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+export const getCustomerData = async ({ 
+  CUSTOMER_ID,
+  ACCT_TYPE,
+  COMP_CD,
+  SCREEN_REF, 
+}) => {
+  if(Boolean(CUSTOMER_ID)) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTOMERDATA", {
+      COMP_CD: COMP_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      CUSTOMER_ID: CUSTOMER_ID,
+      SCREEN_REF: SCREEN_REF
+    });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+};
+
 export const getTabsDetail = async ({
   COMP_CD,
   BRANCH_CD,
