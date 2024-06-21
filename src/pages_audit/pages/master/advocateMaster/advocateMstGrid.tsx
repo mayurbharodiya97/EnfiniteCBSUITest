@@ -22,7 +22,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Details",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -47,7 +47,7 @@ export const AdvocateMstGrid = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],

@@ -12,18 +12,20 @@ import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 export const AdvocateMstForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.advocateMstDataDML, {
     onError: (error: any) => {
@@ -78,7 +80,7 @@ export const AdvocateMstForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -132,7 +134,7 @@ export const AdvocateMstForm = ({
                     disabled={isSubmitting}
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -141,7 +143,7 @@ export const AdvocateMstForm = ({
                     color={"primary"}
                     disabled={isSubmitting}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </GradientButton>
                 </>
               ) : formMode === "new" ? (
@@ -153,10 +155,10 @@ export const AdvocateMstForm = ({
                     disabled={isSubmitting}
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               ) : (
@@ -167,10 +169,10 @@ export const AdvocateMstForm = ({
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("Edit")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               )}
@@ -188,7 +190,7 @@ export const AdvocateMstFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog

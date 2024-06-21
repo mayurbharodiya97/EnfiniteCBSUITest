@@ -27,7 +27,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -48,7 +48,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DESCRIPTION",
-      columnName: "Advocate Name",
+      columnName: "AdvocateName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -59,7 +59,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT1",
-      columnName: "Mobile No.",
+      columnName: "MobileNo",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -80,7 +80,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "EMAIL",
-      columnName: "Email ID",
+      columnName: "EmailID",
       sequence: 6,
       alignment: "left",
       componentType: "default",
