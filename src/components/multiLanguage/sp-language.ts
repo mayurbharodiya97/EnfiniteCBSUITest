@@ -453,9 +453,41 @@ export const sp_language_data = {
   AuditorName: "Nombre del auditor",
   PhoneNo: "Número de teléfono",
   Designation: "Designación",
+  EnterAuditorName: "Ingrese el nombre del auditor",
+  AuditorNameisrequired: "El nombre del auditor es obligatorio",
+  EnterAddress1: "Introduzca la dirección1",
+  EnterAddress2: "Introduzca la dirección2",
+  EnterPhoneNo: "Ingresa número telefónico",
+  SelectDesignation: "Seleccionar designación",
 
   // Lien reason master
   LienReasonMaster: "Maestro de razón de gravamen",
+  Codeisrequired: "Se requiere código",
+  Descriptionisrequired: "Se requiere descripción",
+
+  // Advocate Master
+  AdvocateMaster: "Maestro abogado",
+  SpecialCharacterIsNotAllowed: "No se permiten caracteres especiales.",
+  AdvocateName: "Nombre del defensor",
+  EnterAdvocateName: "Ingrese el nombre del defensor",
+  AdvocateNameisrequired: "El nombre del defensor es obligatorio.",
+  Address: "dirección",
+  EnterEmailID: "Ingrese su ID de correo electrónico",
+  InvalidEmailID: "ID de correo electrónico no válido.",
+
+  // Clearing bank master
+
+  ClearingBankMaster: "Maestro del Banco de Compensación",
+  RBICode: "Código RBI",
+  Exclude: "Excluir",
+  EnterRBICode: "Ingrese el código RBI",
+  RBICodeIsRequired: "Se requiere el código RBI.",
+  EnterBankName: "Ingrese el nombre del banco",
+  BankNameIsRequired: "El nombre del banco es obligatorio.",
+  AtleastOneBranchShouldBeSelected:
+    "Se debe seleccionar al menos una sucursal.",
+  Select: "Seleccionar",
+  DisplayName: "Nombre para mostrar",
 
   sidebar: {
     Dashboard: "Tablero de control",

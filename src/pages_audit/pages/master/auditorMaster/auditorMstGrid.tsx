@@ -1,15 +1,15 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 import GridWrapper from "components/dataTableStatic";
-import { AdvocateMstGridMetaData } from "./gridMetadata";
+import { AuditorMstGridMetaData } from "./gridMetadata";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { useMutation, useQuery } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
-import { AdvocateMstFormWrapper } from "./form";
+import { AuditorMstFormWrapper } from "./form";
 import { enqueueSnackbar } from "notistack";
+import { useMutation, useQuery } from "react-query";
 import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
@@ -34,7 +34,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const AdvocateMstGrid = () => {
+export const AuditorMstGrid = () => {
   const isDeleteDataRef = useRef<any>(null);
   const isDataChangedRef = useRef(false);
   const { authState } = useContext(AuthContext);
@@ -74,8 +74,8 @@ export const AdvocateMstGrid = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getAdvocateMstData", authState?.user?.branchCode], () =>
-    API.getAdvocateMstData({
+  >(["getAuditorMstData", authState?.user?.branchCode], () =>
+    API.getAuditorMstData({
       branchCode: authState?.user?.branchCode ?? "",
       companyID: authState?.companyID ?? "",
     })
@@ -90,13 +90,13 @@ export const AdvocateMstGrid = () => {
         });
       }
       queryClient.removeQueries([
-        "getAdvocateMstData",
+        "getAuditorMstData",
         authState?.user?.branchCode,
       ]);
     };
   }, [getEntries]);
 
-  const deleteMutation = useMutation(API.advocateMstDataDML, {
+  const deleteMutation = useMutation(API.auditorMstDataDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -107,7 +107,7 @@ export const AdvocateMstGrid = () => {
       });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       enqueueSnackbar("Record successfully deleted", {
         variant: "success",
       });
@@ -135,8 +135,8 @@ export const AdvocateMstGrid = () => {
         />
       )}
       <GridWrapper
-        key={`advocateMstGrid`}
-        finalMetaData={AdvocateMstGridMetaData as GridMetaDataType}
+        key={`auditorMstGrid`}
+        finalMetaData={AuditorMstGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
@@ -144,26 +144,25 @@ export const AdvocateMstGrid = () => {
         setAction={setCurrentAction}
         refetchData={() => refetch()}
       />
+
       <Routes>
         <Route
           path="view-details/*"
           element={
-            <AdvocateMstFormWrapper
+            <AuditorMstFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
-              gridData={data}
             />
           }
         />
         <Route
           path="add/*"
           element={
-            <AdvocateMstFormWrapper
+            <AuditorMstFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
-              gridData={data}
             />
           }
         />

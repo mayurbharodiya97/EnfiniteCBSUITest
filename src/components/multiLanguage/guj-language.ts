@@ -363,10 +363,37 @@ export const guj_language_data = {
   AuditorName: "ઓડિટરનું નામ",
   PhoneNo: "ફોન નંબર",
   Designation: "હોદ્દો",
+  EnterAuditorName: "ઓડિટરનું નામ દાખલ કરો",
+  AuditorNameisrequired: "ઓડિટરનું નામ જરૂરી છે.",
+  EnterAddress1: "સરનામું 1 દાખલ કરો",
+  EnterAddress2: "સરનામું 2 દાખલ કરો",
+  EnterPhoneNo: "ફોન નંબર દાખલ કરો",
+  SelectDesignation: "હોદ્દો પસંદ કરો",
+
+  // advocate master
+  AdvocateMaster: "એડવોકેટ માસ્ટર",
+  SpecialCharacterIsNotAllowed: "વિશિષ્ટ પાત્રની મંજૂરી નથી.",
+  AdvocateName: "એડવોકેટનું નામ",
+  EnterAdvocateName: "એડવોકેટનું નામ દાખલ કરો",
+  AdvocateNameisrequired: "એડવોકેટનું નામ જરૂરી છે.",
+  Address: "સરનામું",
+  EnterEmailID: "ઈમેલ આઈડી દાખલ કરો",
+  InvalidEmailID: "અમાન્ય ઈમેલ આઈડી.",
 
   // Lien reason master
   LienReasonMaster: "પૂર્વાધિકાર કારણ માસ્ટર",
 
+  // Clearing bank master
+  ClearingBankMaster: "ક્લિયરિંગ બેંક માસ્ટર",
+  RBICode: "આરબીઆઈ કોડ",
+  Exclude: "બાકાત",
+  EnterRBICode: "આરબીઆઈ કોડ દાખલ કરો",
+  RBICodeIsRequired: "આરબીઆઈ કોડ જરૂરી છે.",
+  EnterBankName: "બેંકનું નામ દાખલ કરો",
+  BankNameIsRequired: "બેંક નામ જરૂરી છે.",
+  AtleastOneBranchShouldBeSelected: "ઓછામાં ઓછી એક શાખા પસંદ કરવી જોઈએ",
+  Select: "પસંદ કરો",
+  DisplayName: "ડિસ્પ્લે નામ",
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 

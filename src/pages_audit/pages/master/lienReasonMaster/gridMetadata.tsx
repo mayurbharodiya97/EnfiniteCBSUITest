@@ -26,13 +26,13 @@ export const LienReasonMstGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 70,
+      width: 100,
       minWidth: 60,
-      maxWidth: 100,
+      maxWidth: 150,
       isAutoSequence: true,
     },
     {

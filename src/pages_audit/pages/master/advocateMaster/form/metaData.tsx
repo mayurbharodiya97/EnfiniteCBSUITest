@@ -44,7 +44,7 @@ export const AdvocateMstFormMetaData = {
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Codeisrequired"] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       validate: (columnValue, ...rest) => {
         let regex = /^[^~`!@#$%^&*()\-+_=\\"';:?/<>,.{}[\]|]+$/;
@@ -52,7 +52,6 @@ export const AdvocateMstFormMetaData = {
           return "Specialcharacterisnotallowed";
         }
         const gridData = rest[1]?.gridData;
-        console.log("grid", rest);
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
         const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();

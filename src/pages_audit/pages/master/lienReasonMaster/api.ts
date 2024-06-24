@@ -14,7 +14,7 @@ export const getLienReasonMstData = async ({ companyID, branchCode }) => {
   }
 };
 
-export const LienReasonMstDataDML = async (formData) => {
+export const lienReasonMstDataDML = async (formData) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOLIENREASONMSTDATA",
     formData
