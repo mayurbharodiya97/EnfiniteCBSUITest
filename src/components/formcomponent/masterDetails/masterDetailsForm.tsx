@@ -235,6 +235,10 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
     //     actionFlag
     //   );
     // };
+    const resetMasterForm = () => {
+      myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+      setGridData([]);
+    };
     useImperativeHandle(ref, () => ({
       addNewRow: (ignoreTouch = false, initValue = intialNewRowData) =>
         AddNewRow(ignoreTouch, initValue),
@@ -244,7 +248,9 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       },
       setGridData: setGridData,
       getFieldData: myMasterRef?.current?.getFieldData,
+      handleFormReset: resetMasterForm,
     }));
+
     return (
       <Fragment>
         <div

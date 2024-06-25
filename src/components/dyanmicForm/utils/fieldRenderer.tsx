@@ -192,6 +192,8 @@ export const renderField: RenderFunctionType = (
         {...others}
         enableGrid={true}
         GridProps={{ item: true, ...others?.GridProps }}
+        //update by altaf
+        {...(Component === Typography ? { fieldKey: others.name } : {})}
       />
     );
   } else if (Component === FormButton) {

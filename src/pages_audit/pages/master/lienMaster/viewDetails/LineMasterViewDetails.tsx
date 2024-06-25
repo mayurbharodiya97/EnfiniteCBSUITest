@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import {metaData  } from "./metaData";
+import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
@@ -11,21 +11,27 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoadingTextAnimation } from "components/common/loader";
 
 
 const LienMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  console.log(rows);
-  
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (gridData.length > 0) {
+      setIsLoading(false);
+    }
+  }, [gridData]);
   const mutation = useMutation(API.updateLienData,
 
     {
@@ -57,7 +63,7 @@ const LienMasterForm = ({
   const codeIncreByOne =
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 
-  const onSubmitHandler: SubmitFnType =async  (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
     endSubmit,
@@ -67,10 +73,10 @@ const LienMasterForm = ({
 
     let newData = {
       ...data,
-       };
+    };
     let oldData = {
       ...rows?.[0]?.data,
-     };
+    };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
     isErrorFuncRef.current = {
@@ -93,11 +99,11 @@ const LienMasterForm = ({
         message: "Are you sure to Save the record?",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({
-          data: {...isErrorFuncRef.current?.data },
+          data: { ...isErrorFuncRef.current?.data },
         });
       }
     }
@@ -105,86 +111,92 @@ const LienMasterForm = ({
 
   return (
     <>
-      <FormWrapper
-        key={"LienMasterForm" + formMode}
-        metaData={
-          extractMetaData(
-            metaData,
-            formMode
-          ) as MetaDataType
-        }
-        displayMode={formMode}
-        onSubmitHandler={onSubmitHandler}
-        initialValues={
-          formMode === "add"
-            ? {
+      {isLoading ? (<LoadingTextAnimation />
+      ) : (
+        <FormWrapper
+          key={"LienMasterForm" + formMode}
+          metaData={
+            extractMetaData(
+              metaData,
+              formMode
+            ) as MetaDataType
+          }
+          displayMode={formMode}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={
+            formMode === "add"
+              ? {
                 ...rows?.[0]?.data,
                 LEAN_CD: codeIncreByOne,
               }
-            : { ...(rows?.[0]?.data as InitialValuesType) }
-        }
-        formStyle={{
-          background: "white",
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            {formMode === "edit" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("view");
-                  }}
-                  color={"primary"}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            ) : formMode === "add" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            ) : (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("edit");
-                  }}
-                  color={"primary"}
-                >
-                  Edit
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            )}
-          </>
-        )}
-      </FormWrapper>
-    
+              : { ...(rows?.[0]?.data as InitialValuesType) }
+          }
+          formState={{
+            gridData: gridData,
+            rows: rows?.[0]?.data,
+          }}
+          formStyle={{
+            background: "white",
+          }}>
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              ) : formMode === "add" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    Edit
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
+        </FormWrapper >
+      )}
+
     </>
   );
 };
@@ -206,6 +218,7 @@ export const LienMasterFormWrapper = ({
       }}
       maxWidth="lg"
     >
+
       <LienMasterForm
         closeDialog={closeDialog}
         defaultView={defaultView}

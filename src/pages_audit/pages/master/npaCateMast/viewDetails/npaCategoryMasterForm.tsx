@@ -1,5 +1,5 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { usePopupContext } from "components/custom/popupContext";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { extractMetaData, utilFunction } from "components/utils";
@@ -8,27 +8,53 @@ import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { Transition } from "pages_audit/common";
 import { useContext, useRef, useState } from "react";
+import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
+import * as API from "../api";
 import { NpaCategoryMasterFormMetadata } from "./metaData";
+import { useTranslation } from "react-i18next";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 export const NpaCategoryMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData,
 }) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
-  const [isOpenSave, setIsOpenSave] = useState(false);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const [formMode, setFormMode] = useState(defaultView);
+  const { t } = useTranslation();
 
-  const onSubmitHandler: SubmitFnType = (
+  const mutation = useMutation(API.updateNpaCategoryMasterData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
+
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
     endSubmit,
-    setFieldError,
-    actionFlag
+    setFieldError
   ) => {
     // @ts-ignore
     endSubmit(true);
@@ -37,15 +63,13 @@ export const NpaCategoryMasterForm = ({
     let oldData = { ...rows?.[0]?.data };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
-    if (upd._UPDATEDCOLUMNS.length > 0) {
-      upd._UPDATEDCOLUMNS = upd._UPDATEDCOLUMNS.filter(
-        (field) => field !== "Rate"
-      );
-    }
     isErrorFuncRef.current = {
       data: {
         ...newData,
         ...upd,
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user.branchCode,
+        _isNewRow: defaultView === "new" ? true : false,
       },
       displayData,
       endSubmit,
@@ -55,16 +79,18 @@ export const NpaCategoryMasterForm = ({
     if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
       setFormMode("view");
     } else {
-      setIsOpenSave(true);
+      const btnName = await MessageBox({
+        message: "SaveData",
+        messageTitle: "Confirmation",
+        buttonNames: [t("Yes"), t("NO")],
+        loadingBtnName: ["Yes"],
+      });
+      if (btnName === t("Yes")) {
+        mutation.mutate({
+          data: { ...isErrorFuncRef.current?.data },
+        });
+      }
     }
-  };
-
-  const onPopupYes = (rows) => {
-    setFormMode("view");
-    setIsOpenSave(false);
-  };
-  const onActionCancel = () => {
-    setIsOpenSave(false);
   };
 
   return (
@@ -86,6 +112,10 @@ export const NpaCategoryMasterForm = ({
           background: "white",
           margin: "10px 0",
         }}
+        formState={{
+          gridData: gridData,
+          rows: rows?.[0]?.data,
+        }}
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
@@ -96,9 +126,10 @@ export const NpaCategoryMasterForm = ({
                     handleSubmit(event, "Save");
                   }}
                   disabled={isSubmitting}
+                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
                 >
-                  Save
+                  {t("Save")}
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
@@ -106,7 +137,7 @@ export const NpaCategoryMasterForm = ({
                   }}
                   color={"primary"}
                 >
-                  Cancel
+                  {t("Cancel")}
                 </GradientButton>
               </>
             ) : formMode === "new" ? (
@@ -119,11 +150,11 @@ export const NpaCategoryMasterForm = ({
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
                 >
-                  Save
+                  {t("Save")}
                 </GradientButton>
 
                 <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             ) : (
@@ -134,26 +165,16 @@ export const NpaCategoryMasterForm = ({
                   }}
                   color={"primary"}
                 >
-                  Edit
+                  {t("Edit")}
                 </GradientButton>
                 <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}
           </>
         )}
       </FormWrapper>
-      {isOpenSave ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Do you want to save this Request?"
-          onActionYes={(rowVal) => onPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
-          rows={isErrorFuncRef.current?.data}
-          open={isOpenSave}
-        />
-      ) : null}
     </>
   );
 };
@@ -162,6 +183,7 @@ export const NpaCategoryMasterWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData,
 }) => {
   return (
     <Dialog
@@ -170,17 +192,22 @@ export const NpaCategoryMasterWrapper = ({
       TransitionComponent={Transition}
       PaperProps={{
         style: {
-          width: "100%",
+          width: "auto",
           overflow: "auto",
         },
       }}
       maxWidth="lg"
     >
-      <NpaCategoryMasterForm
-        isDataChangedRef={isDataChangedRef}
-        closeDialog={closeDialog}
-        defaultView={defaultView}
-      />
+      {gridData ? (
+        <NpaCategoryMasterForm
+          isDataChangedRef={isDataChangedRef}
+          closeDialog={closeDialog}
+          defaultView={defaultView}
+          gridData={gridData}
+        />
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </Dialog>
   );
 };

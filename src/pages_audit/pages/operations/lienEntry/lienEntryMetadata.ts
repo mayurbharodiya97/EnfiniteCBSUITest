@@ -137,7 +137,6 @@ export const LienEntryMetadata = {
               let res = await formState.MessageBox({
                 messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
-                buttonNames: ["Ok"],
                 defFocusBtnName: "Ok",
               });
               if (res === "Ok") {
@@ -164,6 +163,7 @@ export const LienEntryMetadata = {
                       dependentValue?.ACCT_TYPE?.optionData
                     ),
                     ignoreUpdate: true,
+                    isFieldFocused: false,
                   },
                   ACCT_NM: {
                     value: postData?.ACCT_NM ?? "",
@@ -184,6 +184,7 @@ export const LienEntryMetadata = {
                     dependentValue?.ACCT_TYPE?.optionData
                   ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",

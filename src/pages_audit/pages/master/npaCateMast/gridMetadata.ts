@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "NPA Category Master (EMST/052)",
+    gridLabel: "NPACategoryMaster",
     rowIdColumn: "NPA_CD",
     defaultColumnConfig: {
       width: 400,
@@ -29,7 +29,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "Sr.No.",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -71,7 +71,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SECURE_PROV_PERC",
-      columnName: "Provision Secure Rate",
+      columnName: "ProvisionSecureRate",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -81,7 +81,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "UNSECURE_PROV_PERC",
-      columnName: "Provision Un-Secure Rate",
+      columnName: "ProvisionUnSecureRate",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -91,7 +91,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ASSET_CLS_DISP",
-      columnName: "A5 Asset Classification Code",
+      columnName: "AssetClassificationCode",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -101,7 +101,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PENAL_ON_OD_OS_DISP",
-      columnName: "Calculate Penal Interest On",
+      columnName: "CalculatePenalInterestOn",
       sequence: 8,
       alignment: "left",
       componentType: "default",

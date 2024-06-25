@@ -22,10 +22,10 @@ export const getCourtMasterArea = async (...reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ AREA_NM, DISPLAY_NM, ...other }) => {
+      responseData = responseData?.map(({ AREA_CD, DISPLAY_NM, ...other }) => {
         return {
           ...other,
-          value: AREA_NM,
+          value: AREA_CD,
           label: DISPLAY_NM,
         };
       });
@@ -36,8 +36,7 @@ export const getCourtMasterArea = async (...reqData) => {
   }
 };
 
-
-export const updateCourtMasterData = async ({ data }) => {
+export const updateCourtMasterData = async (data: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOCOURTMST",
     data

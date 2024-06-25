@@ -40,16 +40,16 @@ const ClearingDateTransferGrid = () => {
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
     }
   );
   const slipMutation: any = useMutation(
     "slipGetRetrievalClearingData",
     API.slipGetRetrievalClearingData,
     {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
     }
   );
   useEffect(() => {
@@ -73,7 +73,6 @@ const ClearingDateTransferGrid = () => {
     actionFlag
   ) => {
     delete data["RETRIEVE"];
-    console.log("data", data);
     if (data?.FLAG === "S") {
       data = {
         CLEARING_DT: format(new Date(data["FR_TRAN_DT"]), "dd/MMM/yyyy"),
@@ -119,7 +118,7 @@ const ClearingDateTransferGrid = () => {
             background: "white",
           }}
           onFormButtonClickHandel={(id) => {
-            let event: any = { preventDefault: () => {} };
+            let event: any = { preventDefault: () => { } };
             // if (mutation?.isLoading) {
             if (id === "RETRIEVE") {
               formRef?.current?.handleSubmit(event, "RETRIEVE");

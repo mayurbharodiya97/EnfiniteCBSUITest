@@ -300,11 +300,11 @@ export const ChequeBookEntryMetaData = {
         allowNegative: true,
       },
       isReadOnly: true,
-      dependentFields: ["SERVICE_TAX", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
       runValidationOnDependentFieldsChange: true,
       validate: (currentField, dependentFields, formState) => {
         if (
-          Number(dependentFields.SERVICE_TAX.value) *
+          Number(dependentFields.AMOUNT.value) *
             Number(dependentFields.CHEQUE_BK_TOTAL.value) >
           Number(currentField.value)
         ) {
@@ -413,11 +413,11 @@ export const ChequeBookEntryMetaData = {
             GST: {
               value: postdata?.[0]?.TAX_RATE ?? "",
             },
-            SERVICE_TAX: {
+            AMOUNT: {
               value: postdata?.[0]?.SERVICE_CHRG ?? "",
             },
 
-            AMOUNT: {
+            SERVICE_TAX: {
               value: postdata?.[0]?.GST_AMT,
             },
             CHEQUE_TO: {
@@ -459,7 +459,7 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "amountField",
       },
-      name: "SERVICE_TAX",
+      name: "AMOUNT",
       label: "ServiceCharge",
       placeholder: "ServiceCharge",
       GridProps: {
@@ -472,7 +472,7 @@ export const ChequeBookEntryMetaData = {
       FormatProps: {
         allowNegative: false,
       },
-      dependentFields: ["SERVICE_C_FLAG"],
+      dependentFields: ["SERVICE_C_FLAG", "ROUND_OFF_FLAG", "GST"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
           return false;
@@ -480,44 +480,50 @@ export const ChequeBookEntryMetaData = {
           return true;
         }
       },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFields
+      ) => {
+        console.log("<<<posyva", field, dependentFields);
+        if (field.value) {
+          return {
+            SERVICE_TAX: {
+              value:
+                dependentFields?.ROUND_OFF_FLAG?.value === "3"
+                  ? Math.floor(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFields?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentFields?.ROUND_OFF_FLAG?.value === "2"
+                  ? Math.ceil(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFields?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentFields?.ROUND_OFF_FLAG?.value === "1"
+                  ? Math.round(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFields?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : (parseInt(field?.value) *
+                      parseInt(dependentFields?.GST?.value)) /
+                      100 ?? "",
+            },
+          };
+        }
+      },
     },
     {
       render: {
         componentType: "amountField",
       },
-      name: "AMOUNT",
+      name: "SERVICE_TAX",
       label: "GSTAmount",
-      type: "text",
       isReadOnly: true,
-      dependentFields: ["SERVICE_TAX", "GST", "ROUND_OFF_FLAG"],
-
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        let value =
-          dependentFields?.ROUND_OFF_FLAG?.value === "3"
-            ? Math.floor(
-                (parseInt(dependentFields?.SERVICE_TAX?.value) *
-                  parseInt(dependentFields?.GST?.value)) /
-                  100
-              ) ?? ""
-            : dependentFields?.ROUND_OFF_FLAG?.value === "2"
-            ? Math.ceil(
-                (parseInt(dependentFields?.SERVICE_TAX?.value) *
-                  parseInt(dependentFields?.GST?.value)) /
-                  100
-              ) ?? ""
-            : dependentFields?.ROUND_OFF_FLAG?.value === "1"
-            ? Math.round(
-                (parseInt(dependentFields?.SERVICE_TAX?.value) *
-                  parseInt(dependentFields?.GST?.value)) /
-                  100
-              ) ?? ""
-            : (parseInt(dependentFields?.SERVICE_TAX?.value) *
-                parseInt(dependentFields?.GST?.value)) /
-                100 ?? "";
-
-        return value ?? "--";
-      },
-
       GridProps: {
         xs: 12,
         md: 2,
@@ -653,13 +659,13 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "amountField",
       },
-      name: "TOTAL_SEVICE_TAX",
+      name: "TOTAL_AMOUNT",
       label: "TotalServiceCharge",
       isReadOnly: true,
-      dependentFields: ["SERVICE_TAX", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
-          Number(dependentFields?.SERVICE_TAX?.value) *
+          Number(dependentFields?.AMOUNT?.value) *
           Number(dependentFields?.CHEQUE_BK_TOTAL?.value);
 
         return value ?? "--";
@@ -683,13 +689,13 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "amountField",
       },
-      name: "TOTAL_AMOUNT",
+      name: "TOTAL_SEVICE_TAX",
       label: "TotalGSTAmount",
       isReadOnly: true,
-      dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["SERVICE_TAX", "CHEQUE_BK_TOTAL"],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
-          Number(dependentFields?.AMOUNT?.value) *
+          Number(dependentFields?.SERVICE_TAX?.value) *
           Number(dependentFields?.CHEQUE_BK_TOTAL?.value);
 
         return value ?? "--";

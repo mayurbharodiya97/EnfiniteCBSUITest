@@ -161,7 +161,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
 export const AccountDetailsGridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Account Details",
+    gridLabel: "AccountDetails",
     rowIdColumn: "SR_NO",
     defaultColumnConfig: {
       width: 120,
@@ -172,7 +172,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     disableSorting: false,
     disableGroupBy: true,
     enablePagination: false,
-    hideFooter: false,
+    hideFooter: true,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -181,48 +181,48 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   filters: [],
   columns: [
     {
-      columnName: "Acct.Status",
+      columnName: "AcctHolderType",
       accessor: "ACCT_STATUS",
       sequence: 1,
       componentType: "default",
       width: 120,
     },
     {
-      columnName: "Account No.",
+      columnName: "AccountNo",
       accessor: "AC_CD",
       sequence: 2,
       componentType: "default",
       width: 220,
     },
     {
-      columnName: "Account Name/Person Name",
+      columnName: "Account_Name",
       accessor: "ACCT_NM",
       sequence: 3,
       componentType: "default",
       width: 300,
     },
     {
-      columnName: "Opening Date",
+      columnName: "OpeningDate",
       accessor: "OP_DATE",
       sequence: 4,
       componentType: "date",
       width: 220,
     },
     {
-      columnName: "Status",
+      columnName: "STATUS",
       accessor: "ORG_STATUS",
       sequence: 5,
       componentType: "default",
       width: 130,
     },
     {
-      columnName: "Close Date",
+      columnName: "CloseDate",
       accessor: "CLOSE_DT",
       sequence: 6,
       componentType: "date",

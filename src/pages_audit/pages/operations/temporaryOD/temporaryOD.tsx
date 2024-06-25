@@ -72,9 +72,11 @@ export const TemporaryOD = () => {
   const crudTempOD: any = useMutation("crudTemoraryOD", API.crudTemoraryOD, {
     onSuccess: (data, variables) => {
       if (Boolean(variables?._isNewRow)) {
+        setIsData((old) => ({ ...old, isVisible: false }));
+        myRef?.current?.handleFormReset();
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
       } else if (!Boolean(variables?.isNewRow)) {
-        enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
+        enqueueSnackbar(t("ForceExpSuccessfully"), { variant: "success" });
         temporaryODDetail.mutate({
           COMP_CD: authState?.companyID,
           BRANCH_CD: variables?.BRANCH_CD,
@@ -141,9 +143,7 @@ export const TemporaryOD = () => {
             const handleTabChange = (metaData, flag) => {
               myRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  metaData.gridConfig.gridLabel = `${t("TemporaryOD")} ${
-                    flag === "T" ? t("Todays") : t("History")
-                  } ${t("Detail")} \u00A0\u00A0 ${(
+                  metaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +

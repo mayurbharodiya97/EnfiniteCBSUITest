@@ -22,6 +22,7 @@ import React, {
   useEffect,
   useState,
   useRef,
+  useMemo,
 } from "react";
 import { lazy } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
@@ -60,7 +61,7 @@ import { makeStyles } from "@mui/styles";
 import { Tabs } from "components/styledComponent/tabs";
 import { Tab } from "components/styledComponent/tab";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
@@ -73,6 +74,9 @@ import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
 import { queryClient } from "cache";
+import { MyAppBar } from "pages_audit/appBar/appBar";
+import DialogWithAppbar from "components/custom/dialogWithAppbar";
+import { t } from "i18next";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,6 +103,7 @@ interface DailyTransTabsProps {
   tabsData: any;
   cardsData: any;
   reqData: any;
+  hideCust360Btn?: boolean;
 }
 
 export const DailyTransTabs = ({
@@ -106,6 +111,7 @@ export const DailyTransTabs = ({
   tabsData,
   cardsData,
   reqData,
+  hideCust360Btn,
 }: DailyTransTabsProps) => {
   const [tabValue, setTabValue] = React.useState(0);
   const navArray = tabsData ? tabsData : [];
@@ -138,7 +144,7 @@ export const DailyTransTabs = ({
                   label={
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <div style={{ marginRight: "0.4rem" }}>
-                        <CommonSvgIcons iconName={a?.TAB_NAME} />
+                        <CommonSvgIcons iconName={a?.ICON} />
                       </div>
                       {a?.TAB_DISPL_NAME}
                     </div>
@@ -152,7 +158,7 @@ export const DailyTransTabs = ({
                 label={
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ marginRight: "0.4rem" }}>
-                      <CommonSvgIcons iconName={"Account"} />
+                      <CommonSvgIcons iconName={"ACCOUNT"} />
                     </div>
                     {"Account"}
                   </div>
@@ -167,78 +173,61 @@ export const DailyTransTabs = ({
             <TabPanel value={tabValue} index={i}>
               <>
                 {/* other trx */}
-                {a?.TAB_NAME.includes("Standing Instruction") && (
-                  <SIDetail reqData={reqData} />
-                )}
-                {a?.TAB_NAME.includes("Lien") && (
+                {a?.TAB_NAME.includes("SI") && <SIDetail reqData={reqData} />}
+                {a?.TAB_NAME.includes("LIEN") && (
                   <LienDetail reqData={reqData} />
                 )}
-                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") && (
-                  <OW_Chq reqData={reqData} />
-                )}
-                {a?.TAB_NAME.includes("Temp.OD/Against") && (
-                  <Temp reqData={reqData} />
-                )}
-                {a?.TAB_NAME.includes("ATM Card") && <ATM reqData={reqData} />}
+                {a?.TAB_NAME.match("OUTWARD") && <OW_Chq reqData={reqData} />}
+                {a?.TAB_NAME.includes("TEMPOD") && <Temp reqData={reqData} />}
+                {a?.TAB_NAME.includes("ATM") && <ATM reqData={reqData} />}
                 {a?.TAB_NAME.match("IMPS") && <IMPS reqData={reqData} />}
                 {a?.TAB_NAME.includes("ASBA") && <ASBA reqData={reqData} />}
-                {a?.TAB_NAME.includes("ACH I/W") && (
-                  <ACH_IW reqData={reqData} />
-                )}
-                {a?.TAB_NAME.includes("ACH O/W") && (
-                  <ACH_OW reqData={reqData} />
-                )}
-                {a?.TAB_NAME.includes("Sp.Instruction") && (
+                {a?.TAB_NAME.includes("ACHIW") && <ACH_IW reqData={reqData} />}
+                {a?.TAB_NAME.includes("ACHOW") && <ACH_OW reqData={reqData} />}
+                {a?.TAB_NAME.includes("SPINST") && (
                   <Instruction reqData={reqData} />
                 )}
-                {a?.TAB_NAME.includes("Group A/c(s)") && (
-                  <Group reqData={reqData} />
-                )}
+                {a?.TAB_NAME.includes("GRPAC") && <Group reqData={reqData} />}
                 {a?.TAB_NAME.includes("APY") && <APY reqData={reqData} />}
                 {a?.TAB_NAME.includes("APBS") && <APBS reqData={reqData} />}
                 {a?.TAB_NAME.includes("PMBY") && <PMBY reqData={reqData} />}
-                {a.TAB_NAME.includes("Account") && (
-                  <AccDetails cardsData={cardsData} />
+                {a.TAB_NAME.includes("ACCOUNT") && (
+                  <AccDetails
+                    cardsData={cardsData}
+                    hideCust360Btn={hideCust360Btn}
+                  />
                 )}
-                {a.TAB_NAME.includes("Joint") && (
+                {a.TAB_NAME.includes("JOINT") && (
                   <JointDetailsForm reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Today's") && (
+                {a.TAB_NAME.includes("TODAYS") && (
                   <TodayTransactionForm reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Cheques") && (
-                  <CheckBook reqData={reqData} />
-                )}
-                {a.TAB_NAME.includes("Snapshot") && (
+                {a.TAB_NAME.includes("CHQ") && <CheckBook reqData={reqData} />}
+                {a.TAB_NAME.includes("SNAPSHOT") && (
                   <Snapshot reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Hold Charges") && (
+                {a.TAB_NAME.includes("HOLDCHRG") && (
                   <HoldCharge reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Documents") && (
-                  <Document reqData={reqData} />
-                )}
-                {a.TAB_NAME.includes("Stop Payment") && (
-                  <StopPay reqData={reqData} />
-                )}
-                {a.TAB_NAME.includes("Insurance") && (
-                  <Insurance reqData={reqData} />
-                )}
-                {a.TAB_NAME.includes("Disbursement Details") && (
+                {a.TAB_NAME.includes("DOCS") && <Document reqData={reqData} />}
+                {a.TAB_NAME.includes("STOP") && <StopPay reqData={reqData} />}
+                {a.TAB_NAME.includes("INSU") && <Insurance reqData={reqData} />}
+                {a.TAB_NAME.includes("DISBDTL") && (
                   <Disbursement reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Subsidy") && (
+                {a.TAB_NAME.includes("SUBSIDY") && (
                   <Subsidyy reqData={reqData} />
                 )}
                 {/* {a.TAB_NAME.includes("Search") && <Search reqData={reqData} />} */}
-                {a.TAB_NAME.includes("Limits") && <Limit reqData={reqData} />}
-                {a.TAB_NAME.includes("Stock") && <Stock reqData={reqData} />}
+                {a.TAB_NAME.includes("LIMIT") && <Limit reqData={reqData} />}
+                {a.TAB_NAME.includes("STOCK") && <Stock reqData={reqData} />}
               </>
             </TabPanel>
           ))
         ) : (
           <TabPanel value={tabValue} index={0}>
-            <AccDetails cardsData={cardsData} />
+            <AccDetails cardsData={cardsData} hideCust360Btn={hideCust360Btn} />
           </TabPanel>
         )}
       </>
@@ -267,7 +256,9 @@ export const DailyTransTabsWithDialog = ({
   rowsData,
   setRowsData,
 }) => {
+  console.log("sjicfbsjbdcjsc", "avcuivhbadavbjbasjdksvbdj");
   const [cardData, setCardsData] = useState<any>([]);
+  const [updatedMtdata, setUpdatedMtdata] = useState<any>({});
   const navigate = useNavigate();
   const previousRowData = useRef(null);
   const controllerRef = useRef<AbortController>();
@@ -299,6 +290,39 @@ export const DailyTransTabsWithDialog = ({
     any
   >(["getAcctDtlList"], () => API.getAcctDtlList(rowsData?.[0]?.data));
 
+  // const memoizedMetadata = useMemo(() => {
+  //   return AccountDetailsGridMetadata;
+  // }, []);
+
+  // const updatedMetadataFn = useCallback(() => {
+  //   const updatedMetadata = {
+  //     ...memoizedMetadata,
+  //     gridConfig: {
+  //       ...memoizedMetadata.gridConfig,
+  //       gridLabel:
+  //         data?.length > 0
+  //           ? t("AccountDetails") + "-" + t("TotalNoOfRecords") + data?.length
+  //           : t("AccountDetails"),
+  //     },
+  //   };
+  //   return updatedMetadata;
+  // }, [memoizedMetadata, data, t]);
+  const updatedMetadata = {
+    ...AccountDetailsGridMetadata,
+    gridConfig: {
+      ...AccountDetailsGridMetadata.gridConfig,
+      gridLabel:
+        data?.length > 0
+          ? t("AccountDetails") + "-" + t("TotalNoOfRecords") + data?.length
+          : t("AccountDetails"),
+    },
+  };
+
+  // useEffect(() => {
+  //   const data = updatedMtdata;
+  //   console.log(data, "dfjubdfjdjfjbdjf");
+  // }, [updatedMtdata]);
+
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardsData(data);
@@ -315,6 +339,9 @@ export const DailyTransTabsWithDialog = ({
       setCardsData([]);
     },
   });
+  useEffect(() => {
+    console.log(updatedMtdata, "updatedMtdataupdatedMtdataupdatedMtdata");
+  }, [updatedMtdata]);
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "_rowChanged") {
@@ -387,100 +414,54 @@ export const DailyTransTabsWithDialog = ({
   }, []);
 
   return (
-    <Dialog
+    <DialogWithAppbar
       open={true}
-      fullScreen
-      PaperProps={{ style: { background: "var(--theme-color4)" } }}
-    >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          background: "var(--theme-color5)",
-          margin: "10px 32px 0px 32px",
-          alignItems: "center",
-          height: "7vh",
-          boxShadow:
-            "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
-        }}
-      >
-        <Typography
-          sx={{
-            fontWeight: 500,
-            fontSize: "1.25rem",
-            lineHeight: 1.6,
-            letterSpacing: "0.0075em",
-            color: "#fff",
-          }}
-        >
-          {`Account Details For Customer ID : ${
-            rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
-          }`}
-        </Typography>
-        <Box>
-          {/* <GradientButton
-            onClick={() =>
-              navigate("view-details", {
-                state: [
-                  {
-                      data: {
-                          BRANCH: "099 ",
-                          CONFIRMED_FLAG: "CONFIRMED",
-                          CATEGORY_CODE: "01  ",
-                          ACTIVE: "Y",
-                          MOBILE_NUMBER: "7858089344",
-                          CUSTOMER_TYPE: "I",
-                          CUSTOMER_ID: "213951",
-                          KYC_NO: "",
-                          REMARKS: "",
-                          REQUEST_ID: "1492",
-                          CATEG_NM: "INDIVIDUAL PERSON",
-                          UPD_TAB_FLAG_NM: "D",
-                          CONSTITUTION_NAME: "INDIVIDUAL",
-                          CUSTOMER_NAME: "HINAL  ",
-                          CONFIRMED: "Y",
-                          UPD_TAB_NAME: "EXISTING DOC MODIFY",
-                          CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
-                          MAKER: "adi",
-                          PAN_NO: "DWIPP9643D",
-                          CONSTITUTION_TYPE: "01"
-                      },
-                      id: "213951"
-                  }
-              ],
-              })
-            }
-            color="primary"
-          >
-            Customer Details
-          </GradientButton> */}
-          <GradientButton onClick={() => handleClose()} color="primary">
-            Close
-          </GradientButton>
-        </Box>
-      </DialogTitle>
-      {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
-        <LinearProgress
-          sx={{
-            margin: "4px 32px 0 32px",
-            background: "var(--theme-color6)",
-            "& .MuiLinearProgress-bar": {
-              background: "var(--theme-color1) !important",
-            },
-          }}
-        />
-      ) : null}
-      <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+      paperProps={{ style: { background: "var(--theme-color4)" } }}
+      // title={
+      //   <>
+      //     <Typography
+      //       sx={{
+      //         fontWeight: 500,
+      //         fontSize: "1.25rem",
+      //         lineHeight: 1.6,
+      //         letterSpacing: "0.0075em",
+      //         color: "#fff",
+      //       }}
+      //     >
+      //       {`Account Details For Customer ID : ${
+      //         rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
+      //       }`}
+      //     </Typography>
+      //     <Box>
+      //       <GradientButton onClick={() => handleClose()} color="primary">
+      //         Close
+      //       </GradientButton>
+      //     </Box>
+      //   </>
+      // }
+      content={
         <>
           <DailyTransTabs
             heading={""}
             tabsData={tabsDetails}
             cardsData={cardData}
             reqData={rowsData?.[0]?.data}
+            hideCust360Btn={true}
           />
+          {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
+            <LinearProgress
+              sx={{
+                // margin: "4px 32px 0 32px",
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
+          ) : null}
           <GridWrapper
             key={`TodaysTransactionTableGrid${isLoading}`}
-            finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
+            finalMetaData={updatedMetadata as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
             ReportExportButton={true}
@@ -490,25 +471,133 @@ export const DailyTransTabsWithDialog = ({
             onlySingleSelectionAllow={true}
             isNewRowStyle={true}
             defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
+            hideActionBar={true}
           />
+          {/* <Routes>
+            <Route
+              path="view-details"
+              element={
+                <CkycProvider>
+                  <FormModal
+                    onClose={() => {
+                      console.log("closing....");
+                      navigate(".");
+                    }}
+                    formmode={"new"}
+                    from={"new-entry"}
+                  />
+                  <p>asdasd</p>
+                  // <FormModal
+                  //   onClose={() => {
+                  //     navigate(".");
+                  //   }}
+                  //   formmode={"new"}
+                  //   from={"new-entry"}
+                  // />
+                </CkycProvider>
+              }
+            />
+          </Routes> */}
         </>
-        <Routes>
-          <Route
-            path="view-details"
-            element={
-              <CkycProvider>
-                <FormModal
-                  onClose={() => {
-                    navigate(".");
-                  }}
-                  formmode={"new"}
-                  from={"new-entry"}
-                />
-              </CkycProvider>
+      }
+      actions={
+        <>
+          <GradientButton onClick={() => handleClose()}>
+            {t("Close")}
+          </GradientButton>
+          {/* <GradientButton
+            onClick={() =>
+              navigate("operations/ckyc/view-details", {
+                state: {
+                  isFormModalOpen: true,
+                  entityType: "I",
+                  isFreshEntry: true,
+                },
+              })
             }
-          />
-        </Routes>
-      </DialogContent>
-    </Dialog>
+            color="primary"
+          >
+            Customer Details
+          </GradientButton> */}
+        </>
+      }
+      // {/* <DialogTitle
+      //   sx={{
+      //     display: "flex",
+      //     justifyContent: "space-between",
+      //     background: "var(--theme-color5)",
+      //     margin: "10px 32px 0px 32px",
+      //     alignItems: "center",
+      //     height: "7vh",
+      //     boxShadow:
+      //       "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+      //   }}
+      // >
+      //   <Typography
+      //     sx={{
+      //       fontWeight: 500,
+      //       fontSize: "1.25rem",
+      //       lineHeight: 1.6,
+      //       letterSpacing: "0.0075em",
+      //       color: "#fff",
+      //     }}
+      //   >
+      //     {`Account Details For Customer ID : ${
+      //       rowsData?.[0]?.data?.CUSTOMER_ID ?? ""
+      //     }`}
+      //   </Typography>
+
+      // </DialogTitle> */}
+      // {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
+      //   <LinearProgress
+      //     sx={{
+      //       margin: "4px 32px 0 32px",
+      //       background: "var(--theme-color6)",
+      //       "& .MuiLinearProgress-bar": {
+      //         background: "var(--theme-color1) !important",
+      //       },
+      //     }}
+      //   />
+      // ) : null}
+      // <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+      //   <>
+      //     <DailyTransTabs
+      //       heading={""}
+      //       tabsData={tabsDetails}
+      //       cardsData={cardData}
+      //       reqData={rowsData?.[0]?.data}
+      //     />
+      //     <GridWrapper
+      //       key={`TodaysTransactionTableGrid${isLoading}`}
+      //       finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
+      //       data={data ?? []}
+      //       setData={() => null}
+      //       ReportExportButton={true}
+      //       actions={[]}
+      //       setAction={setCurrentAction}
+      //       loading={isLoading || isFetching}
+      //       onlySingleSelectionAllow={true}
+      //       isNewRowStyle={true}
+      //       defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
+      //     />
+      //   </>
+      //   <Routes>
+      //     <Route
+      //       path="view-details"
+      //       element={
+      //         <CkycProvider>
+      //           <FormModal
+      //             onClose={() => {
+      //               navigate(".");
+      //             }}
+      //             formmode={"new"}
+      //             from={"new-entry"}
+      //           />
+      //         </CkycProvider>
+      //       }
+      //     />
+      //   </Routes>
+      // </DialogContent>
+    />
   );
 };

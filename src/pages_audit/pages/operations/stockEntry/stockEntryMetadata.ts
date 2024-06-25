@@ -45,6 +45,7 @@ export const StockEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        isReadOnly: true,
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {

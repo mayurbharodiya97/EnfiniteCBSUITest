@@ -213,7 +213,6 @@ export const TRN001_Table = ({
       // USER_DEF_REMARKS: remarks,
       USER_DEF_REMARKS: input,
     };
-
     input?.length > 5
       ? deleteScrollByVoucher.mutate(obj)
       : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {

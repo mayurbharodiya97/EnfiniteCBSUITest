@@ -12,12 +12,14 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 
 //logical
 import "./accDetails.css";
-import { AccDetailContext } from "pages_audit/auth";
+import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+import { GradientButton } from "components/styledComponent/button";
+import { DailyTransTabsWithDialog } from "../DailyTransTabs";
 
 const useStyles = makeStyles((theme) => ({
   // cardContainer: {
@@ -68,22 +70,39 @@ const cardDimensions = {
   },
 };
 
-export const AccDetails = ({ cardsData }) => {
+export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const [cardName, setCardName] = useState<any>([]);
+  const [isOpenCust360, setIsOpenCust360] = useState<boolean>(false);
+  const [rowsDatas, setRowsDatas] = useState<any>([]);
   const classes = useStyles();
   const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
-
+  const { authState } = useContext(AuthContext);
   let cardsInfo = cardsData ?? [];
 
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
     let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
     setCardName(arr3);
+    const customerIDObj = cardsData.find(
+      (item) => item.COL_LABEL === "Customer ID"
+    );
+    const customerID = customerIDObj ? customerIDObj.COL_VALUE : null;
+    setRowsDatas([
+      {
+        data: {
+          COMP_CD: authState?.companyID,
+          A_FLAG: "",
+          BRANCH_CD: "",
+          ACCT_TYPE: "",
+          ACCT_CD: "",
+          CUSTOMER_ID: customerID,
+        },
+      },
+    ]);
   }, [cardsData]);
 
-  console.log(cardsInfo, "cardsInfocardsInfo");
   const filteredCardsInfo1 = cardsInfo.filter((card) => card.CARD_NO === "1");
   const filteredCardsInfo2 = cardsInfo.filter((card) => card.CARD_NO === "2");
   const filteredCardsInfo3 = cardsInfo.filter((card) => card.CARD_NO === "3");
@@ -91,7 +110,9 @@ export const AccDetails = ({ cardsData }) => {
   const isOddTotal1 = filteredCardsInfo1.length % 2 === 1;
   const isOddTotal2 = filteredCardsInfo2.length % 2 === 1;
   const isOddTotal3 = filteredCardsInfo3.length % 2 === 1;
-
+  const handleClose = () => {
+    setIsOpenCust360(false);
+  };
   return (
     <>
       {cardName?.length > 0 ? (
@@ -147,7 +168,7 @@ export const AccDetails = ({ cardsData }) => {
                           }}
                         >
                           <Typography className={classes.cardLabel}>
-                            {b?.COL_LABEL}
+                            {b?.COL_LABEL}{" "}
                           </Typography>
                           <Typography>
                             {b?.COMPONENT_TYPE === "amountField" ? (
@@ -177,7 +198,20 @@ export const AccDetails = ({ cardsData }) => {
                                 </span>
                               )
                             ) : (
-                              <span>{b?.COL_VALUE}</span>
+                              <span>
+                                {b?.COL_VALUE}{" "}
+                                {!hideCust360Btn &&
+                                  b?.COL_LABEL === "Customer ID" && (
+                                    <GradientButton
+                                      style={{ height: "1.5rem" }}
+                                      onClick={() => {
+                                        setIsOpenCust360(true);
+                                      }}
+                                    >
+                                      Customer 360
+                                    </GradientButton>
+                                  )}
+                              </span>
                             )}
                           </Typography>
                         </Grid>
@@ -208,6 +242,13 @@ export const AccDetails = ({ cardsData }) => {
         >
           <div style={{ paddingTop: "10%" }}></div>
         </Card>
+      )}
+      {isOpenCust360 && (
+        <DailyTransTabsWithDialog
+          handleClose={handleClose}
+          rowsData={rowsDatas}
+          setRowsData={setRowsDatas}
+        />
       )}
     </>
   );

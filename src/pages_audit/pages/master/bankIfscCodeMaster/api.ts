@@ -80,7 +80,7 @@ console.log(reqData);
     try {
   
         const { data, status, message, messageDetails } = await AuthSDK.internalFetcher(
-            "GETFILETOJSON",
+            "IMPORTFILE",
             {
              ...reqData
             }

@@ -1,8 +1,10 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+
 export const limitEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "LimitDetail",
+    subGridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -102,6 +104,8 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
       isVisible: true,
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
     },
     {
       accessor: "LIMIT_AMOUNT",
@@ -109,6 +113,8 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
       width: 120,
       minWidth: 90,
       maxWidth: 150,

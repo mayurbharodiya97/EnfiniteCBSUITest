@@ -45,14 +45,10 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
     async function apiCall() {
       let buttonName = await MessageBox({
         messageTitle: "confirmation",
-        message: `
-                Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,                             
-                Press 'No' then to view all the FD(s) of
-                this Customer.
-            `,
-        buttonNames: ["Yes", "No"],
+        message: `Press 'Yes' then - to view Lien FD(s) against this A/c.,\nPress 'No' then to view all the FD(s) of  this Customer.`,
+        buttonNames: ["Yes", "No", "Cancel"],
       });
-      if (buttonName) {
+      if (buttonName === "Yes" || buttonName === "No") {
         myMasterRef?.current?.getFieldData().then((res) => {
           if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
             fdDetail.mutate({
@@ -61,10 +57,13 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
               ACCT_TYPE: res?.ACCT_TYPE,
               BRANCH_CD: res?.BRANCH_CD,
               LOGIN_COMP_CD: authState?.companyID,
-              FLAG: buttonName === "Yes" ? "L" : "C",
+              FLAG:
+                buttonName === "Yes" ? "L" : buttonName === "No" ? "C" : null,
             });
           }
         });
+      } else {
+        navigate(".");
       }
     }
     apiCall();
