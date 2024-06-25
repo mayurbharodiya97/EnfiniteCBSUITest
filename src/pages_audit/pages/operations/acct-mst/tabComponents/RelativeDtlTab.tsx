@@ -71,7 +71,19 @@ const RelativeDtlTab = () => {
     }
     endSubmit(true);
   };
-  const initialVal:any= {}
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? {RELATIVE_DTL: [{}]}
+        : AcctMSTState?.formDatactx["RELATIVE_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? {}, ...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["RELATIVE_DTL"]
+  ])
 
   const handleSave = (e) => {
     handleCurrFormctx({

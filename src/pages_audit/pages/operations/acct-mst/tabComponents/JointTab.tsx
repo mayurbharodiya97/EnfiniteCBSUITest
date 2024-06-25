@@ -71,9 +71,19 @@ const JointTab = () => {
       // setIsNextLoading(false);
       setFormStatus(old => [...old, false])
     }
-    endSubmit(true);
-  };
-  const initialVal: any = {};
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {JOINT_ACCOUNT_DTL: [{}]}
+        : AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}, ...AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
+  ])
 
   const handleSave = (e) => {
     handleCurrFormctx({
