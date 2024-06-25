@@ -2,22 +2,19 @@ import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
-import * as API from "../api";
-import { format } from "date-fns";
-import { ckyc_pending_req_meta_data } from "../metadata";
+import * as API from "./api";
+import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import FormModal from "../formModal/formModal";
-import { Grid, Typography } from "@mui/material";
-import { t } from "i18next";
-import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
+import AcctModal from "./AcctModal";
+import { Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 import { MessageBoxWrapper } from "components/custom/messageBox";
 
 
-export const CkycConfirm = () => {
+const AcctConfirm = () => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [rowsData, setRowsData] = useState<any[]>([]);
@@ -29,22 +26,20 @@ export const CkycConfirm = () => {
   
 
   const {
-      data: PendingData,
-      isError: isPendingError,
-      isLoading: isPendingDataLoading,
-      isFetching: isPendingDataFetching,
-      refetch: PendingRefetch,
-      error: PendingError,
-  } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
-    API.getPendingData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
+    data: PendingAcct,
+    isError: isPendingError,
+    isLoading: isPendingAcctLoading,
+    isFetching: isPendingAcctFetching,
+    refetch: PendingRefetch,
+    error: PendingError,
+    } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
+    API.getPendingAcct({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        REQ_FLAG: "P",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      REQ_FLAG: "P",
-      // ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
-      // ENTERED_DATE: "22-12-2023"
     })
-  )
+    )
 
   const actions: ActionTypes[] = [
     {
@@ -91,10 +86,10 @@ export const CkycConfirm = () => {
     PendingRefetch()
   }, [location])
 
-    ckyc_pending_req_meta_data.gridConfig.gridLabel = "Confirmation Pending Request";
-    ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
-      min: "42vh",
-      max: "65vh",
+    pendingAcctMetadata.gridConfig.gridLabel = "Confirmation Pending Request";
+    pendingAcctMetadata.gridConfig["containerHeight"] = {
+      min: "60vh",
+      max: "calc(100vh - 200px)",
     }
 
   return (
@@ -117,11 +112,11 @@ export const CkycConfirm = () => {
           {t("Confirmation Pending")}
         </Typography> */}
         <GridWrapper
-          key={`ckycConfirmation`+PendingData}
-          finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
-          data={PendingData ?? []}
+          key={`ckycConfirmation`+PendingAcct}
+          finalMetaData={pendingAcctMetadata as GridMetaDataType}
+          data={PendingAcct ?? []}
           setData={() => null}
-          loading={isPendingDataLoading || isPendingDataFetching}
+          loading={isPendingAcctLoading || isPendingAcctFetching}
           actions={actions}
           setAction={setCurrentAction}
           refetchData={() => PendingRefetch()}
@@ -146,15 +141,15 @@ export const CkycConfirm = () => {
           <Route
             path="view-detail/*"
             element={
-              <FormModal
-                onClose={() => navigate(".")}
-                formmode={"view"}
-                from={"confirmation-entry"}
-              />
+                <AcctModal
+                    onClose={() => navigate(".")}
+                    formmode={"view"}
+                    from={"pending-entry"}
+                />
             }
           />
 
-          <Route
+          {/* <Route
             path="photo-signature/*"
             element={
               <PhotoSignConfirmDialog
@@ -164,8 +159,10 @@ export const CkycConfirm = () => {
                 }}
               />
             }
-          />
+          /> */}
         </Routes>
     </Grid>
   );
 };
+
+export default AcctConfirm;

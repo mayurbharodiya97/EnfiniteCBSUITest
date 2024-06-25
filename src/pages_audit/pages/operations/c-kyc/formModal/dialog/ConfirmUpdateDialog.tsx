@@ -69,7 +69,15 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL, setAlertOnU
     }
 
     return <PopupRequestWrapper
-        MessageTitle={mutation.isError ? "ERROR" : "SUCCESS"}
+        MessageTitle={
+            !shouldUpdate 
+                ? "CONFIRM" 
+                : mutation.isLoading
+                    ? "LOADING"
+                    : mutation.isError 
+                        ? "ERROR" 
+                        : "SUCCESS"
+        }
         Message={
             !shouldUpdate 
                 ? "Are you sure you want to apply changes and update ?"
@@ -102,6 +110,7 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL, setAlertOnU
                         setAlertOnUpdate(true)
                         abortUpdate()
                     } else if(Object.keys(updated_tab_format)?.length>0) {
+                        console.log("wkeuhfiwuefhdwiuef", updated_tab_format)
                         const payload = {
                           COMP_CD: authState?.companyID ?? "",
                           updated_tab_format: updated_tab_format,

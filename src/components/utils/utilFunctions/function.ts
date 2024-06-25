@@ -21,6 +21,34 @@ export const GetMaxCdForDetails = (data, keys) => {
     return 1;
   }
 };
+
+export const GetMaxDisplaySequenceCd = (data, keys) => {
+  if (Array.isArray(data)) {
+    if (!Boolean(keys)) {
+      return data.length + 1;
+    }
+    let maxCd = 0;
+    data.forEach((item, index) => {
+      if (typeof item[keys] !== "undefined") {
+        let { _hidden } = item;
+        if (
+          typeof _hidden === "undefined" ||
+          (typeof _hidden === "boolean" && !Boolean(_hidden))
+        ) {
+          if (parseFloat(item[keys]) > maxCd) {
+            maxCd = parseFloat(item[keys]);
+          }
+        }
+      } else if (maxCd < index + 1) {
+        maxCd = index + 1;
+      }
+    });
+    return maxCd + 1;
+  } else {
+    return 1;
+  }
+};
+
 export const base64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays: any = [];

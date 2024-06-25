@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { AppBar, Dialog, IconButton } from "@mui/material";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const DeactivateCustomer = ({rowdata, onClose}) => {
     const { authState } = useContext(AuthContext);
@@ -13,8 +17,9 @@ export const DeactivateCustomer = ({rowdata, onClose}) => {
     const [isDialogOpen, setIsDialogOpen] = useState(true)
     const [dependecyDialogOpen, setDependecyDialogOpen] = useState(false)
     const {state:data} = useLocation();
+    const { MessageBox } = usePopupContext();
     // console.log("::stateeee", data)
-    const {data:inactivateCustData, isError: isinactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
+    const {data:inactivateCustData, isError: isinactivateCustError, error: InactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
       ["DeactivateCustomer", {data }],
       () => API.DeactivateCustomer({
         COMP_CD: authState?.companyID ?? "",
@@ -26,12 +31,33 @@ export const DeactivateCustomer = ({rowdata, onClose}) => {
     )
 
     useEffect(() => {
-      if(!isinactivateCustLoading && inactivateCustData) {
-        // console.log("DeactivateCustomer data", inactivateCustData)
-        setIsDialogOpen(true)
+      if(inactivateCustData && !isinactivateCustLoading) {
+        let data:any[] = inactivateCustData;
+        if(Array.isArray(data) && data?.length>0) {
+          if(data?.[0]?.STATUS === "999" && Boolean(data?.[0]?.MSG)) {
+            msgBox(data?.[0]?.STATUS ,data?.[0]?.MSG);
+          } else if(data?.[0]?.STATUS === "0") {
+            msgBox(data?.[0]?.STATUS, "")            
+          }
+        }
       }
     }, [inactivateCustData, isinactivateCustLoading])
 
+    const msgBox = async (status, msg) => {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message: status === "999" ? msg : `Customer Deactivated Successfully : ${data?.[0]?.data?.CUSTOMER_ID}`,
+        buttonNames: ["Ok"],
+        loadingBtnName: "Yes",
+      });
+      if(buttonName === "Ok") {
+        if(status === "999") {
+          setDependecyDialogOpen(true)
+        } else if(status === "0") {
+          onClose();
+        }
+      }
+    }
 
   return (
     <React.Fragment>
@@ -46,82 +72,57 @@ export const DeactivateCustomer = ({rowdata, onClose}) => {
         }} 
       />
       }
-      <Dialog open={true}
-      // onClose={() => setIsDialogOpen(false)}
-        // PaperProps={{
-        //   style: {
-        //       minWidth: "1000px",
-        //       width: "auto",
-        //       maxWidth: "1100px",
-        //       height: "90%",
-        //   }
-        // }}
-        // sx={{width:"100px", height: "100px"}}
-      >
-        {/* {inactivateCustData && <p>asdasd</p>} */}
-        <DialogTitle
-          sx={{
-            background: "var(--theme-color3)",
-            color: "var(--theme-color2)",
-            letterSpacing: "1.3px",
-            margin: "10px",
-            boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-            fontWeight: 500,
-            borderRadius: "inherit",
-            minWidth: "450px",
-            py: 1,
-          }}
-          id="responsive-dialog-title"
-        >
-          {`Deactivate Customer ID ${data?.[0]?.data?.CUSTOMER_ID ? `: ${data?.[0]?.data?.CUSTOMER_ID}` : null}`}
-          {/* rowdata?.[0]?.data?.CUSTOMER_ID */}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText
-            sx={{ fontSize: "19px", display: "flex" }}
-          >
-            {inactivateCustData && <p>Customer mapped with accounts: {inactivateCustData?.[0]?.TOTAL_ACCT}</p>}
-            {/* Are you sure want to logout...{" "} */}
-            {/* <HelpIcon color="secondary" fontSize="large" /> */}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          {/* <GradientButton
-            // sx={{
-            //   color: "var(--theme-color2)",
-            // }}
-            autoFocus
-            // onClick={() => setLogoutOpen(false)}
-          >
-            No
-          </GradientButton> */}
-          <GradientButton
-            // sx={{
-            //   color: "var(--theme-color2)",
-            // }}
-            // onClick={() => authController?.logout()}
-            onClick={() => {
-              // if(inactivateCustData?.[0]?.TOTAL_ACCT && inactivateCustData?.[0]?.TOTAL_ACCT !== 0) {
-              //   navigate("dependencies")
-              //   // <Dependencies 
-              //   //   rowsData={rowdata}
-              //   //   open={isDialogOpen}
-              //   //   onClose={() => setIsDialogOpen(false)} 
-              //   // />
-              // } else {
-                if(Number(inactivateCustData?.[0]?.TOTAL_ACCT) !== 0) {
-                  setDependecyDialogOpen(true)
-                }
-                // onClose(inactivateCustData?.[0]?.TOTAL_ACCT)
-              // }
+    <Dialog
+      open={true}
+      maxWidth="lg"
+      PaperProps={{
+        style: {
+          minWidth: "70%",
+          width: "80%",
+          // maxWidth: "90%",
+        },
+      }}
+    >
+        {isinactivateCustLoading ? (
+          <div style={{ height: 100, paddingTop: 10 }}>
+            <div style={{ padding: 10 }}>
+              <LoaderPaperComponent />
+            </div>
+            {typeof onClose === "function" ? (
+              <div style={{ position: "absolute", right: 0, top: 0 }}>
+                <IconButton onClick={onClose}>
+                  <HighlightOffOutlinedIcon />
+                </IconButton>
+              </div>
+            ) : null}
+          </div>
+        ) : isinactivateCustError && (
+          <div
+            style={{
+              paddingRight: "10px",
+              paddingLeft: "10px",
+              height: 100,
+              paddingTop: 10,
             }}
-            autoFocus
           >
-            OK
-          </GradientButton>
-        </DialogActions>
-      </Dialog>
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={InactivateCustError?.error_msg ?? "Unknow Error"}
+                errorDetail={InactivateCustError?.error_detail ?? ""}
+                color="error"
+              />
+              {typeof onClose === "function" ? (
+                <div style={{ position: "absolute", right: 0, top: 0 }}>
+                  <IconButton onClick={onClose}>
+                    <HighlightOffOutlinedIcon />
+                  </IconButton>
+                </div>
+              ) : null}
+            </AppBar>
+          </div>
+        )}
+    </Dialog>      
     </React.Fragment>
   );
 };

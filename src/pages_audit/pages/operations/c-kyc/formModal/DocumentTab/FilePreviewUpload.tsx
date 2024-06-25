@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogTitle } from "@mui/material";
+// import { Box, Button, Dialog, DialogTitle } from "@mui/material";
 import {
   ImageViewer,
   NoPreview,
@@ -9,25 +9,27 @@ import { UploadTarget } from "components/fileUpload/uploadTarget";
 import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-import { Fragment, useCallback, useEffect, useState } from "react";
+    // import { Fragment, useCallback, useEffect, useState } from "react";
 
-const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow }) => {
-  const [files, setFiles] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
-  // console.log(detailsDataRef, "detailsDataRefdetailsDataRef", filesGridData)
+import { Box, Button, Dialog, DialogTitle } from "@mui/material";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { CkycContext } from "../../CkycContext";
+
+const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, 
+  // mainDocRow
+ }) => {
+  const { state: ckycState } = useContext(CkycContext);
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
   };
-  useEffect(() => {
-    if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
-      if(detailsDataRef.NEW_FLAG === "N") {
-        setAllowUpdate(true)
-      }
-    } else {
-      setAllowUpdate(true)
-    }
-  }, [])
+
+  const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
+  const [files, setFiles] = useState<any>(null);
+
+  const onClose = () => {
+    // setFiles(null)
+    setOpen(false)
+  }
   const validateFilesAndAddToListCB = useCallback(
     async (newFiles: File[], existingFiles: FileObjectType[] | undefined) => {
       // console.log("file change... new file ", newFiles)
@@ -47,16 +49,6 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
             const maxAllowedSize = 1024 * 1024 * 3;
             if (fileSize <= maxAllowedSize) {
               setFiles(filesObj[0]);
-              //   fileURL.current =
-              //     typeof filesObj?.[0]?.blob === "object" &&
-              //     Boolean(filesObj?.[0]?.blob)
-              //       ? await URL.createObjectURL(filesObj?.[0]?.blob as any)
-              //       : null;
-              //   setImageData(filesObj?.[0]?.blob);
-
-              //   fileName.current = filesObj?.[0]?.blob?.name;
-              //   //submitBtnRef.current?.click?.();
-              //   setFilecnt(filecnt + 1);
             } else {
               enqueueSnackbar("Image size should be less than 5 MB.", {
                 variant: "warning",
@@ -72,39 +64,57 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
     },
     [files, setFiles]
   );
-  // useEffect(() => {
-  //   console.log("file change...", files);
-  // }, [files, setFiles]);
-
-  useEffect(() => {
-    // console.log("wehfiuwqefhwiuefhweihfiuwehfu detailsDataRef", detailsDataRef)
-    if(detailsDataRef && Boolean(detailsDataRef?.DOC_IMAGE)) {
-        const fileBlob = utilFunction.blobToFile(
-            utilFunction.base64toBlob(
-                detailsDataRef?.DOC_IMAGE,
-                detailsDataRef?.IMG_TYPE?.includes("pdf")
-                ? "application/pdf"
-                : "image/" + detailsDataRef?.IMG_TYPE
-            )
-            // ,rows?.FILE_NAME
-            ,""
-        )
-        // const fileBlob = utilFunction.base64toBlob(
-        //   mySubGridData.current?.[0]?.DOC_IMAGE,
-        //   mySubGridData.current?.[0]?.IMG_TYPE === "pdf"
-        //     ? "application/pdf"
-        //     : "image/" + mySubGridData.current?.[0]?.IMG_TYPE
-        // );
-        // console.log("qewfhniwuehf", fileBlob)
-        setFiles({blob: fileBlob});
-    } else {
-      setFiles(null)
-    }
-  }, []);
-
-
 
   const onSave = async () => {
+    let base64Data = "";
+    let docImage = "";
+    let imageType = "";
+    if(Boolean(files) && Boolean(files.blob)) {
+      base64Data = await utilFunction.convertBlobToBase64(files?.blob);
+      if(Array.isArray(base64Data) && base64Data.length>1) {
+        docImage = base64Data[1];
+        imageType = files?.blob?.type;
+      }
+    }
+        myRef?.current.setGridData(old => {
+          let newGridArr = old;
+          if(!Boolean(detailsDataRef.NEW_FLAG)) {
+            newGridArr = old.map(gridRow => {
+              if(gridRow.LINE_ID === detailsDataRef.LINE_ID 
+                && gridRow.DOC_IMAGE !== docImage) {
+                return {
+                  ...gridRow,
+                  DOC_IMAGE: docImage,
+                  IMG_TYPE: imageType,
+                }
+              } else {
+                return gridRow;
+              }
+            })
+          } else {
+            newGridArr = old.map(gridRow => {
+              if(gridRow.LINE_ID === detailsDataRef.LINE_ID
+                && gridRow.DOC_IMAGE !== docImage
+              ) {
+                return {
+                  ...gridRow,
+                  DOC_IMAGE: docImage,
+                  IMG_TYPE: imageType,
+                  _isTouchedCol: {
+                    ...gridRow._isTouchedCol,
+                    DOC_IMAGE: true
+                  }
+                }
+              } else {
+                return gridRow;
+              }
+            })
+          }
+          return newGridArr;
+        })
+        setOpen(false)
+  }
+  const onSave2 = async () => {
     let base64Data = "";
     let docImage = "";
     let imageType = "";
@@ -154,16 +164,44 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
         setOpen(false)
   }
 
-  const onClose = () => {
-    // setFiles(null)
-    setOpen(false)
-  }
+  // check for allowing to update
+  useEffect(() => {
+    console.log("wekiufhiwuehfhwiuefw", detailsDataRef)
+    if(ckycState?.isFreshEntryctx) {
+      setAllowUpdate(true)
+    } else {
+      if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
+        if(detailsDataRef.NEW_FLAG === "N") {
+          setAllowUpdate(true)
+        }
+      } else {
+        setAllowUpdate(true)
+      }
+    }
+  }, [])
 
+  useEffect(() => {
+    // console.log("wehfiuwqefhwiuefhweihfiuwehfu detailsDataRef", detailsDataRef)
+    if(detailsDataRef && Boolean(detailsDataRef?.DOC_IMAGE)) {
+        const fileBlob = utilFunction.blobToFile(
+            utilFunction.base64toBlob(
+                detailsDataRef?.DOC_IMAGE,
+                detailsDataRef?.IMG_TYPE?.includes("pdf")
+                ? "application/pdf"
+                : "image/" + detailsDataRef?.IMG_TYPE
+            )
+            // ,rows?.FILE_NAME
+            ,""
+        )
+        setFiles({blob: fileBlob});
+    } else {
+      setFiles(null)
+    }
+  }, [])
   return (
     <Fragment>
       <Dialog
         open={open}
-        // onClose={() => setOpen(false)}
         maxWidth="md"
         PaperProps={{
           style: {
@@ -191,21 +229,17 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
           }}
           id="responsive-dialog-title"
         >
-            File
+          File
           <Box>
-            {/* {`Customer Info - Customer ID ${
-              data?.[0]?.CUSTOMER_ID ? data[0].CUSTOMER_ID : ""
-            }`} */}
           {allowUpdate && <Button onClick={onSave}>Save</Button>}
           <Button onClick={onClose}>Close</Button>
           </Box>
-          {/* rowdata?.[0]?.data?.CUSTOMER_ID */}
         </DialogTitle>
 
         {allowUpdate && <UploadTarget
           existingFiles={files}
           onDrop={validateFilesAndAddToListCB}
-          disabled={loading}
+          disabled={false}
         />}
         {files && (files?._mimeType?.includes("pdf") || files?.blob?.type?.includes("pdf")) ? (
           <PDFViewer
