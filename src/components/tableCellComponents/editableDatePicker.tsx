@@ -56,9 +56,6 @@ export const EditableDatePicker = (props) => {
   const [value, setValue] = useState(initialValue);
 
   const isReadOnlyLocal = useMemo(() => {
-    if (original?._isNewRow === true) {
-      return false;
-    }
     if (isReadOnly) {
       return true;
     }
@@ -119,7 +116,7 @@ export const EditableDatePicker = (props) => {
             onChange={onChange}
             className={classes.root}
             value={new Date(value)}
-            disabled={loadingcall || loading || isReadOnlyLocal}
+            disabled={loadingcall || loading}
             readOnly={isReadOnlyLocal}
             minDate={mindate || new Date("1900-01-01")}
             disablePast
