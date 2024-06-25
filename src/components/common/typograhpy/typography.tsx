@@ -51,7 +51,14 @@ const MyTypography: FC<MyTypographyAllProps> = ({
 }) => {
   const classes = useStyles();
 
-  const { value, handleChange, name, excluded, dependentValues } = useField({
+  const {
+    value,
+    handleChange,
+    name,
+    excluded,
+    dependentValues,
+    incomingMessage,
+  } = useField({
     name: fieldName,
     fieldKey: fieldID,
     dependentFields,
@@ -69,6 +76,17 @@ const MyTypography: FC<MyTypographyAllProps> = ({
     }
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
+  // update by altaf
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { value } = incomingMessage;
+
+      if (Boolean(value) || value === "") {
+        handleChange(value);
+      }
+    }
+  }, [incomingMessage, handleChange]);
+
   if (excluded) {
     return null;
   }
@@ -78,7 +96,7 @@ const MyTypography: FC<MyTypographyAllProps> = ({
         {/* <InputLabel className={classes.labelStyle}>{label}</InputLabel> */}
         {/* <Typography {...TypographyProps}>{label}</Typography> */}
         <Typography variant="h6" style={undefined} {...TypographyProps}>
-          {value}
+          {value || label}
         </Typography>
       </Grid>
     </Fragment>

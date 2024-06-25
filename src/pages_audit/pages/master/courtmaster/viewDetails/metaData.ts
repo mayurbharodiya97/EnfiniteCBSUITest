@@ -3,7 +3,7 @@ import { getCourtMasterArea } from "../api";
 export const CourtMasterFormMetadata = {
   form: {
     name: "courtMaster",
-    label: "Court Master",
+    label: "CourtMaster",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -46,8 +46,37 @@ export const CourtMasterFormMetadata = {
       required: true,
       maxLength: 4,
       txtTransform: "uppercase",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       isFieldFocused: true,
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Code is required."] }],
@@ -65,9 +94,10 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "COURT_NAME",
-      label: "Court Name",
+      label: "CourtName",
       maxLength: 100,
-      placeholder: "Enter Court Name",
+      placeholder: "EnterCourtName",
+      // Add duplication validation
       GridProps: {
         xs: 12,
         sm: 4,
@@ -80,7 +110,7 @@ export const CourtMasterFormMetadata = {
       render: {
         componentType: "autocomplete",
       },
-      name: "AREA_NM",
+      name: "AREA_CD",
       label: "Area",
       options: getCourtMasterArea,
       _optionsKey: "getCourtMasterArea",
@@ -97,16 +127,14 @@ export const CourtMasterFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "COUNTRY_NM",
+      name: "COUNTRY_CD",
       label: "Country",
-      dependentFields: ["AREA_NM"],
+      dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields["AREA_NM"]?.optionData?.[0]?.COUNTRY_NM) {
-          return dependentFields["AREA_NM"]?.optionData?.[0]?.COUNTRY_NM;
-        } else if (!dependentFields["AREA_NM"]?.optionData?.[0]?.COUNTRY_NM) {
-          return "";
-        }
+        return dependentFields["AREA_CD"]?.optionData?.[0]?.COUNTRY_CD
+          ? dependentFields["AREA_CD"]?.optionData?.[0]?.COUNTRY_CD
+          : "";
       },
       isReadOnly: true,
       GridProps: {
@@ -122,17 +150,15 @@ export const CourtMasterFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "STATE_NM",
+      name: "STATE_CD",
       label: "State",
       isReadOnly: true,
-      dependentFields: ["AREA_NM"],
+      dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields["AREA_NM"]?.optionData?.[0]?.STATE_NM) {
-          return dependentFields["AREA_NM"]?.optionData?.[0]?.STATE_NM;
-        } else {
-          return "";
-        }
+        return dependentFields["AREA_CD"]?.optionData?.[0]?.STATE_CD
+          ? dependentFields["AREA_CD"]?.optionData?.[0]?.STATE_CD
+          : "";
       },
       GridProps: {
         xs: 12,
@@ -146,17 +172,15 @@ export const CourtMasterFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "DIST_NM",
+      name: "DIST_CD",
       label: "District",
       isReadOnly: true,
-      dependentFields: ["AREA_NM"],
+      dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields["AREA_NM"]?.optionData?.[0]?.DIST_NM) {
-          return dependentFields["AREA_NM"]?.optionData?.[0]?.DIST_NM;
-        } else {
-          return "";
-        }
+        return dependentFields["AREA_CD"]?.optionData?.[0]?.DISTRICT_CD
+          ? dependentFields["AREA_CD"]?.optionData?.[0]?.DISTRICT_CD
+          : "";
       },
       GridProps: {
         xs: 12,
@@ -170,17 +194,15 @@ export const CourtMasterFormMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CITY_NM",
+      name: "CITY_CD",
       label: "City",
       isReadOnly: true,
-      dependentFields: ["AREA_NM"],
+      dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields["AREA_NM"]?.optionData?.[0]?.CITY_NM) {
-          return dependentFields["AREA_NM"]?.optionData?.[0]?.CITY_NM;
-        } else {
-          return "";
-        }
+        return dependentFields["AREA_CD"]?.optionData?.[0]?.CITY_CD
+          ? dependentFields["AREA_CD"]?.optionData?.[0]?.CITY_CD
+          : "";
       },
       GridProps: {
         xs: 12,
@@ -195,9 +217,9 @@ export const CourtMasterFormMetadata = {
         componentType: "numberFormat",
       },
       name: "PIN_CODE",
-      label: "Pin Code",
+      label: "PinCode",
       fullWidth: true,
-      placeholder: "Enter Area Pin Code",
+      placeholder: "EnterPinCode",
       maxLength: 6,
       FormatProps: {
         format: "######",
@@ -207,6 +229,15 @@ export const CourtMasterFormMetadata = {
           }
           return true;
         },
+      },
+
+      validate: async (currentField, ...rest) => {
+        if (rest?.[1]?.PinCode) {
+          if (currentField?.value === "") {
+            return "Pincode required";
+          }
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
@@ -221,8 +252,8 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "ADD1",
-      label: "Address 1",
-      placeholder: "Enter Address",
+      label: "Address1",
+      placeholder: "EnterAddress",
       maxLength: 100,
       GridProps: {
         xs: 12,
@@ -237,8 +268,8 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "ADD2",
-      label: "Address 2",
-      placeholder: "Enter Address",
+      label: "Address2",
+      placeholder: "EnterAddress",
       maxLength: 100,
       GridProps: {
         xs: 12,
@@ -253,8 +284,8 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "CONTACT1",
-      label: "Contact 1",
-      placeholder: "Enter Contact Number",
+      label: "Contact1",
+      placeholder: "EnterContactNumber",
       maxLength: 20,
       fullWidth: true,
       GridProps: {
@@ -270,8 +301,8 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "CONTACT2",
-      label: "Contact 2",
-      placeholder: "Enter Contact Number",
+      label: "Contact2",
+      placeholder: "EnterContactNumber",
       maxLength: 20,
       fullWidth: true,
       GridProps: {
@@ -287,8 +318,8 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "CONTACT3",
-      label: "Contact 3",
-      placeholder: "Enter Contact Number",
+      label: "Contact3",
+      placeholder: "EnterContactNumber",
       maxLength: 20,
       fullWidth: true,
       GridProps: {

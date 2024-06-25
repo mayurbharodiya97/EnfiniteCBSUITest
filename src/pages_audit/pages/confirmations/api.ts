@@ -9,7 +9,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
     parameters = {
       FROM_DATE: apiReqPara?.FROM_DATE ?? apiReqPara?.workingDate,
       TO_DATE: apiReqPara?.TO_DATE ?? apiReqPara?.workingDate,
-      FLAG: apiReqPara?.FLAG ?? "",
+      FLAG: apiReqPara?.FLAG ?? "B",
     };
   } else if (apiReqPara?.screenFlag === "limitCFM") {
     APIURL = "GETLMTCNFDATADISP";
@@ -19,6 +19,8 @@ export const getConfirmationGridData = async (apiReqPara) => {
     APIURL = "GETSTOPCNFDATADISP";
   } else if (apiReqPara?.screenFlag === "lienCFM") {
     APIURL = "GETLIENCNFDATADISP";
+  } else if (apiReqPara?.screenFlag === "tempOdCFM") {
+    APIURL = "GETTEMPODAGCNFDATAGRID";
   }
 
   const { data, status, message, messageDetails } =
@@ -27,10 +29,15 @@ export const getConfirmationGridData = async (apiReqPara) => {
       COMP_CD: apiReqPara?.COMP_CD,
       BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
+
   if (status === "0") {
     // return data;
     return data.map((item) => {
       //chequeboook
+      item._rowColor =
+        item.AUTO_CHQBK_PRINT_FLAG &&
+        item.CONFIRMED === "N" &&
+        "rgb(225, 0, 0)";
       item.SERVICE_TAX = item.SERVICE_TAX
         ? parseFloat(item.SERVICE_TAX).toFixed(2)
         : "0.00";
@@ -39,6 +46,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
       item.CHEQUE_SERIES = item.CHEQUE_FROM + " - " + item.CHEQUE_TO;
 
       //limit
+
       item.INT_RATE = item.INT_RATE
         ? parseFloat(item.INT_RATE).toFixed(2)
         : "0.00";
@@ -51,18 +59,20 @@ export const getConfirmationGridData = async (apiReqPara) => {
           : item.AD_HOC_LIMIT_FLG === "A"
           ? "Ad-Hoc Limit"
           : null;
+
       item.EXPIRED_FLAG =
         item.EXPIRED_FLAG === "A"
           ? "Active"
           : item.EXPIRED_FLAG === "E"
           ? "Expired"
-          : null;
+          : item.EXPIRED_FLAG;
 
       if (item.STATUS_FLAG === "E") {
         item._rowColor = "rgb(255, 225, 225)";
       }
 
       //stock
+
       item.STOCK_VALUE = item.STOCK_VALUE
         ? parseFloat(item.STOCK_VALUE).toFixed(2)
         : "0.00";
@@ -72,6 +82,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
         : "0.00";
 
       //stopPayment
+
       item.CHEQUE_FROM_TO = item.CHEQUE_FROM + " - " + item.CHEQUE_TO;
       if (item.FLAG === "P") {
         item._rowColor = "#ebdcef";
@@ -84,14 +95,24 @@ export const getConfirmationGridData = async (apiReqPara) => {
       }
 
       //lien
-      item.PARENT_CD_NM = item.PARENT_CD + " - " + item.LEAN_NM;
 
+      item.PARENT_CD_NM = item.PARENT_CD + " - " + item.LEAN_NM;
       item.LIEN_STATUS_DISPLAY =
         item.LIEN_STATUS === "A"
           ? "Active"
           : item.LIEN_STATUS === "E"
           ? "Expired"
           : null;
+
+      // temporary OD against
+
+      item.CODE_DISPLAY =
+        item.CODE === "ODA "
+          ? "O.D. Applicable"
+          : item.CODE === "AGC "
+          ? "Agaist Clearing Applicable"
+          : null;
+
       return item;
     });
   } else {

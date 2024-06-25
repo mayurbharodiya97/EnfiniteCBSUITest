@@ -23,7 +23,6 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextField } from "components/styledComponent";
-import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
@@ -121,9 +120,16 @@ export const InwardClearing = () => {
     }
   }, []);
   const { data, isLoading, isFetching, refetch, error, isError, status } =
-    useQuery<any, any>(["BranchSelectionGridData"], () =>
+    useQuery<any, any>(["BranchSelectionGridData", isOpenRetrieve], () =>
       API.BranchSelectionGridData()
     );
+
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["BranchSelectionGridData", isOpenRetrieve]);
+    };
+  }, []);
   const getInwardClearingData: any = useMutation(API.getInwardClearingData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -135,7 +141,7 @@ export const InwardClearing = () => {
       });
     },
 
-    onSuccess: (data) => {},
+    onSuccess: (data) => { },
   });
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
@@ -193,16 +199,16 @@ export const InwardClearing = () => {
           messageTitle: "Validation Successful",
           message: "Are you sure to post this Cheque?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
             ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                "dd/MMM/yyyy"
+              )
               : "",
             DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
             _UPDATEDCOLUMNS: [],
@@ -220,16 +226,16 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           postConfigDML.mutate({
             ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                "dd/MMM/yyyy"
+              )
               : "",
             DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
             _UPDATEDCOLUMNS: [],
@@ -264,16 +270,16 @@ export const InwardClearing = () => {
             variables?.DAILY_TRN_CD +
             "?",
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
             ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                "dd/MMM/yyyy"
+              )
               : "",
             SCREEN_REF: "TRN/650",
             AMOUNT: mysubdtlRef.current?.AMOUNT,
@@ -290,16 +296,16 @@ export const InwardClearing = () => {
           messageTitle: "Are you sure do you want to continue?",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["No", "Yes"],
-          loadingBtnName: "Yes",
+          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           confirmPostedConfigDML.mutate({
             ...commonReqData,
             CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
               ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                "dd/MMM/yyyy"
+              )
               : "",
             ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
             SCREEN_REF: "TRN/650",
@@ -392,13 +398,9 @@ export const InwardClearing = () => {
         filteredData: data,
       }));
     }
-  }, [isLoading, isFetching, data]);
+  }, [isLoading, isFetching]);
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["BranchSelectionGridData"]);
-    };
-  }, []);
+
 
   const handleRowClick = (event: any, name: string, label: string) => {
     setState((prevState) => ({
@@ -519,10 +521,10 @@ export const InwardClearing = () => {
                   </InputAdornment>
                 ),
               }}
-              //@ts-ignore
+            //@ts-ignore
             />
             <>
-              {isLoading || isFetching ? (
+              {/* {isLoading || isFetching ? (
                 <LoaderPaperComponent />
               ) : isError ? (
                 <>
@@ -534,6 +536,9 @@ export const InwardClearing = () => {
                     />
                   </div>
                 </>
+              ) : ( */}
+              {isLoading || isFetching ? (
+                <LoaderPaperComponent />
               ) : (
                 <Grid
                   item
@@ -772,16 +777,16 @@ export const InwardClearing = () => {
                       authState?.role < "2"
                         ? ["Yes", "No"]
                         : ["Yes", "No", "Cancel"],
-                    loadingBtnName: "Yes" || "No",
+                    loadingBtnName: ["Yes" || "No"],
                   });
                   const postData = {
-                    COMP_CD: mysubdtlRef.current?.COMP_CD,
-                    BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
-                    ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
-                    ACCT_CD: mysubdtlRef.current?.ACCT_CD,
-                    TRAN_CD: mysubdtlRef.current?.TRAN_CD,
-                    CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
-                    DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+                    COMP_CD: data?.COMP_CD,
+                    BRANCH_CD: data?.BRANCH_CD,
+                    ACCT_TYPE: data?.ACCT_TYPE,
+                    ACCT_CD: data?.ACCT_CD,
+                    TRAN_CD: data?.TRAN_CD,
+                    CHEQUE_NO: data?.CHEQUE_NO,
+                    DRAFT_DIV: data?.DRAFT_DIV,
                     _UPDATEDCOLUMNS: [],
                     _OLDROWVALUE: {},
                     _isNewRow: false,
@@ -793,15 +798,21 @@ export const InwardClearing = () => {
                     postConfigDML.mutate(postData);
                   } else if (buttonName === "No") {
                     validatePostData.mutate({
-                      ...commonReqData,
-                      ERROR_STATUS: mysubdtlRef.current?.ERR_STATUS ?? "",
+                      COMP_CD: data?.COMP_CD,
+                      BRANCH_CD: data?.BRANCH_CD,
+                      TRAN_CD: data?.TRAN_CD,
+                      ACCT_TYPE: data?.ACCT_TYPE,
+                      ACCT_CD: data?.ACCT_CD,
+                      CHEQUE_NO: data?.CHEQUE_NO,
+                      MICR_TRAN_CD: data?.MICR_TRAN_CD,
+                      ERROR_STATUS: data?.ERR_STATUS ?? "",
                       SCREEN_REF: "TRN/650",
-                      ENTERED_BY: mysubdtlRef.current?.ENTERED_BY ?? "",
+                      ENTERED_BY: data?.ENTERED_BY ?? "",
                       ENTERED_BRANCH_CD:
-                        mysubdtlRef.current?.ENTERED_BRANCH_CD ?? "",
-                      REMARKS: mysubdtlRef.current?.REMARKS ?? "",
-                      CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT ?? "",
-                      AMOUNT: mysubdtlRef.current?.AMOUNT ?? "",
+                        data?.ENTERED_BRANCH_CD ?? "",
+                      REMARKS: data?.REMARKS ?? "",
+                      CHEQUE_DT: data?.CHEQUE_DT ?? "",
+                      AMOUNT: data?.AMOUNT ?? "",
                     });
                   }
                 } else if (data && data?.DRAFT_DIV === "DIVIDEND") {

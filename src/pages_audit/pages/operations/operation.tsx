@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
-import SingleDeno from "../dashboard/noteDenomination/singleDeno";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 
@@ -16,9 +15,6 @@ const TemporaryOD = lazy(() => import("./temporaryOD"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
-const CashReceiptEntry = lazy(
-  () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
-);
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -28,10 +24,11 @@ const ClearingDateTransferGridWrapper = lazy(
   () => import("./clearingDateTransfer")
 );
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
-const TellerScreen = lazy(
-  () => import("../dashboard/noteDenomination/tellerScreen")
-);
+const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
+const SingleDenomination = lazy(
+  () => import("./denomination/singleDenomination/index")
+);
 
 export const OperationsMenu = () => (
   <Routes>
@@ -61,8 +58,12 @@ export const OperationsMenu = () => (
       path="lien-confirmation/*"
       element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
     />
+    <Route
+      path="tempOd-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
+    />
     <Route path="teller/*" element={<TellerScreen />} />
-    {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
+    <Route path="single-denomination/*" element={<SingleDenomination />} />
     <Route
       path="confirm-ckyc/*"
       element={
@@ -87,7 +88,7 @@ export const OperationsMenu = () => (
         </AcctMSTProvider>
       }
     />
-    <Route path="single-deno/*" element={<SingleDeno />} />
+    {/* <Route path="single-deno/*" element={<SingleDeno />} /> */}
 
     <Route
       path="ckyc/*"

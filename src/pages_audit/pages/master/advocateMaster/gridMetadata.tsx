@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AdvocateMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Advocate Master (EMST/061)",
+    gridLabel: "Advocate Master (MST/061)",
     rowIdColumn: "CODE",
     defaultColumnConfig: {
       width: 350,
@@ -21,63 +21,19 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "CODE",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Advocate Name",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "CONTACT1",
-      columnName: "Mobile No.",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "EMAIL",
-      columnName: "Email ID",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
-
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 70,
-      minWidth: 60,
-      maxWidth: 100,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
       isAutoSequence: true,
     },
     {
@@ -86,13 +42,13 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 70,
-      minWidth: 60,
-      maxWidth: 100,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
     },
     {
       accessor: "DESCRIPTION",
-      columnName: "Advocate Name",
+      columnName: "AdvocateName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -103,7 +59,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT1",
-      columnName: "Mobile No.",
+      columnName: "MobileNo",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -124,7 +80,7 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "EMAIL",
-      columnName: "Email ID",
+      columnName: "EmailID",
       sequence: 6,
       alignment: "left",
       componentType: "default",

@@ -13,8 +13,14 @@ import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { CourtMasterFormMetadata } from "./metaData";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
-const CourtMasterForm = ({ isDataChangedRef, closeDialog, defaultView }) => {
+const CourtMasterForm = ({
+  isDataChangedRef,
+  closeDialog,
+  defaultView,
+  gridData,
+}) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -53,10 +59,14 @@ const CourtMasterForm = ({ isDataChangedRef, closeDialog, defaultView }) => {
     // @ts-ignore
     endSubmit(true);
 
-    let newData = { ...data };
-    let oldData = { ...rows?.[0]?.data };
+    let newData = { ...data, COUNTRY_CD: null, STATE_CD: null, DIST_CD: null };
+    let oldData = {
+      ...rows?.[0]?.data,
+      COUNTRY_CD: null,
+      STATE_CD: null,
+      DIST_CD: null,
+    };
     let upd = utilFunction.transformDetailsData(newData, oldData);
-
     isErrorFuncRef.current = {
       data: {
         ...newData,
@@ -74,14 +84,14 @@ const CourtMasterForm = ({ isDataChangedRef, closeDialog, defaultView }) => {
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
         mutation.mutate({
-          data: { ...isErrorFuncRef.current?.data },
+          ...isErrorFuncRef.current?.data,
         });
       }
     }
@@ -102,6 +112,12 @@ const CourtMasterForm = ({ isDataChangedRef, closeDialog, defaultView }) => {
         formStyle={{
           background: "white",
           margin: "10px 0",
+        }}
+        formState={{
+          MessageBox: MessageBox,
+          PinCode: rows?.[0]?.data?.PIN_CODE,
+          gridData: gridData,
+          rows: rows?.[0]?.data,
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
@@ -170,6 +186,7 @@ export const CourtMasterWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
+  gridData,
 }) => {
   return (
     <Dialog
@@ -184,11 +201,16 @@ export const CourtMasterWrapper = ({
       }}
       maxWidth="lg"
     >
-      <CourtMasterForm
-        isDataChangedRef={isDataChangedRef}
-        closeDialog={closeDialog}
-        defaultView={defaultView}
-      />
+      {gridData ? (
+        <CourtMasterForm
+          isDataChangedRef={isDataChangedRef}
+          closeDialog={closeDialog}
+          defaultView={defaultView}
+          gridData={gridData}
+        />
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </Dialog>
   );
 };

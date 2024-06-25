@@ -1,12 +1,11 @@
 import { AppBar, Button, Dialog } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { confirmFormMetaData } from "./confirmationFormMetadata";
 import { useMutation } from "react-query";
 import { chequeBookCfm } from "../api";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
@@ -19,6 +18,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
+  const buttonRef: any = useRef<any>(null);
 
   const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
@@ -28,30 +28,29 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       CloseMessageBox();
       closeDialog();
 
-      if (data?.status === "99") {
+      const resultData = {
+        screenFlag: "chequebookCFM",
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+        FROM_DATE: result?.variables?.FROM_DATE ?? authState.workingDate,
+        TO_DATE: result?.variables?.TO_DATE ?? authState.workingDate,
+        FLAG: variables?.FLAG ?? "",
+      };
+
+      if (data?.[0]?.STATUS === "999") {
         MessageBox({
           messageTitle: "InvalidConfirmation",
-          message: data?.message,
+          message: data?.message || data?.[0]?.MESSAGE,
           icon: "WARNING",
         });
       } else {
-        result.mutate({
-          screenFlag: "chequebookCFM",
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          FROM_DATE: result?.variables?.FROM_DATE,
-          TO_DATE: result?.variables?.TO_DATE,
-          FLAG: variables?.FLAG ?? "",
-        });
-        if (Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar(t("DataConfirmMessage"), {
-            variant: "success",
-          });
-        } else if (!Boolean(variables?.IS_CONFIMED)) {
-          enqueueSnackbar(t("DataRejectMessage"), {
-            variant: "success",
-          });
-        }
+        result.mutate(resultData);
+        enqueueSnackbar(
+          t(
+            variables?.IS_CONFIMED ? "DataConfirmMessage" : "DataRejectMessage"
+          ),
+          { variant: "success" }
+        );
       }
     },
   });
@@ -61,6 +60,11 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       queryClient.removeQueries(["chequeBookCfm"]);
     };
   }, []);
+  // useEffect(() => {
+  //   if (buttonRef.current) {
+  //     buttonRef.current.focus();
+  //   }
+  // }, [buttonRef]);
 
   useEffect(() => {
     if (rows?.[0]?.data) {
@@ -90,7 +94,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
         isConfirm === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
       buttonNames: ["No", "Yes"],
       defFocusBtnName: "Yes",
-      loadingBtnName: "Yes",
+      loadingBtnName: ["Yes"],
     });
 
     if (res === "Yes") {
@@ -122,8 +126,8 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
 
         <FormWrapper
           key={"confirmation-Form"}
-          metaData={confirmFormMetaData}
-          initialValues={rows?.[0]?.data ?? []}
+          metaData={confirmFormMetaData as MetaDataType}
+          initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
@@ -136,12 +140,20 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button color="primary" onClick={() => handelChange("C")}>
-                  {t("Confirm")}
-                </Button>
-                <Button color="primary" onClick={() => handelChange("R")}>
-                  {t("Reject")}
-                </Button>
+                {rows?.[0]?.data?.CONFIRMED !== "N" && (
+                  <>
+                    <Button
+                      color="primary"
+                      ref={buttonRef}
+                      onClick={() => handelChange("C")}
+                    >
+                      {t("Confirm")}
+                    </Button>
+                    <Button color="primary" onClick={() => handelChange("R")}>
+                      {t("Reject")}
+                    </Button>
+                  </>
+                )}
                 <Button color="primary" onClick={closeDialog}>
                   {t("Close")}
                 </Button>
