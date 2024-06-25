@@ -48,7 +48,7 @@ export const DeactivateCustomer = ({rowdata, onClose}) => {
         messageTitle: "Confirmation",
         message: status === "999" ? msg : `Customer Deactivated Successfully : ${data?.[0]?.data?.CUSTOMER_ID}`,
         buttonNames: ["Ok"],
-        loadingBtnName: "Yes",
+        loadingBtnName: ["Yes"],
       });
       if(buttonName === "Ok") {
         if(status === "999") {
