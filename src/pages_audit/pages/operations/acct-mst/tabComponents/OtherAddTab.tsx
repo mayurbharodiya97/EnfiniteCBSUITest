@@ -69,6 +69,7 @@ const OtherAddTab = () => {
       // setIsNextLoading(false);
       setFormStatus(old => [...old, false])
     }
+  }
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx

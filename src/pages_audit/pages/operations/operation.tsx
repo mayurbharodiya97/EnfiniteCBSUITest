@@ -14,6 +14,7 @@ const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const Ckyc = lazy(() => import("./c-kyc"));
+const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
@@ -75,6 +76,14 @@ export const OperationsMenu = () => (
       element={
         <AcctMSTProvider>
           <AcctMST />
+        </AcctMSTProvider>
+      }
+    />
+    <Route
+      path="account-confirm/*"
+      element={
+        <AcctMSTProvider>
+          <AcctConfirm />
         </AcctMSTProvider>
       }
     />
