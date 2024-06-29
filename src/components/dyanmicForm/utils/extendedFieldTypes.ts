@@ -237,14 +237,32 @@ export const extendFieldTypes = (
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
     if (item.render.componentType === "datePicker") {
-      if (Boolean(item?.isWorkingDate)) {
-        item["defaultValue"] = new Date(authState?.workingDate);
+      const workingDate = authState?.workingDate
+        ? new Date(authState.workingDate)
+        : null;
+
+      if (workingDate) {
+        if (item?.isWorkingDate) {
+          item["defaultValue"] = workingDate;
+        }
+        if (item?.isMaxWorkingDate) {
+          item["maxDate"] = workingDate;
+        }
+        if (item?.isMinWorkingDate) {
+          item["minDate"] = workingDate;
+        }
       }
-      if (Boolean(item?.isMaxWorkingDate)) {
-        item["maxDate"] = new Date(authState?.workingDate);
+    }
+    if (
+      item.render.componentType === "datetimePicker" ||
+      item.render.componentType === "datePicker"
+    ) {
+      const now = new Date();
+      if (item?.disablePast) {
+        item["minDate"] = now;
       }
-      if (Boolean(item?.isMinWorkingDate)) {
-        item["minDate"] = new Date(authState?.workingDate);
+      if (item?.disableFuture) {
+        item["maxDate"] = now;
       }
     }
   });
