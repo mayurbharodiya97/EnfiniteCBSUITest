@@ -51,7 +51,7 @@ export const introductorjoint_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "JOINT",
+            name: "INTRODUCTORY_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
@@ -184,7 +184,7 @@ export const introductorjoint_tab_metadata = {
                     name: "CRDT_WORTHINESS_ignoreField",
                     label: "Credit Worthiness",
                     type: "text",
-                    GridProps: {lg: 1, xl:1},
+                    GridProps: {xs:12},
                 },
                 
 
@@ -681,7 +681,7 @@ export const introductorjoint_tab_metadata = {
                     name: "PROPERTY_ignoreField",
                     label: "PROPERTY",
                     type: "text",
-                    GridProps: {lg: 1, xl:1},
+                    GridProps: {xs:12},
                 },
                 {
                     render: {
@@ -724,7 +724,7 @@ export const introductorjoint_tab_metadata = {
                     name: "OTHRSECURITY_ignoreField",
                     label: "OTHER SECURITY",
                     type: "text",
-                    GridProps: {lg: 1, xl:1},
+                    GridProps: {xs:12},
                 },
                 {
                     render: {
@@ -769,7 +769,7 @@ export const introductorjoint_tab_metadata = {
                     name: "MACHINERY_ignoreField",
                     label: "MACHINERY",
                     type: "text",
-                    GridProps: {lg: 1, xl:1},
+                    GridProps: {xs:12},
                 },
                 {
                     render: {

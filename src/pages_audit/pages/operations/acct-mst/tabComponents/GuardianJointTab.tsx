@@ -13,7 +13,6 @@ const GuardianJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -56,6 +55,20 @@ const GuardianJointTab = () => {
     }
   }, [formStatus])
 
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["GUARDIAN_DTL"] ?? {GUARDIAN_DTL: [{}]}
+        : AcctMSTState?.formDatactx["GUARDIAN_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["GUARDIAN_DTL"] ?? {}, ...AcctMSTState?.formDatactx["GUARDIAN_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["GUARDIAN_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["GUARDIAN_DTL"]
+  ])
+
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
@@ -63,7 +76,6 @@ const GuardianJointTab = () => {
         ref={formRef}
         metaData={guardianjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onSubmitPDHandler}
-        // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: AcctMSTState?.customerIDctx ?? "", REQ_FLAG: (AcctMSTState?.isFreshEntryctx || AcctMSTState?.isDraftSavedctx) ? "F" : "E"}}
         hideHeader={true}

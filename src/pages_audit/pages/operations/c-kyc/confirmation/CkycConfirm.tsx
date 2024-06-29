@@ -67,9 +67,6 @@ export const CkycConfirm = () => {
       const loggedinUser = authState?.user?.id;
       if(maker === loggedinUser) {
         setPreventConfirmDialog(true)
-        enqueueSnackbar("You can not confirm your own posted transaction", {
-          variant: "error",
-        })
       } else {
         if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
           navigate("photo-signature", {

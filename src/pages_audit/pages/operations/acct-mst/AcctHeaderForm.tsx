@@ -7,6 +7,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { AcctMSTContext } from "./AcctMSTContext";
 import { Alert } from "components/common/alert";
+import { extractMetaData } from "components/utils";
 
 const AcctHeaderForm = React.memo(function HeaderForm() {
   const {
@@ -26,36 +27,16 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
     actionFlag,
     hasError
   ) => {
-    // if(data && !hasError) {
-      // console.log("hwefiuhwieuhfiwhef", data, hasError);
-      handleHeaderFormSubmit({acctType: data?.ACCT_TYPE, acctMode: data?.ACCT_MODE});
-      endSubmit(true)
-    // }
+    handleHeaderFormSubmit({acctType: data?.ACCT_TYPE, reqID: data?.REQ_ID});
+    endSubmit(true)
   };
 
-  // const initialVal = useMemo(() => {
-  //   return AcctMSTState?.isFreshEntryctx
-  //     ? AcctMSTState?.formDatactx["PERSONAL_DETAIL"]
-  //       ? AcctMSTState?.formDatactx["PERSONAL_DETAIL"]
-  //       : {}
-  //     : AcctMSTState?.retrieveFormDataApiRes
-  //     ? AcctMSTState?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
-  //     : {};
-  // }, [AcctMSTState?.isFreshEntryctx, AcctMSTState?.retrieveFormDataApiRes]);
-
-  // const initialVal = {
-  //   ACCT_TYPE: "0001",
-  //   ACCT_MODE: "04  ",
-  // }
   const initialVal = useMemo(() => {
-    // console.log("wedqwqwq", AcctMSTState?.accTypeValuectx, AcctMSTState?.acctModectx)
     return {
       ACCT_TYPE: AcctMSTState?.accTypeValuectx,
-      ACCT_MODE: AcctMSTState?.acctModectx,
-      CUST_ID: AcctMSTState?.customerIDctx,
       REQ_ID: AcctMSTState?.req_cd_ctx,
     }
-  }, [AcctMSTState?.accTypeValuectx, AcctMSTState?.acctModectx, AcctMSTState?.customerIDctx, AcctMSTState?.req_cd_ctx])
+  }, [AcctMSTState?.accTypeValuectx, AcctMSTState?.req_cd_ctx])
 
   // const loader = useMemo(() => (AcctMSTState?.currentFormctx.isLoading || AcctMSTState?.isLoading) ? <LinearProgress color="secondary" /> : null, [AcctMSTState?.currentFormctx.isLoading, AcctMSTState?.isLoading])
   const loader = useMemo(() => AcctMSTState?.isLoading ? <LinearProgress color="secondary" /> : null, [AcctMSTState?.isLoading])
@@ -131,7 +112,12 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
           ref={formRef}
           onSubmitHandler={onSubmitHandler}
           initialValues={initialVal}
-          metaData={acctMSTHeaderFormMetadata as MetaDataType}
+          metaData={
+            extractMetaData(
+              acctMSTHeaderFormMetadata,
+              AcctMSTState?.formmodectx
+            ) as MetaDataType
+          }
           formStyle={{}}
           hideHeader={true}
           displayMode={AcctMSTState?.formmodectx}

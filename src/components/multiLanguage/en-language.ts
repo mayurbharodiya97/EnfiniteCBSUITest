@@ -550,6 +550,45 @@ export const en_language_data = {
     newAcct: "New Account",
   },
 
+  // Auditor Master
+  AuditorMaster: "Auditor Master",
+  AuditorName: "Auditor Name",
+  PhoneNo: "Phone Number",
+  Designation: "Designation",
+  EnterAuditorName: "Enter Auditor Name",
+  AuditorNameisrequired: "Auditor Name is required.",
+  EnterAddress1: "Enter Address1",
+  EnterAddress2: "Enter Address2",
+  EnterPhoneNo: "Enter Phone Number",
+  SelectDesignation: "Select Designation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Reason Master",
+  Codeisrequired: "Code is required.",
+  Descriptionisrequired: "Description is required.",
+
+  // Advocate Master
+  AdvocateMaster: "Advocate Master",
+  SpecialCharacterIsNotAllowed: "Special character is not allowed.",
+  AdvocateName: "Advocate Name",
+  EnterAdvocateName: "Enter Advocate Name",
+  AdvocateNameisrequired: "Advocate Name is required.",
+  Address: "Address",
+  EnterEmailID: "Enter Email ID",
+  InvalidEmailID: "Invalid Email ID.",
+
+  // Clearing bank master
+  ClearingBankMaster: "Clearing Bank Master",
+  RBICode: "RBI Code",
+  Exclude: "Exclude",
+  EnterRBICode: "Enter RBI Code",
+  RBICodeIsRequired: "RBI Code is required.",
+  EnterBankName: "Enter Bank Name",
+  BankNameIsRequired: "Bank Name is required.",
+  AtleastOneBranchShouldBeSelected:"Atleast one branch should be selected",
+  Select:"Select",
+  DisplayName:"Display Name",
+
   sidebar: {
     Dashboard: "Dashboard",
 

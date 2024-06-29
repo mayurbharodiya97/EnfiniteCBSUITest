@@ -6,11 +6,14 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
+import { GradientButton } from "components/styledComponent/button";
+import CategoryUpdate from "./CategoryUpdate";
 
-const HeaderForm = React.memo(function HeaderForm() {
+const HeaderForm = () => {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
     const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
     const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
+    const [changeCategDialog, setChangeCategDialog] = useState<boolean>(false)
     const {authState} = useContext(AuthContext);
     const location: any = useLocation();
     // state?.currentFormctx.isLoading && <LinearProgress color="secondary" />
@@ -45,7 +48,7 @@ const HeaderForm = React.memo(function HeaderForm() {
     );
 
       // get tabs data
-    const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+    const {data:TabsData, isSuccess, isLoading, isFetching, error, refetch} = useQuery(
         ["getTabsDetail", {
         ENTITY_TYPE: state?.entityTypectx, 
         CATEGORY_CD: state?.categoryValuectx, 
@@ -93,6 +96,16 @@ const HeaderForm = React.memo(function HeaderForm() {
         }
         }
     }, [TabsData, isLoading])
+    
+    useEffect(() => {
+      if((isLoading || isFetching) && state?.categoryValuectx && state?.constitutionValuectx) {
+        handleCurrFormctx({
+          isLoading: true,
+        })
+      }
+    }, [isLoading, isFetching, state?.entityTypectx,
+      state?.categoryValuectx,
+      state?.constitutionValuectx])
 
     
 
@@ -107,6 +120,7 @@ const HeaderForm = React.memo(function HeaderForm() {
     }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
 
     return (
+      <>
         <AppBar
         position="sticky"
         // color=""
@@ -204,6 +218,15 @@ const HeaderForm = React.memo(function HeaderForm() {
               size="small"
             />} */}
 
+            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx) &&
+            <Grid sx={{alignSelf: "flex-end"}}>
+              <GradientButton
+                onClick={() => setChangeCategDialog(true)}
+                disabled={false}
+                style={{width: "auto", maxWidth: "20px"}}
+              >...</GradientButton>
+            </Grid>}
+
             <Grid item xs={12} sm={6} md>
               <Autocomplete sx={{width: "100%"}}
                 // disablePortal
@@ -274,7 +297,14 @@ const HeaderForm = React.memo(function HeaderForm() {
                 color="secondary"
               />
             </Grid>
-            {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
+            {!state?.isFreshEntryctx && (
+              <FormControlLabel 
+              control={
+                <Checkbox 
+                  checked={Boolean(state?.isCustActivectx && state?.isCustActivectx === "Y") ? true : false} 
+                  disabled color="secondary" />
+              } label="Active" />
+            )}            
             {/* <ButtonGroup size="small" variant="outlined" color="secondary">
               <Button color="secondary" onClick={() => {
                   setIsCustomerData(false)
@@ -296,7 +326,14 @@ const HeaderForm = React.memo(function HeaderForm() {
         {loader}
         {/* {state?.currentFormctx.isLoading && <LinearProgress color="secondary" />} */}
   </AppBar>
-    )
-})
+        {changeCategDialog && 
+          <CategoryUpdate 
+            open={changeCategDialog} 
+            setChangeCategDialog={setChangeCategDialog} 
+          />
+        }
+    </>
+  )
+}
 
 export default HeaderForm;

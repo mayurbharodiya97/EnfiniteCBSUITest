@@ -50,8 +50,8 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
     }
   );
   useEffect(() => {
@@ -89,8 +89,6 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     actionFlag
   ) => {
     delete data["RETRIEVE"];
-    data["COMP_CD"] = authState.companyID;
-    data["BRANCH_CD"] = authState.user.branchCode;
     if (Boolean(data["FROM_TRAN_DT"])) {
       data["FROM_TRAN_DT"] = format(
         new Date(data["FROM_TRAN_DT"]),
@@ -101,25 +99,19 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
       data["TO_TRAN_DT"] = format(new Date(data["TO_TRAN_DT"]), "dd/MMM/yyyy");
     }
     data["BANK_CD"] = data["BANK_CD"].padEnd(10, " ");
-    if (actionFlag === "RETRIEVE") {
-      data = {
-        ...data,
-        TRAN_TYPE: zoneTranType,
-        CONFIRMED: "N",
-      };
-      mutation.mutate(data);
-      endSubmit(true);
-    } else if (actionFlag === "VIEW_ALL") {
-      data = {
-        ...data,
-        TRAN_TYPE: zoneTranType,
-        CONFIRMED: "0",
-      };
-      mutation.mutate(data);
-      endSubmit(true);
-    }
+
+    data = {
+      ...data,
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      TRAN_TYPE: zoneTranType,
+      CONFIRMED: actionFlag === "RETRIEVE" ? "N" : "0",
+    };
+    mutation.mutate(data);
+    endSubmit(true)
     setFormData(data);
   };
+
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
@@ -229,7 +221,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => {} };
+              let event: any = { preventDefault: () => { } };
               // if (mutation?.isLoading) {
               if (id === "RETRIEVE") {
                 formRef?.current?.handleSubmit(event, "RETRIEVE");

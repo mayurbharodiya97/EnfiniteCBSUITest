@@ -12,6 +12,7 @@ import { AuthContext } from 'pages_audit/auth';
 import _ from 'lodash';
 import { Alert } from 'components/common/alert';
 import TabNavigate from '../TabNavigate';
+import { PopupRequestWrapper } from 'components/custom/popupMessage';
 // import { format } from 'date-fns';
 
 const DeclarationDetails = () => {
@@ -19,12 +20,13 @@ const DeclarationDetails = () => {
   //  const [isLoading, setIsLoading] = useState(false)
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext)
+  const {state, handleFromFormModectx, onDraftSavectx, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx, handleFormDataonRetrievectx} = useContext(CkycContext)
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const [formStatus, setFormStatus] = useState<any[]>([])
+  const [shouldDraftSaveDialog, setShouldDraftSaveDialog] = useState<boolean>(false)
 
 //   const {data:saveDraftData, isSuccess, isLoading: isSaveDraftLoading, error, refetch} = useQuery(
 //     ["getSaveDraftData"],
@@ -81,7 +83,25 @@ const DeclarationDetails = () => {
       if(data?.[0]?.REQ_CD) {
           let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
           handleReqCDctx(req_cd)
-          setFormStatus(old => [...old, true])
+          handleFromFormModectx({formmode: "edit", from: "new-draft"})
+          onDraftSavectx()
+
+          let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+            // COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? ""
+          }
+          const reqCD = (req_cd || state?.req_cd_ctx) ?? "";
+          const custID = state?.customerIDctx ?? "";
+          if(Boolean(reqCD)) {
+            payload["REQUEST_CD"] = reqCD;
+          }
+          if(Boolean(custID)) {
+            payload["CUSTOMER_ID"] = custID;
+          }
+          if(Object.keys(payload)?.length > 1) {
+            retrieveMutation.mutate(payload)
+          }
+          
           // handleColTabChangectx(state?.colTabValuectx+1)
       } else {
         setFormStatus(old => [...old, false])
@@ -92,6 +112,20 @@ const DeclarationDetails = () => {
       setFormStatus(old => [...old, false])
     },
   });
+
+    // get customer form details  
+    const retrieveMutation: any = useMutation(API.getCustomerDetailsonEdit, {
+      onSuccess: (data) => {
+        handleFormDataonRetrievectx(data[0])
+        handleFormDataonSavectx({})
+        handleModifiedColsctx({})
+        setFormStatus(old => [...old, true])
+      },
+      onError: (error: any) => {
+        setFormStatus(old => [...old, false])
+      },
+    });
+  
 
 
 //   useEffect(() => {
@@ -144,7 +178,7 @@ const DeclarationDetails = () => {
         //     IsNewRow: state?.isFreshEntryctx,
         //     PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
         // })
-        if(!state?.isFreshEntryctx) {
+        if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
             let tabModifiedCols:any = state?.modifiedFormCols
             let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
             tabModifiedCols = {
@@ -162,12 +196,18 @@ const DeclarationDetails = () => {
                 ACCT_TYPE: state?.accTypeValuectx,
                 KYC_NUMBER: state?.kycNoValuectx,
                 CONSTITUTION_TYPE: state?.constitutionValuectx,
-                IsNewRow: state?.isFreshEntryctx,
+                // IsNewRow: state?.isFreshEntryctx,
+                IsNewRow: true,
                 PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? ""
             }
-            mutation.mutate(payload)
+            if(!Boolean(state?.req_cd_ctx)) {
+              setShouldDraftSaveDialog(true)
+            } else {
+              setFormStatus(old => [...old, true])
+            }
+            // mutation.mutate(payload)
             // refetch()
         // }
         // handleColTabChangectx(state?.colTabValuectx+1)
@@ -198,23 +238,30 @@ const DeclarationDetails = () => {
 
 const myGridRef = useRef<any>(null);
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
-                ? state?.formDatactx["PERSONAL_DETAIL"]
-                    ? state?.formDatactx["PERSONAL_DETAIL"]
-                    : {}
-                : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
-                    : {}
-    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
-
+      return (
+        (state?.isFreshEntryctx && !state?.isDraftSavedctx)
+          ? state?.formDatactx["PERSONAL_DETAIL"]
+          : state?.formDatactx["PERSONAL_DETAIL"]
+            ? {...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, ...state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+            : {...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}}
+      )
+    }, [state?.isFreshEntryctx, state?.isDraftSavedctx, state?.retrieveFormDataApiRes])
+  
     
     return (
         <Grid container rowGap={3}>
-          {mutation.isError && (
+          {mutation.isError ? (
             <Alert
               severity={mutation.error?.severity ?? "error"}
               errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
               errorDetail={mutation.error?.error_detail}
+              color="error"
+            />
+          ) : retrieveMutation.isError && (
+            <Alert
+              severity={retrieveMutation.error?.severity ?? "error"}
+              errorMsg={retrieveMutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={retrieveMutation.error?.error_detail}
               color="error"
             />
           )}
@@ -247,6 +294,9 @@ const myGridRef = useRef<any>(null);
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
                         formState={{
+                          // GSTIN: state?.isFreshEntryctx 
+                          // ? state?.formDatactx["PERSONAL_DETAIL"]?.GSTIN ?? "" 
+                          // : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.GSTIN ?? "",
                           GSTIN: state?.formDatactx["PERSONAL_DETAIL"]?.GSTIN ??
                           state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.GSTIN,
                         }}
@@ -259,6 +309,40 @@ const myGridRef = useRef<any>(null);
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
             <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+            <PopupRequestWrapper
+              MessageTitle={"CONFIRM"}
+              Message={"Do you want to save entry as draft?"}
+              onClickButton={async (rows, buttonNames, ...others) => {
+                  // console.log(rows, "kjefeiwqf", buttonNames)
+                  if(buttonNames === "Yes") {
+                    setShouldDraftSaveDialog(false)
+                      // setDocValidateDialog(false)
+                      let payload = {
+                        CUSTOMER_TYPE: state?.entityTypectx,
+                        CATEGORY_CD: state?.categoryValuectx,
+                        ACCT_TYPE: state?.accTypeValuectx,
+                        KYC_NUMBER: state?.kycNoValuectx,
+                        CONSTITUTION_TYPE: state?.constitutionValuectx,
+                        // IsNewRow: state?.isFreshEntryctx,
+                        IsNewRow: true,
+                        PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
+                        COMP_CD: authState?.companyID ?? "",
+                        BRANCH_CD: authState?.user?.branchCode ?? ""
+                      }
+                      mutation.mutate(payload)
+                      // mutation.mutate(data)        
+                  } else if (buttonNames === "No") {
+                      // setDocValidateDialog(false)
+                      setShouldDraftSaveDialog(false)
+                      setFormStatus(old => [...old, true])
+                  }
+              }}
+              buttonNames={["Yes", "No"]}
+              rows={[]}
+              loading={{Yes: mutation.isLoading}}
+              // loading={{ Yes: getData?.isLoading, No: false }}
+              open={shouldDraftSaveDialog}
+            />
         </Grid>        
     )
 }

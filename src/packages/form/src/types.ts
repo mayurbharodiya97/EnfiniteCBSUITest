@@ -102,6 +102,7 @@ export interface UseFieldHookProps {
     touchAndValidate?: any;
   };
   componentType?: string;
+  preventSpecialCharInput?: boolean;
 }
 
 export interface UseFieldArrayHookProps {

@@ -13,3 +13,15 @@ export const getAdvocateMstData = async ({ companyID, branchCode }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const advocateMstDataDML = async (formData) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOADVOCATEMSTDML",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

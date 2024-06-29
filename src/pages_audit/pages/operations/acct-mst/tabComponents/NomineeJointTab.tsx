@@ -13,7 +13,6 @@ const NomineeJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -55,6 +54,20 @@ const NomineeJointTab = () => {
       }
     }
   }, [formStatus])
+
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["NOMINEE_DTL"] ?? {NOMINEE_DTL: [{}]}
+        : AcctMSTState?.formDatactx["NOMINEE_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["NOMINEE_DTL"] ?? {}, ...AcctMSTState?.formDatactx["NOMINEE_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["NOMINEE_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["NOMINEE_DTL"]
+  ])
 
   return (
     <Grid sx={{ mb: 4 }}>

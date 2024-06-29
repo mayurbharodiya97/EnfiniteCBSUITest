@@ -234,7 +234,7 @@ export const shareNominal_tab_metadata = {
         },
         {
             render: {
-                componentType: "textField"
+                componentType: "textField"//come back
             },
             name: "RECOMMENED_NM",
             label: "Hand-Over Remark",
