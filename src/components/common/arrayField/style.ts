@@ -140,5 +140,5 @@ export const useStyles = makeStyles((theme: any) => ({
     padding: "8px 0px 0px 8px",
     background: "var(--theme-color4)",
   },
-  arrayFieldUnselected: {},
+  arrayFieldUnselected: { width: "100%" },
 }));

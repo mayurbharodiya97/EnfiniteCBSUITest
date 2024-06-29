@@ -60,6 +60,7 @@ export interface FormFieldAtomType {
   validationAPIResult?: any;
   skipValueUpdateFromCrossFieldWhenReadOnly: boolean;
   optionData?: any;
+  ignoreInSubmit?: boolean;
 }
 
 export interface DependentValuesType {
@@ -100,6 +101,7 @@ export interface UseFieldHookProps {
     alwaysRun?: any;
     touchAndValidate?: any;
   };
+  componentType?: string;
 }
 
 export interface UseFieldArrayHookProps {
