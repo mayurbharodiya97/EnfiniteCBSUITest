@@ -1,6 +1,17 @@
 import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
 
 export const en_language_data = {
+  //For Ornament Type master
+  OrnamentTypeMaster: "Ornament Type Master (MST/247)",
+  OrnamentTypeMasterForm: "Ornament Type Master",
+  CodeisRequired: "Code is Required",
+  DescriptionisRequired: "Description is required",
+  MarginisRequired: "Margin is required",
+
+  //Action Taken Master
+  ActionTakenMaster: "Action Taken Master (MST/145)",
+  ActionTakenMasterForm: "Action Taken Master",
+  LegalProcess: "Legal Process",
   // GridWrapper
   Search: "Search",
   NoDataFound: " No data found..!",
@@ -83,19 +94,19 @@ export const en_language_data = {
   PendingCount: "Pending Count",
 
   //for priority master main
-  ParentGroup:"Parent Group",
-  SubPriority:"Sub Priority",
-  SanctionFromLimit:"Sanction From Limit",
-  SanctionToLimit:"Sanction To Limit",
-  ProvisionSecured:"Provision Secured %",
-  ProvisionUnSecured:"Provision Unsecured %",
-  ParentWeaker:"Parent Weaker",
-  CKYCGroup:"C-KYC Group",
-  Constitution:"Constitution",
-  PinCode:"Pin Code",
-  FROMLIMIT:"FROM LIMIT",
-  TOLIMIT:"TO LIMIT",
-  
+  ParentGroup: "Parent Group",
+  SubPriority: "Sub Priority",
+  SanctionFromLimit: "Sanction From Limit",
+  SanctionToLimit: "Sanction To Limit",
+  ProvisionSecured: "Provision Secured %",
+  ProvisionUnSecured: "Provision Unsecured %",
+  ParentWeaker: "Parent Weaker",
+  CKYCGroup: "C-KYC Group",
+  Constitution: "Constitution",
+  PinCode: "Pin Code",
+  FROMLIMIT: "FROM LIMIT",
+  TOLIMIT: "TO LIMIT",
+
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
@@ -539,6 +550,45 @@ export const en_language_data = {
     newAcct: "New Account",
   },
 
+  // Auditor Master
+  AuditorMaster: "Auditor Master",
+  AuditorName: "Auditor Name",
+  PhoneNo: "Phone Number",
+  Designation: "Designation",
+  EnterAuditorName: "Enter Auditor Name",
+  AuditorNameisrequired: "Auditor Name is required.",
+  EnterAddress1: "Enter Address1",
+  EnterAddress2: "Enter Address2",
+  EnterPhoneNo: "Enter Phone Number",
+  SelectDesignation: "Select Designation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Reason Master",
+  Codeisrequired: "Code is required.",
+  Descriptionisrequired: "Description is required.",
+
+  // Advocate Master
+  AdvocateMaster: "Advocate Master",
+  SpecialCharacterIsNotAllowed: "Special character is not allowed.",
+  AdvocateName: "Advocate Name",
+  EnterAdvocateName: "Enter Advocate Name",
+  AdvocateNameisrequired: "Advocate Name is required.",
+  Address: "Address",
+  EnterEmailID: "Enter Email ID",
+  InvalidEmailID: "Invalid Email ID.",
+
+  // Clearing bank master
+  ClearingBankMaster: "Clearing Bank Master",
+  RBICode: "RBI Code",
+  Exclude: "Exclude",
+  EnterRBICode: "Enter RBI Code",
+  RBICodeIsRequired: "RBI Code is required.",
+  EnterBankName: "Enter Bank Name",
+  BankNameIsRequired: "Bank Name is required.",
+  AtleastOneBranchShouldBeSelected:"Atleast one branch should be selected",
+  Select:"Select",
+  DisplayName:"Display Name",
+
   sidebar: {
     Dashboard: "Dashboard",
 
@@ -844,6 +894,24 @@ export const en_language_data = {
   TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  // lien Mater
+  MinimumNoofJoints: "Minimum No. of Joints",
+  MaximumNoofJoints: "Maximum No. of Joints",
+  // Ac period Mater
+  PeriodName: "Period-Name",
+  InstNo: "Inst. No.",
+  InstallmentPeriod: "Installment Period",
+  // Bank ifsc code master
+  IFSCCode: "IFS CCode",
+  BankName: "Bank Name",
+  Facility: "Facility",
+  MICRCode: "MICR Code",
+  Add1: "Add 1",
+  ContactDetail: "Contact Detail",
+  DistrictName: "District Name",
+  StateName: "State Name",
+  Import: "Import",
+  CentreName: "Centre Name",
   TempODAgainstConfirmation: "Temporary OD Against Confirmation",
   Defination: "Defination",
 };

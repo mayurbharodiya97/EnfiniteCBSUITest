@@ -51,7 +51,7 @@ export const nomineejoint_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "JOINT",
+            name: "NOMINEE_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
@@ -193,7 +193,7 @@ export const nomineejoint_tab_metadata = {
                     name: "CRDT_WORTHINESS_ignoreField",
                     label: "Credit Worthiness",
                     type: "text",
-                    GridProps: {lg: 1, xl:1},
+                    GridProps: {xs:12},
                 },
 
                 {

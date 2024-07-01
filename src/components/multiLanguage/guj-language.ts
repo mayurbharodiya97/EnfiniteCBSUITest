@@ -1,4 +1,15 @@
 export const guj_language_data = {
+  //Ornament Type Master
+  OrnamentTypeMaster: "આભૂષણ પ્રકાર માસ્ટર (MST/247)",
+  OrnamentTypeMasterForm: "આભૂષણ પ્રકાર માસ્ટર",
+  CodeisRequired: "કોડ જરૂરી છે",
+  DescriptionisRequired: "વર્ણન જરૂરી છે",
+  MarginisRequired: "માર્જિન જરૂરી છે",
+
+  //Action Taken Master
+  ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
+  ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
+  LegalProcess: "કાનૂની પ્રક્રિયા",
   // GridWrapper
   Search: "શોધો",
   NoDataFound: "કોઈ ડેટા મળ્યો નથી..!",
@@ -79,19 +90,19 @@ export const guj_language_data = {
   Decline: "નકારો",
 
   // Priority master main
-  Code:"કોડ",
-  ParentGroup:"પિતૃ જૂથ",
-  SubPriority:"સબ પ્રાયોરિટી",
-  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
-  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
-  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
-  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
-  ParentWeaker:"પેરેંટ વેકર",
-  CKYCGroup:"C-KYC ગ્રુપ",
-  Constitution:"બંધારણ",
-  PinCode:"પીન કોડ",
-  City:"શહેર",
-  ParentArea:"પિતૃ વિસ્તાર",
+  Code: "કોડ",
+  ParentGroup: "પિતૃ જૂથ",
+  SubPriority: "સબ પ્રાયોરિટી",
+  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
+  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
+  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
+  ParentWeaker: "પેરેંટ વેકર",
+  CKYCGroup: "C-KYC ગ્રુપ",
+  Constitution: "બંધારણ",
+  PinCode: "પીન કોડ",
+  City: "શહેર",
+  ParentArea: "પિતૃ વિસ્તાર",
 
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
@@ -347,6 +358,42 @@ export const guj_language_data = {
   Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
   Account_Status: "ખાતા સ્થિતિ",
 
+  // Auditor Master
+  AuditorMaster: "ઓડિટર માસ્ટર",
+  AuditorName: "ઓડિટરનું નામ",
+  PhoneNo: "ફોન નંબર",
+  Designation: "હોદ્દો",
+  EnterAuditorName: "ઓડિટરનું નામ દાખલ કરો",
+  AuditorNameisrequired: "ઓડિટરનું નામ જરૂરી છે.",
+  EnterAddress1: "સરનામું 1 દાખલ કરો",
+  EnterAddress2: "સરનામું 2 દાખલ કરો",
+  EnterPhoneNo: "ફોન નંબર દાખલ કરો",
+  SelectDesignation: "હોદ્દો પસંદ કરો",
+
+  // advocate master
+  AdvocateMaster: "એડવોકેટ માસ્ટર",
+  SpecialCharacterIsNotAllowed: "વિશિષ્ટ પાત્રની મંજૂરી નથી.",
+  AdvocateName: "એડવોકેટનું નામ",
+  EnterAdvocateName: "એડવોકેટનું નામ દાખલ કરો",
+  AdvocateNameisrequired: "એડવોકેટનું નામ જરૂરી છે.",
+  Address: "સરનામું",
+  EnterEmailID: "ઈમેલ આઈડી દાખલ કરો",
+  InvalidEmailID: "અમાન્ય ઈમેલ આઈડી.",
+
+  // Lien reason master
+  LienReasonMaster: "પૂર્વાધિકાર કારણ માસ્ટર",
+
+  // Clearing bank master
+  ClearingBankMaster: "ક્લિયરિંગ બેંક માસ્ટર",
+  RBICode: "આરબીઆઈ કોડ",
+  Exclude: "બાકાત",
+  EnterRBICode: "આરબીઆઈ કોડ દાખલ કરો",
+  RBICodeIsRequired: "આરબીઆઈ કોડ જરૂરી છે.",
+  EnterBankName: "બેંકનું નામ દાખલ કરો",
+  BankNameIsRequired: "બેંક નામ જરૂરી છે.",
+  AtleastOneBranchShouldBeSelected: "ઓછામાં ઓછી એક શાખા પસંદ કરવી જોઈએ",
+  Select: "પસંદ કરો",
+  DisplayName: "ડિસ્પ્લે નામ",
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 
@@ -660,7 +707,28 @@ export const guj_language_data = {
   TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
-
+  // lien Master
+  // Mode Master
+  Mode: "મોડ",
+  MinimumNoofJoints: "સાંધાઓની ન્યૂનતમ સંખ્યા",
+  MaximumNoofJoints: "સાંધાઓની મહત્તમ સંખ્યા",
+  // Ac period Mater
+  PeriodName: "પીરિયડનું નામ",
+  InstNo: "હપ્તા નં.",
+  InstallmentPeriod: "હપ્તાનો સમયગાળો",
+  // Bank ifsc code master
+  IFSCCode: "IFSC કોડ",
+  BankName: "બેંકનું નામ",
+  Facility: "સુવિધા",
+  MICRCode: "MICR કોડ",
+  Add1: "સરનામું 1",
+  ContactDetail: "સંપર્ક વિગતો",
+  DistrictName: "જિલ્લાનું નામ",
+  StateName: "રાજ્યનું નામ",
+  Import: "આયાત",
+  CentreName: "કેન્દ્રનું નામ",
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
 };
+
+

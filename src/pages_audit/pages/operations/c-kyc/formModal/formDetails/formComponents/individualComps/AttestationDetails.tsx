@@ -15,6 +15,7 @@ import { CustomerSaveDialog } from "../../../dialog/CustomerSave"
 import TabNavigate from "../TabNavigate"
 import { Alert } from "components/common/alert"
 import { PopupRequestWrapper } from "components/custom/popupMessage"
+import { utilFunction } from "components/utils"
 
 const actions = [
     {
@@ -32,7 +33,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const [updateDialog, setUpdateDialog] = useState(false)
     const [isUpdated, setIsUpdated] = useState(false)
     const [saveSuccessDialog, setSaveSuccessDialog] = useState<boolean>(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx, handleReqCDctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");  
@@ -40,6 +41,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const [formStatus, setFormStatus] = useState<any[]>([])
     const [docValidateDialog, setDocValidateDialog] = useState<boolean>(false)
     const [errMsg, setErrMsg] = useState<any>("");
+    const [reqCD, setReqCD] = useState<any>(null);
     const onCloseSearchDialog = () => {
         setHistoryDialog(false)
     }    
@@ -111,9 +113,11 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const docValidationMutation: any = useMutation(API.validateDocData, {
         onSuccess: (data) => {
             // console.log("qwiwuiefhqioweuhfd", data?.[0]?.MESSAGE)
-            setDocValidateDialog(true)
             if(data?.[0]?.MESSAGE) {
+                setDocValidateDialog(true)
                 setErrMsg(data?.[0]?.MESSAGE)
+            } else {
+                onSave()
             }
         },
         onError: (error: any) => {
@@ -125,8 +129,12 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
         onSuccess: (data) => {
             // console.log("data on save", data)
             if(data?.[0]?.REQ_CD) {
-                setFormStatus(old => [...old, true])
-                setSaveSuccessDialog(true)
+                if(!Number.isNaN(data?.[0]?.REQ_CD)) {
+                    setReqCD(parseInt(data?.[0]?.REQ_CD))
+                    handleReqCDctx(parseInt(data?.[0]?.REQ_CD))
+                    setFormStatus(old => [...old, true])
+                    setSaveSuccessDialog(true)
+                }
                 // handleReqCDctx(data?.[0]?.REQ_CD)
                 // handleColTabChangectx(state?.colTabValuectx+1)
             }
@@ -172,7 +180,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
             // handleColTabChangectx(7)
 
             // setIsNextLoading(false)
-            if(!state?.isFreshEntryctx) {
+            if(!state?.isFreshEntryctx && !state?.isDraftSavedctx) {
                 let tabModifiedCols:any = state?.modifiedFormCols
                 let updatedCols = tabModifiedCols.ATTESTATION_DTL ? _.uniq([...tabModifiedCols.ATTESTATION_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
                 tabModifiedCols = {
@@ -180,7 +188,6 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                     ATTESTATION_DTL: [...updatedCols]
                 }
                 handleModifiedColsctx(tabModifiedCols)
-                setFormStatus(old => [...old, true])
                 // if() {
                 //     setAlertOnUpdate
                 // } else {
@@ -188,18 +195,30 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                 // }
                 // setUpdateDialog(true)
                 // updateMutation.mutate()
-            } else {
+            } 
+            // if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
+            //     setFormStatus(old => [...old, true])
+            // } else {
+            if(state?.isFreshEntryctx || state?.isDraftSavedctx) {
                 // console.log("acdsvq currentFormctx mutateeee...", state?.steps)
                 // if(state?.req_cd_ctx) {}
                 // /customerServiceAPI/VALIDATEDOCDATA
+                let submittedDoc = state?.formDatactx["DOC_MST"]?.["doc_mst_payload"];
+                if(Array.isArray(submittedDoc)) {
+                    submittedDoc = submittedDoc?.map(docRow => {
+                        return docRow?.TEMPLATE_CD ?? "";
+                    })
+                    submittedDoc = submittedDoc.toString();
+                }
+
                 let docValidatePayload = {
-                    PAN_NO: state?.formDatactx["PERSONAL_DETAIL"]?.PAN_NO,
-                    UNIQUE_ID: state?.formDatactx["PERSONAL_DETAIL"]?.UNIQUE_ID,
-                    ELECTION_CARD_NO: state?.formDatactx["PERSONAL_DETAIL"]?.ELECTION_CARD_NO,
-                    NREGA_JOB_CARD: state?.formDatactx["PERSONAL_DETAIL"]?.NREGA_JOB_CARD,
-                    PASSPORT_NO: state?.formDatactx["PERSONAL_DETAIL"]?.PASSPORT_NO,
-                    DRIVING_LICENSE_NO: state?.formDatactx["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO,
-                    TEMPLATE_CD: "", //temp
+                    PAN_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.PAN_NO ?? "",
+                    UNIQUE_ID: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.UNIQUE_ID ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.UNIQUE_ID ?? "",
+                    ELECTION_CARD_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.ELECTION_CARD_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.ELECTION_CARD_NO ?? "",
+                    NREGA_JOB_CARD: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.NREGA_JOB_CARD ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.NREGA_JOB_CARD ?? "",
+                    PASSPORT_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PASSPORT_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.PASSPORT_NO ?? "",
+                    DRIVING_LICENSE_NO: state?.isDraftSavedctx ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO ?? "" : state?.formDatactx["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO ?? "",
+                    TEMPLATE_CD: submittedDoc ?? "", //temp
                     CUST_TYPE: state?.entityTypectx ?? "",
                     // PAN_NO: "DWIPP9643D",
                     // UNIQUE_ID: "123123123123",
@@ -210,6 +229,8 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                     // CUST_TYPE: state?.entityTypectx,
                 }
                 docValidationMutation.mutate(docValidatePayload)
+            } else {
+                    setFormStatus(old => [...old, true])
             }
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
@@ -246,6 +267,48 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
         })
         const refs = [AttestationDTLFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
+    }
+
+    const onSave = () => {
+        if(state?.isFreshEntryctx || state?.isDraftSavedctx) {
+            let data = {
+                CUSTOMER_ID: state?.customerIDctx,
+                CUSTOMER_TYPE: state?.entityTypectx,
+                CATEGORY_CD: state?.categoryValuectx,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACCT_TYPE: state?.accTypeValuectx,
+                KYC_NUMBER: state?.kycNoValuectx,
+                CONSTITUTION_TYPE: state?.constitutionValuectx,
+                IsNewRow: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? true : false,
+                REQ_CD: state?.req_cd_ctx,
+                formData: state?.formDatactx,
+                isDraftSaved: state?.isDraftSavedctx,
+                updated_tab_format: {}
+            }
+            if(state?.isDraftSavedctx) {
+                let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"] ?? [])
+                let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"] ?? [])
+                let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
+                // console.log("weuifhwiuefhupdated_tabs", updated_tabs, Array.isArray(updated_tabs), updated_tabs.includes("PERSONAL_DETAIL"), updated_tabs["PERSONAL_DETAIL"])
+                if(Array.isArray(updated_tabs) && updated_tabs.includes("PERSONAL_DETAIL")) {
+                    let updated_tab_format:any = {}
+                    updated_tab_format["PERSONAL_DETAIL"] = {
+                        ...upd,
+                        ...(_.pick(state?.formDatactx["PERSONAL_DETAIL"], upd._UPDATEDCOLUMNS)),
+                        // ...other_data
+                        // IsNewRow: (state?.req_cd_ctx && state?.isDraftSavedctx) ? true : false,
+                        IsNewRow: (state?.req_cd_ctx && state?.isDraftSavedctx) ? false : true,
+                        REQ_CD: state?.req_cd_ctx ?? "",
+                        COMP_CD: authState?.companyID ?? "",
+                    }
+                    data["updated_tab_format"] = updated_tab_format;
+                    // console.log("on final saveeee", updated_tab_format)
+                }
+            }
+            mutation.mutate(data)
+        }
     }
 
     // useEffect(() => {
@@ -299,7 +362,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                 <Grid item container direction={"row"} style={{justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)",  pl: 2, pt: "6px"}} variant={"h6"}>{t("AttestationDetails")}</Typography>
                     {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography> */}
-                    {!state?.isFreshEntryctx && <Button sx={{mr:2, mt: "6px"}} 
+                    {(!state?.isFreshEntryctx && !state?.isDraftSavedctx) && <Button sx={{mr:2, mt: "6px"}} 
                     color="secondary" variant="contained" size="small"
                     onClick={() => {
                         // historyDataRefetch()
@@ -347,37 +410,25 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
                 // mt={updateMutation}
             />} */}
 
-            <CustomerSaveDialog 
+            {saveSuccessDialog && <CustomerSaveDialog 
                 open={saveSuccessDialog} 
                 onClose={onCloseSaveSuccessDialog} 
                 onFormClose={onFormClose}
+                // reqCD={reqCD}
                 // data={historyData} 
                 // isLoading={!isUpdated} 
                 // setIsLoading={setIsUpdated}
                 // mt={updateMutation}
-            />
+            />}
 
-    <PopupRequestWrapper
+    {docValidateDialog && <PopupRequestWrapper
         MessageTitle={"ALERT"}
         Message={errMsg}
         onClickButton={async (rows, buttonNames, ...others) => {
             // console.log(rows, "kjefeiwqf", buttonNames)
             if(buttonNames === "Yes") {
                 setDocValidateDialog(false)
-                let data = {
-                    CUSTOMER_ID: state?.customerIDctx,
-                    CUSTOMER_TYPE: state?.entityTypectx,
-                    CATEGORY_CD: state?.categoryValuectx,
-                    COMP_CD: authState?.companyID ?? "",
-                    BRANCH_CD: authState?.user?.branchCode ?? "",
-                    ACCT_TYPE: state?.accTypeValuectx,
-                    KYC_NUMBER: state?.kycNoValuectx,
-                    CONSTITUTION_TYPE: state?.constitutionValuectx,
-                    IsNewRow: state?.isFreshEntryctx,
-                    REQ_CD: state?.req_cd_ctx,
-                    formData: state?.formDatactx
-                }
-                mutation.mutate(data)        
+                onSave()
             } else if (buttonNames === "No") {
                 setDocValidateDialog(false)
                 setFormStatus(old => [...old, false])
@@ -388,7 +439,7 @@ const AttestationDetails = ({onFormClose, onUpdateForm}) => {
         loading={{Yes: mutation.isLoading}}
         // loading={{ Yes: getData?.isLoading, No: false }}
         open={docValidateDialog}
-    />
+    />}
 
 
         </Grid>

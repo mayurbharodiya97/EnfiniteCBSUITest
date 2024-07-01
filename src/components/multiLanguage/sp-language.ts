@@ -1,4 +1,15 @@
 export const sp_language_data = {
+  "Margin%": "Margen%",
+  OrnamentTypeMaster: "Maestro de tipos de ornamentos (MST/247)",
+  OrnamentTypeMasterForm: "Maestro de tipos de ornamentos",
+  CodeisRequired: "El código es obligatorio",
+  DescriptionisRequired: "Se requiere descripción",
+  MarginisRequired: "Se requiere margen",
+
+  //Action Taken Master
+  ActionTakenMaster: "Maestro de acción tomada (MST/145)",
+  ActionTakenMasterForm: "Maestro de acción tomada",
+  LegalProcess: "Proceso legal",
   // GridWrapper
   Search: "Buscar",
   NoDataFound: "  Datos no encontrados..!",
@@ -126,20 +137,20 @@ export const sp_language_data = {
     VerifyOTP: "Verificar OTP",
   },
   //priority master main
-  ParentGroup:"GGrupo de padres",
-  SubPriority:"Subprioridad",
-  Description:"Descripción",
-  SanctionFromLimit:"Sanción desde límite",
-  SanctionToLimit:"Sanción para limitar",
-  ProvisionSecured:"Provisión % asegurada",
-  ProvisionUnSecured:"Provisión % no garantizada",
-  ViewDetail:"Ver Detalle",
-  ParentWeaker:"Padre más débil",
-  CKYCGroup:"Grupo C-KYC",
-  Constitution:"Constitución",
-  PinCode:"Código PIN",
-  Add:"Agregar",
-  Delete:"Borrar",
+  ParentGroup: "GGrupo de padres",
+  SubPriority: "Subprioridad",
+  Description: "Descripción",
+  SanctionFromLimit: "Sanción desde límite",
+  SanctionToLimit: "Sanción para limitar",
+  ProvisionSecured: "Provisión % asegurada",
+  ProvisionUnSecured: "Provisión % no garantizada",
+  ViewDetail: "Ver Detalle",
+  ParentWeaker: "Padre más débil",
+  CKYCGroup: "Grupo C-KYC",
+  Constitution: "Constitución",
+  PinCode: "Código PIN",
+  Add: "Agregar",
+  Delete: "Borrar",
   // For Biometric
   Biometric: {
     BiometrixAuthentication: "Autenticación Biometrix",
@@ -437,6 +448,47 @@ export const sp_language_data = {
   AttesDetailsIPVBy:
     "Detalles de la atestación [IPV-Prueba de identidad verificada por]",
 
+  // Auditor master
+  AuditorMaster: "Maestro Auditor",
+  AuditorName: "Nombre del auditor",
+  PhoneNo: "Número de teléfono",
+  Designation: "Designación",
+  EnterAuditorName: "Ingrese el nombre del auditor",
+  AuditorNameisrequired: "El nombre del auditor es obligatorio",
+  EnterAddress1: "Introduzca la dirección1",
+  EnterAddress2: "Introduzca la dirección2",
+  EnterPhoneNo: "Ingresa número telefónico",
+  SelectDesignation: "Seleccionar designación",
+
+  // Lien reason master
+  LienReasonMaster: "Maestro de razón de gravamen",
+  Codeisrequired: "Se requiere código",
+  Descriptionisrequired: "Se requiere descripción",
+
+  // Advocate Master
+  AdvocateMaster: "Maestro abogado",
+  SpecialCharacterIsNotAllowed: "No se permiten caracteres especiales.",
+  AdvocateName: "Nombre del defensor",
+  EnterAdvocateName: "Ingrese el nombre del defensor",
+  AdvocateNameisrequired: "El nombre del defensor es obligatorio.",
+  Address: "dirección",
+  EnterEmailID: "Ingrese su ID de correo electrónico",
+  InvalidEmailID: "ID de correo electrónico no válido.",
+
+  // Clearing bank master
+
+  ClearingBankMaster: "Maestro del Banco de Compensación",
+  RBICode: "Código RBI",
+  Exclude: "Excluir",
+  EnterRBICode: "Ingrese el código RBI",
+  RBICodeIsRequired: "Se requiere el código RBI.",
+  EnterBankName: "Ingrese el nombre del banco",
+  BankNameIsRequired: "El nombre del banco es obligatorio.",
+  AtleastOneBranchShouldBeSelected:
+    "Se debe seleccionar al menos una sucursal.",
+  Select: "Seleccionar",
+  DisplayName: "Nombre para mostrar",
+
   sidebar: {
     Dashboard: "Tablero de control",
 
@@ -464,4 +516,24 @@ export const sp_language_data = {
     "Stock Entry": "Entrada de stock",
     "Inward Clearing Process": "Proceso de compensación interna",
   },
+  // lien Mater
+  // Mode Master
+  Mode: "Modo",
+  MinimumNoofJoints: "Número mínimo de juntas",
+  MaximumNoofJoints: "Número mínimo de juntas",
+  // Ac period Mater
+  PeriodName: "Nombre del período",
+  InstNo: "número de pago",
+  InstallmentPeriod: "Período de pago",
+  //bank ifsc code master
+  IFSCCode: "Código IFSC",
+  BankName: "Nombre del banco",
+  Facility: "Facilidad",
+  MICRCode: "Código MICR",
+  Add1: "Dirección 1",
+  ContactDetail: "Detalles de contacto",
+  DistrictName: "Nombre del distrito",
+  StateName: "Nombre del estado",
+  Import: "Importación",
+  CentreName: "Nombre del centro"
 };

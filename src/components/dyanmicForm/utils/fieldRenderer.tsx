@@ -104,7 +104,7 @@ export const renderField: RenderFunctionType = (
     case "textField":
       Component = TextField;
       break;
-    case "Divider":
+    case "divider":
       Component = Divider;
       break;
     case "select":
@@ -192,6 +192,9 @@ export const renderField: RenderFunctionType = (
         {...others}
         enableGrid={true}
         GridProps={{ item: true, ...others?.GridProps }}
+        //update by altaf
+        fieldKey={others.name}
+        componentType={render.componentType}
       />
     );
   } else if (Component === FormButton) {
@@ -220,6 +223,7 @@ export const renderField: RenderFunctionType = (
           lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
+        componentType={render.componentType}
       />
     );
   } else {
@@ -247,6 +251,7 @@ export const renderField: RenderFunctionType = (
           lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
+        componentType={render.componentType}
       />
     );
   }

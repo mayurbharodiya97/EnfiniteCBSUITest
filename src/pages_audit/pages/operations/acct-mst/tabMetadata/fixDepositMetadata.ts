@@ -187,7 +187,7 @@ export const fixDeposit_tab_metadata = {
         },
         {//COME BACK
             render: {
-                componentType: "textField"
+                componentType: "textField"//come back
             },
             name: "INST_NO",
             label: "Lookupdisplay",

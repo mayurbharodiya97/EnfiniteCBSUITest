@@ -1,6 +1,18 @@
 import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
 
 export const fr_language_data = {
+  // Ornament Type Master
+  "Margin%": "Marge%",
+  OrnamentTypeMaster: "Maître du type d’ornement (MST/247)",
+  OrnamentTypeMasterForm: "Maître du type d’ornement",
+  CodeisRequired: "Le code est requis",
+  DescriptionisRequired: "Une description est requise",
+  MarginisRequired: "Une marge est requise",
+
+  //Action Taken Master
+  ActionTakenMaster: "Action entreprise Maître (MST/145)",
+  ActionTakenMasterForm: "Action entreprise Maître",
+  LegalProcess: "Procédure légale",
   // GridWrapper
   Search: "Recherche",
   NoDataFound: " Aucune donnée disponible..!",
@@ -91,20 +103,20 @@ export const fr_language_data = {
   PendingCount: "Décompte en attente",
 
   //Parent master main
-  ParentGroup:"Groupe de parents",
-  SubPriority:"Sous-priorité",
-  Description:"Description",
-  SanctionFromLimit:"Sanction de la limite",
-  SanctionToLimit:"Sanction à limiter",
-  ProvisionSecured:"Provision sécurisée %",
-  ProvisionUnSecured:"Provision non garantie %",
-  ViewDetail:"Voir les détails",
-  ParentWeaker:"Parent plus faible",
-  CKYCGroup:"Groupe C-KYC",
-  Constitution:"Constitution",
-  PinCode:"Code PIN",
-  Add:"Ajouter",
-  Delete:"Supprimer",
+  ParentGroup: "Groupe de parents",
+  SubPriority: "Sous-priorité",
+  Description: "Description",
+  SanctionFromLimit: "Sanction de la limite",
+  SanctionToLimit: "Sanction à limiter",
+  ProvisionSecured: "Provision sécurisée %",
+  ProvisionUnSecured: "Provision non garantie %",
+  ViewDetail: "Voir les détails",
+  ParentWeaker: "Parent plus faible",
+  CKYCGroup: "Groupe C-KYC",
+  Constitution: "Constitution",
+  PinCode: "Code PIN",
+  Add: "Ajouter",
+  Delete: "Supprimer",
 
   Loading: "Chargement..",
   SignIn: "S'identifier",
@@ -459,6 +471,47 @@ export const fr_language_data = {
   AttesDetailsIPVBy:
     "Détails de l'attestation [IPV-Identity Preuve vérifiée par]",
 
+  // Auditor Master
+  AuditorMaster: "Maître auditeur",
+  AuditorName: "Nom de l'auditeur",
+  PhoneNo: "Numéro de téléphone",
+  Designation: "Désignation",
+  EnterAuditorName: "Entrez le nom de l'auditeur",
+  AuditorNameisrequired: "Le nom de l'auditeur est requis",
+  EnterAddress1: "Entrez l'adresse1",
+  EnterAddress2: "Entrez l'adresse2",
+  EnterPhoneNo: "Entrez le numéro de téléphone",
+  SelectDesignation: "Sélectionnez la désignation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Raison Maître",
+  Codeisrequired: "Le code est requis",
+  Descriptionisrequired: "Une description est requise",
+
+  // Advocate Master
+  AdvocateMaster: "Maître avocat",
+  SpecialCharacterIsNotAllowed:
+    "Les caractères spéciaux ne sont pas autorisés.",
+  AdvocateName: "Nom de l'avocat",
+  EnterAdvocateName: "Entrez le nom de l'avocat",
+  AdvocateNameisrequired: "Le nom de l'avocat est requis.",
+  Address: "Adresse",
+  EnterEmailID: "Entrez l'identifiant de messagerie",
+  InvalidEmailID: "Identifiant de messagerie invalide.",
+
+  // Clearing bank master
+  ClearingBankMaster: "Maître de banque de compensation",
+  RBICode: "Code RBI",
+  Exclude: "Exclure",
+  EnterRBICode: "Entrez le code RBI",
+  RBICodeIsRequired: "Le code RBI est requis.",
+  EnterBankName: "Entrez le nom de la banque",
+  BankNameIsRequired: "Le nom de la banque est requis.",
+  AtleastOneBranchShouldBeSelected:
+    "Au moins une branche doit être sélectionnée.",
+  Select: "Sélectionner",
+  DisplayName: "Afficher un nom",
+
   sidebar: {
     Dashboard: "Tableau de bord",
 
@@ -484,4 +537,25 @@ export const fr_language_data = {
     "Stock Entry": "Entrée de stock",
     "Inward Clearing Process": "Processus de compensation entrante",
   },
+  // lien Mater
+  // Mode Master
+  Mode: "Mode",
+  MinimumNoofJoints: "Nombre minimum de joints",
+  MaximumNoofJoints: "Nombre maximum de joints",
+  // Ac period Mater
+  PeriodName: "Nom de la période",
+  InstNo: "numéro de versement",
+  InstallmentPeriod: "Période de versement",
+  //bank ifsc code master
+  IFSCCode: "Code IFSC",
+  BankName: "Nom de la banque",
+  Facility: "Facilité",
+  MICRCode: "Code MICR",
+  Add1: "Adresse 1",
+  ContactDetail: "Coordonnées de contact",
+  DistrictName: "Nom du district",
+  StateName: "Nom de l'état",
+  Import: "Importation",
+  CentreName: "Nom du centre"
+
 };

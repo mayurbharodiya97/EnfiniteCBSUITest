@@ -464,6 +464,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
     packageName: "",
   },
+  VALIDATETOINACTIVE: {
+    url: "/customerServiceAPI/VALIDATETOINACTIVE",
+    packageName: "",
+  },
   GETINSURANCE: {
     url: "/customerServiceAPI/GETINSURANCE",
     packageName: "",
@@ -1227,6 +1231,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMODEDDW",
     packageName: "",
   },
+  GETCUSTOMERDATA: {
+    url: "accountServiceAPI/GETCUSTOMERDATA",
+    packageName: "",
+  },
+  GETPENDINGACCTLIST: {
+    url: "accountServiceAPI/GETPENDINGACCTLIST",
+    packageName: "",
+  },
+  GETACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETACCOUNTDETAILS",
+    packageName: "",
+  },
   GETACCTMSTMORTGAGEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMORTGAGEDDW",
     packageName: "",
@@ -1295,7 +1311,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTRISKCLASSDDW",
     packageName: "",
   },
-  GETTRADEMSTDATADISP:{
+  GETTRADEMSTDATADISP: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMSTDATADISP",
     packageName: "",
   },
@@ -1303,7 +1319,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTINDUSTRYDDW",
     packageName: "",
   },
-  DOTRADEMSTDML:{
+  DOTRADEMSTDML: {
     url: "/commonMasterServiceAPI/DOTRADEMSTDML",
     packageName: "",
   },
@@ -1311,7 +1327,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTRECREDDW",
     packageName: "",
   },
-  DOSUBPRIORITYMST:{
+  DOSUBPRIORITYMST: {
     url: "/commonMasterServiceAPI/DOSUBPRIORITYMST",
     packageName: "",
   },
@@ -1319,7 +1335,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
-  PRIORITYMASTERMAINDML:{
+  PRIORITYMASTERMAINDML: {
     url: "/commonMasterServiceAPI/PRIORITYMASTERMAINDML",
     packageName: "",
   },
@@ -1331,7 +1347,7 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/DOTEMPODDML",
     packageName: "",
   },
-  GETAREAMSTRETRIVEGRID:{
+  GETAREAMSTRETRIVEGRID: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTRETRIVEGRID",
     packageName: "",
   },
@@ -1339,7 +1355,7 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETRETRIVECHQBKFLAG",
     packageName: "",
   },
-  GETAREAMSTCITYDDW:{
+  GETAREAMSTCITYDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTCITYDDW",
     packageName: "",
   },
@@ -1347,7 +1363,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQCNFDATADISP",
     packageName: "",
   },
-  GETAREAMSTPARENTDDW:{
+  GETAREAMSTPARENTDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTPARENTDDW",
     packageName: "",
   },
@@ -1355,7 +1371,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLMTCNFDATADISP",
     packageName: "",
   },
-  GETMISCTABLECONFIG:{
+  GETMISCTABLECONFIG: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETMISCTABLECONFIG",
     packageName: "",
   },
@@ -1363,7 +1379,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKCNFDATADISP",
     packageName: "",
   },
-  DOAREAMST:{
+  DOAREAMST: {
     url: "commonMasterServiceAPI/DOAREAMST",
     packageName: "",
   },
@@ -1435,6 +1451,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRANTYPEDDW",
     packageName: "",
   },
+  GETAGENTMSTRETRIVE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTRETRIVE",
+    packageName: "",
+  },
   GETCOMMTYPEDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEDDDW",
     packageName: "",
@@ -1467,6 +1487,162 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
+  GETCUSTMSTDOCDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTMSTDOCDTL",
+    packageName: "",
+  },
+  GETCATEGORYDTL: {
+    url: "/customerServiceAPI/GETCATEGORYDTL",
+    packageName: "",
+  },
+  CALCULATEINTRATE: {
+    url: "/customerServiceAPI/CALCULATEINTRATE",
+    packageName: "",
+  },
+  SAVECATEGORYDTL: {
+    url: "/customerServiceAPI/SAVECATEGORYDTL",
+    packageName: "",
+  },
+  CLEARINGBANKMASTERDML: {
+    url: "/commonMasterServiceAPI/CLEARINGBANKMASTERDML",
+    packageName: "",
+  },
+  GETDYNAMICBRANCHLIST: {
+    url: "/commonMasterServiceAPI/GETDYNAMICBRANCHLIST",
+    packageName: "",
+  },
+  DOADDDYNAMICBRANCH: {
+    url: "/commonMasterServiceAPI/DOADDDYNAMICBRANCH",
+    packageName: "",
+  },
+  DOLIENREASONMSTDATA: {
+    url: "/commonMasterServiceAPI/DOLIENREASONMSTDATA",
+    packageName: "",
+  },
+  DOADVOCATEMSTDML: {
+    url: "/commonMasterServiceAPI/DOADVOCATEMSTDML",
+    packageName: "",
+  },
+  GETAUDITORMSTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAUDITORMSTGRID",
+    packageName: "",
+  },
+  GETAUDITORMSTDSGDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAUDITORMSTDSGDDW",
+    packageName: "",
+  },
+  AUDITORMASTERDML: {
+    url: "/commonMasterServiceAPI/AUDITORMASTERDML",
+    packageName: "",
+  },
+  GETFORM15GHDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHDTL",
+    packageName: "",
+  },
+  GETACCTDETAIL: {
+    url: "/transactionServiceAPI/GETACCTDETAIL",
+    packageName: "",
+  },
+  GETFDRDDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDRDDETAILS",
+    packageName: "",
+  },
+  GETFORM15GHFDDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHFDDTL",
+    packageName: "",
+  },
+  GETFORM15GHFINDATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHFINDATE",
+    packageName: "",
+  },
+  GETFORM15GHRETRIVEDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHRETRIVEDATA",
+    packageName: "",
+  },
+  FORM15GHENTRYDML: {
+    url: "/enfinityFDServiceAPI/FORM15GHENTRYDML",
+    packageName: "",
+  },
+  GETPRINTFORMDETAILS: {
+    url: "/enfinityFDServiceAPI/GETPRINTFORMDETAILS",
+    packageName: "",
+  },
+  GETFORM15GHCONFPENDING: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHCONFPENDING",
+    packageName: "",
+  },
+  FORM15GHENTRYCONFIRMATION: {
+    url: "/enfinityFDServiceAPI/FORM15GHENTRYCONFIRMATION",
+    packageName: "",
+  },
+  GETAGENTMSTCONFIGPIGMYDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
+    packageName: "",
+  },
+  AGENTMASTERDML: {
+    url: "/commonMasterServiceAPI/AGENTMASTERDML",
+    packageName: "",
+  },
+  GETRECURPAYMENTMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTMST",
+    packageName: "",
+  },
+  GETRECURRINGVALIDATEACCTDTL: {
+    url: "/transactionServiceAPI/GETRECURRINGVALIDATEACCTDTL",
+    packageName: "",
+  },
+  GETRECURRINGACCTDATA: {
+    url: "/transactionServiceAPI/GETRECURRINGACCTDATA",
+    packageName: "",
+  },
+  GETRECURRINGADVICEDTL: {
+    url: "/transactionServiceAPI/GETRECURRINGADVICEDTL",
+    packageName: "",
+  },
+  GETPAYSLIPINFAVOURDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPINFAVOURDDW",
+    packageName: "",
+  },
+  GETPAYSLIPREGIONDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREGIONDDW",
+    packageName: "",
+  },
+  GETPAYSLIPBANKCODEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBANKCODEDDW",
+    packageName: "",
+  },
+  GETPAYSLIPSIGNATUREDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSIGNATUREDDW",
+    packageName: "",
+  },
+  CHECKTOKENVALIDATE: {
+    url: "/transactionServiceAPI/CHECKTOKENVALIDATE",
+    packageName: "",
+  },
+  SAVERECURRINGENTRYVALIDATION: {
+    url: "/transactionServiceAPI/SAVERECURRINGENTRYVALIDATION",
+    packageName: "",
+  },
+  GETCALCULATEGSTCOMM: {
+    url: "/transactionServiceAPI/GETCALCULATEGSTCOMM",
+    packageName: "",
+  },
+  VALIDATEPAYSLIPNO: {
+    url: "/transactionServiceAPI/VALIDATEPAYSLIPNO",
+    packageName: "",
+  },
+  GETRTGSBNFCRYDTL: {
+    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
+    packageName: "",
+  },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
+    packageName: "",
+  },
+  GETRTGSIFSCCODEACWISE: {
+    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
+    packageName: "",
+  },
   GETBANKIFSCCODEMSTGRID: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCCODEMSTGRID",
     packageName: "",
@@ -1479,8 +1655,12 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIFSCIMPORTDDDW",
     packageName: "",
   },
-  GETFILETOJSON:{
-    url:"enfinityCommonServiceAPI/GETFILETOJSON",
+  GETFILETOJSON: {
+    url: "enfinityCommonServiceAPI/GETFILETOJSON",
+    packageName: "",
+  },
+  IMPORTFILE: {
+    url: "enfinityCommonServiceAPI/IMPORTFILE",
     packageName: "",
   },
   DOSPECIALINSTMST: {
@@ -1507,14 +1687,6 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/DOCOURTMST",
     packageName: "",
   },
-  GETRTGSBNFCRYDTL: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
-    packageName: "",
-  },
-  GETRTGSIFSCCODEACWISE: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
-    packageName: "",
-  },
   GETRTGSIFSCCODEGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEGRID",
     packageName: "",
@@ -1525,6 +1697,78 @@ export const ActionWiseAPIConfiguration = {
   },
   GETRTGSCHARGES: {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
+    packageName: "",
+  },
+  VALIDATERTGSDTL: {
+    url: "/transactionServiceAPI/VALIDATERTGSDTL",
+    packageName: "",
+  },
+  VALIDATEAMOUNT: {
+    url: "/transactionServiceAPI/VALIDATEAMOUNT",
+    packageName: "",
+  },
+  DOSAVERTGSENTRY: {
+    url: "/transactionServiceAPI/DOSAVERTGSENTRY",
+    packageName: "",
+  },
+  DOBENEFICIARYACCTAUDITENTRY: {
+    url: "/transactionServiceAPI/DOBENEFICIARYACCTAUDITENTRY",
+    packageName: "",
+  },
+  GETRTGSENTRYTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSENTRYTYPEDDDW",
+    packageName: "",
+  },
+  GETRTGSRTRIVEFRMDTTODTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSRTRIVEFRMDTTODTGRID",
+    packageName: "",
+  },
+  GETRTGSTRNHDRDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNHDRDATADISP",
+    packageName: "",
+  },
+  GETRTGSTRNDTLDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRNDTLDATADISP",
+    packageName: "",
+  },
+  GETPAYSLIPBILLTYPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPBILLTYPDDW",
+    packageName: "",
+  },
+  GETPAYSLIPRETRIVEGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPRETRIVEGRID",
+    packageName: "",
+  },
+  GETPAYSLIPTODAYGRID: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPTODAYGRID",
+    packageName: "",
+  },
+  GETPAYSLIPACCTDTLDISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPACCTDTLDISP",
+    packageName: "",
+  },
+  GETPAYSLIPDDDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDDDATADISP",
+    packageName: "",
+  },
+  GETPAYSLIPNOHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPNOHDR",
+    packageName: "",
+  },
+  GETPAYSLIPTRANCD: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPTRANCD",
+    packageName: "",
+  },
+  DOSAVEREGIONMST: {
+    url: "transactionServiceAPI/DOSAVEREGIONMST",
+    packageName: "",
+  },
+  VALIDATEPAYSLIPISSUEENTRY: {
+    url: "transactionServiceAPI/VALIDATEPAYSLIPISSUEENTRY",
+    packageName: "",
+  },
+  GETCOMMTYPEMSTDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEMSTDDDW  ",
     packageName: "",
   },
   GETTEMPODAGCNFDATAGRID: {

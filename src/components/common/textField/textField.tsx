@@ -55,6 +55,7 @@ interface MyGridExtendedProps {
     touchAndValidate?: any;
   };
   enableShortcut?: string[];
+  ignoreInSubmit?: boolean;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -94,7 +95,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
   textFieldStyle,
   txtTransform,
   AlwaysRunPostValidationSetCrossFieldValues,
+  preventSpecialCharInput,
   enableShortcut = [],
+  ignoreInSubmit = false,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -119,6 +122,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     dependentValues,
     setErrorAsCB,
     fieldDataOnBlr,
+    setIgnoreInSubmit,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -153,8 +157,19 @@ const MyTextField: FC<MyTextFieldProps> = ({
     }
   }, [value, setColor]);
 
+  useEffect(() => {
+    setIgnoreInSubmit(ignoreInSubmit);
+  }, [ignoreInSubmit]);
+
   const customHandleChange = useCallback(
     (e) => {
+      if(Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
+        let newValue:string = e.target.value;
+        const characters: string | null = localStorage.getItem("specialChar") ?? "";
+        if(newValue.split("")?.filter((char) => characters?.includes(char))?.length>0) {
+          return;
+        }
+      }
       handleChange(e, e.target?.formattedValue ?? undefined);
     },
     [handleChange]

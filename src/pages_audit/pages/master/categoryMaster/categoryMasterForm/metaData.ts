@@ -1,5 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { getDDDWAcctType, getPMISCData } from "../api";
+import { utilFunction } from "components/utils";
 
 export const CategoryMasterFormMetaData = {
   form: {
@@ -57,6 +58,32 @@ export const CategoryMasterFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Code is required."] }],
       },
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       __EDIT__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
@@ -73,6 +100,32 @@ export const CategoryMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
+      validate: (columnValue, ...rest) => {
+        let specialChar = /^[^!&]*$/;
+        if (columnValue?.value && !specialChar.test(columnValue.value)) {
+          return "'!' and '&' not allowed";
+        }
+
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Category Name is required."] }],
@@ -135,7 +188,7 @@ export const CategoryMasterFormMetaData = {
         { label: "Super Sr. Citizen", value: "P   " },
         { label: "All", value: "A   " },
       ],
-      defaultValue: "A   ",
+      __NEW__: { defaultValue: "A   " },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
     },
 
@@ -182,26 +235,8 @@ export const CategoryMasterFormMetaData = {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "TDS_BRANCH_CD",
-        label: "Branch",
-        placeholder: "Select Branch",
         __VIEW__: { isReadOnly: true },
-        GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
-      },
-      accountTypeMetadata: {
-        name: "TDS_ACCT_TYPE",
-        label: "Account Type",
-        placeholder: "Select Account Type",
-        options: getDDDWAcctType,
-        _optionsKey: "getDDDWAcctType",
-        __VIEW__: { isReadOnly: true },
-        GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
-      },
-      accountCodeMetadata: {
-        name: "TDS_ACCT_CD",
-        label: "Account No.",
-        autoComplete: "off",
-        placeholder: "Enter Account No.",
-        dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -209,56 +244,120 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          const paddedAcctcode = (currentField?.value).padStart(
-            dependentFieldValues?.TDS_ACCT_TYPE?.optionData?.[0]
-              ?.PADDING_NUMBER || 0,
-            0
-          );
-
-          const reqParameters = {
-            BRANCH_CD: dependentFieldValues?.TDS_BRANCH_CD?.value,
-            COMP_CD: authState?.companyID,
-            ACCT_TYPE: dependentFieldValues?.TDS_ACCT_TYPE?.value,
-            ACCT_CD: paddedAcctcode,
-            SCREEN_REF: "EMST/041",
-          };
+          if (!currentField?.value) {
+            return {
+              TDS_ACCT_TYPE: { value: "" },
+              TDS_ACCT_CD: { value: "" },
+              TDS_ACCT_NM: { value: "" },
+            };
+          }
+        },
+        GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
+      },
+      accountTypeMetadata: {
+        name: "TDS_ACCT_TYPE",
+        options: getDDDWAcctType,
+        _optionsKey: "getDDDWAcctType",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (!currentField?.value) {
+            return {
+              TDS_ACCT_CD: { value: "" },
+              TDS_ACCT_NM: { value: "" },
+            };
+          }
+        },
+        __VIEW__: { isReadOnly: true },
+        GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
+      },
+      accountCodeMetadata: {
+        name: "TDS_ACCT_CD",
+        autoComplete: "off",
+        dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
 
           if (
-            paddedAcctcode &&
+            currentField?.value &&
             dependentFieldValues?.TDS_BRANCH_CD?.value &&
             dependentFieldValues?.TDS_ACCT_TYPE?.value
           ) {
+            const reqParameters = {
+              BRANCH_CD: dependentFieldValues?.TDS_BRANCH_CD?.value,
+              COMP_CD: authState?.companyID,
+              ACCT_TYPE: dependentFieldValues?.TDS_ACCT_TYPE?.value,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                currentField?.value,
+                dependentFieldValues?.TDS_ACCT_TYPE?.optionData
+              ),
+              SCREEN_REF: "MST/041",
+            };
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
               formState.MessageBox({
                 messageTitle: "Validation Failed...!",
-                message: postData.RESTRICTION,
+                message: postData?.RESTRICTION,
+              });
+              return {
+                TDS_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                TDS_SURCHARGE: {
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TDS_ACCT_NM: { value: "" },
+              };
+            } else if (postData?.MESSAGE1) {
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
               return {
-                TDS_ACCT_CD: { value: "" },
-                TDS_ACCT_TYPE: { value: "" },
+                TDS_ACCT_CD: {
+                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TDS_ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+              };
+            } else {
+              return {
+                TDS_ACCT_CD: {
+                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TDS_ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
               };
             }
-
-            if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Validation Alert",
-                message: postData.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-            }
-
+          } else if (!currentField?.value) {
             return {
-              TDS_ACCT_CD: {
-                value: paddedAcctcode || "",
-                ignoreUpdate: true,
-              },
-              TDS_ACCT_NM: { value: postData.ACCT_NM || "" },
+              TDS_ACCT_NM: { value: "" },
             };
           }
+          return {};
         },
+
+        fullWidth: true,
         GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
       },
     },
@@ -281,7 +380,7 @@ export const CategoryMasterFormMetaData = {
       render: {
         componentType: "Divider",
       },
-      dividerText: "Service Charge",
+      dividerText: "Surcharge",
       name: "Surcharge",
     },
 
@@ -319,9 +418,23 @@ export const CategoryMasterFormMetaData = {
       render: { componentType: "autocomplete" },
       name: "TDS_SUR_ACCT_TYPE",
       label: "Account Type",
-      placeholder: "Select Account Type",
+      placeholder: "Select account type",
       options: getDDDWAcctType,
       _optionsKey: "getDDDWAcctType",
+      runPostValidationHookAlways: true,
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldValues
+      ) => {
+        if (formState?.isSubmitting) return {};
+        if (!currentField?.value) {
+          return {
+            TDS_SUR_ACCT_CD: { value: "" },
+          };
+        }
+      },
       type: "text",
       __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
@@ -338,9 +451,10 @@ export const CategoryMasterFormMetaData = {
       },
       label: "Account No.",
       name: "TDS_SUR_ACCT_CD",
-      placeholder: "Enter Account No.",
+      placeholder: "Enter account number",
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -348,57 +462,61 @@ export const CategoryMasterFormMetaData = {
         dependentFieldValues
       ) => {
         if (formState?.isSubmitting) return {};
-        const paddedAcctcode = (currentField?.value).padStart(
-          dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData?.[0]
-            ?.PADDING_NUMBER || 0,
-          0
-        );
-
-        const reqParameters = {
-          BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
-          COMP_CD: authState?.companyID,
-          ACCT_TYPE: dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value,
-          ACCT_CD: paddedAcctcode,
-          SCREEN_REF: "EMST/041",
-        };
 
         if (
-          paddedAcctcode &&
+          currentField?.value &&
           dependentFieldValues?.BRANCH_CD?.value &&
           dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value
         ) {
+          const reqParameters = {
+            BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+            COMP_CD: authState?.companyID,
+            ACCT_TYPE: dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value,
+            ACCT_CD: utilFunction.getPadAccountNumber(
+              currentField?.value,
+              dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
+            ),
+            SCREEN_REF: "MST/041",
+          };
           const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
           if (postData?.RESTRICTION) {
             formState.MessageBox({
               messageTitle: "Validation Failed...!",
-              message: postData.RESTRICTION,
+              message: postData?.RESTRICTION,
+            });
+            return {
+              TDS_SUR_ACCT_CD: { value: "", isFieldFocused: true },
+              TDS_REC_BRANCH_CD: {
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          } else if (postData?.MESSAGE1) {
+            formState.MessageBox({
+              messageTitle: "Risk Category Alert",
+              message: postData?.MESSAGE1,
               buttonNames: ["Ok"],
             });
             return {
-              TDS_SUR_ACCT_CD: { value: "" },
-              TDS_SUR_ACCT_TYPE: { value: "" },
+              TDS_SUR_ACCT_CD: {
+                value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                ignoreUpdate: true,
+              },
+            };
+          } else {
+            return {
+              TDS_SUR_ACCT_CD: {
+                value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                ignoreUpdate: true,
+              },
             };
           }
-
-          if (postData?.MESSAGE1) {
-            formState.MessageBox({
-              messageTitle: "Validation Alert",
-              message: postData.MESSAGE1,
-              buttonNames: ["Ok"],
-            });
-          }
-
-          return {
-            TDS_SUR_ACCT_CD: {
-              value: paddedAcctcode || "",
-              ignoreUpdate: true,
-            },
-          };
         }
+        return {};
       },
-
       maxLength: 8,
+      fullWidth: true,
       GridProps: {
         xs: 12,
         sm: 4,
@@ -430,23 +548,7 @@ export const CategoryMasterFormMetaData = {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "TDS_REC_BRANCH_CD",
-        label: "Branch",
-        placeholder: "Select Branch",
-        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
-      },
-      accountTypeMetadata: {
-        name: "TDS_REC_ACCT_TYPE",
-        label: "Account Type",
-        placeholder: "Select Account Type",
-        _optionsKey: "getDDDWAcctType",
-        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
-      },
-      accountCodeMetadata: {
-        name: "TDS_REC_ACCT_CD",
-        label: "Account No.",
-        placeholder: "Enter Account No.",
-        autoComplete: "off",
-        dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -454,56 +556,114 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          const paddedAcctcode = (currentField?.value).padStart(
-            dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData?.[0]
-              ?.PADDING_NUMBER || 0,
-            0
-          );
-
-          const reqParameters = {
-            BRANCH_CD: dependentFieldValues?.TDS_REC_BRANCH_CD?.value,
-            COMP_CD: authState?.companyID,
-            ACCT_TYPE: dependentFieldValues?.TDS_REC_ACCT_TYPE?.value,
-            ACCT_CD: paddedAcctcode,
-            SCREEN_REF: "EMST/041",
-          };
+          if (!currentField?.value) {
+            return {
+              TDS_REC_ACCT_TYPE: { value: "" },
+              TDS_REC_ACCT_CD: { value: "" },
+              TDS_REC_ACCT_NM: { value: "" },
+            };
+          }
+        },
+        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
+      },
+      accountTypeMetadata: {
+        name: "TDS_REC_ACCT_TYPE",
+        options: getDDDWAcctType,
+        _optionsKey: "getDDDWAcctType",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (!currentField?.value) {
+            return {
+              TDS_REC_ACCT_CD: { value: "" },
+              TDS_REC_ACCT_NM: { value: "" },
+            };
+          }
+        },
+        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
+      },
+      accountCodeMetadata: {
+        name: "TDS_REC_ACCT_CD",
+        autoComplete: "off",
+        dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
 
           if (
-            paddedAcctcode &&
+            currentField?.value &&
             dependentFieldValues?.TDS_REC_BRANCH_CD?.value &&
             dependentFieldValues?.TDS_REC_ACCT_TYPE?.value
           ) {
+            const reqParameters = {
+              BRANCH_CD: dependentFieldValues?.TDS_REC_BRANCH_CD?.value,
+              COMP_CD: authState?.companyID,
+              ACCT_TYPE: dependentFieldValues?.TDS_REC_ACCT_TYPE?.value,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                currentField?.value,
+                dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
+              ),
+              SCREEN_REF: "MST/041",
+            };
+
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
               formState.MessageBox({
                 messageTitle: "Validation Failed...!",
-                message: postData.RESTRICTION,
+                message: postData?.RESTRICTION,
+              });
+              return {
+                TDS_REC_ACCT_CD: {
+                  value: "",
+                  ignoreUpdate: true,
+                },
+                TDS_REC_ACCT_NM: { value: "" },
+              };
+            } else if (postData?.MESSAGE1) {
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
               return {
-                TDS_REC_ACCT_CD: { value: "" },
-                TDS_REC_ACCT_TYPE: { value: "" },
+                TDS_REC_ACCT_CD: {
+                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TDS_REC_ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+              };
+            } else {
+              return {
+                TDS_REC_ACCT_CD: {
+                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TDS_REC_ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
               };
             }
-
-            if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Validation Alert",
-                message: postData.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-            }
-
+          } else if (!currentField?.value) {
             return {
-              TDS_REC_ACCT_CD: {
-                value: paddedAcctcode || "",
-                ignoreUpdate: true,
-              },
-              TDS_REC_ACCT_NM: { value: postData.ACCT_NM || "" },
+              TDS_REC_ACCT_NM: { value: "" },
             };
           }
+          return {};
         },
+        fullWidth: true,
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
     },
