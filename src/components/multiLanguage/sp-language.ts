@@ -6,7 +6,7 @@ export const sp_language_data = {
   CodeisRequired: "El código es obligatorio",
   DescriptionisRequired: "Se requiere descripción",
   MarginisRequired: "Se requiere margen",
-  RecordsdeletedMsg: "Registros eliminados exitosamente",
+  RecordsDeletedMsg: "Registros eliminados exitosamente",
 
   //Action Taken Master
   ActionTakenMaster: "Maestro de acción tomada (MST/145)",

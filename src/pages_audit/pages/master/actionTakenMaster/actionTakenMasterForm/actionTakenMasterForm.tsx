@@ -29,7 +29,7 @@ const ActionTakenMasterForm = ({
 
   const mutation = useMutation(API.actionTakenMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -90,7 +90,7 @@ const ActionTakenMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],

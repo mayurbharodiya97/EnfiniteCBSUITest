@@ -8,7 +8,7 @@ export const fr_language_data = {
   CodeisRequired: "Le code est requis",
   DescriptionisRequired: "Une description est requise",
   MarginisRequired: "Une marge est requise",
-  RecordsdeletedMsg: "Enregistrements supprimés avec succès",
+  RecordsDeletedMsg: "Enregistrements supprimés avec succès",
 
   //Action Taken Master
   ActionTakenMaster: "Action entreprise Maître (MST/145)",

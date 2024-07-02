@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const CategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "Category Master (MST/050)",
+    gridLabel: "CategoryMaster",
     rowIdColumn: "CATEG_CD",
     defaultColumnConfig: {
       width: 400,
@@ -26,7 +26,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -47,7 +47,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CATEG_NM",
-      columnName: "Category Name",
+      columnName: "CategoryName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -57,7 +57,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONSTITUTION_TYPE_DESC",
-      columnName: "Type Of Constitution",
+      columnName: "TypeOfConstitution",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -67,7 +67,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_LIMIT",
-      columnName: "TDS Limit",
+      columnName: "TDSLimit",
       sequence: 5,
       alignment: "right",
       componentType: "currency",
@@ -77,7 +77,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_RATE",
-      columnName: "TDS Payable Rate",
+      columnName: "TDSPayableRate",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -87,7 +87,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_BRANCH_CD",
-      columnName: "TDS Payable Branch",
+      columnName: "TDSPayableBranch",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -97,7 +97,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_ACCT_TYPE",
-      columnName: "TDS Payable Type",
+      columnName: "TDSPayableType",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -107,7 +107,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_ACCT_CD",
-      columnName: "TDS Payable A/c No.",
+      columnName: "TDSPayableA/cNo",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -117,7 +117,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_ACCT_NM",
-      columnName: "TDS Payable Account Name",
+      columnName: "TDSPayableAccountName",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -127,7 +127,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_SURCHARGE",
-      columnName: "Surcharge Rate",
+      columnName: "SurchargeRate",
       sequence: 11,
       alignment: "right",
       componentType: "default",
@@ -137,7 +137,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_SUR_ACCT_TYPE",
-      columnName: "Surcharge Type",
+      columnName: "SurchargeType",
       sequence: 12,
       alignment: "left",
       componentType: "default",
@@ -147,7 +147,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_SUR_ACCT_CD",
-      columnName: "Surcharge A/c No.",
+      columnName: "SurchargeA/cNo",
       sequence: 13,
       alignment: "left",
       componentType: "default",
@@ -157,7 +157,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_REC_BRANCH_CD",
-      columnName: "TDS Receivable Branch",
+      columnName: "TDSReceivableBranch",
       sequence: 14,
       alignment: "left",
       componentType: "default",
@@ -167,7 +167,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_REC_ACCT_TYPE",
-      columnName: "TDS Receivable Type",
+      columnName: "TDSReceivableType",
       sequence: 15,
       alignment: "left",
       componentType: "default",
@@ -177,7 +177,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_REC_ACCT_CD",
-      columnName: "TDS Receivable A/c No.",
+      columnName: "TDSReceivableAcNo",
       sequence: 16,
       alignment: "left",
       componentType: "default",
@@ -187,7 +187,7 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_REC_ACCT_NM",
-      columnName: "TDS Receivable Account Name",
+      columnName: "TDSReceivableAccountName",
       sequence: 17,
       alignment: "left",
       componentType: "default",

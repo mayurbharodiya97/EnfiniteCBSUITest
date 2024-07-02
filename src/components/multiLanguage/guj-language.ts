@@ -5,7 +5,7 @@ export const guj_language_data = {
   CodeisRequired: "કોડ જરૂરી છે",
   DescriptionisRequired: "વર્ણન જરૂરી છે",
   MarginisRequired: "માર્જિન જરૂરી છે",
-  RecordsdeletedMsg: "રેકોર્ડ સફળતાપૂર્વક કાઢી નાખ્યા",
+  RecordsDeletedMsg: "રેકોર્ડ સફળતાપૂર્વક કાઢી નાખ્યા",
 
   //Action Taken Master
   ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",

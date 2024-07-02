@@ -7,7 +7,7 @@ export const en_language_data = {
   CodeisRequired: "Code is required",
   DescriptionisRequired: "Description is required",
   MarginisRequired: "Margin is required",
-  RecordsdeletedMsg: "Records successfully deleted",
+  RecordsDeletedMsg: "Records successfully deleted",
 
   //Action Taken Master
   ActionTakenMaster: "Action Taken Master (MST/145)",

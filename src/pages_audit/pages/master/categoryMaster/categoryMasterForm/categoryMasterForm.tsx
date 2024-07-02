@@ -12,6 +12,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 const CategoryMasterForm = ({
   isDataChangedRef,
@@ -24,10 +25,11 @@ const CategoryMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.categoryMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -86,7 +88,7 @@ const CategoryMasterForm = ({
         setFormMode("view");
       } else {
         const btnName = await MessageBox({
-          message: "Do you want to save this Request?",
+          message: "SaveData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -146,7 +148,7 @@ const CategoryMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -154,7 +156,7 @@ const CategoryMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </GradientButton>
                 </>
               ) : formMode === "new" ? (
@@ -169,11 +171,11 @@ const CategoryMasterForm = ({
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
 
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               ) : (
@@ -184,10 +186,10 @@ const CategoryMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("Edit")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               )}
