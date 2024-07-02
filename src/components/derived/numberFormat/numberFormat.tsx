@@ -39,6 +39,7 @@ interface extendedProps {
   FormatProps: any;
   formattedValue?: boolean;
   isFieldFocused?: boolean;
+  textInputFromRight?: boolean;
 }
 
 export type AllNumberFormatProps = Merge<TextFieldProps, extendedProps>;
@@ -47,6 +48,7 @@ const MyNumberFormat: React.FC<AllNumberFormatProps> = ({
   FormatProps,
   formattedValue,
   isFieldFocused,
+  textInputFromRight = false,
   ...others
 }) => {
   const ref = useRef<any>(null);
@@ -60,6 +62,7 @@ const MyNumberFormat: React.FC<AllNumberFormatProps> = ({
   return (
     <TextField
       {...others}
+      className={textInputFromRight ? "textInputFromRight" : ""}
       InputProps={{
         inputComponent: NumberFormatCustom,
         inputProps: {

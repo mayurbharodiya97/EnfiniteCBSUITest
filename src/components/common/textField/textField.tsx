@@ -211,7 +211,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         try {
           let result = await setValueOnDependentFieldsChange(
             transformDependentFieldsState(dependentValues),
-            { isSubmitting }
+            { isSubmitting, value }
           );
 
           if (result !== undefined && result !== null) {

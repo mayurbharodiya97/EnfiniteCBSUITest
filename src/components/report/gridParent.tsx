@@ -15,7 +15,6 @@ import { Alert } from "components/common/alert";
 import { attachFilterComponentToMetaData, formatFilterBy } from "./utils";
 import { AmountProvider } from "./amountContext";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 
 export const ReportGrid: FC<any> = ({
   metaData,
@@ -40,7 +39,15 @@ export const ReportGrid: FC<any> = ({
   searchPlaceholder,
 }) => {
   /* eslint-disable react-hooks/exhaustive-deps */
-  const memoizedColumns = useMemo(() => metaData.columns, []);
+  const { t } = useTranslation();
+  const memoizedColumns = useMemo(() => {
+    if (Array.isArray(metaData.columns)) {
+      return metaData.columns.map((item) => {
+        return { ...item, columnName: t(item.columnName) };
+      });
+    }
+    return metaData.columns ?? [];
+  }, [t]);
   const memoizedFilters = useMemo(
     () => attachFilterComponentToMetaData(metaData.filters),
     []
