@@ -4,47 +4,35 @@ import React, { useCallback, useReducer } from "react";
 
 const initialState: any = {
   acctModectx: "",
+  acctNumberctx: "",
   isLoading: false,
-  param320: null,
-  gparam155: null,
+  param320: "",
+  gparam155: "",
 
   // all customer-mst states
   isFormModalOpenctx: false,
-  handleFormModalOpenctx: () => {},
-  handleFormModalClosectx: () => {},
 
   fromctx: "",
   formmodectx: "",
   isDraftSavedctx: false,
 
   isSidebarExpandedctx: false,
-  setIsSidebarExpandedctx: () => {},
-  handleSidebarExpansionctx: () => {},
 
   colTabValuectx: 0,
-  setColTabValuectx: () => {},
-  handleColTabChangectx: () => {},
+  // handleColTabChangectx: () => {},
 
-  isLoadingDatactx: () => {},
-  setIsLoadingDatactx: () => {},
   isCustomerDatactx: false,
-  setIsCustomerDatactx: () => {},
 
   entityTypectx: null,
-  setEntityTypectx: () => {},
 
   tabsApiResctx: [],
   tabNameList: [],
-  setTabsApiRes: () => {},
   // customerCategoriesctx: [],
   categConstitutionValuectx: null,
   categoryValuectx: null,
   constitutionValuectx: null,
   accTypeValuectx: null,
   kycNoValuectx: null,
-  setCategoryValue: () => {},
-  setConstitutionValuectx: () => {},
-  setAccTypeValuectx: () => {},
   AccTypeOptionsctx: [],
 
   formDatactx: {},
@@ -119,11 +107,20 @@ export const AcctMSTContext = React.createContext<any>({
   handleFormLoading: () => {},
   handleFromFormModectx: () => {},
   handleFormModalClosectx: () => {},
+  handleFormModalOpenOnEditctx: () => {},
   handleSidebarExpansionctx: () => {},
   handleHeaderFormSubmit: () => {},
   handleApiRes: () => {},
   handleColTabChangectx: () => {},
-  handleFormModalOpenct: () => {},
+  handleFormModalOpenctx: () => {},
+  handleCurrFormctx: () => {},
+  handleStepStatusctx: () => {},
+  handleFormDataonSavectx: () => {},
+  handlecustomerIDctx: () => {},
+  handleModifiedColsctx: () => {},
+  handleFormDataonRetrievectx: () => {},
+  handleSavectx: () => {},
+  handleUpdatectx: () => {},
 });
   const AcctMSTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
@@ -152,9 +149,10 @@ export const AcctMSTContext = React.createContext<any>({
       type: "handleFormModalClose",
       payload: {
         acctModectx: "",
+        acctNumberctx: "",
         isLoading: false,
-        param320: null,
-        gparam155: null,
+        param320: "",
+        gparam155: "",
 
         isFormModalOpenctx: false,
         entityTypectx: null,
@@ -162,7 +160,7 @@ export const AcctMSTContext = React.createContext<any>({
         categConstitutionValuectx: null,
         categoryValuectx: null,
         constitutionValuectx: null,
-        accTypeValuectx: "",
+        accTypeValuectx: null,
         tabsApiResctx: [],
         isFreshEntryctx: false,
         tabNameList: [],
@@ -205,17 +203,17 @@ export const AcctMSTContext = React.createContext<any>({
     });
   }, [state.isSidebarExpandedctx]);
 
-  interface handleHeaderFormSubmit {
-    acctType?:any, 
-    acctMode?:any
+  interface handleHeaderFormSubmitType {
+    acctType:any, 
+    reqID: any
   }
-  const handleHeaderFormSubmit = useCallback((reqObj:handleHeaderFormSubmit) => {
+  const handleHeaderFormSubmit = useCallback((reqObj:handleHeaderFormSubmitType) => {
     let payload:any = {}
     if(Boolean(reqObj.acctType)) {
       payload.accTypeValuectx = reqObj.acctType; 
     }
-    if(Boolean(reqObj.acctMode)) {
-      payload.acctModectx = reqObj.acctMode; 
+    if(Boolean(reqObj.reqID)) {
+      payload.req_cd_ctx = reqObj.reqID; 
     }
     dispatch({
       type: "update_accTypeValuectx",
@@ -259,6 +257,25 @@ export const AcctMSTContext = React.createContext<any>({
     })
   }, [])
 
+  const handleFormModalOpenOnEditctx = (recordData:any[]) => {
+    if(
+      Array.isArray(recordData) && 
+      recordData?.[0]?.data && 
+      Boolean(recordData?.[0]?.data?.REQUEST_ID)
+    ) {
+      let payload = {
+        req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
+        acctNumberctx: recordData[0].data?.ACCOUNT_NUMBER ?? "",
+        accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
+        isFormModalOpenctx: true, isFreshEntryctx: false
+      };
+      dispatch({
+        type: "handleCategoryChangectx",
+        payload: payload
+      })
+    }
+  }
+
   const handleFormLoading = useCallback((isloading:boolean) => {
     dispatch({
       type: "handle_formloading",
@@ -301,12 +318,31 @@ export const AcctMSTContext = React.createContext<any>({
     })
   }
 
+  const handlecustomerIDctx = (data) => {
+    dispatch({
+        type: "update_customerIDctx",
+        payload: {
+            customerIDctx: data
+        }
+    })
+  }
+
   const handleModifiedColsctx = (tabModifiedCols ) => {    
     dispatch({
         type: "modify_tabCols",
         payload: {
             modifiedFormCols: {...tabModifiedCols}
         }
+    })
+  }
+
+  const handleFormDataonRetrievectx = (data) => {
+    let retrieveApiRes = data
+    let payload = {};
+    payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
+    dispatch({
+        type: "update_retrieveFormData",
+        payload: payload
     })
   }
 
@@ -464,6 +500,7 @@ export const AcctMSTContext = React.createContext<any>({
         handleFormLoading,
         handleFromFormModectx,
         handleFormModalClosectx,
+        handleFormModalOpenOnEditctx,
         handleSidebarExpansionctx,
         handleHeaderFormSubmit,
         handleApiRes,
@@ -472,7 +509,9 @@ export const AcctMSTContext = React.createContext<any>({
         handleCurrFormctx,
         handleStepStatusctx,
         handleFormDataonSavectx,
+        handlecustomerIDctx,
         handleModifiedColsctx,
+        handleFormDataonRetrievectx,
         handleSavectx,
         handleUpdatectx,
       }}

@@ -206,13 +206,15 @@ const OtherAddressDetails = () => {
     // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
-                ? state?.formDatactx["OTHER_ADDRESS"]
-                    ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
+        return (
+            state?.formDatactx["OTHER_ADDRESS"]
+                ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
+                    ? state?.retrieveFormDataApiRes["OTHER_ADDRESS"]
+                        ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
+                        : {}
                     : {OTHER_ADDRESS: [{}]}
-                : state?.retrieveFormDataApiRes
-                    ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
-                    : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {

@@ -15,6 +15,27 @@ export const getAccountDetail = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getEntryType = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSENTRYTYPEDDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DISPLAY_VALUE, DEFAULT_VALUE, DATA_VALUE, ...other }) => {
+          return {
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+            ...other,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getJointDetailsList = async (Apireq?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNJOINTTAB", { ...Apireq });
@@ -159,7 +180,7 @@ export const getIfscBankGridData = async (ApiReq) => {
 };
 export const getRtgsChequeNoValidation = async (ApiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOCHEQUEVALIDATE", {
+    await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
       ...ApiReq,
     });
   if (status === "0") {
@@ -179,3 +200,119 @@ export const getRtgsAmountChargeValidation = async (ApiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getIfscBenDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETIFSCDETAILS", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getAuditDml = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOBENEFICIARYACCTAUDITENTRY", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateRtgsDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATERTGSDTL", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateAmount = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEAMOUNT", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsEntryDML = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSAVERTGSENTRY", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsRetrieveData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSRTRIVEFRMDTTODTGRID", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        HO_CONFIRMED: item.HO_CONFIRMED === "0" ? "Pending"
+          : item.HO_CONFIRMED === "Y" ? "Confirm" : item.HO_CONFIRMED,
+      };
+    });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsOrderingData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSTRNHDRDATADISP", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRtgsBenDetailData = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRTGSTRNDTLDATADISP", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// export const getIfscBenDetail = async (reqObj: reqObjTypes) => {
+//   const { reqData, controllerFinal } = reqObj;
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher(
+//       "GETIFSCDETAILS",
+//       {
+//         // PARENT_TYPE: reqData?.PARENT_TYPE,
+//         IFSC_CODE: reqData?.TO_IFSCCODE,
+//         ENTRY_TYPE: "RTGS",
+//       },
+//       {},
+//       null,
+//       controllerFinal
+//     ); // Pass signal as an option
+
+//   if (status === "0") {
+//     return data;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };

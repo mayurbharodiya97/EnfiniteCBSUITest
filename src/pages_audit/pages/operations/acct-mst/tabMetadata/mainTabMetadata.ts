@@ -49,6 +49,67 @@ export const main_tab_metadata = {
     fields: [
         {
             render: {
+              componentType: "textField",
+            },
+            name: "CUSTOMER_ID",
+            label: "Customer ID",
+            isReadOnly: (fieldValue, dependentFields, formState) => {
+                const PARAM320 = formState?.PARAM320;
+                if(Boolean(PARAM320 && PARAM320 === "Y")) {
+                    return false
+                } else return true;
+            },
+            validate: (columnValue, allField, flag) => {
+                const PARAM320 = flag?.PARAM320;
+                if(Boolean(PARAM320 && PARAM320 === "Y")) {
+                    if(!Boolean(columnValue?.value)) {
+                        return "this field is required"
+                    } else return "";
+                } else return "";
+            },
+            GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+            postValidationSetCrossFieldValues: async (
+                field,
+                formState,
+                authState,
+                dependentFieldsValues
+            ) => {
+                const data = await API.getCustomerData({
+                    CUSTOMER_ID: field.value,
+                    ACCT_TYPE: formState?.ACCT_TYPE ?? "",
+                    COMP_CD: authState?.companyID ?? "",
+                    SCREEN_REF: "MST/002"
+                });
+                if(data && Array.isArray(data)) {
+                    if (Array.isArray(data) && data?.length > 0) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i]?.O_STATUS === "9") {
+                                const buttonName = await formState?.MessageBox({
+                                messageTitle: "Alert",
+                                message: data[i]?.O_MESSAGE,
+                                buttonNames: ["Ok"],
+                                });
+                            } else if (data[i]?.O_STATUS === "99") {
+                                const buttonName = await formState?.MessageBox({
+                                    messageTitle: "CONFIRM",
+                                    message: data[i]?.O_MESSAGE,
+                                    buttonNames: ["No", "Yes"],
+                                    //   loadingBtnName: ["Yes"],
+                                });
+                                if (buttonName === "No") {
+                                    formState?.handlecustomerIDctx("");
+                                    return {
+                                        CUSTOMER_ID: {value: "", ignoreUpdate: true}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            render: {
                 componentType: "textField",
             },
             name: "FIRST_NM",

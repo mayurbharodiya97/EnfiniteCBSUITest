@@ -21,6 +21,34 @@ export const GetMaxCdForDetails = (data, keys) => {
     return 1;
   }
 };
+
+export const GetMaxDisplaySequenceCd = (data, keys) => {
+  if (Array.isArray(data)) {
+    if (!Boolean(keys)) {
+      return data.length + 1;
+    }
+    let maxCd = 0;
+    data.forEach((item, index) => {
+      if (typeof item[keys] !== "undefined") {
+        let { _hidden } = item;
+        if (
+          typeof _hidden === "undefined" ||
+          (typeof _hidden === "boolean" && !Boolean(_hidden))
+        ) {
+          if (parseFloat(item[keys]) > maxCd) {
+            maxCd = parseFloat(item[keys]);
+          }
+        }
+      } else if (maxCd < index + 1) {
+        maxCd = index + 1;
+      }
+    });
+    return maxCd + 1;
+  } else {
+    return 1;
+  }
+};
+
 export const base64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays: any = [];
@@ -151,12 +179,12 @@ export const transformBlobData = (data) => {
       newItem["fileExt"] === "pdf"
         ? "pdf"
         : newItem["fileExt"] === "jpg"
-        ? "image"
-        : newItem["fileExt"] === "png"
-        ? "image"
-        : newItem["fileExt"] === "jpeg"
-        ? "image"
-        : "other";
+          ? "image"
+          : newItem["fileExt"] === "png"
+            ? "image"
+            : newItem["fileExt"] === "jpeg"
+              ? "image"
+              : "other";
     newItem["sizeStr"] = newItem["blob"]?.size ?? 1000;
     return newItem;
   });
@@ -175,7 +203,7 @@ export const transformDetailsData = (newData, oldData) => {
       isValidDate(newData[item]) &&
       isValidDate(oldData[item]) &&
       format(new Date(newData[item]), "dd/MM/yyyy HH:mm:ss") ===
-        format(new Date(oldData[item]), "dd/MM/yyyy HH:mm:ss")
+      format(new Date(oldData[item]), "dd/MM/yyyy HH:mm:ss")
     ) {
     } else {
       _UPDATEDCOLUMNS.push(item);
@@ -245,13 +273,27 @@ const getChangedColumns = (obj1, obj2, keys) => {
         isValidDate(obj2[key]) &&
         isValidDate(obj1[key]) &&
         format(new Date(obj2[key]), "dd/MM/yyyy HH:mm:ss") ===
-          format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
+        format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
       ) {
       } else {
         return key;
       }
     }
   });
+};
+
+const groupItemsById = (items, id) => {
+  const groupedItems = {};
+
+  items.forEach(item => {
+    const key = item[id];
+    if (!groupedItems[key]) {
+      groupedItems[key] = [];
+    }
+    groupedItems[key].push(item);
+  });
+
+  return groupedItems;
 };
 
 export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
@@ -264,51 +306,96 @@ export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
     isUpdatedRow: [],
     isDeleteRow: [],
   };
-
   const idMapInput1: any = new Map(
     input1.map((item) => [getKey(item, keysToCompare), item])
   );
-  const idMapInput2: any = new Map(
-    input2.map((item) => [getKey(item, keysToCompare), item])
-  );
+  // const idMapInput2: any = new Map(
+  //   input2.map((item) => {
+  //     return [getKey(item, keysToCompare), item]
+  //   })
+  // );
+  input1.forEach(oldRow => {
+    let isExistingRow = input2.filter(newRows => newRows[keysToCompare] === oldRow[keysToCompare])
+    if (isExistingRow.length === 0) {
+      output.isDeleteRow.push(oldRow);
+    }
+  });
 
-  // Process INSERT and UPDATE operations
-  for (const [id, item2] of idMapInput2) {
-    const item1 = idMapInput1.get(id);
-
-    if (!item1) {
-      output.isNewRow.push(item2);
-    } else if (areObjectsEqual(item1, item2, keysToCompare)) {
-      const changedColumns = getChangedColumns(
-        item1,
-        item2,
-        Object.keys(item2)
-      );
-
-      if (changedColumns.length > 0) {
-        const oldValues = {};
-        for (const key of changedColumns) {
-          if (key in item1) {
-            oldValues[key] = item1[key];
+  const grouped = (groupItemsById(input2, keysToCompare));
+  const uniqueKeys = Object.keys(grouped);
+  uniqueKeys.forEach(key => {
+    if (Array.isArray(grouped[key])) {
+      const item1 = idMapInput1.get(key);
+      if (!item1) {
+        output.isNewRow.push(...grouped[key]);
+      } else {
+        grouped[key].forEach(row => {
+          if (areObjectsEqual(item1, row, keysToCompare)) {
+            const changedColumns = getChangedColumns(
+              item1,
+              row,
+              Object.keys(row)
+            );
+            if (changedColumns.length > 0) {
+              const oldValues = {};
+              for (const key of changedColumns) {
+                if (key in item1) {
+                  oldValues[key] = item1[key];
+                }
+              }
+              const updateObj = {
+                ...row,
+                _OLDROWVALUE: oldValues,
+                _UPDATEDCOLUMNS: changedColumns,
+              };
+              output.isUpdatedRow.push(updateObj);
+            }
           }
-        }
-        const updateObj = {
-          ...item2,
-          _OLDROWVALUE: oldValues,
-          _UPDATEDCOLUMNS: changedColumns,
-        };
-
-        output.isUpdatedRow.push(updateObj);
+        });
       }
     }
-  }
+  });
+  // input1.forEach(oldRow => {
+  //   if()
+  // });
+  // Process INSERT and UPDATE operations
+  // for (const [id, item2] of idMapInput2) {
+  //   console.log(id, "myrmyr id, item2", item2)
+  //   const item1 = idMapInput1.get(id);
+
+  //   if (!item1) {
+  //     output.isNewRow.push(item2);
+  //   } else if (areObjectsEqual(item1, item2, keysToCompare)) {
+  //     const changedColumns = getChangedColumns(
+  //       item1,
+  //       item2,
+  //       Object.keys(item2)
+  //     );
+
+  //     if (changedColumns.length > 0) {
+  //       const oldValues = {};
+  //       for (const key of changedColumns) {
+  //         if (key in item1) {
+  //           oldValues[key] = item1[key];
+  //         }
+  //       }
+  //       const updateObj = {
+  //         ...item2,
+  //         _OLDROWVALUE: oldValues,
+  //         _UPDATEDCOLUMNS: changedColumns,
+  //       };
+
+  //       output.isUpdatedRow.push(updateObj);
+  //     }
+  //   }
+  // }
 
   // Process DELETE operation
-  for (const [id, item1] of idMapInput1) {
-    if (!idMapInput2.has(id)) {
-      output.isDeleteRow.push(item1);
-    }
-  }
+  // for (const [id, item1] of idMapInput1) {
+  //   if (!idMapInput2.has(id)) {
+  //     output.isDeleteRow.push(item1);
+  //   }
+  // }
   return output;
 };
 export const getPadAccountNumber = (accountNo, optionData) => {

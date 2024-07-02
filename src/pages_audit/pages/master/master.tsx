@@ -28,6 +28,7 @@ const Prioritymastersub = lazy(
 );
 const TradeMaster = lazy(() => import("./tradeMaster/tradeMasterGrid"));
 const AreaMaster = lazy(() => import("./areaMaster/areaMasterGrid"));
+const AuditorMstGrid = lazy(() => import("./auditorMaster"));
 
 const Master = () => {
   return (
@@ -64,6 +65,7 @@ const Master = () => {
         <Route path="priority-master-sub/*" element={<Prioritymastersub />} />
         <Route path="trade-master/*" element={<TradeMaster />} />
         <Route path="area-master/*" element={<AreaMaster />} />
+        <Route path="auditor-master/*" element={<AuditorMstGrid />} />
       </Routes>
     </>
   );

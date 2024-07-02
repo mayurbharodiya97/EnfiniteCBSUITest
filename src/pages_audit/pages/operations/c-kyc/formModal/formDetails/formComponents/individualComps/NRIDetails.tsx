@@ -101,13 +101,15 @@ const NRIDetails = () => {
         // setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
+        return (
+            state?.formDatactx["NRI_DTL"]
                 ? state?.formDatactx["NRI_DTL"]
-                    ? state?.formDatactx["NRI_DTL"]
-                    : {}
-                : state?.retrieveFormDataApiRes
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
                     ? state?.retrieveFormDataApiRes["NRI_DTL"]
+                        ? state?.retrieveFormDataApiRes["NRI_DTL"]
+                        : {}
                     : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {

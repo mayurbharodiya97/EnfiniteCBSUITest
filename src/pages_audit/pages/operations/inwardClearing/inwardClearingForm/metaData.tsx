@@ -224,7 +224,7 @@ export const chequeReturnPostFormMetaData = {
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         isFieldFocused: true,
         defaultfocus: true,
-        required: true,
+        // required: true,
         dependentFields: ["DISABLE_MAIN_AC", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -253,7 +253,11 @@ export const chequeReturnPostFormMetaData = {
         label: "A/C Number",
         placeholder: "",
         fullWidth: true,
-        required: true,
+        // required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "", params: "" }],
+        },
         FormatProps: {
           isAllowed: (values) => {
             if (values?.value?.length > 6) {

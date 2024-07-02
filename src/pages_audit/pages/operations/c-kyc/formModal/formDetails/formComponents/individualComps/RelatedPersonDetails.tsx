@@ -156,14 +156,16 @@ const RelatedPersonDetails = () => {
     }
 
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
-                ? state?.formDatactx["RELATED_PERSON_DTL"]
-                    ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
-                    : {RELATED_PERSON_DTL: [{}]}
-                : state?.retrieveFormDataApiRes
-                    ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
-                    : {}
-    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+      return (
+        state?.formDatactx["RELATED_PERSON_DTL"]
+          ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
+          : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
+            ? state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]
+              ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
+              : {}
+            : {RELATED_PERSON_DTL: [{}]}
+      )
+    }, [state?.isFreshEntryctx, state?.isDraftSavedctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
         handleCurrFormctx({
