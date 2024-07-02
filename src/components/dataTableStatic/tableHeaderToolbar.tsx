@@ -9,6 +9,7 @@ import { ColumnVisibility } from "../dataTable/columnVisibility";
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -64,6 +65,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
     const { progress, enabled, intervalElapsed, pause, resume } =
       useAutoRefresh(refetchData, autoRefreshInterval);
     const classes = useStyles();
+    const { t } = useTranslation();
     useImperativeHandle(ref, () => ({
       pause: pause,
       resume: resume,
@@ -135,7 +137,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
             endicon="GetApp"
             style={{ color: "var(--theme-color2", background: "inherit" }}
           >
-            Export
+            {t("Export")}
           </GradientButton>
         )}
         <RenderActions

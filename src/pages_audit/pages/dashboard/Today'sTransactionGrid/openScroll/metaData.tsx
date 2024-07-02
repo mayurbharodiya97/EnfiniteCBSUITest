@@ -14,12 +14,12 @@ export const scrollMetaData = {
       width: 100,
     },
     {
-      columnName: "A/C Number",
+      columnName: "ACNumber",
       accessor: "ACCT_NO",
       width: 180,
     },
     {
-      columnName: "A/C Holder",
+      columnName: "ACHolder",
       accessor: "ACCT_NM",
       width: 310,
     },
@@ -31,7 +31,7 @@ export const scrollMetaData = {
     //
 
     {
-      columnName: "Cheque No.",
+      columnName: "ChequeNo",
       accessor: "CHEQUE_NO",
       width: 120,
       type: "default",
@@ -62,12 +62,12 @@ export const scrollMetaData = {
       // symbolPosi: "end",
     },
     {
-      columnName: "Tr.Branch",
+      columnName: "TrBranch",
       accessor: "BRANCH_CD",
       width: 100,
     },
     {
-      columnName: "Entry Time",
+      columnName: "EntryTime",
       accessor: "TIME",
       Cell: components.DateTimeCell,
       width: 120,
