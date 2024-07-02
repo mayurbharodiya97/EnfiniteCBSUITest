@@ -31,7 +31,7 @@ export const InsuranceTypeMasterForm = ({
 
   const mutation = useMutation(API.updateInsuTypeMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -82,10 +82,10 @@ export const InsuranceTypeMasterForm = ({
       const btnName = await MessageBox({
         message: "SaveData",
         messageTitle: "Confirmation",
-        buttonNames: [t("Yes"), t("NO")],
+        buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
-      if (btnName === t("Yes")) {
+      if (btnName === "Yes") {
         mutation.mutate({
           data: { ...isErrorFuncRef.current?.data },
         });
