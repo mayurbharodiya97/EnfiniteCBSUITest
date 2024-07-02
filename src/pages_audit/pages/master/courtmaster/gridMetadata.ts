@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const CourtMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "CourtMaster",
+    gridLabel: "",
     rowIdColumn: "COURT_CD",
     defaultColumnConfig: {
       width: 400,

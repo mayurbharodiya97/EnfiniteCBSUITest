@@ -1,9 +1,10 @@
+import { t } from "i18next";
 import { getCourtMasterArea } from "../api";
 
 export const CourtMasterFormMetadata = {
   form: {
     name: "courtMaster",
-    label: "CourtMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -48,12 +49,8 @@ export const CourtMasterFormMetadata = {
       txtTransform: "uppercase",
       placeholder: "EnterCode",
       isFieldFocused: true,
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -71,7 +68,10 @@ export const CourtMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -79,7 +79,7 @@ export const CourtMasterFormMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required."] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -97,7 +97,32 @@ export const CourtMasterFormMetadata = {
       label: "CourtName",
       maxLength: 100,
       placeholder: "EnterCourtName",
-      // Add duplication validation
+      validate: (columnValue, ...rest) => {
+        // Duplication validation
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
+            }
+          }
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         sm: 4,
@@ -234,7 +259,7 @@ export const CourtMasterFormMetadata = {
       validate: async (currentField, ...rest) => {
         if (rest?.[1]?.PinCode) {
           if (currentField?.value === "") {
-            return "Pincode required";
+            return "PincodeRequired";
           }
         }
         return "";
