@@ -135,7 +135,7 @@ export const CategoryMasterFormMetaData = {
       name: "CONSTITUTION_TYPE",
       label: "TypeOfConstitution",
       placeholder: "SelectTypeOfConstitution",
-      options: () => getPMISCData("CKYC_CONST_TYPE"),
+      options: getPMISCData,
       _optionsKey: "getPMISCData",
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
@@ -299,6 +299,7 @@ export const CategoryMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
@@ -307,6 +308,7 @@ export const CategoryMasterFormMetaData = {
                 message: postData?.RESTRICTION,
               });
               if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
                 return {
                   TDS_ACCT_CD: {
                     value: "",
@@ -322,6 +324,7 @@ export const CategoryMasterFormMetaData = {
                 buttonNames: ["Ok"],
               });
               if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
                 return {
                   TDS_ACCT_CD: {
                     value: utilFunction.getPadAccountNumber(
@@ -337,6 +340,7 @@ export const CategoryMasterFormMetaData = {
                 };
               }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -352,10 +356,12 @@ export const CategoryMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               TDS_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
 
@@ -479,6 +485,7 @@ export const CategoryMasterFormMetaData = {
             ),
             SCREEN_REF: "MST/041",
           };
+          formState?.handleButtonDisable(true);
           const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
           if (postData?.RESTRICTION) {
@@ -487,6 +494,7 @@ export const CategoryMasterFormMetaData = {
               message: postData?.RESTRICTION,
             });
             if (btnName === "Ok") {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_SUR_ACCT_CD: { value: "", isFieldFocused: true },
               };
@@ -498,6 +506,7 @@ export const CategoryMasterFormMetaData = {
               buttonNames: ["Ok"],
             });
             if (btnName === "Ok") {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_SUR_ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -510,6 +519,7 @@ export const CategoryMasterFormMetaData = {
               };
             }
           } else {
+            formState?.handleButtonDisable(false);
             return {
               TDS_SUR_ACCT_CD: {
                 value: utilFunction.getPadAccountNumber(
@@ -522,6 +532,7 @@ export const CategoryMasterFormMetaData = {
             };
           }
         }
+        formState?.handleButtonDisable(false);
         return {};
       },
       maxLength: 8,
@@ -625,6 +636,7 @@ export const CategoryMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
@@ -633,6 +645,7 @@ export const CategoryMasterFormMetaData = {
                 message: postData?.RESTRICTION,
               });
               if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
                 return {
                   TDS_REC_ACCT_CD: {
                     value: "",
@@ -648,6 +661,7 @@ export const CategoryMasterFormMetaData = {
                 buttonNames: ["Ok"],
               });
               if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
                 return {
                   TDS_REC_ACCT_CD: {
                     value: utilFunction.getPadAccountNumber(
@@ -663,6 +677,7 @@ export const CategoryMasterFormMetaData = {
                 };
               }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_REC_ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -678,10 +693,12 @@ export const CategoryMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               TDS_REC_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,

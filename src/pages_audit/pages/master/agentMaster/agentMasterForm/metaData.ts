@@ -5,11 +5,12 @@ import {
   getAgentMstConfigPigmyDDW,
 } from "../api";
 import { utilFunction } from "components/utils";
+import { t } from "i18next";
 
 export const AgentMasterFormMetaData = {
   form: {
     name: "agentMaster",
-    label: "Agent Master",
+    label: "AgentMasterForm",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -52,23 +53,18 @@ export const AgentMasterFormMetaData = {
       },
       name: "AGENT_CD",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       type: "text",
       maxLength: 4,
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required."] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -82,7 +78,10 @@ export const AgentMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -97,23 +96,18 @@ export const AgentMasterFormMetaData = {
       },
       name: "AGENT_NM",
       label: "Name",
-      placeholder: "Enter Name",
+      placeholder: "EnterName",
       maxLength: 50,
       type: "text",
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Category Name is required."] }],
+        rules: [{ name: "required", params: ["CategoryNameisrequired"] }],
       },
-      validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        return "";
-      },
+
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
 
@@ -121,25 +115,24 @@ export const AgentMasterFormMetaData = {
       render: { componentType: "autocomplete" },
       name: "GROUP_CD",
       label: "Group",
-      placeholder: "Select Group",
-      options: () => getPMISCData("AGENT_GROUP"),
+      placeholder: "SelectGroup",
+      options: getPMISCData,
       _optionsKey: "getPMISCData",
       type: "text",
-      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Agent Account",
+      label: "AgentAccount",
       name: "AgentAccount",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "AGENT_BRANCH_CD",
-        __VIEW__: { isReadOnly: true },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -160,7 +153,6 @@ export const AgentMasterFormMetaData = {
       },
       accountTypeMetadata: {
         name: "AGENT_TYPE_CD",
-        __VIEW__: { isReadOnly: true },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -181,7 +173,6 @@ export const AgentMasterFormMetaData = {
       accountCodeMetadata: {
         name: "AGENT_ACCT_CD",
         autoComplete: "off",
-        maxLength: 20,
         dependentFields: ["AGENT_TYPE_CD", "AGENT_BRANCH_CD"],
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
@@ -206,44 +197,56 @@ export const AgentMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                AGENT_ACCT_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-                SECURITY_BRANCH: {
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  AGENT_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                AGENT_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  AGENT_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.AGENT_TYPE_CD?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 AGENT_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.AGENT_TYPE_CD?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -251,10 +254,12 @@ export const AgentMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,
@@ -266,8 +271,7 @@ export const AgentMasterFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -276,10 +280,11 @@ export const AgentMasterFormMetaData = {
     },
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Security Account",
+      label: "SecurityAccount",
       name: "SecurityAccount",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: { componentType: "_accountNumber" },
@@ -303,7 +308,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 },
       },
       accountTypeMetadata: {
@@ -325,7 +329,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 },
       },
       accountCodeMetadata: {
@@ -358,45 +361,56 @@ export const AgentMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                SECURITY_ACCT_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-                SECURITY_AMT: {
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                SECURITY_ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  SECURITY_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  SECURITY_ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                SECURITY_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                SECURITY_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  SECURITY_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.SECURITY_TYPE_CD?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  SECURITY_ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 SECURITY_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.SECURITY_TYPE_CD?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 SECURITY_ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -404,10 +418,12 @@ export const AgentMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               SECURITY_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 },
@@ -418,8 +434,7 @@ export const AgentMasterFormMetaData = {
         componentType: "textField",
       },
       name: "SECURITY_ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -431,8 +446,7 @@ export const AgentMasterFormMetaData = {
         componentType: "amountField",
       },
       name: "SECURITY_AMT",
-      label: "Security Amount",
-      placeholder: "Enter Security Account Amount",
+      label: "SecurityAmount",
       defaultValue: "0.00",
       autoComplete: "off",
       maxLength: 14,
@@ -468,7 +482,7 @@ export const AgentMasterFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "SECURITY_PER",
-      label: "Security %",
+      label: "Security%",
       defaultValue: "0.00",
       autoComplete: "off",
       maxLength: 14,
@@ -502,21 +516,21 @@ export const AgentMasterFormMetaData = {
     {
       render: { componentType: "select" },
       name: "SECURITY_FLAG",
-      label: "Security Calculation On",
+      label: "SecurityCalculationOn",
       options: [
         { label: "On Commission Amount", value: "N" },
         { label: "On Collection Amount", value: "Y" },
       ],
-      z: "N",
       GridProps: { xs: 12, sm: 7, md: 3, lg: 2, xl: 2 },
     },
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Other Account",
+      label: "OtherAccount",
       name: "OtherAccount",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
     {
@@ -541,7 +555,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
@@ -563,7 +576,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       },
       accountCodeMetadata: {
@@ -595,45 +607,56 @@ export const AgentMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                OTH_ACCT_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-                PTAX_BRANCH_CD: {
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                OTHER_ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  OTH_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  OTHER_ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                OTH_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                OTHER_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  OTH_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.OTH_ACCT_TYPE?.optionData
+                    ),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                  OTHER_ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 OTH_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.OTH_ACCT_TYPE?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 OTHER_ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -641,10 +664,12 @@ export const AgentMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               OTHER_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,
@@ -656,8 +681,7 @@ export const AgentMasterFormMetaData = {
         componentType: "textField",
       },
       name: "OTHER_ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -667,10 +691,11 @@ export const AgentMasterFormMetaData = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Professional Tax Account",
+      label: "ProfessionalTaxAccount",
       name: "ProfessionalTaxAccount",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
     {
@@ -678,6 +703,7 @@ export const AgentMasterFormMetaData = {
       branchCodeMetadata: {
         name: "PTAX_BRANCH_CD",
         required: false,
+        defaultValue: "    ",
         schemaValidation: {},
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
@@ -695,7 +721,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 },
       },
       accountTypeMetadata: {
@@ -717,7 +742,6 @@ export const AgentMasterFormMetaData = {
             };
           }
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 },
       },
       accountCodeMetadata: {
@@ -749,45 +773,56 @@ export const AgentMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                PTAX_ACCT_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-                PTAX_DEF_TRAN_CD: {
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                PTAX_ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  PTAX_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  PTAX_ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                PTAX_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                PTAX_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  PTAX_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.PTAX_ACCT_TYPE?.optionData
+                    ),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                  PTAX_ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 PTAX_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.PTAX_ACCT_TYPE?.optionData
+                  ),
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 PTAX_ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -795,10 +830,12 @@ export const AgentMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               PTAX_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,
@@ -810,8 +847,7 @@ export const AgentMasterFormMetaData = {
         componentType: "textField",
       },
       name: "PTAX_ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -821,30 +857,29 @@ export const AgentMasterFormMetaData = {
     {
       render: { componentType: "autocomplete" },
       name: "PTAX_DEF_TRAN_CD",
-      label: "Configuration",
-      placeholder: "Enter Configuration",
+      label: "sidebar.Configuration",
+      placeholder: "SelectConfiguration",
       options: getAgentMstConfigDDW,
       _optionsKey: "getAgentMstConfigDDW",
       type: "text",
-      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     },
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Hand Held Machine",
+      label: "HandHeldMachine",
       name: "HandHeldMachine",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "PIGMY_CONF_TRAN_CD",
-      label: "Configuration",
-      placeholder: "Select Configuration",
+      label: "sidebar.Configuration",
+      placeholder: "SelectConfiguration",
       options: getAgentMstConfigPigmyDDW,
       _optionsKey: "getAgentMstConfigPigmyDDW",
       type: "text",
-      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     },
     {
@@ -852,7 +887,7 @@ export const AgentMasterFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "TDS_RATE",
-      label: "TDS Rate",
+      label: "TDSRate",
       autoComplete: "off",
       maxLength: 5,
       GridProps: {

@@ -21,6 +21,7 @@ const CategoryMasterForm = ({
   gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
+  const [disableButton, setDisableButton] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -104,6 +105,10 @@ const CategoryMasterForm = ({
     }
   };
 
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
+  };
+
   return (
     <>
       {gridData ? (
@@ -132,6 +137,7 @@ const CategoryMasterForm = ({
             MessageBox: MessageBox,
             gridData: gridData,
             rows: rows?.[0]?.data,
+            handleButtonDisable: handleButtonDisable,
           }}
         >
           {({ isSubmitting, handleSubmit }) => (
@@ -142,7 +148,7 @@ const CategoryMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
@@ -165,7 +171,7 @@ const CategoryMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }

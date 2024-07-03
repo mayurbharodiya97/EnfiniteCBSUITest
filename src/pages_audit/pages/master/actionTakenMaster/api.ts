@@ -22,11 +22,12 @@ export const getActionTakenMasterGridData = async ({
   }
 };
 
-export const getSuitFldStdMstData = async (...reqdata) => {
+export const getSuitFldStdMstData = async (...reqData) => {
+  reqData?.[1]?.handleButtonDisable(true);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSUITFLDMSTDATADISP", {
-      COMP_CD: reqdata?.[3]?.companyID,
-      BRANCH_CD: reqdata?.[3]?.user?.branchCode,
+      COMP_CD: reqData?.[3]?.companyID,
+      BRANCH_CD: reqData?.[3]?.user?.branchCode,
     });
   if (status === "0") {
     let responseData = data;
@@ -41,8 +42,10 @@ export const getSuitFldStdMstData = async (...reqdata) => {
         }
       );
     }
+    reqData?.[1]?.handleButtonDisable(false);
     return responseData;
   } else {
+    reqData?.[1]?.handleButtonDisable(false);
     throw DefaultErrorObject(message, messageDetails);
   }
 };
