@@ -1295,7 +1295,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTRISKCLASSDDW",
     packageName: "",
   },
-  GETTRADEMSTDATADISP:{
+  GETTRADEMSTDATADISP: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMSTDATADISP",
     packageName: "",
   },
@@ -1303,7 +1303,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTINDUSTRYDDW",
     packageName: "",
   },
-  DOTRADEMSTDML:{
+  DOTRADEMSTDML: {
     url: "/commonMasterServiceAPI/DOTRADEMSTDML",
     packageName: "",
   },
@@ -1311,7 +1311,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTRECREDDW",
     packageName: "",
   },
-  DOSUBPRIORITYMST:{
+  DOSUBPRIORITYMST: {
     url: "/commonMasterServiceAPI/DOSUBPRIORITYMST",
     packageName: "",
   },
@@ -1319,7 +1319,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
-  PRIORITYMASTERMAINDML:{
+  PRIORITYMASTERMAINDML: {
     url: "/commonMasterServiceAPI/PRIORITYMASTERMAINDML",
     packageName: "",
   },
@@ -1331,7 +1331,7 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/DOTEMPODDML",
     packageName: "",
   },
-  GETAREAMSTRETRIVEGRID:{
+  GETAREAMSTRETRIVEGRID: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTRETRIVEGRID",
     packageName: "",
   },
@@ -1339,7 +1339,7 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETRETRIVECHQBKFLAG",
     packageName: "",
   },
-  GETAREAMSTCITYDDW:{
+  GETAREAMSTCITYDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTCITYDDW",
     packageName: "",
   },
@@ -1347,7 +1347,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQCNFDATADISP",
     packageName: "",
   },
-  GETAREAMSTPARENTDDW:{
+  GETAREAMSTPARENTDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREAMSTPARENTDDW",
     packageName: "",
   },
@@ -1355,7 +1355,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLMTCNFDATADISP",
     packageName: "",
   },
-  GETMISCTABLECONFIG:{
+  GETMISCTABLECONFIG: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETMISCTABLECONFIG",
     packageName: "",
   },
@@ -1363,7 +1363,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKCNFDATADISP",
     packageName: "",
   },
-  DOAREAMST:{
+  DOAREAMST: {
     url: "commonMasterServiceAPI/DOAREAMST",
     packageName: "",
   },
@@ -1675,6 +1675,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
+  VALIDATESAVECHQDATA: {
+    url: "/chequeServiceAPI/VALIDATESAVECHQDATA",
+    packageName: "",
+  },
+  GETCHEQUEBOOKISSUED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -1690,17 +1698,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-    PackageName +
-    (url.startsWith("./")
-      ? url.substring(1)
-      : url.startsWith("/")
+      PackageName +
+      (url.startsWith("./")
+        ? url.substring(1)
+        : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-      ? url
-      : url.startsWith("/")
-        ? "." + url
-        : "./" + url;
+    ? url
+    : url.startsWith("/")
+    ? "." + url
+    : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

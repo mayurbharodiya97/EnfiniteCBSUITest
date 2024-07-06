@@ -1,6 +1,6 @@
 import { constructInitialValuesForArrayFields } from "components/dyanmicForm/utils/constructINITValues";
 import { DefaultErrorObject, utilFunction } from "components/utils";
-import { isValid } from "date-fns";
+import { isEqual, isValid } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getSecurityListData = async (apiReq) => {
@@ -200,7 +200,8 @@ export const LimitSecurityData = async (apiReqPara) => {
                       let res = await formState.MessageBox({
                         messageTitle: "Risk Category Alert",
                         message: postData?.[0]?.MESSAGE1,
-                        buttonNames: ["Yes", "No"],
+                        buttonNames: ["No", "Yes"],
+                        defFocusBtnName: "Yes",
                       });
                       if (res === "Yes") {
                         return {
@@ -552,10 +553,25 @@ export const LimitSecurityData = async (apiReqPara) => {
                     TRAN_DT: { value: "", isFieldFocused: true },
                   };
                 }
+              } else {
+                return {
+                  EXPIRY_DT: {
+                    value:
+                      apiReqPara?.SECURITY_TYPE === "OTH" ||
+                      apiReqPara?.SECURITY_TYPE === "PRT"
+                        ? field?.value
+                        : null,
+                  },
+                };
               }
             };
           } else if (item.name === "EXPIRY_DT") {
             item.required = true;
+            item.defaultValue =
+              apiReqPara?.SECURITY_TYPE === "OTH" ||
+              apiReqPara?.SECURITY_TYPE === "PRT"
+                ? apiReqPara?.WORKING_DATE
+                : null;
             item.schemaValidation = {
               type: "string",
               rules: [
@@ -568,23 +584,24 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
               return "";
             };
-            item.dependentFields = ["FD_NO", "TRAN_DT", "ENTRY_DT"];
-            item.isReadOnly = (
-              fieldData,
-              dependentFieldsValues,
-              formState,
-              authState
-            ) => {
+            item.dependentFields = ["FD_NO"];
+            item.isReadOnly = (fieldData, dependentFieldsValues) => {
               if (fieldData?.value && dependentFieldsValues?.FD_NO?.value) {
                 return true;
               } else if (
-                (apiReqPara?.SECURITY_TYPE === "OTH" &&
-                  new Date(dependentFieldsValues?.TRAN_DT?.value) >
-                    new Date(dependentFieldsValues?.ENTRY_DT?.value)) ||
-                (apiReqPara?.SECURITY_TYPE === "PRT" &&
-                  new Date(dependentFieldsValues?.TRAN_DT?.value) >
-                    new Date(dependentFieldsValues?.ENTRY_DT?.value))
+                apiReqPara?.SECURITY_TYPE === "OTH" ||
+                apiReqPara?.SECURITY_TYPE === "PRT"
               ) {
+                // if (
+                //   isEqual(
+                //     new Date(dependentFieldsValues?.TRAN_DT?.value),
+                //     new Date(dependentFieldsValues?.ENTRY_DT?.value)
+                //   )
+                // ) {
+                //   return false;
+                // } else {
+                //   return true;
+                // }
                 return true;
               } else {
                 return false;
@@ -876,39 +893,42 @@ export const LimitSecurityData = async (apiReqPara) => {
               return apiReqPara?.HDN_GST_AMT;
             };
           } else if (item.name === "REMARKS") {
+            item.maxLength = 100;
             item.validate = (columnValue) => {
-              let regex = /^[a-zA-Z0-9\s]*$/;
+              let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Reamrks.";
               }
               return "";
             };
           } else if (item.name === "SECURITY") {
+            item.maxLength = 22;
             item.validate = (columnValue) => {
-              let regex = /^[a-zA-Z0-9\s]*$/;
+              let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Description.";
               }
               return "";
             };
           } else if (item.name === "DOCKET_NO") {
+            item.maxLength = 16;
             item.validate = (columnValue) => {
-              let regex = /^[a-zA-Z0-9\s]*$/;
+              let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Docket No.";
               }
               return "";
             };
           } else if (item.name === "RESOLUTION_NO") {
+            item.maxLength = 16;
             item.validate = (columnValue) => {
-              let regex = /^[a-zA-Z0-9\s]*$/;
+              let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Resolution No.";
               }
               return "";
             };
           }
-
           return item;
         })
       );
@@ -924,6 +944,7 @@ export const getFDbranchDDlist = async (COMP_CD) => {
     await AuthSDK.internalFetcher("GETLIMITFDBRANCHDDW", {
       COMP_CD: COMP_CD,
     });
+
   if (status === "0") {
     let responseData = data;
 

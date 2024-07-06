@@ -272,29 +272,6 @@ export const limitEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "LIMIT_TYPE",
-      label: "LimitType",
-      placeholder: "LimitType",
-      defaultValue: "Normal",
-      options: () => {
-        return [
-          { value: "Normal", label: "Normal Limit" },
-          { value: "Hoc", label: "Ad-hoc Limit" },
-        ];
-      },
-      _optionsKey: "limitTypeList",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
       name: "SECURITY_CD",
       label: "SecurityCode",
       placeholder: "SecurityCode",
@@ -339,6 +316,29 @@ export const limitEntryMetaData = {
         sm: 3,
         lg: 3,
         xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "LIMIT_TYPE",
+      label: "LimitType",
+      placeholder: "LimitType",
+      defaultValue: "Normal",
+      options: () => {
+        return [
+          { value: "Normal", label: "Normal Limit" },
+          { value: "Hoc", label: "Ad-hoc Limit" },
+        ];
+      },
+      _optionsKey: "limitTypeList",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {

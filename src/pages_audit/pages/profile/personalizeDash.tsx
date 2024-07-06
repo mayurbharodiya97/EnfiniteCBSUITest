@@ -7,10 +7,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  PersonlizationDashboardGridData,
-  PersonlizationQuickGridMetaData,
-} from "./metaData";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
@@ -21,6 +17,8 @@ import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "cache";
+import { PersonlizationQuickGridMetaData } from "./Metadata/personalizeQuick";
+import { PersonlizationDashboardGridData } from "./Metadata/personalizeDashboard";
 export const PersonalizeDash = () => {
   const [quickGridData, setQuickGridData] = useState([]);
   const [dashGridData, setDashGridData] = useState([]);

@@ -477,14 +477,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                 }}
                 InputProps={{
                   style: {
-                    background: textFieldStyle
-                      ? ""
-                      : Boolean(readOnly)
-                      ? "var(--theme-color7)"
+                    background: Boolean(readOnly)
+                      ? "var(--theme-color7) !important"
                       : "",
-                    // background: Boolean(readOnly) ? "var(--theme-color7)" : "",
                   },
-
                   ...params.InputProps,
                   endAdornment: (
                     <Fragment>

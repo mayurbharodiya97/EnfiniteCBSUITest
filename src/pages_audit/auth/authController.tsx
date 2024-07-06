@@ -152,6 +152,7 @@ const reducer = (state, action) => {
         otpmodelClose: false,
         currentFlow: "OTP",
         authType: action?.payload?.authType,
+        // authType: "TOTP",
         auth_data: action?.payload?.auth_data,
         otpValidFor: action?.payload?.otpValidFor,
         company_ID: action?.paylod?.company_ID,
@@ -309,7 +310,7 @@ export const AuthLoginController = () => {
           },
         });
         if (data?.STATUS === "0") {
-          let messageData = JSON.parse(data?.ALERT_MSG_LIST || '[]')
+          let messageData = JSON.parse(data?.ALERT_MSG_LIST || "[]");
           for (let i = 0; i < messageData.length; i++) {
             await MessageBox({
               messageTitle: "Password Alert",
@@ -548,7 +549,8 @@ export const AuthLoginController = () => {
                     />
                   ) : (
                     <>
-                      {loginState.authType === "OTP" ? (
+                      {loginState.authType === "OTP" ||
+                      loginState.authType === "TOTP" ? (
                         <OTPModel
                           key="otp"
                           classes={classes}
@@ -574,35 +576,37 @@ export const AuthLoginController = () => {
                           }}
                           otpresendCount={otpResendRef.current}
                         />
-                      ) : loginState.authType === "TOTP" ? (
-                        <>
-                          {" "}
-                          <OTPModelForm
-                            key={"OTPForm"}
-                            classes={classes}
-                            // handleClose={() => {}}
-                            handleClose={changeUserName}
-                            loginState={loginState}
-                            VerifyOTP={VerifyOTP}
-                            OTPError={loginState?.OtpuserMessage ?? ""}
-                            setOTPError={(error) => {
-                              dispath({
-                                type: "OTPVerificationFailed",
-                                payload: { error: error },
-                              });
-                            }}
-                            resendFlag={"LOGIN"}
-                            setNewRequestID={(newRequestID) => {
-                              dispath({
-                                type: "OTPResendSuccess",
-                                payload: { transactionID: newRequestID },
-                              });
-                              otpResendRef.current = otpResendRef.current + 1;
-                            }}
-                            otpresendCount={otpResendRef.current}
-                          />
-                        </>
                       ) : (
+                        //       : loginState.authType === "TOTP" ? (
+                        // <>
+                        //   {" "}
+                        //   <OTPModelForm
+                        //     key={"OTPForm"}
+                        //     classes={classes}
+                        //     // handleClose={() => {}}
+                        //     handleClose={changeUserName}
+                        //     loginState={loginState}
+                        //     VerifyOTP={VerifyOTP}
+                        //     OTPError={loginState?.OtpuserMessage ?? ""}
+                        //     setOTPError={(error) => {
+                        //       dispath({
+                        //         type: "OTPVerificationFailed",
+                        //         payload: { error: error },
+                        //       });
+                        //     }}
+                        //     resendFlag={"LOGIN"}
+                        //     setNewRequestID={(newRequestID) => {
+                        //       dispath({
+                        //         type: "OTPResendSuccess",
+                        //         payload: { transactionID: newRequestID },
+                        //       });
+                        //       otpResendRef.current = otpResendRef.current + 1;
+                        //     }}
+                        //     otpresendCount={otpResendRef.current}
+                        //   />
+                        // </>
+                        //       )
+
                         <VerifyFinger
                           key="biometric"
                           classes={classes}

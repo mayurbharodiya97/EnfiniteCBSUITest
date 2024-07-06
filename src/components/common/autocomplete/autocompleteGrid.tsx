@@ -261,7 +261,9 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
                 <Fragment>
                   {loadingOptions ? (
                     <CircularProgress
-                      color="primary"
+                      size={20}
+                      // color="primary"
+                      sx={{ color: "var(--theme-color3)" }}
                       variant="indeterminate"
                       {...CircularProgressProps}
                     />

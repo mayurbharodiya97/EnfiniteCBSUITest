@@ -13,6 +13,7 @@ import { utilFunction } from "components/utils";
 import { TextField } from "components/styledComponent";
 import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
+import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -117,29 +118,18 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
-    // chnages for min-max date is not edit
-    if (value) {
-      const selectedDate = new Date(value).toLocaleDateString();
-      const maxDate = new Date(others.maxDate).toLocaleDateString();
-      const minDate = new Date(others.minDate).toLocaleDateString();
-
-      if (
-        new Date(selectedDate) > new Date(maxDate) &&
-        Boolean(others.maxDate)
-      ) {
-        handleChange(new Date(maxDate));
-        return;
-      }
-
-      if (
-        new Date(selectedDate) < new Date(minDate) &&
-        Boolean(others.minDate)
-      ) {
-        handleChange(new Date(minDate));
-        return;
-      }
-    }
   }, [value, handleChange]);
+
+  // chnages for min-max date with Altaf
+  useEffect(() => {
+    if (geaterThanDate(value, others?.maxDate)) {
+      runValidation({ value, _maxDt: others?.maxDate }, true);
+    }
+    if (lessThanDate(value, others?.minDate)) {
+      runValidation({ value, _minDt: others?.minDate }, true);
+    }
+  }, [value]);
+
   const focusRef = useRef<any>();
   const getFocus = () => {
     setTimeout(() => {

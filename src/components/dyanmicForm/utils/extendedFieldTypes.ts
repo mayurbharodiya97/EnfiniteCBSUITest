@@ -236,7 +236,7 @@ export const extendFieldTypes = (
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
-    if (item.render.componentType === "datePicker") {
+    if (item.render.componentType === "datePicker" && authState?.workingDate) {
       if (Boolean(item?.isWorkingDate)) {
         item["defaultValue"] = new Date(authState?.workingDate);
       }

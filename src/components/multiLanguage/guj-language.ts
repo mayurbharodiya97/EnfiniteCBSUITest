@@ -134,9 +134,11 @@ export const guj_language_data = {
   // For OTP Verify
   otp: {
     OTPAuthentication: "ઓટીપી પ્રમાણીકરણ",
+    TOTPAuthentication: "ટી-ઓટીપી પ્રમાણીકરણ",
     GenerateNewOTP:
       "કૃપા કરીને નવો ઓટીપી જનરેટ કરવા માટે રીસેેંન્ડ બટન પર ક્લિક કરો",
-    EnterOTP: "તમારા મોબાઈલ નંબર 98*****37 પર મોકલેલ OTP દાખલ કરો",
+    EnterOTPsentToMobile: "તમારા મોબાઈલ નંબર 98*****37 પર મોકલેલ OTP દાખલ કરો",
+    PleaseEnterOTP: "કૃપા કરીને OTP દાખલ કરો (પ્રમાણકર્તા)",
     ResendOTP: "ઓટીપી ફરીથી મોકલો",
     GetNewOTP: "નવો ઓટીપી મેળવો",
     ValidFor: "માટે માન્ય",
@@ -492,6 +494,7 @@ export const guj_language_data = {
   BalanceIsLesThanServicecharge: "બેલેન્સ સર્વિસ-ચાર્જ કરતાં ઓછું છે",
   BeforeChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પહેલા",
   AfterChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પછી",
+  ChequeBkAlreadyIssued: "પહેલેથી જ જારી કરેલ ચેકબુક",
 
   // limit entry
 
@@ -671,6 +674,11 @@ export const guj_language_data = {
   TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+  FromDateGreaterThanOrEqualToWorkingDate:
+    "અસરકારક From તારીખ કામકાજની તારીખ કરતાં મોટી અથવા બરાબર હોવી જોઈએ.",
+  ToDateGreaterThanOrEqualToFromDate:
+    "અસરકારક To Date અસરકારક From Date કરતાં મોટી અથવા બરાબર હોવી જોઈએ",
+
   // lien Master
   // Mode Master
   Mode: "મોડ",
@@ -694,5 +702,3 @@ export const guj_language_data = {
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
 };
-
-

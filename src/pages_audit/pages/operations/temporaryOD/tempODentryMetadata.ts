@@ -4,6 +4,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import { DefaultValue } from "recoil";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 export const temporaryODentryMetadata = {
   masterForm: {
     form: {
@@ -214,6 +215,19 @@ export const temporaryODentryMetadata = {
         isWorkingDate: true,
         required: true,
         isMinWorkingDate: true,
+        validate: (currentField, dependentField) => {
+          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+            return t("Mustbeavaliddate");
+          }
+          if (
+            lessThanDate(currentField?.value, currentField?._minDt, {
+              ignoreTime: true,
+            })
+          ) {
+            return t("FromDateGreaterThanOrEqualToWorkingDate");
+          }
+          return "";
+        },
         label: "EffectiveFromDate",
         GridProps: {
           xs: 12,
@@ -231,16 +245,20 @@ export const temporaryODentryMetadata = {
         fullWidth: true,
         required: true,
         isWorkingDate: true,
-        isMinWorkingDate: true,
         validate: (currentField, dependentField) => {
           if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
             return t("Mustbeavaliddate");
           }
           if (
-            new Date(currentField?.value) <
-            new Date(dependentField?.FROM_EFF_DATE?.value)
+            lessThanDate(
+              currentField?.value,
+              dependentField?.FROM_EFF_DATE?.value,
+              {
+                ignoreTime: true,
+              }
+            )
           ) {
-            return t("ToDateshouldbegreaterthanorequaltoFromDate");
+            return t("ToDateGreaterThanOrEqualToFromDate");
           }
           return "";
         },

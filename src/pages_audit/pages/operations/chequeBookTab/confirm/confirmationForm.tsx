@@ -20,6 +20,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { t } = useTranslation();
   const buttonRef: any = useRef<any>(null);
 
+  // API calling function for data confirm od reject
   const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
       CloseMessageBox();
