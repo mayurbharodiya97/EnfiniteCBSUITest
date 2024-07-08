@@ -15,6 +15,7 @@ import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/indi
 import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 import { MessageBoxWrapper } from "components/custom/messageBox";
+import UpdateDocument from "../formModal/formDetails/formComponents/update-document/Document";
 
 
 export const CkycConfirm = () => {
@@ -53,12 +54,6 @@ export const CkycConfirm = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    // {
-    //   actionName: "inactive-customer",
-    //   actionLabel: "Inactivate Customer",
-    //   multiple: false,
-    //   rowDoubleClick: false,
-    // },
   ];
   const setCurrentAction = useCallback(
     (data) => {
@@ -68,20 +63,31 @@ export const CkycConfirm = () => {
       if(maker === loggedinUser) {
         setPreventConfirmDialog(true)
       } else {
-        if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+        if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P") {
+          // P=EXISTING_PHOTO_MODIFY
           navigate("photo-signature", {
             state: data?.rows,
           })
-        } else if(data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
+        } else if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D") {
+          // D=EXISTING_DOC_MODIFY
+          navigate("document", {
+            state: {CUSTOMER_DATA: data?.rows},
+          })
+        } else if(
+          data.rows?.[0]?.data?.UPD_TAB_NAME === "A" ||
+          data.rows?.[0]?.data?.UPD_TAB_NAME === "M"
+        ) {
+          // A=FRESH_MODIFY, M=EXISTING_MODIFY
           navigate("view-detail", {
             state: data?.rows,
           })
-        } else {
-          setRowsData(data?.rows);
-          navigate(data?.name, {
-            state: data?.rows,
-          });
         }
+        //  else {
+        //   setRowsData(data?.rows);
+        //   navigate(data?.name, {
+        //     state: data?.rows,
+        //   });
+        // }
       }
     },
     [navigate]

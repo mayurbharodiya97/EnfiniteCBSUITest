@@ -75,7 +75,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const [actionDialog, setActionDialog] = useState(false)
   const CUST_NM = location.state?.[0]?.data.CUSTOMER_NAME ?? "";
   const CUST_ID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-
+  const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID ?? "";
   // useEffect(() => {
   //   console.log("photoBase64ctx, signBase64ctx", Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx))
   // }, [state?.photoBase64ctx, state?.signBase64ctx])
@@ -288,14 +288,6 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
           // disabled={mutation.isLoading}
         >
           {t("Confirm")}
-        </Button>
-        <Button
-          onClick={() => openActionDialog("query")}
-          color="primary"
-          sx={{textWrap: "nowrap"}}
-          // disabled={mutation.isLoading}
-        >
-          {t("Raise Query")}
         </Button>
         <Button
           onClick={() => openActionDialog("reject")}
@@ -535,6 +527,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         setOpen={setActionDialog} 
         closeForm = {onClose}
         action= {confirmAction}
+        REQUEST_CD={REQUEST_CD}
     />}
 
     </React.Fragment>

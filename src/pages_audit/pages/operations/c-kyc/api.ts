@@ -844,12 +844,26 @@ export const getPendingData = async (reqObj:{COMP_CD: string, BRANCH_CD: string,
     throw DefaultErrorObject(message, messageDetails);
   }
 }
-// for getting pending entries, in grid
+
 export const ConfirmPendingCustomers = async ({REQUEST_CD, REMARKS, CONFIRMED}) => {
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("CONFIRMCUSTOMERDATA", {
     REQUEST_CD: REQUEST_CD,
     REMARKS: REMARKS,
+    CONFIRMED: CONFIRMED,
+  });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const ConfirmCustPhoto = async ({REQUEST_CD, COMP_CD, CONFIRMED}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CONFIRMCUSTPHOTODATA", {
+    REQUEST_CD: REQUEST_CD,
+    COMP_CD: COMP_CD,
     CONFIRMED: CONFIRMED,
   });
   if (status === "0") {
@@ -1111,20 +1125,6 @@ export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
     }
   }
 }
-
-export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID,
-    });
-  if (status === "0") {
-    return data
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-}
-
 export const updatePhotoSignData = async (reqData) => {
   // console.log(":wedwd", reqData)
   const { data, status, message, messageDetails } =

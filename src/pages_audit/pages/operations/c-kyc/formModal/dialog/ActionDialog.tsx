@@ -9,24 +9,32 @@ import { ckyc_confirmation_form_metadata } from "../formDetails/metadata/confirm
 import { GradientButton } from "components/styledComponent/button";
 import { Alert } from "components/common/alert";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { enqueueSnackbar } from "notistack";
 
-export const ActionDialog = ({open, setOpen, closeForm, action
+export const ActionDialog = ({open, setOpen, closeForm, action, REQUEST_CD
     // isLoading, setIsLoading, data, mt
   }) => {
     const { authState } = useContext(AuthContext);
     const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
     const confirmFormRef = useRef<any>("");
     let initialVal = {}
-    const confirmed = action == "confirm" 
+    const confirmed = action === "confirm" 
                                   ? "Y" 
-                                  : action == "query" 
+                                  : action === "query" 
                                     ? "M"
-                                    : action == "reject" && "R"
+                                    : action === "reject" && "R";
+    const successMsg = action === "confirm"
+      ? `Request ID ${REQUEST_CD} confirmed Successfully.`
+      :  action === "query"
+        ? `Request ID ${REQUEST_CD} sent for modificaction successfully.`
+        : action === "reject" && 
+          `Request ID ${REQUEST_CD} rejected successfully.`
     const mutation: any = useMutation(API.ConfirmPendingCustomers, {
         onSuccess: (data) => {
             // console.log("data o n save", data)
             handleFormModalClosectx()
             closeForm()
+            enqueueSnackbar(successMsg, { variant: "success"});
         },
         onError: (error: any) => {
             // console.log("data o n error", error)
@@ -61,7 +69,7 @@ export const ActionDialog = ({open, setOpen, closeForm, action
       onActionYes={(val, rows) => {
         // console.log(val, "weiuifuhiwuefefgwef", rows)
         mutation.mutate({
-            REQUEST_CD: state?.req_cd_ctx ?? "",
+            REQUEST_CD: REQUEST_CD ?? "",
             REMARKS: val ?? "",
             CONFIRMED: confirmed
         })
