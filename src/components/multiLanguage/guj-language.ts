@@ -394,6 +394,9 @@ export const guj_language_data = {
   AtleastOneBranchShouldBeSelected: "ઓછામાં ઓછી એક શાખા પસંદ કરવી જોઈએ",
   Select: "પસંદ કરો",
   DisplayName: "ડિસ્પ્લે નામ",
+  CTS: "સીટીએસ",
+  AddBranch:"શાખા ઉમેરો",
+
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 
@@ -729,6 +732,46 @@ export const guj_language_data = {
   CentreName: "કેન્દ્રનું નામ",
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
+
+  // form 15GH entry and confirmation
+  NoteDoubleClickOnViewDetails: "નોંધ: વિગતો જોવા માટે ડબલ ક્લિક કરો",
+  FormExpiryDate: "ફોર્મ સમાપ્તિ તારીખ",
+  FormName: "ફોર્મનું નામ",
+  VerifiedDate: "ચકાસાયેલ તારીખ",
+  UniqueId: "અનન્ય આઈડી",
+  CustomerNotFound: "ગ્રાહક મળ્યો નથી",
+  Information: "માહિતી",
+  BirthDate: "જન્મતારીખ",
+  FormTillDate: "તારીખ સુધી ફોર્મ",
+  Email: "ઈમેલ",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "અંદાજિત વ્યાજ જેના માટે ઘોષણા કરવામાં આવે છે",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "ઉપરની વ્યાજની રકમ સિવાય અંદાજિત અન્ય આવક",
+  NoOfFormsSubmittedInOtherBanks: "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની સંખ્યા",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની કુલ આવક",
+  WhetherAssessedToIncomeTaxAct: "શું આવકવેરા કાયદામાં આકારણી કરવામાં આવી છે?",
+  IfYesLatestAssessmentDate: "જો હા, તો નવીનતમ આકારણી તારીખ",
+  LastAssessmentDateValidationMessage:
+    "છેલ્લી આકારણી તારીખ નાણાકીય વર્ષનો છેલ્લો દિવસ હોવો જોઈએ.",
+  ActiveValidationMessage:
+    "એફડી/આરડી માંથી એક (અથવા વધુ) ચૂકવવામાં આવે છે જેના માટે આ ફોર્મ સબમિટ કરવામાં આવ્યું હતું. તેથી તમે આ ફોર્મને નિષ્ક્રિય કરી શકતા નથી.",
+  Inactive: "નિષ્ક્રિય",
+  PrintForm: "પ્રિન્ટ ફોર્મ",
+  Bank: "બેંક",
+  FDNo: "એફડી નંબર",
+  FinInterest: "નાણાકીય વ્યાજ",
+  RetrievalParameters: "પુનઃપ્રાપ્તિ પરિમાણો",
+  FromDateIsRequired: "થી તારીખ જરૂરી છે.",
+  ToDateIsRequired: "સુધી તારીખ જરૂરી છે.",
+  EnterCustomerID: "ગ્રાહક આઈડી દાખલ કરો",
+  NoRecordFound: "કોઈ રેકોર્ડ મળ્યો નથી",
+  ConfirmFormData: "શું તમે આ ફોર્મની ખાતરી કરવા માટે ચોક્કસ છો?",
+  ConfirmRestrictionMessage:
+    "તમારા પોતાના દાખલ કરેલ ફોર્મની પુષ્ટિ કરી શકતા નથી.",
+  DeleteWarning: "કાઢી નાખવા માટેની ચેતવણી",
+  CannotDeleteConfirmedForm: "કન્ફર્મ કરેલ ફોર્મ ડિલીટ કરી શકાતું નથી.",
+  PrintFormConfirmation: "શું તમે ફોર્મ છાપવા માંગો છો?",
+  ViewAll: "બધુજ જુઓ",
 };
-
-
