@@ -35,7 +35,7 @@ import { ChequeSignForm } from "./inwardClearingForm/chequeSignForm";
 import { format } from "date-fns";
 import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPostForm";
 import { usePopupContext } from "components/custom/popupContext";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 
@@ -79,6 +79,7 @@ export const InwardClearing = () => {
   const mysubdtlRef = useRef<any>({});
   const indexRef = useRef(0);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [state, setState] = useState<any>({
     selectedRows: authState?.user?.branchCode ?? [],
@@ -735,7 +736,10 @@ export const InwardClearing = () => {
               },
             })
           }
-          onlySingleSelectionAllow={true}
+          // onlySingleSelectionAllow={true}
+          // doubleClickAction={(index, id, data): any => {
+          //   console.log("index, id, data", index, id, data)
+          // }}
           onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
               mysubdtlRef.current = data;

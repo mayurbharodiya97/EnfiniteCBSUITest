@@ -1632,15 +1632,11 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSBNFCRYDTL: {
-    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
-    packageName: "",
-  },
-  GETIFSCDETAILS: {
-    url: "/transactionServiceAPI/GETIFSCDETAILS",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
   GETRTGSIFSCCODEACWISE: {
-    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",
   },
   GETBANKIFSCCODEMSTGRID: {
@@ -1697,6 +1693,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETRTGSCHARGES: {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
+    packageName: "",
+  },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
     packageName: "",
   },
   VALIDATERTGSDTL: {
@@ -1779,6 +1779,30 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
+  DORTGSBRANCHCONFIRMATION: {
+    url: "transactionServiceAPI/DORTGSBRANCHCONFIRMATION",
+    packageName: "",
+  },
+  DORTGSHOCONFIRMATION: {
+    url: "transactionServiceAPI/DORTGSHOCONFIRMATION",
+    packageName: "",
+  },
+  DOCLGDTTRNF: {
+    url: "chequeServiceAPI/DOCLGDTTRNF",
+    packageName: "",
+  },
+  GETRTGSBRANCHCONFIRMEDHISTORY: {
+    url: "transactionServiceAPI/GETRTGSBRANCHCONFIRMEDHISTORY",
+    packageName: "",
+  },
+  GETGENERATEOTP: {
+    url: "enfinityCommonServiceAPI/GETGENERATEOTP",
+    packageName: "",
+  },
+  DOVERIFYOTP: {
+    url: "/enfinityCommonServiceAPI/DOVERIFYOTP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -1794,17 +1818,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

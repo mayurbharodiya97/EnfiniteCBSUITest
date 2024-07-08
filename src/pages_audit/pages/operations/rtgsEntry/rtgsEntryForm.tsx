@@ -258,6 +258,9 @@ const RtgsEntryForm: FC<{}> = () => {
         isDeleteRemark: false,
         formMode: "new",
       }));
+      setFormData({})
+      myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
+      myBenFormRef?.current?.handleFormReset({ preventDefault: () => { } });
       CloseMessageBox();
     },
   });
@@ -321,7 +324,7 @@ const RtgsEntryForm: FC<{}> = () => {
             BRANCH_CD: formData?.BRANCH_CD,
             COMP_CD: authState?.companyID,
             TO_ACCT_NO: item?.TO_ACCT_NO,
-            DEF_TRAN_CD: formData?.DEF_TRAN_CD
+            DEF_TRAN_CD: formData?.DEF_TRAN_CD,
 
           }
         )
@@ -383,7 +386,6 @@ const RtgsEntryForm: FC<{}> = () => {
                   buttonNames: ["No", "Yes"],
                   loadingBtnName: ["Yes"],
                 });
-
                 if (buttonName === "Yes") {
                   mutationRtgs.mutate(finalReqDataRef.current);
                 }
@@ -499,15 +501,19 @@ const RtgsEntryForm: FC<{}> = () => {
                     >
                       Retrieve
                     </GradientButton>
-                    <GradientButton
-                      onClick={() => {
-                        let event: any = { preventDefault: () => { } };
-                        myBenFormRef?.current?.handleSubmit(event, "FINAL");
-
-                      }}
-                    >
-                      Save
-                    </GradientButton>
+                    {activeStep === 1 ?
+                      <>
+                        <GradientButton
+                          onClick={() => {
+                            let event: any = { preventDefault: () => { } };
+                            myBenFormRef?.current?.handleSubmit(event, "FINAL");
+                          }}
+                        >
+                          Save
+                        </GradientButton>
+                      </>
+                      : null
+                    }
                   </>
                 ) : formMode === "view" ? (
                   <>
@@ -621,21 +627,25 @@ const RtgsEntryForm: FC<{}> = () => {
                     >
                       Retrieve
                     </GradientButton>
-                    <GradientButton
-                      onClick={() => {
-                        let event: any = { preventDefault: () => { } };
-                        myBenFormRef?.current?.handleSubmit(event, "FINAL");
-
-                      }}
-                    >
-                      Save
-                    </GradientButton>
+                    {activeStep === 1 ?
+                      <>
+                        <GradientButton
+                          onClick={() => {
+                            let event: any = { preventDefault: () => { } };
+                            myBenFormRef?.current?.handleSubmit(event, "FINAL");
+                          }}
+                        >
+                          Save
+                        </GradientButton>
+                      </> : null}
                     <GradientButton
                       onClick={() => {
                         setState((old) => ({
                           ...old,
                           formMode: "new",
+                          activeStep: 0
                         }));
+
                         setFormData({})
                         myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
                         myBenFormRef?.current?.handleFormReset({ preventDefault: () => { } });
@@ -1054,11 +1064,11 @@ const RtgsEntryForm: FC<{}> = () => {
                     retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                     if (flag === "action") {
                       getRtgsOrderingData.mutate({
+                        ENT_BRANCH_CD: authState?.user?.branchCode,
                         COMP_CD: rowsData?.[0]?.data?.COMP_CD ?? "",
                         BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD ?? "",
                         BRANCH_TRAN_CD: rowsData?.[0]?.data?.BRANCH_TRAN_CD ?? "",
                         FLAG_RTGSC: ""
-
                       });
                       getRtgsBenDetailData.mutate({
                         COMP_CD: rowsData?.[0]?.data?.COMP_CD ?? "",

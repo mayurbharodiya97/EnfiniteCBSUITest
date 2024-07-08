@@ -52,12 +52,15 @@ const ClearingDateTransferGrid = () => {
       onError: (error: any) => { },
     }
   );
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getRetrievalClearingData"]);
-      queryClient.removeQueries(["slipGetRetrievalClearingData"]);
-    };
-  }, []);
+  const transferDateMutation: any = useMutation(
+    "transferDateClearingData",
+    API.transferDateClearingData,
+    {
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
+    }
+  );
+
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "transfer") {

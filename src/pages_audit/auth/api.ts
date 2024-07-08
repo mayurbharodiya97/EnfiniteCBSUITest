@@ -76,10 +76,9 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId,
+      REQUEST_CD: transactionId || '00',
       OTP: otpnumber,
-      AUTH_TYPE: "OTP",
-      // AUTH_TYPE: authType,
+      AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
       BIO_FLAG: bioflag,
     },
@@ -225,6 +224,7 @@ export const LogoutAPI = async ({ userID }) => {
 // };
 
 const transformAuthData = (data: any, access_token: any): AuthStateType => {
+  console.log("data", data)
   return {
     access_token: access_token,
     role: data?.USER_LEVEL,
@@ -407,19 +407,21 @@ export const updatenewPassword = async (transactionId, username, password) => {
 };
 
 export const OTPResendRequest = async (
-  transactionId,
-  username,
-  tran_type,
   companyID,
-  branch_cd
+  branch_cd,
+  contact,
+  tran_type,
+  validUpto,
+  username
 ) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
-      USER_ID: username,
-      TRAN_CD: transactionId,
-      TRN_TYPE: tran_type,
+    await AuthSDK.internalFetcherPreLogin("GETGENERATEOTP", {
       COMP_CD: companyID,
       BRANCH_CD: branch_cd,
+      CONTACT2: contact,
+      VALID_UPTO: validUpto,
+      TRN_TYPE: tran_type,
+      USER_ID: username,
     });
   if (status === "0") {
     return {
@@ -432,6 +434,32 @@ export const OTPResendRequest = async (
     return { status, data, message, messageDetails };
   }
 };
+// export const OTPResendRequest = async (
+//   transactionId,
+//   username,
+//   tran_type,
+//   companyID,
+//   branch_cd
+// ) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
+//       USER_ID: username,
+//       TRAN_CD: transactionId,
+//       TRN_TYPE: tran_type,
+//       COMP_CD: companyID,
+//       BRANCH_CD: branch_cd,
+//     });
+//   if (status === "0") {
+//     return {
+//       data: data[0],
+//       status,
+//       message,
+//       messageDetails,
+//     };
+//   } else {
+//     return { status, data, message, messageDetails };
+//   }
+// };
 
 export const capture = async () => {
   var MFS100Request = {

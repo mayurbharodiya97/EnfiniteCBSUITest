@@ -24,3 +24,12 @@ export const slipGetRetrievalClearingData = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const transferDateClearingData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`DOCLGDTTRNF`, { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

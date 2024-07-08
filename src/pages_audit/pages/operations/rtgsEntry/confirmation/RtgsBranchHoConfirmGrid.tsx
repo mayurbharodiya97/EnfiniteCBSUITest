@@ -12,17 +12,15 @@ import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { CtsOutwardClearingConfirmForm } from "./CtsOutwardClearingForm";
+import { CtsOutwardClearingConfirmFormWrapper } from "./RtgsBranchHoConfirmForm";
 import {
-  CtsOutwardClearingConfirmGridMetaData,
   RetrieveFormConfigMetaData,
+  RtgsConfirmGridMetaData,
 } from "./ConfirmationMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { AppBar } from "@mui/material";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 const actions: ActionTypes[] = [
   {
@@ -33,8 +31,8 @@ const actions: ActionTypes[] = [
   },
 ];
 
-const CtsOutwardClearingGrid = ({ zoneTranType }) => {
-  const { authState } = useContext(AuthContext);
+const RtgsConfirmationGrid = ({ flag }) => {
+  const { authState } = useContext<any>(AuthContext);
   const formRef = useRef<any>(null);
   const indexRef = useRef(0);
   const navigate = useNavigate();
@@ -42,18 +40,46 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
 
-  const { data, isLoading, isError, error } = useQuery<any, any>(
-    ["getBussinessDate"],
-    () => API.getBussinessDate()
-  );
+
   const mutation: any = useMutation(
     "getRetrievalClearingData",
-    API.getRetrievalClearingData,
+    API.getRtgsRetrBranchConfirmData,
     {
-      onSuccess: (data) => { },
+      onSuccess: (data) => {
+      },
       onError: (error: any) => { },
     }
   );
+  // const mutation: any = useMutation(
+  //   "getRtgsBranchConfirmOrderingData",
+  //   API.getRtgsBranchConfirmOrderingData,
+  //   {
+  //     onSuccess: (data) => {
+  //     },
+  //     onError: (error: any) => { },
+  //   }
+  // );
+  // const mutation: any = useMutation(
+  //   "getRetrievalClearingData",
+  //   API.getRtgsBenDetailBranchConfirmData,
+  //   {
+  //     onSuccess: (data) => {
+  //     },
+  //     onError: (error: any) => { },
+  //   }
+  // );
+  // const mutation: any = useMutation(
+  //   "getRetrievalClearingData",
+  //   API.getRtgsRetrBranchConfirmData,
+  //   {
+  //     onSuccess: (data) => {
+  //     },
+  //     onError: (error: any) => { },
+  //   }
+  // );
+
+
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getBussinessDate"]);
@@ -63,12 +89,13 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
           queryClient.removeQueries(one);
         });
       }
-      queryClient.removeQueries(["getRetrievalClearingData", zoneTranType]);
+      queryClient.removeQueries(["getRetrievalClearingData", flag]);
     };
   }, [getEntries]);
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
+      console.log("data", data);
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -88,29 +115,31 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     actionFlag
   ) => {
     delete data["RETRIEVE"];
-    if (Boolean(data["FROM_TRAN_DT"])) {
-      data["FROM_TRAN_DT"] = format(
-        new Date(data["FROM_TRAN_DT"]),
+    delete data["VIEW_ALL"];
+    if (Boolean(data["FROM_DT"])) {
+      data["FROM_DT"] = format(
+        new Date(data["FROM_DT"]),
         "dd/MMM/yyyy"
       );
     }
-    if (Boolean(data["TO_TRAN_DT"])) {
-      data["TO_TRAN_DT"] = format(new Date(data["TO_TRAN_DT"]), "dd/MMM/yyyy");
+    if (Boolean(data["TO_DT"])) {
+      data["TO_DT"] = format(
+        new Date(data["TO_DT"]),
+        "dd/MMM/yyyy"
+      );
     }
-    data["BANK_CD"] = data["BANK_CD"].padEnd(10, " ");
-
     data = {
       ...data,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
-      TRAN_TYPE: zoneTranType,
-      CONFIRMED: actionFlag === "RETRIEVE" ? "N" : "0",
+      FLAG: flag === "BO" ? actionFlag === "RETRIEVE" ? "P" : "A" : actionFlag === "RETRIEVE" ? "RTGSHO" : "A",
+      FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO"
     };
     mutation.mutate(data);
-    endSubmit(true)
-    setFormData(data);
-  };
+    endSubmit(true);
+    setFormData(data)
 
+  };
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
@@ -121,6 +150,27 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     }
     navigate(".");
   };
+
+
+  // const handlePrev = useCallback(
+  //   () => {
+  //     navigate(".");
+  //     const index = indexRef.current -= 2;
+  //     setTimeout(() => {
+  //       setCurrentAction({ name: "view-detail", rows: [{ data: mutation?.data[index], id: String(index + 1) }] })
+  //     }, 0)
+  //   }, [mutation?.data]);
+
+  // const handleNext = useCallback(
+  //   () => {
+  //     navigate(".");
+  //     const index = indexRef.current++;
+  //     console.log("next index", index)
+  //     setTimeout(() => {
+  //       setCurrentAction({ name: "view-detail", rows: [{ data: mutation?.data[index + 1], id: String(index + 1) }] })
+  //     }, 0)
+  //     console.log("next data", mutation?.data[index], mutation?.data)
+  //   }, [mutation?.data]);
   const handlePrev = useCallback(() => {
     navigate(".");
     const index = (indexRef.current -= 1);
@@ -135,7 +185,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
           },
         ],
       });
-      console.log("mutation?.data[index]", mutation?.data[index - 1]);
+      console.log("mutation?.data[index]", mutation?.data);
     }, 0);
   }, [mutation?.data]);
   const handleNext = useCallback(() => {
@@ -152,25 +202,17 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
           },
         ],
       });
+      console.log("mutation?.data[index + 1]", mutation?.data[index + 1])
     }, 0);
   }, [mutation?.data]);
 
-  const typeDefaults = {
-    R: { defaultValue: "10  ", label: "Inward Return Retrieve Information" },
-    S: { defaultValue: "0   ", label: "CTS O/W Retrieve Information" },
-    W: { defaultValue: "18  ", label: "Outward Return Retrieve Information" },
-  };
 
-  const defaultValues = typeDefaults[zoneTranType];
-  if (defaultValues) {
-    RetrieveFormConfigMetaData.fields[2].defaultValue =
-      defaultValues.defaultValue;
-    RetrieveFormConfigMetaData.form.label = defaultValues.label;
-  }
+
+
 
   return (
     <Fragment>
-      {isLoading ? (
+      {/* {isLoading ? (
         <div style={{ height: 100, paddingTop: 10 }}>
           <div style={{ padding: 10 }}>
             <LoaderPaperComponent />
@@ -196,78 +238,68 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
             </AppBar>
           </div>
         </>
-      ) : (
-        <>
-          <FormWrapper
-            key={`retrieveForm` + zoneTranType}
-            metaData={
-              (zoneTranType === "S"
-                ? RetrieveFormConfigMetaData
-                : RetrieveFormConfigMetaData) as unknown as MetaDataType
+      ) : ( */}
+      <>
+        <FormWrapper
+          key={`retrieveForm` + flag}
+          metaData={
+            (flag === "BO"
+              ? RetrieveFormConfigMetaData
+              : RetrieveFormConfigMetaData) as unknown as MetaDataType
+          }
+          initialValues={{
+            FROM_DT: authState?.workingDate,
+            TO_DT: authState?.workingDate,
+          }}
+          onSubmitHandler={onSubmitHandler}
+          formStyle={{
+            background: "white",
+          }}
+          onFormButtonClickHandel={(id) => {
+            let event: any = { preventDefault: () => { } };
+            // if (mutation?.isLoading) {
+            if (id === "RETRIEVE") {
+              formRef?.current?.handleSubmit(event, "RETRIEVE");
+            } else if (id === "VIEW_ALL") {
+              formRef?.current?.handleSubmit(event, "VIEW_ALL");
             }
-            initialValues={{
-              FROM_TRAN_DT:
-                zoneTranType === "S"
-                  ? data?.[0]?.TRAN_DATE
-                  : authState?.workingDate,
-              TO_TRAN_DT:
-                zoneTranType === "S"
-                  ? data?.[0]?.TRAN_DATE
-                  : authState?.workingDate,
-            }}
-            onSubmitHandler={onSubmitHandler}
-            formStyle={{
-              background: "white",
-            }}
-            onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => { } };
-              // if (mutation?.isLoading) {
-              if (id === "RETRIEVE") {
-                formRef?.current?.handleSubmit(event, "RETRIEVE");
-              } else if (id === "VIEW_ALL") {
-                formRef?.current?.handleSubmit(event, "VIEW_ALL");
+            // }
+          }}
+          formState={{ ZONE_TRAN_TYPE: flag }}
+          ref={formRef}
+        />
+        <Fragment>
+          {mutation.isError && (
+            <Alert
+              severity="error"
+              errorMsg={
+                mutation.error?.error_msg ?? "Something went to wrong.."
               }
-              // }
-            }}
-            formState={{ ZONE_TRAN_TYPE: zoneTranType }}
-            ref={formRef}
-          />
-          <Fragment>
-            {mutation.isError && (
-              <Alert
-                severity="error"
-                errorMsg={
-                  mutation.error?.error_msg ?? "Something went to wrong.."
-                }
-                errorDetail={mutation.error?.error_detail}
-                color="error"
-              />
-            )}
-            {/* {mutation?.data ? ( */}
-            <GridWrapper
-              key={"CtsOutwardClearingConfirmGrid" + zoneTranType}
-              finalMetaData={
-                zoneTranType === "S"
-                  ? CtsOutwardClearingConfirmGridMetaData
-                  : CtsOutwardClearingConfirmGridMetaData
-              }
-              data={mutation?.data ?? []}
-              setData={() => null}
-              loading={mutation.isLoading || mutation.isFetching}
-              actions={actions}
-              setAction={setCurrentAction}
+              errorDetail={mutation.error?.error_detail}
+              color="error"
             />
+          )}
+          {/* {mutation?.data ? ( */}
+          <GridWrapper
+            key={"rtgsConfirmGrid" + flag}
+            finalMetaData={RtgsConfirmGridMetaData}
+            data={mutation?.data ?? []}
+            setData={() => null}
+            loading={mutation.isLoading || mutation.isFetching}
+            actions={actions}
+            setAction={setCurrentAction}
+          />
 
-            {/* ) : null} */}
-          </Fragment>
-        </>
-      )}
+          {/* ) : null} */}
+        </Fragment>
+      </>
+      {/* )} */}
       <Routes>
         <Route
           path="view-detail/*"
           element={
-            <CtsOutwardClearingConfirmForm
-              zoneTranType={zoneTranType}
+            <CtsOutwardClearingConfirmFormWrapper
+              flag={flag}
               handleDialogClose={handleDialogClose}
               handlePrev={handlePrev}
               handleNext={handleNext}
@@ -281,13 +313,16 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     </Fragment>
   );
 };
-export const CtsOutwardClearingConfirmGrid = ({ zoneTranType }) => {
+export const RtgsBranchHoConfirmationGrid = ({ flag }) => {
   return (
     <ClearCacheProvider>
-      <CtsOutwardClearingGrid
-        key={zoneTranType + "-CtsOutwardClearingGrid"}
-        zoneTranType={zoneTranType}
+      <RtgsConfirmationGrid
+        key={flag + "-CtsOutwardClearingGrid"}
+        flag={flag}
       />
     </ClearCacheProvider>
   );
 };
+
+
+

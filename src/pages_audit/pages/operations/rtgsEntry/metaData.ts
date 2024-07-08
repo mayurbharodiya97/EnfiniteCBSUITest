@@ -9,7 +9,6 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
-import { isValidDate } from "components/utils/utilFunctions/function";
 export const RtgsEntryFormMetaData = {
   form: {
     name: "rtgsEntry",
@@ -85,12 +84,20 @@ export const RtgsEntryFormMetaData = {
       name: "TRAN_TYPE",
       label: "Transaction Type",
       defaultValue: "R42",
-      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       skipDefaultOption: true,
-      options: () => {
-        return API.getRtgsTransactionTypeList({
-          MSG_FLOW: "O",
-        });
+      dependentFields: ["ENTRY_TYPE"],
+      options: (dependentValue, formState, _, authState) => {
+        if (dependentValue?.ENTRY_TYPE?.value) {
+          return API.getRtgsTransactionTypeList({
+            MSG_FLOW: "O",
+            BASE_BRANCH_CD: authState?.user?.baseBranchCode,
+            COMP_CD: authState?.companyID,
+            ENT_BRANCH_CD: authState?.user?.branchCode,
+            MSG_TYPE: "0",
+            ENTRY_TYPE: dependentValue?.ENTRY_TYPE?.value
+          });
+        }
       },
       _optionsKey: "getRtgsTransactionTypeList",
       disableCaching: true,
@@ -132,7 +139,7 @@ export const RtgsEntryFormMetaData = {
         },
       },
 
-      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: { xs: 6, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
     },
     {
       render: {
@@ -141,7 +148,7 @@ export const RtgsEntryFormMetaData = {
       name: "DEF_TRAN_CD",
       label: "Comm. Type",
       defaultValue: "149",
-      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2.4 },
       options: (dependentValue, formState, _, authState) => {
         return API.getCommTypeList({
           COMP_CD: authState?.companyID,
@@ -206,7 +213,7 @@ export const RtgsEntryFormMetaData = {
 
       __NEW__: {
         branchCodeMetadata: {
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
           schemaValidation: {
             type: "string",
             rules: [
@@ -419,7 +426,7 @@ export const RtgsEntryFormMetaData = {
             return {};
           },
           runPostValidationHookAlways: true,
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.7 },
         },
       },
       __VIEW__: {
@@ -492,7 +499,7 @@ export const RtgsEntryFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
+      GridProps: { xs: 12, sm: 3.5, md: 3.5, lg: 3.5, xl: 3.3 },
     },
     {
       render: {
@@ -503,7 +510,7 @@ export const RtgsEntryFormMetaData = {
       placeholder: "",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
     {
       render: {
@@ -514,7 +521,7 @@ export const RtgsEntryFormMetaData = {
       placeholder: "",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
     {
       render: {
@@ -525,7 +532,7 @@ export const RtgsEntryFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -535,7 +542,7 @@ export const RtgsEntryFormMetaData = {
       label: "Ord.A/C Name",
       type: "text",
       fullWidth: true,
-      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
+      GridProps: { xs: 12, sm: 3.5, md: 3.5, lg: 3.5, xl: 3.5 },
       required: true,
       schemaValidation: {
         type: "string",
@@ -575,7 +582,7 @@ export const RtgsEntryFormMetaData = {
           }
         },
       },
-      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
+      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 3.3 },
       required: true,
       schemaValidation: {
         type: "string",
@@ -596,7 +603,7 @@ export const RtgsEntryFormMetaData = {
       label: "Contact Number",
       placeholder: "Mobile Number",
       type: "string",
-      GridProps: { xs: 12, sm: 1.9, md: 1.9, lg: 1.9, xl: 1.9 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
       required: true,
       schemaValidation: {
         type: "string",
@@ -694,7 +701,7 @@ export const RtgsEntryFormMetaData = {
                 dependentFieldsValues?.["ACCT_TYPE"]?.optionData
               ),
               CHEQUE_NO: field.value,
-              TYPE_CD: dependentFieldsValues?.["TYPE_CD"],
+              TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value,
               SCREEN_REF: "MST/552"
             });
             let btn99;
@@ -765,7 +772,7 @@ export const RtgsEntryFormMetaData = {
           }
         },
       },
-      GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 6, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
     },
     {
       render: {
@@ -787,7 +794,7 @@ export const RtgsEntryFormMetaData = {
           }
         },
       },
-      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
     },
     {
       render: {
@@ -807,7 +814,7 @@ export const RtgsEntryFormMetaData = {
           }
         },
       },
-      GridProps: { xs: 12, sm: 4.4, md: 4.4, lg: 4.4, xl: 4.4 },
+      GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
     },
     {
       render: {
@@ -1011,10 +1018,10 @@ export const RtgsEntryFormMetaData = {
       __EDIT__: { isReadOnly: true },
       GridProps: {
         xs: 12,
-        md: 1.4,
-        sm: 1.4,
-        lg: 1.4,
-        xl: 1.4,
+        md: 1.2,
+        sm: 1.2,
+        lg: 1.2,
+        xl: 1.2,
       },
       schemaValidation: {
         type: "string",
@@ -1027,7 +1034,7 @@ export const RtgsEntryFormMetaData = {
       },
       dependentFields: ["ENABLE_DISABLE"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
-        if (dependentFields?.ENABLE_DISABLE?.value === "N") {
+        if (dependentFields?.ENABLE_DISABLE?.value === "Y") {
           return true;
         } else {
           return false;
@@ -1040,16 +1047,7 @@ export const RtgsEntryFormMetaData = {
       },
       name: "ENABLE_DISABLE",
       label: "",
-      placeholder: "",
-      type: "text",
-      required: true,
-      GridProps: {
-        xs: 12,
-        md: 1.4,
-        sm: 1.4,
-        lg: 1.4,
-        xl: 1.4,
-      },
+
     },
     {
       render: {
@@ -1062,10 +1060,10 @@ export const RtgsEntryFormMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 1.4,
-        sm: 1.4,
-        lg: 1.4,
-        xl: 1.4,
+        md: 1.2,
+        sm: 1.2,
+        lg: 1.2,
+        xl: 1.2,
       },
     },
 
@@ -1081,7 +1079,7 @@ export const RtgsEntryFormMetaData = {
         allowNegative: false,
       },
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2 },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
 
       dependentFields: ["AMOUNT", "SER_CHRG_AMT", "COMM_AMT"],
 
@@ -1654,8 +1652,8 @@ export const rtgsAccountDetailFormMetaData: any = {
                 formState?.rtgsAcData?.PARA_BNFCRY === "Y"
                   ? formState?.rtgsAcData?.ACCT_CD ?? ""
                   : "",
-              FLAG:
-                formState?.rtgsAcData?.PARA_BNFCRY,
+              FLAG: "N",
+              // FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
             });
           },
           _optionsKey: "getRtgsBenfDtlList",
@@ -1665,6 +1663,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            console.log("field", field)
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&
@@ -1713,8 +1712,8 @@ export const rtgsAccountDetailFormMetaData: any = {
                   AS_VALUE: field?.optionData[0].TO_IFSCCODE ?? "",
                   FLAG: "I",
                 });
-
                 return {
+                  // TO_ACCT_NO: { value: field.value.split('-')[0] ?? "" },
                   TO_ACCT_NM: { value: field.optionData[0].TO_ACCT_NM ?? "" },
                   TO_ACCT_TYPE: {
                     value: field.optionData[0].TO_ACCT_TYPE ?? "",
@@ -1868,6 +1867,16 @@ export const rtgsAccountDetailFormMetaData: any = {
             } else {
               return false;
             }
+          },
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+            // special-character not allowed
+            if (columnValue.value) {
+              if (!regex.test(columnValue.value)) {
+                return "Please Enter Alphanumeric Value";
+              }
+            }
+            return "";
           },
           GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
         },
@@ -2438,11 +2447,12 @@ export const AuditBenfiDetailFormMetadata = {
           }
           return "";
         },
+
+        __EDIT__: {
+          isReadOnly: true,
+        },
+        GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
       },
-      __EDIT__: {
-        isReadOnly: true,
-      },
-      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
     },
     {
       render: {
@@ -2452,6 +2462,16 @@ export const AuditBenfiDetailFormMetadata = {
       label: "Reamrks",
       placeholder: "",
       type: "text",
+      validate: (columnValue, allField, flag) => {
+        let regex = /^[a-zA-Z0-9 ]*$/;
+        // special-character not allowed
+        if (columnValue.value) {
+          if (!regex.test(columnValue.value)) {
+            return "Please Enter Alphanumeric Value";
+          }
+        }
+        return "";
+      },
       __EDIT__: {
         isReadOnly: true,
       },

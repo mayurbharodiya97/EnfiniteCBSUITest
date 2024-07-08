@@ -39,6 +39,7 @@ const inititalState = {
   username: "",
   auth_type: "O",
   transactionID: "",
+  contactUser: "",
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -54,6 +55,7 @@ const reducer = (state, action) => {
         apierrorMessage: action?.payload?.apierrorMessage ?? "",
         requestCd: "",
         username: "",
+        contactUser: "",
       };
     }
     case "initverifyUserNameandMobileNo": {
@@ -81,6 +83,7 @@ const reducer = (state, action) => {
         company_ID: action?.payload?.company_ID,
         branch_cd: action?.payload?.branch_cd,
         otpValidFor: action?.payload?.otpValidFor,
+        contactUser: action?.payload?.contactUser,
       };
     }
     case "inititateOTPVerification": {
@@ -169,6 +172,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
   } = useQuery<any, any>(["getLoginImageData"], () =>
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
+  console.log(">>loginState", loginState)
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -193,6 +197,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
               company_ID: resdata?.COMP_CD,
               branch_cd: resdata?.BRANCH_CD,
               otpValidFor: resdata?.OTP_VALID,
+              contactUser: resdata?.CONTACT2,
             },
           });
           setOpen(true);
@@ -386,8 +391,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                 {loginState.workingState === 1
                   ? t("Setnewpassword")
                   : screenFlag === "totp"
-                  ? "Forgot TOTP"
-                  : t("ForgotPassword")}
+                    ? "Forgot TOTP"
+                    : t("ForgotPassword")}
               </h2>
               {open ? (
                 <OTPModelForm

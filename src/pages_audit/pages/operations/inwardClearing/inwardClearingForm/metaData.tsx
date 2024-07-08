@@ -101,8 +101,6 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       required: true,
       autoComplete: "off",
-      isFieldFocused: true,
-      defaultfocus: true,
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
@@ -157,6 +155,8 @@ export const chequeReturnPostFormMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      isFieldFocused: true,
+      defaultfocus: true,
       // dependentFields: ["TRAN_DATE", "RANGE_DATE"],
       // validate: (currentField, dependentField) => {
       //   const currentDate = new Date(currentField?.value);
@@ -182,13 +182,11 @@ export const chequeReturnPostFormMetaData = {
       name: "AMOUNT",
       label: "Cheque Amount",
       placeholder: "",
-      isFieldFocused: true,
       required: true,
       type: "text",
       FormatProps: {
         allowNegative: false,
       },
-
       GridProps: { xs: 6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
     {
@@ -207,6 +205,11 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
+        // validate: (currentField, value) => {
+        //   if (currentField?.value) {
+        //     return;
+        //   }
+        // },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("ACCT_CD_BLANK");
@@ -222,9 +225,11 @@ export const chequeReturnPostFormMetaData = {
       accountTypeMetadata: {
         name: "ACCT_TYPE",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-        isFieldFocused: true,
-        defaultfocus: true,
-        // required: true,
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
         dependentFields: ["DISABLE_MAIN_AC", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -266,6 +271,11 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -274,7 +284,6 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -323,7 +332,7 @@ export const chequeReturnPostFormMetaData = {
               //   ignoreUpdate: true,
               // },
               ACCT_CD: {
-                value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                value: field?.value.padStart(6, "0")?.padEnd(20, " "),
                 ignoreUpdate: true,
               },
               ACCT_NM: {
@@ -1273,15 +1282,15 @@ export const shareDividendMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
+                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  }
                   : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               WARRANT_NO: {
                 value: returnVal?.WARRANT_NO ?? "",
               },

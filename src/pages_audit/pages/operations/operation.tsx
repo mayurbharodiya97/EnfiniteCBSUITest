@@ -19,6 +19,9 @@ const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
 );
+const RtgsBranchHoConfirmationGrid = lazy(
+  () => import("./rtgsEntry/confirmation")
+);
 const InwardClearing = lazy(() => import("./inwardClearing"));
 const ClearingDateTransferGridWrapper = lazy(
   () => import("./clearingDateTransfer")
@@ -123,7 +126,16 @@ export const OperationsMenu = () => (
       path="clearing-date-transfer/*"
       element={<ClearingDateTransferGridWrapper />}
     />
+
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
+    <Route
+      path="rtgs-branch-confirmation/*"
+      element={<RtgsBranchHoConfirmationGrid flag="BO" />}
+    />
+    <Route
+      path="rtgs-ho-confirmation/*"
+      element={<RtgsBranchHoConfirmationGrid flag="HO" />}
+    />
     <Route
       path="fix-deposit/*"
       element={
