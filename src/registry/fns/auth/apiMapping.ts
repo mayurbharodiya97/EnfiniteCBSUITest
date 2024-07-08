@@ -259,6 +259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
     packageName: "",
   },
+  CONFIRMCUSTPHOTODATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTPHOTODATA",
+    packageName: "",
+  },
   GETDOCTEMPLATEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDOCTEMPLATEDTL",
     packageName: "",
@@ -594,6 +598,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
+    packageName: "",
+  },
+  GETCUSTLATESTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTLATESTPHOTODTL",
     packageName: "",
   },
   GETUPDCUSTPHOTODATA: {

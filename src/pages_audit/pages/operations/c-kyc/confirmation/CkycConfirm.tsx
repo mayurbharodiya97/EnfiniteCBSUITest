@@ -168,6 +168,7 @@ export const CkycConfirm = () => {
                 onClose={() => {
                   navigate(".");
                 }}
+                PendingRefetch={PendingRefetch}
               />
             }
           />
