@@ -147,6 +147,7 @@ const RetrieveCustomer = () => {
       const loggedinUser = authState?.user?.id;
       // console.log("retrievecustomer", confirmed, maker, loggedinUser)
       if(Boolean(confirmed)) {
+        // P=SENT TO CONFIRMATION
         if(confirmed.includes("P")) {
           if(maker === loggedinUser) {
             setFormMode("edit")
@@ -154,6 +155,7 @@ const RetrieveCustomer = () => {
             setFormMode("view")
           }
         } else if(confirmed.includes("M")) {
+          // M=SENT TO MODIFICATION
           setFormMode("edit")
         } else if(confirmed.includes("Y") || confirmed.includes("R")) {
           setFormMode("edit")

@@ -58,6 +58,7 @@ export const formFieldAtom = atomFamily<FormFieldAtomType, string>({
     incomingMessage: null,
     skipValueUpdateFromCrossFieldWhenReadOnly: false,
     optionData: {},
+    ignoreInSubmit: false,
   }),
 });
 

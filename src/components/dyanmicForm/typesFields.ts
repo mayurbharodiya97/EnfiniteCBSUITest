@@ -174,7 +174,7 @@ export type TextFieldPropsOptional = Optional<AllTextFieldProps>;
 
 export type AllDividerProps = Merge<
   Omitted<DividerProps>,
-  FieldMetaData<"Divider">
+  FieldMetaData<"divider">
 >;
 export type DividerPropsOptional = Optional<AllTextFieldProps>;
 

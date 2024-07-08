@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const BranchSelectionGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Access Branch List",
+    gridLabel: "AccessBranchList",
     rowIdColumn: "BRANCH_CD",
     searchPlaceholder: "Branches",
     defaultColumnConfig: {
@@ -41,7 +41,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch Code",
+      columnName: "BranchCode",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -51,7 +51,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_NM",
-      columnName: "Branch Name",
+      columnName: "BranchName",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -71,7 +71,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BEGIN_DATETIME",
-      columnName: "Begin Time",
+      columnName: "BeginTime",
       sequence: 4,
       alignment: "left",
       componentType: "dateTime",
@@ -81,7 +81,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "END_DATETIME",
-      columnName: "End Time",
+      columnName: "EndTime",
       sequence: 5,
       alignment: "left",
       componentType: "dateTime",
