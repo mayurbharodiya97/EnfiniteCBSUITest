@@ -29,7 +29,7 @@ export const AdvocateMstForm = ({
 
   const mutation = useMutation(API.advocateMstDataDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
