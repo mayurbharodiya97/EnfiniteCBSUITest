@@ -768,6 +768,34 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
+  const getCustLatestDtl = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTLATESTPHOTODTL", {
+        COMP_CD: COMP_CD, 
+        CUSTOMER_ID: CUSTOMER_ID, 
+        REQ_CD: REQ_CD
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  
+  const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
+        COMP_CD: COMP_CD, 
+        CUSTOMER_ID: CUSTOMER_ID,
+        REQ_CD: REQ_CD
+      });
+    if (status === "0") {
+      return data
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
   return {
     GetMiscValue,
     getValidateValue,
@@ -799,6 +827,8 @@ const GeneralAPISDK = () => {
     get_Account_Type,
     getChequeNoValidation,
     getCommTypeList,
+    getCustLatestDtl,
+    getPhotoSignHistory
   };
 };
 export const GeneralAPI = GeneralAPISDK();

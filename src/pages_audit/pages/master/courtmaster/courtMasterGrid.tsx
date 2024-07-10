@@ -7,6 +7,7 @@ import GridWrapper from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -42,10 +43,11 @@ export const CourtMasterGrid = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isDataChangedRef = useRef(false);
   const isDeleteDataRef = useRef<any>(null);
+  const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.updateCourtMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -55,7 +57,7 @@ export const CourtMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       CloseMessageBox();

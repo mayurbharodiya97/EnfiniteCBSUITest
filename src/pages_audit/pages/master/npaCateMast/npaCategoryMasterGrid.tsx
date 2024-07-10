@@ -47,7 +47,7 @@ export const NpaCategoryMasterGrid = () => {
 
   const deleteMutation = useMutation(API.updateNpaCategoryMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -57,7 +57,7 @@ export const NpaCategoryMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -72,10 +72,10 @@ export const NpaCategoryMasterGrid = () => {
         const btnName = await MessageBox({
           message: "DeleteData",
           messageTitle: "Confirmation",
-          buttonNames: [t("Yes"), t("NO")],
+          buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
-        if (btnName === t("Yes")) {
+        if (btnName === "Yes") {
           deleteMutation.mutate({
             data: { ...isDeleteDataRef.current?.data, _isDeleteRow: true },
           });

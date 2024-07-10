@@ -5,6 +5,7 @@ import {
   useCallback,
   useState,
   useContext,
+  useMemo,
 } from "react";
 import {
   useField,
@@ -56,6 +57,8 @@ interface MyGridExtendedProps {
   };
   enableShortcut?: string[];
   ignoreInSubmit?: boolean;
+  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  label?: string;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -89,6 +92,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   setColor,
   showMaxLength = true,
   label,
+  setFieldLabel,
   startsIcon,
   endsIcon,
   iconStyle,
@@ -211,7 +215,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         try {
           let result = await setValueOnDependentFieldsChange(
             transformDependentFieldsState(dependentValues),
-            { isSubmitting }
+            { isSubmitting, value }
           );
 
           if (result !== undefined && result !== null) {
@@ -254,6 +258,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
     whenToRunValidation,
     setErrorAsCB,
   ]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
+  }, [setFieldLabel, label, dependentValues, value])
 
   if (excluded) {
     return null;
@@ -385,7 +393,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
+        label={updatedLabel ?? label}
         value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={

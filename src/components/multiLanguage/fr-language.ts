@@ -88,8 +88,8 @@ export const fr_language_data = {
   Export: "Exporter",
 
   // Message box
-  DeleteData: "Êtes-vous sûr de supprimer la ligne sélectionnée... ?",
-  SaveData: "Voulez-vous enregistrer cette demande... ?",
+  DeleteData: "Êtes-vous sûr de supprimer la ligne sélectionnée?",
+  SaveData: "Voulez-vous enregistrer cette demande?",
   Confirmation: "Confirmation",
   Ok: "D'accord",
   Yes: "Oui",
@@ -108,6 +108,9 @@ export const fr_language_data = {
   EntryDescriptionMaster: "Entrée Description Maître MST/067",
   ParentType: "Type de parent",
   EnterDescription: "Entrez la description",
+  DuplicateValidation:
+    "{{fieldValue}} est déjà inscrit au numéro principal:{{rowNumber}}",
+  ParentTyperequired: "Le type de parent est requis.",
 
   // MST/097
   SecurityType: "Type de sécurité",
@@ -121,6 +124,10 @@ export const fr_language_data = {
   AssetClassificationCode: "Code de classification des actifs A5",
   CalculatePenalInterestOn: "Calculer les intérêts pénalisés sur",
   EnterName: "Enter Name",
+  ParentRequired: "Le parent est requis.",
+  Nameisrequired: "Le nom est requis.",
+  EnterSecureRate: "Entrez le taux de provisionnement sécurisé",
+  EnterUnSecureRate: "Entrez le taux de provision non sécurisé",
 
   // MST/146
   CourtMaster: "Maître de cour (MST/146)",
@@ -135,6 +142,7 @@ export const fr_language_data = {
   EnterPinCode: "Entrez le code PIN",
   EnterAddress: "Entrer l'adresse",
   EnterContactNumber: "Entrez le numéro de contact",
+  PincodeRequired:"Code PIN requis",
 
   // Report
   CreditCount: "Compte de crédits",
@@ -169,6 +177,22 @@ export const fr_language_data = {
   ConfirmedCount: "Nombre confirmé",
   RejectedCount: "Nombre de rejets",
   PendingCount: "Décompte en attente",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "Récupérer l’option d’impression du livret",
+  Print: "imprimer",
+  AccountHolder: "Nom du titulaire du compte",
+  LineNo: "Numéro de ligne",
+  Reprint: "Réimpression",
+  NextPageAlert: "Voulez-vous imprimer la page suivante ?",
+  PassbookPrint: "Imprimer le livret",
+  printPage: "Imprimer cette page",
+  PassbookStatementPreview: "Aperçu du relevé du livret",
+  LineNoValidation: "garder le numéro de ligne entre {{from}} et {{to}}",
+  DateValidation:
+    "La date de début ne doit pas être antérieure à la date d'ouverture du compte. :- {{date}}",
+  PassbookUpdateMessage:
+    "Compte : {{account}}.\n Livret Déjà imprimé jusqu'au {{date}}.\n Voulez-vous considérer comme un doublon/une réimpression ?\n Oui - Dupliquer\n Non - Réimpression",
 
   //Parent master main
   ParentGroup: "Groupe de parents",

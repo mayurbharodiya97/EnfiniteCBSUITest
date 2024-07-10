@@ -85,8 +85,8 @@ export const guj_language_data = {
   Export: "નિકાસ કરો",
 
   // Message box
-  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો...?",
-  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો...?",
+  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો?",
+  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો?",
   Confirmation: "પુષ્ટિકરણ",
 
   // FormWrapper
@@ -96,9 +96,14 @@ export const guj_language_data = {
   new: "નવો",
 
   // MST/067
-  EntryDescriptionMaster: "પ્રવેશ વર્ણન માસ્ટર MST/067",
+  "Entry Description Master (MST/067)": "પ્રવેશ વર્ણન માસ્ટર (MST/067)",
+  "Entry Description Master": "પ્રવેશ વર્ણન માસ્ટર",
   ParentType: "પિતૃ વર્ગ",
   EnterDescription: "વર્ણન દાખલ કરો",
+  DuplicateValidation:
+    "{{fieldValue}} પહેલાથી જ ક્રમ નંબર: {{rowNumber}} પર દાખલ કરેલ છે",
+    ParentTyperequired: "પિતૃ પ્રકાર જરૂરી છે.",
+
 
   // MST/097
   InsuranceTypeMaster: "વીમા પ્રકાર માસ્ટર MST/097",
@@ -106,11 +111,15 @@ export const guj_language_data = {
   // MST/052
   NPACategoryMaster: "NPA કેટેગરી માસ્ટર MST/052",
   Parent: "પિતૃ",
-  ProvisionSecureRate: "જોગવાઈ સુરક્ષિત દર",
-  ProvisionUnSecureRate: "જોગવાઈ અસુરક્ષિત દર",
+  ProvisionSecureRate: "સુરક્ષિત જોગવાઈ દર",
+  ProvisionUnSecureRate: "અસુરક્ષિત જોગવાઈ દર",
   AssetClassificationCode: "A5 સંપત્તિ વર્ગીકરણ કોડ",
   CalculatePenalInterestOn: "દંડાત્મક વ્યાજની ગણત્રી",
   EnterName: "નામ દાખલ કરો",
+  ParentRequired:"પિતૃ જરૂરી છે.",
+  Nameisrequired: "નામ જરૂરી છે.",
+  EnterSecureRate:"સુરક્ષિત જોગવાઈ દર દાખલ કરો",
+  EnterUnSecureRate:"અસુરક્ષિત જોગવાઈ દર દાખલ કરો",
 
   // MST/146
   CourtMaster: "કોર્ટ માસ્ટર (MST/146)",
@@ -129,6 +138,8 @@ export const guj_language_data = {
   EnterPinCode: "પિન કોડ દાખલ કરો",
   EnterAddress: "સરનામું દાખલ કરો",
   EnterContactNumber: "સંપર્ક નંબર દાખલ કરો",
+  PincodeRequired:"પિનકોડ જરૂરી છે",
+
 
   // Report
   CreditCount: "ક્રેડિટ ગણતરી",
@@ -155,6 +166,21 @@ export const guj_language_data = {
   NO: "ના",
   Accept: "સ્વીકારો",
   Decline: "નકારો",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "પાસબુક પ્રિન્ટ વિકલ્પ પુનઃપ્રાપ્ત કરો",
+  AccountHolder: "ખાતા ધારકનું નામ",
+  LineNo: "લાઇન નંબર",
+  Reprint: "ફરીથી છાપો",
+  NextPageAlert: "શું તમે આગલું પૃષ્ઠ છાપવા માંગો છો?",
+  PassbookPrint: "પાસબુક પ્રિન્ટ",
+  printPage: "આ પૃષ્ઠ છાપો",
+  PassbookStatementPreview: "પાસબુક સ્ટેટમેન્ટ પૂર્વાવલોકન",
+  LineNoValidation: "લાઇન નંબર {{from}} થી {{to}} ની વચ્ચે રાખો",
+  DateValidation:
+    "'તારીખથી' ખાતું ખોલ્યાની તારીખ કરતાં પહેલાંની ન હોવી જોઈએ :- {{date}}",
+  PassbookUpdateMessage:
+    "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
   Code: "કોડ",
@@ -400,8 +426,8 @@ export const guj_language_data = {
 
   PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
-  ToDate: "તારીખ સુધી",
-  FromDate: "તારીખ થી",
+  ToDate: "તારીખ સુધી:-",
+  FromDate: "તારીખ થી:-",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
