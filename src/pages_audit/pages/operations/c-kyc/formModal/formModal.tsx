@@ -470,7 +470,7 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSignatureCpy />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -531,7 +531,7 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
