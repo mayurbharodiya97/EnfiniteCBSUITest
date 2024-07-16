@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "NPACategoryMaster",
+    gridLabel: "",
     rowIdColumn: "NPA_CD",
     defaultColumnConfig: {
       width: 400,

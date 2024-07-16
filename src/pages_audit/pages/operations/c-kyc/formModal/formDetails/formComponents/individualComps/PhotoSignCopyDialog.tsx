@@ -49,6 +49,7 @@ import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
 import { Alert } from "components/common/alert";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { GeneralAPI } from "registry/fns/functions";
 
 interface PhotoSignProps {
   open: boolean;
@@ -70,6 +71,24 @@ interface PhotoSignProps {
 const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
   const { open, onClose, viewMode } = props;
 
+  return (
+    <Dialog
+      open={open}
+      maxWidth="lg"
+      PaperProps={{
+        style: {
+          minWidth: "70%",
+          width: "80%",
+          // maxWidth: "90%",
+        },
+      }}
+    >
+      <PhotoSignCommonComp onClose={onClose} viewMode={viewMode} />
+    </Dialog>
+  );
+};
+
+export const PhotoSignCommonComp = ({onClose, viewMode}) => {
   const {
     state,
     handleFormDataonSavectx,
@@ -109,29 +128,21 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [customerData, setCustomerData] = useState<any>({});
-  // const [custData, setCustData] = useState<any>({});
 
   // useEffect(() => {
-  //   if (location.state && location.state.length > 0) {
-  //     setCustData(location.state?.[0]?.data);
-  //   }
-  // }, [location]);
-
-  useEffect(() => {
-    console.log("photoBase64ctx, signBase64ctx", Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx))
-  }, [state?.photoBase64ctx, state?.signBase64ctx])
+  //   console.log("photoBase64ctx, signBase64ctx", Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx))
+  // }, [state?.photoBase64ctx, state?.signBase64ctx])
 
   // let customerData = {};
   useEffect(() => {
     if (location.state && location.state.length > 0) {
-      console.log("locationdata", location.state)
+      // console.log("locationdata", location.state)
       let data = location.state?.[0]?.data;
       setCustomerData(data);
     }
   }, [location]);
-  //   console.log("skjvciwhecfvwrefv", location);
 
-  // to get photo/sign history, on edit
+    // to get photo/sign history, on edit
   const {
     data: PhotoHistoryData,
     isError: isPhotoHistoryError,
@@ -139,89 +150,48 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
     isFetching: isPhotoHistoryFetching,
     refetch: photoHistoryRefetch,
     error: photoHistoryError,
-  } = useQuery<any, any>(["getPhotoSignHistory", {}], () =>
-    API.getPhotoSignHistory({
+  } = useQuery<any, any>(["getPhotoSignHistory"], () =>
+    GeneralAPI.getPhotoSignHistory({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
     })
   );
 
-  const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
-    onSuccess: (data) => {
-      console.log(data, "getcustdtmtgltdngk")
-      if(data && data.length>0) {
-        if(data?.[0]?.PHOTO_MST) {
-          let CUST_PHOTO = data?.[0]?.PHOTO_MST?.CUST_PHOTO ?? "";
-          let CUST_SIGN = data?.[0]?.PHOTO_MST?.CUST_SIGN ?? "";
-
-          handlePhotoOrSignctx(null, CUST_PHOTO, "photo")
-          handlePhotoOrSignctx(null, CUST_SIGN, "sign")
-          // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
-          setPhotoImageURL(CUST_PHOTO, "photo");
-          setPhotoImageURL(CUST_SIGN, "sign");
-          photoFilesdata.current = CUST_PHOTO;
-          signFilesdata.current = CUST_SIGN;  
-        }
-      }
-    },
-    onError: (error: any) => {},
-  });
+  const {
+    data: LatestPhotoSignData,
+    isError: isLatestDtlError,
+    isLoading: isLatestDtlLoading,
+    isFetching: isLatestDtlFetching,
+    refetch: LatestDtlRefetch,
+    error: LatestDtlError,
+  } = useQuery<any, any>(["getLatestPhotoSign"], () =>
+    GeneralAPI.getCustLatestDtl({
+      COMP_CD: authState?.companyID ?? "",
+      CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
+    })
+  );
 
   useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getPhotoSignHistory"]);
+    if(LatestPhotoSignData && !isLatestDtlLoading) {
+      let custPhoto = LatestPhotoSignData?.[0]?.CUST_PHOTO;
+      let custSign = LatestPhotoSignData?.[0]?.CUST_SIGN;
+      if(custPhoto) {
+        handlePhotoOrSignctx(null, custPhoto, "photo")
+        setPhotoImageURL(custPhoto, "photo");
+        photoFilesdata.current = custPhoto;
+      }
+      if(custSign) {
+        handlePhotoOrSignctx(null, custSign, "sign")   
+        setPhotoImageURL(custSign, "sign");
+        signFilesdata.current = custSign;
+      }
     }
-  }, [])
+  }, [LatestPhotoSignData, isLatestDtlLoading])
 
-  useEffect(() => {
-    if (!isPhotoHistoryLoading && PhotoHistoryData) {
-      console.log("photoHistt", PhotoHistoryData)
-      //   setPhotoHistory(PhotoHistoryData);
-      let activeHistory = null;
-      activeHistory =
-        PhotoHistoryData &&
-        PhotoHistoryData.length > 0 &&
-        PhotoHistoryData.findLast((el) => el.ACT_FLAG === "Y");
-        setActivePhotoHist(activeHistory);
-    }
-  }, [PhotoHistoryData, isPhotoHistoryLoading]);
-  useEffect(() => {
-    if(Boolean(activePhotoHist && Object.keys(activePhotoHist))) {
-      if(location.state?.[0]?.data && !Boolean(location.state?.[0]?.data.REQUEST_ID)) {
-        if(activePhotoHist) {
-          handlePhotoOrSignctx(null, activePhotoHist.CUST_PHOTO, "photo")
-          handlePhotoOrSignctx(null, activePhotoHist.CUST_SIGN, "sign")
-          // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
-          setPhotoImageURL(activePhotoHist.CUST_PHOTO, "photo");
-          setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign");
-          photoFilesdata.current = activePhotoHist.CUST_PHOTO;
-          signFilesdata.current = activePhotoHist.CUST_SIGN;
-        }
-      }
-    }
-  }, [activePhotoHist])
 
-  // set photo, sign url from history api active record, on edit
-  useEffect(() => {
-    // console.log(!Boolean(location.state?.[0]?.data.REQUEST_ID), "asdasdasd1", location.state?.[0]?.data)
-    let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-      // COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? ""
-    }
-    if(Array.isArray(location.state) && location.state.length>0) {
-      const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-      const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-      if(Boolean(reqCD)) {
-        payload["REQUEST_CD"] = reqCD;
-      }
-      if(Boolean(custID)) {
-        payload["CUSTOMER_ID"] = custID;
-      }
-      if(Object.keys(payload)?.length > 1) {
-        mutation.mutate(payload)
-      }
-    }
-  }, []);
+
 
   const updateMutation: any = useMutation(API.updatePhotoSignData, {
     onSuccess: (data, payload) => {
@@ -229,21 +199,22 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
       handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_SIGN, "sign")
 
       // photoHistoryRefetch()
-      console.log(payload, "datatdastdastdasd", data);
+      // console.log(payload, "datatdastdastdasd", data);
       setDialogAction(null)
       setIsSaveDisabled(true)
       setFormMode("view")
       enqueueSnackbar("Data Saved Successfully!", {
         variant: "success",
       })
+      LatestDtlRefetch();
     },
     onError: (error: any) => {
-      console.log("datatdastdastdasd error", error);
+      // console.log("datatdastdastdasd error", error);
     },
   });
 
   const onSave = () => {
-    console.log(activePhotoHist, "onsavewefwf", location);
+    // console.log(activePhotoHist, "onsavewefwf", location);
     let tabModifiedCols: any = ["CUST_PHOTO", "CUST_SIGN"];
     let newFormData = {
       CUST_PHOTO: photoFilesdata.current ?? "",
@@ -269,18 +240,18 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
     // );
     let upd;
     upd = utilFunction.transformDetailsData(newFormData, oldFormData);
-    console.log("updupd", {
-      ...upd,
-      CUST_PHOTO: photoFilesdata.current,
-      CUST_SIGN: signFilesdata.current,
-    });
+    // console.log("updupd", {
+    //   ...upd,
+    //   CUST_PHOTO: photoFilesdata.current,
+    //   CUST_SIGN: signFilesdata.current,
+    // });
     let data = {
       // ENTRY_TYPE: "1",
       COMP_CD: authState?.companyID ?? "",
-      CUSTOMER_ID: activePhotoHist?.CUSTOMER_ID ?? "",
+      CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID ?? "",
       REQ_FLAG: "E",
       PHOTO_DTL: {
-        ...activePhotoHist,
+        ...LatestPhotoSignData[0],
         isNewRow: true,
         CUST_PHOTO: photoFilesdata.current ?? "",
         CUST_SIGN: signFilesdata.current ?? "",
@@ -289,11 +260,11 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
       },
     };
     if(Boolean(location.state?.[0]?.data.REQUEST_ID)) {
-      const {SR_CD, COMP_CD} = mutation.data[0].PHOTO_MST
+      const {SR_CD, COMP_CD} = LatestPhotoSignData[0];
       data = {
         // ENTRY_TYPE: "1",
         COMP_CD: authState?.companyID ?? "",
-        CUSTOMER_ID: activePhotoHist?.CUSTOMER_ID ?? "",
+        CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID ?? "",
         REQ_FLAG: "E",
         PHOTO_DTL: {
           // ...activePhotoHist,
@@ -327,17 +298,8 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
   }
 
   // useEffect(() => {
-  //   if (dialogAction == "cancel") {
-  //     if (!isSaveDisabled) {
-  //       setDialogOpen(true);
-  //     }
-  //   }
-  // }, [dialogAction]);
-
-
-  useEffect(() => {
-    console.log("dialogAction, isSaveDisabled, formMode", dialogAction, isSaveDisabled, formMode)
-  }, [dialogAction, isSaveDisabled, formMode])
+  //   console.log("dialogAction, isSaveDisabled, formMode", dialogAction, isSaveDisabled, formMode)
+  // }, [dialogAction, isSaveDisabled, formMode])
 
   // set image url by getting response in base64, convert to blob;, on edit
   const setPhotoImageURL = async (filedata, img: string) => {
@@ -362,7 +324,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
         signFileURL.current = null;
       }
     }
-  };
+  };  
 
   // custom blob creation from selected file blob
   const customTransformFileObj = (currentObj) => {
@@ -432,33 +394,18 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
         }
       }
     }
-  };
+  };  
+
 
   useEffect(() => {
-    if (activePhotoHist) {
-      console.log(
-        "photoFilesdata, signFilesdata",
-        photoFilesdata.current,
-        signFilesdata.current,
-        "asd",
-        activePhotoHist.CUST_PHOTO,
-        activePhotoHist.CUST_SIGN
-      );
+    return () => {
+      queryClient.removeQueries(["getPhotoSignHistory"]);
+      queryClient.removeQueries(["getLatestPhotoSign"]);
     }
-  }, [activePhotoHist]);
+  }, [])
 
   return (
-    <Dialog
-      open={open}
-      maxWidth="lg"
-      PaperProps={{
-        style: {
-          minWidth: "70%",
-          width: "80%",
-          // maxWidth: "90%",
-        },
-      }}
-    >
+    <>
       <DialogTitle
         sx={{
           background: "var(--theme-color3)",
@@ -547,7 +494,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
       </DialogTitle>
       <DialogContent sx={{px: "0"}}>
         <>
-          {((updateMutation.isLoading || isPhotoHistoryLoading) || mutation.isLoading) ? <LinearProgress color="secondary" /> : null}
+          {((updateMutation.isLoading || isPhotoHistoryLoading) || isLatestDtlLoading) ? <LinearProgress color="secondary" /> : null}
           {updateMutation.isError ? (
             <Alert
               severity={updateMutation.error?.severity ?? "error"}
@@ -555,18 +502,18 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
               errorDetail={updateMutation.error?.error_detail}
               color="error"
             />
-          ) : mutation.isError ? (
-            <Alert
-              severity={updateMutation.error?.severity ?? "error"}
-              errorMsg={updateMutation.error?.error_msg ?? "Something went to wrong.."}
-              errorDetail={updateMutation.error?.error_detail}
-              color="error"
-            />
-          ) : isPhotoHistoryError && (
+          ) : isPhotoHistoryError ? (
             <Alert
               severity={photoHistoryError?.severity ?? "error"}
               errorMsg={photoHistoryError?.error_msg ?? "Something went to wrong.."}
               errorDetail={photoHistoryError?.error_detail}
+              color="error"
+            />
+          ) : isLatestDtlError && (
+            <Alert
+              severity={LatestDtlError?.severity ?? "error"}
+              errorMsg={LatestDtlError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={LatestDtlError?.error_detail}
               color="error"
             />
           )}
@@ -887,8 +834,8 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
           </Grid>
         </>
       </DialogContent>
-    </Dialog>
-  );
-};
+    </>
+  )
+}
 
 export default PhotoSignatureCpyDialog;

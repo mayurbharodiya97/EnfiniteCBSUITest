@@ -19,8 +19,8 @@ export const en_language_data = {
   Export: "Export",
 
   // Message box
-  DeleteData: "Are you sure to delete selected row...?",
-  SaveData: "Do you want to save this Request...?",
+  DeleteData: "Are you sure to delete selected row?",
+  SaveData: "Do you want to save this Request?",
   Confirmation: "Confirmation",
   NO: "No",
   Accept: "Accept",
@@ -37,6 +37,9 @@ export const en_language_data = {
   EntryDescriptionMaster: "Entry Description Master MST/067",
   ParentType: "Parent Type",
   EnterDescription: "Enter Description",
+  DuplicateValidation:
+    "{{fieldValue}} is already entered at Sr. No: {{rowNumber}}",
+  ParentTyperequired: "Parent Type is required.",
 
   // MST/097
   InsuranceTypeMaster: "Insurance Type Master (MST/097)",
@@ -48,6 +51,10 @@ export const en_language_data = {
   AssetClassificationCode: "A5 Asset Classification Code",
   CalculatePenalInterestOn: "Calculate Penal Interest On",
   EnterName: "Enter Name",
+  ParentRequired:"Parent is required.",
+  Nameisrequired: "Name is required.",
+  EnterSecureRate:"Enter Provision Secure Rate",
+  EnterUnSecureRate:"Enter Provision Un-Secure Rate",
 
   // MST/146
   CourtMaster: "Court Master (MST/146)",
@@ -62,6 +69,7 @@ export const en_language_data = {
   EnterPinCode: "Enter Pin Code",
   EnterAddress: "Enter Address",
   EnterContactNumber: "Enter Contact Number",
+  PincodeRequired:"Pincode required",
 
   // Report
   CreditCount: "Credit Count",
@@ -92,6 +100,20 @@ export const en_language_data = {
   ConfirmedCount: "Confirmed Count",
   RejectedCount: "Rejected Count",
   PendingCount: "Pending Count",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "Retrieve Passbook Print Option",
+  AccountHolder: "Account holder Name",
+  LineNo: "Line Number",
+  LineNoValidation: "Line No. Between {{from}} to {{to}}",
+  DateValidation:
+    "From date should not be before than date of account opening date :- {{date}}",
+  NextPageAlert: "Do you want to print next page?",
+  PassbookPrint: "Passbook Print",
+  printPage: "Print this page",
+  PassbookStatementPreview: "Passbook Statement Preview",
+  PassbookUpdateMessage:
+    "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -332,8 +354,8 @@ export const en_language_data = {
 
   PassbookStatementPrintOption: "Passbook/Statement Print Option",
   Template: "Template",
-  ToDate: "To Date",
-  FromDate: "From Date",
+  ToDate: "To Date:-",
+  FromDate: "From Date:-",
   passbook: "passbook",
   Statement: "Statement",
   FrontPage: "Front Page",

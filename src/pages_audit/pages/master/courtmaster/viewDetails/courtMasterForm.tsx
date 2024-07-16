@@ -31,7 +31,7 @@ const CourtMasterForm = ({
 
   const mutation = useMutation(API.updateCourtMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }

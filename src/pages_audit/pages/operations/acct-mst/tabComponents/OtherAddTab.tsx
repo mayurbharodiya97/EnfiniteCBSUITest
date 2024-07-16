@@ -1,5 +1,5 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import { otherAdd_tab_metadata } from "../tabMetadata/otherAddMetadata";
@@ -69,9 +69,20 @@ const OtherAddTab = () => {
       // setIsNextLoading(false);
       setFormStatus(old => [...old, false])
     }
-    endSubmit(true);
-  };
-  const initialVal:any= {}
+  }
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["OTHER_ADDRESS"] ?? {OTHER_ADDRESS: [{}]}
+        : AcctMSTState?.formDatactx["OTHER_ADDRESS"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS"] ?? {}, ...AcctMSTState?.formDatactx["OTHER_ADDRESS"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["OTHER_ADDRESS"]
+  ])
 
   const handleSave = (e) => {
     handleCurrFormctx({

@@ -17,8 +17,8 @@ export const sp_language_data = {
   Export: "Exportar",
 
   // Message box
-  DeleteData: "¿Está seguro de eliminar la fila seleccionada...?",
-  SaveData: "¿Quieres guardar esta Solicitud...?",
+  DeleteData: "¿Está seguro de eliminar la fila seleccionada?",
+  SaveData: "¿Quieres guardar esta Solicitud?",
   Confirmation: "Confirmación",
   Ok: "De acuerdo",
   Yes: "Sí",
@@ -37,6 +37,9 @@ export const sp_language_data = {
   EntryDescriptionMaster: "Entrada Descripción Maestro MST/067",
   ParentType: "Tipo de padre",
   EnterDescription: "Ingresar descripción",
+  DuplicateValidation:
+    "{{fieldValue}} ya está ingresado en Sr. No:{{rowNumber}}",
+  ParentTyperequired: "Se requiere tipo de padre",
 
   // MST/097
   SecurityType: "Tipo de seguridad",
@@ -50,6 +53,10 @@ export const sp_language_data = {
   AssetClassificationCode: "Código de clasificación de activos A5",
   CalculatePenalInterestOn: "Calcular el interés penal",
   EnterName: "Ingrese su nombre",
+  ParentRequired: "Se requiere madre.",
+  Nameisrequired: "Se requiere el nombre.",
+  EnterSecureRate: "Ingrese la tarifa segura de provisión",
+  EnterUnSecureRate: "Ingrese la tarifa de provisión no segura",
 
   // MST/146
   CourtMaster: "Maestro de la Corte (MST/146)",
@@ -64,6 +71,7 @@ export const sp_language_data = {
   EnterPinCode: "Ingrese el código PIN",
   EnterAddress: "Ingresa la direccion",
   EnterContactNumber: "Ingrese el número de contacto",
+  PincodeRequired: "Se requiere código PIN",
 
   // Report
   CreditCount: "Recuento de créditos",
@@ -98,6 +106,22 @@ export const sp_language_data = {
   ConfirmedCount: "Recuento confirmado",
   RejectedCount: "Recuento rechazado",
   PendingCount: "Conteo Pendiente",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "Recuperar la opción de impresión de libreta",
+  Print: "imprimir",
+  AccountHolder: "Nombre del titular de la cuenta",
+  LineNo: "Número de línea",
+  Reprint: "Reimpresión",
+  NextPageAlert: "¿Quieres imprimir la página siguiente?",
+  PassbookPrint: "Impresión de libreta",
+  printPage: "imprime esta página",
+  PassbookStatementPreview: "Vista previa del estado de cuenta de la libreta",
+  LineNoValidation: "mantener Linee No. Entre {{from}} a {{to}}",
+  DateValidation:
+    "La fecha de inicio no debe ser anterior a la fecha de apertura de la cuenta. :- {{date}}",
+  PassbookUpdateMessage:
+    "Cuenta: {{account}}.\n Libreta de ahorros ya impresa hasta el {{date}}.\n ¿Quiere considerarlo duplicado/reimprimir?\n Sí - Duplicado\n No - Reimprimir",
 
   Loading: "Cargando..",
   SignIn: "Iniciar sesión",

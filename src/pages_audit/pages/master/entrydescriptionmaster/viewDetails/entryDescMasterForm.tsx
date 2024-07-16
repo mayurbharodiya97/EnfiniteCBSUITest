@@ -31,7 +31,7 @@ const EntryDescriptionMasterForm = ({
 
   const mutation = useMutation(API.updateEntryDescMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -82,10 +82,10 @@ const EntryDescriptionMasterForm = ({
       const btnName = await MessageBox({
         message: "SaveData",
         messageTitle: "Confirmation",
-        buttonNames: [t("Yes"), t("NO")],
-        loadingBtnName: [t("Yes")],
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
       });
-      if (btnName === t("Yes")) {
+      if (btnName === "Yes") {
         mutation.mutate({
           data: { ...isErrorFuncRef.current?.data },
         });

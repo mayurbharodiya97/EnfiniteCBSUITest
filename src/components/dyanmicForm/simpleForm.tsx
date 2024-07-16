@@ -9,6 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { t } from "i18next";
 
 export const SimpleForm: FC<FormProps> = ({
   fields,
@@ -151,7 +152,7 @@ export const SimpleFormTitle = ({
             variant="outlined"
             color="primary"
             size="small"
-            label={`${displayMode} mode`}
+            label={`${displayMode} ${t("mode")}`}
           />
         ) : (
           ""

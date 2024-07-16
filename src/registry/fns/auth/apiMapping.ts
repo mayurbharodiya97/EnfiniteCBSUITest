@@ -259,6 +259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
     packageName: "",
   },
+  CONFIRMCUSTPHOTODATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTPHOTODATA",
+    packageName: "",
+  },
   GETDOCTEMPLATEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDOCTEMPLATEDTL",
     packageName: "",
@@ -464,6 +468,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
     packageName: "",
   },
+  VALIDATETOINACTIVE: {
+    url: "/customerServiceAPI/VALIDATETOINACTIVE",
+    packageName: "",
+  },
   GETINSURANCE: {
     url: "/customerServiceAPI/GETINSURANCE",
     packageName: "",
@@ -590,6 +598,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
+    packageName: "",
+  },
+  GETCUSTLATESTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTLATESTPHOTODTL",
     packageName: "",
   },
   GETUPDCUSTPHOTODATA: {
@@ -1227,6 +1239,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMODEDDW",
     packageName: "",
   },
+  GETCUSTOMERDATA: {
+    url: "accountServiceAPI/GETCUSTOMERDATA",
+    packageName: "",
+  },
+  GETPENDINGACCTLIST: {
+    url: "accountServiceAPI/GETPENDINGACCTLIST",
+    packageName: "",
+  },
+  GETACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETACCOUNTDETAILS",
+    packageName: "",
+  },
   GETACCTMSTMORTGAGEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMORTGAGEDDW",
     packageName: "",
@@ -1469,6 +1493,22 @@ export const ActionWiseAPIConfiguration = {
   },
   GETACCOUNTDETAIL: {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
+    packageName: "",
+  },
+  GETCUSTMSTDOCDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTMSTDOCDTL",
+    packageName: "",
+  },
+  GETCATEGORYDTL: {
+    url: "/customerServiceAPI/GETCATEGORYDTL",
+    packageName: "",
+  },
+  CALCULATEINTRATE: {
+    url: "/customerServiceAPI/CALCULATEINTRATE",
+    packageName: "",
+  },
+  SAVECATEGORYDTL: {
+    url: "/customerServiceAPI/SAVECATEGORYDTL",
     packageName: "",
   },
   CLEARINGBANKMASTERDML: {

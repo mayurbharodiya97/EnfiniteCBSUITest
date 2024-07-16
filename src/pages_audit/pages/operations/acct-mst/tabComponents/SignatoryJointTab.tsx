@@ -13,7 +13,6 @@ const SignatoryJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -55,6 +54,20 @@ const SignatoryJointTab = () => {
       }
     }
   }, [formStatus])
+
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["SIGNATORY_DTL"] ?? {SIGNATORY_DTL: [{}]}
+        : AcctMSTState?.formDatactx["SIGNATORY_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["SIGNATORY_DTL"] ?? {}, ...AcctMSTState?.formDatactx["SIGNATORY_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["SIGNATORY_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["SIGNATORY_DTL"]
+  ])
 
   return (
     <Grid sx={{ mb: 4 }}>
