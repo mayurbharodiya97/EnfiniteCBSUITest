@@ -1,7 +1,7 @@
 export const ClearingBankMstFormMetaData = {
   form: {
     name: "clearingBankMaster",
-    label: "Clearing Bank Master",
+    label: "ClearingBankMaster",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -35,15 +35,17 @@ export const ClearingBankMstFormMetaData = {
         componentType: "textField",
       },
       name: "RBI_CD",
-      label: "RBI Code",
-      placeholder: "Enter RBI Code",
+      label: "RBICode",
+      placeholder: "EnterRBICode",
       maxLength: 10,
       required: true,
+      autoComplete: "off",
       type: "text",
+      preventSpecialCharInput: true,
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["RBI Code is required"] }],
+        rules: [{ name: "required", params: ["RBICodeIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
@@ -53,10 +55,11 @@ export const ClearingBankMstFormMetaData = {
       },
       name: "BANK_CD",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       maxLength: 10,
       required: true,
       type: "text",
+      autoComplete: "off",
       __EDIT__: { isReadOnly: true },
       __NEW__: {
         dependentFields: ["RBI_CD"],
@@ -65,9 +68,30 @@ export const ClearingBankMstFormMetaData = {
           return dependentFields?.RBI_CD?.value ?? "";
         },
       },
+      preventSpecialCharInput: true,
+      validate: (columnValue, ...rest) => {
+        const gridData = rest[1]?.gridData;
+        const accessor: any = columnValue.fieldKey.split("/").pop();
+        const fieldValue = columnValue.value?.trim().toLowerCase();
+        const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (fieldValue === rowColumnValue) {
+          return "";
+        }
+        if (gridData) {
+          for (let i = 0; i < gridData.length; i++) {
+            const ele = gridData[i];
+            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+            if (trimmedColumnValue === fieldValue) {
+              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+            }
+          }
+        }
+        return "";
+      },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required"] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
@@ -76,15 +100,17 @@ export const ClearingBankMstFormMetaData = {
         componentType: "textField",
       },
       name: "BANK_NM",
-      label: "Bank Name",
-      placeholder: "Enter Bank Name",
+      label: "BankName",
+      placeholder: "EnterBankName",
       maxLength: 50,
       required: true,
       type: "text",
+      autoComplete: "off",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Bank Name is required"] }],
+        rules: [{ name: "required", params: ["BankNameIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },

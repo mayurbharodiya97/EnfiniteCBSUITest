@@ -35,6 +35,7 @@ export interface AllTypographyProps {
   label: string;
   fieldKey: string;
   setValueOnDependentFieldsChange?: Function;
+  componentType?: string;
 }
 
 export type MyTypographyAllProps = UseFieldHookProps & AllTypographyProps;
@@ -48,6 +49,7 @@ const MyTypography: FC<MyTypographyAllProps> = ({
   dependentFields,
   shouldExclude,
   setValueOnDependentFieldsChange,
+  componentType,
 }) => {
   const classes = useStyles();
 
@@ -63,6 +65,7 @@ const MyTypography: FC<MyTypographyAllProps> = ({
     fieldKey: fieldID,
     dependentFields,
     shouldExclude,
+    componentType,
   });
 
   useEffect(() => {

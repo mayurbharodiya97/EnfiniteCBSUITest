@@ -90,6 +90,7 @@ export const verifyOTP = async (
     }
   );
   if (status === "0") {
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,

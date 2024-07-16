@@ -238,14 +238,31 @@ const KYCDetails = () => {
   };
 
   const initialVal = useMemo(() => {
-    return state?.isFreshEntryctx
-      ? state?.formDatactx["PERSONAL_DETAIL"]
+    return (
+      (state?.isFreshEntryctx && !state?.isDraftSavedctx)
         ? state?.formDatactx["PERSONAL_DETAIL"]
-        : {}
-      : state?.retrieveFormDataApiRes
-      ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
-      : {};
-  }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
+        : state?.formDatactx["PERSONAL_DETAIL"]
+          ? {
+            ...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {},
+              CONTACT1: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT1 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT1 || ""),
+              CONTACT2: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT2 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT2 || ""),
+              CONTACT3: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT3 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT3 || ""),
+              CONTACT4: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT4 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT4 || ""),
+              CONTACT5: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT5 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT5 || ""),
+              PAN_NO: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_PAN_NO ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO || ""),
+            ...state?.formDatactx["PERSONAL_DETAIL"] ?? {}
+          }
+          : {
+            ...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {},
+              CONTACT1: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT1 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT1 || ""),
+              CONTACT2: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT2 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT2 || ""),
+              CONTACT3: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT3 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT3 || ""),
+              CONTACT4: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT4 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT4 || ""),
+              CONTACT5: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT5 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT5 || ""),
+              PAN_NO: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_PAN_NO ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO || ""),
+            }
+    )
+  }, [state?.isFreshEntryctx, state?.isDraftSavedctx, state?.retrieveFormDataApiRes])
 
   const handleSave = (e) => {
     handleCurrFormctx({

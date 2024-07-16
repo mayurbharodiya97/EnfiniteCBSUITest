@@ -5,6 +5,7 @@ import {
   useCallback,
   useState,
   useContext,
+  useMemo,
 } from "react";
 import {
   useField,
@@ -55,6 +56,9 @@ interface MyGridExtendedProps {
     touchAndValidate?: any;
   };
   enableShortcut?: string[];
+  ignoreInSubmit?: boolean;
+  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  label?: string;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -88,13 +92,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
   setColor,
   showMaxLength = true,
   label,
+  setFieldLabel,
   startsIcon,
   endsIcon,
   iconStyle,
   textFieldStyle,
   txtTransform,
   AlwaysRunPostValidationSetCrossFieldValues,
+  preventSpecialCharInput,
   enableShortcut = [],
+  ignoreInSubmit = false,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -119,6 +126,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     dependentValues,
     setErrorAsCB,
     fieldDataOnBlr,
+    setIgnoreInSubmit,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -153,8 +161,19 @@ const MyTextField: FC<MyTextFieldProps> = ({
     }
   }, [value, setColor]);
 
+  useEffect(() => {
+    setIgnoreInSubmit(ignoreInSubmit);
+  }, [ignoreInSubmit]);
+
   const customHandleChange = useCallback(
     (e) => {
+      if(Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
+        let newValue:string = e.target.value;
+        const characters: string | null = localStorage.getItem("specialChar") ?? "";
+        if(newValue.split("")?.filter((char) => characters?.includes(char))?.length>0) {
+          return;
+        }
+      }
       handleChange(e, e.target?.formattedValue ?? undefined);
     },
     [handleChange]
@@ -196,7 +215,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         try {
           let result = await setValueOnDependentFieldsChange(
             transformDependentFieldsState(dependentValues),
-            { isSubmitting }
+            { isSubmitting, value }
           );
 
           if (result !== undefined && result !== null) {
@@ -239,6 +258,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
     whenToRunValidation,
     setErrorAsCB,
   ]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
+  }, [setFieldLabel, label, dependentValues, value])
 
   if (excluded) {
     return null;
@@ -370,7 +393,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
+        label={updatedLabel ?? label}
         value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={

@@ -46,6 +46,11 @@ interface MyGridExtendedProps {
   GridProps?: GridProps;
   disableTimestamp?: boolean;
   enableGrid: boolean;
+  disablePast?: boolean;
+  disableFuture?: boolean;
+  isWorkingDate?: boolean;
+  isMaxWorkingDate?: boolean;
+  isMinWorkingDate?: boolean;
 }
 
 export type MyDataPickerAllProps = Merge<
@@ -74,6 +79,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
   isWorkingDate = false,
+  format,
   //disableTimestamp,
   ...others
 }) => {
@@ -109,6 +115,16 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     skipValueUpdateFromCrossFieldWhenReadOnly,
     //@ts-ignore
   });
+
+  // below code added for run validation if max or min date specified in metadata
+  useEffect(() => {
+    if (geaterThanDate(value, others?.maxDate)) {
+      runValidation({ value, _maxDt: others?.maxDate });
+    }
+    if (lessThanDate(value, others?.minDate)) {
+      runValidation({ value, _minDt: others?.minDate });
+    }
+  }, [value]);
 
   useEffect(() => {
     if (typeof value === "string") {
@@ -146,13 +162,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   }, [isFieldFocused]);
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { isFieldFocused, value } = incomingMessage;
+      const { isFieldFocused, value, ignoreUpdate } = incomingMessage;
       if (isFieldFocused) {
         getFocus();
       }
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if (whenToRunValidation === "onBlur") {
+        if (!ignoreUpdate && whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
@@ -173,17 +189,19 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       <KeyboardDatePicker
         {...others}
         key={fieldKey}
+        format={format || "dd/MM/yyyy"}
         // className={classes.root}
         id={fieldKey}
         label={label}
         name={name}
-        value={
-          value === ""
-            ? null
-            : utilFunction.isValidDate(value)
-            ? new Date(value)
-            : null
-        } //make sure to pass null when input is empty string
+        value={value === "" || value === null ? null : new Date(value)}
+        // value={
+        //   value === ""
+        //     ? null
+        //     : utilFunction.isValidDate(value)
+        //     ? new Date(value)
+        //     : null
+        // } //make sure to pass null when input is empty string
         error={!isSubmitting && isError}
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore

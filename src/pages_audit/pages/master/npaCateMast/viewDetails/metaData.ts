@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const NpaCategoryMasterFormMetadata = {
   form: {
     name: "npaCategoryMaster",
-    label: "NPACategoryMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -47,15 +49,11 @@ export const NpaCategoryMasterFormMetadata = {
       required: true,
       maxLength: 4,
       placeholder: "EnterCode",
+      preventSpecialCharInput: true,
       __EDIT__: { isReadOnly: true },
       __NEW__: { isFieldFocused: true },
 
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -73,7 +71,10 @@ export const NpaCategoryMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -82,13 +83,7 @@ export const NpaCategoryMasterFormMetadata = {
 
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Code is required."] },
-          {
-            name: "NPA_CD",
-            params: ["Please enter Code."],
-          },
-        ],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -117,7 +112,7 @@ export const NpaCategoryMasterFormMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Parent is required."] }],
+        rules: [{ name: "required", params: ["ParentRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -137,13 +132,9 @@ export const NpaCategoryMasterFormMetadata = {
       maxLength: 100,
       placeholder: "EnterName",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       __EDIT__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -161,7 +152,10 @@ export const NpaCategoryMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -169,7 +163,7 @@ export const NpaCategoryMasterFormMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Name is required."] }],
+        rules: [{ name: "required", params: ["Nameisrequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -233,7 +227,7 @@ export const NpaCategoryMasterFormMetadata = {
       },
       name: "SECURE_PROV_PERC",
       label: "ProvisionSecureRate",
-      placeholder: "Enter Provision Secure Rate",
+      placeholder: "EnterSecureRate",
       defaultValue: "0",
       fullWidth: true,
       FormatProps: {
@@ -247,7 +241,7 @@ export const NpaCategoryMasterFormMetadata = {
       },
       name: "UNSECURE_PROV_PERC",
       label: "ProvisionUnSecureRate",
-      placeholder: "Enter Provision Un-Secure Rate",
+      placeholder: "EnterUnSecureRate",
       defaultValue: "0",
       fullWidth: true,
       FormatProps: {

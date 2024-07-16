@@ -19,8 +19,8 @@ export const en_language_data = {
   Export: "Export",
 
   // Message box
-  DeleteData: "Are you sure to delete selected row...?",
-  SaveData: "Do you want to save this Request...?",
+  DeleteData: "Are you sure to delete selected row?",
+  SaveData: "Do you want to save this Request?",
   Confirmation: "Confirmation",
   NO: "No",
   Accept: "Accept",
@@ -37,6 +37,9 @@ export const en_language_data = {
   EntryDescriptionMaster: "Entry Description Master MST/067",
   ParentType: "Parent Type",
   EnterDescription: "Enter Description",
+  DuplicateValidation:
+    "{{fieldValue}} is already entered at Sr. No: {{rowNumber}}",
+  ParentTyperequired: "Parent Type is required.",
 
   // MST/097
   InsuranceTypeMaster: "Insurance Type Master (MST/097)",
@@ -48,6 +51,10 @@ export const en_language_data = {
   AssetClassificationCode: "A5 Asset Classification Code",
   CalculatePenalInterestOn: "Calculate Penal Interest On",
   EnterName: "Enter Name",
+  ParentRequired:"Parent is required.",
+  Nameisrequired: "Name is required.",
+  EnterSecureRate:"Enter Provision Secure Rate",
+  EnterUnSecureRate:"Enter Provision Un-Secure Rate",
 
   // MST/146
   CourtMaster: "Court Master (MST/146)",
@@ -62,6 +69,7 @@ export const en_language_data = {
   EnterPinCode: "Enter Pin Code",
   EnterAddress: "Enter Address",
   EnterContactNumber: "Enter Contact Number",
+  PincodeRequired:"Pincode required",
 
   // Report
   CreditCount: "Credit Count",
@@ -92,6 +100,20 @@ export const en_language_data = {
   ConfirmedCount: "Confirmed Count",
   RejectedCount: "Rejected Count",
   PendingCount: "Pending Count",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "Retrieve Passbook Print Option",
+  AccountHolder: "Account holder Name",
+  LineNo: "Line Number",
+  LineNoValidation: "Line No. Between {{from}} to {{to}}",
+  DateValidation:
+    "From date should not be before than date of account opening date :- {{date}}",
+  NextPageAlert: "Do you want to print next page?",
+  PassbookPrint: "Passbook Print",
+  printPage: "Print this page",
+  PassbookStatementPreview: "Passbook Statement Preview",
+  PassbookUpdateMessage:
+    "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -334,8 +356,8 @@ export const en_language_data = {
 
   PassbookStatementPrintOption: "Passbook/Statement Print Option",
   Template: "Template",
-  ToDate: "To Date",
-  FromDate: "From Date",
+  ToDate: "To Date:-",
+  FromDate: "From Date:-",
   passbook: "passbook",
   Statement: "Statement",
   FrontPage: "Front Page",
@@ -551,6 +573,47 @@ export const en_language_data = {
   AcctMaster: {
     newAcct: "New Account",
   },
+
+  // Auditor Master
+  AuditorMaster: "Auditor Master",
+  AuditorName: "Auditor Name",
+  PhoneNo: "Phone Number",
+  Designation: "Designation",
+  EnterAuditorName: "Enter Auditor Name",
+  AuditorNameisrequired: "Auditor Name is required.",
+  EnterAddress1: "Enter Address1",
+  EnterAddress2: "Enter Address2",
+  EnterPhoneNo: "Enter Phone Number",
+  SelectDesignation: "Select Designation",
+
+  // Lien reason master
+  LienReasonMaster: "Lien Reason Master",
+  Codeisrequired: "Code is required.",
+  Descriptionisrequired: "Description is required.",
+
+  // Advocate Master
+  AdvocateMaster: "Advocate Master",
+  SpecialCharacterIsNotAllowed: "Special character is not allowed.",
+  AdvocateName: "Advocate Name",
+  EnterAdvocateName: "Enter Advocate Name",
+  AdvocateNameisrequired: "Advocate Name is required.",
+  Address: "Address",
+  EnterEmailID: "Enter Email ID",
+  InvalidEmailID: "Invalid Email ID.",
+
+  // Clearing bank master
+  ClearingBankMaster: "Clearing Bank Master",
+  RBICode: "RBI Code",
+  Exclude: "Exclude",
+  EnterRBICode: "Enter RBI Code",
+  RBICodeIsRequired: "RBI Code is required.",
+  EnterBankName: "Enter Bank Name",
+  BankNameIsRequired: "Bank Name is required.",
+  AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected",
+  Select: "Select",
+  DisplayName: "Display Name",
+  CTS: "CTS",
+  AddBranch:"Add Branch",
 
   sidebar: {
     Dashboard: "Dashboard",
@@ -883,4 +946,46 @@ export const en_language_data = {
   CentreName: "Centre Name",
   TempODAgainstConfirmation: "Temporary OD Against Confirmation",
   Defination: "Defination",
+
+  // Form 15GH entry and confirmation
+  NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
+  FormName: "Form Name",
+  FormExpiryDate: "Form Expiry Date",
+  VerifiedDate: "Verified Date",
+  EnterCustomerID: "Enter Customer ID",
+  CustomerNotFound: "Customer Not Found",
+  Information: "Information",
+  BirthDate: "BirthDate",
+  UIN: "UIN",
+  FormTillDate: "Form Till Date",
+  Email: "Email",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Estimated Interest for which declaration is made",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Estimated Other income except above Interest Amount",
+  NoOfFormsSubmittedInOtherBanks: "No. of Forms submitted in Other Bank(s)",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Total Income of Forms submitted in Other Bank(s)",
+  WhetherAssessedToIncomeTaxAct: "Whether assessed to Income-tax Act?",
+  IfYesLatestAssessmentDate: "If Yes, Latest Assessment Date",
+  LastAssessmentDateValidationMessage:
+    "Last Assessment Date should be the last Day of a Financial Year.",
+  ActiveValidationMessage:
+    "One (or More) of the FD/RD is Paid for which this form was submitted. So you can not inactive this Form.",
+  Inactive: "Inactive",
+  PrintForm: "Print Form",
+  Bank: "Bank",
+  FDNo: "FD No.",
+  FinInterest: "Fin Interest",
+  RetrievalParameters: "Retrieval Parameters",
+  FromDateIsRequired: "From Date is required.",
+  ToDateIsRequired: "To Date is required.",
+  NoRecordFound: "No Record Found",
+  ////
+  ConfirmFormData: "Are you sure to confirm this Form?",
+  ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
+  DeleteWarning: "Delete Warning",
+  CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
+  PrintFormConfirmation: "Do you want to print form?",
+  ViewAll: "View All",
 };

@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const EntryDescMasterFormMetadata = {
   form: {
     name: "entryDescriptionMaster",
-    label: "EntryDescriptionMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -43,18 +45,14 @@ export const EntryDescMasterFormMetadata = {
       txtTransform: "uppercase",
       placeholder: "EnterCode",
       isFieldFocused: true,
+      preventSpecialCharInput: true,
       __EDIT__: {
         isReadOnly: true,
         isFieldFocused: false,
       },
 
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
         // Duplication validation
-
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -70,7 +68,10 @@ export const EntryDescMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -78,10 +79,7 @@ export const EntryDescMasterFormMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Code is required."] },
-          { name: "specialChar", params: ["'!' and '&' not allowed"] },
-        ],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -107,7 +105,7 @@ export const EntryDescMasterFormMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Parent Type is required."] }],
+        rules: [{ name: "required", params: ["ParentTyperequired"] }],
       },
       __VIEW__: {
         SelectProps: { IconComponent: () => null },
@@ -133,12 +131,8 @@ export const EntryDescMasterFormMetadata = {
       maxLength: 50,
       placeholder: "EnterDescription",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -156,7 +150,10 @@ export const EntryDescMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -165,7 +162,7 @@ export const EntryDescMasterFormMetadata = {
 
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: {
         xs: 12,

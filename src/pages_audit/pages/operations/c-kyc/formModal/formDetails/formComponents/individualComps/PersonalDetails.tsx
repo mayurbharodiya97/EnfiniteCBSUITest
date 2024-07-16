@@ -259,14 +259,14 @@ const PersonalDetails = () => {
   };
 
   const initialVal = useMemo(() => {
-    return state?.isFreshEntryctx
-      ? state?.formDatactx["PERSONAL_DETAIL"]
+    return (
+      (state?.isFreshEntryctx && !state?.isDraftSavedctx)
         ? state?.formDatactx["PERSONAL_DETAIL"]
-        : {}
-      : state?.retrieveFormDataApiRes
-      ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
-      : {};
-  }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
+        : state?.formDatactx["PERSONAL_DETAIL"]
+          ? {...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, ...state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+          : {...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}}
+    )
+  }, [state?.isFreshEntryctx, state?.isDraftSavedctx, state?.retrieveFormDataApiRes])
 
   const handleSave = (e) => {
     // setIsNextLoading(true)

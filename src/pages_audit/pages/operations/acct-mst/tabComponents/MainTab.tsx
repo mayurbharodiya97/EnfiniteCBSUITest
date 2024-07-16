@@ -5,13 +5,29 @@ import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import TabNavigate from "../TabNavigate";
 import _ from "lodash";
+import { usePopupContext } from "components/custom/popupContext";
 
 const MainTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
+  const { AcctMSTState, handlecustomerIDctx, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
+  const { MessageBox } = usePopupContext();
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const formRef = useRef<any>(null);
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes, 
+    AcctMSTState?.formDatactx["MAIN_DETAIL"]
+  ])
+
   const onSubmitPDHandler = (
     data: any,
     displayData,
@@ -45,7 +61,7 @@ const MainTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
+      if(!AcctMSTState?.isFreshEntryctx) {
         let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
         let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
 
@@ -81,7 +97,6 @@ const MainTab = () => {
   //     ? AcctMSTState?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
   //     : {};
   // }, [AcctMSTState?.isFreshEntryctx, AcctMSTState?.retrieveFormDataApiRes]);
-  const initialVal:any= {}
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
@@ -153,12 +168,16 @@ const MainTab = () => {
       <FormWrapper
         ref={formRef}
         onSubmitHandler={onSubmitPDHandler}
-        // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-main-form" + initialVal}
         metaData={main_tab_metadata as MetaDataType}
         formStyle={{}}
-        formState={{PARAM320: AcctMSTState?.param320 }}
+        formState={{
+          PARAM320: AcctMSTState?.param320, 
+          ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+          MessageBox: MessageBox,
+          handlecustomerIDctx: handlecustomerIDctx
+        }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}

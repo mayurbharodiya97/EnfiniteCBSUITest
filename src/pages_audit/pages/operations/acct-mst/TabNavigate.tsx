@@ -29,7 +29,7 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
                 {
                     (totalTab - 1) === state?.colTabValuectx 
                     ? t("Save") 
-                    : (state?.colTabValuectx === 2) ? t("Save & Next") : t("Next")
+                    : t("Next")
                 }
             </GradientButton>
             : displayMode == "edit"
@@ -44,10 +44,10 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
                         // : (state?.colTabValuectx === 2) ? t("Update & Next") : t("Next")
                         (totalTab - 1) === state?.colTabValuectx 
                         ? t("Update") 
-                        : (state?.colTabValuectx === 2) ? t("Update & Next") : t("Next")
+                        : t("Next")
                     }
                 </GradientButton>
-                : (displayMode == "view" && totalTab !== (state?.colTabValuectx - 1)) && <GradientButton
+                : (displayMode == "view" && (totalTab - 1) !== state?.colTabValuectx) && <GradientButton
                     sx={{ mr: 2, mb: 2 }}
                     disabled={state?.currentFormctx.isLoading}
                     onClick={(e) => {
