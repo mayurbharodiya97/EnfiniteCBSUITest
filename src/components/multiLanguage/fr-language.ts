@@ -535,7 +535,8 @@ export const fr_language_data = {
     "Au moins une branche doit être sélectionnée.",
   Select: "Sélectionner",
   DisplayName: "Afficher un nom",
-
+  CTS:"CTS",
+  AddBranch:"Ajouter une succursale",
   sidebar: {
     Dashboard: "Tableau de bord",
 
@@ -581,4 +582,60 @@ export const fr_language_data = {
   StateName: "Nom de l'état",
   Import: "Importation",
   CentreName: "Nom du centre",
+
+  // form 15GH entry and confirmation
+  AccountName: "Nom du compte",
+  FormName: "Nom de forme",
+  FormExpiryDate: "Date d'expiration du formulaire",
+  NoteDoubleClickOnViewDetails:
+    "Remarque: double-cliquez pour afficher les détails",
+  EnteredBy: "Entré par",
+  EnteredDate: "Date d'entrée",
+  VerifiedBy: "Vérifié par",
+  VerifiedDate: "Date de vérification",
+  Upload: "Télécharger",
+  CustomerNotFound: "Client introuvable",
+  ValidationAlert: "Alerte de validation",
+  RiskCategoryAlert: "Alerte de catégorie de risque",
+  Information: "Information",
+  BirthDate: "Date de naissance",
+  FormTillDate: "Formulaire jusqu'à la date",
+  Email: "E-mail",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Intérêts estimés pour lesquels une déclaration est faite",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Autres revenus estimés, sauf au-dessus du montant des intérêts",
+  NoOfFormsSubmittedInOtherBanks:
+    "Nombre de formulaires soumis dans d'autres banques",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Revenu total des formulaires soumis dans d'autres banques",
+  ValidationFailed: "Validation échouée",
+  WhetherAssessedToIncomeTaxAct:
+    "Est-ce qu'il est évalué en vertu de la Loi de l'impôt sur le revenu?",
+  IfYesLatestAssessmentDate: "Si oui, date de la dernière évaluation",
+  LastAssessmentDateValidationMessage:
+    "La date de la dernière évaluation doit être le dernier jour d'un exercice financier.",
+  ActiveValidationMessage:
+    "Un (ou plusieurs) des FD/RD pour lesquels ce formulaire a été soumis est payé. Vous ne pouvez donc pas désactiver ce formulaire.",
+  Inactive: "Inactive",
+  PrintForm: "Imprimer le formulaire",
+  Bank: "Banque",
+  AccountType: "Type de compte",
+  FDNo: "Numéro FD",
+  FinInterest: "Intérêt des nageoires",
+  RetrievalParameters: "Paramètres de récupération",
+  Mustbeavaliddate: "Doit être une date valide",
+  FromDateIsRequired: "La date de début est obligatoire.",
+  ToDateIsRequired: "À ce jour est requis.",
+  ToDateshouldbegreaterthanorequaltoFromDate:
+    "La date de fin doit être supérieure ou égale à la date de début.",
+  EnterCustomerID: "Entrez le numéro de client",
+  NoRecordFound: "Aucun Enregistrement Trouvé",
+  ConfirmFormData: "Êtes-vous sûr de confirmer ce formulaire?",
+  ConfirmRestrictionMessage:
+    "Impossible de confirmer votre propre formulaire saisi.",
+  DeleteWarning: "Supprimer l'avertissement",
+  CannotDeleteConfirmedForm: "Impossible de supprimer le formulaire confirmé.",
+  PrintFormConfirmation: "Voulez-vous imprimer le formulaire?",
+  ViewAll: "Voir tout",
 };

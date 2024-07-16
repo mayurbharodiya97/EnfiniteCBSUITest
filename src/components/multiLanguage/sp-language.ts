@@ -512,6 +512,8 @@ export const sp_language_data = {
     "Se debe seleccionar al menos una sucursal.",
   Select: "Seleccionar",
   DisplayName: "Nombre para mostrar",
+  CTS: "cts",
+  AddBranch: "Agregar sucursal",
 
   sidebar: {
     Dashboard: "Tablero de control",
@@ -560,4 +562,60 @@ export const sp_language_data = {
   StateName: "Nombre del estado",
   Import: "Importación",
   CentreName: "Nombre del centro",
+
+  // form 15GH entry and confirmation
+  AccountName: "Nombre de la cuenta",
+  FormName: "Nombre del formulario",
+  FormExpiryDate: "Fecha de vencimiento del formulario",
+  NoteDoubleClickOnViewDetails: "Nota: Haga doble clic para ver detalles",
+  EnteredBy: "Introducido por",
+  EnteredDate: "Fecha introducida",
+  VerifiedBy: "Verificada por",
+  VerifiedDate: "Fecha verificada",
+  Upload: "Subir",
+  CustomerNotFound: "Cliente no encontrada",
+  ValidationAlert: "Alerta de validación",
+  RiskCategoryAlert: "Alerta de categoría de riesgo",
+  Information: "Información",
+  BirthDate: "Fecha de nacimiento",
+  FormTillDate: "Formulario hasta la fecha",
+  Email: "Correo electrónico",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Interés estimado por el que se realiza la declaración",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Otros ingresos estimados excepto el monto de interés anterior",
+  NoOfFormsSubmittedInOtherBanks:
+    "No. de formularios enviados en otro(s) banco(s)",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Ingresos totales de formularios presentados en otro(s) banco(s)",
+  ValidationFailed: "Validación fallida",
+  WhetherAssessedToIncomeTaxAct:
+    "Si se evalúa según la Ley del impuesto sobre la renta",
+  IfYesLatestAssessmentDate:
+    "En caso afirmativo, fecha de la última evaluación",
+  LastAssessmentDateValidationMessage:
+    "La última fecha de evaluación debe ser el último día de un año financiero.",
+  ActiveValidationMessage:
+    "Se paga uno (o más) de los FD/RD por los cuales se envió este formulario. Por lo que no puedes inactivar este formulario.",
+  Inactive: "Inactiva",
+  PrintForm: "Forma impresa",
+  Bank: "Banco",
+  AccountType: "Tipo de cuenta",
+  FDNo: "número DF",
+  FinInterest: "Interés de aleta",
+  RetrievalParameters: "Parámetros de recuperación",
+  Mustbeavaliddate: "Debe ser una fecha válida",
+  FromDateIsRequired: "Desde la fecha es obligatoria",
+  ToDateIsRequired: "Se requiere hasta la fecha",
+  ToDateshouldbegreaterthanorequaltoFromDate:
+    "Hasta la fecha debe ser mayor o igual que desde la fecha.",
+  EnterCustomerID: "Ingrese el ID del cliente",
+  NoRecordFound: "ningún record fue encontrado",
+  ConfirmFormData: "¿Estás segura de confirmar este formulario?",
+  ConfirmRestrictionMessage:
+    "No se puede confirmar su propio formulario ingresado.",
+  DeleteWarning: "Eliminar advertencia",
+  CannotDeleteConfirmedForm: "No se puede eliminar el formulario confirmado.",
+  PrintFormConfirmation: "¿Quieres imprimir el formulario?",
+  ViewAll: "Ver todo",
 };
