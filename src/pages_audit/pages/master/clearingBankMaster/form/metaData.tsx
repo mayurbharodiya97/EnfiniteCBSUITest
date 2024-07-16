@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 export const ClearingBankMstFormMetaData = {
   form: {
     name: "clearingBankMaster",
@@ -83,7 +85,10 @@ export const ClearingBankMstFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }

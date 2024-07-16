@@ -12,6 +12,7 @@ import { AddBranchGrid } from "./branch/addBranchGrid";
 import { ClearingBankMstFormWrapper } from "./form";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -41,6 +42,7 @@ export const ClearingBankMstGrid = () => {
   const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -48,7 +50,7 @@ export const ClearingBankMstGrid = () => {
     if (authState?.user?.baseBranchCode === authState?.user?.branchCode) {
       actions.push({
         actionName: "add-branch",
-        actionLabel: "Add Branch",
+        actionLabel: "AddBranch",
         multiple: false,
         rowDoubleClick: false,
       });
@@ -135,7 +137,7 @@ export const ClearingBankMstGrid = () => {
 
   const deleteMutation = useMutation(API.clearingBankMasterDataDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -145,7 +147,7 @@ export const ClearingBankMstGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Record successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
