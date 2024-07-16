@@ -233,6 +233,7 @@ export const CategoryMasterFormMetaData = {
       branchCodeMetadata: {
         name: "TDS_BRANCH_CD",
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -240,13 +241,11 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_ACCT_TYPE: { value: "" },
-              TDS_ACCT_CD: { value: "" },
-              TDS_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_ACCT_TYPE: { value: "" },
+            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -255,6 +254,7 @@ export const CategoryMasterFormMetaData = {
         options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -262,12 +262,10 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_ACCT_CD: { value: "" },
-              TDS_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -427,6 +425,7 @@ export const CategoryMasterFormMetaData = {
       name: "TDS_SUR_ACCT_TYPE",
       label: "AccountType",
       placeholder: "AccountTypePlaceHolder",
+      validationRun: "onChange",
       options: getDDDWAcctType,
       _optionsKey: "getDDDWAcctType",
       runPostValidationHookAlways: true,
@@ -437,11 +436,9 @@ export const CategoryMasterFormMetaData = {
         dependentFieldValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (!currentField?.value) {
-          return {
-            TDS_SUR_ACCT_CD: { value: "" },
-          };
-        }
+        return {
+          TDS_SUR_ACCT_CD: { value: "" },
+        };
       },
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
@@ -570,6 +567,7 @@ export const CategoryMasterFormMetaData = {
       branchCodeMetadata: {
         name: "TDS_REC_BRANCH_CD",
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -577,13 +575,12 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_REC_ACCT_TYPE: { value: "" },
-              TDS_REC_ACCT_CD: { value: "" },
-              TDS_REC_ACCT_NM: { value: "" },
-            };
-          }
+
+          return {
+            TDS_REC_ACCT_TYPE: { value: "" },
+            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
@@ -591,6 +588,7 @@ export const CategoryMasterFormMetaData = {
         name: "TDS_REC_ACCT_TYPE",
         options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
+        validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -599,12 +597,10 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_REC_ACCT_CD: { value: "" },
-              TDS_REC_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
