@@ -1,5 +1,5 @@
 import { Checkbox } from "components/common/checkbox";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
 import { FormHelperText } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -23,7 +23,14 @@ export const EditableCheckbox = (props) => {
     value: initialValue,
     rows,
     row: { index, original },
-    column: { id, options, validation, requestProps, isReadOnly },
+    column: {
+      id,
+      options,
+      validation,
+      requestProps,
+      isReadOnly,
+      shouldExclude,
+    },
     updateGridData,
     gridProps,
     hiddenFlag,
@@ -50,7 +57,12 @@ export const EditableCheckbox = (props) => {
     .slice(index + 1)
     .map((one) => one?.original)
     .filter((one) => Boolean(one[hiddenFlag]) !== true);
-
+  const isShouldExclude = useMemo(() => {
+    if (typeof shouldExclude === "function") {
+      return shouldExclude(initialValue, original, prevRows, nextRows);
+    }
+    return false;
+  }, [initialValue, prevRows, nextRows, original]);
   const onChange = (e) => {
     //console.log("e.target.value", e.target.checked);
     setValue(e.target.checked);
@@ -68,7 +80,9 @@ export const EditableCheckbox = (props) => {
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue, externalError]);
-
+  if (isShouldExclude) {
+    return <CellWrapper showBorder {...props}></CellWrapper>;
+  }
   return (
     <CellWrapper showBorder {...props}>
       <div className={classes.wrapperclass}>
@@ -84,9 +98,7 @@ export const EditableCheckbox = (props) => {
           fieldKey={id}
         />
         {Boolean(externalTouched) && Boolean(externalError) ? (
-          <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>
-            {externalError}
-          </FormHelperText>
+          <FormHelperText error={true}>{externalError}</FormHelperText>
         ) : null}
       </div>
     </CellWrapper>
