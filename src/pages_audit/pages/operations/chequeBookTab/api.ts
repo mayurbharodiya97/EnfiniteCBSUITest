@@ -144,3 +144,27 @@ export const chequeBookCfm = async (apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const validateInsert = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATESAVECHQDATA", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const issuedChequeBkDTL = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHEQUEBOOKISSUED", {
+      ...apireq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

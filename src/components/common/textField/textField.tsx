@@ -431,10 +431,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: textFieldStyle
-              ? ""
-              : Boolean(readOnly)
-              ? "var(--theme-color7)"
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
               : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
@@ -480,7 +478,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           ...inputProps,
         }}
         onBlur={handleBlur}
-        disabled={isSubmitting}
+        disabled={isSubmitting || readOnly}
         variant={"standard"}
         color="secondary"
         ref={inputfocusRef}

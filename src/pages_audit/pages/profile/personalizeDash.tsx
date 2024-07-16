@@ -7,14 +7,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  PersonlizationDashboardGridData,
-  PersonlizationQuickGridMetaData,
-} from "./metaData";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
-
 import { Alert } from "components/common/alert";
 import * as API from "./api";
 import { CreateDetailsRequestData } from "components/utils";
@@ -22,13 +17,14 @@ import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "cache";
+import { PersonlizationQuickGridMetaData } from "./Metadata/personalizeQuick";
+import { PersonlizationDashboardGridData } from "./Metadata/personalizeDashboard";
 export const PersonalizeDash = () => {
-  const [dashBoxData, setDashBoxData] = useState<any>([]);
-  const [quickViewData, setQuickViewData] = useState<any>([]);
-
+  const [quickGridData, setQuickGridData] = useState([]);
+  const [dashGridData, setDashGridData] = useState([]);
   const { t } = useTranslation();
-  const myGridRef = useRef<any>(null);
-  const myGridQuickRef = useRef<any>(null);
+  const dashGridRef = useRef<any>(null);
+  const quickGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
 
   const Dashactions: ActionTypes[] = [
@@ -44,6 +40,7 @@ export const PersonalizeDash = () => {
       rotateIcon: "scale(1.4)",
     },
   ];
+
   const Quickactions: ActionTypes[] = [
     {
       actionName: "quickSave",
@@ -67,7 +64,7 @@ export const PersonalizeDash = () => {
       }),
     {
       onSuccess: (data) => {
-        setQuickViewData(data);
+        setQuickGridData(data);
       },
     }
   );
@@ -81,7 +78,7 @@ export const PersonalizeDash = () => {
       }),
     {
       onSuccess: (data) => {
-        setDashBoxData(data);
+        setDashGridData(data);
       },
     }
   );
@@ -122,66 +119,19 @@ export const PersonalizeDash = () => {
   }, []);
 
   const setCurrentAction = useCallback((data) => {
-    console.log("<<<data", data);
     if (data?.name === "quickSave") {
       async function quick() {
-        let { hasError, data } = await myGridQuickRef.current?.validate(true);
-        let isError = data.filter((item) => {
-          if (item._error.DOC_CD) {
-            return item._error.DOC_CD;
-          }
-        });
-
-        if (isError[0]?._error?.DOC_CD) {
-        } else {
-          let result = myGridQuickRef?.current?.cleanData?.();
-          let finalResult = result.filter((one) => !Boolean(one?._hidden));
-          let newData = finalResult.map((item) => {
-            // const trimmedDOC_CD = item.DOC_CD.trim();
+        const { hasError, data } = await quickGridRef.current?.validate(true);
+        const isError = data.some((item) => item._error.DOC_CD.length > 0);
+        if (!isError) {
+          let result = quickGridRef?.current?.cleanData?.();
+          let newData = result.map((item) => {
             const newItem = {
               ...item,
-              _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
               BRANCH_CD: authState?.user?.branchCode,
-            };
-            return newItem;
-          });
-          newData = CreateDetailsRequestData(newData);
-          if (newData.isNewRow) {
-            newData.isNewRow.forEach((item) => {
-              if ("TRAN_CD" in item) {
-                delete item.TRAN_CD;
-              }
-              if ("LAST_ENTERED_DATE" in item) {
-                delete item.LAST_ENTERED_DATE;
-              }
-            });
-          }
-          let reqData = {
-            // ...refID,
-            DETAILS_DATA: newData,
-          };
-          saveQuickData.mutate(reqData);
-        }
-      }
-      quick();
-    } else if (data?.name === "dashSave") {
-      async function name() {
-        let { hasError, data } = await myGridRef.current?.validate(true);
-        let isError = data.filter((item) => {
-          if (item._error.DASH_TRAN_CD.length > 5) {
-            return (item._error.DASH_TRAN_CD = true);
-          }
-        });
-        if (isError[0]?._error?.DASH_TRAN_CD) {
-        } else {
-          let result = myGridRef?.current?.cleanData?.();
-          let finalResult = result.filter((one) => !Boolean(one?._hidden));
-          let newData = finalResult.map((item) => {
-            const newItem = {
-              ...item,
-              _isNewRow:
-                item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
               USER_TYPE: "USER",
+              _hidden: item.IS_DATA === "Y" && item.DOC_CD === "",
+              _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
             };
             return newItem;
           });
@@ -189,16 +139,37 @@ export const PersonalizeDash = () => {
           if (newData.isNewRow) {
             newData.isNewRow.forEach((item) => {
               delete item.TRAN_CD;
+              delete item.LAST_ENTERED_DATE;
             });
           }
-          let data = {
-            // ...refID,
-            DETAILS_DATA: newData,
-          };
-          saveDashData.mutate(data);
+          saveQuickData.mutate({ DETAILS_DATA: newData });
         }
       }
-      name();
+      quick();
+    } else if (data?.name === "dashSave") {
+      async function dashBox() {
+        const { hasError, data } = await dashGridRef.current?.validate(true);
+        const isError = data.some(
+          (item) => item._error.DASH_TRAN_CD.length > 5
+        );
+        if (!isError) {
+          let result = dashGridRef?.current?.cleanData?.();
+          let newData = result.map((item) => {
+            const newItem = {
+              ...item,
+              USER_TYPE: "USER",
+              _hidden: item.IS_DATA === "Y" && item.DASH_TRAN_CD === "",
+              _isNewRow:
+                item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
+            };
+            return newItem;
+          });
+          newData = CreateDetailsRequestData(newData);
+          newData.isNewRow?.forEach((item) => delete item.TRAN_CD);
+          saveDashData.mutate({ DETAILS_DATA: newData });
+        }
+      }
+      dashBox();
     }
   }, []);
 
@@ -240,8 +211,8 @@ export const PersonalizeDash = () => {
           <GridWrapper
             key={`personalizeQuickView`}
             finalMetaData={PersonlizationQuickGridMetaData as GridMetaDataType}
-            data={quickViewData ?? []}
-            setData={setQuickViewData}
+            data={quickGridData ?? []}
+            setData={setQuickGridData}
             loading={quickViewUsrData.isLoading || saveQuickData?.isLoading}
             actions={Quickactions}
             setAction={setCurrentAction}
@@ -249,7 +220,7 @@ export const PersonalizeDash = () => {
               background: "var(--theme-color2)",
               color: "black",
             }}
-            ref={myGridQuickRef}
+            ref={quickGridRef}
           />
         </Grid>
         <Grid
@@ -279,16 +250,16 @@ export const PersonalizeDash = () => {
           <GridWrapper
             key={`personalizeDashboardData`}
             finalMetaData={PersonlizationDashboardGridData as GridMetaDataType}
-            data={dashBoxData ?? []}
+            data={dashGridData ?? []}
             headerToolbarStyle={{
               background: "var(--theme-color2)",
               color: "black",
             }}
-            setData={setDashBoxData}
+            setData={setDashGridData}
             loading={dashboxUserData.isLoading || saveDashData?.isLoading}
             actions={Dashactions}
             setAction={setCurrentAction}
-            ref={myGridRef}
+            ref={dashGridRef}
           />
         </Grid>
       </Grid>

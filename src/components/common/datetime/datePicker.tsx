@@ -135,6 +135,17 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }
     }
   }, [value, handleChange]);
+
+  // chnages for min-max date with Altaf
+  useEffect(() => {
+    if (geaterThanDate(value, others?.maxDate)) {
+      runValidation({ value, _maxDt: others?.maxDate }, true);
+    }
+    if (lessThanDate(value, others?.minDate)) {
+      runValidation({ value, _minDt: others?.minDate }, true);
+    }
+  }, [value]);
+
   const focusRef = useRef<any>();
   const getFocus = () => {
     setTimeout(() => {

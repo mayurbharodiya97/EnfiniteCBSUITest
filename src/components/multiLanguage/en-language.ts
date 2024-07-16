@@ -158,8 +158,10 @@ export const en_language_data = {
   // For OTP Verify
   otp: {
     OTPAuthentication: "OTP Authentication",
+    TOTPAuthentication: "T-OTP Authentication",
     GenerateNewOTP: "Please click on Resend button to Generate new OTP",
-    EnterOTP: "Enter OTP Sent to your mobile number 98******37",
+    EnterOTPsentToMobile: "Enter OTP Sent to your mobile number 98******37",
+    PleaseEnterOTP: "Please Enter OTP (Authenticator)",
     ResendOTP: "Resend OTP",
     GetNewOTP: "Get New OTP",
     ValidFor: "Valid for",
@@ -745,6 +747,7 @@ export const en_language_data = {
   BalanceIsLesThanServicecharge: "Balance is less than Service-charge",
   BeforeChequeBookPrinting: "Before Cheque Book Printing",
   AfterChequeBookPrinting: "After Cheque Book Printing",
+  ChequeBkAlreadyIssued: "Already Issued Chequebook",
 
   // limit entry
 
@@ -918,6 +921,11 @@ export const en_language_data = {
   TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  FromDateGreaterThanOrEqualToWorkingDate:
+    "Effective From Date should be greater than or equal to working date.",
+  ToDateGreaterThanOrEqualToFromDate:
+    "Effective To Date should be greater than or equal to From Date.",
+
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",

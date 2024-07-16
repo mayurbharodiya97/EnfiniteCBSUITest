@@ -191,8 +191,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
-  GETQUICKVIEWSCREEN: {
-    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+  DOQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/DOQUICKVIEWSCREEN",
     packageName: "",
   },
   GETPASSBKTEMPL: {
@@ -1785,6 +1785,14 @@ export const ActionWiseAPIConfiguration = {
   },
   DOTEMPODCONFIRMATION: {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
+    packageName: "",
+  },
+  VALIDATESAVECHQDATA: {
+    url: "/chequeServiceAPI/VALIDATESAVECHQDATA",
+    packageName: "",
+  },
+  GETCHEQUEBOOKISSUED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
     packageName: "",
   },
 };

@@ -173,7 +173,8 @@ export const fr_language_data = {
     OTPAuthentication: "Authentification OTP",
     GenerateNewOTP:
       "Veuillez cliquer sur le bouton Renvoyer pour générer un nouvel OTP",
-    EnterOTP: "Entrez OTP Envoyé à votre numéro de mobile 98******37",
+    EnterOTPsentToMobile:
+      "Entrez OTP Envoyé à votre numéro de mobile 98******37",
     ResendOTP: "Renvoyer OTP",
     GetNewOTP: "Obtenez un nouvel OTP",
     ValidFor: "Valable",
