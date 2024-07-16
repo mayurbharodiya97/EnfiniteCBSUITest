@@ -21,6 +21,7 @@ const ActionTakenMasterForm = ({
   gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
+  const [disableButton, setDisableButton] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -29,7 +30,7 @@ const ActionTakenMasterForm = ({
 
   const mutation = useMutation(API.actionTakenMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -90,7 +91,7 @@ const ActionTakenMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -101,6 +102,10 @@ const ActionTakenMasterForm = ({
         });
       }
     }
+  };
+
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
   };
 
   return (
@@ -124,7 +129,11 @@ const ActionTakenMasterForm = ({
                 }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
-          formState={{ gridData: gridData, rows: rows?.[0]?.data }}
+          formState={{
+            gridData: gridData,
+            rows: rows?.[0]?.data,
+            handleButtonDisable: handleButtonDisable,
+          }}
           formStyle={{
             background: "white",
           }}
@@ -137,7 +146,7 @@ const ActionTakenMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
@@ -160,7 +169,7 @@ const ActionTakenMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }

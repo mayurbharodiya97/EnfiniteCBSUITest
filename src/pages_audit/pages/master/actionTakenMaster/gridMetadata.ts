@@ -65,7 +65,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DATA_DISP",
-      columnName: "A4 Suit File Status Code",
+      columnName: "A4SuitFileStatusCode",
       sequence: 5,
       alignment: "left",
       componentType: "default",
