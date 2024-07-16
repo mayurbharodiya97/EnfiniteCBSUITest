@@ -1571,8 +1571,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYDML",
     packageName: "",
   },
-  GETPRINTFORMDETAILS: {
-    url: "/enfinityFDServiceAPI/GETPRINTFORMDETAILS",
+  GETPRINT15GFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15GANNEXUREFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GANNEXUREFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15HFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15HFORMDETAILS",
     packageName: "",
   },
   GETFORM15GHCONFPENDING: {
@@ -1793,6 +1801,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCHEQUEBOOKISSUED: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
+  GETPOSITIVEPAYGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYGRID",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYVALIDATION: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYVALIDATION",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYDML: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYDML",
     packageName: "",
   },
 };
