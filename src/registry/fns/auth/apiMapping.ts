@@ -1640,7 +1640,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSBNFCRYDTL: {
-    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
   GETIFSCDETAILS: {
@@ -1648,7 +1648,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSIFSCCODEACWISE: {
-    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",
   },
   GETBANKIFSCCODEMSTGRID: {
@@ -1793,6 +1793,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCHEQUEBOOKISSUED: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
+  GETRECURPAYMENTSCREENPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTSCREENPARA",
+    packageName: "",
+  },
+  VALIDATEDELRECURRPAYMENTENTRY: {
+    url: "/transactionServiceAPI/VALIDATEDELRECURRPAYMENTENTRY",
+    packageName: "",
+  },
+  GETPARAMNEFTDD: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARAMNEFTDD",
     packageName: "",
   },
 };
