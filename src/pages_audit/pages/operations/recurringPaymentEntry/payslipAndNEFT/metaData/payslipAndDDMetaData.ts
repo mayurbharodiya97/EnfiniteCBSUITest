@@ -149,21 +149,27 @@ export const PayslipAndDDFormMetaData = {
       isScreenStyle: true,
       displayCountName: "Payslip & Demand Draft",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      removeRowFn: "deleteFormArrayFieldData",
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.PAYSLIPDD) ? data?.PAYSLIPDD : [];
-        for (let i = 0; i < dataArray?.length; i++) {
-          const item = dataArray[0];
-          if (
-            item.DEF_TRAN_CD.trim() &&
-            item.INFAVOUR_OF.trim() &&
-            item.AMOUNT.trim() &&
-            item.PAYSLIP_NO.trim()
-          ) {
-            return true;
+        if (dataArray?.length > 0) {
+          for (let i = 0; i < dataArray?.length; i++) {
+            const item = dataArray[0];
+            if (
+              item.DEF_TRAN_CD.trim() &&
+              item.INFAVOUR_OF.trim() &&
+              item.AMOUNT.trim() &&
+              item.PAYSLIP_NO.trim()
+            ) {
+              return true;
+            }
           }
+          return false;
+        } else {
+          return true;
         }
-        return false;
       },
+
       _fields: [
         {
           render: {
@@ -225,6 +231,11 @@ export const PayslipAndDDFormMetaData = {
                 COMMISSION: {
                   value: gstApiData?.[0]?.COMMISSION ?? "",
                   ignoreUpdate: true,
+                  isReadOnly: () => {
+                    if (gstApiData?.[0]?.FLAG_ENABLE_DISABLE === "Y") {
+                      return true;
+                    } else return false;
+                  },
                 },
                 OTHER_COMISSION: {
                   value: gstApiData?.[0]?.OTHER_COMISSION ?? "",
@@ -397,13 +408,13 @@ export const PayslipAndDDFormMetaData = {
               for (let i = 0; i < postData.length; i++) {
                 if (postData[i]?.O_STATUS === "999") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert!",
+                    messageTitle: "ValidationFailed",
                     message: postData[i]?.O_MESSAGE,
                   });
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "99") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Risk Category Alert",
+                    messageTitle: "Confirmation",
                     message: postData[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
                   });
@@ -414,7 +425,7 @@ export const PayslipAndDDFormMetaData = {
                 } else if (postData[i]?.O_STATUS === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert!",
+                      messageTitle: "Alert",
                       message: postData[i]?.O_MESSAGE,
                     });
                   }
@@ -532,13 +543,18 @@ export const PayslipAndDDFormMetaData = {
                   value: gstApiData?.[0]?.SERVICE_CHARGE ?? "",
                   ignoreUpdate: true,
                 },
-                COMMISSION: {
-                  value: gstApiData?.[0]?.COMMISSION ?? "",
-                  ignoreUpdate: true,
-                },
                 OTHER_COMISSION: {
                   value: gstApiData?.[0]?.OTHER_COMISSION ?? "",
                   ignoreUpdate: true,
+                },
+                COMMISSION: {
+                  value: gstApiData?.[0]?.COMMISSION ?? "",
+                  ignoreUpdate: true,
+                  isReadOnly: () => {
+                    if (gstApiData?.[0]?.FLAG_ENABLE_DISABLE === "Y") {
+                      return true;
+                    } else return false;
+                  },
                 },
                 TAX_RATE: {
                   value: gstApiData?.[0]?.TAX_RATE ?? "",
