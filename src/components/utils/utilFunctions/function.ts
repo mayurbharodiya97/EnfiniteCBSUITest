@@ -418,3 +418,28 @@ export const getDependetFieldDataArrayField = (inputData) => {
   }
   return transformedData;
 };
+
+export const getDynamicLabel = (
+  path: string,
+  data: any,
+  setScreenCode: boolean
+) => {
+  const relativePath = path.replace("/cbsenfinity/", "");
+  let cleanedPath;
+
+  if (relativePath.includes("/")) {
+    cleanedPath = relativePath.split("/").slice(0, 2).join("/");
+  } else {
+    cleanedPath = relativePath;
+  }
+  let screenList = GetAllChieldMenuData(data, true);
+  const matchingPath = screenList.find((item) => item.href === cleanedPath);
+
+  if (matchingPath) {
+    return setScreenCode
+      ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
+      : `${matchingPath.label}`;
+  }
+
+  return "";
+};
