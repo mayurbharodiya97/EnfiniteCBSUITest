@@ -17,8 +17,8 @@ export const sp_language_data = {
   Export: "Exportar",
 
   // Message box
-  DeleteData: "¿Está seguro de eliminar la fila seleccionada...?",
-  SaveData: "¿Quieres guardar esta Solicitud...?",
+  DeleteData: "¿Está seguro de eliminar la fila seleccionada?",
+  SaveData: "¿Quieres guardar esta Solicitud?",
   Confirmation: "Confirmación",
   Ok: "De acuerdo",
   Yes: "Sí",
@@ -37,6 +37,9 @@ export const sp_language_data = {
   EntryDescriptionMaster: "Entrada Descripción Maestro MST/067",
   ParentType: "Tipo de padre",
   EnterDescription: "Ingresar descripción",
+  DuplicateValidation:
+    "{{fieldValue}} ya está ingresado en Sr. No:{{rowNumber}}",
+  ParentTyperequired: "Se requiere tipo de padre",
 
   // MST/097
   SecurityType: "Tipo de seguridad",
@@ -50,6 +53,10 @@ export const sp_language_data = {
   AssetClassificationCode: "Código de clasificación de activos A5",
   CalculatePenalInterestOn: "Calcular el interés penal",
   EnterName: "Ingrese su nombre",
+  ParentRequired: "Se requiere madre.",
+  Nameisrequired: "Se requiere el nombre.",
+  EnterSecureRate: "Ingrese la tarifa segura de provisión",
+  EnterUnSecureRate: "Ingrese la tarifa de provisión no segura",
 
   // MST/146
   CourtMaster: "Maestro de la Corte (MST/146)",
@@ -64,6 +71,7 @@ export const sp_language_data = {
   EnterPinCode: "Ingrese el código PIN",
   EnterAddress: "Ingresa la direccion",
   EnterContactNumber: "Ingrese el número de contacto",
+  PincodeRequired: "Se requiere código PIN",
 
   // Report
   CreditCount: "Recuento de créditos",
@@ -98,6 +106,22 @@ export const sp_language_data = {
   ConfirmedCount: "Recuento confirmado",
   RejectedCount: "Recuento rechazado",
   PendingCount: "Conteo Pendiente",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "Recuperar la opción de impresión de libreta",
+  Print: "imprimir",
+  AccountHolder: "Nombre del titular de la cuenta",
+  LineNo: "Número de línea",
+  Reprint: "Reimpresión",
+  NextPageAlert: "¿Quieres imprimir la página siguiente?",
+  PassbookPrint: "Impresión de libreta",
+  printPage: "imprime esta página",
+  PassbookStatementPreview: "Vista previa del estado de cuenta de la libreta",
+  LineNoValidation: "mantener Linee No. Entre {{from}} a {{to}}",
+  DateValidation:
+    "La fecha de inicio no debe ser anterior a la fecha de apertura de la cuenta. :- {{date}}",
+  PassbookUpdateMessage:
+    "Cuenta: {{account}}.\n Libreta de ahorros ya impresa hasta el {{date}}.\n ¿Quiere considerarlo duplicado/reimprimir?\n Sí - Duplicado\n No - Reimprimir",
 
   Loading: "Cargando..",
   SignIn: "Iniciar sesión",
@@ -448,6 +472,49 @@ export const sp_language_data = {
   AttesDetailsIPVBy:
     "Detalles de la atestación [IPV-Prueba de identidad verificada por]",
 
+  // Auditor master
+  AuditorMaster: "Maestro Auditor",
+  AuditorName: "Nombre del auditor",
+  PhoneNo: "Número de teléfono",
+  Designation: "Designación",
+  EnterAuditorName: "Ingrese el nombre del auditor",
+  AuditorNameisrequired: "El nombre del auditor es obligatorio",
+  EnterAddress1: "Introduzca la dirección1",
+  EnterAddress2: "Introduzca la dirección2",
+  EnterPhoneNo: "Ingresa número telefónico",
+  SelectDesignation: "Seleccionar designación",
+
+  // Lien reason master
+  LienReasonMaster: "Maestro de razón de gravamen",
+  Codeisrequired: "Se requiere código",
+  Descriptionisrequired: "Se requiere descripción",
+
+  // Advocate Master
+  AdvocateMaster: "Maestro abogado",
+  SpecialCharacterIsNotAllowed: "No se permiten caracteres especiales.",
+  AdvocateName: "Nombre del defensor",
+  EnterAdvocateName: "Ingrese el nombre del defensor",
+  AdvocateNameisrequired: "El nombre del defensor es obligatorio.",
+  Address: "dirección",
+  EnterEmailID: "Ingrese su ID de correo electrónico",
+  InvalidEmailID: "ID de correo electrónico no válido.",
+
+  // Clearing bank master
+
+  ClearingBankMaster: "Maestro del Banco de Compensación",
+  RBICode: "Código RBI",
+  Exclude: "Excluir",
+  EnterRBICode: "Ingrese el código RBI",
+  RBICodeIsRequired: "Se requiere el código RBI.",
+  EnterBankName: "Ingrese el nombre del banco",
+  BankNameIsRequired: "El nombre del banco es obligatorio.",
+  AtleastOneBranchShouldBeSelected:
+    "Se debe seleccionar al menos una sucursal.",
+  Select: "Seleccionar",
+  DisplayName: "Nombre para mostrar",
+  CTS: "cts",
+  AddBranch: "Agregar sucursal",
+
   sidebar: {
     Dashboard: "Tablero de control",
 
@@ -494,5 +561,61 @@ export const sp_language_data = {
   DistrictName: "Nombre del distrito",
   StateName: "Nombre del estado",
   Import: "Importación",
-  CentreName: "Nombre del centro"
+  CentreName: "Nombre del centro",
+
+  // form 15GH entry and confirmation
+  AccountName: "Nombre de la cuenta",
+  FormName: "Nombre del formulario",
+  FormExpiryDate: "Fecha de vencimiento del formulario",
+  NoteDoubleClickOnViewDetails: "Nota: Haga doble clic para ver detalles",
+  EnteredBy: "Introducido por",
+  EnteredDate: "Fecha introducida",
+  VerifiedBy: "Verificada por",
+  VerifiedDate: "Fecha verificada",
+  Upload: "Subir",
+  CustomerNotFound: "Cliente no encontrada",
+  ValidationAlert: "Alerta de validación",
+  RiskCategoryAlert: "Alerta de categoría de riesgo",
+  Information: "Información",
+  BirthDate: "Fecha de nacimiento",
+  FormTillDate: "Formulario hasta la fecha",
+  Email: "Correo electrónico",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Interés estimado por el que se realiza la declaración",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Otros ingresos estimados excepto el monto de interés anterior",
+  NoOfFormsSubmittedInOtherBanks:
+    "No. de formularios enviados en otro(s) banco(s)",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Ingresos totales de formularios presentados en otro(s) banco(s)",
+  ValidationFailed: "Validación fallida",
+  WhetherAssessedToIncomeTaxAct:
+    "Si se evalúa según la Ley del impuesto sobre la renta",
+  IfYesLatestAssessmentDate:
+    "En caso afirmativo, fecha de la última evaluación",
+  LastAssessmentDateValidationMessage:
+    "La última fecha de evaluación debe ser el último día de un año financiero.",
+  ActiveValidationMessage:
+    "Se paga uno (o más) de los FD/RD por los cuales se envió este formulario. Por lo que no puedes inactivar este formulario.",
+  Inactive: "Inactiva",
+  PrintForm: "Forma impresa",
+  Bank: "Banco",
+  AccountType: "Tipo de cuenta",
+  FDNo: "número DF",
+  FinInterest: "Interés de aleta",
+  RetrievalParameters: "Parámetros de recuperación",
+  Mustbeavaliddate: "Debe ser una fecha válida",
+  FromDateIsRequired: "Desde la fecha es obligatoria",
+  ToDateIsRequired: "Se requiere hasta la fecha",
+  ToDateshouldbegreaterthanorequaltoFromDate:
+    "Hasta la fecha debe ser mayor o igual que desde la fecha.",
+  EnterCustomerID: "Ingrese el ID del cliente",
+  NoRecordFound: "ningún record fue encontrado",
+  ConfirmFormData: "¿Estás segura de confirmar este formulario?",
+  ConfirmRestrictionMessage:
+    "No se puede confirmar su propio formulario ingresado.",
+  DeleteWarning: "Eliminar advertencia",
+  CannotDeleteConfirmedForm: "No se puede eliminar el formulario confirmado.",
+  PrintFormConfirmation: "¿Quieres imprimir el formulario?",
+  ViewAll: "Ver todo",
 };

@@ -13,7 +13,6 @@ const IntroductorJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -55,6 +54,20 @@ const IntroductorJointTab = () => {
       }
     }
   }, [formStatus])
+
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["INTRODUCTORY_DTL"] ?? {INTRODUCTORY_DTL: [{}]}
+        : AcctMSTState?.formDatactx["INTRODUCTORY_DTL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["INTRODUCTORY_DTL"] ?? {}, ...AcctMSTState?.formDatactx["INTRODUCTORY_DTL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["INTRODUCTORY_DTL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["INTRODUCTORY_DTL"]
+  ])
 
   return (
     <Grid sx={{ mb: 4 }}>

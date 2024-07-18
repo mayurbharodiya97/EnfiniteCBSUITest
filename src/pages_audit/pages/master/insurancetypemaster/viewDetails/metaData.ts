@@ -1,8 +1,9 @@
+import { t } from "i18next";
 import { getPMISCData } from "../api";
 export const InsuTypeMasterFormMetadata = {
   form: {
     name: "insuranceTypeMaster",
-    label: "InsuranceTypeMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -43,13 +44,10 @@ export const InsuTypeMasterFormMetadata = {
       maxLength: 4,
       placeholder: "EnterCode",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       __EDIT__: { isReadOnly: true },
       __NEW__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -67,7 +65,10 @@ export const InsuTypeMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -75,7 +76,7 @@ export const InsuTypeMasterFormMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required."] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -94,12 +95,9 @@ export const InsuTypeMasterFormMetadata = {
       required: true,
       maxLength: 75,
       placeholder: "EnterDescription",
+      preventSpecialCharInput: true,
       __EDIT__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
         // Duplication validation
 
         const gridData = rest[1]?.gridData;
@@ -117,7 +115,10 @@ export const InsuTypeMasterFormMetadata = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -125,7 +126,7 @@ export const InsuTypeMasterFormMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: {
         xs: 12,

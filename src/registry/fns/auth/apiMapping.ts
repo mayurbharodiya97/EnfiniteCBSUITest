@@ -259,6 +259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
     packageName: "",
   },
+  CONFIRMCUSTPHOTODATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTPHOTODATA",
+    packageName: "",
+  },
   GETDOCTEMPLATEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDOCTEMPLATEDTL",
     packageName: "",
@@ -464,6 +468,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
     packageName: "",
   },
+  VALIDATETOINACTIVE: {
+    url: "/customerServiceAPI/VALIDATETOINACTIVE",
+    packageName: "",
+  },
   GETINSURANCE: {
     url: "/customerServiceAPI/GETINSURANCE",
     packageName: "",
@@ -590,6 +598,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
+    packageName: "",
+  },
+  GETCUSTLATESTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTLATESTPHOTODTL",
     packageName: "",
   },
   GETUPDCUSTPHOTODATA: {
@@ -1227,6 +1239,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMODEDDW",
     packageName: "",
   },
+  GETCUSTOMERDATA: {
+    url: "accountServiceAPI/GETCUSTOMERDATA",
+    packageName: "",
+  },
+  GETPENDINGACCTLIST: {
+    url: "accountServiceAPI/GETPENDINGACCTLIST",
+    packageName: "",
+  },
+  GETACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETACCOUNTDETAILS",
+    packageName: "",
+  },
   GETACCTMSTMORTGAGEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMORTGAGEDDW",
     packageName: "",
@@ -1469,6 +1493,94 @@ export const ActionWiseAPIConfiguration = {
   },
   GETACCOUNTDETAIL: {
     url: "/transactionServiceAPI/GETACCOUNTDETAIL",
+    packageName: "",
+  },
+  GETCUSTMSTDOCDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTMSTDOCDTL",
+    packageName: "",
+  },
+  GETCATEGORYDTL: {
+    url: "/customerServiceAPI/GETCATEGORYDTL",
+    packageName: "",
+  },
+  CALCULATEINTRATE: {
+    url: "/customerServiceAPI/CALCULATEINTRATE",
+    packageName: "",
+  },
+  SAVECATEGORYDTL: {
+    url: "/customerServiceAPI/SAVECATEGORYDTL",
+    packageName: "",
+  },
+  CLEARINGBANKMASTERDML: {
+    url: "/commonMasterServiceAPI/CLEARINGBANKMASTERDML",
+    packageName: "",
+  },
+  GETDYNAMICBRANCHLIST: {
+    url: "/commonMasterServiceAPI/GETDYNAMICBRANCHLIST",
+    packageName: "",
+  },
+  DOADDDYNAMICBRANCH: {
+    url: "/commonMasterServiceAPI/DOADDDYNAMICBRANCH",
+    packageName: "",
+  },
+  DOLIENREASONMSTDATA: {
+    url: "/commonMasterServiceAPI/DOLIENREASONMSTDATA",
+    packageName: "",
+  },
+  DOADVOCATEMSTDML: {
+    url: "/commonMasterServiceAPI/DOADVOCATEMSTDML",
+    packageName: "",
+  },
+  GETAUDITORMSTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAUDITORMSTGRID",
+    packageName: "",
+  },
+  GETAUDITORMSTDSGDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAUDITORMSTDSGDDW",
+    packageName: "",
+  },
+  AUDITORMASTERDML: {
+    url: "/commonMasterServiceAPI/AUDITORMASTERDML",
+    packageName: "",
+  },
+  GETFORM15GHDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHDTL",
+    packageName: "",
+  },
+  GETACCTDETAIL: {
+    url: "/transactionServiceAPI/GETACCTDETAIL",
+    packageName: "",
+  },
+  GETFDRDDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDRDDETAILS",
+    packageName: "",
+  },
+  GETFORM15GHFDDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHFDDTL",
+    packageName: "",
+  },
+  GETFORM15GHFINDATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHFINDATE",
+    packageName: "",
+  },
+  GETFORM15GHRETRIVEDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHRETRIVEDATA",
+    packageName: "",
+  },
+  FORM15GHENTRYDML: {
+    url: "/enfinityFDServiceAPI/FORM15GHENTRYDML",
+    packageName: "",
+  },
+  GETPRINTFORMDETAILS: {
+    url: "/enfinityFDServiceAPI/GETPRINTFORMDETAILS",
+    packageName: "",
+  },
+  GETFORM15GHCONFPENDING: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORM15GHCONFPENDING",
+    packageName: "",
+  },
+  FORM15GHENTRYCONFIRMATION: {
+    url: "/enfinityFDServiceAPI/FORM15GHENTRYCONFIRMATION",
     packageName: "",
   },
   GETAGENTMSTCONFIGPIGMYDDW: {

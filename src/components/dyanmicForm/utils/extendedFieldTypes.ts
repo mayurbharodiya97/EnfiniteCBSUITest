@@ -240,11 +240,17 @@ export const extendFieldTypes = (
       if (Boolean(item?.isWorkingDate)) {
         item["defaultValue"] = new Date(authState?.workingDate);
       }
-      if (Boolean(item?.isMaxWorkingDate)) {
-        item["maxDate"] = new Date(authState?.workingDate);
+    }
+    if (
+      item.render.componentType === "datetimePicker" ||
+      item.render.componentType === "datePicker"
+    ) {
+      const now = new Date();
+      if (item?.disablePast) {
+        item["minDate"] = now;
       }
-      if (Boolean(item?.isMinWorkingDate)) {
-        item["minDate"] = new Date(authState?.workingDate);
+      if (item?.disableFuture) {
+        item["maxDate"] = now;
       }
     }
   });

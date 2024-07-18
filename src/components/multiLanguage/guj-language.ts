@@ -18,8 +18,8 @@ export const guj_language_data = {
   Export: "નિકાસ કરો",
 
   // Message box
-  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો...?",
-  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો...?",
+  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો?",
+  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો?",
   Confirmation: "પુષ્ટિકરણ",
 
   // FormWrapper
@@ -29,9 +29,14 @@ export const guj_language_data = {
   new: "નવો",
 
   // MST/067
-  EntryDescriptionMaster: "પ્રવેશ વર્ણન માસ્ટર MST/067",
+  "Entry Description Master (MST/067)": "પ્રવેશ વર્ણન માસ્ટર (MST/067)",
+  "Entry Description Master": "પ્રવેશ વર્ણન માસ્ટર",
   ParentType: "પિતૃ વર્ગ",
   EnterDescription: "વર્ણન દાખલ કરો",
+  DuplicateValidation:
+    "{{fieldValue}} પહેલાથી જ ક્રમ નંબર: {{rowNumber}} પર દાખલ કરેલ છે",
+    ParentTyperequired: "પિતૃ પ્રકાર જરૂરી છે.",
+
 
   // MST/097
   InsuranceTypeMaster: "વીમા પ્રકાર માસ્ટર MST/097",
@@ -39,11 +44,15 @@ export const guj_language_data = {
   // MST/052
   NPACategoryMaster: "NPA કેટેગરી માસ્ટર MST/052",
   Parent: "પિતૃ",
-  ProvisionSecureRate: "જોગવાઈ સુરક્ષિત દર",
-  ProvisionUnSecureRate: "જોગવાઈ અસુરક્ષિત દર",
+  ProvisionSecureRate: "સુરક્ષિત જોગવાઈ દર",
+  ProvisionUnSecureRate: "અસુરક્ષિત જોગવાઈ દર",
   AssetClassificationCode: "A5 સંપત્તિ વર્ગીકરણ કોડ",
   CalculatePenalInterestOn: "દંડાત્મક વ્યાજની ગણત્રી",
   EnterName: "નામ દાખલ કરો",
+  ParentRequired:"પિતૃ જરૂરી છે.",
+  Nameisrequired: "નામ જરૂરી છે.",
+  EnterSecureRate:"સુરક્ષિત જોગવાઈ દર દાખલ કરો",
+  EnterUnSecureRate:"અસુરક્ષિત જોગવાઈ દર દાખલ કરો",
 
   // MST/146
   CourtMaster: "કોર્ટ માસ્ટર (MST/146)",
@@ -62,6 +71,8 @@ export const guj_language_data = {
   EnterPinCode: "પિન કોડ દાખલ કરો",
   EnterAddress: "સરનામું દાખલ કરો",
   EnterContactNumber: "સંપર્ક નંબર દાખલ કરો",
+  PincodeRequired:"પિનકોડ જરૂરી છે",
+
 
   // Report
   CreditCount: "ક્રેડિટ ગણતરી",
@@ -88,6 +99,21 @@ export const guj_language_data = {
   NO: "ના",
   Accept: "સ્વીકારો",
   Decline: "નકારો",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "પાસબુક પ્રિન્ટ વિકલ્પ પુનઃપ્રાપ્ત કરો",
+  AccountHolder: "ખાતા ધારકનું નામ",
+  LineNo: "લાઇન નંબર",
+  Reprint: "ફરીથી છાપો",
+  NextPageAlert: "શું તમે આગલું પૃષ્ઠ છાપવા માંગો છો?",
+  PassbookPrint: "પાસબુક પ્રિન્ટ",
+  printPage: "આ પૃષ્ઠ છાપો",
+  PassbookStatementPreview: "પાસબુક સ્ટેટમેન્ટ પૂર્વાવલોકન",
+  LineNoValidation: "લાઇન નંબર {{from}} થી {{to}} ની વચ્ચે રાખો",
+  DateValidation:
+    "'તારીખથી' ખાતું ખોલ્યાની તારીખ કરતાં પહેલાંની ન હોવી જોઈએ :- {{date}}",
+  PassbookUpdateMessage:
+    "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
   Code: "કોડ",
@@ -335,8 +361,8 @@ export const guj_language_data = {
 
   PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
-  ToDate: "તારીખ સુધી",
-  FromDate: "તારીખ થી",
+  ToDate: "તારીખ સુધી:-",
+  FromDate: "તારીખ થી:-",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
@@ -359,6 +385,45 @@ export const guj_language_data = {
 
   Assets_Liabilities: "સંપત્તિ અને જવાબદારીઓ",
   Account_Status: "ખાતા સ્થિતિ",
+
+  // Auditor Master
+  AuditorMaster: "ઓડિટર માસ્ટર",
+  AuditorName: "ઓડિટરનું નામ",
+  PhoneNo: "ફોન નંબર",
+  Designation: "હોદ્દો",
+  EnterAuditorName: "ઓડિટરનું નામ દાખલ કરો",
+  AuditorNameisrequired: "ઓડિટરનું નામ જરૂરી છે.",
+  EnterAddress1: "સરનામું 1 દાખલ કરો",
+  EnterAddress2: "સરનામું 2 દાખલ કરો",
+  EnterPhoneNo: "ફોન નંબર દાખલ કરો",
+  SelectDesignation: "હોદ્દો પસંદ કરો",
+
+  // advocate master
+  AdvocateMaster: "એડવોકેટ માસ્ટર",
+  SpecialCharacterIsNotAllowed: "વિશિષ્ટ પાત્રની મંજૂરી નથી.",
+  AdvocateName: "એડવોકેટનું નામ",
+  EnterAdvocateName: "એડવોકેટનું નામ દાખલ કરો",
+  AdvocateNameisrequired: "એડવોકેટનું નામ જરૂરી છે.",
+  Address: "સરનામું",
+  EnterEmailID: "ઈમેલ આઈડી દાખલ કરો",
+  InvalidEmailID: "અમાન્ય ઈમેલ આઈડી.",
+
+  // Lien reason master
+  LienReasonMaster: "પૂર્વાધિકાર કારણ માસ્ટર",
+
+  // Clearing bank master
+  ClearingBankMaster: "ક્લિયરિંગ બેંક માસ્ટર",
+  RBICode: "આરબીઆઈ કોડ",
+  Exclude: "બાકાત",
+  EnterRBICode: "આરબીઆઈ કોડ દાખલ કરો",
+  RBICodeIsRequired: "આરબીઆઈ કોડ જરૂરી છે.",
+  EnterBankName: "બેંકનું નામ દાખલ કરો",
+  BankNameIsRequired: "બેંક નામ જરૂરી છે.",
+  AtleastOneBranchShouldBeSelected: "ઓછામાં ઓછી એક શાખા પસંદ કરવી જોઈએ",
+  Select: "પસંદ કરો",
+  DisplayName: "ડિસ્પ્લે નામ",
+  CTS: "સીટીએસ",
+  AddBranch:"શાખા ઉમેરો",
 
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
@@ -707,4 +772,46 @@ export const guj_language_data = {
   CentreName: "કેન્દ્રનું નામ",
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
+
+  // form 15GH entry and confirmation
+  NoteDoubleClickOnViewDetails: "નોંધ: વિગતો જોવા માટે ડબલ ક્લિક કરો",
+  FormExpiryDate: "ફોર્મ સમાપ્તિ તારીખ",
+  FormName: "ફોર્મનું નામ",
+  VerifiedDate: "ચકાસાયેલ તારીખ",
+  UniqueId: "અનન્ય આઈડી",
+  CustomerNotFound: "ગ્રાહક મળ્યો નથી",
+  Information: "માહિતી",
+  BirthDate: "જન્મતારીખ",
+  FormTillDate: "તારીખ સુધી ફોર્મ",
+  Email: "ઈમેલ",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "અંદાજિત વ્યાજ જેના માટે ઘોષણા કરવામાં આવે છે",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "ઉપરની વ્યાજની રકમ સિવાય અંદાજિત અન્ય આવક",
+  NoOfFormsSubmittedInOtherBanks: "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની સંખ્યા",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની કુલ આવક",
+  WhetherAssessedToIncomeTaxAct: "શું આવકવેરા કાયદામાં આકારણી કરવામાં આવી છે?",
+  IfYesLatestAssessmentDate: "જો હા, તો નવીનતમ આકારણી તારીખ",
+  LastAssessmentDateValidationMessage:
+    "છેલ્લી આકારણી તારીખ નાણાકીય વર્ષનો છેલ્લો દિવસ હોવો જોઈએ.",
+  ActiveValidationMessage:
+    "એફડી/આરડી માંથી એક (અથવા વધુ) ચૂકવવામાં આવે છે જેના માટે આ ફોર્મ સબમિટ કરવામાં આવ્યું હતું. તેથી તમે આ ફોર્મને નિષ્ક્રિય કરી શકતા નથી.",
+  Inactive: "નિષ્ક્રિય",
+  PrintForm: "પ્રિન્ટ ફોર્મ",
+  Bank: "બેંક",
+  FDNo: "એફડી નંબર",
+  FinInterest: "નાણાકીય વ્યાજ",
+  RetrievalParameters: "પુનઃપ્રાપ્તિ પરિમાણો",
+  FromDateIsRequired: "થી તારીખ જરૂરી છે.",
+  ToDateIsRequired: "સુધી તારીખ જરૂરી છે.",
+  EnterCustomerID: "ગ્રાહક આઈડી દાખલ કરો",
+  NoRecordFound: "કોઈ રેકોર્ડ મળ્યો નથી",
+  ConfirmFormData: "શું તમે આ ફોર્મની ખાતરી કરવા માટે ચોક્કસ છો?",
+  ConfirmRestrictionMessage:
+    "તમારા પોતાના દાખલ કરેલ ફોર્મની પુષ્ટિ કરી શકતા નથી.",
+  DeleteWarning: "કાઢી નાખવા માટેની ચેતવણી",
+  CannotDeleteConfirmedForm: "કન્ફર્મ કરેલ ફોર્મ ડિલીટ કરી શકાતું નથી.",
+  PrintFormConfirmation: "શું તમે ફોર્મ છાપવા માંગો છો?",
+  ViewAll: "બધુજ જુઓ",
 };

@@ -43,7 +43,8 @@ import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
 // import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
-import Document from './formDetails/formComponents/document/Document';
+// import Document from './formDetails/formComponents/document/Document';
+import Document from './DocumentTab/Document';
 import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy2';
 import { format } from 'date-fns';
 import { GradientButton } from 'components/styledComponent/button';
@@ -615,13 +616,13 @@ export default function FormModal({
         >
           {t("Confirm")}
         </Button>
-        <Button
+        {!Boolean(state?.customerIDctx) && <Button
           onClick={() => openActionDialog("M")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Raise Query")}
-        </Button>
+        </Button>}
         <Button
           onClick={() => openActionDialog("R")}
           color="primary"
@@ -783,7 +784,7 @@ export default function FormModal({
               color="primary"
               // disabled={mutation.isLoading}
             >
-              {t("Cancel")}
+              {t("Close")}
             </Button>
           </Toolbar>
         </AppBar>

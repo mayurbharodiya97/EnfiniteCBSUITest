@@ -162,49 +162,47 @@ export const MyAppBar = ({
       className={clsx(classes.appBar, open && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
-        {!hideSidebarIcon && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              height: "80px",
-              width: "227px",
-            }}
-          >
-            {open ? (
-              <IconButton
-                disableRipple
-                onClick={handleDrawerClose}
-                className={classes.DrawerClose_icon}
-              >
-                <MenuOutlinedIcon fontSize="large" />
-              </IconButton>
-            ) : (
-              <IconButton
-                disableRipple
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                className={classes.DrawerClose_icon}
-              >
-                <MenuOutlinedIcon fontSize="large" />
-              </IconButton>
-            )}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            height: "80px",
+            width: "227px",
+          }}
+        >
+          <div>
+            <img
+              src={Boolean(logos?.logo) ? logos?.logo : Logo}
+              alt="CbsEnfinity"
+              className={classes.logo}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("./dashboard");
+              }}
+            />
+            <p className={classes.version01}>{logos?.version}</p>
+          </div>
 
-            <div>
-              <img
-                src={Boolean(logos?.logo) ? logos?.logo : Logo}
-                alt="CbsEnfinity"
-                className={classes.logo}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("./dashboard");
-                }}
-              />
-              <p className={classes.version01}>{logos?.version}</p>
-            </div>
-          </Box>
-        )}
+          {open ? (
+            <IconButton
+              disableRipple
+              onClick={handleDrawerClose}
+              className={classes.DrawerClose_icon}
+            >
+              <MenuOutlinedIcon fontSize="large" />
+            </IconButton>
+          ) : (
+            <IconButton
+              disableRipple
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={classes.DrawerClose_icon}
+            >
+              <MenuOutlinedIcon fontSize="large" />
+            </IconButton>
+          )}
+        </Box>
         <Stack direction="row" spacing={4} mx={2}>
           <Box className={classes.heading_user_img_border}>
             <Avatar

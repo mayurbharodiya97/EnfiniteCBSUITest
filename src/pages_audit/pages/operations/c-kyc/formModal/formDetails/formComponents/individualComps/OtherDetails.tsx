@@ -144,13 +144,15 @@ const OtherDetails = () => {
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
+        return (
+            state?.formDatactx["OTHER_DTL"]
                 ? state?.formDatactx["OTHER_DTL"]
-                    ? state?.formDatactx["OTHER_DTL"]
-                    : {}
-                : state?.retrieveFormDataApiRes
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
                     ? state?.retrieveFormDataApiRes["OTHER_DTL"]
+                        ? state?.retrieveFormDataApiRes["OTHER_DTL"]
+                        : {}
                     : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {

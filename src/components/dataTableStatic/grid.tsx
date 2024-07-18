@@ -366,7 +366,7 @@ export const DataGrid = ({
       >
         {Boolean(hideHeader) ? null : (
           <TableHeaderToolbar
-            label={label}
+            label={t(label)}
             dense={dense}
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={state.globalFilter}
@@ -512,7 +512,7 @@ export const DataGrid = ({
                       color: "rgba(133, 130, 130, 0.8)",
                     }}
                   >
-                    No data found..!
+                    {t("NoDataFound")}
                   </div>
                 </Grid>
               ) : null}
