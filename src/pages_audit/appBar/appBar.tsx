@@ -168,7 +168,7 @@ export const MyAppBar = ({
               display: "flex",
               justifyContent: "space-evenly",
               alignItems: "center",
-              height:  "80px",
+              height: "80px",
               width: "227px",
             }}
           >
@@ -543,9 +543,9 @@ export const MyAppBar = ({
                 //     : USER_PROFILE_DEFAULT
                 // }
                 src={
-                  Boolean(authController?.getProfileImage)
-                    ? authController?.getProfileImage
-                    : logos?.profile
+                  Boolean(logos?.profile)
+                    ? logos?.profile
+                    : authController?.getProfileImage
                 }
               />
             </LightTooltip>

@@ -4,10 +4,14 @@ export const FooterCell = ({
   rows,
   column: { id: columnName, isDisplayTotal = false, totalDecimalCount },
 }) => {
+  let newrowdata = rows.filter((item) => !item.original.ignoreValue);
   const total = useMemo(
     () =>
-      rows.reduce((sum, row) => Number(row.values?.[columnName] ?? 0) + sum, 0),
-    [rows, columnName]
+      newrowdata.reduce(
+        (sum, row) => Number(row.values?.[columnName] ?? 0) + sum,
+        0
+      ),
+    [newrowdata, columnName]
   );
   return `${
     isNaN(total) || !Boolean(isDisplayTotal)

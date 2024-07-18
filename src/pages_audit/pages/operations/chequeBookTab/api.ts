@@ -163,7 +163,16 @@ export const issuedChequeBkDTL = async (apireq) => {
       ...apireq,
     });
   if (status === "0") {
-    return data;
+    // return data;
+    return data.map((item) => {
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED_DISPLAY = "Confirm";
+      } else {
+        item.CONFIRMED_DISPLAY = "Pending";
+      }
+      return item;
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

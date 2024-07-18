@@ -88,6 +88,7 @@ const ChequebookTabCustom = () => {
           let apiReq = {
             _isNewRow: true,
             _isDeleteRow: false,
+            COMP_CD: authState?.companyID,
             BRANCH_CD: insertReq?.BRANCH_CD,
             ACCT_TYPE: insertReq?.ACCT_TYPE,
             ACCT_CD: insertReq?.ACCT_CD,
@@ -107,12 +108,13 @@ const ChequebookTabCustom = () => {
           };
           // After validating data then inside the response multiple message with multiple statuses, so merge all the same status messages and conditionally display status-wise.
           if (Array.isArray(data) && data?.length > 0) {
-            const btnName = async (buttonNames, msg, msgTitle) => {
+            const btnName = async (buttonNames, msg, msgTitle, icon) => {
               return await MessageBox({
                 messageTitle: msgTitle,
                 message: msg,
                 buttonNames: buttonNames,
                 loadingBtnName: ["Yes"],
+                icon: icon,
               });
             };
             let messages = { "999": [], "99": [], "9": [], "0": [] };
@@ -129,16 +131,27 @@ const ChequebookTabCustom = () => {
               concatenatedMessages[key] = messages[key].join("\n");
             }
             if (status["999"]) {
-              btnName(["Ok"], concatenatedMessages["999"], "ValidationFailed");
+              btnName(
+                ["Ok"],
+                concatenatedMessages["999"],
+                "ValidationFailed",
+                "ERROR"
+              );
             } else if (status["99"]) {
               let buttonName = await btnName(
                 ["Yes", "No"],
                 concatenatedMessages["99"],
-                "DoYouContinueWithRecord"
+                "DoYouContinueWithRecord",
+                "INFO"
               );
 
               if (buttonName === "Yes" && status["9"]) {
-                btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert");
+                btnName(
+                  ["Ok"],
+                  concatenatedMessages["9"],
+                  "ValidationAlert",
+                  "INFO"
+                );
               } else if (
                 buttonName === "Yes" &&
                 data?.[0]?.RESTRICT_WINDOW === "N"
@@ -160,12 +173,18 @@ const ChequebookTabCustom = () => {
                 crudChequeData.mutate(apiReq);
               }
             } else if (status["9"]) {
-              btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert");
+              btnName(
+                ["Ok"],
+                concatenatedMessages["9"],
+                "ValidationAlert",
+                "INFO"
+              );
             } else if (status["0"]) {
               let buttonName = await btnName(
                 ["Yes", "No"],
                 "AreYouSureToProceed",
-                "ValidationSuccessfull"
+                "ValidationSuccessfull",
+                "INFO"
               );
               if (buttonName === "Yes") {
                 crudChequeData.mutate(apiReq);
@@ -264,19 +283,22 @@ const ChequebookTabCustom = () => {
     let reqPara = {
       ...data,
       COMP_CD: authState?.companyID,
-      CHEQUE_FROM: Number(data?.CHEQUE_FROM),
-      CHEQUE_TO: Number(data?.CHEQUE_TO),
-      NO_OF_CHQBK: Number(data?.NO_OF_CHQBK),
-      CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL) ?? Number(data?.CHEQUE_TOTALS),
+      AUTO_CHQBK_FLAG: data?.PER_CHQ_ALLOW,
+      NO_OF_CHQBK: data?.NO_OF_CHQBK ?? "1",
+      CHEQUE_TOTAL: data?.CHEQUE_TOTAL ?? data?.CHEQUE_TOTALS,
+      CHARACTERISTICS: data?.CHARACTERISTICS ?? "B",
+      PAYABLE_AT_PAR: data?.PAYABLE_AT_PAR ?? "Y",
+      SR_CD: data?.AUTO_CHQBK_FLAG === "N" ? "0" : data?.SR_CD,
     };
     reqDataRef.current.insertReq = reqPara;
 
-    if (reqPara.NO_OF_CHQBK > 1 && reqPara?.CHEQUE_TO) {
+    if (Number(reqPara.NO_OF_CHQBK) > 1 && reqPara?.CHEQUE_TO) {
       navigate("multiChequebook/", {
         state: reqPara,
       });
     } else {
       validateInsertData.mutate({
+        COMP_CD: authState?.companyID,
         BRANCH_CD: reqPara?.BRANCH_CD,
         ACCT_TYPE: reqPara?.ACCT_TYPE,
         ACCT_CD: reqPara?.ACCT_CD,

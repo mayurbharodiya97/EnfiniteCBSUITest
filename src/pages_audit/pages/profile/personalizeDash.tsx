@@ -15,18 +15,16 @@ import * as API from "./api";
 import { CreateDetailsRequestData } from "components/utils";
 import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
-import { useTranslation } from "react-i18next";
 import { queryClient } from "cache";
 import { PersonlizationQuickGridMetaData } from "./Metadata/personalizeQuick";
 import { PersonlizationDashboardGridData } from "./Metadata/personalizeDashboard";
 export const PersonalizeDash = () => {
-  const [quickGridData, setQuickGridData] = useState([]);
+  const [quickGridData, setQuickGridData] = useState<any>([]);
   const [dashGridData, setDashGridData] = useState([]);
-  const { t } = useTranslation();
   const dashGridRef = useRef<any>(null);
   const quickGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-
+  // console.log("<<<quickGridData", quickGridData);
   const Dashactions: ActionTypes[] = [
     {
       actionName: "dashSave",
@@ -68,6 +66,24 @@ export const PersonalizeDash = () => {
       },
     }
   );
+
+  // useEffect(() => {
+  //   setQuickGridData((old) => {
+  //     console.log("<<<old", old, quickGridData);
+
+  //     if (Array.isArray(old) && old?.length) {
+  //       old?.map((item) => {
+  //         console.log("<<iiiui", item);
+  //         if (item._error) {
+  //           item._error.DOC_CD = "OPTION ALREADT";
+  //         }
+  //       });
+  //       return old;
+  //     } else {
+  //       return old;
+  //     }
+  //   });
+  // }, [quickGridData]);
 
   const dashboxUserData = useQuery<any, any, any>(
     ["GETUSRDASHBOX"],
@@ -125,16 +141,21 @@ export const PersonalizeDash = () => {
         const isError = data.some((item) => item._error.DOC_CD.length > 0);
         if (!isError) {
           let result = quickGridRef?.current?.cleanData?.();
-          let newData = result.map((item) => {
-            const newItem = {
-              ...item,
-              BRANCH_CD: authState?.user?.branchCode,
-              USER_TYPE: "USER",
-              _hidden: item.IS_DATA === "Y" && item.DOC_CD === "",
-              _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
-            };
-            return newItem;
-          });
+          let newData = result
+            .map((item) => {
+              const newItem = {
+                ...item,
+                BRANCH_CD: authState?.user?.branchCode,
+                USER_TYPE: "USER",
+                _hidden: item.IS_DATA === "Y" && item.DOC_CD === "",
+                _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
+              };
+              if (item.DOC_CD === item?._oldData?.DOC_CD) {
+                return { ...item, _markedForRemoval: true };
+              }
+              return newItem;
+            })
+            .filter((item) => !item._markedForRemoval);
           newData = CreateDetailsRequestData(newData);
           if (newData.isNewRow) {
             newData.isNewRow.forEach((item) => {
@@ -142,7 +163,12 @@ export const PersonalizeDash = () => {
               delete item.LAST_ENTERED_DATE;
             });
           }
-          saveQuickData.mutate({ DETAILS_DATA: newData });
+          let quickDMLdata = Object.values(newData).every(
+            (array) => Array.isArray(array) && array.length === 0
+          );
+          if (!quickDMLdata) {
+            saveQuickData.mutate({ DETAILS_DATA: newData });
+          }
         }
       }
       quick();
@@ -154,19 +180,31 @@ export const PersonalizeDash = () => {
         );
         if (!isError) {
           let result = dashGridRef?.current?.cleanData?.();
-          let newData = result.map((item) => {
-            const newItem = {
-              ...item,
-              USER_TYPE: "USER",
-              _hidden: item.IS_DATA === "Y" && item.DASH_TRAN_CD === "",
-              _isNewRow:
-                item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
-            };
-            return newItem;
-          });
+          let newData = result
+            .map((item) => {
+              const newItem = {
+                ...item,
+                USER_TYPE: "USER",
+                APP_TRAN_CD: "51",
+                _hidden: item.IS_DATA === "Y" && item.DASH_TRAN_CD === "",
+                _isNewRow:
+                  item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
+              };
+              if (item.DASH_TRAN_CD === item?._oldData?.DASH_TRAN_CD) {
+                return { ...item, _markedForRemoval: true };
+              }
+              return newItem;
+            })
+            .filter((item) => !item._markedForRemoval);
           newData = CreateDetailsRequestData(newData);
           newData.isNewRow?.forEach((item) => delete item.TRAN_CD);
-          saveDashData.mutate({ DETAILS_DATA: newData });
+
+          let dashDMLdata = Object.values(newData).every(
+            (array) => Array.isArray(array) && array.length === 0
+          );
+          if (!dashDMLdata) {
+            saveDashData.mutate({ DETAILS_DATA: newData });
+          }
         }
       }
       dashBox();

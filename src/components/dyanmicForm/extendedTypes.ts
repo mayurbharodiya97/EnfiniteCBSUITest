@@ -187,6 +187,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 6) {
           return false;

@@ -637,6 +637,8 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
+  SpecialCharactersNotAllowedRemarks:
+    "Special Characters (! &) not Allowed in Remarks",
 
   // cheque book
 
@@ -685,6 +687,8 @@ export const en_language_data = {
   BeforeChequeBookPrinting: "Before Cheque Book Printing",
   AfterChequeBookPrinting: "After Cheque Book Printing",
   ChequeBkAlreadyIssued: "Already Issued Chequebook",
+  RequistionDtShouldBeLessThanOrEqualWorkingDt:
+    "Requistion date should be less than or equal to Working date",
 
   // limit entry
 
@@ -748,6 +752,7 @@ export const en_language_data = {
   SecurityType: "Security Type",
   CollateralRemarks: "Collateral Remarks",
   AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
+  LimitDeleteTitle: "Enter Removal Remarks For Limit Entry (TRN/046)",
 
   // stop payment
 
@@ -775,6 +780,9 @@ export const en_language_data = {
   ReleaseCheque: "Release Cheque",
   StopPaymentConfirmation: "Stop Payment Confirmation",
   ChequeFromTo: "Cheque From - To",
+  StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
+  StopConfirmDeleteTitle:
+    "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
 
   // stock entry
 
@@ -810,6 +818,11 @@ export const en_language_data = {
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
+  DateShouldBeLessThanEqualToWorkingDT:
+    "date should be less than or equal to Working date.",
+  StmtTillDateShouldBeGreterThanStmt:
+    "Stock Statement Till date should be greter than or equal to Statement date",
+  StockDeleteTitle: "Enter Removal Remarks For Stock Entry (TRN/047)",
 
   // Lien Entry
 
@@ -831,6 +844,8 @@ export const en_language_data = {
   LienExpire: "Lien Expire",
   LienConfirmation: "Lien Confirmation",
   LienReason: "Lien Reason",
+  RemovalDtShouldBeGreterThanEqualToEffDT:
+    "Removal Date should be greter than or Equal to Effective date",
 
   // Temporary OD
 
