@@ -231,11 +231,6 @@ export const PayslipAndDDFormMetaData = {
                 COMMISSION: {
                   value: gstApiData?.[0]?.COMMISSION ?? "",
                   ignoreUpdate: true,
-                  isReadOnly: () => {
-                    if (gstApiData?.[0]?.FLAG_ENABLE_DISABLE === "Y") {
-                      return true;
-                    } else return false;
-                  },
                 },
                 OTHER_COMISSION: {
                   value: gstApiData?.[0]?.OTHER_COMISSION ?? "",
@@ -543,18 +538,13 @@ export const PayslipAndDDFormMetaData = {
                   value: gstApiData?.[0]?.SERVICE_CHARGE ?? "",
                   ignoreUpdate: true,
                 },
-                OTHER_COMISSION: {
-                  value: gstApiData?.[0]?.OTHER_COMISSION ?? "",
-                  ignoreUpdate: true,
-                },
                 COMMISSION: {
                   value: gstApiData?.[0]?.COMMISSION ?? "",
                   ignoreUpdate: true,
-                  isReadOnly: () => {
-                    if (gstApiData?.[0]?.FLAG_ENABLE_DISABLE === "Y") {
-                      return true;
-                    } else return false;
-                  },
+                },
+                OTHER_COMISSION: {
+                  value: gstApiData?.[0]?.OTHER_COMISSION ?? "",
+                  ignoreUpdate: true,
                 },
                 TAX_RATE: {
                   value: gstApiData?.[0]?.TAX_RATE ?? "",
