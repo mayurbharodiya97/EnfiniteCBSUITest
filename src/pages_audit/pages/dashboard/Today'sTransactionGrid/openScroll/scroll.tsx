@@ -3,12 +3,14 @@ import { scrollMetaData } from "./metaData";
 import Report from "components/report";
 import * as API from "./api";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Scroll = ({ open, handleCloseDialog, data }) => {
   const [scrollData, setScrollData] = useState<any>([]);
 
   const { SCROLL1, COMP_CD, BRANCH_CD } = data?.[0]?.data;
   const scroll = SCROLL1;
+  const { t } = useTranslation();
 
   const updatedMetaData = {
     ...scrollMetaData,
@@ -69,10 +71,10 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
         }}
       >
         <Typography marginLeft={"10px"} fontWeight={"bold"}>
-          Credit Count : {count?.creditCount}{" "}
+          {t("CreditCount")} : {count?.creditCount}{" "}
         </Typography>
         <Typography fontWeight={"bold"}>
-          Debit Count :{count?.debitCount}{" "}
+          {t("DebitCount")} :{count?.debitCount}{" "}
         </Typography>
       </Grid>
     </Dialog>

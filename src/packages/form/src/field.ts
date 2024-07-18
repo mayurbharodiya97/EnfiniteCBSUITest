@@ -47,6 +47,7 @@ export const useField = ({
   skipValueUpdateFromCrossFieldWhenReadOnly,
   txtTransform,
   AlwaysRunPostValidationSetCrossFieldValues,
+  componentType = "",
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -153,13 +154,36 @@ export const useField = ({
         : null;
     //console.log("field", value, defaultValueForArrayField, currentfield);
     if (typeof value === "boolean" || Boolean(value)) {
-      defaultValue = { value: value };
+      // defaultValue = { value: value };
+      defaultValue = {
+        value: value,
+        ignoreInSubmit:
+          componentType.toLowerCase() === "typography" ||
+          componentType.toLowerCase() === "divider" ||
+          componentType.toLowerCase() === "spacer",
+      };
     } else if (Boolean(defaultValueForArrayField)) {
-      defaultValue = { value: defaultValueForArrayField };
+      // defaultValue = { value: defaultValueForArrayField };
+      defaultValue = {
+        value: defaultValueForArrayField,
+        ignoreInSubmit:
+          componentType.toLowerCase() === "typography" ||
+          componentType.toLowerCase() === "divider" ||
+          componentType.toLowerCase() === "spacer",
+      };
     }
 
     const registrationValue: FormFieldRegisterSelectorAttributes = {
-      defaultValue: defaultValue,
+      // defaultValue: defaultValue,
+      defaultValue:
+        defaultValue === null
+          ? {
+              ignoreInSubmit:
+                componentType.toLowerCase() === "typography" ||
+                componentType.toLowerCase() === "divider" ||
+                componentType.toLowerCase() === "spacer",
+            }
+          : defaultValue,
       fieldName: currentfield,
     };
     registerField(registrationValue);
@@ -639,6 +663,17 @@ export const useField = ({
     },
     [setFieldData]
   );
+
+  // to ignore field data in submit handler
+  const setIgnoreInSubmit = useCallback(
+    (val: boolean) => {
+      setFieldData((currVal) => {
+        return { ...currVal, ignoreInSubmit: val };
+      });
+    },
+    [setFieldData]
+  );
+
   const runValidation = useCallback(
     (mergeObj: any, alwaysRun?: boolean, touchAndValidate?: boolean) => {
       if (mergeObj) {
@@ -769,6 +804,7 @@ export const useField = ({
     setValue,
     setValueAsCB,
     setErrorAsCB,
+    setIgnoreInSubmit, //Ignore in Submit
     setIncomingMessage,
     runValidation,
     dependentValues: dependentFieldsState,

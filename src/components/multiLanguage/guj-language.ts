@@ -5,11 +5,78 @@ export const guj_language_data = {
   CodeisRequired: "કોડ જરૂરી છે",
   DescriptionisRequired: "વર્ણન જરૂરી છે",
   MarginisRequired: "માર્જિન જરૂરી છે",
+  RecordsDeletedMsg: "રેકોર્ડ સફળતાપૂર્વક કાઢી નાખ્યા",
 
   //Action Taken Master
   ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
   ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
   LegalProcess: "કાનૂની પ્રક્રિયા",
+  A4SuitFileStatusCode: "A4 સૂટ ફાઇલ સ્ટેટસ કોડ",
+  SelectA4SuitFileStatusCode: "A4 સૂટ ફાઇલ સ્ટેટસ કોડ પસંદ કરો",
+
+  //Category Master
+  CategoryMaster: "કેટેગરી માસ્ટર (MST/050)",
+  CategoryMasterForm: "કેટેગરી માસ્ટર",
+  CategoryName: "શ્રેણીનું નામ",
+  TypeOfConstitution: "બંધારણનો પ્રકાર",
+  TDSLimit: "TDS મર્યાદા",
+  TDSPayableRate: "TDS ચૂકવવાપાત્ર દર",
+  TDSPayable: "TDS ચૂકવવાપાત્ર",
+  TDSPayableBranch: "TDS ચૂકવવાપાત્ર શાખા",
+  EnterCategoryName: "કેટેગરીનું નામ દાખલ કરો",
+  CategoryNameisrequired: "કેટેગરીનું નામ જરૂરી છે",
+  SelectTypeOfConstitution: "બંધારણનો પ્રકાર પસંદ કરો",
+  "Minor/Major": "માઇનોર/મેજર",
+  Surcharge: "સરચાર્જ",
+  TDSReceivable: "TDS મેળવવાપાત્ર",
+  TDSPayableType: "TDS ચૂકવવાપાત્ર પ્રકાર",
+  "TDSPayableA/cNo": "TDS ચૂકવવાપાત્ર એકાઉન્ટ નંબર",
+  TDSPayableAccountName: "TDS ચૂકવવાપાત્ર એકાઉન્ટનું નામ",
+  SurchargeRate: "સરચાર્જ દર",
+  SurchargeType: "સરચાર્જનો પ્રકાર",
+  "SurchargeA/cNo": "સરચાર્જ એકાઉન્ટ નંબર",
+  TDSReceivableBranch: "TDS પ્રાપ્તિપાત્ર શાખા",
+  TDSReceivableType: "TDS પ્રાપ્તિપાત્ર પ્રકાર",
+  TDSReceivableAcNo: "TDS પ્રાપ્તિપાત્ર એકાઉન્ટ નંબર",
+  TDSReceivableAccountName: "TDS પ્રાપ્ત કરી શકાય તેવા એકાઉન્ટનું નામ",
+
+  //Agent Master
+  AgentMaster: "એજન્ટ માસ્ટર (MST/041)",
+  AgentMasterForm: "એજન્ટ માસ્ટર",
+  SecurityAmtPerValidation:
+    "સુરક્ષા રકમ અથવા ટકાવારી(%) શૂન્ય હોવી જોઈએ. બંને એક જ સમયે અસ્તિત્વમાં હોઈ શકતા નથી",
+  Group: "સમૂહ",
+  SelectGroup: "જૂથ પસંદ કરો",
+  SecurityAmount: "સુરક્ષા રકમ",
+  "Security%": "સુરક્ષા %",
+  SecurityCalculationOn: "સુરક્ષા ગણતરી ચાલુ",
+  SelectConfiguration: "રૂપરેખાંકન પસંદ કરો",
+  TDSRate: "TDS દર",
+  AgentAccount: "એજન્ટ એકાઉન્ટ",
+  SecurityAccount: "સુરક્ષા ખાતું",
+  OtherAccount: "અન્ય એકાઉન્ટ",
+  ProfessionalTaxAccount: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ",
+  HandHeldMachine: "હેન્ડ હેલ્ડ મશીન",
+  AgentAccountBranch: "એજન્ટ એકાઉન્ટ શાખા",
+  AgentAccountType: "એજન્ટ એકાઉન્ટનો પ્રકાર",
+  AgentAccountNo: "એજન્ટ એકાઉન્ટ નં.",
+  AgentAccountName: "એજન્ટ એકાઉન્ટ નામ",
+  SecurityAccountBranch: "સુરક્ષા ખાતાની શાખા",
+  SecurityAccountType: "સુરક્ષા એકાઉન્ટ પ્રકાર",
+  SecurityAccountNo: "સુરક્ષા ખાતું નં.",
+  SecurityAccountName: "સુરક્ષા ખાતાનું નામ",
+  OtherAccountBranch: "અન્ય એકાઉન્ટ શાખા",
+  OtherAccountType: "અન્ય એકાઉન્ટ પ્રકાર",
+  OtherAccountNo: "અન્ય ખાતા નં.",
+  OtherAccountName: "અન્ય એકાઉન્ટ નામ",
+  ProfessionalTaxAccountBranch: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ શાખા",
+  ProfessionalTaxAccountType: "પ્રોફેશનલ ટેક્સ એકાઉન્ટનો પ્રકાર",
+  ProfessionalTaxAccountNo: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ નં.",
+  ProfessionalTaxAccountName: "પ્રોફેશનલ ટેક્સ એકાઉન્ટનું નામ",
+  ProfessionalTaxAccountConfiguration: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ કન્ફિગરેશન",
+  HandHeldMachineConfiguration: "હેન્ડ હેલ્ડ મશીન રૂપરેખાંકન",
+  HandHeldMachineTDSRate: "હેન્ડ હેલ્ડ મશીન TDS દર",
+
   // GridWrapper
   Search: "શોધો",
   NoDataFound: "કોઈ ડેટા મળ્યો નથી..!",
@@ -18,8 +85,8 @@ export const guj_language_data = {
   Export: "નિકાસ કરો",
 
   // Message box
-  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો...?",
-  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો...?",
+  DeleteData: "શું તમે પસંદ કરેલી પંક્તિ કાઢી નાખવાની ખાતરી કરો છો?",
+  SaveData: "શું તમે આ વિનંતીને સાચવવા માંગો છો?",
   Confirmation: "પુષ્ટિકરણ",
 
   // FormWrapper
@@ -29,9 +96,14 @@ export const guj_language_data = {
   new: "નવો",
 
   // MST/067
-  EntryDescriptionMaster: "પ્રવેશ વર્ણન માસ્ટર MST/067",
+  "Entry Description Master (MST/067)": "પ્રવેશ વર્ણન માસ્ટર (MST/067)",
+  "Entry Description Master": "પ્રવેશ વર્ણન માસ્ટર",
   ParentType: "પિતૃ વર્ગ",
   EnterDescription: "વર્ણન દાખલ કરો",
+  DuplicateValidation:
+    "{{fieldValue}} પહેલાથી જ ક્રમ નંબર: {{rowNumber}} પર દાખલ કરેલ છે",
+    ParentTyperequired: "પિતૃ પ્રકાર જરૂરી છે.",
+
 
   // MST/097
   InsuranceTypeMaster: "વીમા પ્રકાર માસ્ટર MST/097",
@@ -39,11 +111,15 @@ export const guj_language_data = {
   // MST/052
   NPACategoryMaster: "NPA કેટેગરી માસ્ટર MST/052",
   Parent: "પિતૃ",
-  ProvisionSecureRate: "જોગવાઈ સુરક્ષિત દર",
-  ProvisionUnSecureRate: "જોગવાઈ અસુરક્ષિત દર",
+  ProvisionSecureRate: "સુરક્ષિત જોગવાઈ દર",
+  ProvisionUnSecureRate: "અસુરક્ષિત જોગવાઈ દર",
   AssetClassificationCode: "A5 સંપત્તિ વર્ગીકરણ કોડ",
   CalculatePenalInterestOn: "દંડાત્મક વ્યાજની ગણત્રી",
   EnterName: "નામ દાખલ કરો",
+  ParentRequired:"પિતૃ જરૂરી છે.",
+  Nameisrequired: "નામ જરૂરી છે.",
+  EnterSecureRate:"સુરક્ષિત જોગવાઈ દર દાખલ કરો",
+  EnterUnSecureRate:"અસુરક્ષિત જોગવાઈ દર દાખલ કરો",
 
   // MST/146
   CourtMaster: "કોર્ટ માસ્ટર (MST/146)",
@@ -62,6 +138,8 @@ export const guj_language_data = {
   EnterPinCode: "પિન કોડ દાખલ કરો",
   EnterAddress: "સરનામું દાખલ કરો",
   EnterContactNumber: "સંપર્ક નંબર દાખલ કરો",
+  PincodeRequired:"પિનકોડ જરૂરી છે",
+
 
   // Report
   CreditCount: "ક્રેડિટ ગણતરી",
@@ -88,6 +166,21 @@ export const guj_language_data = {
   NO: "ના",
   Accept: "સ્વીકારો",
   Decline: "નકારો",
+
+  // Passbook printing
+  RetrievePassbookPrinting: "પાસબુક પ્રિન્ટ વિકલ્પ પુનઃપ્રાપ્ત કરો",
+  AccountHolder: "ખાતા ધારકનું નામ",
+  LineNo: "લાઇન નંબર",
+  Reprint: "ફરીથી છાપો",
+  NextPageAlert: "શું તમે આગલું પૃષ્ઠ છાપવા માંગો છો?",
+  PassbookPrint: "પાસબુક પ્રિન્ટ",
+  printPage: "આ પૃષ્ઠ છાપો",
+  PassbookStatementPreview: "પાસબુક સ્ટેટમેન્ટ પૂર્વાવલોકન",
+  LineNoValidation: "લાઇન નંબર {{from}} થી {{to}} ની વચ્ચે રાખો",
+  DateValidation:
+    "'તારીખથી' ખાતું ખોલ્યાની તારીખ કરતાં પહેલાંની ન હોવી જોઈએ :- {{date}}",
+  PassbookUpdateMessage:
+    "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
   Code: "કોડ",
@@ -134,9 +227,11 @@ export const guj_language_data = {
   // For OTP Verify
   otp: {
     OTPAuthentication: "ઓટીપી પ્રમાણીકરણ",
+    TOTPAuthentication: "ટી-ઓટીપી પ્રમાણીકરણ",
     GenerateNewOTP:
       "કૃપા કરીને નવો ઓટીપી જનરેટ કરવા માટે રીસેેંન્ડ બટન પર ક્લિક કરો",
-    EnterOTP: "તમારા મોબાઈલ નંબર 98*****37 પર મોકલેલ OTP દાખલ કરો",
+    EnterOTPsentToMobile: "તમારા મોબાઈલ નંબર 98*****37 પર મોકલેલ OTP દાખલ કરો",
+    PleaseEnterOTP: "કૃપા કરીને OTP દાખલ કરો (પ્રમાણકર્તા)",
     ResendOTP: "ઓટીપી ફરીથી મોકલો",
     GetNewOTP: "નવો ઓટીપી મેળવો",
     ValidFor: "માટે માન્ય",
@@ -333,8 +428,8 @@ export const guj_language_data = {
 
   PassbookStatementPrintOption: "પાસબુક/સ્ટેટમેન્ટ પ્રિંટ વિકલ્પ",
   Template: "ટેમ્પ્લેટ",
-  ToDate: "તારીખ સુધી",
-  FromDate: "તારીખ થી",
+  ToDate: "તારીખ સુધી:-",
+  FromDate: "તારીખ થી:-",
   passbook: "પાસબુક",
   Statement: "નિવેદન",
   FrontPage: "આગળનું પાનું",
@@ -394,6 +489,9 @@ export const guj_language_data = {
   AtleastOneBranchShouldBeSelected: "ઓછામાં ઓછી એક શાખા પસંદ કરવી જોઈએ",
   Select: "પસંદ કરો",
   DisplayName: "ડિસ્પ્લે નામ",
+  CTS: "સીટીએસ",
+  AddBranch:"શાખા ઉમેરો",
+
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
 
@@ -528,6 +626,7 @@ export const guj_language_data = {
   BalanceIsLesThanServicecharge: "બેલેન્સ સર્વિસ-ચાર્જ કરતાં ઓછું છે",
   BeforeChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પહેલા",
   AfterChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પછી",
+  ChequeBkAlreadyIssued: "પહેલેથી જ જારી કરેલ ચેકબુક",
 
   // limit entry
 
@@ -707,6 +806,11 @@ export const guj_language_data = {
   TemporaryODHistory: "ટેમ્પરરી-ઓડી ઇતિહાસની વિગતો",
   LastMachineName: "છેલ્લા મશીનનું નામ",
   AreYouSureToForceExp: "શું તમે ફોર્સ-એક્સપાયર કરવા માટે નિશ્ચિત છો ?",
+  FromDateGreaterThanOrEqualToWorkingDate:
+    "અસરકારક From તારીખ કામકાજની તારીખ કરતાં મોટી અથવા બરાબર હોવી જોઈએ.",
+  ToDateGreaterThanOrEqualToFromDate:
+    "અસરકારક To Date અસરકારક From Date કરતાં મોટી અથવા બરાબર હોવી જોઈએ",
+
   // lien Master
   // Mode Master
   Mode: "મોડ",
@@ -729,6 +833,46 @@ export const guj_language_data = {
   CentreName: "કેન્દ્રનું નામ",
   TempODAgainstConfirmation: "ટેમ્પરરી-ઓડી કન્ફર્મેશન",
   Defination: "વ્યાખ્યા",
+
+  // form 15GH entry and confirmation
+  NoteDoubleClickOnViewDetails: "નોંધ: વિગતો જોવા માટે ડબલ ક્લિક કરો",
+  FormExpiryDate: "ફોર્મ સમાપ્તિ તારીખ",
+  FormName: "ફોર્મનું નામ",
+  VerifiedDate: "ચકાસાયેલ તારીખ",
+  UniqueId: "અનન્ય આઈડી",
+  CustomerNotFound: "ગ્રાહક મળ્યો નથી",
+  Information: "માહિતી",
+  BirthDate: "જન્મતારીખ",
+  FormTillDate: "તારીખ સુધી ફોર્મ",
+  Email: "ઈમેલ",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "અંદાજિત વ્યાજ જેના માટે ઘોષણા કરવામાં આવે છે",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "ઉપરની વ્યાજની રકમ સિવાય અંદાજિત અન્ય આવક",
+  NoOfFormsSubmittedInOtherBanks: "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની સંખ્યા",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "અન્ય બેંકમાં સબમિટ કરેલા ફોર્મની કુલ આવક",
+  WhetherAssessedToIncomeTaxAct: "શું આવકવેરા કાયદામાં આકારણી કરવામાં આવી છે?",
+  IfYesLatestAssessmentDate: "જો હા, તો નવીનતમ આકારણી તારીખ",
+  LastAssessmentDateValidationMessage:
+    "છેલ્લી આકારણી તારીખ નાણાકીય વર્ષનો છેલ્લો દિવસ હોવો જોઈએ.",
+  ActiveValidationMessage:
+    "એફડી/આરડી માંથી એક (અથવા વધુ) ચૂકવવામાં આવે છે જેના માટે આ ફોર્મ સબમિટ કરવામાં આવ્યું હતું. તેથી તમે આ ફોર્મને નિષ્ક્રિય કરી શકતા નથી.",
+  Inactive: "નિષ્ક્રિય",
+  PrintForm: "પ્રિન્ટ ફોર્મ",
+  Bank: "બેંક",
+  FDNo: "એફડી નંબર",
+  FinInterest: "નાણાકીય વ્યાજ",
+  RetrievalParameters: "પુનઃપ્રાપ્તિ પરિમાણો",
+  FromDateIsRequired: "થી તારીખ જરૂરી છે.",
+  ToDateIsRequired: "સુધી તારીખ જરૂરી છે.",
+  EnterCustomerID: "ગ્રાહક આઈડી દાખલ કરો",
+  NoRecordFound: "કોઈ રેકોર્ડ મળ્યો નથી",
+  ConfirmFormData: "શું તમે આ ફોર્મની ખાતરી કરવા માટે ચોક્કસ છો?",
+  ConfirmRestrictionMessage:
+    "તમારા પોતાના દાખલ કરેલ ફોર્મની પુષ્ટિ કરી શકતા નથી.",
+  DeleteWarning: "કાઢી નાખવા માટેની ચેતવણી",
+  CannotDeleteConfirmedForm: "કન્ફર્મ કરેલ ફોર્મ ડિલીટ કરી શકાતું નથી.",
+  PrintFormConfirmation: "શું તમે ફોર્મ છાપવા માંગો છો?",
+  ViewAll: "બધુજ જુઓ",
 };
-
-

@@ -1,11 +1,12 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { getDDDWAcctType, getPMISCData } from "../api";
 import { utilFunction } from "components/utils";
+import { t } from "i18next";
 
 export const CategoryMasterFormMetaData = {
   form: {
     name: "categoryMaster",
-    label: "Category Master",
+    label: "CategoryMasterForm",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -48,23 +49,18 @@ export const CategoryMasterFormMetaData = {
       },
       name: "CATEG_CD",
       label: "Code",
-      placeholder: "Enter Code",
+      placeholder: "EnterCode",
       type: "text",
       maxLength: 4,
       isFieldFocused: true,
       required: true,
       autoComplete: "off",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Code is required."] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -78,7 +74,10 @@ export const CategoryMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -93,20 +92,15 @@ export const CategoryMasterFormMetaData = {
         componentType: "textField",
       },
       name: "CATEG_NM",
-      label: "Category Name",
-      placeholder: "Enter Category Name",
+      label: "CategoryName",
+      placeholder: "EnterCategoryName",
       maxLength: 100,
       type: "text",
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -120,7 +114,10 @@ export const CategoryMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -128,7 +125,7 @@ export const CategoryMasterFormMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Category Name is required."] }],
+        rules: [{ name: "required", params: ["CategoryNameisrequired"] }],
       },
       GridProps: { xs: 12, sm: 10, md: 10, lg: 10, xl: 10 },
     },
@@ -136,12 +133,11 @@ export const CategoryMasterFormMetaData = {
     {
       render: { componentType: "autocomplete" },
       name: "CONSTITUTION_TYPE",
-      label: "Type Of Constitution",
-      placeholder: "Select Type Of Constitution",
-      options: () => getPMISCData("CKYC_CONST_TYPE"),
+      label: "TypeOfConstitution",
+      placeholder: "SelectTypeOfConstitution",
+      options: getPMISCData,
       _optionsKey: "getPMISCData",
       type: "text",
-      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
 
@@ -150,7 +146,7 @@ export const CategoryMasterFormMetaData = {
         componentType: "amountField",
       },
       name: "TDS_LIMIT",
-      label: "TDS Limit",
+      label: "TDSLimit",
       placeholder: "Enter TDS Limit",
       autoComplete: "off",
       maxLength: 9,
@@ -194,10 +190,11 @@ export const CategoryMasterFormMetaData = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "TDS Payable",
+      label: "TDSPayable",
       name: "TDSPayable",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
     {
@@ -235,8 +232,8 @@ export const CategoryMasterFormMetaData = {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "TDS_BRANCH_CD",
-        __VIEW__: { isReadOnly: true },
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -244,13 +241,11 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_ACCT_TYPE: { value: "" },
-              TDS_ACCT_CD: { value: "" },
-              TDS_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_ACCT_TYPE: { value: "" },
+            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -259,6 +254,7 @@ export const CategoryMasterFormMetaData = {
         options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -266,14 +262,11 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_ACCT_CD: { value: "" },
-              TDS_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_NM: { value: "" },
+          };
         },
-        __VIEW__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
       },
       accountCodeMetadata: {
@@ -304,44 +297,55 @@ export const CategoryMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                TDS_ACCT_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-                TDS_SURCHARGE: {
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                TDS_ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  TDS_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  TDS_ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                TDS_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                TDS_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  TDS_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.TDS_ACCT_TYPE?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  TDS_ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.TDS_ACCT_TYPE?.optionData
+                  ),
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
                 TDS_ACCT_NM: {
@@ -350,10 +354,12 @@ export const CategoryMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               TDS_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
 
@@ -367,8 +373,7 @@ export const CategoryMasterFormMetaData = {
         componentType: "textField",
       },
       name: "TDS_ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },
@@ -378,10 +383,11 @@ export const CategoryMasterFormMetaData = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "Surcharge",
+      label: "Surcharge",
       name: "Surcharge",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
     {
@@ -417,8 +423,9 @@ export const CategoryMasterFormMetaData = {
     {
       render: { componentType: "autocomplete" },
       name: "TDS_SUR_ACCT_TYPE",
-      label: "Account Type",
-      placeholder: "Select account type",
+      label: "AccountType",
+      placeholder: "AccountTypePlaceHolder",
+      validationRun: "onChange",
       options: getDDDWAcctType,
       _optionsKey: "getDDDWAcctType",
       runPostValidationHookAlways: true,
@@ -429,14 +436,11 @@ export const CategoryMasterFormMetaData = {
         dependentFieldValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (!currentField?.value) {
-          return {
-            TDS_SUR_ACCT_CD: { value: "" },
-          };
-        }
+        return {
+          TDS_SUR_ACCT_CD: { value: "" },
+        };
       },
       type: "text",
-      __VIEW__: { isReadOnly: true },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
 
@@ -449,9 +453,9 @@ export const CategoryMasterFormMetaData = {
       render: {
         componentType: "numberFormat",
       },
-      label: "Account No.",
+      label: "AccountNumber",
       name: "TDS_SUR_ACCT_CD",
-      placeholder: "Enter account number",
+      placeholder: "AccountNumberPlaceHolder",
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
@@ -478,41 +482,54 @@ export const CategoryMasterFormMetaData = {
             ),
             SCREEN_REF: "MST/041",
           };
+          formState?.handleButtonDisable(true);
           const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
           if (postData?.RESTRICTION) {
-            formState.MessageBox({
-              messageTitle: "Validation Failed...!",
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
               message: postData?.RESTRICTION,
             });
-            return {
-              TDS_SUR_ACCT_CD: { value: "", isFieldFocused: true },
-              TDS_REC_BRANCH_CD: {
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
-            };
+            if (btnName === "Ok") {
+              formState?.handleButtonDisable(false);
+              return {
+                TDS_SUR_ACCT_CD: { value: "", isFieldFocused: true },
+              };
+            }
           } else if (postData?.MESSAGE1) {
-            formState.MessageBox({
-              messageTitle: "Risk Category Alert",
+            let btnName = await formState.MessageBox({
+              messageTitle: "RiskCategoryAlert",
               message: postData?.MESSAGE1,
               buttonNames: ["Ok"],
             });
-            return {
-              TDS_SUR_ACCT_CD: {
-                value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                ignoreUpdate: true,
-              },
-            };
+            if (btnName === "Ok") {
+              formState?.handleButtonDisable(false);
+              return {
+                TDS_SUR_ACCT_CD: {
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
+                  ),
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+              };
+            }
           } else {
+            formState?.handleButtonDisable(false);
             return {
               TDS_SUR_ACCT_CD: {
-                value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                value: utilFunction.getPadAccountNumber(
+                  currentField?.value,
+                  dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
+                ),
+                isFieldFocused: false,
                 ignoreUpdate: true,
               },
             };
           }
         }
+        formState?.handleButtonDisable(false);
         return {};
       },
       maxLength: 8,
@@ -538,10 +555,11 @@ export const CategoryMasterFormMetaData = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
-      dividerText: "TDS Receivable",
+      label: "TDSReceivable",
       name: "TDSReceivable",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
     {
@@ -549,6 +567,7 @@ export const CategoryMasterFormMetaData = {
       branchCodeMetadata: {
         name: "TDS_REC_BRANCH_CD",
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -556,13 +575,12 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_REC_ACCT_TYPE: { value: "" },
-              TDS_REC_ACCT_CD: { value: "" },
-              TDS_REC_ACCT_NM: { value: "" },
-            };
-          }
+
+          return {
+            TDS_REC_ACCT_TYPE: { value: "" },
+            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
@@ -570,6 +588,7 @@ export const CategoryMasterFormMetaData = {
         name: "TDS_REC_ACCT_TYPE",
         options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
+        validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -578,12 +597,10 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (!currentField?.value) {
-            return {
-              TDS_REC_ACCT_CD: { value: "" },
-              TDS_REC_ACCT_NM: { value: "" },
-            };
-          }
+          return {
+            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_NM: { value: "" },
+          };
         },
         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
@@ -615,40 +632,55 @@ export const CategoryMasterFormMetaData = {
               ),
               SCREEN_REF: "MST/041",
             };
-
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             if (postData?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
                 message: postData?.RESTRICTION,
               });
-              return {
-                TDS_REC_ACCT_CD: {
-                  value: "",
-                  ignoreUpdate: true,
-                },
-                TDS_REC_ACCT_NM: { value: "" },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  TDS_REC_ACCT_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                  },
+                  TDS_REC_ACCT_NM: { value: "" },
+                };
+              }
             } else if (postData?.MESSAGE1) {
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
+              let btnName = await formState.MessageBox({
+                messageTitle: "RiskCategoryAlert",
                 message: postData?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
-              return {
-                TDS_REC_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
-                  ignoreUpdate: true,
-                },
-                TDS_REC_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
+              if (btnName === "Ok") {
+                formState?.handleButtonDisable(false);
+                return {
+                  TDS_REC_ACCT_CD: {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  TDS_REC_ACCT_NM: {
+                    value: postData?.ACCT_NM ?? "",
+                  },
+                };
+              }
             } else {
+              formState?.handleButtonDisable(false);
               return {
                 TDS_REC_ACCT_CD: {
-                  value: currentField.value.padStart(6, "0")?.padEnd(20, " "),
+                  value: utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
+                  ),
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
                 TDS_REC_ACCT_NM: {
@@ -657,10 +689,12 @@ export const CategoryMasterFormMetaData = {
               };
             }
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               TDS_REC_ACCT_NM: { value: "" },
             };
           }
+          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,
@@ -673,8 +707,7 @@ export const CategoryMasterFormMetaData = {
         componentType: "textField",
       },
       name: "TDS_REC_ACCT_NM",
-      label: "Account Name",
-      placeholder: "Enter Account Name",
+      label: "AccountName",
       maxLength: 30,
       type: "text",
       __EDIT__: { isReadOnly: true },

@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const EntryDescMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "EntryDescriptionMaster",
+    gridLabel: "",
     rowIdColumn: "SP_CD",
     defaultColumnConfig: {
       width: 400,

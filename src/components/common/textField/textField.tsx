@@ -5,6 +5,7 @@ import {
   useCallback,
   useState,
   useContext,
+  useMemo,
 } from "react";
 import {
   useField,
@@ -55,6 +56,9 @@ interface MyGridExtendedProps {
     touchAndValidate?: any;
   };
   enableShortcut?: string[];
+  ignoreInSubmit?: boolean;
+  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  label?: string;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -88,6 +92,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   setColor,
   showMaxLength = true,
   label,
+  setFieldLabel,
   startsIcon,
   endsIcon,
   iconStyle,
@@ -96,6 +101,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   AlwaysRunPostValidationSetCrossFieldValues,
   preventSpecialCharInput,
   enableShortcut = [],
+  ignoreInSubmit = false,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -120,6 +126,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     dependentValues,
     setErrorAsCB,
     fieldDataOnBlr,
+    setIgnoreInSubmit,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -153,6 +160,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
       }
     }
   }, [value, setColor]);
+
+  useEffect(() => {
+    setIgnoreInSubmit(ignoreInSubmit);
+  }, [ignoreInSubmit]);
 
   const customHandleChange = useCallback(
     (e) => {
@@ -204,7 +215,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         try {
           let result = await setValueOnDependentFieldsChange(
             transformDependentFieldsState(dependentValues),
-            { isSubmitting }
+            { isSubmitting, value }
           );
 
           if (result !== undefined && result !== null) {
@@ -247,6 +258,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
     whenToRunValidation,
     setErrorAsCB,
   ]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
+  }, [setFieldLabel, label, dependentValues, value])
 
   if (excluded) {
     return null;
@@ -378,7 +393,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
+        label={updatedLabel ?? label}
         value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={
@@ -416,10 +431,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: textFieldStyle
-              ? ""
-              : Boolean(readOnly)
-              ? "var(--theme-color7)"
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
               : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
@@ -465,7 +478,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           ...inputProps,
         }}
         onBlur={handleBlur}
-        disabled={isSubmitting}
+        disabled={isSubmitting || readOnly}
         variant={"standard"}
         color="secondary"
         ref={inputfocusRef}

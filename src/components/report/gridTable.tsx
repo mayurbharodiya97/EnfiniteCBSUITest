@@ -239,7 +239,7 @@ export const GridTable: FC<GridTableType> = ({
               onClick={() => setAllFilters([])}
               style={{ marginRight: "8px" }}
             >
-              Clear Filter
+              {t("ClearFilter")}
             </Button>
           )}
           <GlobalFilter
@@ -261,7 +261,7 @@ export const GridTable: FC<GridTableType> = ({
               />
             }
             style={{ color: "var(--theme-color2)" }}
-            label="show Filters"
+            label={t("showFilters")}
           />
           <FormControlLabel
             control={
@@ -273,7 +273,7 @@ export const GridTable: FC<GridTableType> = ({
               />
             }
             style={{ color: "var(--theme-color2)" }}
-            label="Expand Rows"
+            label={t("ExpandRows")}
           />
           {rows.length ? (
             <FormControlLabel
@@ -285,7 +285,7 @@ export const GridTable: FC<GridTableType> = ({
                     }}
                     style={{ marginTop: "0px", color: "white" }}
                   >
-                    Export <GetAppIcon />
+                    {t("Export")} <GetAppIcon />
                   </Button>
                   {/* <IconButton
                   onClick={() =>
@@ -326,7 +326,16 @@ export const GridTable: FC<GridTableType> = ({
           filters={queryFilters}
         />
       </Paper>
-      {loading && <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}}/>}
+      {loading && (
+        <LinearProgress
+          sx={{
+            background: "var(--theme-color6)",
+            "& .MuiLinearProgress-bar": {
+              background: "var(--theme-color1) !important",
+            },
+          }}
+        />
+      )}
       <Paper
         style={{
           width: "100%",

@@ -37,14 +37,14 @@ export const App = () => {
             <PopupContextProvider>
               <WorkerContextProvider>
                 <ThemeProviders>
-                <SnackbarProvider
-                  maxSnack={3}
-                  autoHideDuration={5000}
-                  Components={{ customSnackbar: CustomSnackbarContent }}
-                >
-                  <IndexPage />
-                </SnackbarProvider>
-                  </ThemeProviders>
+                  <SnackbarProvider
+                    maxSnack={3}
+                    autoHideDuration={5000}
+                    Components={{ customSnackbar: CustomSnackbarContent }}
+                  >
+                    <IndexPage />
+                  </SnackbarProvider>
+                </ThemeProviders>
               </WorkerContextProvider>
               {/* {process.env.NODE_ENV !== "production" ? (
                 <ReactQueryDevtools />

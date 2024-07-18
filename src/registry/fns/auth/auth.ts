@@ -261,24 +261,35 @@ const authAPI = () => {
       );
 
       if (String(response.status) === "200") {
-        let data = await response.json();
-        if (Array.isArray(data)) {
-          data = data[0];
+        if (response.headers.get("Content-Type") === "application/pdf") {
+          let data = await response.blob();
+          return {
+            status: "0",
+            message: "",
+            data: data,
+            messageDetails: "",
+            isPrimaryKeyError: false,
+          };
+        } else {
+          let data = await response.json();
+          if (Array.isArray(data)) {
+            data = data[0];
+          }
+          return {
+            status: String(data.STATUS),
+            message: data?.MESSAGE ?? "",
+            data: data?.RESPONSE ?? [],
+            messageDetails: data?.RESPONSEMESSAGE ?? "",
+            isPrimaryKeyError:
+              String(data.STATUS) === "0"
+                ? false
+                : (data?.RESPONSEMESSAGE ?? "").indexOf(
+                    "ORA-00001: unique constraint"
+                  ) >= 0
+                ? true
+                : false,
+          };
         }
-        return {
-          status: String(data.STATUS),
-          message: data?.MESSAGE ?? "",
-          data: data?.RESPONSE ?? [],
-          messageDetails: data?.RESPONSEMESSAGE ?? "",
-          isPrimaryKeyError:
-            String(data.STATUS) === "0"
-              ? false
-              : (data?.RESPONSEMESSAGE ?? "").indexOf(
-                  "ORA-00001: unique constraint"
-                ) >= 0
-              ? true
-              : false,
-        };
       } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {
         //@ts-ignore
         if (typeof window.__logout === "function") {

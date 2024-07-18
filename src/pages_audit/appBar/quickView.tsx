@@ -41,6 +41,7 @@ export const Quick_View = () => {
   }, []);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
+    refetch();
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

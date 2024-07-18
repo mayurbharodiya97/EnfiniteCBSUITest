@@ -191,8 +191,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
-  GETQUICKVIEWSCREEN: {
-    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+  DOQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/DOQUICKVIEWSCREEN",
     packageName: "",
   },
   GETPASSBKTEMPL: {
@@ -1640,7 +1640,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSBNFCRYDTL: {
-    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
   GETIFSCDETAILS: {
@@ -1648,7 +1648,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSIFSCCODEACWISE: {
-    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",
   },
   GETBANKIFSCCODEMSTGRID: {
@@ -1785,6 +1785,26 @@ export const ActionWiseAPIConfiguration = {
   },
   DOTEMPODCONFIRMATION: {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
+    packageName: "",
+  },
+  VALIDATESAVECHQDATA: {
+    url: "/chequeServiceAPI/VALIDATESAVECHQDATA",
+    packageName: "",
+  },
+  GETCHEQUEBOOKISSUED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
+  GETRECURPAYMENTSCREENPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTSCREENPARA",
+    packageName: "",
+  },
+  VALIDATEDELRECURRPAYMENTENTRY: {
+    url: "/transactionServiceAPI/VALIDATEDELRECURRPAYMENTENTRY",
+    packageName: "",
+  },
+  GETPARAMNEFTDD: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARAMNEFTDD",
     packageName: "",
   },
 };

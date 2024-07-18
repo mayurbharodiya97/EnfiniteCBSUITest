@@ -11,7 +11,7 @@ import { chequeGridDTL } from "../api";
 import { Alert } from "components/common/alert";
 import Draggable from "react-draggable";
 
-export const ChequeDtlGrid = ({ ClosedEventCall }) => {
+export const ChequeDtlGrid = ({ navigate }) => {
   const closeAction: ActionTypes[] = [
     {
       actionName: "close",
@@ -42,7 +42,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      ChequeDtlGridMetaData.gridConfig.gridLabel = `Cheque Detail \u00A0\u00A0 
+      ChequeDtlGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 
       
       ${(
         rows?.[0]?.data?.COMP_CD +
@@ -92,7 +92,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
           setData={() => {}}
           loading={chequeDTL?.isLoading}
           actions={closeAction}
-          setAction={() => ClosedEventCall()}
+          setAction={() => navigate(".")}
         />
       </div>
     </Dialog>

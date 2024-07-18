@@ -132,10 +132,10 @@ export const limitEntryMetaData = {
             if (postData?.length) {
               formState.setDataOnFieldChange("NSC_FD_BTN", {
                 NSC_FD_BTN: postData?.[0]?.RESTRICTION ? false : true,
-                HDN_CHARGE_AMT: postData?.[0]?.CHARGE_AMT,
-                HDN_GST_AMT: postData?.[0]?.GST_AMT,
+                HDN_CHARGE_AMT: postData?.[0]?.CHARGE_AMT || 0,
+                HDN_GST_AMT: postData?.[0]?.GST_AMT || 0,
                 HDN_GST_ROUND: postData?.[0]?.GST_ROUND,
-                HDN_TAX_RATE: postData?.[0]?.TAX_RATE,
+                HDN_TAX_RATE: postData?.[0]?.TAX_RATE || 0,
               });
             }
 
@@ -156,7 +156,7 @@ export const limitEntryMetaData = {
               }
             } else if (postData?.[0]?.MESSAGE1) {
               let res = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Alert",
                 message: postData?.[0]?.MESSAGE1,
                 buttonNames: ["Ok"],
               });
@@ -272,29 +272,6 @@ export const limitEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "LIMIT_TYPE",
-      label: "LimitType",
-      placeholder: "LimitType",
-      defaultValue: "Normal",
-      options: () => {
-        return [
-          { value: "Normal", label: "Normal Limit" },
-          { value: "Hoc", label: "Ad-hoc Limit" },
-        ];
-      },
-      _optionsKey: "limitTypeList",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
       name: "SECURITY_CD",
       label: "SecurityCode",
       placeholder: "SecurityCode",
@@ -339,6 +316,29 @@ export const limitEntryMetaData = {
         sm: 3,
         lg: 3,
         xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "LIMIT_TYPE",
+      label: "LimitType",
+      placeholder: "LimitType",
+      defaultValue: "Normal",
+      options: () => {
+        return [
+          { value: "Normal", label: "Normal Limit" },
+          { value: "Hoc", label: "Ad-hoc Limit" },
+        ];
+      },
+      _optionsKey: "limitTypeList",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
