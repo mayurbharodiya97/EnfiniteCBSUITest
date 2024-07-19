@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import  { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { gridMetadata } from "./gridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { ActionTypes } from "components/dataTable";
@@ -55,7 +55,7 @@ const BankIfscCodeMaasterGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -84,9 +84,18 @@ const BankIfscCodeMaasterGrid = () => {
     })
   );
   const deleteMutation = useMutation(API.deleteupdateBankIfscCodeData, {
-    onError: (error: any) => { },
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar("deleteSuccessfully", {
         variant: "success",
       });
       refetch();
@@ -116,7 +125,7 @@ const BankIfscCodeMaasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
           errorDetail={error?.error_detail}
           color="error"
         />

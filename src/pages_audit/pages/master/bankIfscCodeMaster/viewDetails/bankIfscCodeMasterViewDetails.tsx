@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
@@ -28,7 +28,7 @@ const BankIfscCdMasterForm = ({
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = "Unknownerroroccured";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -38,7 +38,7 @@ const BankIfscCdMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar("insertSuccessfully", {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -83,7 +83,7 @@ const BankIfscCdMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Are you sure to Save the record?",
+        message: "DeleteData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
