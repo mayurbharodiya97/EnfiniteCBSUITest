@@ -194,21 +194,28 @@ export const fr_language_data = {
   PassbookUpdateMessage:
     "Compte : {{account}}.\n Livret Déjà imprimé jusqu'au {{date}}.\n Voulez-vous considérer comme un doublon/une réimpression ?\n Oui - Dupliquer\n Non - Réimpression",
 
-  //Parent master main
-  ParentGroup: "Groupe de parents",
-  SubPriority: "Sous-priorité",
-  Description: "Description",
-  SanctionFromLimit: "Sanction de la limite",
-  SanctionToLimit: "Sanction à limiter",
-  ProvisionSecured: "Provision sécurisée %",
-  ProvisionUnSecured: "Provision non garantie %",
-  ViewDetail: "Voir les détails",
-  ParentWeaker: "Parent plus faible",
-  CKYCGroup: "Groupe C-KYC",
-  Constitution: "Constitution",
-  PinCode: "Code PIN",
-  Add: "Ajouter",
-  Delete: "Supprimer",
+
+
+      //Parent master main
+  ParentGroup:"Groupe de parents",
+  SubPriority:"Sous-priorité",
+  Description:"Description",
+  SanctionFromLimit:"Sanction de la limite",
+  SanctionToLimit:"Sanction à limiter",
+  ProvisionSecured:"Provision sécurisée %",
+  ProvisionUnSecured:"Provision non garantie %",
+  ViewDetail:"Voir les détails",
+  ToLimitValidation:"La limite doit être supérieure ou égale à par limite",
+  codeisRequired:"le code est requis",
+  //Priority master - sub
+  ParentWeaker:"Parent plus faible",
+  //trade master
+  CKYCGroup:"Groupe C-KYC",
+  Constitution:"Constitution",
+  //area master
+  PinCode:"Code PIN",
+  Add:"Ajouter",
+  Delete:"Supprimer",
 
   Loading: "Chargement..",
   SignIn: "S'identifier",

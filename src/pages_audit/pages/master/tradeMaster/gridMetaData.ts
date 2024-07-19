@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TradeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Trade Master (EMST/062)",
+    gridLabel: "",
     rowIdColumn: "TRADE_CD",
     defaultColumnConfig: {
       width: 200,

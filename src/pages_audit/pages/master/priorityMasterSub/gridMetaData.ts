@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const Prioritymastersubmetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Priority Master - Sub (EMST/O56)",
+    gridLabel: "",
     rowIdColumn: "SUB_PRIORITY_CD",
     defaultColumnConfig: {
       width: 200,
