@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const gridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Bank Ifsc Code Master MST/142",
+    gridLabel: "",
     rowIdColumn: "IFSC_CODE",
     defaultColumnConfig: {
       width: 400,

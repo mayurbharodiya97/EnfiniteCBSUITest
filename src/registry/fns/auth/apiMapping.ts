@@ -1787,6 +1787,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
+  SAVEPAYSLIPISSUEENTRYDTL: {
+    url: "transactionServiceAPI/SAVEPAYSLIPISSUEENTRYDTL",
+    packageName: "",
+  },
+  GETPAYSLIPTRXDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPTRXDDW",
+    packageName: "",
+  },
+  GETVOUCHERMSG: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETVOUCHERMSG",
+    packageName: "",
+  },
   VALIDATESAVECHQDATA: {
     url: "/chequeServiceAPI/VALIDATESAVECHQDATA",
     packageName: "",
