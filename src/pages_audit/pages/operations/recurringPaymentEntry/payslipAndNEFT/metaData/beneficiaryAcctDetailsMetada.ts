@@ -149,13 +149,17 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         const dataArray = Array.isArray(data?.BENEFIACCTDTL)
           ? data?.BENEFIACCTDTL
           : [];
-        for (let i = 0; i < dataArray?.length; i++) {
-          const item = dataArray[0];
-          if (item.TO_ACCT_NO.trim() && item.AMOUNT.trim()) {
-            return true;
+        if (dataArray?.length > 0) {
+          for (let i = 0; i < dataArray?.length; i++) {
+            const item = dataArray[0];
+            if (item.TO_ACCT_NO.trim() && item.AMOUNT.trim()) {
+              return true;
+            }
           }
+          return false;
+        } else {
+          return true;
         }
-        return false;
       },
       _fields: [
         {
@@ -242,7 +246,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
 
               if (validateIFSC?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState.MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: "ValidationFailed",
                   message: validateIFSC?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
                 });

@@ -167,7 +167,14 @@ export const extendFieldTypes = (
       field["placeholder"] = lanTranslate(field["placeholder"]);
       if (key === "branchCode") {
         // Set the default value for branchCode
-        field["defaultValue"] = authState?.user?.branchCode;
+        if (
+          field?.defaultValue?.trim() === "" ||
+          Boolean(field?.defaultValue?.trim())
+        ) {
+          field["defaultValue"] = field?.defaultValue;
+        } else {
+          field["defaultValue"] = authState?.user?.branchCode;
+        }
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
         // field["autoFocus"] = true;
