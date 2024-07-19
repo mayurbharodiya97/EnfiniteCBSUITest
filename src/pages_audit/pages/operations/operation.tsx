@@ -29,7 +29,7 @@ const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
-const StandingInstructionGridWrapper = lazy(()=>import("./standingInstruction/index"))
+
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
@@ -132,6 +132,5 @@ export const OperationsMenu = () => (
         </FixDepositProvider>
       }
     />
-        <Route path="standing-instruction-entry/*" element={<StandingInstructionGridWrapper />} />
   </Routes>
 );
