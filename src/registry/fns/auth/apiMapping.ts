@@ -1407,6 +1407,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/PARAMSTCONFIRM",
     packageName: "",
   },
+  GETSECMSTRETRIVE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTRETRIVE",
+    packageName: "",
+  },
   VALIDATEPARAVALUE: {
     url: "/enfinityCommonServiceAPI/VALIDATEPARAVALUE",
     packageName: "",
