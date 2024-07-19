@@ -4,6 +4,7 @@ import {
   useRef,
   useImperativeHandle,
   forwardRef,
+  useContext,
 } from "react";
 import { cloneDeep } from "lodash-es";
 import {
@@ -28,6 +29,9 @@ import {
 import { attachFilterComponentToMetaData } from "components/dataTable/utils";
 import { useTranslation } from "react-i18next";
 import { FooterCell } from "components/tableCellComponents/footerCell";
+import { utilFunction } from "components/utils";
+import { AuthContext } from "pages_audit/auth";
+import { useLocation } from "react-router-dom";
 export const GridWrapperWithAutoRefresh = forwardRef<any, GridWrapperPropTypes>(
   (props, ref) => {
     return (
@@ -69,6 +73,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     const { pause, resume } = useAutoRefreshControls();
     const metaDataRef = useRef<any>(null);
     const { t } = useTranslation();
+    const authController = useContext(AuthContext);
     if (metaDataRef.current === null) {
       metaDataRef.current = transformMetaData({
         metaData: finalMetaData,
@@ -76,6 +81,8 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         setAction,
       });
     }
+    let currentPath = useLocation().pathname;
+
     //console.log(data);
     let dataRef = useRef(data);
     dataRef.current = data;
@@ -291,7 +298,12 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     }
     return (
       <DataGrid
-        label={t(metaData.gridConfig?.gridLabel ?? "NO_NAME")}
+        // label={t(metaData.gridConfig?.gridLabel ?? "NO_NAME")}
+        label={
+          metaData.gridConfig?.gridLabel
+            ? t(metaData.gridConfig.gridLabel)
+            : t(utilFunction.getDynamicLabel(currentPath, authController?.authState?.menulistdata, true))
+        }
         dense={true}
         getRowId={getRowId}
         columns={columns}

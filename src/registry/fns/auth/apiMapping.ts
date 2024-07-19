@@ -191,8 +191,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
-  GETQUICKVIEWSCREEN: {
-    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+  DOQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/DOQUICKVIEWSCREEN",
     packageName: "",
   },
   GETPASSBKTEMPL: {
@@ -257,6 +257,10 @@ export const ActionWiseAPIConfiguration = {
   },
   CONFIRMCUSTOMERDATA: {
     url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
+    packageName: "",
+  },
+  CONFIRMCUSTPHOTODATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTPHOTODATA",
     packageName: "",
   },
   GETDOCTEMPLATEDTL: {
@@ -594,6 +598,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
+    packageName: "",
+  },
+  GETCUSTLATESTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTLATESTPHOTODTL",
     packageName: "",
   },
   GETUPDCUSTPHOTODATA: {
@@ -1632,7 +1640,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSBNFCRYDTL: {
-    url: "/transactionServiceAPI/GETRTGSBNFCRYDTL",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
   GETIFSCDETAILS: {
@@ -1640,7 +1648,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETRTGSIFSCCODEACWISE: {
-    url: "/transactionServiceAPI/GETRTGSIFSCCODEACWISE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",
   },
   GETBANKIFSCCODEMSTGRID: {
@@ -1791,6 +1799,95 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETVOUCHERMSG",
     packageName: "",
   },
+  VALIDATESAVECHQDATA: {
+    url: "/chequeServiceAPI/VALIDATESAVECHQDATA",
+    packageName: "",
+  },
+  GETCHEQUEBOOKISSUED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
+  GETRECURPAYMENTSCREENPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTSCREENPARA",
+    packageName: "",
+  },
+  VALIDATEDELRECURRPAYMENTENTRY: {
+    url: "/transactionServiceAPI/VALIDATEDELRECURRPAYMENTENTRY",
+    packageName: "",
+  },
+  GETPARAMNEFTDD: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARAMNEFTDD",
+    packageName: "",
+  },
+  GETSICOMMTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSICOMMTYPEDDW",
+    packageName: "",
+  },  
+  GETSIGRIDDATADISP  : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIGRIDDATADISP",
+    packageName: "",
+  },  
+  GETSISEARCHBTN  : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSISEARCHBTN",
+    packageName: "",
+  }, 
+  GETSIASEXECUTEDBTN  : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIASEXECUTEDBTN",
+    packageName: "",
+  }, 
+  GETSIEXECUTEDTLBTN  : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIEXECUTEDTLBTN",
+    packageName: "",
+  }, 
+  GETSIHDR : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDR",
+    packageName: "",
+  }, 
+  GETSICHARGE : {
+    url: "transactionServiceAPI/GETSICHARGE",
+    packageName: "",
+  }, 
+  VALIDATESTANDINGINSTRUCTIONENTRY : {
+    url: "/transactionServiceAPI/VALIDATESTANDINGINSTRUCTIONENTRY",
+    packageName: "",
+  }, 
+  GETSIDTLAUDITBTN:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIDTLAUDITBTN",
+    packageName: "",
+  },
+  GETDRACCTDATA:{
+    url: "transactionServiceAPI/GETDRACCTDATA",
+    packageName: "",
+  },
+  VALIDATEDELETESIEXECDTL:{
+    url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
+    packageName: "",
+  },
+  GETCRACCOUNTDETAILS:
+  {
+    url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
+    packageName: "",
+  },
+ DODELETESIEXECDTL:
+  {
+    url: "/transactionServiceAPI/DODELETESIEXECDTL",
+    packageName: "",
+  },
+  SAVESTANDINGINSTRUCTIONENTRY:
+  {
+    url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
+    packageName: "",
+  },
+  DOSIEXECUTION:
+  {
+    url: "/transactionServiceAPI/DOSIEXECUTION",
+    packageName: "",
+  },
+  DOSIEXECUTIONDETAILVIEW:
+  {
+    url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
+    packageName: "",
+  }
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

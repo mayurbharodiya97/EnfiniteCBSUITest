@@ -8,11 +8,79 @@ export const fr_language_data = {
   CodeisRequired: "Le code est requis",
   DescriptionisRequired: "Une description est requise",
   MarginisRequired: "Une marge est requise",
+  RecordsDeletedMsg: "Enregistrements supprimés avec succès",
 
   //Action Taken Master
   ActionTakenMaster: "Action entreprise Maître (MST/145)",
   ActionTakenMasterForm: "Action entreprise Maître",
   LegalProcess: "Procédure légale",
+  A4SuitFileStatusCode: "Code d'état du dossier de combinaison A4",
+  SelectA4SuitFileStatusCode:
+    "Sélectionnez le code d'état du fichier de combinaison A4",
+
+  //Category Master
+  CategoryMaster: "Catégorie Maître (MST/050)",
+  CategoryMasterForm: "Catégorie Maître",
+  CategoryName: "Nom de catégorie",
+  TypeOfConstitution: "Type de Constitution",
+  TDSLimit: "Limite TDS",
+  TDSPayableRate: "Taux payable TDS",
+  TDSPayable: "TDS à payer",
+  TDSPayableBranch: "Branche payable TDS",
+  EnterCategoryName: "Entrez le nom de la catégorie",
+  CategoryNameisrequired: "Le nom de la catégorie est obligatoire",
+  SelectTypeOfConstitution: "Sélectionnez le type de constitution",
+  "Minor/Major": "Mineur majeur",
+  Surcharge: "Surtaxe",
+  TDSReceivable: "TDS à recevoir",
+  TDSPayableType: "Type de paiement TDS",
+  "TDSPayableA/cNo": "Numéro de compte payable TDS",
+  TDSPayableAccountName: "Nom du compte payable TDS",
+  SurchargeRate: "Taux de supplément",
+  SurchargeType: "Type de supplément",
+  "SurchargeA/cNo": "Numéro de compte de majoration",
+  TDSReceivableBranch: "Direction des créances TDS",
+  TDSReceivableType: "Type de créance TDS",
+  TDSReceivableAcNo: "Numéro de compte client TDS",
+  TDSReceivableAccountName: "Nom du compte clients TDS",
+
+  //Agent Master
+  AgentMaster: "Maître des agents (MST/041)",
+  AgentMasterForm: "Maître des agents",
+  SecurityAmtPerValidation:
+    "Le montant ou le pourcentage de sécurité (%) doit être nul. Les deux ne peuvent pas exister en même temps",
+  SelectGroup: "Sélectionner un groupe",
+  SecurityAmount: "Montant de la sécurité",
+  "Security%": "Sécurité %",
+  SecurityCalculationOn: "Calcul de sécurité activé",
+  SelectConfiguration: "Sélectionnez Configuration",
+  TDSRate: "Taux TDS",
+  AgentAccount: "Compte d'agent",
+  SecurityAccount: "Compte de sécurité",
+  OtherAccount: "Autre compte",
+  ProfessionalTaxAccount: "Compte Impôt Professionnel",
+  HandHeldMachine: "Machine portative",
+  AgentAccountBranch: "Branche de compte d'agent",
+  AgentAccountType: "Type de compte d'agent",
+  AgentAccountNo: "Numéro de compte de l'agent",
+  AgentAccountName: "Nom du compte de l'agent",
+  SecurityAccountBranch: "Direction des comptes de sécurité",
+  SecurityAccountType: "Type de compte de sécurité",
+  SecurityAccountNo: "Numéro de compte de sécurité",
+  SecurityAccountName: "Nom du compte de sécurité",
+  OtherAccountBranch: "Autre succursale de compte",
+  OtherAccountType: "Autre type de compte",
+  OtherAccountNo: "Autre numéro de compte",
+  OtherAccountName: "Autre nom de compte",
+  ProfessionalTaxAccountBranch: "Direction du compte de taxes professionnelles",
+  ProfessionalTaxAccountType: "Type de compte de taxe professionnelle",
+  ProfessionalTaxAccountNo: "N° de compte de taxe professionnelle",
+  ProfessionalTaxAccountName: "Nom du compte de taxe professionnelle",
+  ProfessionalTaxAccountConfiguration:
+    "Configuration du compte de taxes professionnel",
+  HandHeldMachineConfiguration: "Configuration de la machine portative",
+  HandHeldMachineTDSRate: "Taux TDS pour machine portative",
+
   // GridWrapper
   Search: "Recherche",
   NoDataFound: " Aucune donnée disponible..!",
@@ -20,8 +88,8 @@ export const fr_language_data = {
   Export: "Exporter",
 
   // Message box
-  DeleteData: "Êtes-vous sûr de supprimer la ligne sélectionnée... ?",
-  SaveData: "Voulez-vous enregistrer cette demande... ?",
+  DeleteData: "Êtes-vous sûr de supprimer la ligne sélectionnée?",
+  SaveData: "Voulez-vous enregistrer cette demande?",
   Confirmation: "Confirmation",
   Ok: "D'accord",
   Yes: "Oui",
@@ -40,6 +108,9 @@ export const fr_language_data = {
   EntryDescriptionMaster: "Entrée Description Maître MST/067",
   ParentType: "Type de parent",
   EnterDescription: "Entrez la description",
+  DuplicateValidation:
+    "{{fieldValue}} est déjà inscrit au numéro principal:{{rowNumber}}",
+  ParentTyperequired: "Le type de parent est requis.",
 
   // MST/097
   SecurityType: "Type de sécurité",
@@ -53,6 +124,10 @@ export const fr_language_data = {
   AssetClassificationCode: "Code de classification des actifs A5",
   CalculatePenalInterestOn: "Calculer les intérêts pénalisés sur",
   EnterName: "Enter Name",
+  ParentRequired: "Le parent est requis.",
+  Nameisrequired: "Le nom est requis.",
+  EnterSecureRate: "Entrez le taux de provisionnement sécurisé",
+  EnterUnSecureRate: "Entrez le taux de provision non sécurisé",
 
   // MST/146
   CourtMaster: "Maître de cour (MST/146)",
@@ -67,6 +142,7 @@ export const fr_language_data = {
   EnterPinCode: "Entrez le code PIN",
   EnterAddress: "Entrer l'adresse",
   EnterContactNumber: "Entrez le numéro de contact",
+  PincodeRequired:"Code PIN requis",
 
   // Report
   CreditCount: "Compte de crédits",
@@ -102,21 +178,44 @@ export const fr_language_data = {
   RejectedCount: "Nombre de rejets",
   PendingCount: "Décompte en attente",
 
-  //Parent master main
-  ParentGroup: "Groupe de parents",
-  SubPriority: "Sous-priorité",
-  Description: "Description",
-  SanctionFromLimit: "Sanction de la limite",
-  SanctionToLimit: "Sanction à limiter",
-  ProvisionSecured: "Provision sécurisée %",
-  ProvisionUnSecured: "Provision non garantie %",
-  ViewDetail: "Voir les détails",
-  ParentWeaker: "Parent plus faible",
-  CKYCGroup: "Groupe C-KYC",
-  Constitution: "Constitution",
-  PinCode: "Code PIN",
-  Add: "Ajouter",
-  Delete: "Supprimer",
+  // Passbook printing
+  RetrievePassbookPrinting: "Récupérer l’option d’impression du livret",
+  Print: "imprimer",
+  AccountHolder: "Nom du titulaire du compte",
+  LineNo: "Numéro de ligne",
+  Reprint: "Réimpression",
+  NextPageAlert: "Voulez-vous imprimer la page suivante ?",
+  PassbookPrint: "Imprimer le livret",
+  printPage: "Imprimer cette page",
+  PassbookStatementPreview: "Aperçu du relevé du livret",
+  LineNoValidation: "garder le numéro de ligne entre {{from}} et {{to}}",
+  DateValidation:
+    "La date de début ne doit pas être antérieure à la date d'ouverture du compte. :- {{date}}",
+  PassbookUpdateMessage:
+    "Compte : {{account}}.\n Livret Déjà imprimé jusqu'au {{date}}.\n Voulez-vous considérer comme un doublon/une réimpression ?\n Oui - Dupliquer\n Non - Réimpression",
+
+
+
+      //Parent master main
+  ParentGroup:"Groupe de parents",
+  SubPriority:"Sous-priorité",
+  Description:"Description",
+  SanctionFromLimit:"Sanction de la limite",
+  SanctionToLimit:"Sanction à limiter",
+  ProvisionSecured:"Provision sécurisée %",
+  ProvisionUnSecured:"Provision non garantie %",
+  ViewDetail:"Voir les détails",
+  ToLimitValidation:"La limite doit être supérieure ou égale à par limite",
+  codeisRequired:"le code est requis",
+  //Priority master - sub
+  ParentWeaker:"Parent plus faible",
+  //trade master
+  CKYCGroup:"Groupe C-KYC",
+  Constitution:"Constitution",
+  //area master
+  PinCode:"Code PIN",
+  Add:"Ajouter",
+  Delete:"Supprimer",
 
   Loading: "Chargement..",
   SignIn: "S'identifier",
@@ -149,7 +248,8 @@ export const fr_language_data = {
     OTPAuthentication: "Authentification OTP",
     GenerateNewOTP:
       "Veuillez cliquer sur le bouton Renvoyer pour générer un nouvel OTP",
-    EnterOTP: "Entrez OTP Envoyé à votre numéro de mobile 98******37",
+    EnterOTPsentToMobile:
+      "Entrez OTP Envoyé à votre numéro de mobile 98******37",
     ResendOTP: "Renvoyer OTP",
     GetNewOTP: "Obtenez un nouvel OTP",
     ValidFor: "Valable",
@@ -511,7 +611,8 @@ export const fr_language_data = {
     "Au moins une branche doit être sélectionnée.",
   Select: "Sélectionner",
   DisplayName: "Afficher un nom",
-
+  CTS:"CTS",
+  AddBranch:"Ajouter une succursale",
   sidebar: {
     Dashboard: "Tableau de bord",
 
@@ -556,6 +657,61 @@ export const fr_language_data = {
   DistrictName: "Nom du district",
   StateName: "Nom de l'état",
   Import: "Importation",
-  CentreName: "Nom du centre"
+  CentreName: "Nom du centre",
 
+  // form 15GH entry and confirmation
+  AccountName: "Nom du compte",
+  FormName: "Nom de forme",
+  FormExpiryDate: "Date d'expiration du formulaire",
+  NoteDoubleClickOnViewDetails:
+    "Remarque: double-cliquez pour afficher les détails",
+  EnteredBy: "Entré par",
+  EnteredDate: "Date d'entrée",
+  VerifiedBy: "Vérifié par",
+  VerifiedDate: "Date de vérification",
+  Upload: "Télécharger",
+  CustomerNotFound: "Client introuvable",
+  ValidationAlert: "Alerte de validation",
+  RiskCategoryAlert: "Alerte de catégorie de risque",
+  Information: "Information",
+  BirthDate: "Date de naissance",
+  FormTillDate: "Formulaire jusqu'à la date",
+  Email: "E-mail",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Intérêts estimés pour lesquels une déclaration est faite",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Autres revenus estimés, sauf au-dessus du montant des intérêts",
+  NoOfFormsSubmittedInOtherBanks:
+    "Nombre de formulaires soumis dans d'autres banques",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Revenu total des formulaires soumis dans d'autres banques",
+  ValidationFailed: "Validation échouée",
+  WhetherAssessedToIncomeTaxAct:
+    "Est-ce qu'il est évalué en vertu de la Loi de l'impôt sur le revenu?",
+  IfYesLatestAssessmentDate: "Si oui, date de la dernière évaluation",
+  LastAssessmentDateValidationMessage:
+    "La date de la dernière évaluation doit être le dernier jour d'un exercice financier.",
+  ActiveValidationMessage:
+    "Un (ou plusieurs) des FD/RD pour lesquels ce formulaire a été soumis est payé. Vous ne pouvez donc pas désactiver ce formulaire.",
+  Inactive: "Inactive",
+  PrintForm: "Imprimer le formulaire",
+  Bank: "Banque",
+  AccountType: "Type de compte",
+  FDNo: "Numéro FD",
+  FinInterest: "Intérêt des nageoires",
+  RetrievalParameters: "Paramètres de récupération",
+  Mustbeavaliddate: "Doit être une date valide",
+  FromDateIsRequired: "La date de début est obligatoire.",
+  ToDateIsRequired: "À ce jour est requis.",
+  ToDateshouldbegreaterthanorequaltoFromDate:
+    "La date de fin doit être supérieure ou égale à la date de début.",
+  EnterCustomerID: "Entrez le numéro de client",
+  NoRecordFound: "Aucun Enregistrement Trouvé",
+  ConfirmFormData: "Êtes-vous sûr de confirmer ce formulaire?",
+  ConfirmRestrictionMessage:
+    "Impossible de confirmer votre propre formulaire saisi.",
+  DeleteWarning: "Supprimer l'avertissement",
+  CannotDeleteConfirmedForm: "Impossible de supprimer le formulaire confirmé.",
+  PrintFormConfirmation: "Voulez-vous imprimer le formulaire?",
+  ViewAll: "Voir tout",
 };

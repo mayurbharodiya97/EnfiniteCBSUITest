@@ -131,7 +131,7 @@ export const validateFilesAndAddToList =
         });
         return false;
       }
-      if (!isMimeTypeValid(one.ext, allowedExtensions)) {
+      if (!isMimeTypeValid(one.fileExt, allowedExtensions)) {
         failedFiles.push({
           ...one,
           failedReason: "File type is not allowed",

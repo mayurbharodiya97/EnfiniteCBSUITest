@@ -1,8 +1,9 @@
+import { Placeholder } from 'reactstrap';
 import * as API from '../api'
 export const Viewformmetadata = {
   form: {
     name: "Priority main master",
-    label: "Priority Master - Main",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -51,14 +52,9 @@ export const Viewformmetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["code is Required"] }],
+        rules: [{ name: "required", params: ["codeisRequired"] }],
       },
-      validate: (columnValue) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue.value && !specialChar.test(columnValue.value)) {
-          return "Special character '!' and '&' not allowed";
-        }
-      },
+      preventSpecialCharInput:true,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __EDIT__: { isReadOnly: true }
     },
@@ -66,10 +62,12 @@ export const Viewformmetadata = {
       render: { componentType: "autocomplete" },
       name: "PARENT_GROUP",
       label: "ParentGroup",
+      placeholder:"ParentGroup",
       options: API.getParentPriority,
       _optionsKey: "getParentPriority",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __VIEW__: { isReadOnly: true },
+ 
     },
 
     {
@@ -79,6 +77,7 @@ export const Viewformmetadata = {
       label: "SubPriority",
       options: API.getSubPriority,
       _optionsKey: "getSubPriority",
+      placeholder:"SubPriority",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __VIEW__: { isReadOnly: true },
 
@@ -90,21 +89,23 @@ export const Viewformmetadata = {
       type: "text",
       required: true,
       placeholder: "Description",
+      preventSpecialCharInput: true,
       maxLength: 50,
       multiline: true,
       isFieldFocused: false,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is Required"] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
       name: "SanctionLimit",
-      dividerText: "Sanction Limit"
+      label: "Sanction Limit",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -112,6 +113,7 @@ export const Viewformmetadata = {
       },
       name: "FROM_LIMIT",
       label: "FromLimit",
+      placeholder:"FromLimit",
       maxLength: 12,
       type: "text",
       fullWidth: true,
@@ -130,6 +132,7 @@ export const Viewformmetadata = {
       },
       name: "TO_LIMIT",
       label: "ToLimit",
+      placeholder:"ToLimit",
       type: "text",
       maxLength: 12,
       fullWidth: true,
@@ -150,7 +153,7 @@ export const Viewformmetadata = {
 
           if (!isNaN(toLimit) && !isNaN(fromLimit)) {
             if (toLimit < fromLimit) {
-              return "To Limit should be greater than or equal to From Limit";
+              return "ToLimitValidation";
             }
           }
         }
@@ -158,10 +161,11 @@ export const Viewformmetadata = {
     },
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
       name: "ProvisionPer",
-      dividerText: "Provision %"
+      label: "Provision %",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -169,6 +173,7 @@ export const Viewformmetadata = {
       },
       name: "SECURE_PROV_PERC",
       label: "Secured",
+      placeholder:"Secured",
       type: "text",
       fullWidth: true,
       thousandsGroupStyle: "lakh",
@@ -186,6 +191,7 @@ export const Viewformmetadata = {
       },
       name: "UNSECURE_PROV_PERC",
       label: "UnSecured",
+      placeholder:"UnSecured",
       type: "text",
       fullWidth: true,
       thousandsGroupStyle: "lakh",

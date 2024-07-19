@@ -28,6 +28,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "pages_audit/auth";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import { utilFunction } from "components/utils";
+import { useLocation } from "react-router-dom";
 // import DateFnsUtils from "@date-io/date-fns";
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
@@ -85,6 +87,8 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
 
+    let currentPath = useLocation().pathname;
+
     return (
       <>
         {/* {console.log("LocalizationProvider", AdapterDateFns)} */}
@@ -111,12 +115,23 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
               //@ts-ignore
               ref={ref}
               formName={formName}
-              formDisplayLabel={t(metaData?.form?.label ?? "NO_LABEL")}
+              // formDisplayLabel={t(metaData?.form?.label ?? "NO_LABEL")}
+              formDisplayLabel={
+                metaData?.form?.label
+                  ? t(metaData?.form?.label)
+                  : t(
+                      utilFunction.getDynamicLabel(
+                        currentPath,
+                        authState?.menulistdata,
+                        false
+                      )
+                    )
+              }
               formRenderType={metaData.form.render.renderType ?? "simple"}
               formRenderConfig={metaData.form.render}
               submitFn={onSubmitHandler}
               hidden={hidden}
-              displayMode={displayMode}
+              displayMode={t(displayMode)}
               groupWiseFields={groupWiseFields}
               hideTitleBar={hideTitleBar}
               hideDisplayModeInTitle={hideDisplayModeInTitle}
@@ -160,6 +175,7 @@ const ChildFormWrapper = forwardRef<any, any>(
     },
     ref
   ) => {
+    const { t } = useTranslation();
     const {
       handleSubmit,
       handleSubmitError,
@@ -172,7 +188,7 @@ const ChildFormWrapper = forwardRef<any, any>(
       ...formState
     } = useForm({
       onSubmit: submitFn,
-      readOnly: displayMode === "view" ? true : false,
+      readOnly: displayMode === t("view") ? true : false,
     });
     const classes = useStyles();
     //this is useful in cases where we want to merge this form with other forms, but we should handle form submission

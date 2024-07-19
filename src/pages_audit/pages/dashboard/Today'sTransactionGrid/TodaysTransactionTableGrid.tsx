@@ -6,6 +6,7 @@ import { Fragment, useCallback, useState } from "react";
 import Scroll from "./openScroll/scroll";
 import { Alert } from "components/common/alert";
 import { Grid, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -23,6 +24,7 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
   // const [enableClick, setEnableClick] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rowsData, setRowsData] = useState({});
+  const { t } = useTranslation();
   const setCurrentAction = useCallback((data) => {
     setRowsData(data.rows);
     if (
@@ -96,13 +98,13 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
         }}
       >
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Confirmed Count : {confirmedCount}
+        {t("ConfirmedCount")} : {confirmedCount}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Rejected Count :{rejectedCount}
+          {t("RejectedCount")} :{rejectedCount}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Pending Count : {pendingCount}
+          {t("PendingCount")} : {pendingCount}
         </Typography>
       </Grid>
       {dialogOpen && (
