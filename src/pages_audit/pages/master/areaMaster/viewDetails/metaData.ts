@@ -3,7 +3,7 @@ import * as API from '../api';
 export const AreaMasterMetaData = {
   form: {
     name: "Area Master",
-    label: "Area Master",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -48,9 +48,10 @@ export const AreaMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["code is Required"] }],
+        rules: [{ name: "required", params: ["codeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl:3  },
       __EDIT__:{isReadOnly:true}
@@ -63,9 +64,10 @@ export const AreaMasterMetaData = {
       required: true, 
       placeholder: "Name",
       maxLength:100,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is Required"] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6 },
     },
@@ -73,14 +75,16 @@ export const AreaMasterMetaData = {
       render: { componentType: "numberFormat" },
       name: "PIN_CODE",
       label: "PinCode",
-      placeholder: "Pin Code",
+      placeholder: "PinCode",
       require:false,
+      preventSpecialCharInput: true,
       GridProps: {  xs: 12, sm: 3, md: 3, lg: 3, xl:3 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "CITY_CD",
       label: "City", 
+      placeholder:"City",
       options:API.GETAREAMSTCITYDDW,
       _optionsKey: "getAreaMstCityddw",
       __VIEW__: { isReadOnly: true },
@@ -90,6 +94,7 @@ export const AreaMasterMetaData = {
       render: { componentType: "autocomplete" },
       name: "PARENT_AREA",
       label: "ParentArea",
+      placeholder:"ParentArea",
       options: API.GETAREAMSTPARENTDDW,
       __VIEW__: { isReadOnly: true },
       _optionsKey: "getAreaMstParentddw",

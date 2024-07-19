@@ -16,20 +16,20 @@ import { t } from "i18next";
 let actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: t("Add"),
+    actionLabel: "Add",
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: t("ViewDetail"),
+    actionLabel: "ViewDetail",
     multiple: false,
     rowDoubleClick: true,
   },
   {
     actionName: "delete",
-    actionLabel: t("Delete"),
+    actionLabel: "Delete",
     multiple: false,
   },
 ];
@@ -46,7 +46,7 @@ const AreaMaster = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row??",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -88,16 +88,16 @@ const AreaMaster = () => {
 
   const LoginuserLevel = authController?.authState?.role;
   if (LoginuserLevel >= userLevel) {
-    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (EMST/046)" + "(View-Only)";
+    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (MST/046)" + "(View-Only)";
     actions = [];
   }
   else {
-    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (EMST/046)";
+    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (MST/046)";
   }
 
   const deleteMutation = useMutation(API.deleteAreaMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -107,7 +107,7 @@ const AreaMaster = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar("deleteSuccessfully", {
         variant: "success",
       });
       refetch();
@@ -129,7 +129,7 @@ const AreaMaster = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
           errorDetail={error?.error_detail}
           color="error"
         />

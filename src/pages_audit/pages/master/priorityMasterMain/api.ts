@@ -59,7 +59,7 @@ export const getParentPriority = async (...reqdata) => {
           return {
             ...OTHER,
             value: SUB_PRIORITY_CD,
-          label: SUB_PRIORITY_CD.trim()   +  DESCRIPTION,
+          label: SUB_PRIORITY_CD + "    " + DESCRIPTION,
             
           };
         });

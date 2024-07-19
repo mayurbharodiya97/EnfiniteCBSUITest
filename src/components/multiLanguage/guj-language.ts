@@ -183,20 +183,27 @@ export const guj_language_data = {
     "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
-  Code: "કોડ",
-  ParentGroup: "પિતૃ જૂથ",
-  SubPriority: "સબ પ્રાયોરિટી",
-  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
-  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
-  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
-  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
-  ParentWeaker: "પેરેંટ વેકર",
-  CKYCGroup: "C-KYC ગ્રુપ",
-  Constitution: "બંધારણ",
-  PinCode: "પીન કોડ",
-  City: "શહેર",
-  ParentArea: "પિતૃ વિસ્તાર",
+  Code:"કોડ",
+  ParentGroup:"પિતૃ જૂથ",
+  SubPriority:"સબ પ્રાયોરિટી",
+  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
+  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
+  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
+  ToLimitValidation:"મર્યાદા પ્રતિ મર્યાદા કરતા વધારે અથવા બરાબર હોવી જોઈએ",
+  codeisRequired:"કોડ જરૂરી છે",
+  //priority master sub
+  ParentWeaker:"પેરેંટ વેકર",
+  //trade master
+  CKYCGroup:"C-KYC ગ્રુપ",
+  Constitution:"બંધારણ",
+  //area master
+  PinCode:"પીન કોડ",
+  City:"શહેર",
+  ParentArea:"પિતૃ વિસ્તાર",
 
+  //
+ 
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:
@@ -223,6 +230,7 @@ export const guj_language_data = {
   backtologin: "લોગિન પર પાછા",
   Save: "સાચવો",
   Edit: "સુધારો",
+
 
   // For OTP Verify
   otp: {

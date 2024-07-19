@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const Prioritymastermainmetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Priority Master - Main (EMST/O55)",
+    gridLabel: "",
     rowIdColumn: "ACCT_PRIORITY_CD",
     defaultColumnConfig: {
       width: 200,

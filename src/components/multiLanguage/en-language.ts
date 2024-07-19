@@ -182,19 +182,26 @@ export const en_language_data = {
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
-  ParentGroup: "Parent Group",
-  SubPriority: "Sub Priority",
-  SanctionFromLimit: "Sanction From Limit",
-  SanctionToLimit: "Sanction To Limit",
-  ProvisionSecured: "Provision Secured %",
-  ProvisionUnSecured: "Provision Unsecured %",
-  ParentWeaker: "Parent Weaker",
-  CKYCGroup: "C-KYC Group",
-  Constitution: "Constitution",
-  PinCode: "Pin Code",
-  FROMLIMIT: "FROM LIMIT",
-  TOLIMIT: "TO LIMIT",
-
+  ParentGroup:"Parent Group",
+  SubPriority:"Sub Priority",
+  SanctionFromLimit:"Sanction From Limit",
+  SanctionToLimit:"Sanction To Limit",
+  ProvisionSecured:"Provision Secured %",
+  ProvisionUnSecured:"Provision Unsecured %",
+  ToLimitValidation:"To Limit should be greater than or equal to From Limit",
+  codeisRequired:"code is Required",
+  Somethingwenttowrong:"Something went to wrong..",
+  //priority master sub
+  ParentWeaker:"Parent Weaker",
+  //trade master
+  CKYCGroup:"C-KYC Group",
+  Constitution:"Constitution",
+  //area master
+  PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
+  
+  //
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
