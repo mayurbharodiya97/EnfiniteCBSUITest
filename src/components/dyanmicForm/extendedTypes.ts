@@ -523,7 +523,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "BRANCH_CD",
     label: "BranchCode",
     placeholder: "BranchCodePlaceHolder",
-    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
