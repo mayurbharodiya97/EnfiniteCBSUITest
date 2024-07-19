@@ -7,9 +7,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import * as API from "./api"
 import { Typography } from "@mui/material";
-import {SecurityContextWrapper} from "./context/SecuityForm";
 import { ClearCacheContext, queryClient } from "cache";
-import Steppers from "./stepper/stepper";
 
 const actions: ActionTypes[] = [
   {
@@ -81,18 +79,4 @@ const Securityuser = () => {
   );
 };
 
-const UserSecurityWrapper = () => {
-
-  return (
-    <SecurityContextWrapper>
-
-    <Routes>
-      <Route path="add" element={<Steppers  defaultView={"new"}/>} />
-      <Route path="edit" element={<Steppers  defaultView={"edit"}/>} />
-      <Route path="/*" element={<Securityuser />} />
-    </Routes>
-    </SecurityContextWrapper>
-  );
-}
-
-export default UserSecurityWrapper;
+export default Securityuser;
