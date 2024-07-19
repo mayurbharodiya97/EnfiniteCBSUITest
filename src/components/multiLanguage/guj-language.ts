@@ -5,11 +5,78 @@ export const guj_language_data = {
   CodeisRequired: "કોડ જરૂરી છે",
   DescriptionisRequired: "વર્ણન જરૂરી છે",
   MarginisRequired: "માર્જિન જરૂરી છે",
+  RecordsDeletedMsg: "રેકોર્ડ સફળતાપૂર્વક કાઢી નાખ્યા",
 
   //Action Taken Master
   ActionTakenMaster: "પગલાં લીધાં માસ્ટર (MST/145)",
   ActionTakenMasterForm: "પગલાં લીધાં માસ્ટર",
   LegalProcess: "કાનૂની પ્રક્રિયા",
+  A4SuitFileStatusCode: "A4 સૂટ ફાઇલ સ્ટેટસ કોડ",
+  SelectA4SuitFileStatusCode: "A4 સૂટ ફાઇલ સ્ટેટસ કોડ પસંદ કરો",
+
+  //Category Master
+  CategoryMaster: "કેટેગરી માસ્ટર (MST/050)",
+  CategoryMasterForm: "કેટેગરી માસ્ટર",
+  CategoryName: "શ્રેણીનું નામ",
+  TypeOfConstitution: "બંધારણનો પ્રકાર",
+  TDSLimit: "TDS મર્યાદા",
+  TDSPayableRate: "TDS ચૂકવવાપાત્ર દર",
+  TDSPayable: "TDS ચૂકવવાપાત્ર",
+  TDSPayableBranch: "TDS ચૂકવવાપાત્ર શાખા",
+  EnterCategoryName: "કેટેગરીનું નામ દાખલ કરો",
+  CategoryNameisrequired: "કેટેગરીનું નામ જરૂરી છે",
+  SelectTypeOfConstitution: "બંધારણનો પ્રકાર પસંદ કરો",
+  "Minor/Major": "માઇનોર/મેજર",
+  Surcharge: "સરચાર્જ",
+  TDSReceivable: "TDS મેળવવાપાત્ર",
+  TDSPayableType: "TDS ચૂકવવાપાત્ર પ્રકાર",
+  "TDSPayableA/cNo": "TDS ચૂકવવાપાત્ર એકાઉન્ટ નંબર",
+  TDSPayableAccountName: "TDS ચૂકવવાપાત્ર એકાઉન્ટનું નામ",
+  SurchargeRate: "સરચાર્જ દર",
+  SurchargeType: "સરચાર્જનો પ્રકાર",
+  "SurchargeA/cNo": "સરચાર્જ એકાઉન્ટ નંબર",
+  TDSReceivableBranch: "TDS પ્રાપ્તિપાત્ર શાખા",
+  TDSReceivableType: "TDS પ્રાપ્તિપાત્ર પ્રકાર",
+  TDSReceivableAcNo: "TDS પ્રાપ્તિપાત્ર એકાઉન્ટ નંબર",
+  TDSReceivableAccountName: "TDS પ્રાપ્ત કરી શકાય તેવા એકાઉન્ટનું નામ",
+
+  //Agent Master
+  AgentMaster: "એજન્ટ માસ્ટર (MST/041)",
+  AgentMasterForm: "એજન્ટ માસ્ટર",
+  SecurityAmtPerValidation:
+    "સુરક્ષા રકમ અથવા ટકાવારી(%) શૂન્ય હોવી જોઈએ. બંને એક જ સમયે અસ્તિત્વમાં હોઈ શકતા નથી",
+  Group: "સમૂહ",
+  SelectGroup: "જૂથ પસંદ કરો",
+  SecurityAmount: "સુરક્ષા રકમ",
+  "Security%": "સુરક્ષા %",
+  SecurityCalculationOn: "સુરક્ષા ગણતરી ચાલુ",
+  SelectConfiguration: "રૂપરેખાંકન પસંદ કરો",
+  TDSRate: "TDS દર",
+  AgentAccount: "એજન્ટ એકાઉન્ટ",
+  SecurityAccount: "સુરક્ષા ખાતું",
+  OtherAccount: "અન્ય એકાઉન્ટ",
+  ProfessionalTaxAccount: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ",
+  HandHeldMachine: "હેન્ડ હેલ્ડ મશીન",
+  AgentAccountBranch: "એજન્ટ એકાઉન્ટ શાખા",
+  AgentAccountType: "એજન્ટ એકાઉન્ટનો પ્રકાર",
+  AgentAccountNo: "એજન્ટ એકાઉન્ટ નં.",
+  AgentAccountName: "એજન્ટ એકાઉન્ટ નામ",
+  SecurityAccountBranch: "સુરક્ષા ખાતાની શાખા",
+  SecurityAccountType: "સુરક્ષા એકાઉન્ટ પ્રકાર",
+  SecurityAccountNo: "સુરક્ષા ખાતું નં.",
+  SecurityAccountName: "સુરક્ષા ખાતાનું નામ",
+  OtherAccountBranch: "અન્ય એકાઉન્ટ શાખા",
+  OtherAccountType: "અન્ય એકાઉન્ટ પ્રકાર",
+  OtherAccountNo: "અન્ય ખાતા નં.",
+  OtherAccountName: "અન્ય એકાઉન્ટ નામ",
+  ProfessionalTaxAccountBranch: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ શાખા",
+  ProfessionalTaxAccountType: "પ્રોફેશનલ ટેક્સ એકાઉન્ટનો પ્રકાર",
+  ProfessionalTaxAccountNo: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ નં.",
+  ProfessionalTaxAccountName: "પ્રોફેશનલ ટેક્સ એકાઉન્ટનું નામ",
+  ProfessionalTaxAccountConfiguration: "પ્રોફેશનલ ટેક્સ એકાઉન્ટ કન્ફિગરેશન",
+  HandHeldMachineConfiguration: "હેન્ડ હેલ્ડ મશીન રૂપરેખાંકન",
+  HandHeldMachineTDSRate: "હેન્ડ હેલ્ડ મશીન TDS દર",
+
   // GridWrapper
   Search: "શોધો",
   NoDataFound: "કોઈ ડેટા મળ્યો નથી..!",
@@ -116,20 +183,27 @@ export const guj_language_data = {
     "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
-  Code: "કોડ",
-  ParentGroup: "પિતૃ જૂથ",
-  SubPriority: "સબ પ્રાયોરિટી",
-  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
-  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
-  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
-  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
-  ParentWeaker: "પેરેંટ વેકર",
-  CKYCGroup: "C-KYC ગ્રુપ",
-  Constitution: "બંધારણ",
-  PinCode: "પીન કોડ",
-  City: "શહેર",
-  ParentArea: "પિતૃ વિસ્તાર",
+  Code:"કોડ",
+  ParentGroup:"પિતૃ જૂથ",
+  SubPriority:"સબ પ્રાયોરિટી",
+  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
+  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
+  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
+  ToLimitValidation:"મર્યાદા પ્રતિ મર્યાદા કરતા વધારે અથવા બરાબર હોવી જોઈએ",
+  codeisRequired:"કોડ જરૂરી છે",
+  //priority master sub
+  ParentWeaker:"પેરેંટ વેકર",
+  //trade master
+  CKYCGroup:"C-KYC ગ્રુપ",
+  Constitution:"બંધારણ",
+  //area master
+  PinCode:"પીન કોડ",
+  City:"શહેર",
+  ParentArea:"પિતૃ વિસ્તાર",
 
+  //
+ 
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:
@@ -156,6 +230,7 @@ export const guj_language_data = {
   backtologin: "લોગિન પર પાછા",
   Save: "સાચવો",
   Edit: "સુધારો",
+
 
   // For OTP Verify
   otp: {
