@@ -1647,10 +1647,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
-  GETIFSCDETAILS: {
-    url: "/transactionServiceAPI/GETIFSCDETAILS",
-    packageName: "",
-  },
   GETRTGSIFSCCODEACWISE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",

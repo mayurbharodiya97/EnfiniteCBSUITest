@@ -765,7 +765,6 @@ export const en_language_data = {
   Description: "Description",
   LastEnteredBy: "Last Entered By",
   VerifiedBy: "Verified By",
-  VerifiedDate: "Verified Date",
   InvalidDeleteOperation: "Invalid Delete Operation",
   RemovalRemarks: "Removal Remarks",
   RequisitionDate: "Requisition Date",
@@ -785,7 +784,6 @@ export const en_language_data = {
   Amount: "Amount",
   SlipNo: "Slip No.",
   ShadowBalance: "Shadow.Balance",
-  Information: "Information",
   PleaseEnterAlphanumericValue: "Please Enter Alphanumeric Value",
   GeneralFromDate: "From Date",
   GeneralToDate: "To Date",
@@ -1211,7 +1209,6 @@ export const en_language_data = {
   PayeeNameRequired: "Payee Name is required.",
   ChequeAmountRequired: "Cheque Amount is required.",
   AreYouSureContinue: "Are you sure to continue!",
-  CTS: "CTS",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
   ChequeAmountList: "Cheque Amount List",
@@ -1241,8 +1238,7 @@ export const en_language_data = {
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",
-  AreYouSurePostThisCheque: "Are you sure to post this Cheque?"
- 
+  AreYouSurePostThisCheque: "Are you sure to post this Cheque?",
   ModeisRequired:"Mode is Required",
   PeriodNameisRequired:"Period Name is Required",
   InstNoisRequired:"Installment is Required",
@@ -1335,7 +1331,6 @@ payslipNoRequired:"Payslip Number is Required",
     "One (or More) of the FD/RD is Paid for which this form was submitted. So you can not inactive this Form.",
   Inactive: "Inactive",
   PrintForm: "Print Form",
-  Bank: "Bank",
   FDNo: "FD No.",
   FinInterest: "Fin Interest",
   RetrievalParameters: "Retrieval Parameters",
@@ -1348,6 +1343,5 @@ payslipNoRequired:"Payslip Number is Required",
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
-  ViewAll: "View All",
 };
 
