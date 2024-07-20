@@ -127,9 +127,10 @@ export const getCurrentDateinLong = () => {
 export const ValidatePassword = (pwd) => {
   if (!Boolean(pwd)) {
     return "Password is Required";
-  } else if (pwd.length < 8 || pwd.length > 16) {
-    return "Password must be between 8 and 16 characters long.";
-  }
+  } 
+  // else if (pwd.length < 8 || pwd.length > 16) {
+  //   return "Password must be between 8 and 16 characters long.";
+  // }
   return "";
 };
 

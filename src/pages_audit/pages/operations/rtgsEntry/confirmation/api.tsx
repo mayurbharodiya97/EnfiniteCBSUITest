@@ -114,7 +114,20 @@ export const getRtgsBenDetailBranchConfirmData = async (ApiReq) => {
       ...ApiReq,
     });
   if (status === "0") {
-    return data;
+    let responseData = data;
+    responseData.map((item) => {
+      item.TO_ACCT_NO_DISP = [
+        item.TO_ACCT_NO,
+        item.TO_IFSCCODE,
+        item.TO_ACCT_NM,
+        item.TO_ACCT_TYPE,
+      ]
+        .filter(Boolean)
+        .join("-");
+
+      return item;
+    });
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

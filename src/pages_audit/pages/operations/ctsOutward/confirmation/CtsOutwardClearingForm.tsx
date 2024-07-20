@@ -8,7 +8,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import {
@@ -26,18 +25,13 @@ import { Alert } from "components/common/alert";
 import {
   AppBar,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
   Theme,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import GridWrapper from "components/dataTableStatic";
-import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
-import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
@@ -45,24 +39,8 @@ import { useLocation } from "react-router-dom";
 import { ChequeSignImage } from "../../inwardClearing/inwardClearingForm/chequeSignImage";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Box } from "@mui/system";
+import { t } from "i18next";
 
-// const useTypeStyles = makeStyles((theme: Theme) => ({
-//   root: {
-//     background: "var(--theme-color5)",
-//   },
-//   title: {
-//     flex: "1 1 100%",
-//     color: "var(--theme-color2)",
-//     letterSpacing: "1px",
-//     fontSize: "1.5rem",
-//   },
-//   // appBar: {
-//   //   position: "fixed",
-//   //   top: 0,
-//   //   width: "100%",
-//   // },
-//   refreshiconhover: {},
-// }));
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -80,7 +58,7 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 const actions: ActionTypes[] = [
   {
     actionName: "close",
-    actionLabel: "Close",
+    actionLabel: t("Close"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -184,7 +162,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
       },
       onSuccess: (data) => {
         // isDataChangedRef.current = true;
-        enqueueSnackbar("Records successfully deleted", {
+        enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -200,8 +178,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
           event.preventDefault();
           if (rowsData?.CONFIRMED === "Y" && authState?.role < "2") {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Confirmed Transaction",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteConfirmedTransaction"),
               buttonNames: ["Ok"],
             });
           } else if (
@@ -211,8 +189,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             )
           ) {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Back Dated Entry",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteBackDatedEntry"),
               buttonNames: ["Ok"],
             });
           } else {
@@ -275,14 +253,14 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     onClick={async () => {
                       if (authState?.user?.id === data?.[0]?.ENTERED_BY) {
                         await MessageBox({
-                          messageTitle: "Validation Failed..",
-                          message: "You can not confirm your own posted transaction",
+                          messageTitle: t("ValidationFailed"),
+                          message: t("ConfirmRestrictMsg"),
                           buttonNames: ["Ok"],
                         });
                       } else {
                         const buttonName = await MessageBox({
-                          messageTitle: "Confirmation",
-                          message: " Proceed ?",
+                          messageTitle: t("Confirmation"),
+                          message: t("Proceed"),
                           buttonNames: ["No", "Yes"],
                           loadingBtnName: ["Yes"],
                         });
@@ -295,7 +273,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                             TRAN_CD: data?.[0]?.TRAN_CD,
                             ACCT_TYPE: data?.[0]?.ACCT_TYPE,
                             ACCT_CD: data?.[0]?.ACCT_CD,
-                            CONFIRMED: "N",
                             ENTERED_BY: data?.[0]?.ENTERED_BY,
                             AMOUNT: data?.[0]?.AMOUNT,
                             SCREEN_REF:
@@ -309,7 +286,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       }
                     }}
                   >
-                    Confirm
+                    {t("Confirm")}
                   </GradientButton>
                   <GradientButton
                     onClick={async () => {
@@ -318,8 +295,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         authState?.role < "2"
                       ) {
                         await MessageBox({
-                          messageTitle: "Validation Failed..",
-                          message: "Cannot Delete Confirmed Transaction",
+                          messageTitle: t("Validation Failed"),
+                          message: t("CannotDeleteConfirmedTransaction"),
                           buttonNames: ["Ok"],
                         });
                       } else if (
@@ -335,8 +312,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         )
                       ) {
                         await MessageBox({
-                          messageTitle: "Validation Failed..",
-                          message: "Cannot Delete Back Dated Entry",
+                          messageTitle: t("Validation Failed"),
+                          message: t("CannotDeleteBackDatedEntry"),
                           buttonNames: ["Ok"],
                         });
                       } else {
@@ -344,7 +321,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       }
                     }}
                   >
-                    Remove
+                    {t("Remove")}
+
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -352,7 +330,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         handleNext();
                     }}
                   >
-                    Move Forward
+                    {t("MoveForward")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -360,7 +338,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         handlePrev();
                     }}
                   >
-                    Previous
+                    {t("Previous")}
                   </GradientButton>
                   {zoneTranType === "R" &&
                     data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD ===
@@ -387,7 +365,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                             setIsVisibleSign(false);
                           }}
                         >
-                          View Cheque
+                          {t("ViewCheque")}
                         </GradientButton>
                       </>
                     )}
@@ -403,14 +381,14 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       setIsConfHistory(true);
                     }}
                   >
-                    Conf.History
+                    {t("ConfHistory")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
                       onClose();
                     }}
                   >
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </Box>
               </Toolbar>
@@ -486,16 +464,16 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     <RemarksAPIWrapper
                       TitleText={
                         zoneTranType === "S"
-                          ? "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)"
+                          ? t("EnterRemovalRemarksCTSOWCONFIRMATION")
                           : zoneTranType === "R"
-                            ? "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)"
-                            : "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)"
+                            ? t("EnterRemovalRemarksINWARDRETURNCONFIRMATION")
+                            : t("EnterRemovalRemarksOUTWARDRETURNCONFIRMATION")
                       }
                       onActionNo={() => SetDeleteRemark(false)}
                       onActionYes={async (val, rows) => {
                         const buttonName = await MessageBox({
-                          messageTitle: "Confirmation",
-                          message: "Do You Want to delete this row?",
+                          messageTitle: t("Confirmation"),
+                          message: t("DoYouWantDeleteRow"),
                           buttonNames: ["No", "Yes"],
                           defFocusBtnName: "Yes",
                           loadingBtnName: ["Yes"],
@@ -618,7 +596,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                                   setIsChequeSign(false);
                                 }}
                               >
-                                Close
+                                {t("Close")}
                               </GradientButton>
                             </Toolbar>
                           </AppBar>

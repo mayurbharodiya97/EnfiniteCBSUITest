@@ -22,10 +22,16 @@ import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
+
+
+
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetails"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -39,7 +45,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
   const isDataChangedRef = useRef(false);
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
-
+  const { t } = useTranslation();
 
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -95,7 +101,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      console.log("data", data);
+      // console.log("data", data);
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -151,7 +157,23 @@ const RtgsConfirmationGrid = ({ flag }) => {
     navigate(".");
   };
 
+  useEffect(() => {
+    mutation.mutate({
+      FROM_DT: format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      TO_DT: format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      FLAG: flag === "BO" ? "P" : "RTGSHO",
+      FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO"
 
+    })
+  }, [])
   // const handlePrev = useCallback(
   //   () => {
   //     navigate(".");
@@ -174,7 +196,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
   const handlePrev = useCallback(() => {
     navigate(".");
     const index = (indexRef.current -= 1);
-    console.log("index prev", index);
+    // console.log("index prev", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
@@ -185,13 +207,13 @@ const RtgsConfirmationGrid = ({ flag }) => {
           },
         ],
       });
-      console.log("mutation?.data[index]", mutation?.data);
+      // console.log("mutation?.data[index]", mutation?.data);
     }, 0);
   }, [mutation?.data]);
   const handleNext = useCallback(() => {
     navigate(".");
     const index = indexRef.current++;
-    console.log("index next", index);
+    // console.log("index next", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
@@ -202,7 +224,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
           },
         ],
       });
-      console.log("mutation?.data[index + 1]", mutation?.data[index + 1])
+      // console.log("mutation?.data[index + 1]", mutation?.data[index + 1])
     }, 0);
   }, [mutation?.data]);
 

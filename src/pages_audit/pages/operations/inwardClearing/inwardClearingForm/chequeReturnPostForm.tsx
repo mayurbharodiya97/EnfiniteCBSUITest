@@ -99,87 +99,89 @@ export const ChequeReturnPostForm: FC<{
     };
     const viewDetailValidatePostData: any = useMutation(API.validatePost, {
       onSuccess: async (data, variables) => {
-        if (data?.[0]?.O_STATUS === "0") {
-          const buttonName = await MessageBox({
-            messageTitle: "Validation Successful",
-            message: "Are you sure to post this Cheque?",
-            buttonNames: ["No", "Yes"],
-            loadingBtnName: ["Yes"],
-          });
-          if (buttonName === "Yes") {
-            const oldData = {
-              ...oldReqData,
-              CHEQUE_DT: inwardGridData?.CHEQUE_DT,
-            };
-            const newData = {
-              COMP_CD: inwardGridData?.COMP_CD ?? "",
-              BRANCH_CD: variables?.BRANCH_CD ?? "",
-              ACCT_TYPE: variables?.ACCT_TYPE ?? "",
-              ACCT_CD: variables?.ACCT_CD ?? "",
-              CHEQUE_NO: variables?.CHEQUE_NO ?? "",
-              TRAN_CD: inwardGridData?.TRAN_CD,
-              MICR_TRAN_CD: variables?.MICR_TRAN_CD ?? "",
-              CHEQUE_DT: variables?.CHEQUE_DT
-                ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
-                : "",
-              DRAFT_DIV: inwardGridData?.DRAFT_DIV,
-            };
+        for (let i = 0; i < data?.length; i++) {
+          if (data[i]?.O_STATUS === "0") {
+            const buttonName = await MessageBox({
+              messageTitle: "Validation Successful",
+              message: "Are you sure to post this Cheque?",
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            if (buttonName === "Yes") {
+              const oldData = {
+                ...oldReqData,
+                CHEQUE_DT: inwardGridData?.CHEQUE_DT,
+              };
+              const newData = {
+                COMP_CD: inwardGridData?.COMP_CD ?? "",
+                BRANCH_CD: variables?.BRANCH_CD ?? "",
+                ACCT_TYPE: variables?.ACCT_TYPE ?? "",
+                ACCT_CD: variables?.ACCT_CD ?? "",
+                CHEQUE_NO: variables?.CHEQUE_NO ?? "",
+                TRAN_CD: inwardGridData?.TRAN_CD,
+                MICR_TRAN_CD: variables?.MICR_TRAN_CD ?? "",
+                CHEQUE_DT: variables?.CHEQUE_DT
+                  ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
+                  : "",
+                DRAFT_DIV: inwardGridData?.DRAFT_DIV,
+              };
 
-            let upd: any = utilFunction.transformDetailsData(
-              newData ?? {},
-              oldData
-            );
-            postConfigDML.mutate({
-              ...newData,
-              ...upd,
-              _isNewRow: true,
+              let upd: any = utilFunction.transformDetailsData(
+                newData ?? {},
+                oldData
+              );
+              postConfigDML.mutate({
+                ...newData,
+                ...upd,
+                _isNewRow: true,
+              });
+            }
+          } else if (data[i]?.O_STATUS === "9") {
+            MessageBox({
+              messageTitle: "Alert",
+              message: data[i]?.O_MESSAGE,
+            });
+          } else if (data[i]?.O_STATUS === "99") {
+            const buttonName = await MessageBox({
+              messageTitle: "Confirmation",
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            if (buttonName === "Yes") {
+              const oldData = {
+                ...oldReqData,
+                CHEQUE_DT: inwardGridData?.CHEQUE_DT,
+              };
+              const newData = {
+                COMP_CD: inwardGridData?.COMP_CD ?? "",
+                BRANCH_CD: variables?.BRANCH_CD ?? "",
+                ACCT_TYPE: variables?.ACCT_TYPE ?? "",
+                ACCT_CD: variables?.ACCT_CD ?? "",
+                CHEQUE_NO: variables?.CHEQUE_NO ?? "",
+                TRAN_CD: inwardGridData?.TRAN_CD,
+                MICR_TRAN_CD: variables?.MICR_TRAN_CD ?? "",
+                CHEQUE_DT: variables?.CHEQUE_DT
+                  ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
+                  : "",
+                DRAFT_DIV: inwardGridData?.DRAFT_DIV,
+              };
+              let upd: any = utilFunction.transformDetailsData(
+                newData ?? {},
+                oldData
+              );
+              postConfigDML.mutate({
+                ...newData,
+                ...upd,
+                _isNewRow: true,
+              });
+            }
+          } else if (data[i]?.O_STATUS === "999") {
+            MessageBox({
+              messageTitle: "Validation Failed",
+              message: data[i]?.O_MESSAGE,
             });
           }
-        } else if (data?.[0]?.O_STATUS === "9") {
-          MessageBox({
-            messageTitle: "Validation Alert",
-            message: data?.[0]?.O_MESSAGE,
-          });
-        } else if (data?.[0]?.O_STATUS === "99") {
-          const buttonName = await MessageBox({
-            messageTitle: "Validation Successful",
-            message: data?.[0]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
-            loadingBtnName: ["Yes"],
-          });
-          if (buttonName === "Yes") {
-            const oldData = {
-              ...oldReqData,
-              CHEQUE_DT: inwardGridData?.CHEQUE_DT,
-            };
-            const newData = {
-              COMP_CD: inwardGridData?.COMP_CD ?? "",
-              BRANCH_CD: variables?.BRANCH_CD ?? "",
-              ACCT_TYPE: variables?.ACCT_TYPE ?? "",
-              ACCT_CD: variables?.ACCT_CD ?? "",
-              CHEQUE_NO: variables?.CHEQUE_NO ?? "",
-              TRAN_CD: inwardGridData?.TRAN_CD,
-              MICR_TRAN_CD: variables?.MICR_TRAN_CD ?? "",
-              CHEQUE_DT: variables?.CHEQUE_DT
-                ? format(new Date(variables["CHEQUE_DT"]), "dd/MMM/yyyy")
-                : "",
-              DRAFT_DIV: inwardGridData?.DRAFT_DIV,
-            };
-            let upd: any = utilFunction.transformDetailsData(
-              newData ?? {},
-              oldData
-            );
-            postConfigDML.mutate({
-              ...newData,
-              ...upd,
-              _isNewRow: true,
-            });
-          }
-        } else if (data?.[0]?.O_STATUS === "999") {
-          MessageBox({
-            messageTitle: "Validation Failed",
-            message: data?.[0]?.O_MESSAGE,
-          });
         }
       },
       onError: (error: any) => {
@@ -191,6 +193,7 @@ export const ChequeReturnPostForm: FC<{
           variant: "error",
         });
       },
+
     });
     const viewDetailValidateReturnData: any = useMutation(API.validateReturn, {
       onSuccess: async (data, variables) => {
@@ -280,43 +283,45 @@ export const ChequeReturnPostForm: FC<{
             : "",
           SCREEN_REF: "TRN/650",
         };
-        if (data?.[0]?.O_STATUS === "0") {
-          const buttonName = await MessageBox({
-            messageTitle: "Validation Successful",
-            message:
-              "Do you want to allow this transaction - Voucher No." +
-              variables?.DAILY_TRN_CD +
-              "?",
-            buttonNames: ["No", "Yes"],
-            loadingBtnName: ["Yes"],
-          });
-          if (buttonName === "Yes") {
-            confirmPostedConfigDML.mutate({
-              apiReq,
+        for (let i = 0; i < data?.length; i++) {
+          if (data[i]?.O_STATUS === "0") {
+            const buttonName = await MessageBox({
+              messageTitle: "Validation Successful",
+              message:
+                "Do you want to allow this transaction - Voucher No." +
+                variables?.DAILY_TRN_CD +
+                "?",
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            if (buttonName === "Yes") {
+              confirmPostedConfigDML.mutate({
+                apiReq,
+              });
+            }
+          } else if (data[i]?.O_STATUS === "9") {
+            MessageBox({
+              messageTitle: "Alert",
+              message: data[i]?.O_MESSAGE,
+            });
+          } else if (data[i]?.O_STATUS === "99") {
+            const buttonName = await MessageBox({
+              messageTitle: "Confirmation",
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            if (buttonName === "Yes") {
+              confirmPostedConfigDML.mutate({
+                apiReq,
+              });
+            }
+          } else if (data[i]?.O_STATUS === "999") {
+            MessageBox({
+              messageTitle: "Validation Failed",
+              message: data[i]?.O_MESSAGE,
             });
           }
-        } else if (data?.[0]?.O_STATUS === "9") {
-          MessageBox({
-            messageTitle: "Validation Alert",
-            message: data?.[0]?.O_MESSAGE,
-          });
-        } else if (data?.[0]?.O_STATUS === "99") {
-          const buttonName = await MessageBox({
-            messageTitle: "Are you sure do you want to continue?",
-            message: data?.[0]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
-            loadingBtnName: ["Yes"],
-          });
-          if (buttonName === "Yes") {
-            confirmPostedConfigDML.mutate({
-              apiReq,
-            });
-          }
-        } else if (data?.[0]?.O_STATUS === "999") {
-          MessageBox({
-            messageTitle: "Validation Failed",
-            message: data?.[0]?.O_MESSAGE,
-          });
         }
       },
       onError: (error: any) => {
@@ -403,18 +408,10 @@ export const ChequeReturnPostForm: FC<{
       endSubmit(true);
 
       if (actionFlag === "Save") {
-        if (data?.ACCT_CD.trim()?.length === 0 || data?.ACCT_TYPE.trim()?.length === 0) {
-          setFieldErrors({
-            ACCT_CD: "Please Enter A/c Number",
-            ACCT_TYPE: "Please Enter A/c Type",
-          });
-          return;
-        }
         const oldData = {
           ...oldReqData,
           CHEQUE_DT: inwardGridData?.CHEQUE_DT,
         };
-
         const newData = {
           COMP_CD: inwardGridData?.COMP_CD ?? "",
           BRANCH_CD: data?.BRANCH_CD ?? "",
@@ -429,16 +426,25 @@ export const ChequeReturnPostForm: FC<{
           DRAFT_DIV: inwardGridData?.DRAFT_DIV,
         };
         let upd: any = utilFunction.transformDetailsData(newData ?? {}, oldData);
-        if (upd?._UPDATEDCOLUMNS?.length > 0) {
-
+        if (upd?._UPDATEDCOLUMNS?.length > 0 && data?.ACCT_TYPE.trim()?.length > 0 && data?.ACCT_CD.trim()?.length > 0) {
           const updateData = {
             ...newData,
             ...upd,
             _isNewRow: false,
           };
           endSubmit(true);
-          console.log("updateData", updateData)
-          // postConfigDML.mutate(updateData);
+          postConfigDML.mutate(updateData);
+        }
+        if (data?.ACCT_TYPE.trim()?.length === 0) {
+          setFieldErrors({
+            ACCT_TYPE: "Please Enter A/c Type",
+          });
+          return;
+        } else if (data?.ACCT_CD.trim()?.length === 0) {
+          setFieldErrors({
+            ACCT_CD: "Please Enter A/c Number",
+          });
+          return;
         }
       } else if (actionFlag === "POST" || actionFlag === "NO") {
         endSubmit(true);
@@ -459,7 +465,7 @@ export const ChequeReturnPostForm: FC<{
           MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
         });
       } else if (actionFlag === "RETURN") {
-        setFieldErrors({});
+        console.log("acImageData", acImageData)
         viewDetailValidateReturnData.mutate({
           COMP_CD: inwardGridData?.COMP_CD ?? "",
           BRANCH_CD: data?.BRANCH_CD ?? "",
@@ -482,6 +488,13 @@ export const ChequeReturnPostForm: FC<{
           RET_ACCT_TYPE: data?.RET_ACCT_TYPE ?? "",
           RET_ACCT_CD: data?.RET_ACCT_CD ?? "",
         });
+        if (data?.ACCT_TYPE.trim()?.length === 0) {
+          setFieldErrors({});
+          return;
+        } else if (data?.ACCT_CD.trim()?.length === 0) {
+          setFieldErrors({});
+          return;
+        }
       } else if (actionFlag === "CONFIRM") {
         validateConfirmData.mutate({
           COMP_CD: inwardGridData?.COMP_CD ?? "",
@@ -584,12 +597,20 @@ export const ChequeReturnPostForm: FC<{
             }}
             ref={formRef}
             setDataOnFieldChange={(action, payload) => {
-              if (action === "ACCT_CD_VALID") {
-                setAcImageData(payload?.[0]?.SIGN_IMG);
-              } else if (action === "ACCT_CD_BLANK") {
+              let event: any = { preventDefault: () => { } };
+              console.log("action", action, payload)
+              // if (action === "ACCT_CD_VALID") {
+              setAcImageData(payload?.[0]?.SIGN_IMG);
+              // }
+
+              if (action === "ACCT_CD_BLANK") {
                 setAcImageData("");
               }
-            }}
+              // else if (formRef?.current?.handleSubmit(event, "RETURN")) {
+              //   setAcImageData(payload?.[0]?.SIGN_IMG);
+              // }
+            }
+            }
           >
             {({ isSubmitting, handleSubmit }) => (
               <>

@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "Clearing Retrieve Information",
+    label: "ClearingRetrieveInformation",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -49,18 +49,18 @@ export const RetrieveFormConfigMetaData = {
         componentType: "datePicker",
       },
       name: "FROM_TRAN_DT",
-      label: "From Date",
+      label: "GeneralFromDate",
       placeholder: "",
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["From Date is required."] }],
+        rules: [{ name: "required", params: ["FromDateRequired"] }],
       },
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
-          return "Must be a valid date";
+          return "Mustbeavaliddate";
         }
         return "";
       },
@@ -70,23 +70,23 @@ export const RetrieveFormConfigMetaData = {
         componentType: "datePicker",
       },
       name: "TO_TRAN_DT",
-      label: "To Date",
+      label: "GeneralToDate",
       placeholder: "",
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["To Date is required."] }],
+        rules: [{ name: "required", params: ["ToDateRequired"] }],
       },
       validate: (currentField, dependentField) => {
         if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
-          return "Must be a valid date";
+          return "Mustbeavaliddate";
         }
         if (
           new Date(currentField?.value) <
           new Date(dependentField?.FROM_TRAN_DT?.value)
         ) {
-          return "To Date should be greater than or equal to From Date.";
+          return "ToDateshouldbegreaterthanorequaltoFromDate";
         }
         return "";
       },
@@ -113,7 +113,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "numberFormat",
       },
       name: "SLIP_CD",
-      label: "Slip No.",
+      label: "SlipNo",
       GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
     },
 
@@ -122,7 +122,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_NO",
-      label: "Cheque No.",
+      label: "ChequeNo",
 
       FormatProps: {
         allowNegative: false,
@@ -142,7 +142,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "numberFormat",
       },
       name: "BANK_CD",
-      label: "Bank Code",
+      label: "BankCode",
 
       GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
     },
@@ -151,7 +151,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "amountField",
       },
       name: "CHEQUE_AMOUNT",
-      label: "Cheque Amount",
+      label: "ChequeAmount",
       type: "text",
       FormatProps: {
         allowNegative: false,
@@ -176,7 +176,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "formbutton",
       },
       name: "VIEW_ALL",
-      label: "View All",
+      label: "ViewAll",
       endsIcon: "YoutubeSearchedFor",
       rotateIcon: "scale(1.5)",
       placeholder: "",
@@ -189,7 +189,7 @@ export const RetrieveFormConfigMetaData = {
 export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Retrieve Grid",
+    gridLabel: "RetrieveGrid",
     rowIdColumn: "SR_NO",
     defaultColumnConfig: {
       width: 400,
@@ -228,7 +228,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     // },
     {
       accessor: "SLIP_CD",
-      columnName: "Slip No.",
+      columnName: "SlipNo",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -239,9 +239,9 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_CNT",
-      columnName: "Cheque Count",
+      columnName: "ChequeCount",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 100,
@@ -250,9 +250,9 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_LIST",
-      columnName: "Cheque No. List",
+      columnName: "ChequeNoList",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 100,
@@ -261,9 +261,9 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_AMT_LIST",
-      columnName: "Cheque Amount List",
+      columnName: "ChequeAmountList",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 200,
@@ -272,7 +272,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "CLG Date",
+      columnName: "CLGDate",
       sequence: 6,
       alignment: "left",
       componentType: "date",
@@ -284,7 +284,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CONFIRMED",
-      columnName: "Confirm Status",
+      columnName: "ConfirmStatus",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -295,7 +295,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "THROUGH_CHANNEL",
-      columnName: "Entry From",
+      columnName: "EntryFrom",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -307,7 +307,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "ENTERED_BY",
-      columnName: "Entered By",
+      columnName: "EnteredBy",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -318,7 +318,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_DATE",
-      columnName: "Entered Date",
+      columnName: "EnteredDate",
       sequence: 10,
       alignment: "left",
       componentType: "date",
@@ -330,7 +330,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "VERIFIED_BY",
-      columnName: "Verified By",
+      columnName: "VerifiedBy",
       sequence: 11,
       alignment: "left",
       componentType: "default",
@@ -341,7 +341,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "VERIFIED_DATE",
-      columnName: "Verified Date",
+      columnName: "VerifiedDate",
       sequence: 12,
       alignment: "left",
       componentType: "date",
@@ -356,7 +356,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
 export const DualConfHistoryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Dual Confirmation History",
+    gridLabel: "DualConfirmationHistory",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -384,7 +384,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ID",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -395,7 +395,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRN_CONF_CNT",
-      columnName: "Entry Type",
+      columnName: "EntryType",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -406,7 +406,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_BY",
-      columnName: "Enter By",
+      columnName: "EnterBy",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -488,7 +488,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Presentment Date",
+      label: "PresentmentDate",
       placeholder: "",
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
@@ -512,7 +512,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "textField",
       },
       name: "SLIP_CD",
-      label: "Slip No.",
+      label: "SlipNo",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
@@ -583,7 +583,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NAME",
-      label: "A/C Name",
+      label: "Account_Name",
       type: "text",
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -604,7 +604,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "amountField",
       },
       name: "TRAN_BAL",
-      label: "Shadow.Balance",
+      label: "ShadowBalance",
       placeholder: "",
       type: "text",
       isReadOnly: true,
@@ -615,7 +615,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "Slip Amount",
+      label: "SlipAmount",
       placeholder: "",
       type: "text",
       FormatProps: {
@@ -654,7 +654,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "datetimePicker",
       },
       name: "ENTERED_DATE",
-      label: "Maker Time",
+      label: "MakerTime",
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
@@ -668,7 +668,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "textField",
       },
       name: "CONFIRMED",
-      label: "Confirm status",
+      label: "ConfirmStatus",
       placeholder: "",
       type: "text",
       fullWidth: true,
@@ -700,7 +700,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "datetimePicker",
       },
       name: "VERIFIED_DATE",
-      label: "Checker Time",
+      label: "CheckerTime",
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
@@ -777,7 +777,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
       isScreenStyle: true,
       disagreeButtonName: "No",
       agreeButtonName: "Yes",
-      errorTitle: "Are you Sure you want to delete this row?",
+      errorTitle: "deleteTitle",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
@@ -787,7 +787,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHEQUE_NO",
-          label: "Cheque No.",
+          label: "ChequeNo",
           placeholder: "Cheque No.",
           type: "text",
           required: true,
@@ -809,8 +809,8 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "BANK_CD",
-          label: "Bank Code",
-          placeholder: "Bank Code",
+          label: "BankCode",
+          placeholder: "BankCode",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -821,7 +821,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "textField",
           },
           name: "BANK_NM",
-          label: "Bank Name",
+          label: "BankName",
           placeholder: "",
           type: "text",
           required: true,
@@ -836,7 +836,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "ECS_SEQ_NO",
-          label: "Payee A/C No.",
+          label: "PayeeACNo",
           placeholder: "",
           type: "text",
           required: true,
@@ -848,7 +848,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "datePicker",
           },
           name: "CHEQUE_DATE",
-          label: "Cheque Date",
+          label: "ChequeDate",
           placeholder: "",
           format: "dd/MM/yyyy",
           type: "text",
@@ -871,7 +871,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHQ_MICR_CD",
-          label: "CHQ Micr",
+          label: "CHQMicr",
           type: "text",
           fullWidth: true,
           defaultValue: "10",
@@ -883,7 +883,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "textField",
           },
           name: "ECS_USER_NO",
-          label: "Payee Name",
+          label: "PayeeName",
           placeholder: "",
           type: "text",
           required: true,
@@ -895,7 +895,7 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Cheque Amount",
+          label: "ChequeAmount",
           placeholder: "",
           required: true,
           type: "text",
@@ -972,7 +972,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
       isScreenStyle: true,
       disagreeButtonName: "No",
       agreeButtonName: "Yes",
-      errorTitle: "Are you Sure you want to delete this row?",
+      errorTitle: "deleteTitle",
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
@@ -982,8 +982,8 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "BANK_CD",
-          label: "Bank Code",
-          placeholder: "Bank Code",
+          label: "BankCode",
+          placeholder: "BankCode",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -994,7 +994,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "textField",
           },
           name: "BANK_NM",
-          label: "Bank Name",
+          label: "BankName",
           placeholder: "",
           type: "text",
           required: true,
@@ -1028,7 +1028,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHQ_MICR_CD",
-          label: "CHQ Micr",
+          label: "CHQMicr",
           type: "text",
           fullWidth: true,
           defaultValue: "10",
@@ -1040,8 +1040,8 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHEQUE_NO",
-          label: "Cheque No.",
-          placeholder: "Cheque No.",
+          label: "ChequeNo",
+          placeholder: "ChequeNo",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -1052,7 +1052,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "datePicker",
           },
           name: "CHEQUE_DATE",
-          label: "Cheque Date",
+          label: "ChequeDate",
           placeholder: "",
           format: "dd/MM/yyyy",
           type: "text",
@@ -1064,7 +1064,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Cheque Amount",
+          label: "ChequeAmount",
           placeholder: "",
           required: true,
           type: "text",

@@ -38,6 +38,8 @@ import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -54,14 +56,14 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 const actions: ActionTypes[] = [
   {
     actionName: "retrieve",
-    actionLabel: "Retrieve",
+    actionLabel: t("Retrieve"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-detail",
-    actionLabel: "Edit Detail",
+    actionLabel: t("ViewDetails"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -79,7 +81,7 @@ export const InwardClearing = () => {
   const mysubdtlRef = useRef<any>({});
   const indexRef = useRef(0);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { t } = useTranslation();
 
   const [state, setState] = useState<any>({
     selectedRows: authState?.user?.branchCode ?? [],
@@ -195,60 +197,62 @@ export const InwardClearing = () => {
   };
   const validatePostData: any = useMutation(API.validatePost, {
     onSuccess: async (data, variables) => {
-      if (data?.[0]?.O_STATUS === "0") {
-        const buttonName = await MessageBox({
-          messageTitle: "Validation Successful",
-          message: "Are you sure to post this Cheque?",
-          buttonNames: ["No", "Yes"],
-          loadingBtnName: ["Yes"],
-        });
-        if (buttonName === "Yes") {
-          postConfigDML.mutate({
-            ...commonReqData,
-            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-              ? format(
-                new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                "dd/MMM/yyyy"
-              )
-              : "",
-            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-            _UPDATEDCOLUMNS: [],
-            _OLDROWVALUE: {},
-            _isNewRow: true,
+      for (let i = 0; i < data?.length; i++) {
+        if (data[i]?.O_STATUS === "0") {
+          const buttonName = await MessageBox({
+            messageTitle: t("ValidationSuccessful"),
+            message: t("AreYouSurePostThisCheque"),
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            postConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+              _UPDATEDCOLUMNS: [],
+              _OLDROWVALUE: {},
+              _isNewRow: true,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: t("Alert"),
+            message: data[i]?.O_MESSAGE,
+          });
+        } else if (data[i]?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            postConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+              _UPDATEDCOLUMNS: [],
+              _OLDROWVALUE: {},
+              _isNewRow: true,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: "Validation Failed",
+            message: data[i]?.O_MESSAGE,
           });
         }
-      } else if (data?.[0]?.O_STATUS === "9") {
-        MessageBox({
-          messageTitle: "Validation Alert",
-          message: data?.[0]?.O_MESSAGE,
-        });
-      } else if (data?.[0]?.O_STATUS === "99") {
-        const buttonName = await MessageBox({
-          messageTitle: "Are you sure do you want to continue?",
-          message: data?.[0]?.O_MESSAGE,
-          buttonNames: ["No", "Yes"],
-          loadingBtnName: ["Yes"],
-        });
-        if (buttonName === "Yes") {
-          postConfigDML.mutate({
-            ...commonReqData,
-            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-              ? format(
-                new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                "dd/MMM/yyyy"
-              )
-              : "",
-            DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
-            _UPDATEDCOLUMNS: [],
-            _OLDROWVALUE: {},
-            _isNewRow: true,
-          });
-        }
-      } else if (data?.[0]?.O_STATUS === "999") {
-        MessageBox({
-          messageTitle: "Validation Failed",
-          message: data?.[0]?.O_MESSAGE,
-        });
       }
     },
     onError: (error: any) => {
@@ -263,60 +267,62 @@ export const InwardClearing = () => {
   });
   const validateConfirmData: any = useMutation(API.validateConfirm, {
     onSuccess: async (data, variables) => {
-      if (data?.[0]?.O_STATUS === "0") {
-        const buttonName = await MessageBox({
-          messageTitle: "Validation Successful",
-          message:
-            "Do you want to allow this transaction - Voucher No." +
-            variables?.DAILY_TRN_CD +
-            "?",
-          buttonNames: ["No", "Yes"],
-          loadingBtnName: ["Yes"],
-        });
-        if (buttonName === "Yes") {
-          confirmPostedConfigDML.mutate({
-            ...commonReqData,
-            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-              ? format(
-                new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                "dd/MMM/yyyy"
-              )
-              : "",
-            SCREEN_REF: "TRN/650",
-            AMOUNT: mysubdtlRef.current?.AMOUNT,
-            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+      for (let i = 0; i < data?.length; i++) {
+        if (data[i]?.O_STATUS === "0") {
+          const buttonName = await MessageBox({
+            messageTitle: "Validation Successful",
+            message:
+              "Do you want to allow this transaction - Voucher No." +
+              variables?.DAILY_TRN_CD +
+              "?",
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            confirmPostedConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              SCREEN_REF: "TRN/650",
+              AMOUNT: mysubdtlRef.current?.AMOUNT,
+              ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: "Alert",
+            message: data[i]?.O_MESSAGE,
+          });
+        } else if (data[i]?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            confirmPostedConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+              SCREEN_REF: "TRN/650",
+            });
+          }
+        } else if (data[i]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: "Validation Failed",
+            message: data[i]?.O_MESSAGE,
           });
         }
-      } else if (data?.[0]?.O_STATUS === "9") {
-        MessageBox({
-          messageTitle: "Validation Alert",
-          message: data?.[0]?.O_MESSAGE,
-        });
-      } else if (data?.[0]?.O_STATUS === "99") {
-        const buttonName = await MessageBox({
-          messageTitle: "Are you sure do you want to continue?",
-          message: data?.[0]?.O_MESSAGE,
-          buttonNames: ["No", "Yes"],
-          loadingBtnName: ["Yes"],
-        });
-        if (buttonName === "Yes") {
-          confirmPostedConfigDML.mutate({
-            ...commonReqData,
-            CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
-              ? format(
-                new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                "dd/MMM/yyyy"
-              )
-              : "",
-            ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
-            SCREEN_REF: "TRN/650",
-          });
-        }
-      } else if (data?.[0]?.O_STATUS === "999") {
-        MessageBox({
-          messageTitle: "Validation Failed",
-          message: data?.[0]?.O_MESSAGE,
-        });
       }
     },
     onError: (error: any) => {

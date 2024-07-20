@@ -91,7 +91,6 @@ export const OTPModel = ({
       VerifyOTP(OTP);
     }
   };
-  console.log("loginState", loginState)
   const handleResendClick = async () => {
     setResendotpLoading(true);
     const { status, data, message } = await OTPResendRequest(
@@ -372,7 +371,6 @@ export const OTPModelForm = ({
       VerifyOTP(OTP);
     }
   };
-  console.log("???loginState", loginState)
   const handleResendClick = async () => {
     setResendotpLoading(true);
     const { status, data, message } = await OTPResendRequest(

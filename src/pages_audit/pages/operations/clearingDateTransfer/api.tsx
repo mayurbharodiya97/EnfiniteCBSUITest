@@ -10,7 +10,12 @@ export const getRetrievalClearingData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETCLGDTTRANSBANKGRID`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        CHECKED: item?.CHECKED === "Y" ? true : false
+      }
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

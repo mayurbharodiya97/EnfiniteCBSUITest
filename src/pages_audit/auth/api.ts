@@ -15,7 +15,17 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
+export const validatePasswords = async ({ ...request }:any) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
+      ...request
+    });
+  if (status === "0") {
+    return { validateStatus :status,  validateData :data[0]};
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const veirfyUsernameandPassword = async (
   username: any,
   password: any
@@ -224,7 +234,6 @@ export const LogoutAPI = async ({ userID }) => {
 // };
 
 const transformAuthData = (data: any, access_token: any): AuthStateType => {
-  console.log("data", data)
   return {
     access_token: access_token,
     role: data?.USER_LEVEL,
@@ -514,3 +523,4 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
+

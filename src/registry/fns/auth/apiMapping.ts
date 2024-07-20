@@ -1811,6 +1811,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/DOVERIFYOTP",
     packageName: "",
   },
+  VALIDATEPASSWORD: {
+    url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
+    packageName: "",
+  },
+  GETSIGNPHOTOVIEW: {
+    url: "/transactionServiceAPI/GETSIGNPHOTOVIEW",
+    packageName: "",
+  },
+  GETCUSTSIGNPHOTOHISTORY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTSIGNPHOTOHISTORY ",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
