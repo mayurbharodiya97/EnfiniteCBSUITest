@@ -110,17 +110,7 @@ export const getCtsAndInwardConfirmtion = async (apiReq) => {
     });
   if (status === "0") {
     return message;
-    // return {
-    //   data: message,
-    //   status: status,
-    // };
   }
-  // else if (status === "999") {
-  // return {
-  //   data: message,
-  //   status: status,
-  // };
-  // }
   else {
     throw DefaultErrorObject(message, messageDetails);
   }

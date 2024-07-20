@@ -271,7 +271,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       accessor: "WIDTH_BAL",
       columnName: "Withdraw.Balance",
       sequence: 14,
-      alignment: "left",
+      alignment: "right",
       componentType: "currency",
       width: 170,
       minWidth: 100,
