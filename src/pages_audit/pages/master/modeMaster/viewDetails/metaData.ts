@@ -3,7 +3,7 @@ import { DefaultValue } from "recoil";
 export const metaData = {
   form: {
     name: "Mode Master",
-    label: "Mode Master",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -56,16 +56,12 @@ export const metaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Mode is Required"] }],
+        rules: [{ name: "required", params: ["ModeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       __EDIT__: { isReadOnly: true },
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        // Duplication validation
 
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -102,7 +98,7 @@ export const metaData = {
       txtTransform: "uppercase",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is Required"] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
 
@@ -114,7 +110,7 @@ export const metaData = {
       className: "textInputFromLeft",
       name: "MIN_NO_OF_JOINT",
       label: "MinimumNoofJoints",
-      placeholder: "Minimum No. of Joints-",
+      placeholder: "MinimumNoofJoints-",
       defaultValue: "00",
       FormatProps: {
         allowNegative: false,
@@ -139,7 +135,7 @@ export const metaData = {
       className: "textInputFromLeft",
       name: "MAX_NO_OF_JOINT",
       label: "MaximumNoofJoints",
-      placeholder: "Maximum No. of Joints-",
+      placeholder: "MaximumNoofJoints",
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: false,

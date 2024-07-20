@@ -1,9 +1,8 @@
 import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
-import { DefaultValue } from "recoil";
 import { t } from "i18next";
-import { isValid } from "date-fns";
+import { lessThanDate } from "registry/rulesEngine";
 export const temporaryODentryMetadata = {
   masterForm: {
     form: {
@@ -77,6 +76,16 @@ export const temporaryODentryMetadata = {
         },
 
         accountCodeMetadata: {
+          render: {
+            componentType: "textField",
+          },
+          validate: (columnValue) => {
+            let regex = /^[^!&]*$/;
+            if (!regex.test(columnValue.value)) {
+              return "Special Characters (!, &) not Allowed";
+            }
+            return "";
+          },
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -214,6 +223,26 @@ export const temporaryODentryMetadata = {
         isWorkingDate: true,
         required: true,
         isMinWorkingDate: true,
+        validate: (currentField, dependentField) => {
+          // if (
+          //   Boolean(currentField?.value) &&
+          //   !isValid(currentField?.value)
+          // ) {
+          //   return t("Mustbeavaliddate");
+          // }
+          if (
+            lessThanDate(currentField?.value, currentField?._minDt, {
+              ignoreTime: true,
+            })
+          ) {
+            return t("FromDateGreaterThanOrEqualToWorkingDate");
+          }
+          return "";
+        },
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        },
         label: "EffectiveFromDate",
         GridProps: {
           xs: 12,
@@ -230,19 +259,29 @@ export const temporaryODentryMetadata = {
         name: "TO_EFF_DATE",
         fullWidth: true,
         required: true,
-        isWorkingDate: true,
-        isMinWorkingDate: true,
         validate: (currentField, dependentField) => {
-          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
-            return t("Mustbeavaliddate");
-          }
+          // if (
+          //   Boolean(currentField?.value) &&
+          //   !isValid(currentField?.value)
+          // ) {
+          //   return t("Mustbeavaliddate");
+          // }
           if (
-            new Date(currentField?.value) <
-            new Date(dependentField?.FROM_EFF_DATE?.value)
+            lessThanDate(
+              currentField?.value,
+              dependentField?.FROM_EFF_DATE?.value,
+              {
+                ignoreTime: true,
+              }
+            )
           ) {
-            return t("ToDateshouldbegreaterthanorequaltoFromDate");
+            return t("ToDateGreaterThanOrEqualToFromDate");
           }
           return "";
+        },
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
         },
         onFocus: (date) => {
           date.target.select();
@@ -305,7 +344,7 @@ export const temporaryODentryMetadata = {
     gridConfig: {
       dense: true,
       gridLabel: "Documents",
-      rowIdColumn: "SR_CD",
+      rowIdColumn: "TEMPLATE_CD",
       defaultColumnConfig: { width: 150, maxWidth: 250, minWidth: 100 },
       allowColumnReordering: true,
       hideHeader: false,
@@ -348,12 +387,19 @@ export const temporaryODentryMetadata = {
         minWidth: 200,
         maxWidth: 400,
         enableDefaultOption: true,
-        // validation: (value, data, prev) => {
-        //   if (Array.isArray(prev)) {
-        //     let lb_error = prev.some((item) => value === item?.SR_CD);
-        //     if (lb_error) {
-        //       return "OptionIsAlreadyEntered";
+        // validation: (value, data, prev, next) => {
+        //   console.log("<<<prnext", value, data, prev, next);
+        //   let concatenatedArray = [prev, next].flat();
+        //   console.log("<<<concal", concatenatedArray);
+        //   let nextMsg: any = concatenatedArray?.some((item) => {
+        //     if (value) {
+        //       return value === item?.SR_CD;
         //     }
+        //     return false;
+        //   });
+
+        //   if (nextMsg) {
+        //     return t("OptionIsAlreadyEntered");
         //   }
         //   return "";
         // },

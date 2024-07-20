@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-import { userAccessbranchMetadata, userAccesstypeMetadata } from "./metaData";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
@@ -8,6 +7,8 @@ import { useQuery } from "react-query";
 import { Grid } from "@mui/material";
 import { queryClient } from "cache";
 import * as API from "./api";
+import { userAccesstypeMetadata } from "./Metadata/userAccessType";
+import { userAccessbranchMetadata } from "./Metadata/userAccessBranch";
 
 export const AllowedAccess = () => {
   const { authState } = useContext(AuthContext);
@@ -57,7 +58,7 @@ export const AllowedAccess = () => {
             />
           ) : null}
           <GridWrapper
-            key={`user-Access-branch`}
+            key={`user-Access-branch` + userAccessBranch.isSuccess}
             finalMetaData={userAccessbranchMetadata as GridMetaDataType}
             data={userAccessBranch.data || []}
             setData={() => null}
@@ -88,7 +89,7 @@ export const AllowedAccess = () => {
             />
           ) : null}
           <GridWrapper
-            key={`user-Access-type`}
+            key={`user-Access-type` + userAccessType.isSuccess}
             finalMetaData={userAccesstypeMetadata as GridMetaDataType}
             data={userAccessType.data || []}
             setData={() => null}

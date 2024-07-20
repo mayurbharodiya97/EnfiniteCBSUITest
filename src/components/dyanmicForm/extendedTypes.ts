@@ -187,6 +187,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 6) {
           return false;
@@ -523,7 +524,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "BRANCH_CD",
     label: "BranchCode",
     placeholder: "BranchCodePlaceHolder",
-    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {

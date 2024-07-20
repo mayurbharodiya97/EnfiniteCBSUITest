@@ -169,6 +169,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       control={
         <Radio
           {...others}
+          disabled={readOnly}
           readOnly={readOnly}
           tabIndex={readOnly ? -1 : undefined}
           color={"secondary"}

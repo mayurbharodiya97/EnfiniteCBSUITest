@@ -20,6 +20,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { t } = useTranslation();
   const buttonRef: any = useRef<any>(null);
 
+  // API calling function for data confirm od reject
   const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
       CloseMessageBox();
@@ -41,7 +42,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
         MessageBox({
           messageTitle: "InvalidConfirmation",
           message: data?.message || data?.[0]?.MESSAGE,
-          icon: "WARNING",
+          icon: "ERROR",
         });
       } else {
         result.mutate(resultData);
@@ -86,7 +87,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
       TRAN_CD: rows?.[0]?.data?.TRAN_CD,
       AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
-      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+      LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
     };
     let res = await MessageBox({
       messageTitle: t("confirmation"),

@@ -15,7 +15,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { usePopupContext } from "components/custom/popupContext";
@@ -33,7 +32,6 @@ import { useMutation } from "react-query";
 import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
 const LienEntryCustom = () => {
@@ -59,6 +57,85 @@ const LienEntryCustom = () => {
 
   const getLienDetail: any = useMutation("lienGridDetail", API.lienGridDetail, {
     onError: () => {
+      setIsData((old) => ({ ...old, closeAlert: true }));
+    },
+  });
+
+  const validateInsertData: any = useMutation(API.validateInsert, {
+    onSuccess(data, variables) {
+      async function validData() {
+        let apiReq = {
+          ...variables,
+          SCREEN_REF: "ETRN/652",
+          _isNewRow: true,
+        };
+
+        if (Array.isArray(data) && data?.length > 0) {
+          const btnName = async (buttonNames, msg, msgTitle, loadBtnNm) => {
+            return await MessageBox({
+              messageTitle: msgTitle,
+              message: msg,
+              buttonNames: buttonNames,
+              loadingBtnName: [loadBtnNm],
+            });
+          };
+
+          let messages = { "999": [], "99": [], "9": [], "0": [] };
+          let status = { "999": false, "99": false, "9": false, "0": false };
+
+          data.forEach((item) => {
+            if (messages[item.O_STATUS] !== undefined) {
+              messages[item.O_STATUS].push(`⁕ ${item?.O_MESSAGE}`);
+              status[item.O_STATUS] = true;
+            }
+          });
+
+          let concatenatedMessages = {};
+          for (let key in messages) {
+            concatenatedMessages[key] = messages[key].join("\n");
+          }
+          if (status["999"]) {
+            btnName(
+              ["Ok"],
+              concatenatedMessages["999"],
+              "ValidationFailed",
+              ""
+            );
+          } else if (status["99"]) {
+            let buttonName = await btnName(
+              ["Yes", "No"],
+              concatenatedMessages["99"],
+              "DoYouContinueWithRecord",
+              ""
+            );
+            if (buttonName === "Yes" && status["9"]) {
+              btnName(
+                ["Ok"],
+                concatenatedMessages["9"],
+                "ValidationAlert",
+                "Yes"
+              );
+            } else if (buttonName === "Yes") {
+              crudLienData.mutate(apiReq);
+            }
+          } else if (status["9"]) {
+            btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert", "");
+          } else if (status["0"]) {
+            let buttonName = await btnName(
+              ["Yes", "No"],
+              "AreYouSureToProceed",
+              "ValidationSuccessfull",
+              "Yes"
+            );
+            if (buttonName === "Yes") {
+              crudLienData.mutate(apiReq);
+            }
+          }
+        }
+      }
+      validData();
+    },
+    onError() {
       setIsData((old) => ({ ...old, closeAlert: true }));
     },
   });
@@ -96,26 +173,8 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    let apiReq = {
-      REMOVAL_DT:
-        data?.REMOVAL_DT && format(new Date(data?.REMOVAL_DT), "dd-MMM-yyyy"),
-      EFECTIVE_DT: format(new Date(data?.EFECTIVE_DT), "dd-MMM-yyyy"),
-      SCREEN_REF: "ETRN/652",
-      _isNewRow: true,
-    };
+    validateInsertData.mutate(data);
 
-    let res = await MessageBox({
-      messageTitle: t("confirmation"),
-      message: t("insertMessage"),
-      buttonNames: ["No", "Yes"],
-      defFocusBtnName: "Yes",
-      loadingBtnName: ["Yes"],
-    });
-
-    if (res === "Yes") {
-      let apiReqs = { ...data, ...apiReq };
-      crudLienData.mutate(apiReqs);
-    }
     //@ts-ignore
     endSubmit(true);
   };
@@ -202,8 +261,11 @@ const LienEntryCustom = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {(getLienDetail?.isError && isData.closeAlert) ||
-          (crudLienData?.isError && isData.closeAlert) ? (
+          {validateInsertData.isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : (getLienDetail?.isError && isData.closeAlert) ||
+            (crudLienData?.isError && isData.closeAlert) ||
+            (validateInsertData?.isError && isData.closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -211,11 +273,13 @@ const LienEntryCustom = () => {
                   errorMsg={
                     getLienDetail?.error?.error_msg ??
                     crudLienData?.error?.error_msg ??
+                    validateInsertData?.error?.error_msg ??
                     "Unknow Error"
                   }
                   errorDetail={
                     getLienDetail?.error?.error_detail ??
                     crudLienData?.error?.error_detail ??
+                    validateInsertData?.error?.error_detail ??
                     ""
                   }
                   color="error"
@@ -266,7 +330,7 @@ const LienEntryCustom = () => {
             style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
           >
             <GridWrapper
-              key={`LienGrid-MetaData`}
+              key={`LienGrid-MetaData` + getLienDetail.isSuccess}
               finalMetaData={LienGridMetaData as GridMetaDataType}
               data={getLienDetail.data ?? []}
               setData={() => {}}

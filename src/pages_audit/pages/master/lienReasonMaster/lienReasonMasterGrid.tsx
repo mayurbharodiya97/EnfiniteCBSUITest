@@ -11,6 +11,7 @@ import { ClearCacheContext, queryClient } from "cache";
 import { LienReasonMstFormWrapper } from "./form/lienReasonMstForm";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -40,6 +41,7 @@ export const LienReasonMstGrid = () => {
   const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
@@ -98,7 +100,7 @@ export const LienReasonMstGrid = () => {
 
   const deleteMutation = useMutation(API.lienReasonMstDataDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -108,7 +110,7 @@ export const LienReasonMstGrid = () => {
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar("Record successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       CloseMessageBox();

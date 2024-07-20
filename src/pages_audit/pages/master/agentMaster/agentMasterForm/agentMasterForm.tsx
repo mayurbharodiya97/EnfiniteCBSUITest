@@ -12,6 +12,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useTranslation } from "react-i18next";
 
 const AgentMasterForm = ({
   isDataChangedRef,
@@ -20,14 +21,16 @@ const AgentMasterForm = ({
   gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
+  const [disableButton, setDisableButton] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.agentMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -75,8 +78,7 @@ const AgentMasterForm = ({
     ) {
       //@ts-ignore
       await MessageBox({
-        message:
-          "Security Amount or Percentage(%) should be Zero. Both can not exists at same time.",
+        message: "SecurityAmtPerValidation",
         messageTitle: "Alert",
         buttonNames: ["Ok"],
       });
@@ -109,7 +111,7 @@ const AgentMasterForm = ({
           setFormMode("view");
         } else {
           const btnName = await MessageBox({
-            message: "Do you want to save this Request?",
+            message: "SaveData",
             messageTitle: "Confirmation",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
@@ -124,6 +126,10 @@ const AgentMasterForm = ({
         setFormMode("view");
       }
     }
+  };
+
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
   };
 
   return (
@@ -148,6 +154,7 @@ const AgentMasterForm = ({
             MessageBox: MessageBox,
             gridData: gridData,
             rows: rows?.[0]?.data,
+            handleButtonDisable: handleButtonDisable,
           }}
           formStyle={{
             background: "white",
@@ -161,13 +168,13 @@ const AgentMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => {
@@ -175,7 +182,7 @@ const AgentMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </GradientButton>
                 </>
               ) : formMode === "new" ? (
@@ -184,17 +191,17 @@ const AgentMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || disableButton}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
                     color={"primary"}
                   >
-                    Save
+                    {t("Save")}
                   </GradientButton>
 
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               ) : (
@@ -205,10 +212,10 @@ const AgentMasterForm = ({
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("Edit")}
                   </GradientButton>
                   <GradientButton onClick={closeDialog} color={"primary"}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               )}
@@ -233,7 +240,7 @@ export const AgentMasterFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}

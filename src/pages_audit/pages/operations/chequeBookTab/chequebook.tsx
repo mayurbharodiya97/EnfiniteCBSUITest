@@ -29,6 +29,7 @@ import {
   getChequebookDTL,
   saveChequebookData,
   validateDeleteData,
+  validateInsert,
 } from "./api";
 import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
@@ -40,6 +41,7 @@ import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSp
 import { useTranslation } from "react-i18next";
 import { ChequeDtlGrid } from "./chequeDetail/chequeDetail";
 import { MultipleChequebook } from "./multipleChequebook/multipleChequebook";
+import { IssuedChequebook } from "./issuedChequebook/issuedChequebook";
 
 const ChequebookTabCustom = () => {
   const chequeActions: ActionTypes[] = [
@@ -62,8 +64,9 @@ const ChequebookTabCustom = () => {
   const myMasterRef = useRef<any>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const reqDataRef = useRef<any>();
+  const reqDataRef = useRef<any>({});
 
+  // API calling function for issued chequebook grid-details
   const getChequeDetail: any = useMutation(
     "getChequebookDTL",
     getChequebookDTL,
@@ -74,42 +77,159 @@ const ChequebookTabCustom = () => {
     }
   );
 
+  // API calling function for validate data before Insert
+  const validateInsertData: any = useMutation(
+    "validateInsert",
+    validateInsert,
+    {
+      onSuccess: (data) => {
+        async function validData() {
+          let insertReq = reqDataRef.current?.insertReq;
+          let apiReq = {
+            _isNewRow: true,
+            _isDeleteRow: false,
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: insertReq?.BRANCH_CD,
+            ACCT_TYPE: insertReq?.ACCT_TYPE,
+            ACCT_CD: insertReq?.ACCT_CD,
+            CHEQUE_FROM: insertReq?.CHEQUE_FROM,
+            CHEQUE_TOTAL: insertReq?.CHEQUE_TOTAL,
+            CHARACTERISTICS: insertReq?.CHARACTERISTICS,
+            PAYABLE_AT_PAR: insertReq?.PAYABLE_AT_PAR,
+            REQUISITION_DT: insertReq?.REQUISITION_DT,
+            REMARKS: insertReq?.REMARKS,
+            SR_CD: insertReq?.SR_CD,
+            NO_OF_CHQBK: insertReq?.NO_OF_CHQBK,
+            AUTO_CHQBK_FLAG: insertReq?.AUTO_CHQBK_FLAG,
+            SERVICE_TAX: insertReq?.SERVICE_TAX,
+            AMOUNT: insertReq?.AMOUNT,
+            ENTERED_BRANCH_CD: insertReq?.ENTERED_BRANCH_CD,
+            REQUEST_CD: "",
+          };
+          // After validating data then inside the response multiple message with multiple statuses, so merge all the same status messages and conditionally display status-wise.
+          if (Array.isArray(data) && data?.length > 0) {
+            const btnName = async (buttonNames, msg, msgTitle, icon) => {
+              return await MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+                loadingBtnName: ["Yes"],
+                icon: icon,
+              });
+            };
+            let messages = { "999": [], "99": [], "9": [], "0": [] };
+            let status = { "999": false, "99": false, "9": false, "0": false };
+
+            data.forEach((item) => {
+              if (messages[item.O_STATUS] !== undefined) {
+                messages[item.O_STATUS].push(`⁕ ${item?.O_MESSAGE}`);
+                status[item.O_STATUS] = true;
+              }
+            });
+            let concatenatedMessages = {};
+            for (let key in messages) {
+              concatenatedMessages[key] = messages[key].join("\n");
+            }
+            if (status["999"]) {
+              btnName(
+                ["Ok"],
+                concatenatedMessages["999"],
+                "ValidationFailed",
+                "ERROR"
+              );
+            } else if (status["99"]) {
+              let buttonName = await btnName(
+                ["Yes", "No"],
+                concatenatedMessages["99"],
+                "DoYouContinueWithRecord",
+                "INFO"
+              );
+
+              if (buttonName === "Yes" && status["9"]) {
+                btnName(
+                  ["Ok"],
+                  concatenatedMessages["9"],
+                  "ValidationAlert",
+                  "INFO"
+                );
+              } else if (
+                buttonName === "Yes" &&
+                data?.[0]?.RESTRICT_WINDOW === "N"
+              ) {
+                crudChequeData.mutate(apiReq);
+              } else if (
+                buttonName === "Yes" &&
+                data?.[0]?.RESTRICT_WINDOW === "Y"
+              ) {
+                navigate("issuedChequebook/", {
+                  state: {
+                    ...apiReq,
+                    CHEQUE_TO: insertReq?.CHEQUE_TO,
+                    COMP_CD: authState?.companyID,
+                  },
+                });
+                CloseMessageBox();
+              } else if (buttonName === "Yes") {
+                crudChequeData.mutate(apiReq);
+              }
+            } else if (status["9"]) {
+              btnName(
+                ["Ok"],
+                concatenatedMessages["9"],
+                "ValidationAlert",
+                "INFO"
+              );
+            } else if (status["0"]) {
+              let buttonName = await btnName(
+                ["Yes", "No"],
+                "AreYouSureToProceed",
+                "ValidationSuccessfull",
+                "INFO"
+              );
+              if (buttonName === "Yes") {
+                crudChequeData.mutate(apiReq);
+              }
+            }
+          }
+        }
+        validData();
+      },
+      onError() {
+        setIsData((old) => ({ ...old, closeAlert: true }));
+      },
+    }
+  );
+
+  // API calling function for Insert , Delete
   const crudChequeData: any = useMutation(
     "saveChequebookData",
     saveChequebookData,
     {
       onSuccess: (data, variables) => {
-        if (variables?.DETAILS_DATA?.isDeleteRow.length) {
+        if (variables?._isDeleteRow) {
           setIsData((old) => ({ ...old, isDelete: false }));
-          let deleteReq = variables?.DETAILS_DATA?.isDeleteRow?.[0];
           getChequeDetail.mutate({
             COMP_CD: authState?.companyID,
-            ACCT_CD: deleteReq?.ACCT_CD,
-            ACCT_TYPE: deleteReq?.ACCT_TYPE,
-            BRANCH_CD: deleteReq?.BRANCH_CD,
+            ACCT_CD: variables?.ACCT_CD,
+            ACCT_TYPE: variables?.ACCT_TYPE,
+            BRANCH_CD: variables?.BRANCH_CD,
           });
           enqueueSnackbar(t("deleteSuccessfully"), { variant: "success" });
-        } else if (variables?.DETAILS_DATA?.isNewRow.length) {
-          if (variables?.DETAILS_DATA?.isNewRow.length > 1) {
-            navigate(".");
-          }
+        } else if (variables?._isNewRow) {
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           setIsData((old) => ({ ...old, isVisible: false }));
           CloseMessageBox();
           enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
         }
       },
-
-      onError: (error, variables) => {
-        if (variables?.DETAILS_DATA?.isNewRow.length > 1) {
-          navigate(".");
-          CloseMessageBox();
-        }
+      onError: () => {
+        CloseMessageBox();
         setIsData((old) => ({ ...old, closeAlert: true, isDelete: false }));
       },
     }
   );
 
+  // API calling function for Validate data before Delete
   const validateDelete: any = useMutation(
     "validateDeleteData",
     validateDeleteData,
@@ -157,76 +277,42 @@ const ChequebookTabCustom = () => {
     };
   }, []);
 
-  const insertData = async (insertdata) => {
-    let apiReq = {
-      isNewRow: true,
-      BRANCH_CD: authState.user.branchCode,
-      COMP_CD: authState.companyID,
-      DETAILS_DATA: {
-        isNewRow: insertdata,
-        isDeleteRow: [],
-        isUpdatedRow: [],
-      },
-    };
-    let res = await MessageBox({
-      messageTitle: t("confirmation"),
-      message: t("AreYouSureToProceed"),
-      buttonNames: ["No", "Yes"],
-      defFocusBtnName: "Yes",
-      loadingBtnName: ["Yes"],
-    });
-    if (res === "Yes") {
-      crudChequeData.mutate(apiReq);
-    }
-  };
-
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     // @ts-ignore
     endSubmit(true);
-
     let reqPara = {
       ...data,
       COMP_CD: authState?.companyID,
-      CHEQUE_FROM: Number(data?.CHEQUE_FROM),
-      CHEQUE_TO: Number(data?.CHEQUE_TO),
-      CHEQUE_BK_TOTAL: Number(data?.CHEQUE_BK_TOTAL),
-      CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
+      AUTO_CHQBK_FLAG: data?.PER_CHQ_ALLOW,
+      NO_OF_CHQBK: data?.NO_OF_CHQBK ?? "1",
+      CHEQUE_TOTAL: data?.CHEQUE_TOTAL ?? data?.CHEQUE_TOTALS,
+      CHARACTERISTICS: data?.CHARACTERISTICS ?? "B",
+      PAYABLE_AT_PAR: data?.PAYABLE_AT_PAR ?? "Y",
+      SR_CD: data?.AUTO_CHQBK_FLAG === "N" ? "0" : data?.SR_CD,
     };
+    reqDataRef.current.insertReq = reqPara;
 
-    let newArray: any = [];
-
-    if (reqPara.CHEQUE_BK_TOTAL > 1 && reqPara?.CHEQUE_TO) {
-      for (
-        let i = reqPara.CHEQUE_FROM;
-        i <=
-        reqPara.CHEQUE_FROM +
-          (reqPara.CHEQUE_BK_TOTAL - 1) * reqPara?.CHEQUE_TOTAL;
-        i += reqPara?.CHEQUE_TOTAL
-      ) {
-        newArray.push({
-          ...reqPara,
-          CHEQUE_FROM: i,
-          CHEQUE_TO: i + reqPara?.CHEQUE_TOTAL - 1,
-        });
-      }
+    if (Number(reqPara.NO_OF_CHQBK) > 1 && reqPara?.CHEQUE_TO) {
       navigate("multiChequebook/", {
-        state: newArray.length > 1 && newArray,
+        state: reqPara,
       });
     } else {
-      insertData([reqPara]);
+      validateInsertData.mutate({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: reqPara?.BRANCH_CD,
+        ACCT_TYPE: reqPara?.ACCT_TYPE,
+        ACCT_CD: reqPara?.ACCT_CD,
+        AMOUNT: reqPara?.AMOUNT,
+        SERVICE_TAX: reqPara?.SERVICE_TAX,
+        CHEQUE_FROM: reqPara?.CHEQUE_FROM,
+        CHEQUE_TO: reqPara?.CHEQUE_TO,
+        AUTO_CHQBK_FLAG: reqPara?.AUTO_CHQBK_FLAG,
+        SR_CD: reqPara?.SR_CD,
+        STATUS: reqPara?.STATUS,
+        SCREEN_REF: "TRN/045",
+      });
     }
   };
-
-  const setCurrentAction = useCallback(
-    (data) => {
-      if (data?.name === "view-details") {
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
-    },
-    [navigate]
-  );
 
   return (
     <>
@@ -242,6 +328,7 @@ const ChequebookTabCustom = () => {
             }));
             getChequeDetail.data = [];
             if (newValue === "tab2") {
+              // API calling for issued chequebook Grid-details and set account-number and name inside the header
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   ChequebookDtlGridMetaData.gridConfig.subGridLabel = ` \u00A0\u00A0 ${(
@@ -283,31 +370,33 @@ const ChequebookTabCustom = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {validateDelete?.isLoading ? (
-            <LinearProgress color="secondary" />
+          {/* All API calls handle error */}
+          {validateDelete?.isLoading || validateInsertData?.isLoading ? (
+            <LinearProgress color="inherit" />
           ) : (crudChequeData?.isError && isData.closeAlert) ||
             (validateDelete?.isError && isData.closeAlert) ||
+            (validateInsertData?.isError && isData.closeAlert) ||
             (getChequeDetail?.isError && isData.closeAlert) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={
-                    crudChequeData?.error?.error_msg ??
-                    validateDelete?.error?.error_msg ??
-                    getChequeDetail?.error?.error_msg ??
-                    "Unknow Error"
-                  }
-                  errorDetail={
-                    crudChequeData?.error?.error_detail ??
-                    validateDelete?.error?.error_detail ??
-                    getChequeDetail?.error?.error_detail ??
-                    ""
-                  }
-                  color="error"
-                />
-              </AppBar>
-            </div>
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={
+                  crudChequeData?.error?.error_msg ??
+                  validateDelete?.error?.error_msg ??
+                  getChequeDetail?.error?.error_msg ??
+                  validateInsertData?.error?.error_msg ??
+                  "Unknow Error"
+                }
+                errorDetail={
+                  crudChequeData?.error?.error_detail ??
+                  validateDelete?.error?.error_detail ??
+                  getChequeDetail?.error?.error_detail ??
+                  validateInsertData?.error?.error_detail ??
+                  ""
+                }
+                color="error"
+              />
+            </AppBar>
           ) : (
             <LinearProgressBarSpacer />
           )}
@@ -327,7 +416,7 @@ const ChequebookTabCustom = () => {
                 if (action === "DTL_TAB") {
                   setIsData((old) => ({ ...old, isVisible: payload.DTL_TAB }));
                 }
-                if (action === "CHEQUE_BK_TOTAL") {
+                if (action === "NO_OF_CHQBK") {
                   myMasterRef?.current?.handleSubmit(
                     { preventDefault: () => {} },
                     "Save"
@@ -358,9 +447,13 @@ const ChequebookTabCustom = () => {
                 element={
                   <MultipleChequebook
                     navigate={navigate}
-                    insertData={insertData}
+                    validateInsertData={validateInsertData}
                   />
                 }
+              />
+              <Route
+                path="issuedChequebook/*"
+                element={<IssuedChequebook navigate={navigate} />}
               />
             </Routes>
           </div>
@@ -376,22 +469,22 @@ const ChequebookTabCustom = () => {
               setData={() => null}
               loading={getChequeDetail.isLoading}
               actions={chequeActions}
-              setAction={setCurrentAction}
+              setAction={(data) => {
+                if (data?.name === "view-details") {
+                  navigate(data?.name, {
+                    state: data?.rows,
+                  });
+                }
+              }}
               onClickActionEvent={(index, id, data) => {
-                reqDataRef.current = data;
+                reqDataRef.current.deleteReq = data;
                 validateDelete.mutate(data);
               }}
             />
             <Routes>
               <Route
                 path="view-details/*"
-                element={
-                  <ChequeDtlGrid
-                    ClosedEventCall={() => {
-                      navigate(".");
-                    }}
-                  />
-                }
+                element={<ChequeDtlGrid navigate={navigate} />}
               />
             </Routes>
           </div>
@@ -399,27 +492,31 @@ const ChequebookTabCustom = () => {
       </Container>
 
       {isData.isDelete && (
+        // API calling for Delete issued chequebook with Remarks
         <RemarksAPIWrapper
           TitleText={"RemovalRemarksChequebook"}
           label={"RemovalRemarks"}
           onActionNo={() => setIsData((old) => ({ ...old, isDelete: false }))}
           onActionYes={(val, rows) => {
             let deleteReqPara = {
+              _isNewRow: false,
+              _isDeleteRow: true,
               BRANCH_CD: rows.BRANCH_CD,
               COMP_CD: rows.COMP_CD,
-              DETAILS_DATA: {
-                isNewRow: [],
-                isDeleteRow: [
-                  {
-                    ...rows,
-                    ACTIVITY_TYPE: "CHEQUE BOOK ISSUE ",
-                    USER_DEF_REMARKS: val
-                      ? val
-                      : "WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045) ",
-                  },
-                ],
-                isUpdatedRow: [],
-              },
+              TRAN_CD: rows.TRAN_CD,
+              ENTERED_COMP_CD: rows.ENTERED_COMP_CD,
+              ENTERED_BRANCH_CD: rows.ENTERED_BRANCH_CD,
+              ACCT_TYPE: rows.ACCT_TYPE,
+              ACCT_CD: rows.ACCT_CD,
+              LIMIT_AMOUNT: rows.LIMIT_AMOUNT,
+              ACTIVITY_TYPE: "CHEQUE BOOK ISSUE ",
+              TRAN_DT: rows.TRAN_DT,
+              CONFIRMED: rows.CONFIRMED,
+              USER_DEF_REMARKS: val
+                ? val
+                : "WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045)",
+              ENTERED_BY: rows.ENTERED_BY,
+              AMOUNT: rows.AMOUNT,
             };
             crudChequeData.mutate(deleteReqPara);
           }}
@@ -428,7 +525,7 @@ const ChequebookTabCustom = () => {
           AcceptbuttonLabelText="Ok"
           CanceltbuttonLabelText="Cancel"
           open={isData?.isDelete}
-          rows={reqDataRef.current}
+          rows={reqDataRef.current.deleteReq}
           defaultValue={"WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045)"}
         />
       )}

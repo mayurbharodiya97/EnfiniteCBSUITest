@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 export const PasswordVerifyMetaData = {
   form: {
     name: "passwordVerify",
@@ -33,7 +35,7 @@ export const PasswordVerifyMetaData = {
       type: "text",
       label: "CurrentPassword",
       placeholder: "CurrentPassword",
-      GridProps: { xs: 12, md: 12, sm: 12 },
+      GridProps: { xs: 12, md: 12, sm: 12, xl: 12, lg: 12 },
       fullWidth: true,
       required: true,
       autoComplete: "off",
@@ -41,6 +43,23 @@ export const PasswordVerifyMetaData = {
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["This is a required field"] }],
+      },
+      validate: (currentField, value) => {
+        if (!Boolean(currentField?.value)) {
+          return t("ThisFieldisrequired");
+        } else if (
+          currentField?.value.length < 8 ||
+          currentField?.value.length > 16
+        ) {
+          return t("EnterPasswordValid");
+        } else if (
+          !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s)/.test(
+            currentField?.value
+          )
+        ) {
+          return t("EnterPasswordPolicy");
+        }
+        return "";
       },
     },
   ],

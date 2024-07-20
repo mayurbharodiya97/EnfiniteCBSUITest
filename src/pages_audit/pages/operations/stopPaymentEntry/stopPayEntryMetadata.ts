@@ -105,6 +105,16 @@ export const StopPayEntryMetadata = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -577,7 +587,9 @@ export const StopPayEntryMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-
+      FormatProps: {
+        allowNegative: false,
+      },
       label: "ChargeAmount",
       dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -645,6 +657,10 @@ export const StopPayEntryMetadata = {
       name: "SERVICE_TAX",
       label: "GSTAmount",
       isReadOnly: true,
+
+      FormatProps: {
+        allowNegative: false,
+      },
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {
@@ -683,6 +699,9 @@ export const StopPayEntryMetadata = {
       name: "CHEQUE_AMOUNT",
       label: "ChequeAmount",
       placeholder: "Cheque Amount",
+      FormatProps: {
+        allowNegative: false,
+      },
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -708,6 +727,13 @@ export const StopPayEntryMetadata = {
       label: "Infavour",
       type: "text",
       placeholder: "Infavour",
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return t("SpecialCharactersNotAllowedRemarks");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -723,6 +749,13 @@ export const StopPayEntryMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "Enter Remarks",
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return t("SpecialCharactersNotAllowedRemarks");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 4.8,

@@ -23,7 +23,7 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
     },
   ];
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [openDialog, setOpenDialg] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -47,6 +47,7 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
         messageTitle: "confirmation",
         message: `Press 'Yes' then - to view Lien FD(s) against this A/c.,\nPress 'No' then to view all the FD(s) of  this Customer.`,
         buttonNames: ["Yes", "No", "Cancel"],
+        loadingBtnName: ["Yes", "No"],
       });
       if (buttonName === "Yes" || buttonName === "No") {
         myMasterRef?.current?.getFieldData().then((res) => {
@@ -62,6 +63,8 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
             });
           }
         });
+
+        CloseMessageBox();
       } else {
         navigate(".");
       }
