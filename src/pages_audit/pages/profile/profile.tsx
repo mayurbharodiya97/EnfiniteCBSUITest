@@ -2,8 +2,6 @@ import { AuthContext } from "pages_audit/auth";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { queryClient } from "cache";
-import { UserProfileMetaData } from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AppBar,
@@ -41,6 +39,7 @@ import { UserDetail } from "./userDetail";
 import DynamicTheme from "app/audit/dynamictheme";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
+import { UserProfileMetaData } from "./Metadata/userProfile";
 
 export const Profile = () => {
   const authController = useContext(AuthContext);

@@ -47,7 +47,7 @@ const ACperiodMasterGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -76,9 +76,18 @@ const ACperiodMasterGrid = () => {
     })
   );
   const deleteMutation = useMutation(API.deleteInstallmentPeriodData, {
-    onError: (error: any) => { },
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar("deleteSuccessfully", {
         variant: "success",
       });
       refetch();
@@ -108,7 +117,7 @@ const ACperiodMasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
           errorDetail={error?.error_detail}
           color="error"
         />

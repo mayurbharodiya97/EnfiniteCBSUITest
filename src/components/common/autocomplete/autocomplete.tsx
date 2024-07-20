@@ -434,10 +434,36 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         // disabled={isSubmitting}
         disabled={isSubmitting || readOnly}
         filterOptions={
+          // chanage by by parag to filter data (to display the input value first)
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
             ? createFilterOptions(CreateFilterOptionsConfig)
-            : undefined
+            : (options, state) => {
+                const inputValue = state.inputValue.toLowerCase();
+                const filtered = options.filter((option) =>
+                  option.label.toLowerCase().includes(inputValue)
+                );
+                return filtered.sort((a, b) => {
+                  const aStartsWith = a.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+                  const bStartsWith = b.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+
+                  if (aStartsWith && !bStartsWith) {
+                    return -1;
+                  }
+                  if (!aStartsWith && bStartsWith) {
+                    return 1;
+                  }
+                  return 0;
+                });
+              }
+          // Boolean(CreateFilterOptionsConfig) &&
+          // typeof CreateFilterOptionsConfig === "object"
+          //   ? createFilterOptions(CreateFilterOptionsConfig)
+          //   : undefined
         }
         renderTags={(value, getTagProps) => {
           return value.map((option, index) => {
@@ -484,14 +510,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                 }}
                 InputProps={{
                   style: {
-                    background: textFieldStyle
-                      ? ""
-                      : Boolean(readOnly)
-                      ? "var(--theme-color7)"
+                    background: Boolean(readOnly)
+                      ? "var(--theme-color7) !important"
                       : "",
-                    // background: Boolean(readOnly) ? "var(--theme-color7)" : "",
                   },
-
                   ...params.InputProps,
                   endAdornment: (
                     <Fragment>

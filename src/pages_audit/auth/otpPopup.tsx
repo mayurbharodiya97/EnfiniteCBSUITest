@@ -165,7 +165,11 @@ export const OTPModel = ({
                 marginBottom: "10px",
               }}
             >
-              {t("otp.OTPAuthentication")}
+              {loginState?.authType === "OTP"
+                ? t("otp.OTPAuthentication")
+                : loginState?.authType === "TOTP"
+                ? t("otp.TOTPAuthentication")
+                : null}
             </div>
             <div
               style={{
@@ -177,7 +181,11 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
-              {t("otp.EnterOTP")}
+              {loginState?.authType === "OTP"
+                ? t("otp.EnterOTPsentToMobile")
+                : loginState?.authType === "TOTP"
+                ? t("otp.PleaseEnterOTP")
+                : null}
             </div>
             {/* <div
               style={{
@@ -198,15 +206,17 @@ export const OTPModel = ({
                 ? loginState.username.charAt(0).toUpperCase() +
                 loginState.username.slice(1)
                 : null}
-              <ResendOTP
-                // onResendClick={() => setbtnshow(false)}
-                onResendClick={handleResendClick}
-                // onTimerComplete={() => setbtnshow(true)}
-                renderButton={renderButton}
-                renderTime={renderTime}
-                maxTime={loginState?.otpValidFor ?? 60}
-                className={classes.resendOTPalign}
-              />
+              {loginState?.authType === "OTP" && (
+                <ResendOTP
+                  // onResendClick={() => setbtnshow(false)}
+                  onResendClick={handleResendClick}
+                  // onTimerComplete={() => setbtnshow(true)}
+                  renderButton={renderButton}
+                  renderTime={renderTime}
+                  maxTime={loginState?.otpValidFor ?? 60}
+                  className={classes.resendOTPalign}
+                />
+              )}
             </div>
             <div
               className={classes.divflex}
@@ -249,6 +259,15 @@ export const OTPModel = ({
                 {OTPError}
               </FormHelperText>
             ) : null}
+            {loginState?.authType === "TOTP" ? (
+              <div style={{ flex: "auto" }}>
+                <a href="forgot-totp" style={{ color: "var(--theme-color3)" }}>
+                  Forgot TOTP
+                </a>
+              </div>
+            ) : (
+              <></>
+            )}
             <div
               style={{
                 display: "flex",
@@ -522,15 +541,6 @@ export const OTPModelForm = ({
           {Boolean(OTPError) ? (
             <FormHelperText style={{ color: "red" }}>{OTPError}</FormHelperText>
           ) : null}
-          {loginState?.auth_type === "TOTP" ? (
-            <div style={{ flex: "auto" }}>
-              <a href="forgot-totp" style={{ color: "var(--theme-color3)" }}>
-                Forgot TOTP
-              </a>
-            </div>
-          ) : (
-            <></>
-          )}
 
           <div
             style={{

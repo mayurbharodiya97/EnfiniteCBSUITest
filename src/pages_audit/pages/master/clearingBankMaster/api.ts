@@ -19,3 +19,15 @@ export const getClearingBankMasterData = async ({ companyID, branchCode }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const clearingBankMasterDataDML = async (formData) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "CLEARINGBANKMASTERDML",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

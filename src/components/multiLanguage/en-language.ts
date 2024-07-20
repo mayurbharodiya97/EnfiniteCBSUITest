@@ -4,14 +4,80 @@ export const en_language_data = {
   //For Ornament Type master
   OrnamentTypeMaster: "Ornament Type Master (MST/247)",
   OrnamentTypeMasterForm: "Ornament Type Master",
-  CodeisRequired: "Code is Required",
+  CodeisRequired: "Code is required",
   DescriptionisRequired: "Description is required",
   MarginisRequired: "Margin is required",
+  RecordsDeletedMsg: "Records successfully deleted",
 
   //Action Taken Master
   ActionTakenMaster: "Action Taken Master (MST/145)",
   ActionTakenMasterForm: "Action Taken Master",
   LegalProcess: "Legal Process",
+  A4SuitFileStatusCode: "A4 Suit File Status Code",
+  SelectA4SuitFileStatusCode: "Select A4 Suit File Status Code",
+
+  //Category Master
+  CategoryMaster: "Category Master (MST/050)",
+  CategoryMasterForm: "Category Master",
+  CategoryName: "Category Name",
+  TypeOfConstitution: "Type Of Constitution",
+  TDSLimit: "TDS Limit",
+  TDSPayableRate: "TDS Payable Rate",
+  TDSPayable: "TDS Payable",
+  TDSPayableBranch: "TDS Payable Branch",
+  EnterCategoryName: "Enter Category Name",
+  CategoryNameisrequired: "Category Name is required",
+  SelectTypeOfConstitution: "Select Type Of Constitution",
+  "Minor/Major": "Minor/Major",
+  Surcharge: "Surcharge",
+  TDSReceivable: "TDS Receivable",
+  TDSPayableType: "TDS Payable Type",
+  "TDSPayableA/cNo": "TDS Payable A/c No.",
+  TDSPayableAccountName: "TDS Payable Account Name",
+  SurchargeRate: "Surcharge Rate",
+  SurchargeType: "Surcharge Type",
+  "SurchargeA/cNo": "Surcharge A/c No.",
+  TDSReceivableBranch: "TDS Receivable Branch",
+  TDSReceivableType: "TDS Receivable Type",
+  TDSReceivableAcNo: "TDS Receivable A/c No",
+  TDSReceivableAccountName: "TDS Receivable Account Name",
+
+  //Agent Master
+  AgentMaster: "Agent Master (MST/041)",
+  AgentMasterForm: "Agent Master",
+  SecurityAmtPerValidation:
+    "Security Amount or Percentage(%) should be Zero. Both can not exists at same time",
+  SelectGroup: "Select Group",
+  SecurityAmount: "Security Amount",
+  "Security%": "Security %",
+  SecurityCalculationOn: "Security Calculation On",
+  SelectConfiguration: "Select Configuration",
+  TDSRate: "TDS Rate",
+  AgentAccount: "Agent Account",
+  SecurityAccount: "Security Account",
+  OtherAccount: "Other Account",
+  ProfessionalTaxAccount: "Professional Tax Account",
+  HandHeldMachine: "Hand Held Machine",
+  AgentAccountBranch: "Agent Account Branch",
+  AgentAccountType: "Agent Account Type",
+  AgentAccountNo: "Agent Account No.",
+  AgentAccountName: "Agent Account Name",
+  SecurityAccountBranch: "Security Account Branch",
+  SecurityAccountType: "Security Account Type",
+  SecurityAccountNo: "Security Account No.",
+  SecurityAccountName: "Security Account Name",
+  OtherAccountBranch: "Other Account Branch",
+  OtherAccountType: "Other Account Type",
+  OtherAccountNo: "Other Account No.",
+  OtherAccountName: "Other Account Name",
+  ProfessionalTaxAccountBranch: "Professional Tax Account Branch",
+  ProfessionalTaxAccountType: "Professional Tax Account Type",
+  ProfessionalTaxAccountNo: "Professional Tax Account No.",
+  ProfessionalTaxAccountName: "Professional Tax Account Name",
+  ProfessionalTaxAccountConfiguration: "Professional Tax Account Configuration",
+  HandHeldMachineConfiguration: "Hand Held Machine Configuration",
+  HandHeldMachineTDSRate: "Hand Held Machine TDS Rate",
+
   // GridWrapper
   Search: "Search",
   NoDataFound: " No data found..!",
@@ -116,19 +182,26 @@ export const en_language_data = {
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
-  ParentGroup: "Parent Group",
-  SubPriority: "Sub Priority",
-  SanctionFromLimit: "Sanction From Limit",
-  SanctionToLimit: "Sanction To Limit",
-  ProvisionSecured: "Provision Secured %",
-  ProvisionUnSecured: "Provision Unsecured %",
-  ParentWeaker: "Parent Weaker",
-  CKYCGroup: "C-KYC Group",
-  Constitution: "Constitution",
-  PinCode: "Pin Code",
-  FROMLIMIT: "FROM LIMIT",
-  TOLIMIT: "TO LIMIT",
-
+  ParentGroup:"Parent Group",
+  SubPriority:"Sub Priority",
+  SanctionFromLimit:"Sanction From Limit",
+  SanctionToLimit:"Sanction To Limit",
+  ProvisionSecured:"Provision Secured %",
+  ProvisionUnSecured:"Provision Unsecured %",
+  ToLimitValidation:"To Limit should be greater than or equal to From Limit",
+  codeisRequired:"code is Required",
+  Somethingwenttowrong:"Something went to wrong..",
+  //priority master sub
+  ParentWeaker:"Parent Weaker",
+  //trade master
+  CKYCGroup:"C-KYC Group",
+  Constitution:"Constitution",
+  //area master
+  PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
+  
+  //
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
@@ -158,8 +231,10 @@ export const en_language_data = {
   // For OTP Verify
   otp: {
     OTPAuthentication: "OTP Authentication",
+    TOTPAuthentication: "T-OTP Authentication",
     GenerateNewOTP: "Please click on Resend button to Generate new OTP",
-    EnterOTP: "Enter OTP Sent to your mobile number 98******37",
+    EnterOTPsentToMobile: "Enter OTP Sent to your mobile number 98******37",
+    PleaseEnterOTP: "Please Enter OTP (Authenticator)",
     ResendOTP: "Resend OTP",
     GetNewOTP: "Get New OTP",
     ValidFor: "Valid for",
@@ -610,6 +685,8 @@ export const en_language_data = {
   AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected",
   Select: "Select",
   DisplayName: "Display Name",
+  CTS: "CTS",
+  AddBranch:"Add Branch",
 
   sidebar: {
     Dashboard: "Dashboard",
@@ -701,6 +778,7 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
+
   PressCtrlJToViewJointInformation: "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do You Want to delete this row?",
   JointDetails: "Joint - Details",
@@ -718,6 +796,9 @@ export const en_language_data = {
   AddRow: "Add Row",
   SignView: "Sign View",
 
+
+  SpecialCharactersNotAllowedRemarks:
+    "Special Characters (! &) not Allowed in Remarks",
 
 
   // cheque book
@@ -766,6 +847,9 @@ export const en_language_data = {
   BalanceIsLesThanServicecharge: "Balance is less than Service-charge",
   BeforeChequeBookPrinting: "Before Cheque Book Printing",
   AfterChequeBookPrinting: "After Cheque Book Printing",
+  ChequeBkAlreadyIssued: "Already Issued Chequebook",
+  RequistionDtShouldBeLessThanOrEqualWorkingDt:
+    "Requistion date should be less than or equal to Working date",
 
   // limit entry
 
@@ -829,6 +913,7 @@ export const en_language_data = {
   SecurityType: "Security Type",
   CollateralRemarks: "Collateral Remarks",
   AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
+  LimitDeleteTitle: "Enter Removal Remarks For Limit Entry (TRN/046)",
 
   // stop payment
 
@@ -856,6 +941,9 @@ export const en_language_data = {
   ReleaseCheque: "Release Cheque",
   StopPaymentConfirmation: "Stop Payment Confirmation",
   ChequeFromTo: "Cheque From - To",
+  StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
+  StopConfirmDeleteTitle:
+    "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
 
   // stock entry
 
@@ -891,6 +979,11 @@ export const en_language_data = {
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
+  DateShouldBeLessThanEqualToWorkingDT:
+    "date should be less than or equal to Working date.",
+  StmtTillDateShouldBeGreterThanStmt:
+    "Stock Statement Till date should be greter than or equal to Statement date",
+  StockDeleteTitle: "Enter Removal Remarks For Stock Entry (TRN/047)",
 
   // Lien Entry
 
@@ -912,6 +1005,8 @@ export const en_language_data = {
   LienExpire: "Lien Expire",
   LienConfirmation: "Lien Confirmation",
   LienReason: "Lien Reason",
+  RemovalDtShouldBeGreterThanEqualToEffDT:
+    "Removal Date should be greter than or Equal to Effective date",
 
   // Temporary OD
 
@@ -939,6 +1034,11 @@ export const en_language_data = {
   TemporaryODHistory: "Temporary-OD History Detail",
   LastMachineName: "Last Machine Name",
   AreYouSureToForceExp: "Are you sure to force expire ?",
+  FromDateGreaterThanOrEqualToWorkingDate:
+    "Effective From Date should be greater than or equal to working date.",
+  ToDateGreaterThanOrEqualToFromDate:
+    "Effective To Date should be greater than or equal to From Date.",
+
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
@@ -946,7 +1046,9 @@ export const en_language_data = {
   PeriodName: "Period-Name",
   InstNo: "Inst. No.",
   InstallmentPeriod: "Installment Period",
+  
   // Bank ifsc code master
+
   IFSCCode: "IFSC Code",
   BankName: "Bank Name",
   Facility: "Facility",
@@ -1140,6 +1242,112 @@ export const en_language_data = {
 
   ValidationSuccessful: "Validation Successful",
   AreYouSurePostThisCheque: "Are you sure to post this Cheque?"
+ 
+  ModeisRequired:"Mode is Required",
+  PeriodNameisRequired:"Period Name is Required",
+  InstNoisRequired:"Installment is Required",
+  IFSCCodeisRequired:"IFSC Code is Required",
+  IfscValidate:"IFSC code should be of eleven digits",
+  BankNameisRequired:"Bank Name is Required",
+  //payslip issue entry
+  branchCode: "Branch Code",
+  accountType: "Account Type",
+  accountCode: "Account Code",
+  accountName: "Account Name",
+  jointDetails: "Joint Details",
+  balance: "Balance",
+  narration: "Narration",
+  byTrf: "By Transfer",
+  chequeNo: "Cheque No.",
+  chequeDate: "Cheque Date",
+  billType: "Bill Type",
+inFavourOf: "In Favour Of",
+address: "Address",
+instRemarks: "Instruction Remarks",
+payslipNumber: "Payslip Number",
+commission: "Commission",
+otherComm: "Other Commission",
+partyName: "Party Name",
+partyAddress: "Party Address",
+kycDocument: "KYC Document",
+kycDocumentNo: "KYC Document No.",
+bankCode: "Bank Code",
+bankName: "Bank Name",
+branch: "Branch",
+byTransfer: "By Transfer",
+signature1: "Signature 1",
+signature2: "Signature 2",
+ddNo: "DD No.",
+commissionType: "Commission Type",
+status: "Status",
+date: "Date",
+enteredBy: "Entered By",
+verifiedBy: "Verified By",
+jointType: "Joint Account Type",
+personName: "Person Name",
+designation: "Designation",
+memTypeAcNo: "Member Type Account Number",
+referenceAccount: "Reference Account",
+contactNo: "Contact Number",
+customerId: "Customer ID",
+commmitionType: "Commission Type",
+fromDate: "From Date",
+toDate: "To Date",
+type: "Type",
+Total: "Total",
+issueDate: "Issue Date",
+slipNo: "Slip Number",
+tota: "Total Amount",
+amount: "Amount",
+regionBtn:"Region Add",
+region:"Region",
+dateValidationMessage:"To Date should be greater than or equal to From Date.",
+ChequeNoisrequired:"Cheque No. is required",
+amountRequired:"Amount is Required",
+infavourofrequired:"InFavourof is Required",
+billtypeRequired:"Bill Type is Required",
+payslipNoRequired:"Payslip Number is Required",
 
-
+  // Form 15GH entry and confirmation
+  NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
+  FormName: "Form Name",
+  FormExpiryDate: "Form Expiry Date",
+  VerifiedDate: "Verified Date",
+  EnterCustomerID: "Enter Customer ID",
+  CustomerNotFound: "Customer Not Found",
+  Information: "Information",
+  BirthDate: "BirthDate",
+  UIN: "UIN",
+  FormTillDate: "Form Till Date",
+  Email: "Email",
+  EstimatedInterestForWhichDeclarationIsMade:
+    "Estimated Interest for which declaration is made",
+  EstimatedOtherIncomeExceptAboveInterestAmount:
+    "Estimated Other income except above Interest Amount",
+  NoOfFormsSubmittedInOtherBanks: "No. of Forms submitted in Other Bank(s)",
+  TotalIncomeOfFormsSubmittedInOtherBanks:
+    "Total Income of Forms submitted in Other Bank(s)",
+  WhetherAssessedToIncomeTaxAct: "Whether assessed to Income-tax Act?",
+  IfYesLatestAssessmentDate: "If Yes, Latest Assessment Date",
+  LastAssessmentDateValidationMessage:
+    "Last Assessment Date should be the last Day of a Financial Year.",
+  ActiveValidationMessage:
+    "One (or More) of the FD/RD is Paid for which this form was submitted. So you can not inactive this Form.",
+  Inactive: "Inactive",
+  PrintForm: "Print Form",
+  Bank: "Bank",
+  FDNo: "FD No.",
+  FinInterest: "Fin Interest",
+  RetrievalParameters: "Retrieval Parameters",
+  FromDateIsRequired: "From Date is required.",
+  ToDateIsRequired: "To Date is required.",
+  NoRecordFound: "No Record Found",
+  ////
+  ConfirmFormData: "Are you sure to confirm this Form?",
+  ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
+  DeleteWarning: "Delete Warning",
+  CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
+  PrintFormConfirmation: "Do you want to print form?",
+  ViewAll: "View All",
 };
+
