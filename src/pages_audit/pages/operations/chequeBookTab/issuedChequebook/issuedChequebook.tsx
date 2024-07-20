@@ -59,7 +59,7 @@ export const IssuedChequebook = ({ navigate }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "950px",
+          maxWidth: "1115px",
           padding: "5px",
         },
       }}

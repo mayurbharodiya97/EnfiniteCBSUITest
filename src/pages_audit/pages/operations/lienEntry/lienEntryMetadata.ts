@@ -1,6 +1,9 @@
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { isValid } from "date-fns";
+import { lessThanDate } from "registry/rulesEngine";
+import { t } from "i18next";
 
 export const LienEntryMetadata = {
   form: {
@@ -105,6 +108,19 @@ export const LienEntryMetadata = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
+        FormatProps: {
+          allowNegative: false,
+          allowLeadingZeros: true,
+          isAllowed: (values) => {
+            if (values?.value?.length > 20) {
+              return false;
+            }
+            if (values?.value.includes(".")) {
+              return false;
+            }
+            return true;
+          },
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -246,7 +262,11 @@ export const LienEntryMetadata = {
       postValidationSetCrossFieldValues: async (field) => {
         if (field?.value) {
           return {
-            PARENT_CD: { value: field?.optionData?.[0]?.PARENT_NM },
+            PARENT_CD: {
+              value:
+                field?.optionData?.[0]?.PARENT_TYPE +
+                field?.optionData?.[0]?.PARENT_NM,
+            },
           };
         }
         return {};
@@ -270,6 +290,9 @@ export const LienEntryMetadata = {
       },
       name: "LIEN_AMOUNT",
       label: "LienAmount",
+      FormatProps: {
+        allowNegative: false,
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -340,7 +363,25 @@ export const LienEntryMetadata = {
       },
       name: "REMOVAL_DT",
       label: "RemovalDate",
-      isMinWorkingDate: true,
+      // isMinWorkingDate: true,
+      dependentFields: ["EFECTIVE_DT"],
+      validate: (currentField, dependentField) => {
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return t("Mustbeavaliddate");
+        }
+        if (
+          lessThanDate(
+            currentField?.value,
+            dependentField?.EFECTIVE_DT?.value,
+            {
+              ignoreTime: true,
+            }
+          )
+        ) {
+          return t("RemovalDtShouldBeGreterThanEqualToEffDT");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -388,6 +429,13 @@ export const LienEntryMetadata = {
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return "Special Characters not Allowed in Remarks";
+        }
+        return "";
       },
       GridProps: {
         xs: 12,

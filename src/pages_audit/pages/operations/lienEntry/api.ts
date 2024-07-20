@@ -61,6 +61,7 @@ export const lienGridDetail = async (apiReqPara) => {
       } else {
         item.LIEN_STATUS_DISPLAY = "Expired";
         item._rowColor = "var(--theme-color7)";
+        item.ignoreValue = true;
       }
       if (item?.CONFIRMED === "Y") {
         item.DISPLAY_CONFIRMED = "Confirmed";

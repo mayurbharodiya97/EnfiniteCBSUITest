@@ -1,5 +1,6 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getdashboxData } from "../api";
+import { t } from "i18next";
 
 export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
@@ -49,29 +50,16 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
       maxWidth: 400,
       minWidth: 250,
       validation: (value, data, prev, next) => {
-        // if (!Boolean(value)) {
-        //   return "This field is required";
-        // }
-        if (Array.isArray(prev)) {
-          let lb_error = false;
-          let ls_msg = "";
-          prev.forEach((item, index) => {
-            if (lb_error) {
-              return ls_msg;
-            }
-            if (item?.DASH_TRAN_CD == "") {
-              return ls_msg;
-            }
-            if (value === item?.DASH_TRAN_CD) {
-              lb_error = true;
-              // ls_msg = "Option is Already entered at Line " + (index + 1);
-              ls_msg = "Option is Already entered  ";
-              return ls_msg;
-            }
-          });
-          if (lb_error) {
-            return ls_msg;
+        let concatenatedArray = [prev, next].flat();
+        let nextMsg: any = concatenatedArray?.some((item) => {
+          if (value) {
+            return value === item?.DASH_TRAN_CD;
           }
+          return false;
+        });
+
+        if (nextMsg) {
+          return t("OptionIsAlreadyEntered");
         }
         return "";
       },

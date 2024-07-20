@@ -228,6 +228,8 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
                 : null,
             onBlur: handleBlur,
             InputLabelProps: { shrink: true },
+            // add by parag for if you use datepicker component and pass required props, the star will appear at the end (label end)
+            required: others.required,
           },
           actionBar: {
             actions: ["today", "accept", "cancel"],

@@ -112,7 +112,7 @@ const LimitEntryCustom = () => {
               });
             };
 
-            let messages = { "999": [], "99": [], "9": [] };
+            let messages = { "999": [], "99": [], "9": [], "0": [] };
             let status = { "999": false, "99": false, "9": false, "0": false };
 
             data.forEach((item) => {
@@ -519,7 +519,7 @@ const LimitEntryCustom = () => {
 
       {isData.isDelete && (
         <RemarksAPIWrapper
-          TitleText={"deleteTitle"}
+          TitleText={"LimitDeleteTitle"}
           onActionNo={() =>
             setIsData((old) => ({
               ...old,
