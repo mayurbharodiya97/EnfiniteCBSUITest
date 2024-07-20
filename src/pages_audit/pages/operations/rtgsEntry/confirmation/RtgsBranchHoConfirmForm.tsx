@@ -333,7 +333,6 @@ const RtgsBranchHoConfirmationForm: FC<{
         );
         if (status === "0") {
           // Check the A_STATUS value and take action accordingly
-          // console.log(data, data?.A_STATUS.trim())
 
           switch (data?.A_STATUS.trim()) {
             case "E":
@@ -432,7 +431,6 @@ const RtgsBranchHoConfirmationForm: FC<{
         rowsData?.HO_CONFIRMED === "T" ||
         result[0]?.data?.hdrData?.PI_ACKN_INDICATOR === "Y"
 
-    // console.log("ac", rowsData?.ENTERED_BY, rowsData?.VERIFIED_BY)
 
     return (
       <Fragment>
@@ -1056,7 +1054,7 @@ const RtgsBranchHoConfirmationForm: FC<{
     );
   };
 
-export const CtsOutwardClearingConfirmFormWrapper = ({
+export const RTGSBranchHoConfirmFormWrapper = ({
   flag,
   handleDialogClose,
   isDataChangedRef,

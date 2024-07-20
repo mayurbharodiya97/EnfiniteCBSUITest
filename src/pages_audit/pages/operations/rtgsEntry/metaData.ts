@@ -1666,7 +1666,6 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
-            console.log("field", field)
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&

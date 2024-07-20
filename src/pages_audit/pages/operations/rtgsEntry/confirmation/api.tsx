@@ -150,7 +150,6 @@ export const rtgsVerifyOTP = async (
   otpValidSec,
   sentDate
 ) => {
-  //console.log(transactionId, username, otpnumber);
   const {
     data,
     status,

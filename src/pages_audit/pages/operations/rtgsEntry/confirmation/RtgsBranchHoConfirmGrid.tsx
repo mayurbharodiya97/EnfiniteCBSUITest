@@ -12,7 +12,7 @@ import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { CtsOutwardClearingConfirmFormWrapper } from "./RtgsBranchHoConfirmForm";
+import { RTGSBranchHoConfirmFormWrapper } from "./RtgsBranchHoConfirmForm";
 import {
   RetrieveFormConfigMetaData,
   RtgsConfirmGridMetaData,
@@ -101,7 +101,6 @@ const RtgsConfirmationGrid = ({ flag }) => {
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      // console.log("data", data);
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -320,7 +319,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
         <Route
           path="view-detail/*"
           element={
-            <CtsOutwardClearingConfirmFormWrapper
+            <RTGSBranchHoConfirmFormWrapper
               flag={flag}
               handleDialogClose={handleDialogClose}
               handlePrev={handlePrev}

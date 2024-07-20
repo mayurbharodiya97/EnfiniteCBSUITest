@@ -399,9 +399,6 @@ const RtgsEntryForm: FC<{}> = () => {
                 beneficiaryDtlData?.beneficiaryAcDetails?.length > 0 &&
                 benData?.beneficiaryAcDetails?.length > 0
               ) {
-                console.log("beneficiaryDtlData?.beneficiaryAcDetails",
-                  beneficiaryDtlData,
-                  beneficiaryDtlData?.beneficiaryAcDetails)
                 setBeneficiaryDtlData((old) => ({
                   ...old,
                   beneficiaryAcDetails: [
