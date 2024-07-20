@@ -13,9 +13,6 @@ import { makeStyles } from "@mui/styles";
 import {
   Theme,
   Dialog,
-  AppBar,
-  Toolbar,
-  Typography,
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
@@ -23,54 +20,36 @@ import { AuthContext } from "pages_audit/auth";
 import {
   AddNewBenfiDetailGridMetadata,
   AuditBenfiDetailFormMetadata,
-
 } from "./metaData";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { ActionTypes, GridMetaDataType } from "components/dataTable";
 import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { usePopupContext } from "components/custom/popupContext";
 import { extractMetaData, utilFunction } from "components/utils";
-import { useCacheWithMutation } from "../DailyTransaction/TRNHeaderTabs/cacheMutate";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { queryClient } from "cache";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
-
-
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--theme-color2)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-  refreshiconhover: {},
-}));
 
 
 const actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: "Add",
+    actionLabel: t("Add"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetails"),
     multiple: undefined,
     rowDoubleClick: true,
   },
   {
     actionName: "Close",
-    actionLabel: "close",
+    actionLabel: t("Close"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -81,7 +60,6 @@ export const AddNewBeneficiaryDetail: FC<{
   onClose?: any;
   isBenAuditTrailData?: any;
 }> = ({ isOpen, onClose, isBenAuditTrailData }) => {
-  const headerClasses = useTypeStyles();
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
@@ -92,7 +70,7 @@ export const AddNewBeneficiaryDetail: FC<{
   const [isAddOpen, setisAddOpen] = useState<any>(false);
   const [formMode, setFormMode] = useState<any>("new");
   const [gridData, setGridData] = useState<any>({});
-
+  const { t } = useTranslation();
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -216,8 +194,8 @@ export const AddNewBeneficiaryDetail: FC<{
       setFieldError,
     };
     const buttonName = await MessageBox({
-      messageTitle: "Confirmation",
-      message: formMode === "new" ? "Are You sure to Save this record?" : "Are You Sure to inactive this record?",
+      messageTitle: t("Confirmation"),
+      message: formMode === "new" ? t("AreYouSaveThisRecord") : t("AreYouSureInactiveThisRecord"),
       buttonNames: ["No", "Yes"],
       loadingBtnName: ["Yes"],
     });
@@ -227,7 +205,7 @@ export const AddNewBeneficiaryDetail: FC<{
 
   };
 
-  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel = "List Of Beneficiary A/c of Ordering A/c No.:" + authState?.companyID + isBenAuditTrailData?.BRANCH_CD + "/" + isBenAuditTrailData?.ACCT_TYPE + "/" + isBenAuditTrailData?.ACCT_CD
+  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel = t("ListOfBeneficiaryAcOrdering") + t("ACNo") + ".: " + authState?.companyID + isBenAuditTrailData?.BRANCH_CD + " / " + isBenAuditTrailData?.ACCT_TYPE + " / " + isBenAuditTrailData?.ACCT_CD
   return (
     <>
       <Dialog
@@ -304,7 +282,7 @@ export const AddNewBeneficiaryDetail: FC<{
                             handleSubmit(event, "Save");
                           }}
                         >
-                          Save
+                          {t("Save")}
                         </GradientButton>
                         :
                         gridData?.ACTIVE_FLAG === "Y" ?
@@ -313,7 +291,7 @@ export const AddNewBeneficiaryDetail: FC<{
                               handleSubmit(event, "Save");
                             }}
                           >
-                            Save
+                            {t("Save")}
                           </GradientButton> : null
                     }
                     <GradientButton
@@ -321,7 +299,7 @@ export const AddNewBeneficiaryDetail: FC<{
                         setisAddOpen(false);
                       }}
                     >
-                      Close
+                      {t("Close")}
                     </GradientButton>
                   </>
                 )}

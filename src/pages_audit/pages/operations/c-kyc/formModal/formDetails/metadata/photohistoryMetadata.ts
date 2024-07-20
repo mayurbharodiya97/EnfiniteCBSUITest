@@ -16,8 +16,8 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
     pageSizes: [15, 25, 35],
     defaultPageSize: 15,
     containerHeight: {
-      min: "68vh",
-      max: "68vh",
+      min: "40vh",
+      max: "40vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

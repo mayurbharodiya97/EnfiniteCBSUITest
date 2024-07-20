@@ -58,7 +58,7 @@ export const AllowedAccess = () => {
             />
           ) : null}
           <GridWrapper
-            key={`user-Access-branch`}
+            key={`user-Access-branch` + userAccessBranch.isSuccess}
             finalMetaData={userAccessbranchMetadata as GridMetaDataType}
             data={userAccessBranch.data || []}
             setData={() => null}
@@ -89,7 +89,7 @@ export const AllowedAccess = () => {
             />
           ) : null}
           <GridWrapper
-            key={`user-Access-type`}
+            key={`user-Access-type` + userAccessType.isSuccess}
             finalMetaData={userAccesstypeMetadata as GridMetaDataType}
             data={userAccessType.data || []}
             setData={() => null}

@@ -180,7 +180,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
 
         {isDelete && (
           <RemarksAPIWrapper
-            TitleText={"deleteTitle"}
+            TitleText={"StopConfirmDeleteTitle"}
             onActionNo={() => setIsDelete(false)}
             onActionYes={(val, rows) => {
               let deleteReqPara = {
@@ -195,7 +195,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                 CONFIRMED: rows.CONFIRMED,
                 USER_DEF_REMARKS: val
                   ? val
-                  : "WRONG ENTRY FROM STOP PAYMENT ENTRY (TRN/048)",
+                  : "WRONG ENTRY FROM CHEQUE STOP CONFIRMATION (TRN/380)",
 
                 ACTIVITY_TYPE: "STOP PAYMENT ENTRY SCREEN",
                 ENTERED_BY: rows.ENTERED_BY,
@@ -208,7 +208,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
             CanceltbuttonLabelText="Cancel"
             open={isDelete}
             rows={rows?.[0]?.data}
-            defaultValue={"WRONG ENTRY FROM STOP PAYMENT ENTRY (TRN/048)"}
+            defaultValue={"WRONG ENTRY FROM CHEQUE STOP CONFIRMATION (TRN/380)"}
           />
         )}
       </>

@@ -24,10 +24,15 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import { t } from "i18next";
+
+
+
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetails"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -44,7 +49,30 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
 
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
-    () => API.getBussinessDate()
+    () => API.getBussinessDate(),
+    {
+      onSuccess: (data) => {
+        mutation.mutate({
+          FROM_TRAN_DT: zoneTranType === "S" ? (format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")) : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+          TO_TRAN_DT: zoneTranType === "S" ? format(
+            new Date(data?.[0]?.TRAN_DATE),
+            "dd/MMM/yyyy"
+          ) : format(
+            new Date(authState?.workingDate),
+            "dd/MMM/yyyy"
+          ),
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState.user.branchCode,
+          TRAN_TYPE: zoneTranType,
+          CONFIRMED: "0",
+          BANK_CD: "",
+          ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+          SLIP_CD: "",
+          CHEQUE_NO: "",
+          CHEQUE_AMOUNT: ""
+        })
+      },
+    }
   );
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -69,7 +97,6 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      // console.log("data", data);
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
