@@ -49,11 +49,11 @@ export const fixDeposit_tab_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "A/c Belongs to Director",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "A/c Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -150,11 +150,11 @@ export const fixDeposit_tab_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "FD Details",
             name: "fddtldivider_ignoreField",
-            label: ""
+            label: "FD Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -316,11 +316,11 @@ export const fixDeposit_tab_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Amount",
             name: "amountdivider_ignoreField",
-            label: ""
+            label: "Amount",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {

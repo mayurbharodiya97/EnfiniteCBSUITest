@@ -365,12 +365,12 @@ export const kyc_poa_legal_meta_data = {
     fields: [
           {
               render:  {
-                  componentType: "Divider",
+                  componentType: "divider",
                   sequence: 1,
               },
-              dividerText: "CurrentAddress",
               name: "currentAddDivider",
-              label: "currentAddDivider"
+              label: "CurrentAddress",
+              GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
           },
         {
             render: {
@@ -615,12 +615,12 @@ export const kyc_poa_legal_meta_data = {
   
       {
           render:  {
-              componentType: "Divider",
+              componentType: "divider",
               sequence: 1,
           },
-          dividerText: "CorrespondenceAddress",
           name: "localAddDivider",
-          label: "localAddDivider"
+          label: "CorrespondenceAddress",
+          GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
       },
       {
           render: { componentType: "checkbox"},
@@ -851,12 +851,12 @@ export const kyc_poa_legal_meta_data = {
   
       {
           render:  {
-              componentType: "Divider",
+              componentType: "divider",
               sequence: 1,
           },
-          dividerText: "Contact",
           name: "contactDivider",
-          label: "contactDivider"
+          label: "Contact",
+          GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
       },
       {
           render: {
