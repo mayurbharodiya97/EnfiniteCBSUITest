@@ -101,8 +101,8 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "cross-env NODE_OPTIONS='--max-old-space-size=4096' react-app-rewired start",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096' react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "docker:build": "docker build -t acutedocker001/netbanking-admin:1.0 .",
