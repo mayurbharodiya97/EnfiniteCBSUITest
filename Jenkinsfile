@@ -59,10 +59,34 @@ pipeline {
             }
         }
 
-    // stage('SonarQube - SAST'){
-    //     steps {
-    //         sonar-scanner -Dsonar.projectKey=Enfinity_UI -Dsonar.sources=. -Dsonar.host.url=http://10.150.17.113:9000 -Dsonar.token=sqp_7d1e1ca6ed168d92b946d73063943309a26d959a
-    //     }
-    // }
+            stage('Extract and Increment Image Tag') {
+            steps {
+                extractAndIncrementImageTag()
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                buildAndPushDockerImage(env.IMAGE_NAME, env.NEW_TAG)
+            }
+        }
+
+        stage('Update Deployment Tags') {
+            steps {
+                updateDeploymentTags(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
+            }
+        }
+
+        stage('Push Deployment File to Git And Copy To K8s Cluster') {
+            steps {
+                pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL, )
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                deployToKubernetes(env.FILENAME, env.DEPLOYMENTNAME)
+            }
+        }
     }
 }
