@@ -8,13 +8,6 @@ pipeline {
     environment {
         // Set CI=false environment variable
         CI = 'false'
-    }
-
-    tools {
-        nodejs 'nodejs20'
-    }
-
-    environment {
         GIT_REPO_URL = 'https://github.com/adminacute/EnfiniteCBS_UI.git'
         GIT_CREDENTIALS = 'jennkins-to-github'
         KUBECONFIG = 'kubeconfig'
@@ -23,6 +16,10 @@ pipeline {
         BRANCH = 'devops_main'
         IMAGE_NAME = 'actdocker123/cbs-micro-service'
         DEPLOYMENTNAME = 'cbs-ui-microservice-deployment'
+    }
+
+    tools {
+        nodejs 'nodejs20'
     }
 
     stages {
