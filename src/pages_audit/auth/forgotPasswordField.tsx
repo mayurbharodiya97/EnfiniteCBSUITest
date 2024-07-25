@@ -65,7 +65,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
           fullWidth
           type={"text"}
           name="userName"
-          value={input.userName || ""}
+          value={input.userName.trimStart() || ""}
           onChange={handleChange}
           error={loginState.isUsernameError}
           helperText={
@@ -78,8 +78,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             loginState.loading
               ? true
               : loginState.workingState === 0
-              ? false
-              : true
+                ? false
+                : true
           }
           autoComplete="off"
           ref={inputRef}
@@ -112,8 +112,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               loginState.loading
                 ? true
                 : loginState.workingState === 0
-                ? false
-                : true
+                  ? false
+                  : true
             }
             autoComplete="off"
             onKeyDown={(e) => {

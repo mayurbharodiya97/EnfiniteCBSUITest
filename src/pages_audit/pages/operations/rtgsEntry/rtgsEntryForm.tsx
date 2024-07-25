@@ -56,10 +56,12 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { format } from "date-fns";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Alert } from "components/common/alert";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
-    actionName: "close",
-    actionLabel: "cancel",
+    actionName: "Close",
+    actionLabel: t("Cancel"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -88,6 +90,8 @@ const RtgsEntryForm: FC<{}> = () => {
   const myBenFormRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
   const retrieveDataRef: any = useRef(null);
+  const { t } = useTranslation();
+
   const [beneficiaryDtlData, setBeneficiaryDtlData] = useState<any>({
     beneficiaryAcDetails: [
       { AMOUNT: "", TO_ACCT_NO: "" },
@@ -121,14 +125,14 @@ const RtgsEntryForm: FC<{}> = () => {
     isDeleteRemark
   } = state;
   const steps = [
-    "New RTGS Entry(Ordering A/C Details)",
-    "Beneficiary A/C Detail",
+    t("NewRTGSEntry"),
+    t("BeneficiaryACDetail"),
   ];
 
   const [formData, setFormData] = useState<any>({})
 
   const setCurrentAction = useCallback(async (data) => {
-    if (data.name === "close") {
+    if (data.name === "Close") {
       setState((old) => ({
         ...old,
         ifscGrid: false,
@@ -206,13 +210,13 @@ const RtgsEntryForm: FC<{}> = () => {
     },
     onSuccess: async (data) => {
       if (formMode === "edit") {
-        enqueueSnackbar("Record Updated successfully.", {
+        enqueueSnackbar(t("RecordUpdatedSuccessfully"), {
           variant: "success",
         })
       } else {
-        const message = ` RTGS/NEFT. Trans.No:- ${data?.[0]?.FD_NO}\n${data?.[0]?.TRAN_CD} A/C No.:- ${data?.[0]?.BRANCH_CD}-${data?.[0]?.ACCT_TYPE}-${data?.[0]?.ACCT_CD}\nTrx:- ${data?.[0]?.TYPE_CD} Amount:- ${data?.[0]?.AMOUNT}.\n${data?.[1]?.TRAN_CD} A/C No.:- ${data?.[1]?.BRANCH_CD}-${data?.[1]?.ACCT_TYPE}-${data?.[1]?.ACCT_CD}\nTrx:- ${data?.[1]?.TYPE_CD} Amount:- ${data?.[1]?.AMOUNT}`;
+        const message = ` ${t("RTGSNEFTTransNo")}:- ${data?.[0]?.FD_NO}\n${data?.[0]?.TRAN_CD} ${t("ACNo")}.:- ${data?.[0]?.BRANCH_CD}-${data?.[0]?.ACCT_TYPE}-${data?.[0]?.ACCT_CD.trim()}  ${t("Trx")}:- ${data?.[0]?.TYPE_CD} ${t("Amount")}:- ${data?.[0]?.AMOUNT}.\n${data?.[1]?.TRAN_CD} ${t("ACNo")}.:- ${data?.[1]?.BRANCH_CD}-${data?.[1]?.ACCT_TYPE}-${data?.[1]?.ACCT_CD.trim()}  ${t("Trx")}:- ${data?.[1]?.TYPE_CD} ${t("Amount")}:- ${data?.[1]?.AMOUNT}`;
         await MessageBox({
-          messageTitle: "Voucher Confirmation",
+          messageTitle: t("VoucherConfirmation"),
           message: message
         });
       }
@@ -248,7 +252,7 @@ const RtgsEntryForm: FC<{}> = () => {
       }));
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
         variant: "success",
       });
       setState((old) => ({
@@ -258,6 +262,9 @@ const RtgsEntryForm: FC<{}> = () => {
         isDeleteRemark: false,
         formMode: "new",
       }));
+      setFormData({})
+      myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
+      myBenFormRef?.current?.handleFormReset({ preventDefault: () => { } });
       CloseMessageBox();
     },
   });
@@ -321,7 +328,7 @@ const RtgsEntryForm: FC<{}> = () => {
             BRANCH_CD: formData?.BRANCH_CD,
             COMP_CD: authState?.companyID,
             TO_ACCT_NO: item?.TO_ACCT_NO,
-            DEF_TRAN_CD: formData?.DEF_TRAN_CD
+            DEF_TRAN_CD: formData?.DEF_TRAN_CD,
 
           }
         )
@@ -342,7 +349,7 @@ const RtgsEntryForm: FC<{}> = () => {
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "999") {
               const buttonName = await MessageBox({
-                messageTitle: "Account Validation Failed",
+                messageTitle: t("ValidationFailed"),
                 message: data[i]?.O_MESSAGE,
               });
             } else if (data[i]?.O_STATUS === "0") {
@@ -378,12 +385,11 @@ const RtgsEntryForm: FC<{}> = () => {
                 };
                 endSubmit(true);
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
-                  message: " Proceed ?",
+                  messageTitle: t("Confirmation"),
+                  message: t("Proceed"),
                   buttonNames: ["No", "Yes"],
                   loadingBtnName: ["Yes"],
                 });
-
                 if (buttonName === "Yes") {
                   mutationRtgs.mutate(finalReqDataRef.current);
                 }
@@ -398,6 +404,7 @@ const RtgsEntryForm: FC<{}> = () => {
                   beneficiaryAcDetails: [
                     {
                       ...old?.beneficiaryAcDetails,
+                      // ...old?.beneficiaryAcDetails[0], 
                     },
                     ...benData.beneficiaryAcDetails,
                   ],
@@ -497,17 +504,21 @@ const RtgsEntryForm: FC<{}> = () => {
 
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
-                    <GradientButton
-                      onClick={() => {
-                        let event: any = { preventDefault: () => { } };
-                        myBenFormRef?.current?.handleSubmit(event, "FINAL");
-
-                      }}
-                    >
-                      Save
-                    </GradientButton>
+                    {activeStep === 1 ?
+                      <>
+                        <GradientButton
+                          onClick={() => {
+                            let event: any = { preventDefault: () => { } };
+                            myBenFormRef?.current?.handleSubmit(event, "FINAL");
+                          }}
+                        >
+                          {t("Save")}
+                        </GradientButton>
+                      </>
+                      : null
+                    }
                   </>
                 ) : formMode === "view" ? (
                   <>
@@ -519,15 +530,15 @@ const RtgsEntryForm: FC<{}> = () => {
                         }));
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
                     <GradientButton onClick={async () => {
                       if (
                         retrieveDataRef.current?.BR_CONFIRMED === "Y"
                       ) {
                         await MessageBox({
-                          messageTitle: "Validation Failed..",
-                          message: "Cannot Modify Confirmed Transaction",
+                          messageTitle: t("ValidationFailed"),
+                          message: t("CannotModifyConfirmedTransaction"),
                           buttonNames: ["Ok"],
                         });
                       } else if (
@@ -543,8 +554,8 @@ const RtgsEntryForm: FC<{}> = () => {
                         )
                       ) {
                         await MessageBox({
-                          messageTitle: "Validation Failed..",
-                          message: "Cannot Modify Back Dated Entry",
+                          messageTitle: t("ValidationFailed"),
+                          message: t("CannotModifyBackDatedEntry"),
                           buttonNames: ["Ok"],
                         });
                       } else {
@@ -555,7 +566,7 @@ const RtgsEntryForm: FC<{}> = () => {
                       }
 
                     }}>
-                      Edit
+                      {t("Edit")}
                     </GradientButton>
                     <GradientButton
                       onClick={() => {
@@ -568,7 +579,7 @@ const RtgsEntryForm: FC<{}> = () => {
                         myBenFormRef?.current?.handleFormReset({ preventDefault: () => { } });
                       }}
                     >
-                      New
+                      {t("New")}
                     </GradientButton>
                     <GradientButton
                       onClick={async () => {
@@ -576,8 +587,8 @@ const RtgsEntryForm: FC<{}> = () => {
                           retrieveDataRef.current?.BR_CONFIRMED === "Y"
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Confirmed Transaction",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteConfirmedTransaction"),
                             buttonNames: ["Ok"],
                           });
                         } else if (
@@ -593,8 +604,8 @@ const RtgsEntryForm: FC<{}> = () => {
                           )
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Back Dated Entry",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
                           });
                         } else {
@@ -605,7 +616,7 @@ const RtgsEntryForm: FC<{}> = () => {
                         }
                       }}
                     >
-                      Remove
+                      {t("Delete")}
                     </GradientButton>
                   </>
                 ) : formMode === "edit" ? (
@@ -619,29 +630,33 @@ const RtgsEntryForm: FC<{}> = () => {
 
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
-                    <GradientButton
-                      onClick={() => {
-                        let event: any = { preventDefault: () => { } };
-                        myBenFormRef?.current?.handleSubmit(event, "FINAL");
-
-                      }}
-                    >
-                      Save
-                    </GradientButton>
+                    {activeStep === 1 ?
+                      <>
+                        <GradientButton
+                          onClick={() => {
+                            let event: any = { preventDefault: () => { } };
+                            myBenFormRef?.current?.handleSubmit(event, "FINAL");
+                          }}
+                        >
+                          {t("Save")}
+                        </GradientButton>
+                      </> : null}
                     <GradientButton
                       onClick={() => {
                         setState((old) => ({
                           ...old,
                           formMode: "new",
+                          activeStep: 0
                         }));
+
                         setFormData({})
                         myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
                         myBenFormRef?.current?.handleFormReset({ preventDefault: () => { } });
                       }}
                     >
-                      New
+                      {t("New")}
                     </GradientButton>
                     <GradientButton
                       onClick={async () => {
@@ -649,8 +664,8 @@ const RtgsEntryForm: FC<{}> = () => {
                           retrieveDataRef.current?.BR_CONFIRMED === "Y"
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Confirmed Transaction",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteConfirmedTransaction"),
                             buttonNames: ["Ok"],
                           });
                         } else if (
@@ -666,8 +681,8 @@ const RtgsEntryForm: FC<{}> = () => {
                           )
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Back Dated Entry",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
                           });
                         } else {
@@ -678,7 +693,7 @@ const RtgsEntryForm: FC<{}> = () => {
                         }
                       }}
                     >
-                      Remove
+                      {t("Delete")}
                     </GradientButton>
                   </>
                 ) : null}
@@ -823,7 +838,7 @@ const RtgsEntryForm: FC<{}> = () => {
                             gutterBottom={true}
                             variant={"h6"}
                           >
-                            Joint - Details
+                            {t("JointDetails")}
                             <Typography
                               sx={{
                                 fontSize: "15px",
@@ -831,7 +846,7 @@ const RtgsEntryForm: FC<{}> = () => {
                                 display: "inline-block"
                               }}
                             >
-                              Press (Ctrl + J) To View Joint Information & Press Esc to Close
+                              {t("PressCtrlJToViewJointInformation")}
                             </Typography>
                           </Typography>
 
@@ -925,8 +940,8 @@ const RtgsEntryForm: FC<{}> = () => {
                           ) {
                             if (formData?.ACCT_CD.length === 0) {
                               MessageBox({
-                                messageTitle: "Validation Failed",
-                                message: "Please enter A/c Type For Ordering A/c No.",
+                                messageTitle: t("ValidationFailed"),
+                                message: t("PleaseEnterAcTypeForOrderingAcNo"),
                               });
                             } else {
                               setState((old) => ({
@@ -981,7 +996,7 @@ const RtgsEntryForm: FC<{}> = () => {
                         }));
                       }}
                     >
-                      Back
+                      {t("Back")}
                     </GradientButton>
                   )}
                   {
@@ -998,7 +1013,8 @@ const RtgsEntryForm: FC<{}> = () => {
 
                             }}
                           >
-                            Next
+                            {t("Next")}
+
                           </GradientButton>
                         ) : null}
                       </>
@@ -1054,11 +1070,11 @@ const RtgsEntryForm: FC<{}> = () => {
                     retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                     if (flag === "action") {
                       getRtgsOrderingData.mutate({
+                        ENT_BRANCH_CD: authState?.user?.branchCode,
                         COMP_CD: rowsData?.[0]?.data?.COMP_CD ?? "",
                         BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD ?? "",
                         BRANCH_TRAN_CD: rowsData?.[0]?.data?.BRANCH_TRAN_CD ?? "",
                         FLAG_RTGSC: ""
-
                       });
                       getRtgsBenDetailData.mutate({
                         COMP_CD: rowsData?.[0]?.data?.COMP_CD ?? "",
@@ -1077,7 +1093,7 @@ const RtgsEntryForm: FC<{}> = () => {
               {isDeleteRemark && (
                 <RemarksAPIWrapper
                   TitleText={
-                    "Enter Removal Remarks For RTGS ENTRY (MST/552)"
+                    t("RemovalRemarksForRTGS")
                   }
                   onActionNo={() => setState((old) => ({
                     ...old,
@@ -1085,8 +1101,8 @@ const RtgsEntryForm: FC<{}> = () => {
                   }))}
                   onActionYes={async (val, rows) => {
                     const buttonName = await MessageBox({
-                      messageTitle: "Confirmation",
-                      message: "Do You Want to delete this row?",
+                      messageTitle: t("Confirmation"),
+                      message: t("DoYouWantDeleteRow"),
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
