@@ -96,6 +96,16 @@ export const StockEntryMetaData = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,

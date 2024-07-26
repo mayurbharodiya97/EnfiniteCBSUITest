@@ -6,10 +6,7 @@ import { forwardRef } from "react";
 import { PayslipAndDDFormMetaData } from "./metaData/payslipAndDDMetaData";
 
 export const PayslipAndDDForm = forwardRef<any, any>(
-  (
-    { defaultView, accountDetailsForPayslip, payslipSubmitHandler },
-    ref: any
-  ) => {
+  ({ defaultView, accountDetailsForPayslip, onSubmitHandler }, ref: any) => {
     const { MessageBox } = usePopupContext();
 
     return (
@@ -24,7 +21,7 @@ export const PayslipAndDDForm = forwardRef<any, any>(
           }
           hideHeader={true}
           initialValues={{ ...accountDetailsForPayslip } as InitialValuesType}
-          onSubmitHandler={payslipSubmitHandler}
+          onSubmitHandler={onSubmitHandler}
           ref={ref}
           formState={{
             MessageBox: MessageBox,

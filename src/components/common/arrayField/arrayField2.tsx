@@ -173,7 +173,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       }
       if (typeof result === "object") {
         allow = result?.allow ?? false;
-        reason = result?.reason ?? "Cannot add a new Row";
+        reason = result?.reason ?? "Required value missing ,Please enter a value";
       }
       if (allow) {
         unshift();

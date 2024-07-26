@@ -1,6 +1,8 @@
 import { DefaultErrorObject } from "components/utils";
-import { endOfMonth, format } from "date-fns";
+import { endOfMonth, format, isValid } from "date-fns";
+import { t } from "i18next";
 import { AuthSDK } from "registry/fns/auth";
+import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 
 export const securityListDD = async (ApiReq) => {
   const { data, status, message, messageDetails } =
@@ -85,6 +87,23 @@ export const securityFieldDTL = async (apiReqPara) => {
                 required: true,
                 isWorkingDate: true,
                 isMaxWorkingDate: true,
+                isFieldFocused: true,
+                validate: (currentField, dependentField) => {
+                  // if (
+                  //   Boolean(currentField?.value) &&
+                  //   !isValid(currentField?.value)
+                  // ) {
+                  //   return t("Mustbeavaliddate");
+                  // }
+                  if (
+                    geaterThanDate(currentField?.value, currentField?._maxDt, {
+                      ignoreTime: true,
+                    })
+                  ) {
+                    return t("DateShouldBeLessThanEqualToWorkingDT");
+                  }
+                  return "";
+                },
                 dependentFields: ["BRANCH_CD", "SECURITY_CD", "ACCT_MST_LIMIT"],
                 postValidationSetCrossFieldValues: async (
                   field,
@@ -121,16 +140,37 @@ export const securityFieldDTL = async (apiReqPara) => {
               return {
                 ...item,
                 required: true,
-                dependentFields: ["STMT_DT_FLAG"],
+                dependentFields: ["STMT_DT_FLAG", "TRAN_DT"],
                 defaultValue: format(
                   endOfMonth(new Date(apiReqPara.WORKING_DATE)),
                   "dd/MMM/yyyy"
                 ),
+                validate: (currentField, dependentField) => {
+                  // if (
+                  //   Boolean(currentField?.value) &&
+                  //   !isValid(currentField?.value)
+                  // ) {
+                  //   return t("Mustbeavaliddate");
+                  // }
+                  if (
+                    lessThanDate(
+                      currentField?.value,
+                      dependentField?.TRAN_DT?.value,
+                      {
+                        ignoreTime: true,
+                      }
+                    )
+                  ) {
+                    return t("StmtTillDateShouldBeGreterThanStmt");
+                  }
+                  return "";
+                },
+
                 isReadOnly(fieldData, dependentFieldsValues, formState) {
                   if (dependentFieldsValues?.STMT_DT_FLAG?.value === "N") {
-                    return true;
-                  } else {
                     return false;
+                  } else {
+                    return true;
                   }
                 },
               };
@@ -232,6 +272,13 @@ export const securityFieldDTL = async (apiReqPara) => {
               return {
                 ...item,
                 required: true,
+                validate: (columnValue) => {
+                  let regex = /^[^!&]*$/;
+                  if (!regex.test(columnValue.value)) {
+                    return "Special Characters not Allowed in Docket No.";
+                  }
+                  return "";
+                },
                 schemaValidation: {
                   type: "string",
                   rules: [
@@ -252,6 +299,17 @@ export const securityFieldDTL = async (apiReqPara) => {
                 ...item,
                 isWorkingDate: true,
                 isMaxWorkingDate: true,
+              };
+            } else if (item.name === "REMARKS") {
+              return {
+                ...item,
+                validate: (columnValue) => {
+                  let regex = /^[^!&]*$/;
+                  if (!regex.test(columnValue.value)) {
+                    return "Special Characters not Allowed in Docket No.";
+                  }
+                  return "";
+                },
               };
             } else {
               return item;

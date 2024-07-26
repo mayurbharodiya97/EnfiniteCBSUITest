@@ -1679,10 +1679,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSBNFCRYDTL",
     packageName: "",
   },
-  GETIFSCDETAILS: {
-    url: "/transactionServiceAPI/GETIFSCDETAILS",
-    packageName: "",
-  },
   GETRTGSIFSCCODEACWISE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSIFSCCODEACWISE",
     packageName: "",
@@ -1741,6 +1737,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETRTGSCHARGES: {
     url: "/transactionServiceAPI/GETRTGSCHARGES",
+    packageName: "",
+  },
+  GETIFSCDETAILS: {
+    url: "/transactionServiceAPI/GETIFSCDETAILS",
     packageName: "",
   },
   VALIDATERTGSDTL: {
@@ -1823,6 +1823,42 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
+  DORTGSBRANCHCONFIRMATION: {
+    url: "transactionServiceAPI/DORTGSBRANCHCONFIRMATION",
+    packageName: "",
+  },
+  DORTGSHOCONFIRMATION: {
+    url: "transactionServiceAPI/DORTGSHOCONFIRMATION",
+    packageName: "",
+  },
+  DOCLGDTTRNF: {
+    url: "chequeServiceAPI/DOCLGDTTRNF",
+    packageName: "",
+  },
+  GETRTGSBRANCHCONFIRMEDHISTORY: {
+    url: "transactionServiceAPI/GETRTGSBRANCHCONFIRMEDHISTORY",
+    packageName: "",
+  },
+  GETGENERATEOTP: {
+    url: "enfinityCommonServiceAPI/GETGENERATEOTP",
+    packageName: "",
+  },
+  DOVERIFYOTP: {
+    url: "/enfinityCommonServiceAPI/DOVERIFYOTP",
+    packageName: "",
+  },
+  VALIDATEPASSWORD: {
+    url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
+    packageName: "",
+  },
+  GETSIGNPHOTOVIEW: {
+    url: "/transactionServiceAPI/GETSIGNPHOTOVIEW",
+    packageName: "",
+  },
+  GETCUSTSIGNPHOTOHISTORY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTSIGNPHOTOHISTORY ",
+    packageName: "",
+  },
   SAVEPAYSLIPISSUEENTRYDTL: {
     url: "transactionServiceAPI/SAVEPAYSLIPISSUEENTRYDTL",
     packageName: "",
@@ -1858,71 +1894,67 @@ export const ActionWiseAPIConfiguration = {
   GETSICOMMTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSICOMMTYPEDDW",
     packageName: "",
-  },  
-  GETSIGRIDDATADISP  : {
+  },
+  GETSIGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIGRIDDATADISP",
     packageName: "",
-  },  
-  GETSISEARCHBTN  : {
+  },
+  GETSISEARCHBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSISEARCHBTN",
     packageName: "",
-  }, 
-  GETSIASEXECUTEDBTN  : {
+  },
+  GETSIASEXECUTEDBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIASEXECUTEDBTN",
     packageName: "",
-  }, 
-  GETSIEXECUTEDTLBTN  : {
+  },
+  GETSIEXECUTEDTLBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIEXECUTEDTLBTN",
     packageName: "",
-  }, 
-  GETSIHDR : {
+  },
+  GETSIHDR: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDR",
     packageName: "",
-  }, 
-  GETSICHARGE : {
+  },
+  GETSICHARGE: {
     url: "transactionServiceAPI/GETSICHARGE",
     packageName: "",
-  }, 
-  VALIDATESTANDINGINSTRUCTIONENTRY : {
+  },
+  VALIDATESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/VALIDATESTANDINGINSTRUCTIONENTRY",
     packageName: "",
-  }, 
-  GETSIDTLAUDITBTN:{
+  },
+  GETSIDTLAUDITBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIDTLAUDITBTN",
     packageName: "",
   },
-  GETDRACCTDATA:{
+  GETDRACCTDATA: {
     url: "transactionServiceAPI/GETDRACCTDATA",
     packageName: "",
   },
-  VALIDATEDELETESIEXECDTL:{
+  VALIDATEDELETESIEXECDTL: {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS:
-  {
+  GETCRACCOUNTDETAILS: {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
- DODELETESIEXECDTL:
-  {
+  DODELETESIEXECDTL: {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY:
-  {
+  SAVESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION:
-  {
+  DOSIEXECUTION: {
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW:
-  {
+  DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
+  },    
   GETNEWSECUSERBRANCHACCESS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
     packageName: "",
@@ -1940,33 +1972,57 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETSECUSERPENDINGUSERGRID: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
-      packageName: "",
-    },
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
+    packageName: "",
+  },
   CONFIRMUSERADATA: {
-      url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
-      packageName: "",
-    },
-    GETSECUSERLOGINSHIFTEXIST: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
-      packageName: "",
-    },
-    GETSECUSERDIGITALSIGN: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
-      packageName: "",
-    },
-    GETSECUSERBIODTL: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
-      packageName: "",
-    },
-    GETSECUSERPARAS: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
-      packageName: "",
-    },
-    VALIDATEPASSWORD: {
-      url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
-      packageName: "",
-    },
+    url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTEXIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
+    packageName: "",
+  },
+  GETSECUSERDIGITALSIGN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
+    packageName: "",
+  },
+  GETSECUSERBIODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
+    packageName: "",
+  },
+  GETSECUSERPARAS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
+    packageName: "",
+  },
+  VALIDATEPASSWORD: {
+    url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
+    packageName: "",
+  },
+  GETATMCARDSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMCARDSTATUSDDDW",
+    packageName: "",
+  },
+  VALIDATEACCOUNTANDCUSTID: {
+    url: "/commonMasterServiceAPI/VALIDATEACCOUNTANDCUSTID",
+    packageName: "",
+  },
+  GETATMCARDTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMCARDTYPEDDDW",
+    packageName: "",
+  },
+  GETATMREGPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGPARA",
+    packageName: "",
+  },    
+  SAVERECURRINGPAYMENTENTRY: {
+    url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
+    packageName: "",
+  },
+  RECURRINGPAYMENTGETADVICEDTLJASPER: {
+    url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -1982,17 +2038,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };
