@@ -261,6 +261,7 @@ export const AcctMSTContext = React.createContext<any>({
     if(
       Array.isArray(recordData) && 
       recordData?.[0]?.data 
+      // && Boolean(recordData?.[0]?.data?.REQUEST_ID)
     ) {
       let payload = {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
