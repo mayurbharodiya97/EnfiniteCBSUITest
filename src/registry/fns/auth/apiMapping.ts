@@ -1923,6 +1923,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
+  GETATMCARDSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMCARDSTATUSDDDW",
+    packageName: "",
+  },
+  VALIDATEACCOUNTANDCUSTID: {
+    url: "/commonMasterServiceAPI/VALIDATEACCOUNTANDCUSTID",
+    packageName: "",
+  },
+  GETATMCARDTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMCARDTYPEDDDW",
+    packageName: "",
+  },
+  GETATMREGPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGPARA",
+    packageName: "",
+  },    
   SAVERECURRINGPAYMENTENTRY: {
     url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
     packageName: "",
