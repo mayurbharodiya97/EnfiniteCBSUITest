@@ -79,7 +79,7 @@ export const pendingAcctMetadata: GridMetaDataType = {
         maxWidth: 100,
       },
       {
-        accessor: "ACCOUNT_NUMBER",
+        accessor: "ACCT_CD",
         columnName: "Account Number",
         sequence: 6,
         alignment: "left",

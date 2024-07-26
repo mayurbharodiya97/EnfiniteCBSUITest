@@ -227,8 +227,8 @@ export const AcctMSTContext = React.createContext<any>({
     apiRes.forEach((element:any) => {
       steps.push({tabName: element?.TAB_DISPL_NAME, icon: element?.ICON, isVisible: element?.isVisible ?? true})
     })
-    const PARAM320 = apiRes?.[0]?.PARA_320;
-    const GPARAM155 = apiRes?.[0]?.GPARA_155;
+    const PARAM320 = apiRes?.[0]?.PARA_320; // enable/disable fields in main tab
+    const GPARAM155 = apiRes?.[0]?.GPARA_155; // hide/display fields
 
     dispatch({
         type: "update_ApiResctx",
@@ -265,7 +265,7 @@ export const AcctMSTContext = React.createContext<any>({
     ) {
       let payload = {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
-        acctNumberctx: recordData[0].data?.ACCOUNT_NUMBER ?? "",
+        acctNumberctx: recordData[0].data?.ACCT_CD ?? "",
         accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
         isFormModalOpenctx: true, isFreshEntryctx: false
       };

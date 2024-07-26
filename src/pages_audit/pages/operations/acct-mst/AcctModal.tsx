@@ -100,7 +100,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
         if(Array.isArray(location.state) && location.state.length>0) {
           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
           const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
-          const acctCD = location.state?.[0]?.data.ACCOUNT_NUMBER ?? "";
+          const acctCD = location.state?.[0]?.data.ACCT_CD ?? "";
           let payload: {
             COMP_CD?: string, 
             CUSTOMER_ID?:string,
