@@ -112,7 +112,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           } = {
             BRANCH_CD: authState?.user?.branchCode ?? "",
             REQUEST_CD: reqCD,  
-            J_TYPE: "J",
+            J_TYPE: "J   ",
             ACCT_TYPE: acctType,  
             ACCT_CD: acctCD,
           }
