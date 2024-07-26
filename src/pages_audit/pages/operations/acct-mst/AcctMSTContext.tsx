@@ -260,8 +260,7 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormModalOpenOnEditctx = (recordData:any[]) => {
     if(
       Array.isArray(recordData) && 
-      recordData?.[0]?.data && 
-      Boolean(recordData?.[0]?.data?.REQUEST_ID)
+      recordData?.[0]?.data 
     ) {
       let payload = {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
