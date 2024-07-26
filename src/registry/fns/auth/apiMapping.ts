@@ -1411,8 +1411,40 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTRETRIVE",
     packageName: "",
   },
+  GETSECMSTGRPNMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTGRPNMDDW",
+    packageName: "",
+  },
+  GETSECMSTCOMPDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTCOMPDDW",
+    packageName: "",
+  },
+  GETSECMSTBRANCHDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTBRANCHDDW",
+    packageName: "",
+  },
+  GETNEWUSERSECAPPACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWUSERSECAPPACCESS",
+    packageName: "",
+  },
+  GETSECAPPLIACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECAPPLIACCESS",
+    packageName: "",
+  },
+  GETSECUSERBRANCHACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBRANCHACCESS",
+    packageName: "",
+  },
+  GETSECUSERRODUCTACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPRODUCTACCESS",
+    packageName: "",
+  },
   VALIDATEPARAVALUE: {
     url: "/enfinityCommonServiceAPI/VALIDATEPARAVALUE",
+    packageName: "",
+  },
+  USERACCESSDATADML: {
+    url: "/commonMasterServiceAPI/USERACCESSDATADML",
     packageName: "",
   },
   GETSYSPARAAUDBTN: {
@@ -1891,7 +1923,50 @@ export const ActionWiseAPIConfiguration = {
   {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
-  }
+  GETNEWSECUSERBRANCHACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
+    packageName: "",
+  },
+  GETNEWSECUSERPRODUCTACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERPRODUCTACCESS",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTDDW",
+    packageName: "",
+  },
+  CHECKUSERNAME: {
+    url: "/commonMasterServiceAPI/CHECKUSERNAME",
+    packageName: "",
+  },
+  GETSECUSERPENDINGUSERGRID: {
+      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
+      packageName: "",
+    },
+  CONFIRMUSERADATA: {
+      url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
+      packageName: "",
+    },
+    GETSECUSERLOGINSHIFTEXIST: {
+      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
+      packageName: "",
+    },
+    GETSECUSERDIGITALSIGN: {
+      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
+      packageName: "",
+    },
+    GETSECUSERBIODTL: {
+      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
+      packageName: "",
+    },
+    GETSECUSERPARAS: {
+      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
+      packageName: "",
+    },
+    VALIDATEPASSWORD: {
+      url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
+      packageName: "",
+    },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
