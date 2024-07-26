@@ -9,7 +9,7 @@ import {
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { CtsOutwardClearingConfirmForm } from "./CtsOutwardClearingForm";
@@ -25,6 +25,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { t } from "i18next";
+import { utilFunction } from "components/utils";
 
 
 
@@ -32,7 +33,7 @@ import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: t("ViewDetails"),
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -46,6 +47,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const isDataChangedRef = useRef(false);
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
+  let currentPath = useLocation().pathname;
 
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
@@ -302,6 +304,13 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
+              formLabel={
+                utilFunction.getDynamicLabel(
+                  currentPath,
+                  authState?.menulistdata,
+                  true
+                )
+              }
             />
           }
         />

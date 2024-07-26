@@ -28,6 +28,7 @@ import { useMutation, useQueries } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { utilFunction } from "components/utils";
 import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -57,6 +58,8 @@ export const ShareDividendFormWrapper: FC<{
   const [viewMasterTab, setViewMasterTab] = useState<any>();
   const { MessageBox } = usePopupContext();
   const myRef = useRef<any>(null);
+  const { t } = useTranslation();
+
   const getDividendViewDetailGridData: any = useMutation(
     API.getDividendViewDetailGridData,
     {
@@ -179,7 +182,7 @@ export const ShareDividendFormWrapper: FC<{
               variant={"h6"}
               component="div"
             >
-              Inward Clearing Process
+              {t("InwardClearingProcess")}
             </Typography>
             <>
               <GradientButton
@@ -188,8 +191,8 @@ export const ShareDividendFormWrapper: FC<{
                     divAmount?.[0]?.DIVIDEND_AMOUNT !== dividendData?.AMOUNT
                   ) {
                     MessageBox({
-                      messageTitle: "Validation Failed",
-                      message: "Dividend Amount not match",
+                      messageTitle: t("ValidationFailed"),
+                      message: t("DividendAmountMatch"),
                     });
                   } else {
                     myRef.current?.handleSubmit(event);
@@ -203,14 +206,14 @@ export const ShareDividendFormWrapper: FC<{
                 }
                 color={"primary"}
               >
-                Save
+                {t("Save")}
               </GradientButton>
               <GradientButton
                 onClick={onClose}
                 color={"primary"}
                 // disabled={isSubmitting}
               >
-                Close
+                {t("Close")}
               </GradientButton>
             </>
           </Toolbar>

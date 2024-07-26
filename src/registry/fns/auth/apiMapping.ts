@@ -1803,8 +1803,8 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/DOCLGDTTRNF",
     packageName: "",
   },
-  GETRTGSBRANCHCONFIRMEDHISTORY: {
-    url: "transactionServiceAPI/GETRTGSBRANCHCONFIRMEDHISTORY",
+  GETCONFIRMEDHISTORY: {
+    url: "transactionServiceAPI/GETCONFIRMEDHISTORY",
     packageName: "",
   },
   GETGENERATEOTP: {
@@ -1862,44 +1862,44 @@ export const ActionWiseAPIConfiguration = {
   GETSICOMMTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSICOMMTYPEDDW",
     packageName: "",
-  },  
-  GETSIGRIDDATADISP  : {
+  },
+  GETSIGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIGRIDDATADISP",
     packageName: "",
-  },  
-  GETSISEARCHBTN  : {
+  },
+  GETSISEARCHBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSISEARCHBTN",
     packageName: "",
-  }, 
-  GETSIASEXECUTEDBTN  : {
+  },
+  GETSIASEXECUTEDBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIASEXECUTEDBTN",
     packageName: "",
-  }, 
-  GETSIEXECUTEDTLBTN  : {
+  },
+  GETSIEXECUTEDTLBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIEXECUTEDTLBTN",
     packageName: "",
-  }, 
-  GETSIHDR : {
+  },
+  GETSIHDR: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDR",
     packageName: "",
-  }, 
-  GETSICHARGE : {
+  },
+  GETSICHARGE: {
     url: "transactionServiceAPI/GETSICHARGE",
     packageName: "",
-  }, 
-  VALIDATESTANDINGINSTRUCTIONENTRY : {
+  },
+  VALIDATESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/VALIDATESTANDINGINSTRUCTIONENTRY",
     packageName: "",
-  }, 
-  GETSIDTLAUDITBTN:{
+  },
+  GETSIDTLAUDITBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIDTLAUDITBTN",
     packageName: "",
   },
-  GETDRACCTDATA:{
+  GETDRACCTDATA: {
     url: "transactionServiceAPI/GETDRACCTDATA",
     packageName: "",
   },
-  VALIDATEDELETESIEXECDTL:{
+  VALIDATEDELETESIEXECDTL: {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
@@ -1908,7 +1908,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
- DODELETESIEXECDTL:
+  DODELETESIEXECDTL:
   {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
@@ -1927,7 +1927,27 @@ export const ActionWiseAPIConfiguration = {
   {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
-  }
+  },
+  GETSTRDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRDATA",
+    packageName: "",
+  },
+  GETSTRSUSPSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRSUSPSTATUSDDDW",
+    packageName: "",
+  },
+  GETSTRSUSPREASONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRSUSPREASONDDDW",
+    packageName: "",
+  },
+  GETSTRGOSDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRGOSDTL",
+    packageName: "",
+  },
+  GETSTRACCTHISTORY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRACCTHISTORY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

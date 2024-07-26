@@ -8,7 +8,7 @@ import {
   useCallback,
   useState,
 } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -37,6 +37,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
+import { utilFunction } from "components/utils";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -71,7 +72,7 @@ export const DynFormMetadataConfig = () => {
   const [filteredData, setFilteredData] = useState<any>([]);
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const { enqueueSnackbar } = useSnackbar();
-
+  let currentPath = useLocation().pathname;
   const setCurrentAction = useCallback(
     (data) => {
       if (data?.name === "retrieve") {
@@ -101,7 +102,7 @@ export const DynFormMetadataConfig = () => {
         isDataChangedRef.current = true;
         refetch();
       },
-      onError: (error: any) => {},
+      onError: (error: any) => { },
     }
   );
 
@@ -189,7 +190,11 @@ export const DynFormMetadataConfig = () => {
                 variant={"h6"}
                 component="div"
               >
-                Flexible Form Metadata Configuration
+                {utilFunction.getDynamicLabel(
+                  currentPath,
+                  authState?.menulistdata,
+                  true
+                )}
               </Typography>
             </Toolbar>
           </AppBar>
@@ -209,7 +214,7 @@ export const DynFormMetadataConfig = () => {
                   </InputAdornment>
                 ),
               }}
-              //@ts-ignore
+            //@ts-ignore
             />
             {isLoading || isFetching ? (
               <LoaderPaperComponent />
@@ -334,7 +339,7 @@ export const DynFormMetadataConfig = () => {
             })
           }
           ref={myGridRef}
-          // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+        // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
         />
         <Routes>
           <Route

@@ -223,7 +223,7 @@ export const getConfirmHistoryData = async ({
   SCREEN_REF,
 }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRTGSBRANCHCONFIRMEDHISTORY", {
+    await AuthSDK.internalFetcher("GETCONFIRMEDHISTORY", {
       ENTERED_COMP_CD: ENTERED_COMP_CD,
       TRAN_DT: TRAN_DT,
       ENTERED_BRANCH_CD: ENTERED_BRANCH_CD,

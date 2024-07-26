@@ -58,6 +58,7 @@ import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { useLocation } from "react-router-dom";
 const actions: ActionTypes[] = [
   {
     actionName: "Close",
@@ -91,6 +92,7 @@ const RtgsEntryForm: FC<{}> = () => {
   const finalReqDataRef: any = useRef(null);
   const retrieveDataRef: any = useRef(null);
   const { t } = useTranslation();
+  let currentPath = useLocation().pathname;
 
   const [beneficiaryDtlData, setBeneficiaryDtlData] = useState<any>({
     beneficiaryAcDetails: [
@@ -491,7 +493,13 @@ const RtgsEntryForm: FC<{}> = () => {
                   variant={"h6"}
                   component="div"
                 >
-                  {"RTGS Entry(MST/552)"}
+                  {
+                    utilFunction.getDynamicLabel(
+                      currentPath,
+                      authState?.menulistdata,
+                      true
+                    )
+                  }
                 </Typography>
                 {formMode === "new" ? (
                   <>

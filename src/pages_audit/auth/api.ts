@@ -21,7 +21,7 @@ export const validatePasswords = async ({ ...request }:any) => {
       ...request
     });
   if (status === "0") {
-    return { validateStatus :status,  validateData :data[0]};
+    return { validateStatus :status, validateData:data[0]};
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -261,6 +261,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
+    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
     access: {},
   };
 };
