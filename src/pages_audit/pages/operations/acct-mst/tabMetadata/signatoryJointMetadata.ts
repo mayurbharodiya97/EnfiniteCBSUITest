@@ -51,7 +51,7 @@ export const signatoryjoint_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "SIGNATORY_DTL",
+            name: "JOINT_SIGNATORY_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [

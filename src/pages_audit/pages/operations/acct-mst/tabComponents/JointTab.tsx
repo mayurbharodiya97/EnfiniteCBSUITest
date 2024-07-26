@@ -25,37 +25,37 @@ const JointTab = () => {
   ) => {
     if(data && !hasError) {
       let newData = AcctMSTState?.formDatactx
-      if(data?.JOINT_ACCOUNT_DTL) {
+      if(data?.JOINT_HOLDER_DTL) {
         let filteredCols:any[]=[]
-        filteredCols = Object.keys(data.JOINT_ACCOUNT_DTL[0])
+        filteredCols = Object.keys(data.JOINT_HOLDER_DTL[0])
         filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
         if(AcctMSTState?.isFreshEntryctx) {
           filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
         }
-        let newFormatOtherAdd = data?.JOINT_ACCOUNT_DTL?.map((formRow, i) => {
+        let newFormatOtherAdd = data?.JOINT_HOLDER_DTL?.map((formRow, i) => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
-          const formData = _.pick(data?.JOINT_ACCOUNT_DTL[i], formFields)
+          const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields)
           return {...formData};
         })
-        newData["JOINT_ACCOUNT_DTL"] = [...newFormatOtherAdd]
+        newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
               ...tabModifiedCols,
-              JOINT_ACCOUNT_DTL: [...filteredCols]
+              JOINT_HOLDER_DTL: [...filteredCols]
           }
           handleModifiedColsctx(tabModifiedCols)
         }
       } else {
-        newData["JOINT_ACCOUNT_DTL"] = []
+        newData["JOINT_HOLDER_DTL"] = []
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
             ...tabModifiedCols,
-            JOINT_ACCOUNT_DTL: []
+            JOINT_HOLDER_DTL: []
           }
           handleModifiedColsctx(tabModifiedCols)
         }  
@@ -71,15 +71,15 @@ const JointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {JOINT_ACCOUNT_DTL: [{}]}
-        : AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}, ...AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}}
+        ? {JOINT_HOLDER_DTL: [AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
+          ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
+          : {JOINT_HOLDER_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"],
+    AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
   ])
 
   const handleSave = (e) => {

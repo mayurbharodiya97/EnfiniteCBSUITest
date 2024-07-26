@@ -58,15 +58,15 @@ const GuardianJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["GUARDIAN_DTL"] ?? {GUARDIAN_DTL: [{}]}
-        : AcctMSTState?.formDatactx["GUARDIAN_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["GUARDIAN_DTL"] ?? {}, ...AcctMSTState?.formDatactx["GUARDIAN_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["GUARDIAN_DTL"] ?? {}}
+        ? {JOINT_GUARDIAN_DTL: [AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"]
+          ? {JOINT_GUARDIAN_DTL: [...AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"] ?? []]}
+          : {JOINT_GUARDIAN_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARDIAN_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["GUARDIAN_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARDIAN_DTL"],
+    AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"]
   ])
 
   return (

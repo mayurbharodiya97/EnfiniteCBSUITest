@@ -13,7 +13,6 @@ const CollateralJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -55,6 +54,20 @@ const CollateralJointTab = () => {
       }
     }
   }, [formStatus])
+  
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? {JOINT_HYPOTHICATION_DTL : [AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"]
+          ? {JOINT_HYPOTHICATION_DTL : [...AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"] ?? []]}
+          : {JOINT_HYPOTHICATION_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HYPOTHICATION_DTL"] ?? []]}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_HYPOTHICATION_DTL"],
+    AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"]
+  ])
 
   return (
     <Grid sx={{ mb: 4 }}>

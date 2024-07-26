@@ -339,6 +339,65 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormDataonRetrievectx = (data) => {
     let retrieveApiRes = data
     let payload = {};
+    if(Array.isArray(data?.JOINT_ACCOUNT_DTL) && data?.JOINT_ACCOUNT_DTL?.length>0) {
+      data?.JOINT_ACCOUNT_DTL.forEach(jointRow => {
+        if(jointRow?.J_TYPE) {
+          // J, I, N, G, M, U, S
+          if(jointRow?.J_TYPE === "J   ") {
+            // Joint Holder
+            if(retrieveApiRes["JOINT_HOLDER_DTL"]) {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [...retrieveApiRes["JOINT_HOLDER_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "I   ") {
+            // Introductor
+            if(retrieveApiRes["JOINT_INTRODUCTOR_DTL"]) {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [...retrieveApiRes["JOINT_INTRODUCTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "N   ") {
+            // Nominee
+            if(retrieveApiRes["JOINT_NOMINEE_DTL"]) {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [...retrieveApiRes["JOINT_NOMINEE_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "G   ") {
+            // Guarantor
+            if(retrieveApiRes["JOINT_GUARANTOR_DTL"]) {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [...retrieveApiRes["JOINT_GUARANTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "M   ") {
+            // Hypothication
+            if(retrieveApiRes["JOINT_HYPOTHICATION_DTL"]) {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [...retrieveApiRes["JOINT_HYPOTHICATION_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "U   ") {
+            // Guardian
+            if(retrieveApiRes["JOINT_GUARDIAN_DTL"]) {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [...retrieveApiRes["JOINT_GUARDIAN_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "S   ") {
+            // Signatory
+            if(retrieveApiRes["JOINT_SIGNATORY_DTL"]) {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [...retrieveApiRes["JOINT_SIGNATORY_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [jointRow]
+            }
+          }
+        } else {
+          console.log("joint type not found")
+        }
+      });
+    }
     payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
     dispatch({
         type: "update_retrieveFormData",
