@@ -1247,6 +1247,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETPENDINGACCTLIST",
     packageName: "",
   },
+  GETACCOUNTLIST: {
+    url: "accountServiceAPI/GETACCOUNTLIST",
+    packageName: "",
+  },
   GETACCOUNTDETAILS: {
     url: "accountServiceAPI/GETACCOUNTDETAILS",
     packageName: "",
