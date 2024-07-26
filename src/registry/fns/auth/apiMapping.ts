@@ -1938,6 +1938,14 @@ export const ActionWiseAPIConfiguration = {
   GETATMREGPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGPARA",
     packageName: "",
+  },    
+  SAVERECURRINGPAYMENTENTRY: {
+    url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
+    packageName: "",
+  },
+  RECURRINGPAYMENTGETADVICEDTLJASPER: {
+    url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
+    packageName: "",
   },
 };
 
