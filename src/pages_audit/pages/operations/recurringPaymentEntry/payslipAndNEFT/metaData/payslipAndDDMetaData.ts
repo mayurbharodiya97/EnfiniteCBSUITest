@@ -140,6 +140,12 @@ export const PayslipAndDDFormMetaData = {
       },
       name: "ACCT_CD",
     },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "COMP_CD",
+    },
 
     {
       render: {
@@ -248,6 +254,10 @@ export const PayslipAndDDFormMetaData = {
                   value: amountValue ?? "",
                   ignoreUpdate: true,
                 },
+                COMM_TYPE_CD: {
+                  value: currentField?.optionData?.[0]?.TYPE_CD ?? "",
+                  ignoreUpdate: true,
+                },
               };
             } else if (!currentField?.value) {
               return {
@@ -266,6 +276,9 @@ export const PayslipAndDDFormMetaData = {
                   value: "",
                 },
                 SIGNATURE2_CD: {
+                  value: "",
+                },
+                COMM_TYPE_CD: {
                   value: "",
                 },
               };
@@ -803,6 +816,21 @@ export const PayslipAndDDFormMetaData = {
 
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "BRANCH_NM",
+          dependentFields: ["COL_BANK_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            return dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+              ?.BRANCH_NM
+              ? dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+                  ?.BRANCH_NM
+              : "";
+          },
+        },
+
+        {
+          render: {
             componentType: "autocomplete",
           },
           name: "SIGNATURE1_CD",
@@ -868,6 +896,60 @@ export const PayslipAndDDFormMetaData = {
             md: 4,
             lg: 3,
             xl: 3,
+          },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "COMM_TYPE_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_CERTI_NO",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+
+          name: "FROM_ACCT_CD",
+          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            return dependentFields?.ACCT_CD?.value?.trim() ?? "";
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_COMP_CD",
+          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD", "COMP_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            return dependentFields?.COMP_CD?.value?.trim() ?? "";
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_BRANCH_CD",
+          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            return dependentFields?.BRANCH_CD?.value?.trim() ?? "";
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_ACCT_TYPE",
+          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            return dependentFields?.ACCT_TYPE?.value?.trim() ?? "";
           },
         },
       ],

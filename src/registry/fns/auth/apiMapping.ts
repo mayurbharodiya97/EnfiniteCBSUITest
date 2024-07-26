@@ -1862,72 +1862,75 @@ export const ActionWiseAPIConfiguration = {
   GETSICOMMTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSICOMMTYPEDDW",
     packageName: "",
-  },  
-  GETSIGRIDDATADISP  : {
+  },
+  GETSIGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIGRIDDATADISP",
     packageName: "",
-  },  
-  GETSISEARCHBTN  : {
+  },
+  GETSISEARCHBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSISEARCHBTN",
     packageName: "",
-  }, 
-  GETSIASEXECUTEDBTN  : {
+  },
+  GETSIASEXECUTEDBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIASEXECUTEDBTN",
     packageName: "",
-  }, 
-  GETSIEXECUTEDTLBTN  : {
+  },
+  GETSIEXECUTEDTLBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIEXECUTEDTLBTN",
     packageName: "",
-  }, 
-  GETSIHDR : {
+  },
+  GETSIHDR: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDR",
     packageName: "",
-  }, 
-  GETSICHARGE : {
+  },
+  GETSICHARGE: {
     url: "transactionServiceAPI/GETSICHARGE",
     packageName: "",
-  }, 
-  VALIDATESTANDINGINSTRUCTIONENTRY : {
+  },
+  VALIDATESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/VALIDATESTANDINGINSTRUCTIONENTRY",
     packageName: "",
-  }, 
-  GETSIDTLAUDITBTN:{
+  },
+  GETSIDTLAUDITBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIDTLAUDITBTN",
     packageName: "",
   },
-  GETDRACCTDATA:{
+  GETDRACCTDATA: {
     url: "transactionServiceAPI/GETDRACCTDATA",
     packageName: "",
   },
-  VALIDATEDELETESIEXECDTL:{
+  VALIDATEDELETESIEXECDTL: {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS:
-  {
+  GETCRACCOUNTDETAILS: {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
- DODELETESIEXECDTL:
-  {
+  DODELETESIEXECDTL: {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY:
-  {
+  SAVESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION:
-  {
+  DOSIEXECUTION: {
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW:
-  {
+  DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
-  }
+  },
+  SAVERECURRINGPAYMENTENTRY: {
+    url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
+    packageName: "",
+  },
+  RECURRINGPAYMENTGETADVICEDTLJASPER: {
+    url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
