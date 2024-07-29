@@ -1954,50 +1954,46 @@ export const ActionWiseAPIConfiguration = {
   DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
-    GETNEWSECUSERBRANCHACCESS: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
-      packageName: "",
-    },
-    GETNEWSECUSERPRODUCTACCESS: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERPRODUCTACCESS",
-      packageName: "",
-    },
-    GETSECUSERLOGINSHIFTDDW: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTDDW",
-      packageName: "",
-    },
-    CHECKUSERNAME: {
-      url: "/commonMasterServiceAPI/CHECKUSERNAME",
-      packageName: "",
-    },
-    GETSECUSERPENDINGUSERGRID: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
-      packageName: "",
-    },
-    CONFIRMUSERADATA: {
-      url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
-      packageName: "",
-    },
-    GETSECUSERLOGINSHIFTEXIST: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
-      packageName: "",
-    },
-    GETSECUSERDIGITALSIGN: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
-      packageName: "",
-    },
-    GETSECUSERBIODTL: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
-      packageName: "",
-    },
-    GETSECUSERPARAS: {
-      url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
-      packageName: "",
-    },
-    VALIDATEPASSWORD: {
-      url: "/enfinityCommonServiceAPI/VALIDATEPASSWORD",
-      packageName: "",
-    },
+  },
+  GETNEWSECUSERBRANCHACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
+    packageName: "",
+  },
+  GETNEWSECUSERPRODUCTACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERPRODUCTACCESS",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTDDW",
+    packageName: "",
+  },
+  CHECKUSERNAME: {
+    url: "/commonMasterServiceAPI/CHECKUSERNAME",
+    packageName: "",
+  },
+  GETSECUSERPENDINGUSERGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
+    packageName: "",
+  },
+  CONFIRMUSERADATA: {
+    url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTEXIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
+    packageName: "",
+  },
+  GETSECUSERDIGITALSIGN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
+    packageName: "",
+  },
+  GETSECUSERBIODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
+    packageName: "",
+  },
+  GETSECUSERPARAS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
+    packageName: "",
   },
   GETATMCARDSTATUSDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMCARDSTATUSDDDW",
