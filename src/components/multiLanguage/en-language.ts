@@ -152,7 +152,7 @@ export const en_language_data = {
 
   // Branch Selection screen
   Back: "Back",
-  Proceed: "Proceed ?",
+  Proceed: "Proceed ",
   AccessBranchList: "Access Branch List",
   BranchName: "Branch Name",
   BeginTime: "Begin Time",
@@ -1137,6 +1137,7 @@ export const en_language_data = {
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are You sure to Save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
+  ProceedGen :"Proceed ?",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",

@@ -54,7 +54,7 @@ export const getRtgsTransactionTypeList = async (ApiReq) => {
 
 export const getRtgsBranchConfirmtion = async (apiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DORTGSBRANCHCONFIRMATION", {
+    await AuthSDK.internalFetcher("DODUALCONFIRMATION", {
       ...apiReq,
     });
   if (status === "0") {

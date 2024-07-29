@@ -1791,8 +1791,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
-  DORTGSBRANCHCONFIRMATION: {
-    url: "transactionServiceAPI/DORTGSBRANCHCONFIRMATION",
+  DODUALCONFIRMATION : {
+    url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",
   },
   DORTGSHOCONFIRMATION: {

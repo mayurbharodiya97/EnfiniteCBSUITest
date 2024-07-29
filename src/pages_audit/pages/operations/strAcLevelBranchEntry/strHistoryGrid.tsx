@@ -80,11 +80,13 @@ const StrBranchLevelHistoryGrid = ({ onClose }) => {
         } else {
             setGridData(data?.filter((item) => item.SUSPICIOUS_FLAG === isFlag) || []);
         }
-        return () => {
-            queryClient.removeQueries(["getStrAcHistoryData"]);
-        };
     }, [data, isFlag]);
 
+    useEffect(() => {
+        return () => {
+            queryClient.removeQueries(["getStrAcHistoryData"]);
+        }
+    }, []);
 
     const setCurrentAction = useCallback(async (data) => {
         if (data?.name === "all") {

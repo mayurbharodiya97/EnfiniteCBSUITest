@@ -1,3 +1,4 @@
+import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "../api";
 
 export const strLevelBranchEditFormMetaData = {
@@ -87,6 +88,12 @@ export const strLevelBranchEditFormMetaData = {
         },
         {
             render: {
+                componentType: "hidden",
+            },
+            name: "REMARKS2_VISIBLE",
+        },
+        {
+            render: {
                 componentType: "autocomplete",
             },
             name: "SUSP_DESC",
@@ -99,12 +106,20 @@ export const strLevelBranchEditFormMetaData = {
                 return API.getSuspStatusData();
             },
             _optionsKey: "getSuspStatusData",
+            postValidationSetCrossFieldValues: async (
+                field,
+                formState,
+                auth,
+                dependentFieldsValues
+            ) => {
+                formState.setDataOnFieldChange("IS_VISIBLE", field?.value);
+            },
             dependentFields: ["DISABLE_SUSP_STATUS"],
             isReadOnly: (fieldValue, dependentFields, formState) => {
                 if (dependentFields?.DISABLE_SUSP_STATUS?.value === "Y") {
-                    return false;
-                } else {
                     return true;
+                } else {
+                    return false;
                 }
             },
             GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
@@ -127,11 +142,12 @@ export const strLevelBranchEditFormMetaData = {
             dependentFields: ["DISABLE_SUSP_STATUS"],
             isReadOnly: (fieldValue, dependentFields, formState) => {
                 if (dependentFields?.DISABLE_SUSP_STATUS?.value === "Y") {
-                    return false;
-                } else {
                     return true;
+                } else {
+                    return false;
                 }
             },
+
         },
 
         {
@@ -163,7 +179,13 @@ export const strLevelBranchEditFormMetaData = {
             type: "text",
             fullWidth: true,
             required: true,
-            isReadOnly: true,
+            isReadOnly: (fieldValue, dependentFields, formState) => {
+                if (dependentFields?.REMARKS2_VISIBLE?.value === "N") {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
         },
         {
@@ -176,6 +198,131 @@ export const strLevelBranchEditFormMetaData = {
             fullWidth: true,
             isReadOnly: true,
             GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+        },
+    ],
+};
+
+export const suspiciousTransactionGridMetaData: GridMetaDataType = {
+    gridConfig: {
+        dense: true,
+        gridLabel: "Suspicious Transaction",
+        rowIdColumn: "index",
+        defaultColumnConfig: {
+            width: 400,
+            maxWidth: 450,
+            minWidth: 300,
+        },
+        allowColumnReordering: true,
+        disableSorting: false,
+        hideHeader: false,
+        disableGroupBy: true,
+        enablePagination: true,
+        pageSizes: [15, 25, 50],
+        defaultPageSize: 15,
+        containerHeight: {
+            min: "55vh",
+            max: "55vh",
+        },
+        allowFilter: false,
+        allowColumnHiding: false,
+        allowRowSelection: false,
+        isCusrsorFocused: true,
+        hiddenFlag: "_hidden",
+    },
+    filters: [
+
+    ],
+    columns: [
+        {
+            accessor: "id",
+            columnName: "SrNo",
+            sequence: 1,
+            alignment: "rigth",
+            componentType: "default",
+            width: 100,
+            minWidth: 100,
+            maxWidth: 120,
+            isAutoSequence: true,
+        },
+
+        {
+            accessor: "TRN_DATE",
+            columnName: "TRN. Date",
+            sequence: 1,
+            alignment: "center",
+            componentType: "date",
+            width: 200,
+            minWidth: 250,
+            maxWidth: 300,
+        },
+        {
+            accessor: "REASON_DESC",
+            columnName: "V. No.",
+            sequence: 2,
+            alignment: "right",
+            componentType: "default",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
+        },
+        {
+            accessor: "SUSPICIOUS",
+            columnName: "Suspicious",
+            sequence: 2,
+            alignment: "center",
+            componentType: "editableCheckbox",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
+        },
+        {
+            accessor: "REMARKS",
+            columnName: "Remarks",
+            sequence: 3,
+            alignment: "right",
+            componentType: "default",
+            width: 450,
+            minWidth: 460,
+            maxWidth: 500,
+        },
+        {
+            accessor: "TRX",
+            columnName: "Trx.",
+            sequence: 2,
+            alignment: "left",
+            componentType: "default",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
+        }, {
+            accessor: "AMOUNT",
+            columnName: "Amount",
+            sequence: 2,
+            alignment: "right",
+            componentType: "currency",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
+        },
+        {
+            accessor: "CHEQUE_NO",
+            columnName: "cheque No.",
+            sequence: 2,
+            alignment: "right",
+            componentType: "currency",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
+        },
+        {
+            accessor: "VERIFIED_BY",
+            columnName: "verified By",
+            sequence: 2,
+            alignment: "left",
+            componentType: "default",
+            width: 300,
+            minWidth: 310,
+            maxWidth: 350,
         },
     ],
 };

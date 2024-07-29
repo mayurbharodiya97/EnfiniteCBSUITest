@@ -388,7 +388,7 @@ const RtgsEntryForm: FC<{}> = () => {
                 endSubmit(true);
                 const buttonName = await MessageBox({
                   messageTitle: t("Confirmation"),
-                  message: t("Proceed"),
+                  message: t("ProceedGen"),
                   buttonNames: ["No", "Yes"],
                   loadingBtnName: ["Yes"],
                 });
