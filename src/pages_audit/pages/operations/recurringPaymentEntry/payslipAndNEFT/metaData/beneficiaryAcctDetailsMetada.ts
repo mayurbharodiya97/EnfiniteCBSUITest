@@ -471,7 +471,6 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           label: "Remarks",
           placeholder: "Enter Remarks",
           type: "text",
-          maxLength: 35,
           autoComplete: "off",
           fullWidth: true,
           GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
@@ -724,6 +723,13 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             },
           },
           GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "REQUEST_FOR_DD",
         },
       ],
     },
