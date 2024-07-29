@@ -1,5 +1,4 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-import * as API from "./api"
 export const UserSecurity: GridMetaDataType = {
   gridConfig: {
     dense: true,

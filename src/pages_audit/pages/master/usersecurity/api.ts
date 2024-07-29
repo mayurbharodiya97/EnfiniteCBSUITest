@@ -5,22 +5,21 @@ export const getSecurityUserGrid = async () => {
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSECMSTRETRIVE", {});
     if (status === "0") {
-      // return data;
       return data;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  export const saveuserdata = async ({ form, grid1, grid2, grid3, grid4 ,grid5}) => {
+  export const saveuserdata = async ({ onboard, applicationdata, branchdata, productdata, loginshiftdata ,biometricdata}) => {
     const { status, message, messageDetails } = await AuthSDK.internalFetcher(
       "USERACCESSDATADML",
       {
-        USER_DTL: form,
-        APPLICATION_ACCESS_DTL: grid1,
-        BRANCH_TYPE_ACCESS_DTL: grid2,
-        ACCT_TYPE_ACCESS_DTL: grid3,
-        USER_SHIFT_DTL: grid4,
-        BIOMETRIC_DATA_DTL:grid5,
+        USER_DTL: onboard,
+        APPLICATION_ACCESS_DTL: applicationdata,
+        BRANCH_TYPE_ACCESS_DTL: branchdata,
+        ACCT_TYPE_ACCESS_DTL: productdata,
+        USER_SHIFT_DTL: loginshiftdata,
+        BIOMETRIC_DATA_DTL:biometricdata,
       }
     );
     if (status === "0") {
@@ -29,11 +28,10 @@ export const getSecurityUserGrid = async () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  export const UpdateDMLData = async ({ form, grid1, grid2, grid3, grid4,grid5 }) => {
-    const grids = [grid1, grid2, grid3,grid4,grid5];
+  export const UpdateDMLData = async ({ onboard, applicationdata, branchdata, productdata, loginshiftdata ,biometricdata }) => {
+    const grids = [applicationdata, branchdata, productdata, loginshiftdata ,biometricdata];
   const requestData = {
-    USER_DTL: form,
-    // USER_SHIFT_DTL: grid4,
+    USER_DTL: onboard,
   };
   
   grids.forEach((grid, index) => {
@@ -64,7 +62,6 @@ export const getSecurityUserGrid = async () => {
         BRANCH_CD:branch_cd
       });
     if (status === "0") {
-      // return data;
       return data;
     } else {
       throw DefaultErrorObject(message, messageDetails);
@@ -80,8 +77,6 @@ export const getSecurityUserGrid = async () => {
     if (status === "0") {
       return message;
     } else {
-      console.log("message",message)
-      console.log("messageDetails",messageDetails)
       throw DefaultErrorObject(message, messageDetails);
     }
   };

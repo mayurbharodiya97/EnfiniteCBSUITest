@@ -64,12 +64,10 @@ export const UserOnboardform = {
           authState,
           dependentFields
         ) => {
-          console.log("Testing", currentField?.value.length);
           if (currentField?.value !== undefined) {
             return API.checkUsername(currentField, {
               USER_NM: currentField?.value,
             });
-            // return {USER_NAME:{value:"",isFieldFocused:true}};
           }
         },
         schemaValidation: {
@@ -165,7 +163,6 @@ export const UserOnboardform = {
           { name: "required", params: ["Confirm Password is required."] },
         ],
       },
-      // runValidationOnDependentFieldsChange: true,
       validate: (currentField, dependentFields) => {
         if (currentField?.value !== dependentFields?.USER_PASSWORD?.value) {
           return "NewPasswordandConfirmPassworddidnotmatched";
@@ -252,7 +249,6 @@ export const UserOnboardform = {
       maxLength: 10,
       type: "text",
       label: "Mobile Number",
-      // fullwidth: true,
       StartAdornment: "+91",
       placeholder: "",
       autoComplete: "off",
@@ -1116,7 +1112,6 @@ export const editloginShift = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: authState?.user?.branchCode,
             }),
-          // disableCaching: true,
           _optionsKey: "GetLoginShift",
           placeholder: "",
           type: "text",

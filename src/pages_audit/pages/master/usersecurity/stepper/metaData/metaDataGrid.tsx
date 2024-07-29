@@ -81,19 +81,7 @@ export const userAccessbranch: GridMetaDataType = {
         },
         allowRowSelection: false,
     },
-    // filters: [],
     columns: [
-        // {
-        //     accessor: "SR_NO",
-        //     columnName: "SrNo",
-        //     sequence: 1,
-        //     alignment: "center",
-        //     componentType: "default",
-        //     width: 70,
-        //     minWidth: 60,
-        //     maxWidth: 120,
-        //     isAutoSequence: true,
-        // },
         {
             accessor: "BRANCH_CD",
             columnName: "Branch",
@@ -173,7 +161,6 @@ export const productaccess: GridMetaDataType = {
         },
         isCusrsorFocused: true,
     },
-    // filters: [],
     columns: [
         {
             accessor: "BRANCH_CD",
@@ -212,7 +199,6 @@ export const productaccess: GridMetaDataType = {
             sequence: 5,
             alignment: "left",
             componentType: "editableCheckbox",
-            // isReadOnly: true,
             SelectAllColumn:true,
             width: 100,
             minWidth: 100,
@@ -253,7 +239,6 @@ export const loginBiometric: GridMetaDataType = {
             width: 80,
             minWidth: 60,
             maxWidth: 120,
-            //isAutoSequence: true,
         },
         {
             accessor: "FINGER_NM",

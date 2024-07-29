@@ -2,7 +2,6 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const checkUsername = async (...reqdata) => {
-  console.log("reqdata",reqdata);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("CHECKUSERNAME", {
       USER_NM: reqdata?.[0]?.value,
@@ -14,7 +13,6 @@ export const checkUsername = async (...reqdata) => {
   }
 };
 export const getCustomerId = async (...reqdata) => {
-  console.log("reqdata",reqdata);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTIDVAL", {
       COMP_CD: reqdata?.[1]?.COMP_CD,
@@ -98,7 +96,6 @@ export const getDigitalSignConfigddw = async (...reqData) => {
       COMP_CD: reqData?.[0],
       BRANCH_CD: reqData?.[1],
     });
-  console.log("reqData", reqData);
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -140,7 +137,6 @@ export const getapplicationaccess = async ({ userid }) => {
       USER_NAME: userid,
     });
   if (status === "0") {
-    // return data;
     return data.map((item) => {
       return {
         ...item,
@@ -157,7 +153,6 @@ export const getNewUserBranchAccess = async ({ comp_cd }) => {
     await AuthSDK.internalFetcher("GETNEWSECUSERBRANCHACCESS", {
       COMP_CD: comp_cd,
     });
-  console.log("comp_cd", comp_cd);
   if (status === "0") {
     return data.map((item) => {
       return {
@@ -200,10 +195,7 @@ export const getNewUserProductAccess = async ({
       GI_BASE_BRANCH: base_branch_cd,
       GI_BASE_COMP: base_comp_cd,
     });
-  console.log("base_branch_cd", base_branch_cd);
-  console.log("base_comp_cd", base_comp_cd);
   if (status === "0") {
-    // return data;
     return data.map((item) => {
       return {
         ...item,
@@ -244,7 +236,6 @@ export const getLoginShiftddw = async ({ COMP_CD, BRANCH_CD }) => {
         return { rest, value: TRAN_CD, label: DESCRIPTION };
       });
     }
-    console.log("responseData2", responseData);
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -278,7 +269,6 @@ export const validatePasswords = async ({ request }) => {
     await AuthSDK.internalFetcher("VALIDATEPASSWORD", {
       ...request,
     });
-  console.log("request", request);
   if (status === "0") {
     return data;
   } else {
@@ -291,9 +281,7 @@ export const BioCapture = async () => {
     Quality: 60,
     TimeOut: 10,
   };
-  console.log("MFS100Request", MFS100Request);
   var jsondata = JSON.stringify(MFS100Request);
-  console.log("jsondata", jsondata);
   const rawResponse = await fetch("http://localhost:8004/mfs100/capture", {
     method: "POST",
     headers: {
@@ -302,8 +290,6 @@ export const BioCapture = async () => {
     },
     body: jsondata,
   });
-  console.log("rawResponse", rawResponse);
   const content = await rawResponse.json();
-  console.log("content", content);
   return content;
 };

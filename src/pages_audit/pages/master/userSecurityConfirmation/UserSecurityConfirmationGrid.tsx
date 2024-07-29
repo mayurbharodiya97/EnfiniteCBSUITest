@@ -34,7 +34,6 @@ const SecurityUserConfirmation = ()=>{
        navigate(data?.name, { state: data?.rows });
      }
    }, [navigate]);
-   console.log("rowsData",rowsData)
    useEffect(() => {
     return () => {
       let entries = getEntries() as any[];

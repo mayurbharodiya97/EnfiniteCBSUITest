@@ -160,21 +160,21 @@ let currentPath = useLocation().pathname;
     if (btnName === "Yes") {
       if (defaultView === "new"){
       addMutation.mutate({
-        form: userState.formData,
-        grid1: userState.grid1,
-        grid2: userState.grid2,
-        grid3: userState.grid3,
-        grid4: userState.grid4,
-        grid5: userState.grid5,
+        onboard: userState.formData,
+        applicationdata: userState.grid1,
+        branchdata: userState.grid2,
+        productdata: userState.grid3,
+        loginshiftdata: userState.grid4,
+        biometricdata: userState.grid5,
       }); 
     } else {
       editMutation.mutate({
-        form: userState.formData,
-        grid1: userState.grid1,
-        grid2: userState.grid2,
-        grid3: userState.grid3,
-        grid4: userState.grid4,
-        grid5: userState.grid5,
+        onboard: userState.formData,
+        applicationdata: userState.grid1,
+        branchdata: userState.grid2,
+        productdata: userState.grid3,
+        loginshiftdata: userState.grid4,
+        biometricdata: userState.grid5,
       });
     }
   }
