@@ -26,12 +26,21 @@ export const MultipleChequebook = ({ navigate, validateInsertData }) => {
   ];
 
   const { t } = useTranslation();
-  const { state: rows }: any = useLocation();
+  const { state: rowsData }: any = useLocation();
   const [gridData, setGridData] = useState<any>([]);
+
+  let rows = {
+    ...rowsData,
+    CHEQUE_FROM: Number(rowsData?.CHEQUE_FROM),
+    CHEQUE_TO: Number(rowsData?.CHEQUE_TO),
+    NO_OF_CHQBK: Number(rowsData?.NO_OF_CHQBK),
+    CHEQUE_TOTAL: Number(rowsData?.CHEQUE_TOTAL),
+  };
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "save") {
         validateInsertData.mutate({
+          COMP_CD: rows?.COMP_CD,
           BRANCH_CD: rows?.BRANCH_CD,
           ACCT_TYPE: rows?.ACCT_TYPE,
           ACCT_CD: rows?.ACCT_CD,
@@ -75,7 +84,7 @@ export const MultipleChequebook = ({ navigate, validateInsertData }) => {
       rows?.NO_OF_CHQBK * rows?.CHEQUE_TOTAL
     }  \u00A0\u00A0  ${t("TotalCharge")} : ₹
         ${(rows?.NO_OF_CHQBK * rows?.AMOUNT).toFixed(2)}     `;
-  }, [rows]);
+  }, []);
 
   return (
     <>

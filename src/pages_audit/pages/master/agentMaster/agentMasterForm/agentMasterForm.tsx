@@ -76,7 +76,6 @@ const AgentMasterForm = ({
       Number(newData?.SECURITY_AMT) !== 0 &&
       Number(newData?.SECURITY_PER) !== 0
     ) {
-      //@ts-ignore
       await MessageBox({
         message: "SecurityAmtPerValidation",
         messageTitle: "Alert",

@@ -25,9 +25,9 @@ interface updateAUTHDetailDataType {
 
 const updateAUTHDetailDataWrapperFn =
   (updateMasterData) =>
-  async ({ userID, COMP_CD, BRANCH_CD }: updateAUTHDetailDataType) => {
-    return updateMasterData({ userID, COMP_CD, BRANCH_CD });
-  };
+    async ({ userID, COMP_CD, BRANCH_CD }: updateAUTHDetailDataType) => {
+      return updateMasterData({ userID, COMP_CD, BRANCH_CD });
+    };
 
 const Dashboard = () => {
   const { authState } = useContext(AuthContext);
@@ -35,17 +35,14 @@ const Dashboard = () => {
     any,
     any
   >(["getDashboardData"], () =>
-    API.getDashboardData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-    })
+    API.getDashboardData()
   );
 
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid),
     {
-      onError: (error: any) => {},
-      onSuccess: (data) => {},
+      onError: (error: any) => { },
+      onSuccess: (data) => { },
     }
   );
   useEffect(() => {
@@ -58,12 +55,12 @@ const Dashboard = () => {
       mutation.mutate(mutationArguments);
     }
   }, [data?.[0]?.CHART1?.ISVISIBLE, data?.[0]?.TODAY_TRN?.ISVISIBLE]);
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.removeQueries(["getDashboardData"]);
-  //     queryClient.removeQueries(["TodaysTransactionTableGrid"]);
-  //   };
-  // }, []);
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getDashboardData"]);
+      queryClient.removeQueries(["TodaysTransactionTableGrid"]);
+    };
+  }, []);
 
   // const handleClick = () => {
   //   setIsOpenSave(true);
@@ -115,11 +112,9 @@ const Dashboard = () => {
                     />
                   </Grid>
                 ))} */}
-
                 {Array.from(Array(8)).map((_, index) => {
                   const item = data?.[0]?.BOXES?.[index];
                   const isVisible = !!item;
-
                   return (
                     <Grid
                       item
@@ -130,15 +125,21 @@ const Dashboard = () => {
                       xs={12}
                       key={index}
                       style={{
-                        borderBottom: "2px solid #EBEDEE",
-                        borderRight: "2px solid #EBEDEE",
-                        paddingRight: "10px",
-                        paddingBottom: "10px",
-                        paddingTop: "10px",
-                        display: isVisible ? "block" : "none", // Set display property based on visibility
+                        ...(isVisible && {
+                          borderBottom: "2px solid #EBEDEE",
+                          borderRight: "2px solid #EBEDEE",
+                          paddingRight: "10px",
+                          paddingBottom: "10px",
+                          paddingTop: "10px",
+                        }),
+                        ...(!isVisible && data?.[0]?.BOXES?.length >= 5 && {
+                          height: "100px",
+                          width: "100%",
+                          backgroundColor: "transparent",
+                        }),
                       }}
                     >
-                      {isVisible && (
+                      {isVisible ? (
                         <DashboardBox
                           key={"board" + index}
                           body={item.DEFAULT_VAL}
@@ -149,7 +150,7 @@ const Dashboard = () => {
                           apiName={item.API_NAME}
                           visibility={!isVisible}
                         />
-                      )}
+                      ) : null}
                     </Grid>
                   );
                 })}
@@ -218,7 +219,7 @@ const Dashboard = () => {
             )}
           </Grid>
         </div>
-      </Box>
+      </Box >
     </>
   );
 };

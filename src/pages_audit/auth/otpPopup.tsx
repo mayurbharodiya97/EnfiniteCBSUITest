@@ -22,9 +22,10 @@ export const OTPModel = ({
   OTPError,
   setOTPError,
   previousStep,
-  setNewRequestID = (id) => {},
+  setNewRequestID = (id) => { },
   otpresendCount = 0,
   resendFlag,
+  marginCondition
 }) => {
   const [OTP, setOTP] = useState("");
   const [showPasswordTime, setShowPasswordTime] = useState(0);
@@ -90,17 +91,18 @@ export const OTPModel = ({
       VerifyOTP(OTP);
     }
   };
-
   const handleResendClick = async () => {
     setResendotpLoading(true);
     const { status, data, message } = await OTPResendRequest(
-      resendFlag === "FORGET_PW" || resendFlag === "FORGT_TOTP"
-        ? loginState?.requestCd
-        : loginState?.transactionID,
-      loginState?.username,
+      // resendFlag === "FORGET_PW" || resendFlag === "FORGT_TOTP"
+      //   ? loginState?.requestCd
+      //   : loginState?.transactionID,
+      loginState?.comapanyCD,
+      loginState?.branchCD,
+      loginState?.contactUser,
       resendFlag,
-      loginState.auth_data?.[0]?.company_ID,
-      loginState.auth_data?.[0]?.branch_cd
+      loginState?.otpValidFor,
+      loginState?.username,
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -138,7 +140,7 @@ export const OTPModel = ({
   return (
     <Fragment>
       <Container maxWidth="sm">
-        <Grid alignItems="center" marginTop={"4em"}>
+        <Grid alignItems="center" marginTop={marginCondition}>
           <div
             // className={classes.formWrap}
             style={
@@ -202,7 +204,7 @@ export const OTPModel = ({
               {t("otp.Hello")}{" "}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
-                  loginState.username.slice(1)
+                loginState.username.slice(1)
                 : null}
               {loginState?.authType === "OTP" && (
                 <ResendOTP
@@ -334,7 +336,7 @@ export const OTPModelForm = ({
   OTPError,
   setOTPError,
   resendFlag,
-  setNewRequestID = (id) => {},
+  setNewRequestID = (id) => { },
   otpresendCount = 0,
 }) => {
   const [OTP, setOTP] = useState("");
@@ -350,6 +352,9 @@ export const OTPModelForm = ({
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
+
+
+
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
     return resendotpLoading ? (
@@ -388,13 +393,16 @@ export const OTPModelForm = ({
   const handleResendClick = async () => {
     setResendotpLoading(true);
     const { status, data, message } = await OTPResendRequest(
-      resendFlag === "FORGET_PW"
-        ? loginState?.requestCd
-        : loginState?.transactionID,
-      loginState?.username,
-      resendFlag,
+      // resendFlag === "FORGET_PW"
+      //   ? loginState?.requestCd
+      //   : loginState?.transactionID,
+      // resendFlag,
       loginState?.company_ID,
-      loginState?.branch_cd
+      loginState?.branch_cd,
+      loginState?.contactUser,
+      resendFlag,
+      loginState?.otpValidFor,
+      loginState?.username,
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -461,11 +469,11 @@ export const OTPModelForm = ({
             {t("otp.Hello")}{" "}
             {loginState?.username
               ? loginState.username.charAt(0).toUpperCase() +
-                loginState.username.slice(1)
+              loginState.username.slice(1)
               : null}
             {loginState.otploading ||
-            otpresendCount >= 3 ||
-            loginState?.auth_type === "TOTP" ? null : (
+              otpresendCount >= 3 ||
+              loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
                 onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}

@@ -97,7 +97,7 @@ export const limitEntryMetaData = {
           return {
             PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
             ACCT_CD: { value: "" },
-            SECURITY_CD: { value: "" },
+            SECURITY_CD: { value: "", isFieldFocused: false },
             ACCT_NM: { value: "" },
             ACCT_BAL: { value: "" },
           };
@@ -105,6 +105,16 @@ export const limitEntryMetaData = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -128,63 +138,53 @@ export const limitEntryMetaData = {
               SCREEN_REF: "EMST/046",
             };
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
-
+            let responseData: any = [];
+            const messagebox = async (msgTitle, msg, buttonNames) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+              return buttonName;
+            };
             if (postData?.length) {
-              formState.setDataOnFieldChange("NSC_FD_BTN", {
-                NSC_FD_BTN: postData?.[0]?.RESTRICTION ? false : true,
-                HDN_CHARGE_AMT: postData?.[0]?.CHARGE_AMT || 0,
-                HDN_GST_AMT: postData?.[0]?.GST_AMT || 0,
-                HDN_GST_ROUND: postData?.[0]?.GST_ROUND,
-                HDN_TAX_RATE: postData?.[0]?.TAX_RATE || 0,
-              });
+              for (let i = 0; i < postData?.length; i++) {
+                if (postData[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    postData[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    postData[i]?.O_MESSAGE,
+                    postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
+                  );
+                  if (btnName === "No" || postData[i]?.O_STATUS === "999") {
+                    formState.setDataOnFieldChange("NSC_FD_BTN", {
+                      NSC_FD_BTN: false,
+                      HDN_CHARGE_AMT: "",
+                      HDN_GST_AMT: "",
+                      HDN_GST_ROUND: "",
+                      HDN_TAX_RATE: "",
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                      SANCTIONED_AMT: { value: "" },
+                    };
+                  }
+                } else {
+                  formState.setDataOnFieldChange("NSC_FD_BTN", {
+                    NSC_FD_BTN: true,
+                    HDN_CHARGE_AMT: responseData?.[0]?.CHARGE_AMT || 0,
+                    HDN_GST_AMT: responseData?.[0]?.GST_AMT || 0,
+                    HDN_GST_ROUND: responseData?.[0]?.GST_ROUND,
+                    HDN_TAX_RATE: responseData?.[0]?.TAX_RATE || 0,
+                  });
+                  responseData.push(postData[i]);
+                }
+              }
             }
-
-            if (postData?.[0]?.RESTRICTION) {
-              let res = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.[0]?.RESTRICTION,
-                buttonNames: ["Ok"],
-                defFocusBtnName: "Ok",
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                  SANCTIONED_AMT: { value: "" },
-                };
-              }
-            } else if (postData?.[0]?.MESSAGE1) {
-              let res = await formState.MessageBox({
-                messageTitle: "Alert",
-                message: postData?.[0]?.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  ACCT_NM: {
-                    value: postData?.[0]?.ACCT_NM,
-                  },
-                  TRAN_BAL: {
-                    value: postData?.[0]?.TRAN_BAL,
-                  },
-                  SANCTIONED_AMT: {
-                    value: postData?.[0]?.SANCTIONED_AMT,
-                  },
-                  BRANCH_CD: {
-                    value: postData?.[0]?.BRANCH_CD,
-                  },
-                };
-              }
-            } else {
+            if (responseData?.length) {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -194,15 +194,11 @@ export const limitEntryMetaData = {
                   ignoreUpdate: true,
                   isFieldFocused: false,
                 },
-                ACCT_NM: {
-                  value: postData?.[0]?.ACCT_NM,
-                },
-                TRAN_BAL: {
-                  value: postData?.[0]?.TRAN_BAL,
-                },
-                SANCTIONED_AMT: {
-                  value: postData?.[0]?.SANCTIONED_AMT,
-                },
+                ACCT_NM: { value: responseData?.[0]?.ACCT_NM },
+                TRAN_BAL: { value: responseData?.[0]?.TRAN_BAL },
+                SANCTIONED_AMT: { value: responseData?.[0]?.SANCTIONED_AMT },
+                BRANCH_CD: { value: responseData?.[0]?.BRANCH_CD },
+                SECURITY_CD: { value: "", isFieldFocused: true },
               };
             }
           } else if (!field?.value) {

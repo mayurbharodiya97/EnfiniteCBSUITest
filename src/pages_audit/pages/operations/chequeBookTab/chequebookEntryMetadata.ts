@@ -3,6 +3,7 @@ import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -46,6 +47,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
@@ -86,6 +88,7 @@ export const ChequeBookEntryMetaData = {
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -118,6 +121,17 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        render: {
+          componentType: "textField",
+        },
+
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -160,6 +174,7 @@ export const ChequeBookEntryMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
@@ -167,6 +182,7 @@ export const ChequeBookEntryMetaData = {
                   messageTitle: "RiskCategoryAlert",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "INFO",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -177,6 +193,7 @@ export const ChequeBookEntryMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "HNIAlert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "INFO",
                   });
                 }
                 returnVal = "";
@@ -206,6 +223,10 @@ export const ChequeBookEntryMetaData = {
                       ignoreUpdate: true,
                     },
 
+              CHEQUE_TOTAL: {
+                value: "",
+                isFieldFocused: returnVal !== "",
+              },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -620,6 +641,10 @@ export const ChequeBookEntryMetaData = {
                       100 ?? "",
             },
           };
+        } else if (!field.value) {
+          return {
+            SERVICE_TAX: { value: "" },
+          };
         }
       },
     },
@@ -629,6 +654,9 @@ export const ChequeBookEntryMetaData = {
       },
       name: "SERVICE_TAX",
       label: "GSTAmount",
+      FormatProps: {
+        allowNegative: false,
+      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -652,8 +680,9 @@ export const ChequeBookEntryMetaData = {
       },
       defaultValue: "1",
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values) => {
-          if (values?.value?.length > 2) {
+          if (values?.value?.length > 2 || values?.value === "-") {
             return false;
           }
           return true;
@@ -758,6 +787,12 @@ export const ChequeBookEntryMetaData = {
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
+        } else if (
+          geaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("RequistionDtShouldBeLessThanOrEqualWorkingDt");
         }
         return "";
       },
@@ -955,13 +990,13 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "AUTO_CHQBK_FLAG",
+      name: "SR_CD",
     },
     {
       render: {
         componentType: "hidden",
       },
-      name: "SR_CD",
+      name: "AUTO_CHQBK_FLAG",
     },
     {
       render: {

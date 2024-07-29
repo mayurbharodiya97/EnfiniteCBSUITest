@@ -10,6 +10,8 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { AddNewBankMasterFormMetadata } from "./metaData";
+import { useTranslation } from "react-i18next";
+
 
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
@@ -34,6 +36,7 @@ export const AddNewBankMasterForm: FC<{
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const mutation = useMutation(API.clearingBankMasterConfigDML, {
     onError: (error: any, { endSubmit }) => {
@@ -46,7 +49,7 @@ export const AddNewBankMasterForm: FC<{
     },
     onSuccess: (data) => {
       console.log("data", data);
-      enqueueSnackbar("Data insert successfully", { variant: "success" });
+      enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
       onClose();
     },
   });
@@ -118,7 +121,7 @@ export const AddNewBankMasterForm: FC<{
                 }
                 color={"primary"}
               >
-                Save
+                {t("Save")}
               </Button>
 
               <Button
@@ -126,7 +129,7 @@ export const AddNewBankMasterForm: FC<{
                 //disabled={isSubmitting}
                 color={"primary"}
               >
-                Close
+                {t("Close")}
               </Button>
             </>
           )}

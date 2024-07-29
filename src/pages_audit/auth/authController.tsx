@@ -34,14 +34,14 @@ const inititalState = {
   userMessageforusername: "",
   currentFlow: "username",
   transactionID: "",
+  comapanyCD: "",
+  branchCD: "",
+  contactUser: "",
   access_token: "",
   token_type: "",
   otpmodelClose: false,
   authType: "",
   isScanning: false,
-  auth_data: [],
-  company_ID: "",
-  Branch_CD: "",
   auth_type: "O",
   otpValidFor: 60,
 };
@@ -77,6 +77,9 @@ const reducer = (state, action) => {
         userMessageforusername: action?.payload?.errorUsername,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "passwordVerificationFailure":
@@ -91,6 +94,8 @@ const reducer = (state, action) => {
         userMessageforpassword: action?.payload?.errorPassword,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: ""
       };
     case "usernameVerificationFailure": {
       return {
@@ -104,6 +109,9 @@ const reducer = (state, action) => {
         userMessageforusername: action?.payload?.errorUsername,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "inititatePasswordVerification": {
@@ -120,6 +128,9 @@ const reducer = (state, action) => {
         username: "",
         transactionID: "",
         access_token: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "passwordRotation": {
@@ -144,6 +155,9 @@ const reducer = (state, action) => {
         loading: false,
         otploading: false,
         transactionID: action?.payload?.transactionID,
+        comapanyCD: action?.payload?.comapanyCD,
+        branchCD: action?.payload?.branchCD,
+        contactUser: action?.payload?.contactUser,
         username: action?.payload?.username,
         auth_type: action?.payload?.auth_type,
         OtpuserMessage: "",
@@ -155,7 +169,6 @@ const reducer = (state, action) => {
         // authType: "TOTP",
         auth_data: action?.payload?.auth_data,
         otpValidFor: action?.payload?.otpValidFor,
-        company_ID: action?.paylod?.company_ID,
       };
     }
     case "inititatebiometricVerification": {
@@ -295,17 +308,15 @@ export const AuthLoginController = () => {
         dispath({
           type: "passwordVerificationSuccessful",
           payload: {
+            comapanyCD: data?.BASE_COMP_CD,
+            branchCD: data?.BASE_BRANCH_CD,
+            contactUser: data?.CONTACT2,
             transactionID: data?.REQUEST_CD,
             username: username,
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
             authType: data?.AUTH_TYPE,
-            auth_data: [
-              {
-                company_ID: data?.BASE_COMP_CD ?? "",
-                branch_cd: data?.BASE_BRANCH_CD,
-              },
-            ],
+            auth_data: data?.AUTH_DATA,
             otpValidFor: data?.OTP_VALID,
           },
         });
@@ -575,6 +586,7 @@ export const AuthLoginController = () => {
                             otpResendRef.current = otpResendRef.current + 1;
                           }}
                           otpresendCount={otpResendRef.current}
+                          marginCondition={"4em"}
                         />
                       ) : (
                         //       : loginState.authType === "TOTP" ? (

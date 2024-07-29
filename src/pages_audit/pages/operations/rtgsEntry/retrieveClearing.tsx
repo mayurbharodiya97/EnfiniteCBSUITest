@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback, useContext, Fragment } from "react";
+import { FC, useRef, useCallback, useContext, Fragment, useState, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { ClearCacheProvider } from "cache";
@@ -12,12 +12,12 @@ import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { useLocation, useNavigate } from "react-router";
-
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
-    actionLabel: "Edit Detail",
+    actionLabel: t("ViewDetails"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -27,7 +27,7 @@ export const RetrieveClearing: FC<{
 }> = ({ onClose }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
-
+  const { t } = useTranslation();
   const setCurrentAction = useCallback((data) => {
     onClose("action", data?.rows);
   }, []);
@@ -71,10 +71,24 @@ export const RetrieveClearing: FC<{
     };
     mutation.mutate(data);
     endSubmit(true);
-
-
   };
+  useEffect(() => {
+    mutation.mutate({
+      FROM_DT: format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      TO_DT: format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      FLAG: "P",
+      FLAG_RTGSC: ""
 
+    })
+  }, [])
 
   return (
     <>
@@ -120,7 +134,7 @@ export const RetrieveClearing: FC<{
                     onClose();
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}

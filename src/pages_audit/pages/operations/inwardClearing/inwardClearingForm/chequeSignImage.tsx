@@ -111,8 +111,8 @@ export const ChequeSignImage: FC<{
                 index === 0
                   ? "Front Grey"
                   : index === 2
-                  ? "Back Image"
-                  : "Black & White";
+                    ? "Back Image"
+                    : "Black & White";
 
               return (
                 <label
@@ -189,7 +189,7 @@ export const ChequeSignImage: FC<{
                         <img
                           src={imageUrl}
                           alt={`image-${index}`}
-                          // style={{ height: "100%", width: "100%" }}
+                        // style={{ height: "100%", width: "100%" }}
                         />
                       </div>
                     </CardContent>

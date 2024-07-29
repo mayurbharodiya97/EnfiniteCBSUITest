@@ -2,11 +2,11 @@ import { DefaultErrorObject } from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getDashboardData = async ({ COMP_CD, BRANCH_CD }) => {
+export const getDashboardData = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDASHBOARDDATA", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
+      APP_TRAN_CD: "51",
+
     });
   if (status === "0") {
     return data;

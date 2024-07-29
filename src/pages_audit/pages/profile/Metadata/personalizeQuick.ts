@@ -1,4 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import { t } from "i18next";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const PersonlizationQuickGridMetaData: GridMetaDataType = {
@@ -47,28 +48,16 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
       options: GeneralAPI.getquickViewList,
       _optionsKey: "getquickViewList",
       validation: (value, data, prev, next) => {
-        // if (!Boolean(value)) {
-        //   return "This field is required";
-        // }
-        if (Array.isArray(prev)) {
-          let lb_error = false;
-          let ls_msg = "";
-          prev.forEach((item, index) => {
-            if (lb_error) {
-              return ls_msg;
-            }
-            if (item?.DOC_CD == "") {
-              return ls_msg;
-            }
-            if (value === item?.DOC_CD) {
-              lb_error = true;
-              ls_msg = "Option is Already entered";
-              return ls_msg;
-            }
-          });
-          if (lb_error) {
-            return ls_msg;
+        let concatenatedArray = [prev, next].flat();
+        let nextMsg: any = concatenatedArray?.some((item) => {
+          if (value) {
+            return value === item?.DOC_CD;
           }
+          return false;
+        });
+
+        if (nextMsg) {
+          return t("OptionIsAlreadyEntered");
         }
         return "";
       },

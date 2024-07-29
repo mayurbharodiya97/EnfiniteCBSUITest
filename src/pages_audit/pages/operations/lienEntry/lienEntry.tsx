@@ -330,7 +330,7 @@ const LienEntryCustom = () => {
             style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
           >
             <GridWrapper
-              key={`LienGrid-MetaData`}
+              key={`LienGrid-MetaData` + getLienDetail.isSuccess}
               finalMetaData={LienGridMetaData as GridMetaDataType}
               data={getLienDetail.data ?? []}
               setData={() => {}}
