@@ -34,6 +34,8 @@ import { usePopupContext } from "components/custom/popupContext";
 import { useSnackbar } from "notistack";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import { utilFunction } from "components/utils";
+import { useLocation } from "react-router-dom";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -74,11 +76,13 @@ const ClearingDateTransferGrid = () => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const gridRef = useRef<any>(null);
-  const [formData, setFormData] = useState()
-  const [isFlag, setIsFlag] = useState();
+  const [formData, setFormData] = useState<any>({})
+  const [isFlag, setIsFlag] = useState<any>();
+  const [isAmount, setIsAmount] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
+  let currentPath = useLocation().pathname;
 
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -197,7 +201,6 @@ const ClearingDateTransferGrid = () => {
           }
         }
       })
-
     }
   }, []);
 
@@ -240,12 +243,7 @@ const ClearingDateTransferGrid = () => {
   //     clearingDateTransferGridMetaData.gridConfig.allowRowSelection = false;
   //   }
   // }
-  // console.log("rows", rows)
-  // useEffect(() => {
-  //   branchClearingDateTransferGridMetaData.gridConfig.footerNote = `${"TotalAmount"} : ${rows?.[0]?.CHEQUE_BK_TOTAL * rows?.[0]?.CHEQUE_TOTAL
-  //     }  \u00A0\u00A0  ${"SelectedAmount"} : ₹
-  //       ${(rows?.[0]?.CHEQUE_BK_TOTAL * rows?.[0]?.AMOUNT).toFixed(2)}     `;
-  // }, [rows]);
+
   return (
     <Fragment>
       <>
@@ -261,7 +259,13 @@ const ClearingDateTransferGrid = () => {
               variant={"h6"}
               component="div"
             >
-              {"Clearing Date Transfer(RPT/1188)"}
+              {
+                utilFunction.getDynamicLabel(
+                  currentPath,
+                  authState?.menulistdata,
+                  true
+                )
+              }
             </Typography>
             <>
               {
@@ -270,7 +274,6 @@ const ClearingDateTransferGrid = () => {
                     <GradientButton
                       onClick={async () => {
                         const cleanedData = gridRef.current?.cleanData?.();
-                        console.log("cleanedData", cleanedData)
                         const totalCount = cleanedData.reduce((acc, row) => acc + parseInt(row?.CNT), 0);
                         formRef.current.getFieldData().then(async (res) => {
                           const buttonName = await MessageBox({

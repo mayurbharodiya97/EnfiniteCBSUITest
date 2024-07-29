@@ -44,6 +44,7 @@ const inititalState: AuthStateType = {
     id: "",
     employeeID: "",
   },
+  hoLogin: ""
 };
 
 const authReducer = (
@@ -154,6 +155,7 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
+        hoLogin: payload.branchCode === payload.baseBranchCode && state?.companyID === state?.baseCompanyID ? "Y" : "N",
         user: {
           ...state.user,
           branchCode: payload.branchCode,

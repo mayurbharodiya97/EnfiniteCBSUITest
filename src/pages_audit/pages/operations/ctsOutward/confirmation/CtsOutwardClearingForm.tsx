@@ -1,7 +1,7 @@
 import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -75,6 +75,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
   handleNext?: any;
   currentIndex?: number;
   totalData?: number;
+  formLabel?: any
 }> = ({
   zoneTranType,
   formMode,
@@ -85,6 +86,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
   handleNext,
   currentIndex,
   totalData,
+  formLabel
 }) => {
     const { authState } = useContext(AuthContext);
     const headerClasses = useTypeStyles();
@@ -94,7 +96,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     const [isChequeSign, setIsChequeSign] = useState<any>(false);
     const [isVisibleSign, setIsVisibleSign] = useState<any>(false);
     const [isConfHistory, setIsConfHistory] = useState<any>(false);
-
+    let currentPath = useLocation().pathname;
     const { data, isLoading, isError, error } = useQuery<any, any>(
       ["getOutwardConfirmViewDetailData", rowsData?.TRAN_CD],
       () =>
@@ -200,14 +202,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
       };
       document.addEventListener("keydown", handleKeyDown);
     }, []);
-    if (zoneTranType === "S") {
-      CTSOutwardClearingConfirmMetaData.form.label = "CTS O/W Confirmation";
-    } else if (zoneTranType === "R") {
-      CTSOutwardClearingConfirmMetaData.form.label = "Inward Return Confirmation";
-    } else if (zoneTranType === "W") {
-      CTSOutwardClearingConfirmMetaData.form.label =
-        "Outward Return Confirmation";
-    }
 
     return (
       <Fragment>
@@ -241,11 +235,11 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   }}
                 >
                   {zoneTranType === "S"
-                    ? " CTS O/W Confirmation"
+                    ? formLabel
                     : zoneTranType === "R"
-                      ? "Inward Return Confirmation"
+                      ? formLabel
                       : zoneTranType === "W"
-                        ? "Outward Return Confirmation"
+                        ? formLabel
                         : null}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: "wrap" }}>
@@ -260,7 +254,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       } else {
                         const buttonName = await MessageBox({
                           messageTitle: t("Confirmation"),
-                          message: t("Proceed"),
+                          message: t("ProceedGen"),
                           buttonNames: ["No", "Yes"],
                           loadingBtnName: ["Yes"],
                         });
@@ -677,6 +671,7 @@ export const CtsOutwardClearingConfirmForm = ({
   handleNext,
   currentIndexRef,
   totalData,
+  formLabel
 }) => {
   const { state: rows } = useLocation();
   currentIndexRef.current = rows?.index;
@@ -693,6 +688,7 @@ export const CtsOutwardClearingConfirmForm = ({
         currentIndex={rows.index}
         isDataChangedRef={isDataChangedRef}
         totalData={totalData}
+        formLabel={formLabel}
       />
     </ClearCacheProvider>
   );
