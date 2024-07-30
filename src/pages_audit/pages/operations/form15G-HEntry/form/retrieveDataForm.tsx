@@ -1,10 +1,18 @@
 import { AppBar, CircularProgress, Dialog } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { RetrievalParameterFormMetaData } from "../form/metaData";
@@ -17,17 +25,11 @@ import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
 
-export const RetrievalParameters = ({
-  closeDialog,
-  onDataRetrieved,
-  zoneTranType,
-  dataRefetch,
-}) => {
+export const RetrievalParameters = ({ closeDialog, onDataRetrieved }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
-  const [formData, setFormData] = useState({});
+  const [retrieveData, setRetrieveData] = useState({});
   const [openForm15GH, setOpenForm15GH] = useState(false);
-  const [fetchData, setFetchData] = useState(false);
   const customerIdRef: any = useRef([]);
   const isDataChangedRef = useRef(false);
   const okButtonRef = useRef<any>(null);
@@ -52,19 +54,18 @@ export const RetrievalParameters = ({
       API.getEntry15GHRetrieveData({
         BRANCH_CD: authState?.user?.branchCode ?? "",
         COMP_CD: authState?.companyID ?? "",
-        TRAN_TYPE: initialData?.[0]?.TRAN_TYPE,
-        CUSTOMER_ID: customerIdRef?.current?.A_CUSTOM_USER_NM,
+        TRAN_TYPE: initialData?.[0]?.TRAN_TYPE ?? "",
+        CUSTOMER_ID: customerIdRef?.current?.A_CUSTOM_USER_NM ?? "",
         FROM_DT: isValidDate(customerIdRef?.current?.FROM_DT)
-          ? format(new Date(customerIdRef?.current?.FROM_DT), "dd-MMM-yyyy") ??
-            ""
-          : format(new Date(), "dd-MMM-yyyy"),
+          ? format(new Date(customerIdRef?.current?.FROM_DT), "dd/MMM/yyyy")
+          : format(new Date(), "dd/MMM/yyyy") ?? "",
         TO_DT: isValidDate(customerIdRef?.current?.TO_DT)
-          ? format(new Date(customerIdRef?.current?.TO_DT), "dd-MMM-yyyy") ?? ""
-          : format(new Date(), "dd-MMM-yyyy"),
+          ? format(new Date(customerIdRef?.current?.TO_DT), "dd/MMM/yyyy")
+          : format(new Date(), "dd/MMM/yyyy") ?? "",
       }),
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = "Unknown Error occurred";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -73,13 +74,13 @@ export const RetrievalParameters = ({
         });
         closeDialog();
       },
-      onSuccess: (retrieveData) => {
-        if (retrieveData?.length === 1) {
+      onSuccess: (data: any) => {
+        if (data.length === 1) {
           setOpenForm15GH(true);
-          setFormData(retrieveData[0]);
-        } else if (retrieveData?.length > 1) {
+          setRetrieveData(data[0]);
+        } else if (data.length > 1) {
           closeDialog();
-          onDataRetrieved(retrieveData);
+          onDataRetrieved(data);
         } else {
           MessageBox({
             messageTitle: "Alert",
@@ -101,8 +102,7 @@ export const RetrievalParameters = ({
     endSubmit(true);
     if (data?.A_CUSTOM_USER_NM && data?.FROM_DT && data?.TO_DT) {
       customerIdRef.current = data;
-      setFetchData(true);
-      await retrieveDataMutation.mutate();
+      retrieveDataMutation.mutate();
     }
   };
 
@@ -192,9 +192,7 @@ export const RetrievalParameters = ({
           isDataChangedRef={isDataChangedRef}
           closeDialog={closeDialog}
           defaultView="view"
-          zoneTranType={zoneTranType}
-          formData={formData}
-          dataRefetch={dataRefetch}
+          retrieveData={retrieveData}
         />
       )}
     </>
@@ -204,8 +202,6 @@ export const RetrievalParameters = ({
 export const RetrievalParametersFormWrapper = ({
   closeDialog,
   onDataRetrieved,
-  zoneTranType,
-  dataRefetch,
 }) => {
   return (
     <Dialog
@@ -221,8 +217,6 @@ export const RetrievalParametersFormWrapper = ({
       <RetrievalParameters
         closeDialog={closeDialog}
         onDataRetrieved={onDataRetrieved}
-        zoneTranType={zoneTranType}
-        dataRefetch={dataRefetch}
       />
     </Dialog>
   );

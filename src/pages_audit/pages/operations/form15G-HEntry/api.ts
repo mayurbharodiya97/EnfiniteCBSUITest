@@ -110,7 +110,7 @@ export const form15GHEntryDML = async (formData) => {
   }
 };
 
-export const printForm = async (apiReq) => {
+export const printForm15G = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPRINT15GFORMDETAILS", {
       ...apiReq,
