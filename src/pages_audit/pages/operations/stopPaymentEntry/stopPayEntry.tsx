@@ -119,6 +119,7 @@ const StopPaymentEntryCustom = () => {
         CloseMessageBox();
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
+        setIsData((old) => ({ ...old, isVisible: false }));
       }
     },
     onError: () => {
@@ -349,7 +350,7 @@ const StopPaymentEntryCustom = () => {
 
       {isData.isDelete && (
         <RemarksAPIWrapper
-          TitleText={"deleteTitle"}
+          TitleText={"StopDeleteTitle"}
           onActionNo={() => setIsData((old) => ({ ...old, isDelete: false }))}
           onActionYes={(val, rows) => {
             let deleteReqPara = {

@@ -765,6 +765,10 @@ export const guj_language_data = {
   Active: "સક્રિય",
   InvalidDeleteOperation: "અમાન્ય ડિલીટ ઓપરેશન",
   AreYouSureToWithdrawShare: "શું તમે શેરો પાછા ખેંચવા માટે ચોક્કસ છો ?",
+  DateShouldBeLessThanEqualToWorkingDT:
+    "તારીખ કામકાજની તારીખ કરતા ઓછી અથવા તેની બરાબર હોવી જોઈએ.",
+  StmtTillDateShouldBeGreterThanStmt:
+    "સ્ટૉક સ્ટેટમેન્ટ ટિલ ડેટ સ્ટેટમેન્ટની તારીખ કરતાં મોટી અથવા બરાબર હોવી જોઈએ",
 
   // lien Entry
 
@@ -786,6 +790,8 @@ export const guj_language_data = {
   LienExpire: "લિયન સમાપ્ત",
   LienConfirmation: "લિયન પુષ્ટિકરણ",
   LienReason: "લિયન કારણ",
+  RemovalDtShouldBeGreterThanEqualToEffDT:
+    "દૂર કરવાની તારીખ અસરકારક તારીખ કરતાં વધુ અથવા તેની બરાબર હોવી જોઈએ",
 
   // Temporary OD
 

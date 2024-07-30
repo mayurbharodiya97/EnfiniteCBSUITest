@@ -75,7 +75,7 @@ export const getRtgsTransactionTypeList = async (ApiReq) => {
       responseData = responseData.map(({ DESCRIPTION, MSG_TYPE, ...other }) => {
         return {
           value: MSG_TYPE,
-          label: DESCRIPTION,
+          label: MSG_TYPE + "-" + DESCRIPTION,
           ...other,
         };
       });
@@ -138,9 +138,10 @@ export const getRtgsBenfDtlList = async (ApiReq) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, ...other }) => {
+      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, AC_UQ_ID, ...other }, i) => {
         return {
           value: TO_ACCT_NO,
+          // value: TO_ACCT_NO,
           label: DISP_VAL,
           ...other,
         };

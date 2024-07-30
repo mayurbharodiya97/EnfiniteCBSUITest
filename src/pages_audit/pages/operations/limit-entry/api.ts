@@ -39,7 +39,7 @@ export const getLimitEntryData = async (apiReqPara) => {
 };
 
 export const LimitSecurityData = async (apiReqPara) => {
-  // console.log("<<<apireq", apiReqPara);
+  console.log("<<<apireq", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECFIELDDISP", {
       // ...apiReqPara,

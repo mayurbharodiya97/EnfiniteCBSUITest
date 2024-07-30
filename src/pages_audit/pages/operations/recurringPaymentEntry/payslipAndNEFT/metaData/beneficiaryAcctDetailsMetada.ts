@@ -149,13 +149,17 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         const dataArray = Array.isArray(data?.BENEFIACCTDTL)
           ? data?.BENEFIACCTDTL
           : [];
-        for (let i = 0; i < dataArray?.length; i++) {
-          const item = dataArray[0];
-          if (item.TO_ACCT_NO.trim() && item.AMOUNT.trim()) {
-            return true;
+        if (dataArray?.length > 0) {
+          for (let i = 0; i < dataArray?.length; i++) {
+            const item = dataArray[0];
+            if (item.TO_ACCT_NO.trim() && item.AMOUNT.trim()) {
+              return true;
+            }
           }
+          return false;
+        } else {
+          return true;
         }
-        return false;
       },
       _fields: [
         {
@@ -242,7 +246,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
 
               if (validateIFSC?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState.MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: "ValidationFailed",
                   message: validateIFSC?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
                 });
@@ -467,7 +471,6 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           label: "Remarks",
           placeholder: "Enter Remarks",
           type: "text",
-          maxLength: 35,
           autoComplete: "off",
           fullWidth: true,
           GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
@@ -720,6 +723,13 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             },
           },
           GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "REQUEST_FOR_DD",
         },
       ],
     },

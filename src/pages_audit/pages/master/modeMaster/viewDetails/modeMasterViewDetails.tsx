@@ -11,7 +11,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
-import { LoadingTextAnimation } from "components/common/loader";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 
 const ModeMasterForm = ({
@@ -24,18 +24,13 @@ const ModeMasterForm = ({
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  useEffect(() => {
-    if (gridData.length > 0) {
-      setIsLoading(false);
-    }
-  }, [gridData]);
+
   const mutation = useMutation(API.updateModeMasterData,
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = "Unknownerroroccured";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -45,7 +40,7 @@ const ModeMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar("insertSuccessfully", {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -95,7 +90,7 @@ const ModeMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Are you sure to Save the record?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -110,7 +105,7 @@ const ModeMasterForm = ({
 
   return (
     <>
-      {isLoading ? (<LoadingTextAnimation />
+      {!gridData ? (<LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"modeMasterForm" + formMode}

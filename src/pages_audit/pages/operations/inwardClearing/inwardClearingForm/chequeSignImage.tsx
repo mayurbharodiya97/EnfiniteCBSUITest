@@ -7,6 +7,7 @@ import noPhotoAvailble from "../../../../../assets/images/noPhotoAvailble.png";
 import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
+import { useTranslation } from "react-i18next";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   printHidden: {
@@ -29,6 +30,7 @@ export const ChequeSignImage: FC<{
   const [isOpen, setIsOpen] = useState<any>(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [rotateImg, setRotate] = useState<number>(0);
+  const { t } = useTranslation();
 
   const handleRotateChange = () => {
     const newRotateValue = (rotateImg + 90) % 360;
@@ -103,16 +105,16 @@ export const ChequeSignImage: FC<{
                   position: "relative",
                   top: "17.4em",
                 }}
-              >{`${current} of ${total}`}</div>
+              >{`${current} "of" ${total}`}</div>
             )}
             renderIndicator={(onClickHandler, isSelected, index, label) => {
               if (!(chequeImageURL && chequeImageURL.length > 0)) return null;
               const indicatorLabel =
                 index === 0
-                  ? "Front Grey"
+                  ? t("FrontGrey")
                   : index === 2
-                  ? "Back Image"
-                  : "Black & White";
+                    ? t("BackImage")
+                    : t("BlackWhite");
 
               return (
                 <label
@@ -189,7 +191,7 @@ export const ChequeSignImage: FC<{
                         <img
                           src={imageUrl}
                           alt={`image-${index}`}
-                          // style={{ height: "100%", width: "100%" }}
+                        // style={{ height: "100%", width: "100%" }}
                         />
                       </div>
                     </CardContent>
@@ -307,7 +309,7 @@ export const ChequeSignImage: FC<{
               className={classes.printHidden}
               onClick={handleRotateChange}
             >
-              {rotateImg === 0 ? "Rotate" : "Reset"}
+              {rotateImg === 0 ? t("Rotate") : t("Reset")}
             </GradientButton>
             <GradientButton
               onClick={() => {
@@ -315,7 +317,8 @@ export const ChequeSignImage: FC<{
               }}
               className={classes.printHidden}
             >
-              Print
+              {t("Print")}
+
             </GradientButton>
           </div>
           {rotateImg === 0 ? (

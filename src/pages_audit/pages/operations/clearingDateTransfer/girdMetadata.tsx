@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "Clearing Date Transfer(RPT/1188)",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -50,18 +50,18 @@ export const RetrieveFormConfigMetaData = {
         componentType: "datePicker",
       },
       name: "FR_TRAN_DT",
-      label: "From Date",
+      label: "GeneralFromDate",
       placeholder: "",
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["From Date is required."] }],
+        rules: [{ name: "required", params: ["FromDateRequired."] }],
       },
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
-          return "Must be a valid date";
+          return "Mustbeavaliddate";
         }
         return "";
       },
@@ -71,23 +71,23 @@ export const RetrieveFormConfigMetaData = {
         componentType: "datePicker",
       },
       name: "TO_TRAN_DT",
-      label: "To Date",
+      label: "GeneralToDate",
       placeholder: "",
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["To Date is required."] }],
+        rules: [{ name: "required", params: ["ToDateRequired"] }],
       },
       validate: (currentField, dependentField) => {
         if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
-          return "Must be a valid date";
+          return "Mustbeavaliddate";
         }
         if (
           new Date(currentField?.value) <
           new Date(dependentField?.FROM_TRAN_DT?.value)
         ) {
-          return "To Date should be greater than or equal to From Date.";
+          return "ToDateshouldbegreaterthanorequaltoFromDate";
         }
         return "";
       },
@@ -100,7 +100,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "select",
       },
       name: "FR_ZONE",
-      label: "From Zone",
+      label: "FromZone",
       defaultValue: "0   ",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       skipDefaultOption: true,
@@ -114,7 +114,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "select",
       },
       name: "TO_ZONE",
-      label: "To Zone",
+      label: "ToZone",
       defaultValue: "0   ",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       skipDefaultOption: true,
@@ -158,10 +158,130 @@ export const RetrieveFormConfigMetaData = {
   ],
 };
 
+export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "",
+    rowIdColumn: "BANK_CD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: true,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [15, 25, 50],
+    defaultPageSize: 15,
+    containerHeight: {
+      min: "50vh",
+      max: "50vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: true,
+    isCusrsorFocused: true,
+    hiddenFlag: "_hidden",
+    // footerNote:"test"
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "id",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "rigth",
+      componentType: "default",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 120,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "BANK_NM",
+      columnName: "BranchName",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 300,
+      minWidth: 300,
+      maxWidth: 350,
+    },
+    {
+      accessor: "AMOUNT",
+      columnName: "TotalAmount",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      isDisplayTotal: true,
+      isSelectedTotal: true,
+      width: 180,
+      minWidth: 200,
+      maxWidth: 250,
+    },
+    // {
+    //   accessor: "CHECKED",
+    //   columnName: "Yes/No",
+    //   sequence: 4,
+    //   alignment: "left",
+    //   componentType: "editableCheckbox",
+    //   // isReadOnly: true,
+    //   SelectAllColumn: true,
+    //   width: 90,
+    //   minWidth: 60,
+    //   maxWidth: 120,
+    // },
+    // {
+    //   accessor: "CHECK_BOX",
+    //   columnName: "Select",
+    //   sequence: 2,
+    //   alignment: "left",
+    //   dependentOptionField: "VISIBLE_YN",
+    //   componentType: "editableCheckbox",
+    //   SelectAllColumn: true,
+    //   width: 100,
+    //   minWidth: 80,
+    //   maxWidth: 140,
+    //   defaultValue: false,
+    //   shouldExclude: (initialValue, original, prevRows, nextRows) => {
+    //     if (!Boolean(original?.VISIBLE_YN === false)) {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    // },
+    {
+      accessor: "BANK_CD",
+      columnName: "Bank",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+    {
+      accessor: "CNT",
+      columnName: "Count",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+  ],
+};
 export const clearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Clearing Retrieve Grid",
+    gridLabel: "",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 400,
@@ -189,7 +309,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "id",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "rigth",
       componentType: "default",
@@ -200,7 +320,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BANK_NM",
-      columnName: "Branch Name",
+      columnName: "BranchName",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -211,7 +331,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "AMOUNT",
-      columnName: "Total Amount",
+      columnName: "TotalAmount",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -219,21 +339,22 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
       width: 180,
       minWidth: 200,
       maxWidth: 250,
+      isDisplayTotal: true,
     },
-    // {
-    //   accessor: "CHECKED",
-    //   columnName: "Yes/No",
-    //   sequence: 4,
-    //   alignment: "left",
-    //   componentType: "editableCheckbox",
-    //   // isReadOnly: true,
-    //   width: 90,
-    //   minWidth: 60,
-    //   maxWidth: 120,
-    // },
     {
       accessor: "BANK_CD",
       columnName: "Bank",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+    {
+      accessor: "CNT",
+      columnName: "Count",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -247,7 +368,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
 export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Slip Retrieve Grid",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -275,7 +396,7 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "id",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "rigth",
       componentType: "default",
@@ -287,7 +408,7 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
 
     {
       accessor: "SLIP_CD",
-      columnName: "Slip No.",
+      columnName: "SlipNo",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -298,7 +419,7 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NO",
-      columnName: "Account Number",
+      columnName: "AccountNo",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -310,25 +431,40 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
 
     {
       accessor: "NO_OF_CHEQUES",
-      columnName: "No.Of Cheques",
+      columnName: "NoOfCheques",
       sequence: 4,
       alignment: "left",
       componentType: "default",
       placeholder: "",
-      width: 120,
-      minWidth: 150,
-      maxWidth: 200,
+      width: 150,
+      minWidth: 200,
+      maxWidth: 250,
+      isDisplayTotal: true,
+      isSelectedTotal: true,
     },
     {
       accessor: "AMOUNT",
-      columnName: "Total Amount",
-      sequence: 5,
+      columnName: "TotalAmount",
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       placeholder: "",
       width: 200,
       minWidth: 250,
       maxWidth: 300,
+      isDisplayTotal: true,
+      isSelectedTotal: true,
+    },
+    {
+      accessor: "CNT",
+      columnName: "Count",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 150,
     },
     // {
     //   accessor: "CHECKED",

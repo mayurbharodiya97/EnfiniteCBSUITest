@@ -117,7 +117,6 @@ const StockEntryCustom = () => {
               stockDataCRUD.mutate({
                 ...reqDataRef.current?.insertReq,
               });
-              CloseMessageBox();
             }
           } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
             MessageBox({
@@ -156,6 +155,7 @@ const StockEntryCustom = () => {
       } else if (variables?._isNewRow) {
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
         enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
+        CloseMessageBox();
         setIsData((old) => ({
           ...old,
           newFormMTdata: StockEntryMetaData,
@@ -409,7 +409,7 @@ const StockEntryCustom = () => {
 
       {isData.isDelete && (
         <RemarksAPIWrapper
-          TitleText={t("deleteTitle")}
+          TitleText={"StockDeleteTitle"}
           onActionNo={() => setIsData((old) => ({ ...old, isDelete: false }))}
           onActionYes={(val, rows) => {
             let deleteReqPara = {

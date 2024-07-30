@@ -32,5 +32,6 @@ registerFn("getMatureInstDetail", GeneralAPI.getMatureInstDetail);
 registerFn("getAccNoValidation", GeneralAPI.getAccNoValidation);
 registerFn("get_Account_Type", GeneralAPI.get_Account_Type);
 registerFn("getChequeNoValidation", GeneralAPI.getChequeNoValidation);
-registerFn("getChequeNoValidation", GeneralAPI.getCustLatestDtl);
-registerFn("getChequeNoValidation", GeneralAPI.getPhotoSignHistory);
+registerFn("getCustLatestDtl", GeneralAPI.getCustLatestDtl);
+registerFn("getPhotoSignHistory", GeneralAPI.getPhotoSignHistory);
+registerFn("getCustAccountLatestDtl", GeneralAPI.getCustAccountLatestDtl);

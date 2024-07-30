@@ -1,7 +1,7 @@
 export const metaData = {
   form: {
     name: "AC Period Master",
-    label: "AC Period Master",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -54,17 +54,12 @@ export const metaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["code is Required"] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       __EDIT__: { isReadOnly: true },
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        // Duplication validation
-
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -93,13 +88,13 @@ export const metaData = {
       },
       name: "PERIOD_NM",
       label: "PeriodName",
-      placeholder: "Period Name",
+      placeholder: "PeriodName",
       maxLength: 40,
       type: "text",
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Period Name is Required"] }],
+        rules: [{ name: "required", params: ["PeriodNameisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
 
@@ -111,7 +106,7 @@ export const metaData = {
       className: "textInputFromLeft",
       name: "INST_NO",
       label: "InstNo",
-      placeholder: "Inst. No.",
+      placeholder: "InstNo",
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: false,
@@ -130,17 +125,11 @@ export const metaData = {
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["Inst. No. is Required"] },
+          { name: "required", params: ["InstNoisRequired"] },
         ],
-
       },
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        // Duplication validation
-
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -164,10 +153,10 @@ export const metaData = {
       },
     },
     {
-      render: { componentType: "select" },
+      render: { componentType: "autocomplete" },
       name: "INSTALLMENT_TYPE",
       label: "InstallmentPeriod",
-      placeholder: "Select Installment Period",
+      placeholder: "InstallmentPeriod",
       options: [
         { label: "Daily ", value: "D" },
         { label: "Monthly", value: "M" },
@@ -177,7 +166,6 @@ export const metaData = {
         { label: "On Expiry", value: "E" },
       ],
       _optionsKey: "Installment_period",
-      defaultOptionLabel: "Select Installment Period",
       defaultValue: "M",
       required: true,
       type: "text",
@@ -186,13 +174,6 @@ export const metaData = {
       autoComplete: "on",
       //@ts-ignore
       isFieldFocused: false,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Please Select Installment Period"] },
-        ],
-
-      },
     },
   ],
 };

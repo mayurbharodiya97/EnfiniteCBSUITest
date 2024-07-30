@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const DynFormGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Dynamic Form Metadata Configure",
+    gridLabel: "",
     rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 400,
