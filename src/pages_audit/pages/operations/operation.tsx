@@ -36,6 +36,11 @@ const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
+const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
+const Form15GHConfirmationGrid = lazy(
+  () => import("./form15G-HEntry/confirmation")
+);
+// const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 
 export const OperationsMenu = () => (
@@ -156,5 +161,14 @@ export const OperationsMenu = () => (
         </FixDepositProvider>
       }
     />
+    <Route
+      path="form-15g-h-entry/*"
+      element={<Form15GHEntryGrid zoneTranType="E" />}
+    />
+    <Route
+      path="form-15g-h-confirmation/*"
+      element={<Form15GHConfirmationGrid zoneTranType="C" />}
+    />
+    {/* <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} /> */}
   </Routes>
 );
