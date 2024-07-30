@@ -541,9 +541,9 @@ export const MyAppBar = ({
                 //     : USER_PROFILE_DEFAULT
                 // }
                 src={
-                  Boolean(authController?.getProfileImage)
-                    ? authController?.getProfileImage
-                    : logos?.profile
+                  Boolean(logos?.profile)
+                    ? logos?.profile
+                    : authController?.getProfileImage
                 }
               />
             </LightTooltip>

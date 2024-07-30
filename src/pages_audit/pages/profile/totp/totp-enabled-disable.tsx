@@ -86,25 +86,29 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
         errorMsg = error?.error_msg ?? errorMsg;
       }
       endSubmit(false, errorMsg, error?.error_detail ?? "");
-      failedCount.current = failedCount.current + 1;
-      if (failedCount.current >= 3) {
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        onClose(false, true);
-      }
     },
     onSuccess: (data, { endSubmit }) => {
-      endSubmit(true, "");
-      if (authFlag === "DISABLED") {
-        enqueueSnackbar(data, {
-          variant: "success",
-        });
-        onClose(true, false);
+      if (data?.[0]?.ERROR_CD && data?.[0]?.ERROR_CD !== "0") {
+        endSubmit(false, data?.[0]?.ERROR_MSG ?? "Unknown Error occured");
+        failedCount.current = failedCount.current + 1;
+        if (failedCount.current >= 3) {
+          enqueueSnackbar(data?.[0]?.ERROR_MSG, {
+            variant: "error",
+          });
+          onClose(false, true);
+        }
       } else {
-        responseRef.current = data[0];
-        failedCount.current = 0;
-        setQRVerifyFlow(true);
+        endSubmit(true, "");
+        if (authFlag === "DISABLED") {
+          enqueueSnackbar(data, {
+            variant: "success",
+          });
+          onClose(true, false);
+        } else {
+          responseRef.current = data[0];
+          failedCount.current = 0;
+          setQRVerifyFlow(true);
+        }
       }
     },
   });

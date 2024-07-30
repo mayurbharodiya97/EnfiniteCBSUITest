@@ -278,91 +278,100 @@ export const CategoryMasterFormMetaData = {
           currentField,
           formState,
           authState,
-          dependentFieldValues
+          dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
 
           if (
             currentField?.value &&
-            dependentFieldValues?.TDS_BRANCH_CD?.value &&
-            dependentFieldValues?.TDS_ACCT_TYPE?.value
+            dependentFieldsValues?.TDS_BRANCH_CD?.value &&
+            dependentFieldsValues?.TDS_ACCT_TYPE?.value
           ) {
             const reqParameters = {
-              BRANCH_CD: dependentFieldValues?.TDS_BRANCH_CD?.value,
+              BRANCH_CD: dependentFieldsValues?.TDS_BRANCH_CD?.value,
               COMP_CD: authState?.companyID,
-              ACCT_TYPE: dependentFieldValues?.TDS_ACCT_TYPE?.value,
+              ACCT_TYPE: dependentFieldsValues?.TDS_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
-                dependentFieldValues?.TDS_ACCT_TYPE?.optionData
+                dependentFieldsValues?.TDS_ACCT_TYPE?.optionData
               ),
-              SCREEN_REF: "MST/041",
+              SCREEN_REF: "MST/050",
             };
             formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
-            if (postData?.RESTRICTION) {
-              let btnName = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.RESTRICTION,
-              });
-              if (btnName === "Ok") {
+            let btn99, returnVal;
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData?.MSG?.length; i++) {
+              if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                return {
-                  TDS_ACCT_CD: {
-                    value: "",
-                    isFieldFocused: true,
-                  },
-                  TDS_ACCT_NM: { value: "" },
-                };
-              }
-            } else if (postData?.MESSAGE1) {
-              let btnName = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-              if (btnName === "Ok") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
-                return {
-                  TDS_ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      currentField?.value,
-                      dependentFieldValues?.TDS_ACCT_TYPE?.optionData
-                    ),
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                  TDS_ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                };
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = postData;
+              } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+                formState?.handleButtonDisable(false);
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+                formState?.handleButtonDisable(false);
+                if (btn99 !== "No") {
+                  returnVal = postData;
+                } else {
+                  returnVal = "";
+                }
               }
-            } else {
-              formState?.handleButtonDisable(false);
-              return {
-                TDS_ACCT_CD: {
-                  value: utilFunction.getPadAccountNumber(
-                    currentField?.value,
-                    dependentFieldValues?.TDS_ACCT_TYPE?.optionData
-                  ),
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                TDS_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
             }
+            btn99 = 0;
+            return {
+              TDS_ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: utilFunction.getPadAccountNumber(
+                        currentField?.value,
+                        dependentFieldsValues?.TDS_ACCT_TYPE?.optionData
+                      ),
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+              TDS_ACCT_NM: {
+                value: returnVal?.ACCT_NM ?? "",
+              },
+            };
           } else if (!currentField?.value) {
             formState?.handleButtonDisable(false);
             return {
               TDS_ACCT_NM: { value: "" },
             };
           }
-          formState?.handleButtonDisable(false);
           return {};
         },
-
         fullWidth: true,
         GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
       },
@@ -459,77 +468,94 @@ export const CategoryMasterFormMetaData = {
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
+
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
-        dependentFieldValues
+        dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-
         if (
           currentField?.value &&
-          dependentFieldValues?.BRANCH_CD?.value &&
-          dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value
+          dependentFieldsValues?.BRANCH_CD?.value &&
+          dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value
         ) {
           const reqParameters = {
-            BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
             COMP_CD: authState?.companyID,
-            ACCT_TYPE: dependentFieldValues?.TDS_SUR_ACCT_TYPE?.value,
+            ACCT_TYPE: dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value,
             ACCT_CD: utilFunction.getPadAccountNumber(
               currentField?.value,
-              dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
+              dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.optionData
             ),
-            SCREEN_REF: "MST/041",
+            SCREEN_REF: "MST/050",
           };
           formState?.handleButtonDisable(true);
           const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
-          if (postData?.RESTRICTION) {
-            let btnName = await formState.MessageBox({
-              messageTitle: "ValidationFailed",
-              message: postData?.RESTRICTION,
-            });
-            if (btnName === "Ok") {
+          let btn99, returnVal;
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          for (let i = 0; i < postData?.MSG?.length; i++) {
+            if (postData?.MSG?.[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              return {
-                TDS_SUR_ACCT_CD: { value: "", isFieldFocused: true },
-              };
-            }
-          } else if (postData?.MESSAGE1) {
-            let btnName = await formState.MessageBox({
-              messageTitle: "RiskCategoryAlert",
-              message: postData?.MESSAGE1,
-              buttonNames: ["Ok"],
-            });
-            if (btnName === "Ok") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "ValidationFailed",
+                message: postData?.MSG?.[i]?.O_MESSAGE,
+              });
+              returnVal = "";
+            } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
-              return {
-                TDS_SUR_ACCT_CD: {
-                  value: utilFunction.getPadAccountNumber(
-                    currentField?.value,
-                    dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
-                  ),
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-              };
+              if (btn99 !== "No") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Alert",
+                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                });
+              }
+              returnVal = postData;
+            } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+              formState?.handleButtonDisable(false);
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Confirmation",
+                message: postData?.MSG?.[i]?.O_MESSAGE,
+                buttonNames: ["Yes", "No"],
+              });
+
+              btn99 = btnName;
+              if (btnName === "No") {
+                returnVal = "";
+              }
+            } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+              formState?.handleButtonDisable(false);
+              if (btn99 !== "No") {
+                returnVal = postData;
+              } else {
+                returnVal = "";
+              }
             }
-          } else {
-            formState?.handleButtonDisable(false);
-            return {
-              TDS_SUR_ACCT_CD: {
-                value: utilFunction.getPadAccountNumber(
-                  currentField?.value,
-                  dependentFieldValues?.TDS_SUR_ACCT_TYPE?.optionData
-                ),
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
-            };
           }
+          btn99 = 0;
+          return {
+            TDS_SUR_ACCT_CD:
+              returnVal !== ""
+                ? {
+                    value: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  }
+                : {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+          };
         }
-        formState?.handleButtonDisable(false);
         return {};
       },
       maxLength: 8,
@@ -613,88 +639,98 @@ export const CategoryMasterFormMetaData = {
           currentField,
           formState,
           authState,
-          dependentFieldValues
+          dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
 
           if (
             currentField?.value &&
-            dependentFieldValues?.TDS_REC_BRANCH_CD?.value &&
-            dependentFieldValues?.TDS_REC_ACCT_TYPE?.value
+            dependentFieldsValues?.TDS_REC_BRANCH_CD?.value &&
+            dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value
           ) {
             const reqParameters = {
-              BRANCH_CD: dependentFieldValues?.TDS_REC_BRANCH_CD?.value,
+              BRANCH_CD: dependentFieldsValues?.TDS_REC_BRANCH_CD?.value,
               COMP_CD: authState?.companyID,
-              ACCT_TYPE: dependentFieldValues?.TDS_REC_ACCT_TYPE?.value,
+              ACCT_TYPE: dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
-                dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
+                dependentFieldsValues?.TDS_REC_ACCT_TYPE?.optionData
               ),
-              SCREEN_REF: "MST/041",
+              SCREEN_REF: "MST/050",
             };
             formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
-            if (postData?.RESTRICTION) {
-              let btnName = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.RESTRICTION,
-              });
-              if (btnName === "Ok") {
+            let btn99, returnVal;
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData?.MSG?.length; i++) {
+              if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                return {
-                  TDS_REC_ACCT_CD: {
-                    value: "",
-                    isFieldFocused: true,
-                  },
-                  TDS_REC_ACCT_NM: { value: "" },
-                };
-              }
-            } else if (postData?.MESSAGE1) {
-              let btnName = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-              if (btnName === "Ok") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
-                return {
-                  TDS_REC_ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      currentField?.value,
-                      dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
-                    ),
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                  TDS_REC_ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                };
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = postData;
+              } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+                formState?.handleButtonDisable(false);
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+                formState?.handleButtonDisable(false);
+                if (btn99 !== "No") {
+                  returnVal = postData;
+                } else {
+                  returnVal = "";
+                }
               }
-            } else {
-              formState?.handleButtonDisable(false);
-              return {
-                TDS_REC_ACCT_CD: {
-                  value: utilFunction.getPadAccountNumber(
-                    currentField?.value,
-                    dependentFieldValues?.TDS_REC_ACCT_TYPE?.optionData
-                  ),
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                TDS_REC_ACCT_NM: {
-                  value: postData?.ACCT_NM ?? "",
-                },
-              };
             }
+            btn99 = 0;
+            return {
+              TDS_REC_ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: utilFunction.getPadAccountNumber(
+                        currentField?.value,
+                        dependentFieldsValues?.TDS_REC_ACCT_TYPE?.optionData
+                      ),
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+              TDS_REC_ACCT_NM: {
+                value: returnVal?.ACCT_NM ?? "",
+              },
+            };
           } else if (!currentField?.value) {
             formState?.handleButtonDisable(false);
             return {
               TDS_REC_ACCT_NM: { value: "" },
             };
           }
-          formState?.handleButtonDisable(false);
           return {};
         },
         fullWidth: true,

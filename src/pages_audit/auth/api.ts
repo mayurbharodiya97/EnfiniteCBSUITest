@@ -15,7 +15,17 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
+export const validatePasswords = async ({ ...request }:any) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
+      ...request
+    });
+  if (status === "0") {
+    return { validateStatus :status, validateData:data[0]};
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const veirfyUsernameandPassword = async (
   username: any,
   password: any
@@ -76,7 +86,7 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId,
+      REQUEST_CD: transactionId || '00',
       OTP: otpnumber,
       AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
@@ -251,6 +261,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
+    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
     access: {},
   };
 };
@@ -406,19 +417,21 @@ export const updatenewPassword = async (transactionId, username, password) => {
 };
 
 export const OTPResendRequest = async (
-  transactionId,
-  username,
-  tran_type,
   companyID,
-  branch_cd
+  branch_cd,
+  contact,
+  tran_type,
+  validUpto,
+  username
 ) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
-      USER_ID: username,
-      TRAN_CD: transactionId,
-      TRN_TYPE: tran_type,
+    await AuthSDK.internalFetcherPreLogin("GETGENERATEOTP", {
       COMP_CD: companyID,
       BRANCH_CD: branch_cd,
+      CONTACT2: contact,
+      VALID_UPTO: validUpto,
+      TRN_TYPE: tran_type,
+      USER_ID: username,
     });
   if (status === "0") {
     return {
@@ -431,6 +444,32 @@ export const OTPResendRequest = async (
     return { status, data, message, messageDetails };
   }
 };
+// export const OTPResendRequest = async (
+//   transactionId,
+//   username,
+//   tran_type,
+//   companyID,
+//   branch_cd
+// ) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
+//       USER_ID: username,
+//       TRAN_CD: transactionId,
+//       TRN_TYPE: tran_type,
+//       COMP_CD: companyID,
+//       BRANCH_CD: branch_cd,
+//     });
+//   if (status === "0") {
+//     return {
+//       data: data[0],
+//       status,
+//       message,
+//       messageDetails,
+//     };
+//   } else {
+//     return { status, data, message, messageDetails };
+//   }
+// };
 
 export const capture = async () => {
   var MFS100Request = {
@@ -485,3 +524,4 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
+

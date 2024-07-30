@@ -39,6 +39,7 @@ const inititalState = {
   username: "",
   auth_type: "O",
   transactionID: "",
+  contactUser: "",
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -54,6 +55,7 @@ const reducer = (state, action) => {
         apierrorMessage: action?.payload?.apierrorMessage ?? "",
         requestCd: "",
         username: "",
+        contactUser: "",
       };
     }
     case "initverifyUserNameandMobileNo": {
@@ -81,6 +83,7 @@ const reducer = (state, action) => {
         company_ID: action?.payload?.company_ID,
         branch_cd: action?.payload?.branch_cd,
         otpValidFor: action?.payload?.otpValidFor,
+        contactUser: action?.payload?.contactUser,
       };
     }
     case "inititateOTPVerification": {
@@ -169,20 +172,17 @@ export const ForgotPasswordController = ({ screenFlag }) => {
   } = useQuery<any, any>(["getLoginImageData"], () =>
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
+ 
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
         dispath({ type: "initverifyUserNameandMobileNo" });
-        const {
-          status,
-          data: resdata,
-          message,
-        } = await veirfyUsernameandMobileNo(
+        const { status, data: resdata, message } = await veirfyUsernameandMobileNo(
           data?.userName.toLowerCase(),
           data?.mobileno,
           screenFlag
         );
-
+  
         if (status === "0") {
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
@@ -193,6 +193,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
               company_ID: resdata?.COMP_CD,
               branch_cd: resdata?.BRANCH_CD,
               otpValidFor: resdata?.OTP_VALID,
+              contactUser: resdata?.CONTACT2,
             },
           });
           setOpen(true);
@@ -206,40 +207,65 @@ export const ForgotPasswordController = ({ screenFlag }) => {
           });
         }
       } else if (flag === 1) {
+        console.log("data", data)
         dispath({ type: "initverifyPasswordSetReq" });
-        const {
-          status,
-          data: resdata,
-          message,
-        } = await updatenewPassword(
-          loginState?.requestCd,
-          loginState?.username,
-          data?.password
-        );
-        if (status === "0") {
-          dispath({ type: "passwordRegistaredSuccess" });
-          enqueueSnackbar("Password successfully reset", {
-            variant: "success",
-          });
-          navigate("login");
-        } else if (status === "99") {
+        const { validateStatus, validateData } = await API.validatePasswords({
+          USER_ID: data?.userName,
+          PASSWORD: data?.password,
+          SCREEN_REF: "FORGET_PW"
+        });
+        console.log("validateData", validateData?.O_MESSAGE, validateStatus)
+        if (validateStatus === "0") {
+          switch (validateData?.O_STATUS) {
+            case "999":
+              dispath({
+                type: "verifyPasswordFailed",
+                payload: {
+                  isPasswordError: true,
+                  userMessageforPassword: validateData?.O_MESSAGE,
+                  apierrorMessage: validateData?.O_MESSAGE,
+                },
+              });
+              break;
+            case "0":
+              const { status, data: resdata, message } = await updatenewPassword(
+                loginState?.requestCd,
+                loginState?.username,
+                data?.password
+              );
+              if (status === "0") {
+                dispath({ type: "passwordRegistaredSuccess" });
+                enqueueSnackbar("Password successfully reset", {
+                  variant: "success",
+                });
+                navigate("login");
+              } else if (status === "99") {
+                dispath({
+                  type: "verifyPasswordFailed",
+                  payload: {
+                    isApiError: true,
+                    apierrorMessage: message,
+                  },
+                });
+              } else {
+                enqueueSnackbar(message, {
+                  variant: "error",
+                });
+                navigate("login");
+              }
+          }
+        } else {
           dispath({
             type: "verifyPasswordFailed",
             payload: {
               isApiError: true,
-              apierrorMessage: message,
+              apierrorMessage: validateData?.O_MESSAGE,
             },
           });
-        } else {
-          enqueueSnackbar(message, {
-            variant: "error",
-          });
-          navigate("login");
         }
       }
     }
-  };
-
+  }
   const verifyRequestData = (data, flag) => {
     if (flag === 0) {
       let validationData = {
@@ -386,8 +412,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                 {loginState.workingState === 1
                   ? t("Setnewpassword")
                   : screenFlag === "totp"
-                  ? "Forgot TOTP"
-                  : t("ForgotPassword")}
+                    ? "Forgot TOTP"
+                    : t("ForgotPassword")}
               </h2>
               {open ? (
                 <OTPModelForm

@@ -1,7 +1,7 @@
 import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -29,23 +29,24 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AddNewBankMasterForm } from "./addNewBank";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 import { RetrieveClearingForm } from "./retrieveClearing";
 import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
-
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
-    actionLabel: "Edit Detail",
+    actionLabel: t("ViewDetail"),
     multiple: undefined,
     rowDoubleClick: true,
   },
   {
     actionName: "close",
-    actionLabel: "cancel",
+    actionLabel: t("Close"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -55,6 +56,7 @@ const actions: ActionTypes[] = [
 const CtsOutwardClearingForm: FC<{
   zoneTranType: any;
 }> = ({ zoneTranType }) => {
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -77,6 +79,9 @@ const CtsOutwardClearingForm: FC<{
   const slipFormDataRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
   const retrieveDataRef: any = useRef(null);
+  let currentPath = useLocation().pathname;
+
+
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
       setChequeDetailData((old) => {
@@ -155,7 +160,7 @@ const CtsOutwardClearingForm: FC<{
     },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
         variant: "success",
       });
       setFormMode("new");
@@ -190,8 +195,8 @@ const CtsOutwardClearingForm: FC<{
       parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
     ) {
       MessageBox({
-        message: "Please Enter Slip Amount",
-        messageTitle: "Validation Failed",
+        message: t("PleaseEnterSlipAmount"),
+        messageTitle: t("ValidationFailed"),
       });
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) === 0 &&
@@ -217,8 +222,8 @@ const CtsOutwardClearingForm: FC<{
         endSubmit,
       };
       const buttonName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: " Proceed ?",
+        messageTitle: t("Confirmation"),
+        message: t("ProceedGen"),
         buttonNames: ["No", "Yes"],
         loadingBtnName: ["Yes"],
       });
@@ -267,8 +272,8 @@ const CtsOutwardClearingForm: FC<{
       setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox({
-        message: "Please Check Amount",
-        messageTitle: "Validation Failed",
+        message: t("PleaseCheckAmount"),
+        messageTitle: t("ValidationFailed"),
       });
     }
   };
@@ -286,8 +291,8 @@ const CtsOutwardClearingForm: FC<{
             authState?.role < "2"
           ) {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Confirmed Transaction",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteConfirmedTransaction"),
               buttonNames: ["Ok"],
             });
           } else if (
@@ -299,8 +304,8 @@ const CtsOutwardClearingForm: FC<{
             )
           ) {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Back Dated Entry",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteBackDatedEntry"),
               buttonNames: ["Ok"],
             });
           } else {
@@ -313,10 +318,18 @@ const CtsOutwardClearingForm: FC<{
   }, [formMode]);
 
   if (zoneTranType === "S") {
-    CTSOutwardClearingFormMetaData.form.label = "CTS O/W Clearing";
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    );
     CTSOutwardClearingFormMetaData.fields[1].defaultValue = "0   ";
   } else if (zoneTranType === "R") {
-    CTSOutwardClearingFormMetaData.form.label = "Inward Return Entry";
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    )
     CTSOutwardClearingFormMetaData.fields[1].defaultValue = "10  ";
   }
 
@@ -459,7 +472,7 @@ const CtsOutwardClearingForm: FC<{
                         setIsOpenRetrieve(true);
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
                   </>
                 ) : formMode === "view" ? (
@@ -469,7 +482,7 @@ const CtsOutwardClearingForm: FC<{
                         setIsOpenRetrieve(true);
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
 
                     <GradientButton
@@ -487,7 +500,7 @@ const CtsOutwardClearingForm: FC<{
                         refetch();
                       }}
                     >
-                      New
+                      {t("New")}
                     </GradientButton>
 
                     <GradientButton
@@ -497,8 +510,8 @@ const CtsOutwardClearingForm: FC<{
                           authState?.role < "2"
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Confirmed Transaction",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteConfirmedTransaction"),
                             buttonNames: ["Ok"],
                           });
                         } else if (
@@ -514,8 +527,8 @@ const CtsOutwardClearingForm: FC<{
                           )
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Back Dated Entry",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
                           });
                         } else {
@@ -523,7 +536,7 @@ const CtsOutwardClearingForm: FC<{
                         }
                       }}
                     >
-                      Remove
+                      {t("Delete")}
                     </GradientButton>
                   </>
                 ) : null}
@@ -565,7 +578,7 @@ const CtsOutwardClearingForm: FC<{
                   gutterBottom={true}
                   variant={"h6"}
                 >
-                  Joint - Details
+                  {t("JointDetails")}
                 </Typography>
                 <IconButton
                   onClick={() => setJointDtlExpand(!isJointDtlExpand)}
@@ -651,8 +664,8 @@ const CtsOutwardClearingForm: FC<{
                 if (action === "MESSAGE") {
                   if (paylod?.[0]?.ERROR_MSSAGE) {
                     let res = await MessageBox({
-                      messageTitle: "Confirmation..",
-                      message: "Are You sure To Add Bank?",
+                      messageTitle: t("Confirmation"),
+                      message: t("AreYouSureToAddBank"),
                       buttonNames: ["Yes", "No"],
                     });
                     if (res === "Yes") {
@@ -708,14 +721,14 @@ const CtsOutwardClearingForm: FC<{
             <RemarksAPIWrapper
               TitleText={
                 zoneTranType === "S"
-                  ? "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)"
-                  : "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)"
+                  ? t("EnterRemovalRemarksForCTSOWCLEARING")
+                  : t("EnterRemovalRemarksINWARDRETURNENTRY")
               }
               onActionNo={() => SetDeleteRemark(false)}
               onActionYes={async (val, rows) => {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
-                  message: "Do You Want to delete this row?",
+                  messageTitle: t("Confirmation"),
+                  message: t("DoYouWantDeleteRow"),
                   buttonNames: ["No", "Yes"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
@@ -755,7 +768,7 @@ const CtsOutwardClearingForm: FC<{
                     DETAILS_DATA: {
                       isNewRow: [],
                       isDeleteRow: [
-                        
+
                         {
                           TRAN_CD: retrieveDataRef.current?.TRAN_CD,
                         },
