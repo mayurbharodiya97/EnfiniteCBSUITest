@@ -8,7 +8,7 @@ export const form15GHEntryMetaData = {
   masterForm: {
     form: {
       name: "form15GHEntryFormMetaData",
-      label: "Form 15G-H Entry",
+      label: "",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -45,6 +45,7 @@ export const form15GHEntryMetaData = {
         placeholder: "EnterCustomerID",
         type: "text",
         autoComplete: "off",
+        // isFieldFocused: true,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["CustomerIDisrequired"] }],
@@ -79,6 +80,7 @@ export const form15GHEntryMetaData = {
                     message: postData[i]?.O_MESSAGE,
                   });
                   returnVal = "";
+                  formState.setDataOnFieldChange("GRID_DATA", []);
                 } else if (postData[i]?.O_STATUS === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
@@ -87,6 +89,7 @@ export const form15GHEntryMetaData = {
                     });
                   }
                   returnVal = "";
+                  formState.setDataOnFieldChange("GRID_DATA", []);
                 } else if (postData[i]?.O_STATUS === "99") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "RiskCategoryAlert",
@@ -97,6 +100,7 @@ export const form15GHEntryMetaData = {
                   btn99 = btnName;
                   if (btnName === "No") {
                     returnVal = "";
+                    formState.setDataOnFieldChange("GRID_DATA", []);
                   }
                 } else if (postData[i]?.O_STATUS === "0") {
                   if (btn99 !== "No") {
@@ -122,11 +126,8 @@ export const form15GHEntryMetaData = {
 
                     for (let j = 0; j < postData2.length; j++) {
                       if (postData2[j]?.O_STATUS === "999") {
-                        console.log(postData2[j]);
-                        console.log(postData2[j]?.O_MESSAGE.startsWith("\n"));
-
                         const { btnName, obj } = await getButtonName({
-                          messageTitle: "Information",
+                          messageTitle: "ValidationFailed",
                           message: postData2[j]?.O_MESSAGE.startsWith("\n")
                             ? postData2[j]?.O_MESSAGE?.slice(1)
                             : postData2[j]?.O_MESSAGE,
@@ -134,13 +135,13 @@ export const form15GHEntryMetaData = {
                       } else if (postData2[j]?.O_STATUS === "9") {
                         if (btn99 !== "No") {
                           const { btnName, obj } = await getButtonName({
-                            messageTitle: "ValidationAlert",
+                            messageTitle: "Alert",
                             message: postData2[j]?.O_MESSAGE,
                           });
                         }
                       } else if (postData2[j]?.O_STATUS === "99") {
                         const { btnName, obj } = await getButtonName({
-                          messageTitle: "RiskCategoryAlert",
+                          messageTitle: "Confirmation",
                           message: postData2[j]?.O_MESSAGE,
                           buttonNames: ["Yes", "No"],
                         });
@@ -158,9 +159,9 @@ export const form15GHEntryMetaData = {
               btn99 = 0;
               return {
                 CUSTOMER_ID: {
-                  // value: currentField?.value ?? "", // make changes in next line for make empty field after getting status code 9,99, 999
                   value: returnVal ? currentField?.value ?? "" : "",
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 ACCT_NM: { value: returnVal?.ACCT_NM ?? "" },
                 ADD1: { value: returnVal?.ADD1 ?? "" },
@@ -182,6 +183,10 @@ export const form15GHEntryMetaData = {
                 UNIQUE_ID: { value: returnVal?.UNIQUE_ID ?? "" },
                 FIN_INT_AMT: { value: returnVal?.FIN_INT_AMT ?? "" },
                 ENTERED_FROM: { value: returnVal?.ENTERED_FROM ?? "" },
+                CONFIRMED: { value: returnVal?.CONFIRMED ?? "" },
+                ALLOW_PRINT: { value: returnVal?.ALLOW_PRINT ?? "" },
+                PRINT_MSG: { value: returnVal?.PRINT_MSG ?? "" },
+                TOT_INCOME: { isFieldFocused: true },
               };
             } else if (!currentField?.value) {
               return {
@@ -204,6 +209,10 @@ export const form15GHEntryMetaData = {
                 VALID_AMT: { value: "" },
                 UNIQUE_ID: { value: "" },
                 ENTERED_FROM: { value: "" },
+                CONFIRMED: { value: "" },
+                ALLOW_PRINT: { value: "" },
+                PRINT_MSG: { value: "" },
+                TOT_INCOME: { isFieldFocused: false },
               };
             }
             return {};
@@ -595,9 +604,9 @@ export const form15GHEntryMetaData = {
         __EDIT__: {
           isReadOnly: (_, dependentFields, formState) => {
             if (
-              formState?.formDataEntry?.CONFIRMED === "N" ||
-              formState?.formDataEntry?.UPLOAD === "Y" ||
-              formState?.formDataEntry?.ACTIVE === false
+              formState?.formData?.CONFIRMED === "N" ||
+              formState?.formData?.UPLOAD === "Y" ||
+              formState?.formData?.ACTIVE === false
             ) {
               return true;
             }
@@ -701,10 +710,13 @@ export const form15GHEntryMetaData = {
         iconStyle: {
           fontSize: "25px !important",
         },
+        dependentFields: ["ALLOW_PRINT"],
         shouldExclude(fieldData, dependentFields, formState) {
           if (
-            formState?.zoneTranType === "C" ||
-            (formState?.zoneTranType === "E" && formState?.formMode === "edit")
+            (formState?.screenFlag === "C" ||
+              (formState?.screenFlag === "E" &&
+                formState?.formMode === "edit")) &&
+            dependentFields["ALLOW_PRINT"]?.value === "Y"
           ) {
             return false;
           } else {
@@ -748,6 +760,18 @@ export const form15GHEntryMetaData = {
           componentType: "hidden",
         },
         name: "INT_AMT_LIMIT",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ALLOW_PRINT",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "PRINT_MSG",
       },
     ],
   },

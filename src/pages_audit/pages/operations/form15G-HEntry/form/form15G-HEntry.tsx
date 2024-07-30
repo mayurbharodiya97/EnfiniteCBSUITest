@@ -19,12 +19,20 @@ import { PDFViewer } from "components/fileUpload/preView";
 import { useTranslation } from "react-i18next";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 
+interface Form15GHEntryFormWrapperProps {
+  isDataChangedRef: any;
+  closeDialog: () => void;
+  retrieveData?: object;
+  defaultView: string;
+  screenFlag?: string;
+  dataRefetch?: any;
+}
 const Form15GHEntry = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  formData = {},
-  zoneTranType,
+  retrieveData = {},
+  screenFlag,
   dataRefetch,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
@@ -56,10 +64,32 @@ const Form15GHEntry = ({
   } = state;
 
   const [metadata, setMetadata] = useState(
-    cloneDeep(form15GHEntryMetaData) as MasterDetailsMetaData
+    form15GHEntryMetaData as MasterDetailsMetaData
   );
-  const formDataEntry =
-    Object.keys(formData)?.length > 0 ? formData : rows?.[0]?.data || {};
+  let currentPath = useLocation().pathname;
+
+  const formData =
+    Object.keys(retrieveData)?.length > 0
+      ? retrieveData
+      : rows?.[0]?.data || {};
+
+  useEffect(() => {
+    if (formMode === "edit" || (formMode === "view" && formData)) {
+      let label = utilFunction.getDynamicLabel(
+        currentPath,
+        authState?.menulistdata,
+        false
+      );
+      const label2 = `${label ?? ""}\u00A0\u00A0 ${
+        formData?.CONFIRMED_DIS ?? ""
+      }\u00A0\u00A0 Uploaded: ${formData?.UPLOAD_DIS ?? ""}\u00A0\u00A0`;
+      setMetadata((prevMetadata) => {
+        const newMetadata = cloneDeep(prevMetadata);
+        newMetadata.masterForm.form.label = label2;
+        return newMetadata;
+      });
+    }
+  }, []);
 
   const { data, isLoading, isError, error, isFetching } = useQuery(
     ["getRetrieveFDData", authState?.user?.branchCode],
@@ -67,7 +97,7 @@ const Form15GHEntry = ({
       API.getRetrieveFDData({
         BRANCH_CD: authState?.user?.branchCode ?? "",
         COMP_CD: authState?.companyID ?? "",
-        TRAN_CD: formDataEntry?.TRAN_CD,
+        TRAN_CD: formData?.TRAN_CD,
       }),
     {
       enabled: fetchData,
@@ -114,23 +144,27 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar("success", {
+      enqueueSnackbar(t("Success"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
       // closeDialog();
-      const confirmation = await MessageBox({
-        messageTitle: "Confirmation",
-        message: "PrintFormConfirmation",
-        buttonNames: ["Yes", "No"],
-        loadingBtnName: ["Yes"],
-      });
-      if (confirmation === "Yes") {
-        let newTranCD = data?.[0]?.TRAN_CD.endsWith(".00")
-          ? parseInt(data?.[0]?.TRAN_CD).toString()
-          : data?.[0]?.TRAN_CD.toString();
-        tranCDRef.current = { newTranCD };
-        handlePrintMutation();
+      if (isErrorFuncRef?.current?.data?.ALLOW_PRINT === "Y") {
+        const confirmation = await MessageBox({
+          messageTitle: "Confirmation",
+          message: isErrorFuncRef?.current?.data?.PRINT_MSG,
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (confirmation === "Yes") {
+          let newTranCD = data?.[0]?.TRAN_CD.endsWith(".00")
+            ? parseInt(data?.[0]?.TRAN_CD).toString()
+            : data?.[0]?.TRAN_CD.toString();
+          tranCDRef.current = { newTranCD };
+          handlePrintMutation();
+        } else {
+          closeDialog();
+        }
       } else {
         closeDialog();
       }
@@ -138,12 +172,12 @@ const Form15GHEntry = ({
   });
 
   const deleteMutation = useMutation(API.form15GHEntryDML, {
-    onError: (error: any) => {
+    onError: (error: any, req) => {
       handleMutationError(error);
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -159,7 +193,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Data Updated Successfully", {
+      enqueueSnackbar(t("DataUpdatedSuccessfully"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -168,7 +202,7 @@ const Form15GHEntry = ({
     },
   });
 
-  const printMutation = useMutation(API.printForm, {
+  const printForm15GMutation = useMutation(API.printForm15G, {
     onError: (error: any) => {
       handleMutationError(error);
       CloseMessageBox();
@@ -243,19 +277,19 @@ const Form15GHEntry = ({
         CloseMessageBox();
         closeDialog();
       } else if (variables?._isDeleteRow === true) {
-        enqueueSnackbar("Records successfully deleted", {
+        enqueueSnackbar(t("RecordsDeletedMsg"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
         CloseMessageBox();
         closeDialog();
-        // dataRefetch();
+        dataRefetch();
       }
     },
   });
 
   const handleMutationError = (error) => {
-    let errorMsg = "Unknown Error occured";
+    let errorMsg = t("Unknownerroroccured");
     if (typeof error === "object") {
       //@ts-ignore
       errorMsg = error?.error_msg ?? errorMsg;
@@ -299,18 +333,13 @@ const Form15GHEntry = ({
             field !== "FLAG" &&
             field !== "PRINT" &&
             field !== "FIN_INT_AMT" &&
+            field !== "PRINT_MSG" &&
             field !== "ANNEXURE"
         );
       }
 
       if (Boolean(data["BIRTH_DT"])) {
         data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd/MMM/yyyy");
-      }
-      if (Boolean(data["FORM_EXPIRY_DATE"])) {
-        data["FORM_EXPIRY_DATE"] = format(
-          new Date(data["FORM_EXPIRY_DATE"]),
-          "dd/MMM/yyyy"
-        );
       }
       if (Boolean(data["LAST_ASS_YEAR"])) {
         data["LAST_ASS_YEAR"] = format(
@@ -347,11 +376,11 @@ const Form15GHEntry = ({
         isErrorFuncRef.current = {
           data: {
             ...data,
-            COMP_CD: authState?.companyID,
-            ENT_BRANCH_CD: authState?.user?.branchCode,
-            ENT_COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            ENTERED_FROM: data?.ENTERED_FROM,
+            COMP_CD: authState?.companyID ?? "",
+            ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+            ENT_COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+            ENTERED_FROM: data?.ENTERED_FROM ?? "",
             _isNewRow: true,
             DETAILS_DATA: {
               ...data.DETAILS_DATA,
@@ -383,7 +412,8 @@ const Form15GHEntry = ({
               ([key, value]) =>
                 key !== "OTH_BANK_AMT" &&
                 key !== "TOT_INCOME" &&
-                key !== "FIN_INT_AMT"
+                key !== "FIN_INT_AMT" &&
+                key !== "PRINT_MSG"
             )
           );
           data._OLDROWVALUE = filteredOldRowValue;
@@ -400,11 +430,11 @@ const Form15GHEntry = ({
         }
         isErrorFuncRef.current = {
           data: {
-            ACTIVE: data?.ACTIVE,
-            INACTIVE_DT: data?.INACTIVE_DT,
-            ENTERED_BRANCH_CD: authState?.user?.branchCode,
-            ENTERED_COMP_CD: authState?.companyID,
-            TRAN_CD: formDataEntry?.TRAN_CD,
+            ACTIVE: data?.ACTIVE ?? "",
+            INACTIVE_DT: data?.INACTIVE_DT ?? "",
+            ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+            ENTERED_COMP_CD: authState?.companyID ?? "",
+            TRAN_CD: formData?.TRAN_CD ?? "",
             _isNewRow: false,
             _OLDROWVALUE: data?._OLDROWVALUE,
             _UPDATEDCOLUMNS: data?._UPDATEDCOLUMNS,
@@ -425,7 +455,7 @@ const Form15GHEntry = ({
     } else if (actionFlag === "Reject") {
       const rejectData = {
         _isDeleteRow: true,
-        TRAN_CD: formDataEntry?.TRAN_CD,
+        TRAN_CD: formData?.TRAN_CD,
         ENTERED_BRANCH_CD: authState?.user?.branchCode,
         ENTERED_COMP_CD: authState?.companyID,
         DETAILS_DATA: {
@@ -438,7 +468,7 @@ const Form15GHEntry = ({
     } else if (actionFlag === "Confirm") {
       const confirmData = {
         _isDeleteRow: false,
-        TRAN_CD: formDataEntry?.TRAN_CD,
+        TRAN_CD: formData?.TRAN_CD,
         ENTERED_BRANCH_CD: authState?.user?.branchCode,
         ENTERED_COMP_CD: authState?.companyID,
       };
@@ -447,7 +477,7 @@ const Form15GHEntry = ({
   };
 
   const handleRemove = async (event) => {
-    if (formMode === "edit" && formDataEntry?.CONFIRMED === "Y") {
+    if (formMode === "edit" && formData?.CONFIRMED === "Y") {
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
@@ -463,7 +493,7 @@ const Form15GHEntry = ({
       if (confirmation === "Yes") {
         const deleteData = {
           _isDeleteRow: true,
-          TRAN_CD: formDataEntry?.TRAN_CD,
+          TRAN_CD: formData?.TRAN_CD,
           ENTERED_BRANCH_CD: authState?.user?.branchCode,
           ENTERED_COMP_CD: authState?.companyID,
           DETAILS_DATA: {
@@ -479,22 +509,22 @@ const Form15GHEntry = ({
 
   const handlePrintMutation = () => {
     if (
-      formDataEntry?.FORM_NM ||
+      formData?.FORM_NM ||
       isErrorFuncRef?.current?.data?.FORM_NM === "FORM 15G"
     ) {
-      printMutation.mutate({
+      printForm15GMutation.mutate({
         BRANCH_CD: authState?.user?.branchCode ?? "",
         COMP_CD: authState?.companyID ?? "",
-        TRAN_CD: formDataEntry?.TRAN_CD || tranCDRef?.current?.newTranCD,
+        TRAN_CD: formData?.TRAN_CD || tranCDRef?.current?.newTranCD,
       });
     } else if (
-      formDataEntry?.FORM_NM === "FORM 15H" ||
+      formData?.FORM_NM === "FORM 15H" ||
       isErrorFuncRef?.current?.data?.FORM_NM
     ) {
       printForm15HMutation.mutate({
         BRANCH_CD: authState?.user?.branchCode ?? "",
         COMP_CD: authState?.companyID ?? "",
-        TRAN_CD: formDataEntry?.TRAN_CD || tranCDRef?.current?.newTranCD,
+        TRAN_CD: formData?.TRAN_CD || tranCDRef?.current?.newTranCD,
       });
     }
   };
@@ -503,33 +533,15 @@ const Form15GHEntry = ({
     printAnnexureMutation.mutate({
       BRANCH_CD: authState?.user?.branchCode ?? "",
       COMP_CD: authState?.companyID ?? "",
-      TRAN_CD: formDataEntry?.TRAN_CD || tranCDRef?.current?.newTranCD,
+      TRAN_CD: formData?.TRAN_CD || tranCDRef?.current?.newTranCD,
     });
   };
-
-  useEffect(() => {
-    if (formMode === "edit" || (formMode === "view" && formDataEntry)) {
-      setMetadata((prevMetadata) => {
-        const newMetadata = cloneDeep(prevMetadata);
-        const labelPrefix =
-          zoneTranType === "C" ? "Form 15G-H Confirmation" : "Form 15G-H Entry";
-        newMetadata.masterForm.form.label = `${labelPrefix}\u00A0\u00A0 ${
-          formDataEntry?.CONFIRMED === "Y"
-            ? "Confirmed"
-            : "Confirmation Pending"
-        }\u00A0\u00A0 Uploaded: ${
-          formDataEntry?.UPLOAD === "Y" ? "Yes" : "No"
-        }\u00A0\u00A0`;
-        return newMetadata;
-      });
-    }
-  }, []);
 
   const printFormFileName = isErrorFuncRef?.current?.data
     ? (isErrorFuncRef?.current?.data?.FORM_NM ?? "") +
       " " +
       (isErrorFuncRef?.current?.data?.CUSTOMER_ID ?? "")
-    : (formDataEntry?.FORM_NM ?? "") + " " + (formDataEntry?.CUSTOMER_ID ?? "");
+    : (formData?.FORM_NM ?? "") + " " + (formData?.CUSTOMER_ID ?? "");
 
   return (
     <>
@@ -553,7 +565,7 @@ const Form15GHEntry = ({
         key={"form15GHEntryForm" + formMode + fdGridData + fdDataOnViewMode}
         metaData={metadata}
         initialData={{
-          ...formDataEntry,
+          ...formData,
           VALID_AMT: "",
           FLAG: "",
           TRAN_CD: "",
@@ -576,8 +588,8 @@ const Form15GHEntry = ({
         formState={{
           MessageBox: MessageBox,
           totalPaidCnt: totalPaidCnt,
-          formDataEntry: formDataEntry,
-          zoneTranType: zoneTranType,
+          formData: formData,
+          screenFlag: screenFlag,
           formMode: formMode,
         }}
         setDataOnFieldChange={(action, payload) => {
@@ -606,10 +618,6 @@ const Form15GHEntry = ({
         onFormButtonClickHandel={async (id) => {
           if (id === "PRINT") {
             handlePrintMutation();
-            // setState((old) => ({
-            //   ...old,
-            //   openPrint: true,
-            // }));
           }
         }}
       >
@@ -664,14 +672,13 @@ const Form15GHEntry = ({
                     {t("Close")}
                   </GradientButton>
                 </>
-              ) : zoneTranType === "C" && formMode === "view" ? (
+              ) : screenFlag === "C" && formMode === "view" ? (
                 <>
                   <GradientButton
+                    disabled={isLoading || isFetching}
                     color={"primary"}
                     onClick={async (event) => {
-                      if (
-                        formDataEntry?.LAST_ENTERED_BY === authState?.user?.id
-                      ) {
+                      if (formData?.LAST_ENTERED_BY === authState?.user?.id) {
                         await MessageBox({
                           messageTitle: "InvalidConfirmation",
                           message: "ConfirmRestrictionMessage",
@@ -694,6 +701,7 @@ const Form15GHEntry = ({
                     {t("Confirm")}
                   </GradientButton>
                   <GradientButton
+                    disabled={isLoading || isFetching}
                     color={"primary"}
                     onClick={async (event) => {
                       const confirmation = await MessageBox({
@@ -716,7 +724,11 @@ const Form15GHEntry = ({
                 </>
               ) : (
                 <>
-                  <GradientButton color={"primary"} onClick={handleRemove}>
+                  <GradientButton
+                    color={"primary"}
+                    onClick={handleRemove}
+                    disabled={isLoading || isFetching}
+                  >
                     {t("Delete")}
                   </GradientButton>
                   <GradientButton
@@ -724,6 +736,7 @@ const Form15GHEntry = ({
                       setFormMode("edit");
                     }}
                     color={"primary"}
+                    disabled={isLoading || isFetching}
                   >
                     {t("Edit")}
                   </GradientButton>
@@ -736,7 +749,7 @@ const Form15GHEntry = ({
           );
         }}
       </MasterDetailsForm>
-      {printMutation?.isLoading || printForm15HMutation?.isLoading ? (
+      {printForm15GMutation?.isLoading || printForm15HMutation?.isLoading ? (
         <Dialog
           open={true}
           PaperProps={{
@@ -770,10 +783,12 @@ const Form15GHEntry = ({
               blob={fileBlob}
               fileName={`${printFormFileName}`}
               onClose={() =>
-                setState((old) => ({
-                  ...old,
-                  openPrint: false,
-                }))
+                formMode === "edit" && "view"
+                  ? setState((old) => ({
+                      ...old,
+                      openPrint: false,
+                    }))
+                  : closeDialog()
               }
               thirdButton={{
                 callback: handleAnnexureFormData,
@@ -816,12 +831,13 @@ const Form15GHEntry = ({
             <PDFViewer
               blob={fileBlobOfAnnexure}
               fileName={`${printFormFileName} Annexure`}
-              // onClose={closeDialog}
               onClose={() =>
-                setState((old) => ({
-                  ...old,
-                  openAnnexureForm: false,
-                }))
+                formMode === "edit" && "view"
+                  ? setState((old) => ({
+                      ...old,
+                      openAnnexureForm: false,
+                    }))
+                  : closeDialog()
               }
               thirdButton={{
                 callback: () => {
@@ -842,12 +858,12 @@ const Form15GHEntry = ({
   );
 };
 
-export const Form15GHEntryWrapper = ({
+export const Form15GHEntryWrapper: React.FC<Form15GHEntryFormWrapperProps> = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  formData = {},
-  zoneTranType,
+  retrieveData = {},
+  screenFlag,
   dataRefetch,
 }) => {
   return (
@@ -866,8 +882,8 @@ export const Form15GHEntryWrapper = ({
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         defaultView={defaultView}
-        formData={formData}
-        zoneTranType={zoneTranType}
+        retrieveData={retrieveData}
+        screenFlag={screenFlag}
         dataRefetch={dataRefetch}
       />
     </Dialog>

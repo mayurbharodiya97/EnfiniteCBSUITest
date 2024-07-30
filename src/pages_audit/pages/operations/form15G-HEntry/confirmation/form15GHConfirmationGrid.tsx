@@ -19,7 +19,7 @@ const Actions: ActionTypes[] = [
   },
 ];
 
-export const Form15GHConfirmationGrid = ({ zoneTranType }) => {
+export const Form15GHConfirmationGrid = ({ screenFlag }) => {
   const isDataChangedRef = useRef(false);
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -62,17 +62,6 @@ export const Form15GHConfirmationGrid = ({ zoneTranType }) => {
     }
   }, [navigate]);
 
-  const updatedGridMetaData = {
-    ...Form15GHEntryGridMetaData,
-    gridConfig: {
-      ...Form15GHEntryGridMetaData.gridConfig,
-      gridLabel:
-        zoneTranType === "C"
-          ? "Form 15G-H Confirmation (TRN/615)"
-          : Form15GHEntryGridMetaData.gridConfig.gridLabel,
-    },
-  };
-
   return (
     <>
       {isError && (
@@ -84,8 +73,8 @@ export const Form15GHConfirmationGrid = ({ zoneTranType }) => {
         />
       )}
       <GridWrapper
-        key={`form15GHEntryGrid` + zoneTranType}
-        finalMetaData={updatedGridMetaData as GridMetaDataType}
+        key={`form15GHEntryGrid` + screenFlag}
+        finalMetaData={Form15GHEntryGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => {}}
         loading={isLoading || isFetching}
@@ -101,7 +90,7 @@ export const Form15GHConfirmationGrid = ({ zoneTranType }) => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
-              zoneTranType={zoneTranType}
+              screenFlag={screenFlag}
               dataRefetch={refetch}
             />
           }

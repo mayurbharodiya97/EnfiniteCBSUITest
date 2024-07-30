@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const Form15GHEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Form 15G-H Entry (TRN/614)",
+    gridLabel: "",
     rowIdColumn: "UNIQUE_ID",
     defaultColumnConfig: {
       width: 350,

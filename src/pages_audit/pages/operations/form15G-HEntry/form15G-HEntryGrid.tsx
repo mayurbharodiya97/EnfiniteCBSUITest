@@ -41,19 +41,16 @@ const Actions: ActionTypes[] = [
   },
 ];
 
-export const Form15GHEntryGrid = ({ zoneTranType }) => {
+export const Form15GHEntryGrid = ({ screenFlag }) => {
   const isDataChangedRef = useRef(false);
   const { authState } = useContext(AuthContext);
   const [gridData, setGridData] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const initialRender = useRef(true);
-  const [newDataRetrieved, setNewDataRetrieved] = useState<(() => void) | null>(
-    null
-  );
-
+  const [isDataRetrieved, setIsDataRetrieved] = useState(false);
   const {
-    data: formData,
+    data: initialData,
     isLoading,
     isFetching,
     isError,
@@ -107,13 +104,15 @@ export const Form15GHEntryGrid = ({ zoneTranType }) => {
   }, [location.pathname, navigate]);
 
   useEffect(() => {
-    if (formData && !isLoading && !isFetching) {
-      setGridData(formData);
+    if (initialData && !isLoading && !isFetching) {
+      setGridData(initialData);
+      setIsDataRetrieved(false);
     }
-  }, [formData, isLoading, isFetching]);
+  }, [initialData, isLoading, isFetching]);
 
   const handleDataRetrieved = (newData) => {
     setGridData(newData);
+    setIsDataRetrieved(true);
     navigate(".");
   };
   const handleDialogClose = useCallback(() => {
@@ -152,8 +151,7 @@ export const Form15GHEntryGrid = ({ zoneTranType }) => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
-              zoneTranType={zoneTranType}
-              dataRefetch={refetch}
+              screenFlag={screenFlag}
             />
           }
         />
@@ -164,8 +162,7 @@ export const Form15GHEntryGrid = ({ zoneTranType }) => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"new"}
-              zoneTranType={zoneTranType}
-              dataRefetch={refetch}
+              screenFlag={screenFlag}
             />
           }
         />
@@ -175,8 +172,6 @@ export const Form15GHEntryGrid = ({ zoneTranType }) => {
             <RetrievalParametersFormWrapper
               closeDialog={handleDialogClose}
               onDataRetrieved={handleDataRetrieved}
-              zoneTranType={zoneTranType}
-              dataRefetch={refetch}
             />
           }
         />
