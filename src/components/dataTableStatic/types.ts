@@ -55,6 +55,7 @@ export interface GridColumnType {
   isDisplayTotal?: Boolean;
   totalDecimalCount?: number;
   SelectAllColumn?: Boolean;
+  isSelectedTotal?: Boolean
 }
 
 export interface GridConfigType {

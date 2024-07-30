@@ -54,13 +54,13 @@ export const InwardClearingRetrievalMetadata = {
       defaultValue: "E",
       options: [
         {
-          label: "Only Error",
+          label: "OnlyError",
           value: "E",
         },
         { label: "All", value: "A" },
-        { label: "Confirmation Pending", value: "P" },
-        { label: "Draft/Banker Cheques", value: "D" },
-        { label: "Share Dividend Warrant", value: "S" },
+        { label: "ConfirmationPending", value: "P" },
+        { label: "DraftBankerCheques", value: "D" },
+        { label: "ShareDividendWarrant", value: "S" },
       ],
 
       GridProps: {
@@ -81,10 +81,10 @@ export const InwardClearingRetrievalMetadata = {
       defaultValue: "E",
       options: [
         {
-          label: "Enter Branch",
+          label: "EnterBranch",
           value: "E",
         },
-        { label: "A/C Branch", value: "A" },
+        { label: "ACBranch", value: "A" },
       ],
 
       GridProps: {
@@ -101,7 +101,7 @@ export const InwardClearingRetrievalMetadata = {
 export const InwardCleaingGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Inward Clearing Process(TRN/650)",
+    gridLabel: "",
     rowIdColumn: "SR_NO",
     defaultColumnConfig: {
       width: 400,
@@ -129,7 +129,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque No.",
+      columnName: "ChequeNo",
       sequence: 1,
       alignment: "right",
       componentType: "default",
@@ -149,7 +149,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch Code",
+      columnName: "BranchCode",
       sequence: 3,
       alignment: "center",
       componentType: "default",
@@ -161,7 +161,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
 
     {
       accessor: "ACCT_TYPE",
-      columnName: "Account Type",
+      columnName: "AccountType",
       sequence: 4,
       alignment: "right",
       componentType: "default",
@@ -171,7 +171,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Account Number",
+      columnName: "AccountNo",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -181,7 +181,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Name",
+      columnName: "AccountName",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -195,7 +195,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "SIGN_PATH",
       sequence: 7,
-      buttonLabel: "Cheque/Sign",
+      buttonLabel: "ChequeSign",
       isVisible: true,
       width: 100,
       minWidth: 120,
@@ -221,7 +221,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "VIEW_DETAIL",
       sequence: 9,
-      buttonLabel: "View Detail",
+      buttonLabel: "ViewDetail",
       isVisible: true,
       width: 130,
       minWidth: 150,
@@ -229,7 +229,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_DT",
-      columnName: "Cheque Date",
+      columnName: "ChequeDate",
       sequence: 10,
       alignment: "right",
       componentType: "default",
@@ -239,7 +239,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FROM_BANK_CD",
-      columnName: "From Bank",
+      columnName: "FromBank",
       sequence: 11,
       alignment: "right",
       componentType: "default",
@@ -269,7 +269,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WIDTH_BAL",
-      columnName: "Withdraw.Balance",
+      columnName: "WithdrawBalance",
       sequence: 14,
       alignment: "right",
       componentType: "currency",
@@ -279,7 +279,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "OTHER_REMARKS",
-      columnName: "Mode Of Operation",
+      columnName: "ModeOfOperation",
       sequence: 15,
       alignment: "left",
       componentType: "default",

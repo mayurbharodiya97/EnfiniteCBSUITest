@@ -27,12 +27,20 @@ const InwardClearing = lazy(() => import("./inwardClearing"));
 const ClearingDateTransferGridWrapper = lazy(
   () => import("./clearingDateTransfer")
 );
+const StrAcLevelBranchEntryGridWrapper = lazy(
+  () => import("./strAcLevelBranchEntry")
+);
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
 const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
+const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
+const Form15GHConfirmationGrid = lazy(
+  () => import("./form15G-HEntry/confirmation")
+);
+// const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 
 export const OperationsMenu = () => (
@@ -114,7 +122,7 @@ export const OperationsMenu = () => (
       element={<CtsOutwardClearingFormWrapper zoneTranType="R" />}
     />
     <Route
-      path="cts-o/w-confirmation/*"
+      path="cts-outward-confirmation/*"
       element={<CtsOutwardClearingConfirmGrid zoneTranType="S" />}
     />
     <Route
@@ -129,6 +137,10 @@ export const OperationsMenu = () => (
     <Route
       path="clearing-date-transfer/*"
       element={<ClearingDateTransferGridWrapper />}
+    />
+    <Route
+      path="str-branch-entry/*"
+      element={<StrAcLevelBranchEntryGridWrapper />}
     />
 
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
@@ -149,5 +161,14 @@ export const OperationsMenu = () => (
         </FixDepositProvider>
       }
     />
+    <Route
+      path="form-15g-h-entry/*"
+      element={<Form15GHEntryGrid zoneTranType="E" />}
+    />
+    <Route
+      path="form-15g-h-confirmation/*"
+      element={<Form15GHConfirmationGrid zoneTranType="C" />}
+    />
+    {/* <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} /> */}
   </Routes>
 );

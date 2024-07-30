@@ -1607,8 +1607,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYDML",
     packageName: "",
   },
-  GETPRINTFORMDETAILS: {
-    url: "/enfinityFDServiceAPI/GETPRINTFORMDETAILS",
+  GETPRINT15GFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15GANNEXUREFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GANNEXUREFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15HFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15HFORMDETAILS",
     packageName: "",
   },
   GETFORM15GHCONFPENDING: {
@@ -1823,8 +1831,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
-  DORTGSBRANCHCONFIRMATION: {
-    url: "transactionServiceAPI/DORTGSBRANCHCONFIRMATION",
+  DODUALCONFIRMATION : {
+    url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",
   },
   DORTGSHOCONFIRMATION: {
@@ -1835,8 +1843,8 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/DOCLGDTTRNF",
     packageName: "",
   },
-  GETRTGSBRANCHCONFIRMEDHISTORY: {
-    url: "transactionServiceAPI/GETRTGSBRANCHCONFIRMEDHISTORY",
+  GETCONFIRMEDHISTORY: {
+    url: "transactionServiceAPI/GETCONFIRMEDHISTORY",
     packageName: "",
   },
   GETGENERATEOTP: {
@@ -1877,6 +1885,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCHEQUEBOOKISSUED: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
+    packageName: "",
+  },
+  GETPOSITIVEPAYGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYGRID",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYVALIDATION: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYVALIDATION",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYDML: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYDML",
     packageName: "",
   },
   GETRECURPAYMENTSCREENPARA: {
@@ -1935,23 +1955,23 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS: {
+  GETCRACCOUNTDETAILS:{
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
-  DODELETESIEXECDTL: {
+  DODELETESIEXECDTL:{
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY: {
+  SAVESTANDINGINSTRUCTIONENTRY:{
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION: {
+  DOSIEXECUTION:{
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW: {
+  DOSIEXECUTIONDETAILVIEW:{
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
@@ -1993,6 +2013,26 @@ export const ActionWiseAPIConfiguration = {
   },
   GETSECUSERPARAS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
+    packageName: "",
+  },
+  GETSTRDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRDATA",
+    packageName: "",
+  },
+  GETSTRSUSPSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRSUSPSTATUSDDDW",
+    packageName: "",
+  },
+  GETSTRSUSPREASONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRSUSPREASONDDDW",
+    packageName: "",
+  },
+  GETSTRGOSDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRGOSDTL",
+    packageName: "",
+  },
+  GETSTRACCTHISTORY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRACCTHISTORY",
     packageName: "",
   },
   GETATMCARDSTATUSDDDW: {

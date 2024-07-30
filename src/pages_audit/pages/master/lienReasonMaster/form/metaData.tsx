@@ -3,7 +3,7 @@ import { t } from "i18next";
 export const LienReasonMstFormMetaData = {
   form: {
     name: "lienReasonMaster",
-    label: "LienReasonMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -39,6 +39,7 @@ export const LienReasonMstFormMetaData = {
       maxLength: 4,
       required: true,
       type: "text",
+      isFieldFocused: true,
       autoComplete: "off",
       preventSpecialCharInput: true,
       schemaValidation: {

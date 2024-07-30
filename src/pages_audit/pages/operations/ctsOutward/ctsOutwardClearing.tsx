@@ -1,7 +1,7 @@
 import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -36,10 +36,11 @@ import { format } from "date-fns";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
-    actionLabel: t("ViewDetails"),
+    actionLabel: t("ViewDetail"),
     multiple: undefined,
     rowDoubleClick: true,
   },
@@ -78,6 +79,9 @@ const CtsOutwardClearingForm: FC<{
   const slipFormDataRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
   const retrieveDataRef: any = useRef(null);
+  let currentPath = useLocation().pathname;
+
+
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
       setChequeDetailData((old) => {
@@ -219,7 +223,7 @@ const CtsOutwardClearingForm: FC<{
       };
       const buttonName = await MessageBox({
         messageTitle: t("Confirmation"),
-        message: t("Proceed"),
+        message: t("ProceedGen"),
         buttonNames: ["No", "Yes"],
         loadingBtnName: ["Yes"],
       });
@@ -314,10 +318,18 @@ const CtsOutwardClearingForm: FC<{
   }, [formMode]);
 
   if (zoneTranType === "S") {
-    CTSOutwardClearingFormMetaData.form.label = "CTS O/W Clearing";
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    );
     CTSOutwardClearingFormMetaData.fields[1].defaultValue = "0   ";
   } else if (zoneTranType === "R") {
-    CTSOutwardClearingFormMetaData.form.label = "Inward Return Entry";
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    )
     CTSOutwardClearingFormMetaData.fields[1].defaultValue = "10  ";
   }
 
