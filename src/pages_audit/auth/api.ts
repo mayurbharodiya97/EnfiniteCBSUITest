@@ -15,13 +15,13 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const validatePasswords = async ({ ...request }:any) => {
+export const validatePasswords = async ({ ...request }: any) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
-      ...request
+      ...request,
     });
   if (status === "0") {
-    return { validateStatus :status,  validateData :data[0]};
+    return { validateStatus: status, validateData: data[0] };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -86,7 +86,7 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId || '00',
+      REQUEST_CD: transactionId || "00",
       OTP: otpnumber,
       AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
@@ -178,6 +178,7 @@ export const RefreshTokenData = async (refreshToken) => {
 export const LogoutAPI = async ({ userID }) => {
   const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
     USER_ID: userID,
+    APP_TRAN_CD: 51,
   });
   //if (status === "0") {
   return message;
@@ -523,4 +524,3 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
-
