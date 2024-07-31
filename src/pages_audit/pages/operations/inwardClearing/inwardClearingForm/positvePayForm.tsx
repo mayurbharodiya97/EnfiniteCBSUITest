@@ -1,16 +1,13 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import { GradientButton } from "components/styledComponent/button";
 import * as API from "../api";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { chequesignFormMetaData, positivePayFormMetaData } from "./metaData";
-import { format } from "date-fns";
+import {  positivePayFormMetaData } from "./metaData";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { ChequeSignImage } from "./chequeSignImage";
-
 export const PositivePayFormWrapper: FC<{
   onClose?: any;
   positiveData?: any;

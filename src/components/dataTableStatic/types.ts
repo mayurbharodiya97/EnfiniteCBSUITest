@@ -40,6 +40,8 @@ export interface GridColumnType {
   isDisabledOnBlurEvent?: boolean;
   isReadOnly?: boolean;
   __EDIT__?: any;
+  __NEW__?: any;
+  __VIEW__?: any;
   buttonLabel?: string;
   currencyRefColumn?: string;
   dependentOptionField?: string;
@@ -53,6 +55,7 @@ export interface GridColumnType {
   isDisplayTotal?: Boolean;
   totalDecimalCount?: number;
   SelectAllColumn?: Boolean;
+  isSelectedTotal?: Boolean
 }
 
 export interface GridConfigType {

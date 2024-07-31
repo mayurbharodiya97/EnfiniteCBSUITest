@@ -3,7 +3,7 @@ import { getAuditorMstDSGDDW } from "../api";
 export const AuditorMstFormMetaData = {
   form: {
     name: "auditorMaster",
-    label: "AuditorMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -46,6 +46,7 @@ export const AuditorMstFormMetaData = {
       maxLength: 100,
       required: true,
       type: "text",
+      isFieldFocused: true,
       autoComplete: "off",
       txtTransform: "uppercase",
       preventSpecialCharInput: true,
