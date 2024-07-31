@@ -13,7 +13,7 @@ import { extractMetaData } from "components/utils";
 import { BeneficiaryAcctDetailsFormMetaData } from "./metaData/beneficiaryAcctDetailsMetada";
 
 export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
-  ({ accountDetailsForBen, benefSubmitHandler, defaultView }, ref: any) => {
+  ({ accountDetailsForBen, onSubmitHandler, defaultView }, ref: any) => {
     const { MessageBox } = usePopupContext();
     const { authState } = useContext(AuthContext);
     const [openAuditTrail, setOpenAuditTrail] = useState(false);
@@ -73,7 +73,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
                   ...accountDetailsForBen,
                 } as InitialValuesType
               }
-              onSubmitHandler={benefSubmitHandler}
+              onSubmitHandler={onSubmitHandler}
               ref={ref}
               formState={{
                 MessageBox: MessageBox,
