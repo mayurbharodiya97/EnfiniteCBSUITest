@@ -147,348 +147,339 @@ const PhotoSignWithHistory = ({
             width: "100%",
           },
         }}
-      // PaperComponent={(props) => (
-      //   <Draggable
-      //     handle="#draggable-dialog-title"
-      //     cancel={'[class*="MuiDialogContent-root"]'}
-      //   >
-      //     <Paper {...props} />
-      //   </Draggable>
-      // )}
-      // aria-labelledby="draggable-dialog-title"
       >
-        {/* <div id="draggable-dialog-title" style={{ cursor: 'move' }}> */}
+
         {isLatestDtlLoading ? (
           <LoaderPaperComponent color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
-        ) : (
-          <>
-            <AppBar position="relative" color="secondary">
-              <Toolbar
-                className={headerClasses.root}
-                variant={"dense"}
-              >
-                <Typography
-                  className={headerClasses.title}
-                  color="inherit"
-                  variant={"h4"}
-                  component="div"
-                >
-                  {
-                    LatestPhotoSignData[0]?.AC_CUST_LEVEL === "A" ? t("AccountLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", data?.ACCT_NM, " ", t("ACMode") + ":", data?.ACCT_MODE)
-                      : t("CustomerLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", data?.ACCT_NM, " ", t("ACMode") + ":", data?.ACCT_MODE)
-                  }
-                </Typography>
-                <GradientButton
-                  onClick={() => {
-                    showAll ? setShowAll(false) : setShowAll(true); LatestDtlRefetch()
-                  }}
-                >
-                  {showAll ? t("Back") : t("ViewAll")}
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    onClose();
-                  }}
-                >
-                  {t("Close")}
-                </GradientButton>
-              </Toolbar>
+        ) :
+          isLatestDtlError ? (
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={LatestDtlError?.error_msg ?? "Unknown Error"}
+                errorDetail={LatestDtlError?.error_detail ?? ""}
+                color="error"
+              />
             </AppBar>
-            <Box sx={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)', paddingBottom: '20px' }}>
-              <Grid container sx={{ px: "1" }}>
-                {isLatestDtlError && (
-                  <AppBar position="relative" color="primary">
-                    <Alert
-                      severity="error"
-                      errorMsg={LatestDtlError?.error_msg ?? "Unknown Error"}
-                      errorDetail={LatestDtlError?.error_detail ?? ""}
-                      color="error"
-                    />
-                  </AppBar>
-                )}
+          ) : (
 
-                <Grid container spacing={3} sx={{ padding: 2 }}>
-                  {LatestPhotoSignData?.filter(item => showAll || item?.ROW_VISIBLE === "Y").map((item, index) => (
-                    < React.Fragment key={index} >
-                      <Grid item xs={12} sm={4} md={4}>
-                        <Paper elevation={3} className={headerClasses.paper}>
-                          <TableContainer>
-                            <Table size="small">
-                              <TableBody>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Grid container alignItems="center">
-                                      <Box
-                                        sx={{
-                                          border: "2px solid var(--theme-color3)",
-                                          height: '20px',
-                                          width: "20px",
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          marginRight: '8px',
-                                        }}
-                                      >
-                                        <Typography variant="body2">{item?.SIGN_GROUP}</Typography>
-                                      </Box>
-                                      <Typography variant="body2" className={headerClasses.boldText}>{t("Type")}</Typography>
-                                    </Grid>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.J_TYPE_DESC}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("Account_Name")}:</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.ACCT_NM}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell colSpan={2} className={headerClasses.tableCell}>
-                                    <Box display="flex" alignItems="center">
+            <>
+              <AppBar position="relative" color="secondary">
+                <Toolbar
+                  className={headerClasses.root}
+                  variant={"dense"}
+                >
+                  <Typography
+                    className={headerClasses.title}
+                    color="inherit"
+                    variant={"h4"}
+                    component="div"
+                  >
+                    {
+                      LatestPhotoSignData?.[0]?.AC_CUST_LEVEL === "A" ? t("AccountLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", LatestPhotoSignData?.[0]?.ACCT_NM, " ", t("ACMode") + ":", LatestPhotoSignData?.[0]?.ACCT_MODE)
+                        : t("CustomerLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", LatestPhotoSignData?.[0]?.ACCT_NM, " ", t("ACMode") + ":", LatestPhotoSignData?.[0]?.ACCT_MODE)
+                    }
+                  </Typography>
+                  <GradientButton
+                    onClick={() => {
+                      showAll ? setShowAll(false) : setShowAll(true); LatestDtlRefetch()
+                    }}
+                  >
+                    {showAll ? t("Back") : t("ViewAll")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      onClose();
+                    }}
+                  >
+                    {t("Close")}
+                  </GradientButton>
+                </Toolbar>
+              </AppBar>
+              <Box sx={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)', paddingBottom: '20px' }}>
+                <Grid container sx={{ px: "1" }}>
+                  <Grid container spacing={3} sx={{ padding: 2 }}>
+                    {LatestPhotoSignData?.filter(item => showAll || item?.ROW_VISIBLE === "Y").map((item, index) => (
+                      < React.Fragment key={index} >
+                        <Grid item xs={12} sm={4} md={4}>
+                          <Paper elevation={3} className={headerClasses.paper}>
+                            <TableContainer>
+                              <Table size="small">
+                                <TableBody>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Grid container alignItems="center">
+                                        <Box
+                                          sx={{
+                                            border: "2px solid var(--theme-color3)",
+                                            height: '20px',
+                                            width: "20px",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '8px',
+                                          }}
+                                        >
+                                          <Typography variant="body2">{item?.SIGN_GROUP}</Typography>
+                                        </Box>
+                                        <Typography variant="body2" className={headerClasses.boldText}>{t("Type")}</Typography>
+                                      </Grid>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.J_TYPE_DESC}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("Account_Name")}:</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.ACCT_NM}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell colSpan={2} className={headerClasses.tableCell}>
                                       <Box display="flex" alignItems="center">
-                                        <Typography className={headerClasses.boldText}>{t("LimitFrom")}:</Typography>
-                                        <Typography variant="body2" sx={{ marginLeft: 6 }}>{item?.FROM_LIMIT}</Typography>
+                                        <Box display="flex" alignItems="center">
+                                          <Typography className={headerClasses.boldText}>{t("LimitFrom")}:</Typography>
+                                          <Typography variant="body2" sx={{ marginLeft: 6 }}>{item?.FROM_LIMIT}</Typography>
+                                        </Box>
+                                        <Box display="flex" alignItems="center" sx={{ marginLeft: 4 }}>
+                                          <Typography className={headerClasses.boldText}>{t("To")}:</Typography>
+                                          <Typography variant="body2" sx={{ marginLeft: 1 }}>{item?.TO_LIMIT}</Typography>
+                                        </Box>
                                       </Box>
-                                      <Box display="flex" alignItems="center" sx={{ marginLeft: 4 }}>
-                                        <Typography className={headerClasses.boldText}>{t("To")}:</Typography>
-                                        <Typography variant="body2" sx={{ marginLeft: 1 }}>{item?.TO_LIMIT}</Typography>
-                                      </Box>
-                                    </Box>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("CustID")}:</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.CUSTOMER_ID}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("CustName")}:</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.REF_PER_NAME}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("ScanBy")}</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.ENTERED_BY}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("ScanDate")}</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.MODIFIED_DATE}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow className={headerClasses.tableRow}>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2" className={headerClasses.boldText}>{t("VerifiedBy")}</Typography>
-                                  </TableCell>
-                                  <TableCell className={headerClasses.tableCell}>
-                                    <Typography variant="body2">{item?.VERIFIED_BY}</Typography>
-                                  </TableCell>
-                                </TableRow>
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                          {item?.HISTORY_BUTTON === "Y" ?
-                            (
-                              <div style={{
-                                display: "flex",
-                                justifyContent: "end"
-                              }}>
-                                <GradientButton
-                                  onClick={() => {
-                                    getPhotoSignHistory?.mutate({
-                                      COMP_CD: authState?.companyID,
-                                      CUSTOMER_ID: item?.CUSTOMER_ID
-                                    })
-                                    setIsHistoryGridVisible(true);
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("CustID")}:</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.CUSTOMER_ID}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("CustName")}:</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.REF_PER_NAME}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("ScanBy")}</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.ENTERED_BY}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("ScanDate")}</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.MODIFIED_DATE}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className={headerClasses.tableRow}>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2" className={headerClasses.boldText}>{t("VerifiedBy")}</Typography>
+                                    </TableCell>
+                                    <TableCell className={headerClasses.tableCell}>
+                                      <Typography variant="body2">{item?.VERIFIED_BY}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                            {item?.HISTORY_BUTTON === "Y" ?
+                              (
+                                <div style={{
+                                  display: "flex",
+                                  justifyContent: "end"
+                                }}>
+                                  <GradientButton
+                                    onClick={() => {
+                                      getPhotoSignHistory?.mutate({
+                                        COMP_CD: authState?.companyID,
+                                        CUSTOMER_ID: item?.CUSTOMER_ID
+                                      })
+                                      setIsHistoryGridVisible(true);
+                                    }}
+                                  >
+                                    {t("History")}
+                                  </GradientButton>
+                                </div>
+                              ) : null
+                            }
+
+                          </Paper>
+                        </Grid>
+
+                        {/* Photo Section */}
+                        < Grid item xs={12} sm={4} md={4} >
+                          <Paper elevation={3} sx={{ p: 2, height: '100%', textAlign: 'center' }}>
+                            <Typography variant="h6" gutterBottom>
+                              {t("PhotoImage")}
+                            </Typography>
+                            <Card
+                              sx={{
+                                color: "var(--theme-color2)",
+                                background: "var(--theme-color5)",
+                                cursor: "grab",
+                                height: "90%"
+                              }}
+                            >
+                              <CardContent style={{ padding: "2px 2px 30px 2px" }}>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                    cursor: 'auto',
+                                    mt: 2
                                   }}
                                 >
-                                  {t("History")}
-                                </GradientButton>
-                              </div>
-                            ) : null
-                          }
-
-                        </Paper>
-                      </Grid>
-
-                      {/* Photo Section */}
-                      < Grid item xs={12} sm={4} md={4} >
-                        <Paper elevation={3} sx={{ p: 2, height: '100%', textAlign: 'center' }}>
-                          <Typography variant="h6" gutterBottom>
-                            {t("PhotoImage")}
-                          </Typography>
-                          <Card
-                            sx={{
-                              color: "var(--theme-color2)",
-                              background: "var(--theme-color5)",
-                              cursor: "grab",
-                              height: "90%"
-                            }}
-                          >
-                            <CardContent style={{ padding: "2px 2px 30px 2px" }}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  width: '100%',
-                                  height: '100%',
-                                  cursor: 'auto',
-                                  mt: 2
-                                }}
-                              >
-                                <Grid container spacing={0} justifyContent="center" alignItems="center">
-                                  {isLatestDtlLoading ? (
-                                    <CircularProgress color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
-                                  ) : (
-                                    <>
-                                      {item?.ACCT_PHOTO ? (
-                                        <Tooltip
-                                          key={"tooltip-"}
-                                          title={
-                                            t("ToZoomInOnTheImagesClickOnItOnce")
-                                          }
-                                          placement={"top"}
-                                          arrow={true}
-                                        >
-                                          <div
-                                            onClick={() => {
-                                              setSelectedImageUrl(URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_PHOTO)))
-                                              setIsImagePhotoOpen(true); // Open the dialog
-                                            }}
+                                  <Grid container spacing={0} justifyContent="center" alignItems="center">
+                                    {isLatestDtlLoading ? (
+                                      <CircularProgress color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
+                                    ) : (
+                                      <>
+                                        {item?.ACCT_PHOTO ? (
+                                          <Tooltip
+                                            key={"tooltip-"}
+                                            title={
+                                              t("ToZoomInOnTheImagesClickOnItOnce")
+                                            }
+                                            placement={"top"}
+                                            arrow={true}
                                           >
-                                            < img
-                                              src={URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_PHOTO))}
-                                              alt="Account Photo"
-                                              style={{ maxWidth: '100%', maxHeight: '190px', cursor: "zoom-in" }}
-                                            />
-                                          </div >
-                                        </Tooltip>
-                                      ) : item?.O_STATUS === "999" ? (
-                                        <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
-                                          {item?.O_MESSAGE}
-                                        </Typography>
-                                      ) : (
-                                        <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
-                                          {t("NoImageFound")}
-                                        </Typography>
-                                      )}
-                                    </>
-                                  )}
-                                </Grid>
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        </Paper>
-                      </Grid>
+                                            <div
+                                              onClick={() => {
+                                                setSelectedImageUrl(URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_PHOTO)))
+                                                setIsImagePhotoOpen(true); // Open the dialog
+                                              }}
+                                            >
+                                              < img
+                                                src={URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_PHOTO))}
+                                                alt="Account Photo"
+                                                style={{ maxWidth: '100%', maxHeight: '190px', cursor: "zoom-in" }}
+                                              />
+                                            </div >
+                                          </Tooltip>
+                                        ) : item?.O_STATUS === "999" ? (
+                                          <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
+                                            {item?.O_MESSAGE}
+                                          </Typography>
+                                        ) : (
+                                          <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
+                                            {t("NoImageFound")}
+                                          </Typography>
+                                        )}
+                                      </>
+                                    )}
+                                  </Grid>
+                                </Box>
+                              </CardContent>
+                            </Card>
+                          </Paper>
+                        </Grid>
 
-                      {/* Signature Section */}
-                      < Grid item xs={12} sm={4} md={4} >
-                        <Paper elevation={3} sx={{ p: 2, height: '100%', textAlign: 'center' }}>
-                          <Typography variant="h6" gutterBottom>
-                            {t("SignatureImage")}
-                          </Typography>
-                          <Card
-                            sx={{
-                              color: "var(--theme-color2)",
-                              background: "var(--theme-color5)",
-                              cursor: "grab",
-                              height: "90%"
-                            }}
-                          >
-                            <CardContent style={{ padding: "2px 2px 30px 2px" }}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  width: '100%',
-                                  height: '100%',
-                                  cursor: 'auto',
-                                  mt: 2
-                                }}
-                              >
-                                <Grid container spacing={0} justifyContent="center" alignItems="center">
-                                  {isLatestDtlLoading ? (
-                                    <CircularProgress color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
-                                  ) : (
-                                    <>
-                                      {item?.ACCT_SIGN ? (
-                                        <Tooltip
-                                          key={"tooltip-"}
-                                          title={
-                                            t("ToZoomInOnTheImagesClickOnItOnce")
-                                          }
-                                          placement={"top"}
-                                          arrow={true}
-                                        >
-                                          <div
-                                            onClick={() => {
-                                              setSelectedImageUrl(URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_SIGN)))
-                                              setIsImagePhotoOpen(true); // Open the dialog
-                                            }}
+                        {/* Signature Section */}
+                        < Grid item xs={12} sm={4} md={4} >
+                          <Paper elevation={3} sx={{ p: 2, height: '100%', textAlign: 'center' }}>
+                            <Typography variant="h6" gutterBottom>
+                              {t("SignatureImage")}
+                            </Typography>
+                            <Card
+                              sx={{
+                                color: "var(--theme-color2)",
+                                background: "var(--theme-color5)",
+                                cursor: "grab",
+                                height: "90%"
+                              }}
+                            >
+                              <CardContent style={{ padding: "2px 2px 30px 2px" }}>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                    cursor: 'auto',
+                                    mt: 2
+                                  }}
+                                >
+                                  <Grid container spacing={0} justifyContent="center" alignItems="center">
+                                    {isLatestDtlLoading ? (
+                                      <CircularProgress color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
+                                    ) : (
+                                      <>
+                                        {item?.ACCT_SIGN ? (
+                                          <Tooltip
+                                            key={"tooltip-"}
+                                            title={
+                                              t("ToZoomInOnTheImagesClickOnItOnce")
+                                            }
+                                            placement={"top"}
+                                            arrow={true}
                                           >
-                                            < img
-                                              src={URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_SIGN))}
-                                              alt="Account Signature"
-                                              style={{ maxWidth: '100%', maxHeight: '190px', cursor: "zoom-in", }}
-                                            />
-                                          </div>
-                                        </Tooltip>
-                                      ) : item?.O_STATUS === "999" ? (
-                                        <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
-                                          {item?.O_MESSAGE}
-                                        </Typography>
-                                      ) : (
-                                        <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
-                                          {t("NoImageFound")}
-                                        </Typography>
-                                      )}
-                                    </>
-                                  )}
-                                </Grid>
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        </Paper>
-                      </Grid>
-                    </React.Fragment>
-                  ))}
+                                            <div
+                                              onClick={() => {
+                                                setSelectedImageUrl(URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_SIGN)))
+                                                setIsImagePhotoOpen(true); // Open the dialog
+                                              }}
+                                            >
+                                              < img
+                                                src={URL.createObjectURL(utilFunction.base64toBlob(item.ACCT_SIGN))}
+                                                alt="Account Signature"
+                                                style={{ maxWidth: '100%', maxHeight: '190px', cursor: "zoom-in", }}
+                                              />
+                                            </div>
+                                          </Tooltip>
+                                        ) : item?.O_STATUS === "999" ? (
+                                          <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
+                                            {item?.O_MESSAGE}
+                                          </Typography>
+                                        ) : (
+                                          <Typography variant="h6" width={"200px"} fontSize={"26px"} margin={"25px"}>
+                                            {t("NoImageFound")}
+                                          </Typography>
+                                        )}
+                                      </>
+                                    )}
+                                  </Grid>
+                                </Box>
+                              </CardContent>
+                            </Card>
+                          </Paper>
+                        </Grid>
+                      </React.Fragment>
+                    ))}
+                  </Grid>
                 </Grid>
-              </Grid>
 
-            </Box >
-          </>
-        )
-        }
-        {/* {
+              </Box >
+            </>
+          )}
+
+        {
           getPhotoSignHistory?.isError && (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={getPhotoSignHistory?.?.error_msg ?? "Unknow Error"}
-                errorDetail={photoHistoryError?.error_detail ?? ""}
+                errorMsg={getPhotoSignHistory?.error_msg ?? "Unknow Error"}
+                errorDetail={getPhotoSignHistory?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
           )
-        } */}
+        }
         <>
           {isHistoryGridVisible ? (
             <>
@@ -547,7 +538,7 @@ const PhotoSignWithHistory = ({
                   component="div"
                 >
                   {
-                    t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", data?.ACCT_NM)
+                    t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", LatestPhotoSignData?.[0]?.ACCT_NM)
 
                   }
                 </Typography>
@@ -604,7 +595,7 @@ const PhotoSignWithHistory = ({
             )}
           </Dialog>
         </>
-        {/* </div> */}
+
       </Dialog >
 
     </>

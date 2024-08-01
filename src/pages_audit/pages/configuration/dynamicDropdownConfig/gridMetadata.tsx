@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const DynamicDropdownConfigGridMData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Flexible Dropdown Configuration",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,

@@ -10,11 +10,14 @@ import { format } from "date-fns";
 import { ChequeSignImage } from "./chequeSignImage";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
+import { useTranslation } from "react-i18next";
 
 export const ChequeSignForm: FC<{
   onClose?: any;
   reqDataRef?: any;
 }> = ({ onClose, reqDataRef }) => {
+
+  const { t } = useTranslation();
   const reqData = {
     COMP_CD: reqDataRef.current?.COMP_CD ?? "",
     ENTERED_COMP_CD: reqDataRef.current?.ENTERED_COMP_CD ?? "",
@@ -67,7 +70,7 @@ export const ChequeSignForm: FC<{
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <GradientButton onClick={onClose}>Close</GradientButton>
+              <GradientButton onClick={onClose}>{t("Close")}</GradientButton>
             </>
           )}
         </FormWrapper>
