@@ -60,57 +60,128 @@ export const form15GHEntryMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const defaultFields = {
+              ACCT_NM: { value: "" },
+              ADD1: { value: "" },
+              PIN_CODE: { value: "" },
+              CITY_NM: { value: "" },
+              FORM_NM: { value: "" },
+              PAN_NO: { value: "" },
+              BIRTH_DT: { value: "" },
+              ADD2: { value: "" },
+              AGE: { value: "" },
+              AREA_NM: { value: "" },
+              DISTRICT_NM: { value: "" },
+              EXPLICIT_TDS: { value: "" },
+              E_MAIL_ID: { value: "" },
+              FORM_EXPIRY_DATE: { value: "" },
+              STATE_NM: { value: "" },
+              INT_AMT_LIMIT: { value: "" },
+              VALID_AMT: { value: "" },
+              UNIQUE_ID: { value: "" },
+              ENTERED_FROM: { value: "" },
+              CONFIRMED: { value: "" },
+              ALLOW_PRINT: { value: "" },
+              PRINT_MSG: { value: "" },
+              TOT_INCOME: { isFieldFocused: false },
+            };
             if (currentField?.value) {
               let postData = await getCutomerDetail({
                 SCREEN_REF: "TRN/614",
                 CUSTOMER_ID: currentField?.value,
               });
+              let returnVal;
+              if (postData?.[0]?.O_STATUS === "999") {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.[0]?.O_MESSAGE,
+                  buttonNames: ["Ok"],
+                });
+                formState.setDataOnFieldChange("GRID_DATA", []);
+                if (buttonName === "Ok") {
+                  return {
+                    ...defaultFields,
+                    CUSTOMER_ID: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                    BIRTH_DT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (postData?.[0]?.O_STATUS === "99") {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Confirmation",
+                  message: postData?.[0]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+                formState.setDataOnFieldChange("GRID_DATA", []);
+                if (buttonName === "No") {
+                  return {
+                    ...defaultFields,
+                    CUSTOMER_ID: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                    BIRTH_DT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (postData?.[0]?.O_STATUS === "9") {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: postData?.[0]?.O_MESSAGE,
+                  buttonNames: ["Ok"],
+                });
+              } else if (postData?.[0]?.O_STATUS === "0") {
+                returnVal = postData?.[0];
+                const postData2 = await getFDDtl({
+                  SCREEN_REF: "TRN/614",
+                  CUSTOMER_ID: currentField?.value,
+                });
 
-              let btn99, returnVal;
+                let btn99;
 
-              const getButtonName = async (obj) => {
-                let btnName = await formState.MessageBox(obj);
-                return { btnName, obj };
-              };
+                const getButtonName = async (obj) => {
+                  let btnName = await formState.MessageBox(obj);
+                  return { btnName, obj };
+                };
 
-              for (let i = 0; i < postData.length; i++) {
-                if (postData[i]?.O_STATUS === "999") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "CustomerNotFound",
-                    message: postData[i]?.O_MESSAGE,
-                  });
-                  returnVal = "";
-                  formState.setDataOnFieldChange("GRID_DATA", []);
-                } else if (postData[i]?.O_STATUS === "9") {
-                  if (btn99 !== "No") {
+                for (let j = 0; j < postData2.length; j++) {
+                  if (postData2[j]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "validationAlert",
-                      message: postData[i]?.O_MESSAGE,
+                      messageTitle: "ValidationFailed",
+                      message: postData2[j]?.O_MESSAGE.startsWith("\n")
+                        ? postData2[j]?.O_MESSAGE?.slice(1)
+                        : postData2[j]?.O_MESSAGE,
                     });
-                  }
-                  returnVal = "";
-                  formState.setDataOnFieldChange("GRID_DATA", []);
-                } else if (postData[i]?.O_STATUS === "99") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "RiskCategoryAlert",
-                    message: postData[i]?.O_MESSAGE,
-                    buttonNames: ["Yes", "No"],
-                  });
-
-                  btn99 = btnName;
-                  if (btnName === "No") {
-                    returnVal = "";
                     formState.setDataOnFieldChange("GRID_DATA", []);
-                  }
-                } else if (postData[i]?.O_STATUS === "0") {
-                  if (btn99 !== "No") {
-                    returnVal = postData[i];
-
-                    const postData2 = await getFDDtl({
-                      SCREEN_REF: "TRN/614",
-                      CUSTOMER_ID: currentField?.value,
+                  } else if (postData2[j]?.O_STATUS === "9") {
+                    if (btn99 !== "No") {
+                      const { btnName, obj } = await getButtonName({
+                        messageTitle: "Alert",
+                        message: postData2[j]?.O_MESSAGE,
+                      });
+                    }
+                  } else if (postData2[j]?.O_STATUS === "99") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: "Confirmation",
+                      message: postData2[j]?.O_MESSAGE,
+                      buttonNames: ["Yes", "No"],
                     });
-
+                    btn99 = btnName;
+                    if (btnName === "No") {
+                      formState.setDataOnFieldChange("GRID_DATA", []);
+                    }
+                  } else {
                     formState.setDataOnFieldChange("GRID_DATA", postData2);
                     const sumOfFinInterest = postData2
                       .reduce((acc, item) => {
@@ -120,63 +191,44 @@ export const form15GHEntryMetaData = {
                       .toString();
 
                     returnVal = {
-                      ...returnVal,
+                      ...postData?.[0],
                       FIN_INT_AMT: sumOfFinInterest,
                     };
-
-                    for (let j = 0; j < postData2.length; j++) {
-                      if (postData2[j]?.O_STATUS === "999") {
-                        const { btnName, obj } = await getButtonName({
-                          messageTitle: "ValidationFailed",
-                          message: postData2[j]?.O_MESSAGE.startsWith("\n")
-                            ? postData2[j]?.O_MESSAGE?.slice(1)
-                            : postData2[j]?.O_MESSAGE,
-                        });
-                      } else if (postData2[j]?.O_STATUS === "9") {
-                        if (btn99 !== "No") {
-                          const { btnName, obj } = await getButtonName({
-                            messageTitle: "Alert",
-                            message: postData2[j]?.O_MESSAGE,
-                          });
-                        }
-                      } else if (postData2[j]?.O_STATUS === "99") {
-                        const { btnName, obj } = await getButtonName({
-                          messageTitle: "Confirmation",
-                          message: postData2[j]?.O_MESSAGE,
-                          buttonNames: ["Yes", "No"],
-                        });
-                        btn99 = btnName;
-                        if (btnName === "No") {
-                          returnVal = "";
-                        }
-                      }
-                    }
-                  } else {
-                    returnVal = "";
                   }
                 }
               }
-              btn99 = 0;
               return {
-                CUSTOMER_ID: {
-                  value: returnVal ? currentField?.value ?? "" : "",
-                  ignoreUpdate: true,
-                  isFieldFocused: false,
-                },
+                CUSTOMER_ID:
+                  returnVal !== ""
+                    ? {
+                        value: currentField?.value,
+                        ignoreUpdate: true,
+                        isFieldFocused: false,
+                      }
+                    : {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
                 ACCT_NM: { value: returnVal?.ACCT_NM ?? "" },
                 ADD1: { value: returnVal?.ADD1 ?? "" },
                 PIN_CODE: { value: returnVal?.PIN_CODE ?? "" },
                 CITY_NM: { value: returnVal?.CITY_NM ?? "" },
                 FORM_NM: { value: returnVal?.FORM_NM ?? "" },
                 PAN_NO: { value: returnVal?.PAN_NO ?? "" },
-                BIRTH_DT: { value: returnVal?.BIRTH_DT ?? "" },
+                BIRTH_DT: {
+                  value: returnVal?.BIRTH_DT ?? "",
+                  isFieldFocused: true,
+                },
                 ADD2: { value: returnVal?.ADD2 ?? "" },
                 AGE: { value: returnVal?.AGE ?? "" },
                 AREA_NM: { value: returnVal?.AREA_NM ?? "" },
                 DISTRICT_NM: { value: returnVal?.DISTRICT_NM ?? "" },
                 EXPLICIT_TDS: { value: returnVal?.EXPLICIT_TDS ?? "" },
                 E_MAIL_ID: { value: returnVal?.E_MAIL_ID ?? "" },
-                FORM_EXPIRY_DATE: { value: returnVal?.FORM_EXPIRY_DATE ?? "" },
+                FORM_EXPIRY_DATE: {
+                  value: returnVal?.FORM_EXPIRY_DATE ?? "",
+                },
                 STATE_NM: { value: returnVal?.STATE_NM ?? "" },
                 INT_AMT_LIMIT: { value: returnVal?.INT_AMT_LIMIT ?? "" },
                 VALID_AMT: { value: returnVal?.VALID_AMT ?? "" },
@@ -190,35 +242,12 @@ export const form15GHEntryMetaData = {
               };
             } else if (!currentField?.value) {
               return {
-                ACCT_NM: { value: "" },
-                ADD1: { value: "" },
-                PIN_CODE: { value: "" },
-                CITY_NM: { value: "" },
-                FORM_NM: { value: "" },
-                PAN_NO: { value: "" },
-                BIRTH_DT: { value: "" },
-                ADD2: { value: "" },
-                AGE: { value: "" },
-                AREA_NM: { value: "" },
-                DISTRICT_NM: { value: "" },
-                EXPLICIT_TDS: { value: "" },
-                E_MAIL_ID: { value: "" },
-                FORM_EXPIRY_DATE: { value: "" },
-                STATE_NM: { value: "" },
-                INT_AMT_LIMIT: { value: "" },
-                VALID_AMT: { value: "" },
-                UNIQUE_ID: { value: "" },
-                ENTERED_FROM: { value: "" },
-                CONFIRMED: { value: "" },
-                ALLOW_PRINT: { value: "" },
-                PRINT_MSG: { value: "" },
-                TOT_INCOME: { isFieldFocused: false },
+                ...defaultFields,
               };
             }
-            return {};
           },
         },
-        disableCaching: true,
+        // disableCaching: true,
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
       },
@@ -790,7 +819,7 @@ export const form15GHEntryMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "50vh", max: "50vh" },
+      containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       disableLoader: false,
     },

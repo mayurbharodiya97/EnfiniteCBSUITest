@@ -1371,11 +1371,28 @@ export const en_language_data = {
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",
-  ////
   ConfirmFormData: "Are you sure to confirm this Form?",
   ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
-};
+  Success: "Success",
+  DataUpdatedSuccessfully: "Data Updated Successfully",
 
+  // Positive pay
+  AccountNum: "Account Number",
+  ChequeNumber: "Cheque Number",
+  RequestFrom: "Request From",
+  TransactionDate: "Transaction Date",
+  UploadImage: "Upload Image",
+  ResponseParameters: "Response Parameters",
+  SelectCofiguration: "Select Cofiguration",
+  EnterPayeeName: "Enter Payee Name",
+  ChequeNumberIsRequired: "Cheque Number is Required.",
+  ChequeDateIsRequired: "Cheque Date is Required.",
+  AmountIsRequired: "Amount is Required.",
+  ChequeImage: "Cheque Image",
+  ChequeImageIsNotUploaded: "Cheque Image is not uploaded.",
+  RemovalRemarksPositivePay: "Removal Remarks For Positive Pay Confirmation",
+  Unknownerroroccured: "Unknown error occured",
+};
