@@ -1927,7 +1927,13 @@ export const ActionWiseAPIConfiguration = {
   {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
-  }
+  },
+  GETPAYSLIPCNFRETRIVEGRID:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCNFRETRIVEGRID",
+    packageName: "",
+  },
+  
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

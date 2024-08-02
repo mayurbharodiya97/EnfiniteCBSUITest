@@ -33,7 +33,10 @@ const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
 const PayslipIsuueEntry = lazy(
-  () => import("./payslip-issue-entry/index")
+  () => import("./payslip-issue-entry")
+);
+const Payslipissueconfirmation = lazy(
+  () => import("./payslipissueconfirmation/index")
 )
 
 export const OperationsMenu = () => (
@@ -132,6 +135,7 @@ export const OperationsMenu = () => (
 
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route path="payslip-issue-entry/*" element={<PayslipIsuueEntry />} />
+    <Route path="payslip-issue-confirmation/*" element={<Payslipissueconfirmation />} />
     <Route
       path="rtgs-branch-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="BO" />}

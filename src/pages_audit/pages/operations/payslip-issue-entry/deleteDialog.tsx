@@ -56,7 +56,7 @@ export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) =>
         ACCT_TYPE: rowData.ACCT_TYPE,
         AMOUNT: rowData.AMOUNT,
         REMARKS: rowData.acctDtlData[0].REMARKS,
-        SCREEN_REF: "Rpt/14",
+        SCREEN_REF: rowData.SCREEN_REF,
         CONFIRMED: rowData.CONFIRMED,
         USER_DEF_REMARKS: data.USER_DEF_REMARKS,
         TRAN_CD: rowData.TRAN_CD,

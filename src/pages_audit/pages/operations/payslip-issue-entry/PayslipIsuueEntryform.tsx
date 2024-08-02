@@ -799,7 +799,8 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         rowData={{
           ...(rows?.[0]?.data || {}),
           draftDtlData: draftDtlData,
-          acctDtlData: acctDtlData
+          acctDtlData: acctDtlData,
+          SCREEN_REF:"RPT/14"
         }}
         slipdataRefetch={slipdataRefetch}
       />
