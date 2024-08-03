@@ -7,15 +7,18 @@ import {
   useState,
 } from "react";
 import { productaccess } from "./metaData/metaDataGrid";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "./api/api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { extractGridMetaData } from "components/utils";
+
+import {
+  extractGridMetaData,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -31,11 +34,8 @@ export const ProductAccess = forwardRef<any, any>(
   ({ defaultView, username }, ref) => {
     const Username = username?.USER_NAME;
     const { authState } = useContext(AuthContext);
-    const {
-      userState,
-      dispatchCommon,
-      updateoldData2,
-    } = useContext(SecurityContext);
+    const { userState, dispatchCommon, updateoldData2 } =
+      useContext(SecurityContext);
     const [gridData, setGridData] = useState<any>([]);
     const [grid1Data, setGrid1Data] = useState<any>([]);
     const [combinedData, setCombinedData] = useState<any>([]);
@@ -49,10 +49,11 @@ export const ProductAccess = forwardRef<any, any>(
       refetch,
     } = useQuery<any, any>(
       ["getNewUserProductAccess"],
-      () => API.getNewUserProductAccess({
-        base_branch_cd: authState?.user?.baseBranchCode,
-        base_comp_cd: authState?.baseCompanyID,
-      }),
+      () =>
+        API.getNewUserProductAccess({
+          base_branch_cd: authState?.user?.baseBranchCode,
+          base_comp_cd: authState?.baseCompanyID,
+        }),
       { enabled: defaultView === "new" }
     );
 
@@ -86,8 +87,12 @@ export const ProductAccess = forwardRef<any, any>(
         if (userState?.grid3?.DETAILS_DATA?.isNewRow?.length > 0) {
           const contextGrid = userState.grid3.DETAILS_DATA.isNewRow;
           const updatedData = mainData.map((item) => {
-            const contextItem = contextGrid.find((gridItem) => gridItem.ACCT_TYPE === item.ACCT_TYPE);
-            return contextItem ? { ...item, ACCESS: contextItem.ACCESS === "Y" ? true : "N" } : item;
+            const contextItem = contextGrid.find(
+              (gridItem) => gridItem.ACCT_TYPE === item.ACCT_TYPE
+            );
+            return contextItem
+              ? { ...item, ACCESS: contextItem.ACCESS === "Y" ? true : "N" }
+              : item;
           });
           setGridData(updatedData);
         } else {
@@ -96,7 +101,10 @@ export const ProductAccess = forwardRef<any, any>(
       }
     }, [mainData, userState, defaultView]);
     useEffect(() => {
-      if (defaultView === "edit" || defaultView === "view" && userState?.initPopulateData2) {
+      if (
+        defaultView === "edit" ||
+        (defaultView === "view" && userState?.initPopulateData2)
+      ) {
         setGrid1Data(userState?.initPopulateData2);
       }
     }, [userState?.initPopulateData1, defaultView]);
@@ -107,33 +115,39 @@ export const ProductAccess = forwardRef<any, any>(
     }, [populateData, grid1Data]);
     useEffect(() => {
       if (defaultView === "edit" || defaultView === "view") {
-        if (populateData && grid1Data){
-        setGridData(populateData);
-        updateoldData2(populateData);
+        if (populateData && grid1Data) {
+          setGridData(populateData);
+          updateoldData2(populateData);
 
-        const updatedGrid1Data = grid1Data.map((gridItem) => ({
-          ...gridItem,
-          ACCESS: gridItem.ACCESS === "Y" ? true : false,
-        }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
-          (gridItem) =>
-            !populateData.some(
-              (dataItem) => dataItem.ACCT_TYPE === gridItem.ACCT_TYPE
-            )
-        );
-        filteredGrid1Data = filteredGrid1Data.map((row) => ({
-          ...row,
-          _isNewRow: true,
-        }));
-        const combinedData = [...populateData, ...filteredGrid1Data];
-        setGridData(combinedData);
-        setCombinedData(combinedData);
-      }
+          const updatedGrid1Data = grid1Data.map((gridItem) => ({
+            ...gridItem,
+            ACCESS: gridItem.ACCESS === "Y" ? true : false,
+          }));
+          let filteredGrid1Data = updatedGrid1Data.filter(
+            (gridItem) =>
+              !populateData.some(
+                (dataItem) => dataItem.ACCT_TYPE === gridItem.ACCT_TYPE
+              )
+          );
+          filteredGrid1Data = filteredGrid1Data.map((row) => ({
+            ...row,
+            _isNewRow: true,
+          }));
+          const combinedData = [...populateData, ...filteredGrid1Data];
+          setGridData(combinedData);
+          setCombinedData(combinedData);
+        }
       }
     }, [populateData, grid1Data, defaultView]);
 
     useEffect(() => {
-      if (defaultView === "edit" || defaultView === "view" && (userState?.grid3?.isUpdatedRow?.length > 0 || userState?.grid3?.isNewRow?.length > 0 || userState?.grid3?.isDeleteRow?.length > 0)) {
+      if (
+        defaultView === "edit" ||
+        (defaultView === "view" &&
+          (userState?.grid3?.isUpdatedRow?.length > 0 ||
+            userState?.grid3?.isNewRow?.length > 0 ||
+            userState?.grid3?.isDeleteRow?.length > 0))
+      ) {
         const contextGrid = [
           ...(userState?.grid3?.isNewRow || []),
           ...(userState?.grid3?.isUpdatedRow || []),
@@ -144,14 +158,23 @@ export const ProductAccess = forwardRef<any, any>(
             (gridItem) => gridItem.ACCT_TYPE === item.ACCT_TYPE
           );
           return contextItem
-          ? { ...item, ACCESS: contextItem.ACCESS === "Y" }
-          : item;
+            ? { ...item, ACCESS: contextItem.ACCESS === "Y" }
+            : item;
         });
         setGridData(updatedData);
       }
-    }, [combinedData, userState?.grid3?.isNewRow, userState?.grid3?.isUpdatedRow, userState?.grid3?.isDeleteRow, defaultView]);
+    }, [
+      combinedData,
+      userState?.grid3?.isNewRow,
+      userState?.grid3?.isUpdatedRow,
+      userState?.grid3?.isDeleteRow,
+      defaultView,
+    ]);
     useEffect(() => {
-      if (defaultView === "new" && userState?.grid3?.DETAILS_DATA?.isNewRow?.length > 0) {
+      if (
+        defaultView === "new" &&
+        userState?.grid3?.DETAILS_DATA?.isNewRow?.length > 0
+      ) {
         const contextGrid = userState?.grid3?.DETAILS_DATA?.isNewRow;
         const updatedData = mainData.map((item) => {
           const contextItem = contextGrid.find(
@@ -190,7 +213,9 @@ export const ProductAccess = forwardRef<any, any>(
       <Fragment>
         <GridWrapper
           key={`userAccessbranch`}
-          finalMetaData={extractGridMetaData(productaccess, defaultView) as GridMetaDataType}
+          finalMetaData={
+            extractGridMetaData(productaccess, defaultView) as GridMetaDataType
+          }
           data={gridData || []}
           actions={defaultView === "edit" ? actions : []}
           setAction={setCurrentAction}

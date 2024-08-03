@@ -1,32 +1,44 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import {
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { main_tab_metadata } from "../tabMetadata/mainTabMetadata";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import TabNavigate from "../TabNavigate";
 import _ from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
 
 const MainTab = () => {
-  const { AcctMSTState, handlecustomerIDctx, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handlecustomerIDctx,
+    handleCurrFormctx,
+    handleStepStatusctx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+    handleSavectx,
+  } = useContext(AcctMSTContext);
   const { MessageBox } = usePopupContext();
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const formRef = useRef<any>(null);
   const initialVal = useMemo(() => {
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
-        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
-    )
+    return AcctMSTState?.isFreshEntryctx
+      ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      ? {
+          ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}),
+          ...(AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}),
+        }
+      : { ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}) };
   }, [
-    AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes, 
-    AcctMSTState?.formDatactx["MAIN_DETAIL"]
-  ])
+    AcctMSTState?.isFreshEntryctx,
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["MAIN_DETAIL"],
+  ]);
 
   const onSubmitPDHandler = (
     data: any,
@@ -37,14 +49,12 @@ const MainTab = () => {
     hasError
   ) => {
     if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
-
-
+      let formFields = Object.keys(data); // array, get all form-fields-name
+      formFields = formFields.filter(
+        (field) => !field.includes("_ignoreField")
+      ); // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current);
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
@@ -61,20 +71,22 @@ const MainTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx) {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+      if (!AcctMSTState?.isFreshEntryctx) {
+        let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
+        let updatedCols = tabModifiedCols.MAIN_DETAIL
+          ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current])
+          : _.uniq([...formFieldsRef.current]);
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -83,7 +95,7 @@ const MainTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
@@ -100,19 +112,19 @@ const MainTab = () => {
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
+    });
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    handleSavectx(e, refs);
+  };
 
   useEffect(() => {
-    let refs = [formRef]
+    let refs = [formRef];
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: AcctMSTState?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
+    });
     // return () => {
     //   handleCurrFormctx({
     //     currentFormRefctx: [],
@@ -120,20 +132,29 @@ const MainTab = () => {
     //     colTabValuectx: null,
     //   })
     // }
-  }, [])
+  }, []);
 
   useEffect(() => {
     // console.log("qweqweqweqwe", formStatus)
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
+    if (
+      Boolean(
+        AcctMSTState?.currentFormctx.currentFormRefctx &&
+          AcctMSTState?.currentFormctx.currentFormRefctx.length > 0
+      ) &&
+      Boolean(formStatus && formStatus.length > 0)
+    ) {
+      if (
+        AcctMSTState?.currentFormctx.currentFormRefctx.length ===
+        formStatus.length
+      ) {
+        setIsNextLoading(false);
         let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+        submitted = formStatus.filter((form) => !Boolean(form));
+        if (submitted && Array.isArray(submitted) && submitted.length > 0) {
           submitted = false;
         } else {
           submitted = true;
-          let newTabs = AcctMSTState?.tabsApiResctx;          
+          let newTabs = AcctMSTState?.tabsApiResctx;
           // if(Array.isArray(newTabs) && newTabs.length>0) {
           //   newTabs = newTabs.map(tab => {
           //     if(tab.TAB_NAME === "NRI Details") {
@@ -152,16 +173,16 @@ const MainTab = () => {
           handleStepStatusctx({
             status: "completed",
             coltabvalue: AcctMSTState?.colTabValuectx,
-          })
+          });
         }
         handleCurrFormctx({
           currentFormSubmitted: submitted,
           isLoading: false,
-        })
-        setFormStatus([])
+        });
+        setFormStatus([]);
       }
     }
-  }, [formStatus])
+  }, [formStatus]);
 
   return (
     <Grid sx={{ mb: 4 }}>
@@ -173,10 +194,10 @@ const MainTab = () => {
         metaData={main_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{
-          PARAM320: AcctMSTState?.param320, 
+          PARAM320: AcctMSTState?.param320,
           ACCT_TYPE: AcctMSTState?.accTypeValuectx,
           MessageBox: MessageBox,
-          handlecustomerIDctx: handlecustomerIDctx
+          handlecustomerIDctx: handlecustomerIDctx,
         }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
@@ -200,7 +221,11 @@ const MainTab = () => {
         //     }
         // }}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

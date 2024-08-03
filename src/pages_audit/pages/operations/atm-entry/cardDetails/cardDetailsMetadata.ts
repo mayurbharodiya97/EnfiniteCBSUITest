@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { cardStatusList, cardTypeList, validateAcctAndCustId } from "../api";
 export const CardDetailsMetaData = {
   form: {

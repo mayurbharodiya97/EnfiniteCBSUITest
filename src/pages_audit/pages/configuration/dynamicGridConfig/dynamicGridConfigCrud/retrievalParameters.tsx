@@ -1,14 +1,18 @@
 import { AppBar, Button, Dialog, Toolbar, Typography } from "@mui/material";
 import { Transition } from "pages_audit/common";
 import { useContext, useEffect, useRef, useState } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { ClearCacheContext, queryClient } from "cache";
 import { RetrievalParametersGridMetaData } from "./retrievalParametersMetadata";
 import { makeStyles } from "@mui/styles";
-import { CreateDetailsRequestData } from "components/utils";
 import { useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
+import {
+  CreateDetailsRequestData,
+  ClearCacheContext,
+  queryClient,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",

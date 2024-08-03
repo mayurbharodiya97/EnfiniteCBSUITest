@@ -8,9 +8,17 @@ import {
   Typography,
 } from "@mui/material";
 import ExtractedHeader from "../c-kyc/formModal/ExtractedHeader";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
-import { Fragment, lazy, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  lazy,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined"; // sidebar-open-icon
 import CancelIcon from "@mui/icons-material/Cancel"; // sidebar-close-icon
 import { CustomTabLabel, TabPanel } from "../c-kyc/formModal/formModal";
@@ -63,69 +71,69 @@ const AcctModal = ({ onClose, formmode, from }) => {
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
-  const [updateDialog, setUpdateDialog] = useState(false)
+  const [updateDialog, setUpdateDialog] = useState(false);
   const [cancelDialog, setCancelDialog] = useState(false);
-  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
+  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false);
   const onCloseUpdateDialog = () => {
-    setUpdateDialog(false)
-  }
+    setUpdateDialog(false);
+  };
   const onCloseCancelDialog = () => {
-    setCancelDialog(false)
-  }
+    setCancelDialog(false);
+  };
   const onClosePreventUpdateDialog = () => {
-    setAlertOnUpdate(false)
-  }
+    setAlertOnUpdate(false);
+  };
 
-  // get account form details  
+  // get account form details
   const mutation: any = useMutation(API.getAccountDetails, {
     onSuccess: (data) => {
-      handleFormDataonRetrievectx(data[0])
-      onClosePreventUpdateDialog()
+      handleFormDataonRetrievectx(data[0]);
+      onClosePreventUpdateDialog();
     },
     onError: (error: any) => {},
-  });  
+  });
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
   }, []);
 
   useEffect(() => {
-    if(Boolean(location.state)) {
-      if(AcctMSTState?.formmodectx === "new") {
-        handleFormModalOpenctx()
+    if (Boolean(location.state)) {
+      if (AcctMSTState?.formmodectx === "new") {
+        handleFormModalOpenctx();
       } else {
-        handleColTabChangectx(0)
-        handleFormModalOpenOnEditctx(location?.state)
-  
-        if(Array.isArray(location.state) && location.state.length>0) {
+        handleColTabChangectx(0);
+        handleFormModalOpenOnEditctx(location?.state);
+
+        if (Array.isArray(location.state) && location.state.length > 0) {
           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
           const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
           const acctCD = location.state?.[0]?.data.ACCOUNT_NUMBER ?? "";
           let payload: {
-            COMP_CD?: string, 
-            CUSTOMER_ID?:string,
-            BRANCH_CD: string, 
-            REQUEST_CD:string, 
-            J_TYPE: string, 
-            ACCT_TYPE: string, 
-            ACCT_CD: string
+            COMP_CD?: string;
+            CUSTOMER_ID?: string;
+            BRANCH_CD: string;
+            REQUEST_CD: string;
+            J_TYPE: string;
+            ACCT_TYPE: string;
+            ACCT_CD: string;
           } = {
             BRANCH_CD: authState?.user?.branchCode ?? "",
-            REQUEST_CD: reqCD,  
+            REQUEST_CD: reqCD,
             J_TYPE: "J",
-            ACCT_TYPE: acctType,  
+            ACCT_TYPE: acctType,
             ACCT_CD: acctCD,
-          }
-          if(Object.keys(payload)?.length > 1) {
-            mutation.mutate(payload)
+          };
+          if (Object.keys(payload)?.length > 1) {
+            mutation.mutate(payload);
           }
         }
       }
     } else {
-      handleFormModalClosectx()
-      onClose()
-    }    
-  }, [AcctMSTState?.formmodectx])
+      handleFormModalClosectx();
+      onClose();
+    }
+  }, [AcctMSTState?.formmodectx]);
 
   const closeForm = () => {
     handleFormModalClosectx();
@@ -149,14 +157,17 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   const dialogsMemo = useMemo(() => {
     // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
-    return <Fragment>
+    return (
+      <Fragment>
         {/* confirms before updating */}
-        {updateDialog && <ConfirmUpdateDialog 
-            open={updateDialog} 
-            onClose={onCloseUpdateDialog} 
+        {updateDialog && (
+          <ConfirmUpdateDialog
+            open={updateDialog}
+            onClose={onCloseUpdateDialog}
             mutationFormDTL={mutation}
             setAlertOnUpdate={setAlertOnUpdate}
-        />}
+          />
+        )}
 
         {/* confirming action-remark dialog */}
         {/* {actionDialog && <ActionDialog 
@@ -167,47 +178,56 @@ const AcctModal = ({ onClose, formmode, from }) => {
         />} */}
 
         {/* data lost alert on closing form */}
-        {cancelDialog && <CloseFormDialog 
-            open={cancelDialog} 
-            onClose={onCloseCancelDialog} 
-            closeForm = {onClose}
-        />}
+        {cancelDialog && (
+          <CloseFormDialog
+            open={cancelDialog}
+            onClose={onCloseCancelDialog}
+            closeForm={onClose}
+          />
+        )}
 
         {/* no change found to update dialog */}
-        {alertOnUpdate && <PreventUpdateDialog 
-            open={alertOnUpdate} 
-            onClose={onClosePreventUpdateDialog} 
-        />}
-    </Fragment>
+        {alertOnUpdate && (
+          <PreventUpdateDialog
+            open={alertOnUpdate}
+            onClose={onClosePreventUpdateDialog}
+          />
+        )}
+      </Fragment>
+    );
   }, [
-    // updateDialog, actionDialog, 
-    cancelDialog, alertOnUpdate])
+    // updateDialog, actionDialog,
+    cancelDialog,
+    alertOnUpdate,
+  ]);
 
   useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
-      const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
-      const totalTab:any = Array.isArray(steps) && steps.length;
+    if (Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
+      const steps = AcctMSTState?.tabNameList.filter((tab) => tab.isVisible);
+      const totalTab: any = Array.isArray(steps) && steps.length;
       // handleCurrFormctx({
       //   // currentFormRefctx: [],
       //   currentFormSubmitted: null,
       //   // colTabValuectx: null,
       //   // isLoading: false,
       // })
-      if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
+      if (Boolean(AcctMSTState?.isFinalUpdatectx)) {
         const getUpdatedTabs = async () => {
-          const {updated_tab_format, update_type} = await handleUpdatectx({
-            COMP_CD: authState?.companyID ?? ""
-          })
-          if(typeof updated_tab_format === "object") {
+          const { updated_tab_format, update_type } = await handleUpdatectx({
+            COMP_CD: authState?.companyID ?? "",
+          });
+          if (typeof updated_tab_format === "object") {
             // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
             if (Object.keys(updated_tab_format)?.length === 0) {
-                setAlertOnUpdate(true)
-            } else if(Object.keys(updated_tab_format)?.length>0) {
-              setUpdateDialog(true)
+              setAlertOnUpdate(true);
+            } else if (Object.keys(updated_tab_format)?.length > 0) {
+              setUpdateDialog(true);
             }
           }
-        }
-        getUpdatedTabs().catch(err => console.log("update error", err.message))
+        };
+        getUpdatedTabs().catch((err) =>
+          console.log("update error", err.message)
+        );
         // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
         //   setUpdateDialog(true)
         //   // setCancelDialog(true)
@@ -215,15 +235,19 @@ const AcctModal = ({ onClose, formmode, from }) => {
         //   setAlertOnUpdate(true)
         // }
       } else {
-        if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+        if (totalTab - 1 > AcctMSTState?.colTabValuectx) {
           handleCurrFormctx({
             colTabValuectx: AcctMSTState?.colTabValuectx + 1,
-          })
-          handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
+          });
+          handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
         }
-      }      
+      }
     }
-  }, [AcctMSTState?.currentFormctx.currentFormSubmitted, AcctMSTState?.tabNameList, AcctMSTState?.isFinalUpdatectx])
+  }, [
+    AcctMSTState?.currentFormctx.currentFormSubmitted,
+    AcctMSTState?.tabNameList,
+    AcctMSTState?.isFinalUpdatectx,
+  ]);
 
   const steps: any = AcctMSTState?.tabsApiResctx.filter((tab) => tab.isVisible);
 
@@ -232,30 +256,30 @@ const AcctModal = ({ onClose, formmode, from }) => {
       case "Main":
         return <MainTab />;
       case "Term Loan":
-        return <TermLoanTab />;  
+        return <TermLoanTab />;
       case "Savings Deposit":
-        return <SavingsDepositTab />  
+        return <SavingsDepositTab />;
       case "Hypothication":
-        return <HypothicationTab />  
+        return <HypothicationTab />;
       case "Current":
-        return <CurrentTab />  
+        return <CurrentTab />;
       case "Share/Nominal":
-        return <ShareNominalTab />  
+        return <ShareNominalTab />;
       case "Cummulative Fix Deposit":
       case "Fix Deposit":
-        return <FixDepositTab />  
+        return <FixDepositTab />;
       case "Locker":
-        return <LockerTab />
+        return <LockerTab />;
       case "Mobile Registration":
-        return <MobileRegTab />
+        return <MobileRegTab />;
       case "Relative Details":
-        return <RelativeDtlTab />
+        return <RelativeDtlTab />;
       case "Other Address":
-        return <OtherAddTab />
+        return <OtherAddTab />;
       case "Documents":
-        return <DocumentTab />
+        return <DocumentTab />;
       case "Advance Configuration":
-        return <AdvConfigTab />
+        return <AdvConfigTab />;
       case "Joint Holder":
         return <JointTab />;
       case "Nominee":

@@ -1,18 +1,22 @@
 import { Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import FormWrapper from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { prioritymastersubformmetadata } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
 import { enqueueSnackbar } from "notistack";
-import { extractMetaData, utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoadingTextAnimation } from "components/common/loader";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 export const Proritysubform = ({
   isDataChangedRef,
@@ -24,37 +28,34 @@ export const Proritysubform = ({
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const { state: rows } = useLocation()
+  const { state: rows } = useLocation();
 
-  const mutation = useMutation((API.updatePriorityMasterSubData),
-    {
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        CloseMessageBox();
-        closeDialog();
-      },
-    }
-  );
+  const mutation = useMutation(API.updatePriorityMasterSubData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar("insertSuccessfully", {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
-    setFieldError,
+    setFieldError
   ) => {
-
     endSubmit(true);
 
     let oldData = {
@@ -101,7 +102,9 @@ export const Proritysubform = ({
       {gridData ? (
         <FormWrapper
           key={"prioritymastersubformmetadata" + formMode}
-          metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as MetaDataType
+          metaData={extractMetaData(prioritymastersubformmetadata, formMode)}
+          as
+          MetaDataType
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           initialValues={{ ...rows?.[0]?.data }}
@@ -172,11 +175,15 @@ export const Proritysubform = ({
         <LoaderPaperComponent />
       )}
     </>
-
   );
 };
 
-export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView, gridData = [] }) => {
+export const ProritymastersubformWrapper = ({
+  isDataChangedRef,
+  closeDialog,
+  defaultView,
+  gridData = [],
+}) => {
   return (
     <Dialog
       open={true}
@@ -192,7 +199,8 @@ export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, def
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         defaultView={defaultView}
-        gridData={gridData} />
+        gridData={gridData}
+      />
     </Dialog>
   );
 };

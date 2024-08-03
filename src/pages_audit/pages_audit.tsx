@@ -19,9 +19,12 @@ import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN3
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
+import { AuthContext } from "./auth";
+import { AuthContextProvider } from "@acuteinfo/common-base";
 // import { AccDetailContext } from "./auth";
 
 export const PagesAudit = (props, { columns }) => {
+  const { authState } = useContext(AuthContext);
   const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
   // const { cardStore, setCardStore } = useContext(AccDetailContext);
@@ -54,57 +57,58 @@ export const PagesAudit = (props, { columns }) => {
 
   return (
     <Fragment>
-      <div className={classes.root}>
-        {/* {alert("Test")} */}
-        <AppBar
-          open={drawerOpen}
-          handleDrawerOpen={handleDrawerOpen}
-          handleDrawerClose={handleDrawerClose}
-          columns={columns}
-        />
-        <Drawer
-          open={drawerOpen}
-          handleDrawerClose={handleDrawerClose}
-          handleDrawerOpen={handleDrawerOpen}
-        >
-          <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
-        </Drawer>
-        <Content>
-          <Routes>
-            {isValidURL ? (
-              <>
-                {/* <Route
+      <AuthContextProvider authState={authState}>
+        <div className={classes.root}>
+          {/* {alert("Test")} */}
+          <AppBar
+            open={drawerOpen}
+            handleDrawerOpen={handleDrawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            columns={columns}
+          />
+          <Drawer
+            open={drawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            handleDrawerOpen={handleDrawerOpen}
+          >
+            <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
+          </Drawer>
+          <Content>
+            <Routes>
+              {isValidURL ? (
+                <>
+                  {/* <Route
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
                 /> */}
-                <Route path="profile" element={<Profile />} />
-                <Route path="dashboard/*" element={<Dashboard />} />
-                <Route path="master/*" element={<Master />} />
-                <Route path="operation/*" element={<OperationsMenu />} />
-                <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="configuration/*" element={<Configuration />} />
-                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                <Route path="operation/daily_tran_F1" element={<Trn001 />} />
-                <Route
-                  path="operation/cnf_daily_tran_F2"
-                  element={<Trn002 />}
-                />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="dashboard/*" element={<Dashboard />} />
+                  <Route path="master/*" element={<Master />} />
+                  <Route path="operation/*" element={<OperationsMenu />} />
+                  <Route path="view-statement/*" element={<AccountDetails />} />
+                  <Route path="configuration/*" element={<Configuration />} />
+                  <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                  <Route path="operation/daily_tran_F1" element={<Trn001 />} />
+                  <Route
+                    path="operation/cnf_daily_tran_F2"
+                    element={<Trn002 />}
+                  />
 
-                {/* <Route
+                  {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}
                 /> */}
-              </>
-            ) : null}
-            <Route
-              path="*"
-              element={<RedirectComponent isValidURL={isValidURL} />}
-            />
-            <Route path="cash/368" element={<TRN368 />} />
-            <Route path="cash/043" element={<TRN043 />} />
-            <Route path="cash/044" element={<TRN044 />} />
-          </Routes>
-          {/* <div
+                </>
+              ) : null}
+              <Route
+                path="*"
+                element={<RedirectComponent isValidURL={isValidURL} />}
+              />
+              <Route path="cash/368" element={<TRN368 />} />
+              <Route path="cash/043" element={<TRN043 />} />
+              <Route path="cash/044" element={<TRN044 />} />
+            </Routes>
+            {/* <div
             style={{
               position: "absolute",
               right: "0px",
@@ -114,8 +118,9 @@ export const PagesAudit = (props, { columns }) => {
           >
             <ChatMessageBox />Switch 
           </div> */}
-        </Content>
-      </div>
+          </Content>
+        </div>
+      </AuthContextProvider>
     </Fragment>
   );
 };

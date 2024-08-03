@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "registry"; //register functions to be used across application
-import "components/tableCellComponents"; //register table cell components
 import "typeface-roboto";
 import "components/multiLanguage/languagesConfiguration";
 import { FullScreenLoader } from "components/common/loaderPaper";

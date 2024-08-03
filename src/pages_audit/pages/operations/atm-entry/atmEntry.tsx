@@ -25,30 +25,30 @@ import React, {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
-import { enqueueSnackbar } from "notistack";
-import { ClearCacheProvider, queryClient } from "cache";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { usePopupContext } from "components/custom/popupContext";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
 import { AtmEntryMetaData602 } from "./atmEntryMetadata";
 import * as API from "./api";
 import { makeStyles } from "@mui/styles";
 import { atmGridMetaData } from "./atmEntryGridMetadata";
 import { CardDetails } from "./cardDetails/cardDetails";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { gridClasses } from "@mui/system";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Draggable from "react-draggable";
+import {
+  LoaderPaperComponent,
+  ClearCacheProvider,
+  RemarksAPIWrapper,
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 const useStyles: any = makeStyles((theme: any) => ({
   box: {

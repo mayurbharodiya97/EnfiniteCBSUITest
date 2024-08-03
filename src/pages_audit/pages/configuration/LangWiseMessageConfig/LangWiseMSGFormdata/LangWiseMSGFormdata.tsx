@@ -1,6 +1,9 @@
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { MasterDetailsForm } from "components/formcomponent";
+import {
+  queryClient,
+  PopupMessageAPIWrapper,
+  FormWrapper,
+  MasterDetailsForm,
+} from "@acuteinfo/common-base";
 import React, {
   FC,
   useCallback,
@@ -19,11 +22,9 @@ import {
 } from "@mui/material";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useLocation } from "react-router-dom";
-import { queryClient } from "cache";
 import * as API from "../api";
 import { useMutation, useQueries, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { enqueueSnackbar } from "notistack";
 interface editMasterDataType {
   data: object;

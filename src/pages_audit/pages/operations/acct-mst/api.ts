@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getCIFCategories = async ({ COMP_CD, BRANCH_CD, ENTITY_TYPE }) => {
@@ -52,20 +52,20 @@ export const getAcctModeOptions = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
-export const getCustomerData = async ({ 
+export const getCustomerData = async ({
   CUSTOMER_ID,
   ACCT_TYPE,
   COMP_CD,
-  SCREEN_REF, 
+  SCREEN_REF,
 }) => {
-  if(Boolean(CUSTOMER_ID)) {
+  if (Boolean(CUSTOMER_ID)) {
     const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDATA", {
-      COMP_CD: COMP_CD,
-      ACCT_TYPE: ACCT_TYPE,
-      CUSTOMER_ID: CUSTOMER_ID,
-      SCREEN_REF: SCREEN_REF
-    });
+      await AuthSDK.internalFetcher("GETCUSTOMERDATA", {
+        COMP_CD: COMP_CD,
+        ACCT_TYPE: ACCT_TYPE,
+        CUSTOMER_ID: CUSTOMER_ID,
+        SCREEN_REF: SCREEN_REF,
+      });
     if (status === "0") {
       return data;
     } else {
@@ -74,16 +74,12 @@ export const getCustomerData = async ({
   }
 };
 
-export const getPendingAcct = async ({
-  COMP_CD,
-  BRANCH_CD,
-  REQ_FLAG,
-}) => {
+export const getPendingAcct = async ({ COMP_CD, BRANCH_CD, REQ_FLAG }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPENDINGACCTLIST", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
-      REQ_FLAG: REQ_FLAG
+      REQ_FLAG: REQ_FLAG,
     });
   if (status === "0") {
     return data;
@@ -298,15 +294,17 @@ export const getPurposeTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ PURPOSE_CD, DISPLAY_NM, ...other }) => {
-        return {
-          ...other,
-          PURPOSE_CD: PURPOSE_CD,
-          DISPLAY_NM: DISPLAY_NM,
-          value: PURPOSE_CD,
-          label: DISPLAY_NM,
-        };
-      });
+      responseData = responseData.map(
+        ({ PURPOSE_CD, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            PURPOSE_CD: PURPOSE_CD,
+            DISPLAY_NM: DISPLAY_NM,
+            value: PURPOSE_CD,
+            label: DISPLAY_NM,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -323,15 +321,17 @@ export const getPrioritParentTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ PRIORITY_CD, PRIORITY_NM, ...other }) => {
-        return {
-          ...other,
-          PRIORITY_CD: PRIORITY_CD,
-          PRIORITY_NM: PRIORITY_NM,
-          value: PRIORITY_CD,
-          label: PRIORITY_NM,
-        };
-      });
+      responseData = responseData.map(
+        ({ PRIORITY_CD, PRIORITY_NM, ...other }) => {
+          return {
+            ...other,
+            PRIORITY_CD: PRIORITY_CD,
+            PRIORITY_NM: PRIORITY_NM,
+            value: PRIORITY_CD,
+            label: PRIORITY_NM,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -355,15 +355,17 @@ export const getPrioritMainTypeOP = async ({
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ PRIORITY_CD, DISPLAY_NM, ...other }) => {
-          return {
-            ...other,
-            PRIORITY_CD: PRIORITY_CD,
-            DISPLAY_NM: DISPLAY_NM,
-            value: PRIORITY_CD,
-            label: DISPLAY_NM,
-          };
-        });
+        responseData = responseData.map(
+          ({ PRIORITY_CD, DISPLAY_NM, ...other }) => {
+            return {
+              ...other,
+              PRIORITY_CD: PRIORITY_CD,
+              DISPLAY_NM: DISPLAY_NM,
+              value: PRIORITY_CD,
+              label: DISPLAY_NM,
+            };
+          }
+        );
       }
       return responseData;
     } else {
@@ -390,15 +392,17 @@ export const getPriorityWeakerTypeOP = async ({
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ SUB_PRIORITY_CD, DESCRIPTION, ...other }) => {
-          return {
-            ...other,
-            SUB_PRIORITY_CD: SUB_PRIORITY_CD,
-            DESCRIPTION: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
-            value: SUB_PRIORITY_CD,
-            label: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
-          };
-        });
+        responseData = responseData.map(
+          ({ SUB_PRIORITY_CD, DESCRIPTION, ...other }) => {
+            return {
+              ...other,
+              SUB_PRIORITY_CD: SUB_PRIORITY_CD,
+              DESCRIPTION: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
+              value: SUB_PRIORITY_CD,
+              label: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
+            };
+          }
+        );
       }
       return responseData;
     } else {
@@ -460,11 +464,11 @@ export const getAgentTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
 };
 
 interface RiskReqParam {
-  COMP_CD: string,
-  BRANCH_CD: string,
-  FOR_SHARE?: string
+  COMP_CD: string;
+  BRANCH_CD: string;
+  FOR_SHARE?: string;
 }
-export const getRiskCategTypeOP = async (reqObj:RiskReqParam) => {
+export const getRiskCategTypeOP = async (reqObj: RiskReqParam) => {
   const { COMP_CD, BRANCH_CD, FOR_SHARE } = reqObj;
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACTRISKCLASSDDW", {
@@ -500,15 +504,17 @@ export const getIndustryTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ INDUSTRY_CODE, DISPLAY_NM, ...other }) => {
-        return {
-          ...other,
-          INDUSTRY_CODE: INDUSTRY_CODE,
-          DISPLAY_NM: DISPLAY_NM,
-          value: INDUSTRY_CODE,
-          label: DISPLAY_NM,
-        };
-      });
+      responseData = responseData.map(
+        ({ INDUSTRY_CODE, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            INDUSTRY_CODE: INDUSTRY_CODE,
+            DISPLAY_NM: DISPLAY_NM,
+            value: INDUSTRY_CODE,
+            label: DISPLAY_NM,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -571,7 +577,7 @@ export const getBusinessypeOP = async ({ COMP_CD, BRANCH_CD }) => {
 export const getAdvDirectorNameTypeOP = async ({ A_ROLE_IND }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDIRECTORLIST", {
-      ROLE: A_ROLE_IND
+      ROLE: A_ROLE_IND,
     });
   if (status === "0") {
     let responseData = data;
@@ -653,15 +659,17 @@ export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ SECURITY_CD, DISPLAY_NM, ...other }) => {
-        return {
-          ...other,
-          SECURITY_CD: SECURITY_CD,
-          DISPLAY_NM: DISPLAY_NM,
-          value: SECURITY_CD,
-          label: DISPLAY_NM,
-        };
-      });
+      responseData = responseData.map(
+        ({ SECURITY_CD, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            SECURITY_CD: SECURITY_CD,
+            DISPLAY_NM: DISPLAY_NM,
+            value: SECURITY_CD,
+            label: DISPLAY_NM,
+          };
+        }
+      );
     }
     return responseData;
   } else {

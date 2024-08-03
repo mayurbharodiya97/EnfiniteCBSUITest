@@ -170,7 +170,7 @@ const ReportExportScreen = ({
 
     // call export and show custom notification popup
     enqueueSnackbar("Report Export Status", {
-      variant: "customSnackbar",
+      variant: "exportReportSnackbar",
       preventDuplicate: true,
       persist: true,
       anchorOrigin: { horizontal: "right", vertical: "bottom" },

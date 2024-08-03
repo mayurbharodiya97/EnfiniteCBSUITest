@@ -11,17 +11,22 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getApiFormMetadata } from "./getApiiFormMetadata";
-import { SubmitFnType } from "packages/form";
-import { CreateDetailsRequestData, utilFunction } from "components/utils";
+
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { savedynamicAPIconfig } from "../api";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
+
+import {
+  Alert,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  CreateDetailsRequestData,
+} from "@acuteinfo/common-base";
 
 const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
   const formRef = useRef<any>(null);

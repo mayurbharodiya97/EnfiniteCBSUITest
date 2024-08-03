@@ -1,8 +1,14 @@
-import GridWrapper from "components/dataTableStatic";
 import { QuickAccessTableGridMetaData } from "./gridMetaData";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
-import { SearchBar } from "components/derived";
+import {
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  ClearCacheProvider,
+  queryClient,
+  SearchBar,
+  Alert,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import * as API from "../api";
@@ -16,9 +22,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -186,7 +190,7 @@ const QuickAccessTableGrid = () => {
         >
           <GradientButton
             onClick={() => handleButtonClick("Recent")}
-            color={
+            textColor={
               activeButton === "Recent" ? "var(--theme-color2)" : "#ffffffb3"
             }
             style={{
@@ -205,7 +209,7 @@ const QuickAccessTableGrid = () => {
           </GradientButton>
           <GradientButton
             onClick={() => handleButtonClick("Favourites")}
-            color={
+            textColor={
               activeButton === "Favourites"
                 ? "var(--theme-color2)"
                 : "#ffffffb3"

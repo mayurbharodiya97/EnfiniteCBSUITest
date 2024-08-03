@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { getDDDWAcctType, getPMISCData } from "../api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
 
 export const CategoryMasterFormMetaData = {

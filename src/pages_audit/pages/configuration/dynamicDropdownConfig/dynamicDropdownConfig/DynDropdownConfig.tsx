@@ -2,20 +2,22 @@ import { Button, CircularProgress, Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
-import { queryClient } from "cache";
 import { useSnackbar } from "notistack";
-// import { ActionsMetaData } from "./actionMetadata";
 import { makeStyles } from "@mui/styles";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { ProcessDetailsData, utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { DynamicDropdownConfigMetaData } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
-
+import {
+  GradientButton,
+  ProcessDetailsData,
+  utilFunction,
+  PopupMessageAPIWrapper,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+} from "@acuteinfo/common-base";
 export const DynamicDropdownConfig = ({
   isDataChangedRef,
   closeDialog,
