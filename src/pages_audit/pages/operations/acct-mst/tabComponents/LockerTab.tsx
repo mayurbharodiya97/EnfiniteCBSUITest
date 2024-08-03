@@ -12,7 +12,50 @@ const LockerTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
-  const onSubmitPDHandler = (
+
+  const handleSave = (e) => {
+    handleCurrFormctx({
+      isLoading: true,
+    })
+    const refs = [formRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  }
+
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: AcctMSTState?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
+  
+  useEffect(() => {
+    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: AcctMSTState?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
+
+  const onFormSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
@@ -25,7 +68,6 @@ const LockerTab = () => {
       formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
-
 
 
 
@@ -45,7 +87,7 @@ const LockerTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
+      if(!AcctMSTState?.isFreshEntryctx) {
         let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
         let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
 
@@ -71,57 +113,29 @@ const LockerTab = () => {
     }
     endSubmit(true);
   };
-  const initialVal:any= {}
 
-  const handleSave = (e) => {
-    handleCurrFormctx({
-      isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
-
-  useEffect(() => {
-    let refs = [formRef]
-    handleCurrFormctx({
-      currentFormRefctx: refs,
-      colTabValuectx: AcctMSTState?.colTabValuectx,
-      currentFormSubmitted: null,
-      isLoading: false,
-    })
-  }, [])
-  useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
-        let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
-          submitted = false;
-        } else {
-          submitted = true;
-          handleStepStatusctx({
-            status: "completed",
-            coltabvalue: AcctMSTState?.colTabValuectx,
-          })
-        }
-        handleCurrFormctx({
-          currentFormSubmitted: submitted,
-          isLoading: false,
-        })
-        setFormStatus([])
-      }
-    }
-  }, [formStatus])
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes, 
+    AcctMSTState?.formDatactx["MAIN_DETAIL"]
+  ])
 
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
         ref={formRef}
-        onSubmitHandler={onSubmitPDHandler}
+        onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-tab-locker-form" + initialVal}
         metaData={locker_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{GPARAM155: AcctMSTState?.gparam155 }}
