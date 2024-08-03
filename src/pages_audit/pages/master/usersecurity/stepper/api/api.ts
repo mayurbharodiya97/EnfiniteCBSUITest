@@ -232,11 +232,11 @@ export const getLoginShiftddw = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ TRAN_CD, DESCRIPTION, ...rest }) => {
-        return { rest, value: TRAN_CD, label: DESCRIPTION };
+      responseData = responseData.map(({ TRAN_CD: SHIFT_TRAN_CD, DESCRIPTION, ...rest }) => {
+        return { rest, value: SHIFT_TRAN_CD, label: DESCRIPTION };
       });
     }
-    return responseData;
+    return responseData;  
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
