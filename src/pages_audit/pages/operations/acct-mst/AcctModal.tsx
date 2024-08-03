@@ -23,7 +23,7 @@ import TabStepper from "./TabStepper";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
 import MainTab from "./tabComponents/MainTab";
-import JointTab from "./tabComponents/JointTab";
+import JointTab from "./tabComponents/jointTabs/JointTab";
 import NomineeJointTab from "./tabComponents/NomineeJointTab";
 import GuardianJointTab from "./tabComponents/GuardianJointTab";
 import GuarantorJointTab from "./tabComponents/GuarantorJointTab";

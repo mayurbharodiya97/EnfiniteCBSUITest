@@ -1,10 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { AcctMSTContext } from "../AcctMSTContext";
-import { joint_tab_metadata } from "../tabMetadata/jointTabMetadata";
+import { AcctMSTContext } from "../../AcctMSTContext";
+import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
 import { AuthContext } from "pages_audit/auth";
-import TabNavigate from "../TabNavigate";
+import TabNavigate from "../../TabNavigate";
 import _ from "lodash";
 
 const JointTab = () => {
@@ -15,7 +15,49 @@ const JointTab = () => {
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
 
-  const onSubmitHandler = (
+  const handleSave = (e) => {
+    handleCurrFormctx({
+      isLoading: true,
+    })
+    const refs = [formRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  }
+
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: AcctMSTState?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
+
+  useEffect(() => {
+    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: AcctMSTState?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
+
+  const onFormSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
@@ -32,6 +74,7 @@ const JointTab = () => {
         if(AcctMSTState?.isFreshEntryctx) {
           filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
         }
+        console.log("AcctMSTSsfwtate joint", filteredCols)
         let newFormatOtherAdd = data?.JOINT_HOLDER_DTL?.map((formRow, i) => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
@@ -82,54 +125,13 @@ const JointTab = () => {
     AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
   ])
 
-  const handleSave = (e) => {
-    handleCurrFormctx({
-      isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
-
-  useEffect(() => {
-    let refs = [formRef]
-    handleCurrFormctx({
-      currentFormRefctx: refs,
-      colTabValuectx: AcctMSTState?.colTabValuectx,
-      currentFormSubmitted: null,
-      isLoading: false,
-    })
-  }, [])
-  useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
-        let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
-          submitted = false;
-        } else {
-          submitted = true;
-          handleStepStatusctx({
-            status: "completed",
-            coltabvalue: AcctMSTState?.colTabValuectx,
-          })
-        }
-        handleCurrFormctx({
-          currentFormSubmitted: submitted,
-          isLoading: false,
-        })
-        setFormStatus([])
-      }
-    }
-  }, [formStatus])
-
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-joint-tab-form" + initialVal}
         ref={formRef}
         metaData={joint_tab_metadata as MetaDataType}
-        onSubmitHandler={onSubmitHandler}
+        onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: AcctMSTState?.customerIDctx ?? "", REQ_FLAG: (AcctMSTState?.isFreshEntryctx || AcctMSTState?.isDraftSavedctx) ? "F" : "E"}}
