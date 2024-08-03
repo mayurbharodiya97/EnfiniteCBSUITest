@@ -321,11 +321,10 @@ export const AuthLoginController = () => {
           },
         });
         if (data?.STATUS === "0") {
-          let messageData = JSON.parse(data?.ALERT_MSG_LIST || "[]");
-          for (let i = 0; i < messageData.length; i++) {
+          for (let i = 0; i < data?.ALERT_MSG_LIST.length; i++) {
             await MessageBox({
               messageTitle: "Password Alert",
-              message: messageData[i],
+              message: data?.ALERT_MSG_LIST[i],
             });
           }
         }

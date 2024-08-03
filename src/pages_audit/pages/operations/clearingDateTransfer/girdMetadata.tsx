@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "Clearing Date Transfer(RPT/1188)",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -161,7 +161,7 @@ export const RetrieveFormConfigMetaData = {
 export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ClearingRetrieveGrid",
+    gridLabel: "",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 400,
@@ -184,6 +184,7 @@ export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
     allowRowSelection: true,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
+    // footerNote:"test"
   },
   filters: [],
   columns: [
@@ -216,6 +217,8 @@ export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       placeholder: "",
+      isDisplayTotal: true,
+      isSelectedTotal: true,
       width: 180,
       minWidth: 200,
       maxWidth: 250,
@@ -278,7 +281,7 @@ export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
 export const clearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ClearingRetrieveGrid",
+    gridLabel: "",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 400,
@@ -336,6 +339,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
       width: 180,
       minWidth: 200,
       maxWidth: 250,
+      isDisplayTotal: true,
     },
     {
       accessor: "BANK_CD",
@@ -364,7 +368,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
 export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "SlipRetrieveGrid",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -432,9 +436,11 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       placeholder: "",
-      width: 120,
-      minWidth: 150,
-      maxWidth: 200,
+      width: 150,
+      minWidth: 200,
+      maxWidth: 250,
+      isDisplayTotal: true,
+      isSelectedTotal: true,
     },
     {
       accessor: "AMOUNT",
@@ -446,6 +452,8 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 250,
       maxWidth: 300,
+      isDisplayTotal: true,
+      isSelectedTotal: true,
     },
     {
       accessor: "CNT",

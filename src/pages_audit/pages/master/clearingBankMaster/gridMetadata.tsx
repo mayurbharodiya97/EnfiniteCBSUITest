@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ClearingBankMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Clearing Bank Master (MST/091)",
+    gridLabel: "",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 350,

@@ -152,7 +152,7 @@ export const en_language_data = {
 
   // Branch Selection screen
   Back: "Back",
-  Proceed: "Proceed ?",
+  Proceed: "Proceed ",
   AccessBranchList: "Access Branch List",
   BranchName: "Branch Name",
   BeginTime: "Begin Time",
@@ -197,9 +197,9 @@ export const en_language_data = {
   CKYCGroup: "C-KYC Group",
   Constitution: "Constitution",
   //area master
-  PinCode: "Pin Code",
-  FROMLIMIT: "FROM LIMIT",
-  TOLIMIT: "TO LIMIT",
+  PinCode:"Pin Code",
+  FROMLIMIT:"FROM LIMIT",
+  TOLIMIT:"TO LIMIT",
 
   //
   Delete: "Remove",
@@ -666,7 +666,7 @@ export const en_language_data = {
 
   // Advocate Master
   AdvocateMaster: "Advocate Master",
-  SpecialCharacterIsNotAllowed: "Special character is not allowed.",
+  SpecialCharacterIsNotAllowed: "Special character are not allowed.",
   AdvocateName: "Advocate Name",
   EnterAdvocateName: "Enter Advocate Name",
   AdvocateNameisrequired: "Advocate Name is required.",
@@ -784,7 +784,7 @@ export const en_language_data = {
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
-  ShadowBalance: "Shadow.Balance",
+  ShadowBalance: "Shadow Balance",
   PleaseEnterAlphanumericValue: "Please Enter Alphanumeric Value",
   GeneralFromDate: "From Date",
   GeneralToDate: "To Date",
@@ -1182,6 +1182,7 @@ export const en_language_data = {
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are You sure to Save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
+  ProceedGen :"Proceed ?",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1305,6 +1306,54 @@ export const en_language_data = {
   IFSCCodeisRequired: "IFSC Code is Required",
   IfscValidate: "IFSC code should be of eleven digits",
   BankNameisRequired: "Bank Name is Required",
+  ChequeAvailableforClearingDateTransferAreYouSureContinue: "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  FromZone: "From Zone", ToZone: "To Zone", Count: "Count",
+
+  // inward clearing
+
+  ValidationSuccessful:"Validation Successful",
+  AreYouSurePostThisCheque:"Are you sure to post this Cheque?",
+  ModeisRequired:"Mode is Required",
+  PeriodNameisRequired:"Period Name is Required",
+  InstNoisRequired:"Installment is Required",
+  IFSCCodeisRequired:"IFSC Code is Required",
+  IfscValidate:"IFSC code should be of eleven digits",
+  BankNameisRequired: "Bank Name is Required",
+  DoYouWantAllowTransactionVoucherNo: "Do you want to allow this transaction - Voucher No.",
+  PleaseSelectAtLeastOneRow: "Please select at least one row.",
+  SelectAll: "Select All",
+  DeselectAll: "Deselect All",
+  DoYouWantRealizeDraft: "Do you want to realize Draft?",
+  DoWantRealizeDraftOrDirectPostInGL: "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+  OnlyError: "Only Error",
+  All: "All", ConfirmationPending: "Confirmation Pending", DraftBankerCheques: "Draft/Banker Cheques",
+  ShareDividendWarrant: "Share Dividend Warrant",
+  EnterBranch: "Enter Branch", ACBranch: "A/C Branch",
+  ChequeSign: "Cheque/Sign", FromBank: "From Bank",
+  MICR: "MICR",
+  InwardClearingProcess: "Inward Clearing Process",
+  DividendAmountMatch: "Dividend Amount not match",
+  InwardClearingChequeDetail: "Inward Clearing Cheque Detail",
+  Post: "Post", PositivePay: "Positive Pay", Return: "Return",
+  ReturnBranch: "Return Branch",
+  ReturnAccountType: "Return Account Type",
+  ReturnACNumber: "Return A/C Number", OtherReason: "Other Reason",
+  Year: "Year", WarrantNumber: "Warrant Number", Dr: "Dr.",
+  DividendAmount: "Dividend Amount", Shares: "Shares", SharesAmount: "Shares Amount",
+  Paid: "Paid", PaidDate: "Paid Date", CreditAccount: "Credit Account",
+  Id: "Id", OpeningDateRequired: "Opening Date is required.",
+  JointName: "Joint Name", OpeningBalance: "Opening Balance",
+  ClosingBalance: "Closing Balance", NoOfShares: "No.of Shares",
+  Nominee: "Nominee", ModeName: "Mode Name",
+  Category: "Category", AlternatePhone: "Alternate Phone",
+  IssuedBranch: "Issued Branch", FrontGrey: "Front Grey", BackImage: "Back Image",
+  BlackWhite: "Black & White",
+  AreYouReturnThisCheque: "Are you sure to return this Cheque?? ",
+  PleaseEnterACType: "Please Enter A/c Type",
+  PleaseEnterACNumber: "Please Enter A / c Number",
+  SaveClose: "Save & Close",
+
+
   //payslip issue entry
   branchCode: "Branch Code",
   accountType: "Account Type",
@@ -1357,8 +1406,7 @@ export const en_language_data = {
   amount: "Amount",
   regionBtn: "Region Add",
   region: "Region",
-  dateValidationMessage:
-    "To Date should be greater than or equal to From Date.",
+  dateValidationMessage: "To Date should be greater than or equal to From Date.",
   ChequeNoisrequired: "Cheque No. is required",
   amountRequired: "Amount is Required",
   infavourofrequired: "InFavourof is Required",

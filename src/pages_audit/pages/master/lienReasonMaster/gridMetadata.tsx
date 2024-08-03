@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const LienReasonMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Lien Reason Master (MST/809)",
+    gridLabel: "",
     rowIdColumn: "REASON_CD",
     defaultColumnConfig: {
       width: 350,

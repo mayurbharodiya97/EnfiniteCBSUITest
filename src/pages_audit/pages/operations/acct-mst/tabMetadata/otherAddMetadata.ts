@@ -57,11 +57,11 @@ export const otherAdd_tab_metadata = {
             _fields: [
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Address",
                     name: "AddDivider_ignoreField",
-                    label: ""
+                    label: "Address",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -363,11 +363,11 @@ export const otherAdd_tab_metadata = {
         
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Contact",
                     name: "contactDivider_ignoreField",
-                    label: ""
+                    label: "Contact",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {

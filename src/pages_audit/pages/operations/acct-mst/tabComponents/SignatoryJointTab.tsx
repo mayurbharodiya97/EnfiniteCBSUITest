@@ -58,15 +58,15 @@ const SignatoryJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["SIGNATORY_DTL"] ?? {SIGNATORY_DTL: [{}]}
-        : AcctMSTState?.formDatactx["SIGNATORY_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["SIGNATORY_DTL"] ?? {}, ...AcctMSTState?.formDatactx["SIGNATORY_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["SIGNATORY_DTL"] ?? {}}
+        ? {JOINT_SIGNATORY_DTL: [AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"]
+          ? {JOINT_SIGNATORY_DTL: [...AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"] ?? []]}
+          : {JOINT_SIGNATORY_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_SIGNATORY_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["SIGNATORY_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_SIGNATORY_DTL"],
+    AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"]
   ])
 
   return (

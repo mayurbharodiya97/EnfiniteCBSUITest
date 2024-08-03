@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "ClearingRetrieveInformation",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

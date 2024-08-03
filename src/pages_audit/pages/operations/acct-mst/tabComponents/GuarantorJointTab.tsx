@@ -13,7 +13,6 @@ const GuarantorJointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
-  const initialVal: any = {};
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -56,6 +55,20 @@ const GuarantorJointTab = () => {
     }
   }, [formStatus])
 
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? {JOINT_GUARANTOR_DTL: [AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"]
+          ? {JOINT_GUARANTOR_DTL: [...AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"] ?? []]}
+          : {JOINT_GUARANTOR_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARANTOR_DTL"] ?? []]}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARANTOR_DTL"],
+    AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"]
+  ])
+  
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper

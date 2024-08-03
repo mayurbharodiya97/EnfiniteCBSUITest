@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AdvocateMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Advocate Master (MST/061)",
+    gridLabel: "",
     rowIdColumn: "CODE",
     defaultColumnConfig: {
       width: 350,
