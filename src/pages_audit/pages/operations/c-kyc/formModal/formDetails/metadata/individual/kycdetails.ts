@@ -265,12 +265,12 @@ export const kyc_proof_of_identity_meta_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "PassportDetails",
             name: "passportDivider_ignoreField",
-            label: "passportDivider"
+            label: "PassportDetails",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -364,12 +364,12 @@ export const kyc_proof_of_identity_meta_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "DrivingLicenseDetails",
             name: "drivingLicenseDivider_ignoreField",
-            label: "drivingLicenseDivider"
+            label: "DrivingLicenseDetails",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -506,12 +506,12 @@ export const kyc_proof_of_address_meta_data = {
   fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "CurrentAddress",
             name: "currentAddDivider_ignoreField",
-            label: "currentAddDivider"
+            label: "CurrentAddress",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
       {
           render: {
@@ -847,12 +847,12 @@ export const kyc_proof_of_address_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "CorrespondenceAddress",
         name: "localAddDivider_ignoreField",
-        label: "localAddDivider"
+        label: "CorrespondenceAddress",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: { componentType: "checkbox"},
@@ -1378,12 +1378,12 @@ export const kyc_proof_of_address_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {
@@ -1696,12 +1696,12 @@ export const kyc_legal_proof_of_add_meta_data = {
   fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "CurrentAddress",
             name: "currentAddDivider_ignoreField",
-            label: "currentAddDivider"
+            label: "CurrentAddress",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
       {
           render: {
@@ -2010,12 +2010,12 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "CorrespondenceAddress",
         name: "localAddDivider_ignoreField",
-        label: "localAddDivider"
+        label: "CorrespondenceAddress",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: { componentType: "checkbox"},
@@ -2311,12 +2311,12 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {

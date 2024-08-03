@@ -178,6 +178,7 @@ export const RefreshTokenData = async (refreshToken) => {
 export const LogoutAPI = async ({ userID }) => {
   const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
     USER_ID: userID,
+    APP_TRAN_CD: 51,
   });
   //if (status === "0") {
   return message;
@@ -524,4 +525,3 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
-

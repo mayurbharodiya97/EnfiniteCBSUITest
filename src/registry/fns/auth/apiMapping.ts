@@ -1247,6 +1247,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETPENDINGACCTLIST",
     packageName: "",
   },
+  GETACCOUNTLIST: {
+    url: "accountServiceAPI/GETACCOUNTLIST",
+    packageName: "",
+  },
   GETACCOUNTDETAILS: {
     url: "accountServiceAPI/GETACCOUNTDETAILS",
     packageName: "",
@@ -2057,6 +2061,14 @@ export const ActionWiseAPIConfiguration = {
   },
   RECURRINGPAYMENTGETADVICEDTLJASPER: {
     url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
+    packageName: "",
+  },
+  GETATMACCTTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMACCTTYPEDDDW",
+    packageName: "",
+  },
+  GETATMDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
     packageName: "",
   },
 };

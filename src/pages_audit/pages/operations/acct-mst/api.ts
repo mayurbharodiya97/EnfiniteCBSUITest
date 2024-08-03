@@ -52,6 +52,18 @@ export const getAcctModeOptions = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+export const getAccountList = async ({SELECT_COLUMN}) => {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCOUNTLIST", {
+      SELECT_COLUMN: SELECT_COLUMN,
+    });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getCustomerData = async ({ 
   CUSTOMER_ID,
   ACCT_TYPE,

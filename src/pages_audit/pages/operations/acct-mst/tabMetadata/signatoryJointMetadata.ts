@@ -51,17 +51,17 @@ export const signatoryjoint_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "SIGNATORY_DTL",
+            name: "JOINT_SIGNATORY_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Reference",
                     name: "referenceDivider_ignoreField",
-                    label: "referenceDivider"
+                    label: "Reference",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -131,11 +131,11 @@ export const signatoryjoint_tab_metadata = {
 
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Membership",
                     name: "MembershipDivider_ignoreField",
-                    label: "membershipDivider"
+                    label: "Membership",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -198,11 +198,11 @@ export const signatoryjoint_tab_metadata = {
 
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    // dividerText: "",
                     name: "PersonaldtlDivider_ignoreField",
-                    label: "personaldtlDivider"
+                    label: "",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {

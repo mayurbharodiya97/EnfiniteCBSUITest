@@ -58,15 +58,15 @@ const NomineeJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["NOMINEE_DTL"] ?? {NOMINEE_DTL: [{}]}
-        : AcctMSTState?.formDatactx["NOMINEE_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["NOMINEE_DTL"] ?? {}, ...AcctMSTState?.formDatactx["NOMINEE_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["NOMINEE_DTL"] ?? {}}
+        ? {JOINT_NOMINEE_DTL : [AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
+          ? {JOINT_NOMINEE_DTL : [...AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? []]}
+          : {JOINT_NOMINEE_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["NOMINEE_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"],
+    AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
   ])
 
   return (

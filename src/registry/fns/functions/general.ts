@@ -44,11 +44,11 @@ const GeneralAPISDK = () => {
     try {
       let response = await fetch(
         "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
-        fromLang +
-        "&tl=" +
-        toLang +
-        "&dt=t&q=" +
-        data
+          fromLang +
+          "&tl=" +
+          toLang +
+          "&dt=t&q=" +
+          data
       );
       if (String(response.status) === "200") {
         let resData: any = await response.json();
@@ -178,8 +178,8 @@ const GeneralAPISDK = () => {
 
     const condition = Boolean(reqFlag === "ACCT_CD")
       ? currentField?.value &&
-      dependentFieldValue?.BRANCH_CD?.value &&
-      dependentFieldValue?.ACCT_TYPE?.value
+        dependentFieldValue?.BRANCH_CD?.value &&
+        dependentFieldValue?.ACCT_TYPE?.value
       : currentField?.value;
 
     if (Boolean(condition)) {
@@ -717,7 +717,7 @@ const GeneralAPISDK = () => {
           ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
-              label: CONCDESCRIPTION,
+              label: ACCT_TYPE + " - " + other.DESCRIPTION,
               ...other,
             };
           }
@@ -774,7 +774,7 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
         COMP_CD: COMP_CD,
         CUSTOMER_ID: CUSTOMER_ID,
-        REQ_CD: REQ_CD
+        REQ_CD: REQ_CD,
       });
     if (status === "0") {
       return data;
@@ -782,7 +782,14 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getCustAccountLatestDtl = async ({ COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_CD, AMOUNT, SCREEN_REF }) => {
+  const getCustAccountLatestDtl = async ({
+    COMP_CD,
+    BRANCH_CD,
+    ACCT_TYPE,
+    ACCT_CD,
+    AMOUNT,
+    SCREEN_REF,
+  }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
         COMP_CD: COMP_CD,
@@ -790,8 +797,7 @@ const GeneralAPISDK = () => {
         ACCT_TYPE: ACCT_TYPE,
         ACCT_CD: ACCT_CD,
         AMOUNT: AMOUNT,
-        SCREEN_REF: SCREEN_REF
-
+        SCREEN_REF: SCREEN_REF,
       });
     if (status === "0") {
       return data;
@@ -804,14 +810,14 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETCUSTSIGNPHOTOHISTORY", {
         COMP_CD: COMP_CD,
         CUSTOMER_ID: CUSTOMER_ID,
-        REQ_CD: REQ_CD
+        REQ_CD: REQ_CD,
       });
     if (status === "0") {
-      return data
+      return data;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
-  }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -845,7 +851,7 @@ const GeneralAPISDK = () => {
     getCommTypeList,
     getCustLatestDtl,
     getPhotoSignHistory,
-    getCustAccountLatestDtl
+    getCustAccountLatestDtl,
   };
 };
 export const GeneralAPI = GeneralAPISDK();
