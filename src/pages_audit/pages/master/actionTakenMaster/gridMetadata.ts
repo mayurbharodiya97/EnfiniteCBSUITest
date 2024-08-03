@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ActionTakenMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "ActionTakenMaster",
+    gridLabel: "",
     rowIdColumn: "ACTION_TAKEN_CD",
     defaultColumnConfig: {
       width: 400,

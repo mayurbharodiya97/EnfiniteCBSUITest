@@ -1,12 +1,12 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { getDDDWAcctType, getPMISCData } from "../api";
+import { getPMISCData } from "../api";
 import { utilFunction } from "components/utils";
 import { t } from "i18next";
 
 export const CategoryMasterFormMetaData = {
   form: {
     name: "categoryMaster",
-    label: "CategoryMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -251,10 +251,19 @@ export const CategoryMasterFormMetaData = {
       },
       accountTypeMetadata: {
         name: "TDS_ACCT_TYPE",
-        options: getDDDWAcctType,
         _optionsKey: "getDDDWAcctType",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
+        dependentFields: ["TDS_BRANCH_CD"],
+        disableCaching: true,
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.TDS_BRANCH_CD?.value,
+            DOC_CD: "MST/050",
+            USER_NAME: authState?.user?.id,
+          });
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -435,7 +444,16 @@ export const CategoryMasterFormMetaData = {
       label: "AccountType",
       placeholder: "AccountTypePlaceHolder",
       validationRun: "onChange",
-      options: getDDDWAcctType,
+      dependentFields: ["BRANCH_CD"],
+      disableCaching: true,
+      options: (dependentValue, formState, _, authState) => {
+        return GeneralAPI.get_Account_Type({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          DOC_CD: "MST/050",
+          USER_NAME: authState?.user?.id,
+        });
+      },
       _optionsKey: "getDDDWAcctType",
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -612,7 +630,16 @@ export const CategoryMasterFormMetaData = {
       },
       accountTypeMetadata: {
         name: "TDS_REC_ACCT_TYPE",
-        options: getDDDWAcctType,
+        disableCaching: true,
+        dependentFields: ["TDS_REC_BRANCH_CD"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.TDS_REC_BRANCH_CD?.value,
+            DOC_CD: "MST/050",
+            USER_NAME: authState?.user?.id,
+          });
+        },
         _optionsKey: "getDDDWAcctType",
         validationRun: "onChange",
         runPostValidationHookAlways: true,
