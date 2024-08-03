@@ -3,7 +3,7 @@ import { t } from "i18next";
 export const OrnamentTypeMasterFormMetaData = {
   form: {
     name: "ornamentTypeMaster",
-    label: "OrnamentTypeMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",

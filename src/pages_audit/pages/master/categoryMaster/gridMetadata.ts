@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const CategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "CategoryMaster",
+    gridLabel: "",
     rowIdColumn: "CATEG_CD",
     defaultColumnConfig: {
       width: 400,
