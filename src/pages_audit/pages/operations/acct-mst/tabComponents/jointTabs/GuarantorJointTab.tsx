@@ -1,12 +1,12 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { AcctMSTContext } from "../AcctMSTContext";
+import { AcctMSTContext } from "../../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
-import { nomineejoint_tab_metadata } from "../tabMetadata/nomineeJointMetadata";
-import TabNavigate from "../TabNavigate";
+import { guarantorjoint_tab_metadata } from "../../tabMetadata/guarantorJointMetadataa";
+import TabNavigate from "../../TabNavigate";
 
-const NomineeJointTab = () => {
+const GuarantorJointTab = () => {
   const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx } = useContext(AcctMSTContext);
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -58,23 +58,23 @@ const NomineeJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_NOMINEE_DTL : [AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? {}]}
-        : AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
-          ? {JOINT_NOMINEE_DTL : [...AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? []]}
-          : {JOINT_NOMINEE_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"] ?? []]}
+        ? {JOINT_GUARANTOR_DTL: [AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"]
+          ? {JOINT_GUARANTOR_DTL: [...AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"] ?? []]}
+          : {JOINT_GUARANTOR_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARANTOR_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"],
-    AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARANTOR_DTL"],
+    AcctMSTState?.formDatactx["JOINT_GUARANTOR_DTL"]
   ])
-
+  
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
         key={"pd-form-kyc" + initialVal}
         ref={formRef}
-        metaData={nomineejoint_tab_metadata as MetaDataType}
+        metaData={guarantorjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onSubmitPDHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
@@ -87,4 +87,4 @@ const NomineeJointTab = () => {
   );
 };
 
-export default NomineeJointTab;
+export default GuarantorJointTab;

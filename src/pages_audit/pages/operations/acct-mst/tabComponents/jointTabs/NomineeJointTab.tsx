@@ -2,18 +2,17 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { AcctMSTContext } from "../../AcctMSTContext";
-import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { nomineejoint_tab_metadata } from "../../tabMetadata/nomineeJointMetadata";
 import TabNavigate from "../../TabNavigate";
 import _ from "lodash";
 
-const JointTab = () => {
+const NomineeJointTab = () => {
   const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
-  const [formStatus, setFormStatus] = useState<any[]>([]);
-  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+  const [formStatus, setFormStatus] = useState<any[]>([])
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -67,37 +66,37 @@ const JointTab = () => {
   ) => {
     if(data && !hasError) {
       let newData = AcctMSTState?.formDatactx
-      if(data?.JOINT_HOLDER_DTL) {
+      if(data?.JOINT_NOMINEE_DTL) {
         let filteredCols:any[]=[]
-        filteredCols = Object.keys(data.JOINT_HOLDER_DTL[0])
+        filteredCols = Object.keys(data.JOINT_NOMINEE_DTL[0])
         filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
         if(AcctMSTState?.isFreshEntryctx) {
           filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
         }
-        let newFormatOtherAdd = data?.JOINT_HOLDER_DTL?.map((formRow, i) => {
+        let newFormatOtherAdd = data?.JOINT_NOMINEE_DTL?.map((formRow, i) => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
-          const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields)
+          const formData = _.pick(data?.JOINT_NOMINEE_DTL[i], formFields)
           return {...formData};
         })
-        newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd]
+        newData["JOINT_NOMINEE_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
               ...tabModifiedCols,
-              JOINT_HOLDER_DTL: [...filteredCols]
+              JOINT_NOMINEE_DTL: [...filteredCols]
           }
           handleModifiedColsctx(tabModifiedCols)
         }
       } else {
-        newData["JOINT_HOLDER_DTL"] = []
+        newData["JOINT_NOMINEE_DTL"] = []
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
             ...tabModifiedCols,
-            JOINT_HOLDER_DTL: []
+            JOINT_NOMINEE_DTL: []
           }
           handleModifiedColsctx(tabModifiedCols)
         }  
@@ -109,27 +108,27 @@ const JointTab = () => {
     }
     endSubmit(true)
   }
-  
+
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_HOLDER_DTL: [AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? {}]}
-        : AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
-          ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
-          : {JOINT_HOLDER_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"] ?? []]}
+        ? {JOINT_NOMINEE_DTL : [AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
+          ? {JOINT_NOMINEE_DTL : [...AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? []]}
+          : {JOINT_NOMINEE_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"],
-    AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"],
+    AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
   ])
 
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
-        key={"acct-mst-joint-tab-form" + initialVal}
+        key={"acct-mst-joint-nominee-form" + initialVal}
         ref={formRef}
-        metaData={joint_tab_metadata as MetaDataType}
+        metaData={nomineejoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
@@ -142,4 +141,4 @@ const JointTab = () => {
   );
 };
 
-export default JointTab;
+export default NomineeJointTab;
