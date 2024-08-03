@@ -328,7 +328,6 @@ export const main_tab_metadata = {
         {
             render: {
                 componentType: "autocomplete",
-                sequence: 7,
             },
             name: "MARITAL_STATUS",
             label: "MaritalStatus",
