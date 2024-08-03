@@ -5,20 +5,19 @@ const inititalState: StateType = {
   formData: {},
   oldformData: {},
   form1Data: {},
-  grid1: [],
-  grid2: [],
-  grid3: [],
+  appContextData: [],
+  branchContextData: [],
+  productContextData: [],
   grid4: {},
   grid5: [],
-  oldData: [],
-  oldData1: [],
-  oldData2: [],
+  oldappContextData: [],
+  oldbranchContextData: [],
+  oldproductContextData: [],
+  appUpdatedData: [],
+  branchUpdatedData: [],
+  productUpdatedData: [],
   oldData3: [],
   oldData4: {},
-  saveData: {},
-  initPopulateData: [],
-  initPopulateData1: [],
-  initPopulateData2: [],
   activeStep: 0,
   isBackButton: false,
 };
@@ -45,50 +44,60 @@ const userReducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         oldformData: { ...state?.formData, ...action.payload },
       };
-    case "saveData":
+    case "appContextData":
       return {
         ...state,
-        saveData: { ...state?.saveData, ...action.payload },
+        appContextData: action.payload,
       };
-    case "grid1":
+    case "branchContextData":
       return {
         ...state,
-        grid1: action.payload,
+        branchContextData: action.payload,
       };
-    case "grid2":
+    case "productContextData":
       return {
         ...state,
-        grid2: action.payload,
-      };
-    case "grid3":
-      return {
-        ...state,
-        grid3: action.payload,
+        productContextData: action.payload,
       };
     case "grid4":
       return {
         ...state,
         grid4: { ...state?.grid4, ...action.payload },
       };
-      case "grid5":
-        return {
-          ...state,
-          grid5: action.payload,
-        };
-    case "oldData":
+    case "grid5":
       return {
         ...state,
-        oldData: action.payload,
+        grid5: action.payload,
       };
-    case "oldData1":
+    case "oldappContextData":
       return {
         ...state,
-        oldData1: action.payload,
+        oldappContextData: action.payload,
       };
-    case "oldData2":
+    case "oldbranchContextData":
       return {
         ...state,
-        oldData2: action.payload,
+        oldbranchContextData: action.payload,
+      };
+    case "oldproductContextData":
+      return {
+        ...state,
+        oldproductContextData: action.payload,
+      };
+    case "appUpdatedData":
+      return {
+        ...state,
+        appUpdatedData: action.payload,
+      };
+    case "branchUpdatedData":
+      return {
+        ...state,
+        branchUpdatedData: action.payload,
+      };
+    case "productUpdatedData":
+      return {
+        ...state,
+        productUpdatedData: action.payload,
       };
     case "oldData3":
       return {
@@ -99,21 +108,6 @@ const userReducer = (state: StateType, action: ActionType): StateType => {
       return {
         ...state,
         oldData4: action.payload,
-      };
-    case "initPopulateData":
-      return {
-        ...state,
-        initPopulateData: action.payload,
-      };
-    case "initPopulateData1":
-      return {
-        ...state,
-        initPopulateData1: action.payload,
-      };
-    case "initPopulateData2":
-      return {
-        ...state,
-        initPopulateData2: action.payload,
       };
     case "resetAllData":
       return inititalState;
@@ -132,38 +126,6 @@ export const SecurityContextWrapper = ({ children }) => {
       type: "activeStep",
       payload: {
         activeStep: value,
-      },
-    });
-  };
-  const updateoldData = (data) => {
-    dispatch({
-      type: "commonType",
-      payload: {
-        oldData: data,
-      },
-    });
-  };
-  const updateoldData1 = (data) => {
-    dispatch({
-      type: "commonType",
-      payload: {
-        oldData1: data,
-      },
-    });
-  };
-  const updateoldData2 = (data) => {
-    dispatch({
-      type: "commonType",
-      payload: {
-        oldData2: data,
-      },
-    });
-  };
-  const populateData = (data) => {
-    dispatch({
-      type: "commonType",
-      payload: {
-        initPopulateData: data,
       },
     });
   };
@@ -194,10 +156,6 @@ export const SecurityContextWrapper = ({ children }) => {
         userState: state,
         setActiveStep,
         dispatchCommon,
-        updateoldData,
-        updateoldData1,
-        updateoldData2,
-        populateData,
         resetAllData,
         setIsBackButton,
       }}

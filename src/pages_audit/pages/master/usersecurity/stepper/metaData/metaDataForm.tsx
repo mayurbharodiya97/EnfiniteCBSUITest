@@ -47,22 +47,14 @@ export const UserOnboardform = {
       label: "User ID",
       placeholder: "User ID",
       autoComplete: "off",
+      txtTransform: "lowercase",
       maxLength: 15,
       isFieldFocused: true,
       __EDIT__: { isReadOnly: true },
       __NEW__: {
         required: true,
-        validate: async (columnValue, allField, flag) => {
-          const regex = /^[^A-Z]*$/;
-          if (!regex.test(columnValue.value)) {
-            return "Username should not contain capital letters.";
-          }
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
-          formState,
-          authState,
-          dependentFields
         ) => {
           if (currentField?.value !== undefined) {
             return API.checkUsername(currentField, {
@@ -873,7 +865,7 @@ export const loginShift = {
         const Data: any[] = [];
         const Test = Array.isArray(dependentFieldState?.["LOGINSHIFT"])
           ? dependentFieldState["LOGINSHIFT"].map((item, index) => {
-              const values = item.DESCRIPTION?.value;
+              const values = item.SHIFT_TRAN_CD?.value;
               if (values) {
                 if (Data.includes(values)) {
                   formState.MessageBox({
@@ -882,7 +874,7 @@ export const loginShift = {
                     buttonNames: ["Ok"],
                   });
                   return {
-                    ["dependentFieldState.LOGINSHIFT.DESCRIPTION"]: {
+                    ["dependentFieldState.LOGINSHIFT.SHIFT_TRAN_CD"]: {
                       value: "",
                     },
                   };
@@ -911,7 +903,7 @@ export const loginShift = {
           render: {
             componentType: "autocomplete",
           },
-          name: "DESCRIPTION",
+          name: "SHIFT_TRAN_CD",
           label: "Login Shift",
           options: (dependentValue, formState, _, authState) =>
             API.getLoginShiftddw({
@@ -941,11 +933,11 @@ export const loginShift = {
           fullWidth: true,
           isReadOnly: true,
           format: "HH:mm:ss",
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
               dependentFields[
-                "LOGINSHIFT.DESCRIPTION"
+                "LOGINSHIFT.SHIFT_TRAN_CD"
               ].optionData[0]?.rest?.START_TIME?.split(" ")[1];
             return value ? value : "";
           },
@@ -960,11 +952,11 @@ export const loginShift = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
               dependentFields[
-                "LOGINSHIFT.DESCRIPTION"
+                "LOGINSHIFT.SHIFT_TRAN_CD"
               ].optionData[0]?.rest?.END_TIME?.split(" ")[1];
             return value ? value : "";
           },
@@ -976,10 +968,10 @@ export const loginShift = {
           },
           name: "ACTIVE",
           label: "Active",
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
-              dependentFields["LOGINSHIFT.DESCRIPTION"].optionData[0]?.rest
+              dependentFields["LOGINSHIFT.SHIFT_TRAN_CD"].optionData[0]?.rest
                 ?.ACTIVE === "Y"
                 ? true
                 : false;
@@ -1061,7 +1053,7 @@ export const editloginShift = {
         const Data: any[] = [];
         const Test = Array.isArray(dependentFieldState?.["EDITLOGINSHIFT"])
           ? dependentFieldState["EDITLOGINSHIFT"].map((item, index) => {
-              const values = item.DESCRIPTION?.value;
+              const values = item.SHIFT_TRAN_CD?.value;
               if (values) {
                 if (Data.includes(values)) {
                   formState.MessageBox({
@@ -1070,7 +1062,7 @@ export const editloginShift = {
                     buttonNames: ["Ok"],
                   });
                   return {
-                    ["dependentFieldState.EDITLOGINSHIFT.DESCRIPTION"]: {
+                    ["dependentFieldState.EDITLOGINSHIFT.SHIFT_TRAN_CD"]: {
                       value: "",
                     },
                   };
@@ -1105,7 +1097,7 @@ export const editloginShift = {
           render: {
             componentType: "autocomplete",
           },
-          name: "DESCRIPTION",
+          name: "SHIFT_TRAN_CD",
           label: "Login Shift",
           options: (dependentValue, formState, _, authState) =>
             API.getLoginShiftddw({
@@ -1134,13 +1126,15 @@ export const editloginShift = {
           fullWidth: true,
           isReadOnly: true,
           format: "HH:mm:ss",
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
+          runValidationOnDependentFieldsChange: true,
           setValueOnDependentFieldsChange: (dependentFields) => {
-            let value =
-              dependentFields[
-                "EDITLOGINSHIFT.DESCRIPTION"
-              ].optionData[0]?.rest?.START_TIME?.split(" ")[1];
-            return value ? value : "";
+            
+            return dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"]?.optionData[0]?.rest?.START_TIME
+              ? dependentFields[
+                      "EDITLOGINSHIFT.SHIFT_TRAN_CD"
+                    ].optionData[0]?.rest?.START_TIME?.split(" ")[1]
+              : "";
           },
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
@@ -1153,11 +1147,11 @@ export const editloginShift = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
               dependentFields[
-                "EDITLOGINSHIFT.DESCRIPTION"
+                "EDITLOGINSHIFT.SHIFT_TRAN_CD"
               ].optionData[0]?.rest?.END_TIME?.split(" ")[1];
             return value ? value : "";
           },
@@ -1169,10 +1163,10 @@ export const editloginShift = {
           },
           name: "ACTIVE",
           label: "Active",
-          dependentFields: ["DESCRIPTION"],
+          dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
-              dependentFields["EDITLOGINSHIFT.DESCRIPTION"].optionData[0]?.rest
+              dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"].optionData[0]?.rest
                 ?.ACTIVE === "Y"
                 ? true
                 : false;

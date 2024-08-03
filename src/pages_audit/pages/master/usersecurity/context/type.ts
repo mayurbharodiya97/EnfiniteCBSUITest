@@ -3,20 +3,19 @@ export interface StateType {
   form1Data: object;
   oldformData: object;
   formData: object;
-  grid1: object[];
-  grid2: object[];
-  grid3: object[];
+  appContextData: object[];
+  branchContextData: object[];
+  productContextData: object[];
   grid4: object;
   grid5: object[];
-  oldData: object[];
-  oldData1: object[];
-  oldData2: object[];
+  appUpdatedData: object[];
+  branchUpdatedData: object[];
+  productUpdatedData: object[];
+  oldappContextData: object[];
+  oldbranchContextData: object[];
+  oldproductContextData: object[];
   oldData3: object[];
   oldData4: object;
-  saveData:object;
-  initPopulateData: object[];
-  initPopulateData1: object[];
-  initPopulateData2: object[];
   isBackButton: boolean;
 }
 
