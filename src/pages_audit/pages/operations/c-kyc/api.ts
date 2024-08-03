@@ -1536,20 +1536,13 @@ export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}
     }
 } 
 
-export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
-  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE)
-  let PIN_CODE = "", PARENT_AREA = ""
-  if(Boolean(dependentValue?.PIN_CODE) && dependentValue?.PIN_CODE?.value?.length>5) {
-    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value)
-    PIN_CODE = dependentValue?.PIN_CODE?.value
-  }
-  if(PIN_CODE) {
-    // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
+export const getOptionsOnPinParentArea = async (pinCode, formState, _, authState) => {
+  if(Boolean(pinCode) && pinCode?.length>5) {
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAREALIST", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      PIN_CODE: PIN_CODE,
+      PIN_CODE: pinCode,
       // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
       // PARENT_AREA: PARENT_AREA,
       FLAG: "P",
@@ -1557,7 +1550,6 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
     });
 
     if(status == 0) {
-      // console.log("getOptionsOnPinParentArea data", data)
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
@@ -1573,7 +1565,7 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
-  }
+  } else return [];
 }
 
 export const getOptionsOnPinParentAreaOtherAdd = async (dependentValue, formState, _, authState) => {

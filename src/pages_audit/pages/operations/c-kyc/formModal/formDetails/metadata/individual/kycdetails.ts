@@ -613,7 +613,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "SubArea",
           dependentFields: ["PIN_CODE"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+          options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue?.PIN_CODE?.value, formState, _, authState),
           _optionsKey: "indSubareaOp",
           isReadOnly: (fieldValue, dependentFields, formState) => {
             const pin_code = dependentFields.PIN_CODE.value;

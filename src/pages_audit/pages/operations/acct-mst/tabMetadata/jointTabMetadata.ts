@@ -288,43 +288,31 @@ export const joint_tab_metadata = {
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },  
-                {
-                    render: {
-                        componentType: "select",
-                    },
-                    runPostValidationHookAlways: false, 
-                    name: "AREA_CD",
-                    label: "SubArea",
-                    dependentFields: ["PIN_CODE"],
-                    disableCaching: true,
-                    options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
-                    _optionsKey: "indSubareaJointOp",
-                    isReadOnly: (fieldValue, dependentFields, formState) => {
-                    const pin_code = dependentFields?.PIN_CODE?.value;
-                    if(!Boolean(pin_code)) {
-                        return true;
-                    } else if(Boolean(pin_code) && pin_code.length<6) {
-                        return true;
-                    }
-                    return false;
-                },
+              {
+                  render: {
+                      componentType: "select",
+                  },
+                  runPostValidationHookAlways: false, 
+                  name: "AREA_CD",
+                  label: "SubArea",
+                  dependentFields: ["PIN_CODE"],
+                  disableCaching: true,
+                  options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["JOINT_HOLDER_DTL.PIN_CODE"]?.value, formState, _, authState),
+                  _optionsKey: "indSubareaMaiwejfjwefnOpjoint",
                 setValueOnDependentFieldsChange: (dependentFields) => {
-                    const pincode = dependentFields?.PIN_CODE?.value
-                    // console.log("siudbcsiudbcisbdc setvalue", pincode)
+                    const pincode = dependentFields["JOINT_HOLDER_DTL.PIN_CODE"]
                     if(Boolean(pincode)) {
                         if(pincode.length<6) {
                             return "";
                         }
                     } else return null;
                 },  
-                    postValidationSetCrossFieldValues: (
+                  postValidationSetCrossFieldValues: (
                     field,
                     __,
                     ___,
                     dependentFieldsValues
-                    ) => {
-                    // console.log("siudbcsiudbcisbdc postValidationSetCrossFieldValues called", field.value)
-                    // console.log("sdhaiuwqidquwdqwe", dependentFieldsValues)
+                  ) => {
                     if(field.value) {
                         let values = {
                             CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
@@ -340,160 +328,152 @@ export const joint_tab_metadata = {
                         return values;
                     }
                     return {}
-                    },
-                    placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "CITY_ignoreField",
-                    label: "City",
-                    schemaValidation: {
+                  },
+                  placeholder: "",
+                  type: "text",
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "CITY_ignoreField",
+                  label: "City",
+                  schemaValidation: {
                     type: "string",
                     rules: [
-                        { name: "required", params: ["ThisFieldisrequired"] },
+                      { name: "required", params: ["ThisFieldisrequired"] },
                     ],
-                    },
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+                  },
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].CITY_NM;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                render: {
+                    componentType: "hidden",        
                 },
-                {
-                    render: {
-                        componentType: "hidden",        
-                    },
-                    name: "CITY_CD",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
-                        // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                        if(optionData && optionData.length>0) {
-                            return optionData[0].CITY_CD;
-                        } else return "";
-                    },
+                name: "CITY_CD",
+                dependentFields: ["AREA_CD"],
+                setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
+                    if(optionData && optionData.length>0) {
+                        return optionData[0].CITY_CD;
+                    } else return "";
                 },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "DISTRICT_ignoreField",
-                    label: "District Name",
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "DISTRICT_ignoreField",
+                  label: "District Name",
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].DISTRICT_NM;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                render: {
+                    componentType: "hidden",
                 },
-                {
-                    render: {
-                        componentType: "hidden",
-                    },
-                    name: "DISTRICT_CD",
-                    label: "hidden district",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
-                        // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                        if(optionData && optionData.length>0) {
-                            return optionData[0].DISTRICT_CD;
-                        } else return "";
-                    },
+                name: "DISTRICT_CD",
+                label: "hidden district",
+                dependentFields: ["AREA_CD"],
+                setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
+                    if(optionData && optionData.length>0) {
+                        return optionData[0].DISTRICT_CD;
+                    } else return "";
                 },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "STATE",
-                    label: "State",
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "STATE",
+                  label: "State",
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].STATE_NM;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "COUNTRY",
-                    label: "Country",
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "COUNTRY",
+                  label: "Country",
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].COUNTRY_NM;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "STATE_CD",
-                    label: "UnionTerritoriesCode",
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "STATE_CD",
+                  label: "UnionTerritoriesCode",
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].STATE_CD;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "COUNTRY_CD",
-                    label: "CountryCode",
-                    isReadOnly: true,
-                    placeholder: "",
-                    type: "text",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
+              {
+                  render: {
+                      componentType: "textField",
+                  },
+                  name: "COUNTRY_CD",
+                  label: "CountryCode",
+                  isReadOnly: true,
+                  placeholder: "",
+                  type: "text",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                    const optionData = dependentFields?.["JOINT_HOLDER_DTL.AREA_CD"].optionData;
                     if(optionData && optionData.length>0) {
                         return optionData[0].COUNTRY_CD;
                     } else return "";
-                    },
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
+                  },
+                  GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+              },
                 {
                     render: {
                         componentType: "numberFormat"
