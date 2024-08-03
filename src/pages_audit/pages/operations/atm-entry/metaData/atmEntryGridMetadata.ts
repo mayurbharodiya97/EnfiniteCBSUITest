@@ -2,8 +2,8 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const atmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Card Details",
-    rowIdColumn: "ACCT_NM",
+    gridLabel: "CardDetails",
+    rowIdColumn: "CUSTOMER_NM",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -39,7 +39,7 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REQ_DT",
-      columnName: "Request Date",
+      columnName: "RequestDate",
       sequence: 2,
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
@@ -48,8 +48,8 @@ export const atmGridMetaData: GridMetaDataType = {
       minWidth: 150,
     },
     {
-      accessor: "STATUS",
-      columnName: "Card Status",
+      accessor: "DISPLAY_STATUS",
+      columnName: "CardStatus",
       componentType: "default",
       sequence: 2,
       alignment: "center",
@@ -59,8 +59,8 @@ export const atmGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "ISSUE_TO",
-      columnName: "Issue To",
+      accessor: "DISPLAY_CARD_ISSUE_TYPE",
+      columnName: "IssueTo",
       sequence: 4,
       componentType: "default",
       width: 120,
@@ -68,15 +68,15 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "Customer Id",
+      columnName: "CustomerId",
       sequence: 5,
       componentType: "default",
       width: 120,
       alignment: "center",
     },
     {
-      accessor: "ACCT_NM",
-      columnName: "Name",
+      accessor: "CUSTOMER_NM",
+      columnName: "CustomerName",
       sequence: 6,
       componentType: "default",
       width: 90,
@@ -86,7 +86,7 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ISSUE_DT",
-      columnName: "Issue/Reject Date",
+      columnName: "IssueRejectDate",
       sequence: 7,
       componentType: "date",
       width: 120,
@@ -95,7 +95,7 @@ export const atmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CITIZEN_ID",
-      columnName: "Citizen Id",
+      columnName: "CitizenId",
       sequence: 8,
       componentType: "default",
       width: 120,
@@ -103,7 +103,7 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "M_CARD_NO",
-      columnName: "Card No",
+      columnName: "CardNo",
       sequence: 9,
       componentType: "default",
       width: 120,
@@ -111,10 +111,19 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CARD_TYPE",
-      columnName: "Card Type",
+      columnName: "CardType",
       sequence: 10,
       componentType: "default",
       alignment: "center",
+      width: 120,
+    },
+    {
+      accessor: "EXPIRE_DT",
+      columnName: "ExpireDate",
+      sequence: 12,
+      componentType: "date",
+      alignment: "center",
+      // dateFormat: "dd/MM/yyyy",
       width: 120,
     },
     {
@@ -127,21 +136,32 @@ export const atmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DEACTIVE_DT",
-      columnName: "De-active(Lost/Destroy) Date",
+      columnName: "DeactiveDate",
       sequence: 12,
       componentType: "date",
       alignment: "center",
       // dateFormat: "dd/MM/yyyy",
       width: 120,
     },
+
     {
       accessor: "ALLOW_DELETE",
       columnName: "Action",
       buttonLabel: "Delete",
-      sequence: 4,
+      sequence: 14,
       alignment: "center",
       componentType: "buttonRowCell",
-
+      shouldExclude: (initialValue, original) => {
+        if (original?.EDIT_STATUS === "N") {
+          return true;
+        } else {
+          if (original.ALLOW_DELETE && original?.ALLOW_DELETE !== "Y") {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      },
       width: 90,
       minWidth: 60,
       maxWidth: 130,
