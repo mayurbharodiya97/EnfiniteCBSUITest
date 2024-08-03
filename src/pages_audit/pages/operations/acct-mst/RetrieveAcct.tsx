@@ -137,7 +137,8 @@ const RetrieveAcct = () => {
         initialValues={{}}
         onSubmitHandler={onFormSubmit}
         formState={{
-          MessageBox: MessageBox
+          MessageBox: MessageBox,
+          docCD: "MST/002"
         }}
         formStyle={{
           background: "white",
