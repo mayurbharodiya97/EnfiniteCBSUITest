@@ -2063,6 +2063,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
     packageName: "",
   },
+  GETATMACCTTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMACCTTYPEDDDW",
+    packageName: "",
+  },
+  GETATMDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
