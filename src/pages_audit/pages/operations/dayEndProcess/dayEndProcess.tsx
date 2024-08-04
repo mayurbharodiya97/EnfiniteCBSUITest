@@ -7,11 +7,10 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import * as API from './api';
 import { useQuery } from "react-query";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
 import { PendinGTrns } from "./pendingTransactions";
 import { usePopupContext } from "components/custom/popupContext";
-
+import { VerifyDayendChecksums } from "./verifyDayendChecksums";
+import {t} from "i18next";
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({
     root: {
@@ -60,52 +59,67 @@ const DayEndProcess = ()=>{
 
     return(
         <>
-          <AppBar position="relative" color="secondary">
-          <Toolbar className={headerClasses.root} variant="dense">
-            <Typography className={headerClasses.title} color="inherit" variant="h6" component="div">
-              {"Day End Process (TRN/399)"}
-            </Typography>
-            <GradientButton
-                onClick={async(event) => {
-                    const btnName = await MessageBox({
-                        message: "DeleteData",
-                        messageTitle: "Do you want to proceed pending transactions?",
-                        buttonNames: ["Yes", "No"],
-                      });
-                      if (btnName === "Yes") {
-                       setOpenPendingTrns(true);
-                      }
-                }}
-                color={"primary"}
-              >
-                Pending Transactions
-              </GradientButton>
-              <GradientButton
-                onClick={(event) => {
-                 setOpenVerifyChecksums(true);
-                }}
-                color={"primary"}
-              >
-               Day End Process
-               {
-                data[0]?.Flag==="D"?"Day End Process":"Day Hand Over"
-               }
-              </GradientButton>
-              <GradientButton
-                onClick={(event) => {
-                 
-                }}
-                color={"primary"}
-              >
-               Verify DayEnd Checksums
-              </GradientButton>
-          </Toolbar>
+        <AppBar position="relative" color="secondary">
+        <Toolbar className={headerClasses.root} variant="dense">
+        <Typography className={headerClasses.title} color="inherit" variant="h6" component="div">
+        {"Day End Process (TRN/399)"}
+        </Typography>
+        <GradientButton
+        onClick={async(event) => {
+        const btnName = await MessageBox({
+        message: "DeleteData",
+        messageTitle: "Do you want to proceed pending transactions?",
+        buttonNames: ["Yes", "No"],
+        });
+        if (btnName === "Yes") {
+        setOpenPendingTrns(true);
+        }
+        }}
+        color={"primary"}
+        >
+        {t("PendingTransactions")}
+        </GradientButton>
+        <GradientButton
+        onClick={(event) => {
+        setOpenDayendProcess(true);
+        }}
+        color={"primary"}
+        >
+        {
+        data[0]?.Flag==="D"?t("DayEndHover"):"Day Hand Over"
+        }
+        </GradientButton>
+        <GradientButton
+        onClick={(event) => {
+          setOpenVerifyChecksums(true);
+        }}
+        color={"primary"}
+        >
+        {t("VerifyDayEndChecksums")}
+        </GradientButton>
+        </Toolbar>
         </AppBar>
         {
             openPendingTrns? 
             <PendinGTrns
              open={openPendingTrns}
              close={()=>setOpenPendingTrns(false)}
+            />
+            :""
+        }
+         {
+            openDayendProcess? 
+            <VerifyDayendChecksums
+             open={openDayendProcess}
+             close={()=>setOpenVerifyChecksums(false)}
+            />
+            :"" 
+        }
+           {
+            openVerifyChecksums? 
+            <VerifyDayendChecksums
+             open={openPendingTrns}
+             close={()=>setOpenVerifyChecksums(false)}
             />
             :""
         }

@@ -7,6 +7,8 @@ import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
 import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
+import { Dialog } from "@mui/material";
 
 const actions: ActionTypes[] = [
     {
@@ -17,7 +19,7 @@ const actions: ActionTypes[] = [
     },
 ];
 
-export const ViewEodReport = ({open,close,metaData,reportData})=>{
+export const ViewEodReport = ({open,close,metaData,reportData,reportLabel})=>{
     const { authState } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -50,8 +52,28 @@ export const ViewEodReport = ({open,close,metaData,reportData})=>{
           queryClient.removeQueries(["pendingtrns"]);
         };
       }, []);
+      metaData.gridConfig.gridLabel = reportLabel;
+
     return(
         <>
+           {isError && (
+        <Alert
+          severity="error"
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorDetail={error?.error_detail}
+          color="error"
+        />
+      )}
+          <Dialog
+      open={open}
+      PaperProps={{
+        style: {
+          width: "60%",
+          overflow: "auto",
+        },
+      }}
+      maxWidth="md"
+    >
            <GridWrapper
             key={"ViewEodReport"}
             finalMetaData={metaData as GridMetaDataType}
@@ -62,6 +84,7 @@ export const ViewEodReport = ({open,close,metaData,reportData})=>{
             ReportExportButton={true}
             setAction={setCurrentAction}
             />
+            </Dialog>
        </>
     )
 }

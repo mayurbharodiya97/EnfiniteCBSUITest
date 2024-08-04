@@ -9,6 +9,8 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
+import { pendingTrnsEodReportMetaData, pendingTrnsMetadata } from "./gridMetadata";
 
 const actions: ActionTypes[] = [
     {
@@ -24,9 +26,6 @@ export const PendinGTrns = ({open,close})=>{
     const [openReport, setOpenReport] = useState(false);
     const [rowData, setRowData] = useState({});
     const { MessageBox, CloseMessageBox } = usePopupContext();
-
-    
-   
 
     const navigate = useNavigate();
 
@@ -105,10 +104,18 @@ export const PendinGTrns = ({open,close})=>{
       }, []);
     return(
         <>
+           {isError && (
+        <Alert
+          severity="error"
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorDetail={error?.error_detail}
+          color="error"
+        />
+      )}
            <GridWrapper
             key={"pendingtrns"}
-            finalMetaData={pendingAcctMetadata as GridMetaDataType}
-            data={[] ?? []}
+            finalMetaData={pendingTrnsMetadata as GridMetaDataType}
+            data={data ?? []}
             setData={() => null}
             actions={actions}
             onClickActionEvent={(index, id, currentData) => {
@@ -131,8 +138,9 @@ export const PendinGTrns = ({open,close})=>{
                  <ViewEodReport
                   open={openReport}
                   close={()=>{setOpenReport(false)}}
-                  metaData={pendingAcctMetadata}
+                  metaData={pendingTrnsEodReportMetaData}
                   reportData={rowData}
+                  reportLabel={`Pending Transaction for ${authState?.workingDate},Version:${rowData},KYC Review Due Date Report`}
                  />
                 ): ""
             }

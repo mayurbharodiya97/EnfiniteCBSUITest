@@ -1343,5 +1343,20 @@ payslipNoRequired:"Payslip Number is Required",
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
+  //Dayend process
+VerifyDayEndChecksums:"Verify DayEnd Checksums",
+PendingTransactions:"Pending Transactions",
+DayEndProcess:"DayEnd Process",
+DayEndHover:"DayEnd Hover",
+VersionNo:"Version No.",
+AcRef:"A/c No. /Ref No.",
+Sequence:"Sequence",
+eodVersion:"EOD Version",
+Mandatory:"Mandatory",
+StartTime:"Start Time",
+endTime:"end Time"
+
 };
+
+
 

@@ -94,26 +94,28 @@ export const getVerifyDayEndCheksumsData = async ({
   BASE_BRANCH_CD,
   ARG,
   CHKSM_TYPE
-
-  }) => {
-  
-  const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("GETDAYENDVERIFYBTN", {
-    COMP_CD:COMP_CD,
-    BASE_BRANCH_CD:BASE_BRANCH_CD,
-    ARG:ARG,
-    CHKSM_TYPE:CHKSM_TYPE
-  
+}) => {
+  const { data, status, message, messageDetails } = await AuthSDK.internalFetcher("GETDAYENDVERIFYBTN", {
+    COMP_CD,
+    BASE_BRANCH_CD,
+    ARG,
+    CHKSM_TYPE
   });
-  
+
   if (status === "0") {
-  
-  return data;
+    return data.map((item) => ({
+      ...item,
+      _rowColor: item.CLR === "P" ? "rgb(40, 180, 99)" :
+                 item.CLR === "Y" ? "rgb(130, 224, 170)" :
+                 item.CLR === "W" ? "rgb(244, 208, 63)" :
+                 item.CLR === "E" ? "rgb(241, 148, 138)" :
+                 ""
+    }));
   } else {
-  throw DefaultErrorObject(message, messageDetails);
+    throw DefaultErrorObject(message, messageDetails);
   }
-  
-  };
+};
+
   export const getDayEnderrLog = async ({
     COMP_CD,
     BASE_BRANCH_CD,

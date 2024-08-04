@@ -9,6 +9,9 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
+import { Dialog } from "@mui/material";
+import { dayEndErroeLogMetaData, verifyDayendChecksumsMetaData } from "./gridMetadata";
 
 const actions: ActionTypes[] = [
     {
@@ -76,7 +79,7 @@ export const VerifyDayendChecksums = ({open,close})=>{
     
           },
           onSuccess: async (data) => {
-            
+            window.open(`/cbsenfinity/${data[0]?.DOC_URL}`, "_blank");
           },
         }
       );
@@ -104,36 +107,52 @@ export const VerifyDayendChecksums = ({open,close})=>{
       }, []);
     return(
         <>
-           <GridWrapper
-            key={"pendingtrns"}
-            finalMetaData={pendingAcctMetadata as GridMetaDataType}
-            data={[] ?? []}
-            setData={() => null}
-            actions={actions}
-            onClickActionEvent={(index, id, currentData) => {
-                if (id === "REPORT") {
-                    setRowData(currentData);
-                    setOpenReport(true);
-                    reportMutation.mutate(reportPayload)
-                }
-                if (id === "OPEN") {
-                    docurlMutation.mutate(docUrlPayload)
-                }
-                }}
-            loading={isLoading || isFetching}
-            ReportExportButton={true}
-            setAction={setCurrentAction}
-            />
-            {
-                openReport ? (
-                 <ViewEodReport
-                  open={openReport}
-                  close={()=>{setOpenReport(false)}}
-                  metaData={pendingAcctMetadata}
-                  reportData={rowData}
-                 />
-                ): ""
-            }
+      <Dialog
+      open={open}
+      fullScreen
+      maxWidth="xl"
+      >
+      {isError && (
+      <Alert
+      severity="error"
+      errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+      errorDetail={error?.error_detail}
+      color="error"
+      />
+      )}
+      
+      <GridWrapper
+      key={"pendingtrns"}
+      finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
+      data={[] ?? []}
+      setData={() => null}
+      actions={actions}
+      onClickActionEvent={(index, id, currentData) => {
+      if (id === "REPORT") {
+          setRowData(currentData);
+          setOpenReport(true);
+          reportMutation.mutate(reportPayload)
+      }
+      if (id === "OPEN") {
+          docurlMutation.mutate(docUrlPayload)
+      }
+      }}
+      loading={isLoading || isFetching}
+      ReportExportButton={true}
+      setAction={setCurrentAction}
+      />
+      {
+      openReport ? (  
+        <ViewEodReport
+        open={openReport}
+        close={()=>{setOpenReport(false)}}
+        metaData={dayEndErroeLogMetaData}
+        reportData={rowData}
+        reportLabel={`EOD Error Log : ${authState?.workingDate} and Version${rowData} User Defined Checksum`}
+        />
+      ): ""
+      }
+      </Dialog>
        </>
     )
 }
