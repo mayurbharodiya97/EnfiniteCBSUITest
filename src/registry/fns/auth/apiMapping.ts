@@ -1958,6 +1958,16 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDERRLOG",
     packageName: "",
   },
+  GETHOLDTRNCONFGRID:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETHOLDTRNCONFGRID",
+    packageName: "",
+  },
+  DAILYHOLDTRANSACTIONCONFIRMATION:
+  {
+    url: "transactionServiceAPI/DAILYHOLDTRANSACTIONCONFIRMATION",
+    packageName: "",
+  },
   
   
 };
