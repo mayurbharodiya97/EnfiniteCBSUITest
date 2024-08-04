@@ -3,7 +3,6 @@ import { AuthContext } from 'pages_audit/auth';
 import { useContext, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom';
-import { Fragment } from 'react/jsx-runtime';
 import { commonDataRetrive, getJointDetailsList, headerDataRetrive } from '../payslip-issue-entry/api';
 import FormWrapper, { MetaDataType } from 'components/dyanmicForm';
 import { extractMetaData } from 'components/utils';
@@ -16,18 +15,25 @@ import { GradientButton } from 'components/styledComponent/button';
 import { DeleteDialog } from '../payslip-issue-entry/deleteDialog';
 import { LoaderPaperComponent } from 'components/common/loaderPaper';
 import { AccdetailsFormMetaData, PayslipdetailsFormMetaData } from './AccdetailsFormMetaData';
-import { GeneralAPI } from 'registry/fns/functions';
-
+import {t} from "i18next";
+import { OpenWithSharp } from '@mui/icons-material';
+import { ConFirmedHistory } from './conFirmedHistory';
+import { format } from 'date-fns';
+import * as API from './api';
+import { enqueueSnackbar } from 'notistack';
+import { RemarksAPIWrapper } from 'components/custom/Remarks';
 function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
 
     const [formMode, setFormMode] = useState(defaultView);
   const { authState } = useContext(AuthContext);
   const [jointDtl, setjointDtl] = useState(false);
+  const [openConfmHistory, setopenConfmHistory] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
   const { state: rows } = useLocation();
   const myChequeFormRef = useRef<any>(null);
   const [openDltDialogue, setopenDltDialogue] = useState(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [isDeleteRemark, SetDeleteRemark] = useState(false);
 
     const requestData = {
         COMP_CD: authState?.companyID,
@@ -35,25 +41,10 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         TRAN_CD: (rows)?.[0]?.data.TRAN_CD
       };
     const { data: acctDtlData, isLoading: isAcctDtlLoading } = useQuery(["headerData", requestData], () => headerDataRetrive(requestData), {
-        // enabled: formMode !== "add",
       });
       const { data: draftDtlData, isLoading: isdraftDtlLoading } = useQuery(["draftdata", requestData], () => commonDataRetrive(requestData), {
-        // enabled: formMode !== "add",
       });
-      // const { data: acctData, isLoading: isacctDataLoading } = useQuery(
-      //   ["draftdata"],
-      //   () => GeneralAPI.getAccNoValidation({
-      //     COMP_CD: authState?.companyID,
-      //     BRANCH_CD: authState.user.branchCode,
-      //     ACCT_TYPE: acctDtlData ? acctDtlData[0]?.ACCT_TYPE : "",
-      //     ACCT_CD: acctDtlData ? acctDtlData[0]?.ACCT_CD : "",
-      //     SCREEN_REF: "RPT/15",
-      //   }),
-      //   {
-      //     enabled: formMode !== "add",
-      //   }
-      // );
-      
+
    
       const jointDetailMutation = useMutation(getJointDetailsList,
         {
@@ -71,8 +62,38 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
           },
         }
       );
+      const confirmMutation = useMutation(
+        "confirmMutation",
+        API.getEntryConfirmed,
+        {
+          onSuccess: (data) => {
+            enqueueSnackbar(data, {
+              variant: "success",
+            });
+            CloseMessageBox();
+          },
+          onError: (error: any) => {
+            CloseMessageBox();
+          },
+        }
+      );
+      const rejectMutaion = useMutation(
+        "rejectMutaion",
+        API.getEntryReject,
+        {
+          onSuccess: (data) => {
+            enqueueSnackbar(data, {
+              variant: "success",
+            });
+            CloseMessageBox();
+          },
+          onError: (error: any) => {
+            CloseMessageBox();
+          },
+        }
+      );
   return (
-  <Fragment>
+    <>
          <Dialog
         fullWidth
         maxWidth="xl"
@@ -97,17 +118,71 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
               }}
               formStyle={{ background: "white" }}
             >
-                <GradientButton color={"primary"}>
-                        Confirm
+                 <GradientButton
+                  color={"primary"}
+                  onClick={async(event) => {
+                     if (rows?.RESTRICT_CNFIRM_MSG !=="") {
+                      await MessageBox({
+                        messageTitle: t("ValidationFailed"),
+                        message: rows?.RESTRICT_CNFIRM_MSG,
+                        buttonNames: ["Ok"],
+                      });
+                    }
+                    else if (
+                      !(
+                        format(
+                          new Date(rows?.TRAN_DT),
+                          "dd/MMM/yyyy"
+                        ) ===
+                        format(
+                          new Date(authState?.workingDate),
+                          "dd/MMM/yyyy"
+                        )
+                      )
+                    ) {
+                      await MessageBox({
+                        messageTitle: t("ValidationFailed"),
+                        message: t("CannotConfirmBackDatedEntry"),
+                        buttonNames: ["Ok"],
+                      });
+                    } else if (authState?.user?.id === rows?.ENTERED_BY) {
+                      await MessageBox({
+                        messageTitle: t("ValidationFailed"),
+                        message: t("ConfirmRestrictMsg"),
+                        buttonNames: ["Ok"],
+                      });
+                    }
+                    else {
+                      const buttonName = await MessageBox({
+                        messageTitle: t("Confirmation"),
+                        message: t("DoYouWantToAllowTheTransaction"),
+                        buttonNames: ["No", "Yes"],
+                        loadingBtnName: ["Yes"],
+                      });
+                      if (buttonName === "Yes") {
+                        confirmMutation.mutate({
+                          ...rows
+                        })
+                      }
+                             
+                  }
+                }}
+                  >
+                        {t("Confirm")}
                     </GradientButton>
                     <GradientButton color={"primary"} onClick={(event) => {
                         setopenDltDialogue(true);
                     }}>
-                        Reject
+                        {t("Reject")}
+                    </GradientButton>
+                    <GradientButton color={"primary"} onClick={(event) => {
+                     setopenConfmHistory(true)
+                    }}>
+                        {t("ConfHistory")}
                     </GradientButton>
 
                 <GradientButton onClick={closeDialog} color={"primary"}>
-                Close
+                {t("Close")}
                 </GradientButton>
             </FormWrapper>
           
@@ -164,7 +239,6 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
               }
               displayMode={formMode}
               onSubmitHandler={() => { }}
-            
               initialValues={{
                 PAYSLIP_DRAFT_DTL:draftDtlData ?? [],
               }}
@@ -215,7 +289,61 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         slipdataRefetch={slipdataRefetch}
       />
         </Dialog>
-  </Fragment>
+        {isDeleteRemark && (
+                      <RemarksAPIWrapper
+                        TitleText={
+                          "Enter Removal Remarks For PAYSLP ISSUE CONFIRMATION RPT/15"
+                        }
+                        onActionNo={() => SetDeleteRemark(false)}
+                        onActionYes={async (val, rows) => {
+                          const buttonName = await MessageBox({
+                            messageTitle: t("Confirmation"),
+                            message: t("DoYouWantDeleteRow"),
+                            buttonNames: ["Yes", "No"],
+                            defFocusBtnName: "Yes",
+                            loadingBtnName: ["Yes"],
+                          });
+                          if (buttonName === "Yes") {
+                            let deleteReqPara = {
+                              REQ_FLAG: "A",
+                              TRAN_TYPE: "Delete",
+                              COMP_CD: acctDtlData[0].ENTERED_COMP_CD,
+                              BRANCH_CD: acctDtlData[0].ENTERED_BRANCH_CD,
+                              ACCT_CD: rows.ACCT_CD,
+                              ACCT_TYPE: rows.ACCT_TYPE,
+                              AMOUNT: rows.AMOUNT,
+                              REMARKS: acctDtlData[0].REMARKS,
+                              SCREEN_REF: "RPT/15",
+                              CONFIRMED: rows.CONFIRMED,
+                              USER_DEF_REMARKS: val,
+                              TRAN_CD: rows.TRAN_CD,
+                              ENTERED_BY: rows.draftDtlData[0].ENTERED_BY,
+                              PAYSLIP_NO: rows.PAYSLIP_NO,
+                              _isNewRow: false,                             
+                            
+                             
+                            };
+                            rejectMutaion.mutate(deleteReqPara);
+                          }
+                        }}
+                        isEntertoSubmit={true}
+                        AcceptbuttonLabelText="Ok"
+                        CanceltbuttonLabelText="Cancel"
+                        open={isDeleteRemark}
+                        defaultValue={"WRONG ENTRY FROM PAYSLIP ISSUE ENTRY CONFIRMATION (RPT/15)"
+                        }
+                        rows={rows}
+                      />
+                    )}
+        {
+          openConfmHistory?(
+          <ConFirmedHistory
+          open={openConfmHistory}
+          close={()=>setopenConfmHistory(false)}
+          />
+          ):""
+        }
+    </>
   )
 }
 

@@ -1968,7 +1968,16 @@ export const ActionWiseAPIConfiguration = {
     url: "transactionServiceAPI/DAILYHOLDTRANSACTIONCONFIRMATION",
     packageName: "",
   },
-  
+  DODUALCONFIRMATION:
+  {
+    url: "/enfinityCommonServiceAPI/DODUALCONFIRMATION",
+    packageName: "",
+  },
+  GETCONFIRMEDHISTORY:
+  {
+    url: "/enfinityCommonServiceAPI/GETCONFIRMEDHISTORY",
+    packageName: "",
+  },
   
 };
 
