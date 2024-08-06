@@ -682,12 +682,12 @@ export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
 };
 
 // retrieving document medatory docs in grid for new entry
-export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, ACCT_TYPE, CONSTITUTION_TYPE}) => {
+export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, ACCT_TYPE, CONSTITUTION_TYPE}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUSTOMER_TYPE: CUST_TYPE ?? null,
+      CUSTOMER_TYPE: null,
       ACCT_TYPE: ACCT_TYPE ?? null, 
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"

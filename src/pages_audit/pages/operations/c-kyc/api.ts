@@ -1032,7 +1032,8 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
     await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUSTOMER_TYPE: CUST_TYPE, 
+      CUSTOMER_TYPE: CUST_TYPE ?? null, 
+      ACCT_TYPE: null,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
     });

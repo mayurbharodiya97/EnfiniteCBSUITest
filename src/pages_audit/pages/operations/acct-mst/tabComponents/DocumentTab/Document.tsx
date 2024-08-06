@@ -41,7 +41,6 @@ const Document = () => {
     let docTemplatePayload = {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      CUST_TYPE: null,
       ACCT_TYPE: AcctMSTState?.accTypeValuectx,
       CONSTITUTION_TYPE: AcctMSTState?.constitutionValuectx ?? "",  
     }
