@@ -362,6 +362,12 @@ const Form15GHEntry = ({
       } else {
         data["TOT_INCOME"] = data["TOT_INCOME"];
       }
+      if (Boolean(data["FIN_INT_AMT"] === "")) {
+        data["FIN_INT_AMT"] = "0";
+      } else {
+        data["FIN_INT_AMT"] = data["FIN_INT_AMT"];
+      }
+
       if (formMode === "new") {
         let newData = fdGridDatawithNewRow.map((item: any) => {
           const { SR_CD, FIN_INT_AMT, ...rest } = item;
@@ -631,7 +637,11 @@ const Form15GHEntry = ({
             <>
               {formMode === "edit" ? (
                 <>
-                  <GradientButton color={"primary"} onClick={handleRemove}>
+                  <GradientButton
+                    color={"primary"}
+                    disabled={updateMutation?.isLoading}
+                    onClick={handleRemove}
+                  >
                     {t("Delete")}
                   </GradientButton>
                   <GradientButton
@@ -653,6 +663,7 @@ const Form15GHEntry = ({
                       setFormMode("view");
                     }}
                     color={"primary"}
+                    disabled={updateMutation?.isLoading}
                   >
                     {t("Cancel")}
                   </GradientButton>
