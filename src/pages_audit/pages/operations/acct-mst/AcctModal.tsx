@@ -40,7 +40,7 @@ import MobileRegTab from "./tabComponents/MobileRegTab";
 import RelativeDtlTab from "./tabComponents/RelativeDtlTab";
 import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
-import DocumentTab from "./tabComponents/DocumentTab";
+import Document from "./tabComponents/DocumentTab/Document";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
 import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
 import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
@@ -253,7 +253,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
       case "Other Address":
         return <OtherAddTab />
       case "Documents":
-        return <DocumentTab />
+        return <Document />
       case "Advance Configuration":
         return <AdvConfigTab />
       case "Joint Holder":
