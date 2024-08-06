@@ -1354,7 +1354,13 @@ Sequence:"Sequence",
 eodVersion:"EOD Version",
 Mandatory:"Mandatory",
 StartTime:"Start Time",
-endTime:"end Time"
+endTime:"end Time",
+//cheque search(outward return)
+clearingType:"clearing Type",
+phone:"Phone",
+from:"From",
+GenerateOutwardReturnEntry:"Are You Sure to Generate Outward Return Entry ?",
+enteredBranch:"Entered Branch",
 
 };
 

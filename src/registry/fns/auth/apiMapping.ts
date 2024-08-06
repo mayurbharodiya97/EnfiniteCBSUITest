@@ -1978,6 +1978,21 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETCONFIRMEDHISTORY",
     packageName: "",
   },
+  GETCHQSEARCHTRANTYP:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHTRANTYP",
+    packageName: "",
+  },
+  GETCHQSEARCHDATA:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHDATA",
+    packageName: "",
+  },
+  GETDUPLICATECLGENTRY:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDUPLICATECLGENTRY",
+    packageName: "",
+  },
   
 };
 
