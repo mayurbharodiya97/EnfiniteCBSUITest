@@ -300,7 +300,7 @@ export const joint_tab_metadata = {
                   options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["JOINT_HOLDER_DTL.PIN_CODE"]?.value, formState, _, authState),
                   _optionsKey: "indSubareaMaiwejfjwefnOpjoint",
                 setValueOnDependentFieldsChange: (dependentFields) => {
-                    const pincode = dependentFields["JOINT_HOLDER_DTL.PIN_CODE"]
+                    const pincode = dependentFields["JOINT_HOLDER_DTL.PIN_CODE"]?.value;
                     if(Boolean(pincode)) {
                         if(pincode.length<6) {
                             return "";
