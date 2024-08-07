@@ -9,8 +9,8 @@ export const getHoldTrnsData = async ({
     
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETHOLDTRNCONFGRID", {
-        COMP_CD:COMP_CD,
-        BRANCH_CD:BRANCH_CD,
+        A_COMP_CD:COMP_CD,
+        A_BRANCH_CD:BRANCH_CD,
     });
     
     if (status === "0") {

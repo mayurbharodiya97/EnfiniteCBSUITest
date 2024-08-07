@@ -1,1 +1,1 @@
-export { ChequqSearch as default } from "./cheQueSearch";
+export { ChequeSearch as default } from "./cheQueSearch";

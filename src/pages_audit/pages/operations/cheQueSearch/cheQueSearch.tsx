@@ -16,11 +16,10 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
 import { ReturnChequeForm } from "./returnChequeForm";
 import {t} from "i18next";
-const { MessageBox, CloseMessageBox } = usePopupContext();
 
 const actions: ActionTypes[] = [
 {
-    actionName: "view-details",
+    actionName: "viewdetail",
     actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
@@ -29,6 +28,7 @@ const actions: ActionTypes[] = [
 ];
 
 const ChequeSearchMain = () => {
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
@@ -36,15 +36,19 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
 
   const setCurrentAction = useCallback(
     async (data) => {
-      if (data?.name === "view-detail") {
-        if(data?.rows[0]?.data.ALLOW_RETURN==="Y")
+      console.log(data);
+      
+      if (data?.name === "viewdetail") {
+        console.log(data?.rows[0]?.data?.ALLOW_RETURN);
+        
+        if(data?.rows[0]?.data?.ALLOW_RETURN==="Y")
         {
           checkDuplicateMutation.mutate({  
         A_COMP_CD:authState?.companyID,
         A_BRANCH_CD:authState?.user?.branchCode,
         A_ACCT_TYPE:data?.rows[0]?.data?.ACCT_TYPE,
         A_ACCT_CD:data?.rows[0]?.data?.ACCT_CD,
-        A_TRAN_TYPE:data?.rows[0]?.data?.TRAN_TYPE,
+        A_TRAN_TYPE: format(new Date(data?.rows[0]?.data?.TRAN_TYPE), "dd/MMM/yyyy"),
         A_TRAN_DT:data?.rows[0]?.data?.TRAN_DT,
         A_BANK_CD:data?.rows[0]?.data?.BANK_CD,
         A_CHEQUE_NO:data?.rows[0]?.data?.CHEQUE_NO,
@@ -123,7 +127,10 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
     }
 
     data = {
-      ...data,
+      FROM_DATE:data?.FROM_DT,
+      TO_DATE:data?.TO_DT,
+      TRAN_TYPE:data?.TRAN_TYPE,
+      CHEQUE_NO:data?.CHEQUE_NO,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
     };
@@ -170,6 +177,7 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
               setData={() => null}
               loading={retrieveMutation.isLoading}
               actions={actions}
+              hideHeader={true}
               setAction={setCurrentAction}
             />
            <Routes>

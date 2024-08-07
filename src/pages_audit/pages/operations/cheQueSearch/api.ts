@@ -14,11 +14,11 @@ COMP_CD,BRANCH_CD
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ DESCRIPTION, TRAN_CD, ...items }) => {
+          ({ DISP_VAL, DATA_VALUE, ...items }) => {
             return {
               ...items,
-              value: TRAN_CD,
-              label: DESCRIPTION,
+              value: DATA_VALUE,
+              label: DISP_VAL,
             };
   
           }

@@ -37,9 +37,9 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         GridProps: {
           xs: 0,
           md: 1,
-          sm: 3.9,
-          lg: 3.9,
-          xl: 3.9,
+          sm: 0,
+          lg: 1,
+          xl: 1,
         },
       },
       {
@@ -56,15 +56,13 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
           type: "string",
           rules: [{ name: "required", params: ["FromDateRequired."] }],
         },
-        validate: (value) => {
-          if (Boolean(value?.value)) {
-            return "Mustbeavaliddate";
-          }
-          return "";
-        },
-        onFocus: (date) => {
-          date.target.select();
-        },
+        // validate: (value) => {
+        //   if (Boolean(value?.value)) {
+        //     return "Mustbeavaliddate";
+        //   }
+        //   return "";
+        // },
+      
       },
       {
         render: {
@@ -79,25 +77,25 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
           type: "string",
           rules: [{ name: "required", params: ["ToDateRequired"] }],
         },
-        validate: (currentField, dependentField) => {
-          if (Boolean(currentField?.value)) {
-            return "Mustbeavaliddate";
-          }
-          if (
-            new Date(currentField?.value) <
-            new Date(dependentField?.FROM_DT?.value)
-          ) {
-            return "ToDateshouldbegreaterthanorequaltoFromDate";
-          }
-          return "";
-        },
+        // validate: (currentField, dependentField) => {
+        //   if (Boolean(currentField?.value)) {
+        //     return "Mustbeavaliddate";
+        //   }
+        //   if (
+        //     new Date(currentField?.value) <
+        //     new Date(dependentField?.FROM_DT?.value)
+        //   ) {
+        //     return "ToDateshouldbegreaterthanorequaltoFromDate";
+        //   }
+        //   return "";
+        // },
         dependentFields: ["FROM_DT"],
         runValidationOnDependentFieldsChange: true,
         GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
       },
       {
         render: {
-          componentType: "numberformat",
+          componentType: "numberFormat",
         },
         name: "CHEQUE_NO",
         label: "Chequeno",
@@ -108,7 +106,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         name: "TRAN_TYPE",
         placeholder: "type",
         label: "type",
-        _optionsKey: "getRetrievalType",
+        _optionsKey: "getClearingTypeDDW",
         options: (dependentValue, formState, _, authState) => {
           return getClearingTypeDDW({
             COMP_CD: authState?.companyID,
@@ -116,8 +114,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
   
           });
         },
-        defaultOptionLabel: "type",
-        defaultValue: "463",
+        defaultOptionLabel: "N",
         GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
      
         fullWidth: true,

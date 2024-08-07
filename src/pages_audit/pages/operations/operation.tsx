@@ -48,10 +48,14 @@ const Form15GHConfirmationGrid = lazy(
 //   () => import("./positivePayEntry/confirmation")
 // );
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
+const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
 
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
+    <Route path="holdtrn-confirmation/*" element={<HoldTrnsConfirmationMain />} />
+    <Route path="owreturn-chqsearch/*" element={<OutwardChequeSearch />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />

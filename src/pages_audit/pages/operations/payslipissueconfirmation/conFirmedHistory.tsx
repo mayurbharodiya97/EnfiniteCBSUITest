@@ -11,7 +11,7 @@ import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
 import { confirmedHistoryMetaData } from "./confirmedHistoryMetaData";
 import { Dialog } from "@mui/material";
-const { state: rows }: any = useLocation();
+
  
 
 const actions: ActionTypes[] = [
@@ -25,7 +25,7 @@ const actions: ActionTypes[] = [
 
 
 export const ConFirmedHistory = ({open,close}) => {
-
+  const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
