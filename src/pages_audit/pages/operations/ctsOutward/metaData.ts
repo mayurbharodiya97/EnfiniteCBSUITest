@@ -548,7 +548,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-
+      name: "SPACER",
       GridProps: {
         xs: 0,
         md: 1,
@@ -1085,7 +1085,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-
+      name: "SPACER",
       GridProps: {
         xs: 0,
         md: 1,

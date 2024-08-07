@@ -255,6 +255,7 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
+      name: "spacer",
       GridProps: {
         xs: 1,
         sm: 1,
@@ -353,6 +354,7 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
+      name: "spacer2",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -2576,6 +2578,7 @@ export const DeleteDialogMetaData = {
       render: {
         componentType: "spacer",
       },
+      name: "spacer3",
       GridProps: {
         xs: 5,
         sm: 5,

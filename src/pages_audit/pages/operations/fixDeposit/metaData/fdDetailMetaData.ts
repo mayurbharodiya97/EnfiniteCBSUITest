@@ -61,6 +61,7 @@ export const FixDepositDetailFormMetadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: { xs: 0, md: 10, sm: 10, lg: 10, xl: 10 },
     },
     {

@@ -267,7 +267,7 @@ export const kyc_proof_of_identity_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "PassportDetails",
@@ -367,7 +367,7 @@ export const kyc_proof_of_identity_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "DrivingLicenseDetails",
@@ -512,7 +512,7 @@ export const kyc_proof_of_address_meta_data = {
   fields: [
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "CurrentAddress",
@@ -866,7 +866,7 @@ export const kyc_proof_of_address_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "CorrespondenceAddress",
@@ -1423,7 +1423,7 @@ export const kyc_proof_of_address_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "Contact",
@@ -1472,6 +1472,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },
@@ -1518,6 +1519,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },
@@ -1577,6 +1579,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },
@@ -1734,7 +1737,7 @@ export const kyc_legal_proof_of_add_meta_data = {
   fields: [
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "CurrentAddress",
@@ -2102,7 +2105,7 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "CorrespondenceAddress",
@@ -2448,7 +2451,7 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "Contact",
@@ -2497,6 +2500,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },
@@ -2543,6 +2547,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },
@@ -2591,6 +2596,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.1,
       },

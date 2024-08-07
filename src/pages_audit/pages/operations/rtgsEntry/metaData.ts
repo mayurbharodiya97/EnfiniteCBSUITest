@@ -1454,6 +1454,7 @@ export const rtgsAccountDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: { xs: 0, md: 6.7, sm: 6.7, lg: 6.7, xl: 6.7 },
     },
     {
@@ -2719,7 +2720,7 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "spacer",
       },
-
+      name: "SPACER",
       GridProps: {
         xs: 0,
         md: 1,

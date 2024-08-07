@@ -49,7 +49,7 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "spacer",
       },
-
+      name: "SPACER",
       GridProps: {
         xs: 0,
         md: 1,
@@ -1624,6 +1624,7 @@ export const rtgBenDetailConfirmFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: { xs: 0, md: 8, sm: 8, lg: 8, xl: 8 },
     },
     {

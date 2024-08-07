@@ -1,10 +1,6 @@
 import { useState, Fragment, useEffect, lazy, useContext } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { AppBar } from "./appBar";
-import { Drawer } from "./drawer";
-import { MySideBar } from "./sideBar";
 import { Content } from "./content";
-// import "react-perfect-scrollbar/dist/css/styles.css";
 import { useStyles } from "./style";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
@@ -14,20 +10,27 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
-import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
 import { AuthContext } from "./auth";
 import { AuthContextProvider } from "@acuteinfo/common-base";
-// import { AccDetailContext } from "./auth";
+import { MultiLanguages } from "./auth/multiLanguages";
+import SearchScreen from "./appBar/searchScreen";
+import { AppbarWrapper, SidebarWrapper } from "@acuteinfo/common-screens";
+import Logo from "assets/images/easy_bankcore_Logo.png";
+import useLogoPics from "components/logoPics/logoPics";
+import { LogoutModal } from "./appBar/logoutModal";
 
 export const PagesAudit = (props, { columns }) => {
   const { authState } = useContext(AuthContext);
   const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
-  // const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const authController = useContext(AuthContext);
+  const navigate = useNavigate();
+  const logos = useLogoPics();
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const classes = useStyles();
   const isValidURL = props?.isValidURL ?? true;
 
@@ -59,20 +62,35 @@ export const PagesAudit = (props, { columns }) => {
     <Fragment>
       <AuthContextProvider authState={authState}>
         <div className={classes.root}>
-          {/* {alert("Test")} */}
-          <AppBar
-            open={drawerOpen}
-            handleDrawerOpen={handleDrawerOpen}
+          <AppbarWrapper
+            authState={authController?.authState}
             handleDrawerClose={handleDrawerClose}
-            columns={columns}
+            handleDrawerOpen={handleDrawerOpen}
+            navigate={navigate}
+            open={drawerOpen}
+            dashboardUrl="./dashboard"
+            LanguageComponent={MultiLanguages}
+            SearchComponent={SearchScreen}
+            bankLogo={Logo}
+            handleLogout={() => setLogoutOpen(true)}
+            handleProfile={() => navigate("./profile")}
+            logos={logos}
+            profilePic={
+              Boolean(authController?.getProfileImage)
+                ? authController?.getProfileImage
+                : logos?.profile
+            }
+            menuIconPosition="left"
+            hideGreetings={false}
           />
-          <Drawer
-            open={drawerOpen}
-            handleDrawerClose={handleDrawerClose}
+          <SidebarWrapper
+            authState={authController?.authState ?? {}}
             handleDrawerOpen={handleDrawerOpen}
-          >
-            <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
-          </Drawer>
+            open={drawerOpen}
+            navigate={navigate}
+            rootUrl="cbsenfinity"
+            dashboardUrl="dashboard"
+          />
           <Content>
             <Routes>
               {isValidURL ? (
@@ -118,6 +136,12 @@ export const PagesAudit = (props, { columns }) => {
           >
             <ChatMessageBox />Switch 
           </div> */}
+            {logoutOpen ? (
+              <LogoutModal
+                logoutOpen={logoutOpen}
+                setLogoutOpen={setLogoutOpen}
+              />
+            ) : null}
           </Content>
         </div>
       </AuthContextProvider>

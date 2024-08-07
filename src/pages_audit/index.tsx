@@ -7,12 +7,132 @@ import {
   ForgotPasswordController,
   ProtectedRoutes,
 } from "./auth";
-import { BranchSelectionGridWrapper } from "./auth/branchSelection";
-import { CustomPropertiesConfigurationProvider } from "@acuteinfo/common-base";
-//alert("EntryPoint");
+import {
+  CustomPropertiesConfigurationProvider,
+  ExtendedFieldMetaDataTypeOptional,
+} from "@acuteinfo/common-base";
+import { BranchSelectionGrid } from "./auth/branchSelection/branchSelectionGrid";
+import { GeneralAPI } from "registry/fns/functions";
+
+const meta: ExtendedFieldMetaDataTypeOptional = {
+  branchCode: {
+    render: {
+      componentType: "autocomplete",
+    },
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Branch Code is required"] }],
+    },
+    required: true,
+    name: "BRANCH_CD",
+    label: "Branch Code",
+    placeholder: "Select branch code",
+    defaultValue: "",
+    // options: [
+    //   { label: "1 branch", value: "1" },
+    //   { label: "2 branch", value: "2" },
+    //   { label: "3 branch", value: "3" },
+    // ],
+    options: GeneralAPI.getBranchCodeList,
+    _optionsKey: "getBranchCodeList",
+    GridProps: {
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
+    },
+    // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
+    defaultBranchTrue: true,
+  },
+
+  accountType: {
+    render: {
+      componentType: "autocomplete",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "Account Type",
+    placeholder: "Select account type",
+    options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "getAccountTypeList",
+    defaultAcctTypeTrue: true,
+    defaultValue: "",
+    GridProps: {
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
+    },
+  },
+
+  accountCode: {
+    render: {
+      componentType: "numberFormat",
+    },
+    label: "Account Number",
+    name: "ACCT_CD",
+    placeholder: "Enter account number",
+    required: true,
+    // maxLength: 8,
+    dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+    postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
+    // setValueOnDependentFieldsChange: (dependentFields) => {
+    //   return "";
+    // },
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["Account code is required"] },
+        {
+          name: "max",
+          params: [20, "Account code should not exceed 20 digits"],
+        },
+      ],
+    },
+    GridProps: {
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
+    },
+    FormatProps: {
+      // format: "###########",
+      allowNegative: false,
+      allowLeadingZeros: true,
+      // isNumericString: true,
+
+      isAllowed: (values) => {
+        if (values?.value?.length > 8) {
+          return false;
+        }
+        return true;
+      },
+    },
+  },
+
+  phoneNumberOptional: {
+    render: {
+      componentType: "inputMask",
+    },
+    MaskProps: {
+      mask: "0000000000",
+      lazy: true,
+    },
+  },
+};
+
 const EntryPoint = () => (
   <Fragment>
-    <CustomPropertiesConfigurationProvider>
+    <CustomPropertiesConfigurationProvider
+      config={{ customExtendedTypes: meta }}
+    >
       <AuthProvider>
         <Routes>
           <Route path="login" element={<AuthLoginController />} />
@@ -26,11 +146,11 @@ const EntryPoint = () => (
           />
           <Route
             path="branch-selection/*"
-            element={<BranchSelectionGridWrapper selectionMode={"S"} />}
+            element={<BranchSelectionGrid selectionMode={"S"} />}
           />
           <Route
             path="change-branch/*"
-            element={<BranchSelectionGridWrapper selectionMode={"C"} />}
+            element={<BranchSelectionGrid selectionMode={"C"} />}
           />
           <Route
             path="*"

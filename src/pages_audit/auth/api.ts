@@ -3,6 +3,32 @@ import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
 import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 
+export const ResetPassword = async (
+  username,
+  password,
+  newpassword,
+  accessToken,
+  token_type
+) => {
+  const { data, status, message, messageDetails, responseType, access_token } =
+    await AuthSDK.internalFetcherPreLogin(
+      "CHANGEPASSWORD",
+      {
+        USER_ID: username,
+        OLD_PASSWORD: password,
+        NEW_PASSWORD: newpassword,
+      },
+      {
+        Authorization: utilFunction.getAuthorizeTokenText(
+          accessToken,
+          token_type
+        ),
+        USER_ID: username,
+      }
+    );
+  return { status, data, message, messageDetails };
+};
+
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLOGINIMGDATA", {

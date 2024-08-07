@@ -891,6 +891,7 @@ export const PassbookStatementInq = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 12,
         md: 0.5,

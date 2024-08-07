@@ -1979,6 +1979,7 @@ export const denoTableMetadataTotal: any = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 0.5,
         sm: 0,

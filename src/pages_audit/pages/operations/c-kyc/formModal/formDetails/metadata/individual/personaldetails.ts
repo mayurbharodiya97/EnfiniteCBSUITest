@@ -49,7 +49,7 @@ export const personal_detail_prefix_data = {
   fields: [
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "Prefix",
@@ -233,7 +233,7 @@ export const personal_detail_prefix_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 8,
       },
       dividerText: "MaidenName",
@@ -321,8 +321,8 @@ export const personal_detail_prefix_data = {
     {
       render: {
         componentType: "spacer",
-        sequence: 13,
       },
+      name: "SPACER",
       sequence: 14,
       GridProps: {
         xs: 12,
@@ -364,7 +364,7 @@ export const personal_detail_prefix_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 15,
       },
       dividerText: "FatherName",
@@ -461,7 +461,7 @@ export const personal_detail_prefix_data = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 20,
       },
       dividerText: "MotherName",
@@ -847,7 +847,7 @@ export const personal_individual_detail_metadata = {
   fields: [
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 1,
       },
       dividerText: "Prefix",
@@ -1003,7 +1003,7 @@ export const personal_individual_detail_metadata = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 8,
       },
       dividerText: "MaidenName",
@@ -1128,7 +1128,7 @@ export const personal_individual_detail_metadata = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 15,
       },
       dividerText: "FatherName",
@@ -1208,7 +1208,7 @@ export const personal_individual_detail_metadata = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
         sequence: 20,
       },
       dividerText: "MotherName",
