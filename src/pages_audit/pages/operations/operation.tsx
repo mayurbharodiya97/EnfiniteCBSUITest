@@ -12,6 +12,7 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
+const AtmEntry = lazy(() => import("./atm-entry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -26,18 +27,27 @@ const InwardClearing = lazy(() => import("./inwardClearing"));
 const ClearingDateTransferGridWrapper = lazy(
   () => import("./clearingDateTransfer")
 );
+const StrAcLevelBranchEntryGridWrapper = lazy(
+  () => import("./strAcLevelBranchEntry")
+);
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
 const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
-const PayslipIsuueEntry = lazy(
-  () => import("./payslip-issue-entry")
-);
 const Payslipissueconfirmation = lazy(
   () => import("./payslipissueconfirmation/index")
 )
+const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
+const Form15GHConfirmationGrid = lazy(
+  () => import("./form15G-HEntry/confirmation")
+);
+// const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
+// const PositivePayConfirmationGrid = lazy(
+//   () => import("./positivePayEntry/confirmation")
+// );
+const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -47,6 +57,8 @@ export const OperationsMenu = () => (
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
+    <Route path="atm-reg-entry/*" element={<AtmEntry />} />
+
     <Route
       path="chequebook-confirmation/*"
       element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
@@ -116,7 +128,7 @@ export const OperationsMenu = () => (
       element={<CtsOutwardClearingFormWrapper zoneTranType="R" />}
     />
     <Route
-      path="cts-o/w-confirmation/*"
+      path="cts-outward-confirmation/*"
       element={<CtsOutwardClearingConfirmGrid zoneTranType="S" />}
     />
     <Route
@@ -131,6 +143,10 @@ export const OperationsMenu = () => (
     <Route
       path="clearing-date-transfer/*"
       element={<ClearingDateTransferGridWrapper />}
+    />
+    <Route
+      path="str-branch-entry/*"
+      element={<StrAcLevelBranchEntryGridWrapper />}
     />
 
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
@@ -152,5 +168,18 @@ export const OperationsMenu = () => (
         </FixDepositProvider>
       }
     />
+    <Route
+      path="form-15g-h-entry/*"
+      element={<Form15GHEntryGrid screenFlag="E" />}
+    />
+    <Route
+      path="form-15g-h-confirmation/*"
+      element={<Form15GHConfirmationGrid screenFlag="C" />}
+    />
+    {/* <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} />
+    <Route
+      path="positivepay-confirmation/*"
+      element={<PositivePayConfirmationGrid screenFlag="C" />}
+    /> */}
   </Routes>
 );

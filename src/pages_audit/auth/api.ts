@@ -21,7 +21,7 @@ export const validatePasswords = async ({ ...request }:any) => {
       ...request
     });
   if (status === "0") {
-    return { validateStatus :status,  validateData :data[0]};
+    return { validateStatus :status, validateData:data[0]};
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -178,6 +178,7 @@ export const RefreshTokenData = async (refreshToken) => {
 export const LogoutAPI = async ({ userID }) => {
   const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
     USER_ID: userID,
+    APP_TRAN_CD: 51,
   });
   //if (status === "0") {
   return message;
@@ -261,6 +262,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
+    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
     access: {},
   };
 };
@@ -523,4 +525,3 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
-

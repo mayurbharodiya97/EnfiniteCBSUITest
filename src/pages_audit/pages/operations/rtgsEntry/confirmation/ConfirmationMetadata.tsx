@@ -522,7 +522,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
 export const RtgsOrderingBranchConfirmFormMetaData = {
   form: {
     name: "rtgsEntry",
-    label: "RTGS Entry(MST/552)",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AgentMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "AgentMaster",
+    gridLabel: "",
     rowIdColumn: "AGENT_CD",
     defaultColumnConfig: {
       width: 400,
@@ -159,7 +159,7 @@ export const AgentMasterGridMetaData: GridMetaDataType = {
       accessor: "SECURITY_PER",
       columnName: "Security%",
       sequence: 14,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 80,
       minWidth: 70,
@@ -279,7 +279,7 @@ export const AgentMasterGridMetaData: GridMetaDataType = {
       accessor: "TDS_RATE",
       columnName: "HandHeldMachineTDSRate",
       sequence: 26,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 190,
       minWidth: 180,

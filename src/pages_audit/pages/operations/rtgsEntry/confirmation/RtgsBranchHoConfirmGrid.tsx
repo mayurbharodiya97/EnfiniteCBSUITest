@@ -9,7 +9,7 @@ import {
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { RTGSBranchHoConfirmFormWrapper } from "./RtgsBranchHoConfirmForm";
@@ -24,6 +24,7 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { utilFunction } from "components/utils";
 
 
 
@@ -31,7 +32,7 @@ import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: t("ViewDetails"),
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -46,6 +47,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
   const { t } = useTranslation();
+  let currentPath = useLocation().pathname;
 
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -231,6 +233,8 @@ const RtgsConfirmationGrid = ({ flag }) => {
 
 
 
+
+
   return (
     <Fragment>
       {/* {isLoading ? (
@@ -327,6 +331,11 @@ const RtgsConfirmationGrid = ({ flag }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
+              formLabel={utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
             />
           }
         />

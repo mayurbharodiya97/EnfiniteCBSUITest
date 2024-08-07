@@ -4,7 +4,7 @@ import * as API from "../api";
 export const ActionTakenMasterFormMetaData = {
   form: {
     name: "actionTakenMaster",
-    label: "ActionTakenMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",

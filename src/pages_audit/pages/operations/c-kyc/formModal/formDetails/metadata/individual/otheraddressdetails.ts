@@ -53,11 +53,11 @@ import * as API from "../../../../api";
             _fields: [
                 {
                     render: {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "CurrentAddress",
                     name: "CurrentAddressDivider_ignoreField",
-                    label: "CurrentAddressDivider",
+                    label: "CurrentAddress",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -355,11 +355,11 @@ import * as API from "../../../../api";
                 },
                 {
                     render: {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Contact",
                     name: "ContactDivider_ignoreField",
-                    label: "ContactDivider",
+                    label: "Contact",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {

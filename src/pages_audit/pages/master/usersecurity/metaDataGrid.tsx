@@ -1,9 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-import * as API from "./api"
 export const UserSecurity: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Security User (MST/131)",
+    gridLabel: "",
     rowIdColumn: "USER_NAME",
     defaultColumnConfig: {
       width: 150,
