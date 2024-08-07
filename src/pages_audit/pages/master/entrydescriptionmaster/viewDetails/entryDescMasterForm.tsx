@@ -1,7 +1,7 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
+import { Transition } from "@acuteinfo/common-base";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";

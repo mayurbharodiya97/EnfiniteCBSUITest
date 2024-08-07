@@ -17,18 +17,11 @@ import React, {
 } from "react";
 import { gridMetadata } from "./gridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
-// import { ActionTypes } from "components/dataTable";
-// import { GridMetaDataType } from "components/dataTableStatic";
-// import GridWrapper from "components/dataTableStatic/";
 import { enqueueSnackbar } from "notistack";
 import { ModeMasterFormWrapper } from "./viewDetails/modeMasterViewDetails";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-// import { Alert } from "components/common/alert";
-// import { queryClient } from "cache";
-// import { usePopupContext } from "components/custom/popupContext";
-
 const actions: ActionTypes[] = [
   {
     actionName: "add",

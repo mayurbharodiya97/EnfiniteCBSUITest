@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { TRN001_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn1Api from "../api";
 import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
@@ -12,10 +10,14 @@ import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 import { useLocation } from "react-router-dom";
-
+import {
+  RemarksAPIWrapper,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   // {
   //   actionName: "view-detail",
@@ -236,8 +238,8 @@ export const TRN001_Table = ({
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        onlySingleSelectionAllow={true}
-        isNewRowStyle={true}
+        disableMultipleRowSelect={true}
+        variant={"standard"}
         defaultSelectedRowId={rows?.[0]?.TRAN_CD ? rows?.[0]?.TRAN_CD : ""}
       />
       <Grid

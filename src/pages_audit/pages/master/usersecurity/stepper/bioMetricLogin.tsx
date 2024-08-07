@@ -11,7 +11,7 @@ import { LoginBiometricForm } from "./metaData/metaDataForm";
 import { SecurityContext } from "../context/SecuityForm";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
-import { ActionTypes } from "components/dataTable";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { useNavigate } from "react-router-dom";
 import { loginBiometric } from "./metaData/metaDataGrid";
 import { Dialog } from "@mui/material";

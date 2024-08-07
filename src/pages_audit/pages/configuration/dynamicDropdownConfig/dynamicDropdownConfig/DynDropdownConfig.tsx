@@ -5,7 +5,7 @@ import * as API from "../api";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
 import { useLocation } from "react-router-dom";
 import { DynamicDropdownConfigMetaData } from "./metaData";
 import {

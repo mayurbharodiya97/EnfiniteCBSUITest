@@ -7,12 +7,12 @@ export const CustomerSaveDialog = ({ open, onClose, onFormClose }) => {
     useContext(CkycContext);
   return (
     <MessageBoxWrapper
-      MessageTitle={"SUCCESS"}
-      Message={
+      // MessageTitle={"SUCCESS"}
+      validMessage={
         `New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ??
         "No Message"
       }
-      onClickButton={() => {
+      onActionYes={() => {
         handleCurrFormctx({
           currentFormSubmitted: null,
           isLoading: false,
@@ -21,8 +21,9 @@ export const CustomerSaveDialog = ({ open, onClose, onFormClose }) => {
         onFormClose();
       }}
       rows={[]}
-      buttonNames={["OK"]}
-      open={open}
+      // buttonNames={["OK"]}
+      isOpen={open}
+      onActionNo={() => {}}
     />
   );
 };

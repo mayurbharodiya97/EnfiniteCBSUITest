@@ -102,9 +102,12 @@ export const Proritysubform = ({
       {gridData ? (
         <FormWrapper
           key={"prioritymastersubformmetadata" + formMode}
-          metaData={extractMetaData(prioritymastersubformmetadata, formMode)}
-          as
-          MetaDataType
+          metaData={
+            extractMetaData(
+              prioritymastersubformmetadata,
+              formMode
+            ) as MetaDataType
+          }
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           initialValues={{ ...rows?.[0]?.data }}

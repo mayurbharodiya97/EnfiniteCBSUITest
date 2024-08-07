@@ -8,9 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "../api";
@@ -18,13 +15,18 @@ import { enqueueSnackbar } from "notistack";
 import { RetrievalParameterFormMetaData } from "../form/metaData";
 import { format } from "date-fns";
 import { Form15GHEntryWrapper } from "../form";
-import { isValidDate } from "components/utils/utilFunctions/function";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
-
+import {
+  queryClient,
+  Alert,
+  usePopupContext,
+  LoaderPaperComponent,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 export const RetrievalParameters = ({ closeDialog, onDataRetrieved }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -56,10 +58,10 @@ export const RetrievalParameters = ({ closeDialog, onDataRetrieved }) => {
         COMP_CD: authState?.companyID ?? "",
         TRAN_TYPE: initialData?.[0]?.TRAN_TYPE ?? "",
         CUSTOMER_ID: customerIdRef?.current?.A_CUSTOM_USER_NM ?? "",
-        FROM_DT: isValidDate(customerIdRef?.current?.FROM_DT)
+        FROM_DT: utilFunction.isValidDate(customerIdRef?.current?.FROM_DT)
           ? format(new Date(customerIdRef?.current?.FROM_DT), "dd/MMM/yyyy")
           : format(new Date(), "dd/MMM/yyyy") ?? "",
-        TO_DT: isValidDate(customerIdRef?.current?.TO_DT)
+        TO_DT: utilFunction.isValidDate(customerIdRef?.current?.TO_DT)
           ? format(new Date(customerIdRef?.current?.TO_DT), "dd/MMM/yyyy")
           : format(new Date(), "dd/MMM/yyyy") ?? "",
       }),
@@ -153,7 +155,7 @@ export const RetrievalParameters = ({ closeDialog, onDataRetrieved }) => {
               TO_DT: initialData?.[0]?.TO_DT,
             }}
             onSubmitHandler={onSubmitHandler}
-            isLoading={true}
+            // isLoading={true}
             //@ts-ignore
             formStyle={{
               background: "white",

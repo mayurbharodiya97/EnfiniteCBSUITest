@@ -1,10 +1,10 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import {
   clearingBankMasterConfigDML,
   getAccountSlipJoinDetail,
   getBankChequeAlert,
 } from "./api";
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
@@ -168,10 +168,14 @@ export const CTSOutwardClearingFormMetaData = {
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               GD_TODAY_DT: auth?.workingDate,
-              SCREEN_REF: formState?.ZONE_TRAN_TYPE === "S" ? "ETRN/559" : "ETRN/028",
+              SCREEN_REF:
+                formState?.ZONE_TRAN_TYPE === "S" ? "ETRN/559" : "ETRN/028",
             };
             let postData = await getAccountSlipJoinDetail(Apireq);
-            formState.setDataOnFieldChange("API_REQ", { ...Apireq, ...postData });
+            formState.setDataOnFieldChange("API_REQ", {
+              ...Apireq,
+              ...postData,
+            });
 
             let btn99, returnVal;
             const getButtonName = async (obj) => {
@@ -179,16 +183,14 @@ export const CTSOutwardClearingFormMetaData = {
               return { btnName, obj };
             };
             for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
-              console.log("postData", postData?.[0]?.MSG?.length)
+              console.log("postData", postData?.[0]?.MSG?.length);
               if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
-
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                 });
                 returnVal = "";
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
-
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
@@ -197,7 +199,6 @@ export const CTSOutwardClearingFormMetaData = {
                 }
                 returnVal = postData?.[0];
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
-
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
@@ -221,18 +222,18 @@ export const CTSOutwardClearingFormMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentFieldsValues?.ACCT_TYPE?.optionData
-                    ),
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  }
+                      value: utilFunction.getPadAccountNumber(
+                        field?.value,
+                        dependentFieldsValues?.ACCT_TYPE?.optionData
+                      ),
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    }
                   : {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
               ACCT_NAME: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -297,10 +298,7 @@ export const CTSOutwardClearingFormMetaData = {
             currentFieldState?.value ?? "0"
           );
         } else {
-          formState.setDataOnFieldChange(
-            "AMOUNT",
-            ""
-          );
+          formState.setDataOnFieldChange("AMOUNT", "");
         }
       },
       GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2 },
@@ -431,7 +429,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "rigth",
+      alignment: "right",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -912,9 +910,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["PayeeACNorequired"] },
-            ],
+            rules: [{ name: "required", params: ["PayeeACNorequired"] }],
           },
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
@@ -1028,9 +1024,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["ChequeAmountRequired"] },
-            ],
+            rules: [{ name: "required", params: ["ChequeAmountRequired"] }],
           },
           postValidationSetCrossFieldValues: async (...arr) => {
             if (arr[0].value) {
@@ -1514,7 +1508,10 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                 let btnName = await formState.MessageBox(obj);
                 return { btnName, obj };
               };
-              async function handleChequeValidationAndMessages(formState, field) {
+              async function handleChequeValidationAndMessages(
+                formState,
+                field
+              ) {
                 let postData = await GeneralAPI.getChequeNoValidation({
                   COMP_CD: formState?.REQ_DATA?.COMP_CD,
                   BRANCH_CD: formState?.REQ_DATA?.BRANCH_CD,
@@ -1579,10 +1576,16 @@ export const inwardReturnChequeDetailFormMetaData: any = {
 
                   btn99 = btnName;
                   if (btnName === "Yes") {
-                    return await handleChequeValidationAndMessages(formState, field);
+                    return await handleChequeValidationAndMessages(
+                      formState,
+                      field
+                    );
                   }
                 } else if (postData[i]?.O_STATUS === "0") {
-                  return await handleChequeValidationAndMessages(formState, field);
+                  return await handleChequeValidationAndMessages(
+                    formState,
+                    field
+                  );
                 }
               }
             }
@@ -1646,9 +1649,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           },
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["ChequeAmountRequired"] },
-            ],
+            rules: [{ name: "required", params: ["ChequeAmountRequired"] }],
           },
 
           postValidationSetCrossFieldValues: async (...arr) => {

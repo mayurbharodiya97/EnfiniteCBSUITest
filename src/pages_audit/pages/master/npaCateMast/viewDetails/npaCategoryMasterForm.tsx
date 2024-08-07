@@ -1,7 +1,6 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
+import { Transition } from "@acuteinfo/common-base";
 import { useContext, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -19,18 +18,19 @@ import {
   FormWrapper,
   MetaDataType,
 } from "@acuteinfo/common-base";
+import { AuthContext } from "pages_audit/auth";
 export const NpaCategoryMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
   gridData,
 }) => {
-  const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const [formMode, setFormMode] = useState(defaultView);
+  const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
 
   const mutation = useMutation(API.updateNpaCategoryMasterData, {

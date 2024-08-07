@@ -48,6 +48,7 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  SubmitFnType,
 } from "@acuteinfo/common-base";
 
 const useStyles: any = makeStyles((theme: any) => ({
@@ -112,8 +113,12 @@ const AtmEntryCustom = (parameter) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const onSubmitHandler = ({ data, displayData, endSubmit }) => {
-    //@ts-ignore
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData: any,
+    endSubmit,
+    setFieldError
+  ) => {
     endSubmit(true);
   };
 
@@ -193,9 +198,9 @@ const AtmEntryCustom = (parameter) => {
             key={"atm-reg-entry"}
             metaData={AtmEntryMetaData602 as MetaDataType}
             initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
             ref={formRef}
             hideHeader={true}
+            onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
               height: "calc(100vh - 442px)",

@@ -15,10 +15,11 @@ import "./accDetails.css";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  GradientButton,
+  formatCurrency,
+  usePropertiesConfigContext,
+} from "@acuteinfo/common-base";
 import { DailyTransTabsWithDialog } from "../DailyTransTabs";
 
 const useStyles = makeStyles((theme) => ({
@@ -76,11 +77,137 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
   const [isOpenCust360, setIsOpenCust360] = useState<boolean>(false);
   const [rowsDatas, setRowsDatas] = useState<any>([]);
   const classes = useStyles();
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const customParameter = usePropertiesConfigContext();
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
   const { authState } = useContext(AuthContext);
   let cardsInfo = cardsData ?? [];
-
+  const currencySymbol = {
+    ALL: "Lek",
+    AFN: "؋",
+    ARS: "$",
+    AWG: "ƒ",
+    AUD: "$",
+    AZN: "₼",
+    BSD: "$",
+    BBD: "$",
+    BYN: "Br",
+    BZD: "BZ$",
+    BMD: "$",
+    BOB: "$b",
+    BAM: "KM",
+    BWP: "P",
+    BGN: "лв",
+    BRL: "R$",
+    BND: "$",
+    KHR: "៛",
+    BDT: "৳",
+    CAD: "$",
+    KYD: "$",
+    CLP: "$",
+    CNY: "¥",
+    COP: "$",
+    CRC: "₡",
+    HRK: "kn",
+    CUP: "₱",
+    CZK: "Kč",
+    DKK: "kr",
+    DOP: "RD$",
+    XCD: "$",
+    EGP: "£",
+    SVC: "$",
+    EUR: "€",
+    FKP: "£",
+    GIP: "£",
+    GTQ: "Q",
+    GGP: "£",
+    GYD: "$",
+    HNL: "L",
+    HKD: "$",
+    HUF: "Ft",
+    INR: "₹", ///////////////////////////////////////////////////////////////////
+    IDR: "Rp",
+    IRR: "﷼",
+    IMP: "£",
+    ILS: "₪",
+    JMD: "J$",
+    JPY: "¥",
+    JEP: "£",
+    KZT: "лв",
+    KPW: "₩",
+    KRW: "₩",
+    KGS: "лв",
+    LAK: "₭",
+    LBP: "£",
+    LRD: "$",
+    MKD: "ден",
+    MYR: "RM",
+    MUR: "₨",
+    MXN: "$",
+    MNT: "₮",
+    MZN: "MT",
+    NAD: "$",
+    ANG: "ƒ",
+    NZD: "$",
+    NIO: "C$",
+    NGN: "₦",
+    NOK: "kr",
+    OMR: "﷼",
+    PKR: "₨",
+    PAB: "B/.",
+    PYG: "Gs",
+    PEN: "S/.",
+    PHP: "₱",
+    PLN: "zł",
+    ZAR: "R",
+    AED: "د.إ", //  United Arab Emirates Dirham
+    CHF: "Fr.", //  Swiss Franc
+    GBP: "£", //British Pound Sterling
+    RUB: "₽", //Russian Ruble
+    SEK: "kr", // Swedish Krona
+    TRY: "₺", //Turkish Lira
+    USD: "$", //United States Dollar
+    VND: "₫", //Vietnamese Dong
+    ZWL: "Z$", // Zimbabwean Dollar - obsolete
+    BTN: "Nu.",
+    BYR: "Br",
+    CVE: "€",
+    DJF: "Fdj",
+    DZD: "دج",
+    ERN: "Nfk",
+    FJD: "$",
+    GEL: "₾",
+    GHS: "¢",
+    ISK: "kr",
+    KWD: "د.ك",
+    LKR: "₨",
+    LYD: "ل.د",
+    MDL: "L",
+    MVR: "ރ",
+    MWK: "MK",
+    NPR: "₨",
+    RSD: "din.",
+    SAR: "ر.س",
+    SCR: "₨",
+    SYP: "£",
+    TND: "د.ت",
+    TTD: "TT$",
+    TWD: "NT$",
+    UGX: "Ush",
+    YER: "﷼",
+    ZMW: "K",
+    XOF: "CFA",
+    XAF: "FCFA",
+    TZS: "TSh",
+    SZL: "L",
+    STN: "Db",
+    SSP: "£",
+    SOS: "Sh.So.",
+    SLL: "Le",
+    ETB: "ብር",
+  };
+  const getCurrencySymbol = (currencyCode) => {
+    return currencySymbol[currencyCode] ?? "₹";
+  };
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
     let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
@@ -191,7 +318,8 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
                                 <span>
                                   {formatCurrency(
                                     parseFloat(b.COL_VALUE),
-                                    getCurrencySymbol(dynamicAmountSymbol),
+
+                                    dynamicAmountSymbol,
                                     currencyFormat,
                                     decimalCount
                                   )}

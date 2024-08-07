@@ -1,8 +1,7 @@
-import { utilFunction } from "components/utils/utilFunctions";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
@@ -15,13 +14,13 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const validatePasswords = async ({ ...request }:any) => {
+export const validatePasswords = async ({ ...request }: any) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
-      ...request
+      ...request,
     });
   if (status === "0") {
-    return { validateStatus :status, validateData:data[0]};
+    return { validateStatus: status, validateData: data[0] };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -86,7 +85,7 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId || '00',
+      REQUEST_CD: transactionId || "00",
       OTP: otpnumber,
       AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
@@ -262,7 +261,11 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
-    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
+    hoLogin:
+      data?.BRANCHCODE === data?.BASEBRANCHCODE &&
+      data?.COMPANYID === data?.BASECOMPANYID
+        ? "Y"
+        : "N",
     access: {},
   };
 };

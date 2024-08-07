@@ -12,12 +12,14 @@ import { matchFinger } from "./biometric";
 import { Grid, Tooltip } from "@mui/material";
 import { BankDetails } from "./bankDetails";
 import { useQuery } from "react-query";
-import { FullScreenLoader } from "components/common/loaderPaper";
-import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { MultiLanguages } from "./multiLanguages";
 import { useTranslation } from "react-i18next";
-import { usePopupContext } from "components/custom/popupContext";
+import {
+  usePopupContext,
+  utilFunction,
+  FullScreenLoader,
+} from "@acuteinfo/common-base";
 
 const inititalState = {
   username: "",
@@ -79,7 +81,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordVerificationFailure":
@@ -95,7 +97,7 @@ const reducer = (state, action) => {
         username: "",
         transactionID: "",
         comapanyCD: "",
-        branchCD: ""
+        branchCD: "",
       };
     case "usernameVerificationFailure": {
       return {
@@ -111,7 +113,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "inititatePasswordVerification": {
@@ -130,7 +132,7 @@ const reducer = (state, action) => {
         access_token: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordRotation": {

@@ -1,9 +1,8 @@
-import { components } from "components/report";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { utilFunction } from "components/utils";
+import { utilFunction, components } from "@acuteinfo/common-base";
 
 export const TellerScreenMetadata: any = {
   form: {

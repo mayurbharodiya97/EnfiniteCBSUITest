@@ -11,8 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import StyledTabs from "components/styledComponent/tabs/tabs";
-import CloseIcon from "@mui/icons-material/Close";
 // import { Button, Tabs } from "@mui/material";
 
 //logic
@@ -60,23 +58,25 @@ import SIDetail from "./OtherTrx/SI_Detail";
 import { makeStyles } from "@mui/styles";
 import { Tabs } from "components/styledComponent/tabs";
 import { Tab } from "components/styledComponent/tab";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic/types";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
-import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "../TRNCommon/api";
-import { GradientButton } from "components/styledComponent/button";
 import FormModal from "../../c-kyc/formModal/formModal";
 import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
-import { queryClient } from "cache";
 import { MyAppBar } from "pages_audit/appBar/appBar";
-import DialogWithAppbar from "components/custom/dialogWithAppbar";
+import {
+  GradientButton,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { t } from "i18next";
+import DialogWithAppbar from "components/common/dialogWithAppbar";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -464,14 +464,14 @@ export const DailyTransTabsWithDialog = ({
             finalMetaData={updatedMetadata as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
-            ReportExportButton={true}
+            enableExport={true}
             actions={[]}
             setAction={setCurrentAction}
             loading={isLoading || isFetching}
-            onlySingleSelectionAllow={true}
-            isNewRowStyle={true}
+            disableMultipleRowSelect={true}
+            variant={"standard"}
             defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
-            hideActionBar={true}
+            hideFooter={true}
           />
           {/* <Routes>
             <Route

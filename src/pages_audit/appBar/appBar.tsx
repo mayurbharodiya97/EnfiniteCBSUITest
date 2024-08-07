@@ -35,10 +35,10 @@ import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
-import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
-import useLogoPics from "components/common/logoPics/logoPics";
+import useLogoPics from "components/logoPics/logoPics";
 import { format } from "date-fns";
+import { GradientButton } from "@acuteinfo/common-base";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,

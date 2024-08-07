@@ -1,11 +1,7 @@
-import GridWrapper from "components/dataTableStatic";
 import { Fragment, useCallback, useContext, useEffect } from "react";
 import { BranchSelectionGridMetaData } from "./gridMetaData";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
 import branchSelectionSideImage from "assets/images/sideImage.png";
 import "./css/branchSelectionGrid.css";
-import { Alert } from "components/common/alert";
 import {
   Avatar,
   Box,
@@ -21,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-import { queryClient } from "cache";
 import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import Waving_hand from "assets/images/Waving_Hand_header.png";
 
@@ -29,8 +24,16 @@ import { useStyles } from "pages_audit/appBar/style";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import Logo from "assets/images/easy_bankcore_Logo.png";
-import useLogoPics from "components/common/logoPics/logoPics";
-// import Greetings from "components/common/logoPics/greet/greetings";
+import useLogoPics from "components/logoPics/logoPics";
+
+import {
+  ClearCacheProvider,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "back",
@@ -560,8 +563,8 @@ const BranchSelectionGrid = ({ selectionMode }) => {
                 color: "black",
                 padding: "0",
               }}
-              onlySingleSelectionAllow={true}
-              isNewRowStyle={true}
+              disableMultipleRowSelect={true}
+              variant={"outlined"}
               loading={isLoading || isFetching || mutation.isLoading}
               defaultSelectedRowId={authState?.user?.branchCode ?? null}
             />

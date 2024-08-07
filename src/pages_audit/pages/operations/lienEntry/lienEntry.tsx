@@ -15,24 +15,29 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { LienGridMetaData } from "./lienEntryGridMetaData";
 import { LienEntryMetadata } from "./lienEntryMetadata";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
 import { ExpireLien } from "./expireLien/expireLien";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 const LienEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -224,12 +229,12 @@ const LienEntryCustom = () => {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  LienGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-                    authState?.companyID +
-                    res?.BRANCH_CD +
-                    res?.ACCT_TYPE +
-                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
-                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  // LienGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+                  //   authState?.companyID +
+                  //   res?.BRANCH_CD +
+                  //   res?.ACCT_TYPE +
+                  //   res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const RequestPara = {
                     COMP_CD: authState?.companyID,

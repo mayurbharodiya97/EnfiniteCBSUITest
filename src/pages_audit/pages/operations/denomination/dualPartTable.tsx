@@ -603,11 +603,13 @@ import {
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
 import { boolean } from "yup";
-import { GradientButton } from "components/styledComponent/button";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
+import {
+  PopupRequestWrapper,
+  formatCurrency,
+  GradientButton,
+} from "@acuteinfo/common-base";
+import { usePropertiesConfigContext } from "@acuteinfo/common-base";
+import getCurrencySymbol from "components/common/custom/getCurrencySymbol";
 const DualPartTable = ({
   data,
   columnDefinitions,
@@ -630,7 +632,7 @@ const DualPartTable = ({
   const classes = useStyles();
   const inputRefs = useRef<any>({});
   const [refsReady, setRefsReady] = useState(false);
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const customParameter = usePropertiesConfigContext();
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
   useEffect(() => {
@@ -963,7 +965,7 @@ const DualPartTable = ({
           }}
           buttonNames={["Yes", "No"]}
           rows={[]}
-          loading={{ Yes: false, No: false }}
+          loading={true}
           open={Boolean(confirmation)}
         />
       ) : null}

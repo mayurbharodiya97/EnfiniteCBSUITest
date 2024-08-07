@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getPassBookTemplate } from "./api";
 
 export const AccountInquiryMetadata = {

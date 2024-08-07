@@ -148,7 +148,7 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
             formStyle={{
               background: "white",
             }}
-            loading={mutation.isLoading}
+            // loading={mutation.isLoading}
             hideHeader={true}
             // onFormButtonCicular={mutation.isLoading}
             ref={formRef}

@@ -1,20 +1,15 @@
 import { FC, useContext, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
-import { GradientButton } from "components/styledComponent/button";
 import * as API from "../api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Tab } from "components/styledComponent/tab";
 import { Tabs } from "components/styledComponent/tabs";
-import { useStyles } from "pages_audit/common/tabStyles";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   PaidWarrantGridMetaData,
   shareDividendMetaData,
   ViewDetailGridMetaData,
   ViewMasterMetaData,
 } from "./metaData";
-import { SubmitFnType } from "packages/form";
 import {
   AppBar,
   CircularProgress,
@@ -26,9 +21,19 @@ import { makeStyles } from "@mui/styles";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQueries } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { utilFunction } from "components/utils";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
+
+import {
+  usePopupContext,
+  utilFunction,
+  GridWrapper,
+  GridMetaDataType,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  useTabStyles,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -51,7 +56,7 @@ export const ShareDividendFormWrapper: FC<{
 }> = ({ onClose, dividendData }) => {
   const headerClasses = useTypeStyles();
   const [currentTab, setCurrentTab] = useState("tab0");
-  const tabClasses = useStyles();
+  const tabClasses = useTabStyles();
   const { authState }: any = useContext(AuthContext);
   const [reqData, setReqData] = useState<any>({});
   const [divAmount, setDivAmount] = useState<any>();
@@ -263,7 +268,7 @@ export const ShareDividendFormWrapper: FC<{
               <FormWrapper
                 key={"ShareDividend"}
                 metaData={ViewMasterMetaData as MetaDataType}
-                onSubmitHandler={{}}
+                onSubmitHandler={() => {}}
                 initialValues={viewMasterTab?.[0]}
                 //@ts-ignore
                 displayMode={"view"}

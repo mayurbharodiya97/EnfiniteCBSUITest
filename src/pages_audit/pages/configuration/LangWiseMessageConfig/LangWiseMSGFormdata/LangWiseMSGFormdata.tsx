@@ -3,6 +3,7 @@ import {
   PopupMessageAPIWrapper,
   FormWrapper,
   MasterDetailsForm,
+  MetaDataType,
 } from "@acuteinfo/common-base";
 import React, {
   FC,
@@ -20,7 +21,7 @@ import {
   Dialog,
   IconButton,
 } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { useMutation, useQueries, useQuery } from "react-query";

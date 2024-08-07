@@ -160,7 +160,6 @@ export const ReleaseUsers = ({ open = false, handleDialogClose }) => {
           actions={actions}
           setAction={setCurrentAction}
           ref={myGridRef}
-          authState={authState}
         />
       </Dialog>
     </>

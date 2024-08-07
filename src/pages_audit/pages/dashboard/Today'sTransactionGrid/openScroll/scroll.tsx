@@ -37,7 +37,6 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
         reportName={"scrollDetail"}
         dataFetcher={API.ScrollDetailData}
         metaData={updatedMetaData}
-        disableFilters
         maxHeight={window.innerHeight - 250}
         title={updatedMetaData?.title}
         options={{
@@ -55,10 +54,10 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
           BRANCH_CD,
           SCROLL1,
         }}
-        dataTransformer={(data) => {
-          setScrollData(data);
-          return data;
-        }}
+        // dataTransformer={(data) => {
+        //   setScrollData(data);
+        //   return data;
+        // }}
       />
       <Grid
         sx={{

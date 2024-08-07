@@ -1,19 +1,25 @@
-import FormWrapper from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { Dialog } from "@mui/material";
 import { DeleteDialogMetaData } from "./paySlipMetadata";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  GradientButton,
+  FormWrapper,
+  SubmitFnType,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { usePopupContext } from "components/custom/popupContext";
+import { usePopupContext } from "@acuteinfo/common-base";
 import { useRef } from "react";
 
-
-export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) => {
+export const DeleteDialog = ({
+  closeDialog,
+  open,
+  rowData,
+  slipdataRefetch,
+}) => {
   const isDeleteDataRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-
 
   const deleteMutation = useMutation(API.savePayslipEntry, {
     onError: (error: any) => {
@@ -36,10 +42,7 @@ export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) =>
       closeDialog();
     },
   });
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-  ) => {
-
+  const onSubmitHandler: SubmitFnType = async (data: any) => {
     const btnName = await MessageBox({
       message: "DeleteData",
       messageTitle: "Confirmation",
@@ -63,22 +66,25 @@ export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) =>
         ENTERED_BY: rowData.draftDtlData[0].ENTERED_BY,
         PAYSLIP_NO: rowData.PAYSLIP_NO,
         _isNewRow: false,
-      }
+      },
     };
     if (btnName === "Yes") {
       deleteMutation.mutate({
-        ...isDeleteDataRef.current.data
+        ...isDeleteDataRef.current.data,
       });
-
     }
-  }
+  };
 
   return (
     <>
-      <Dialog open={open} PaperProps={{ style: { width: "100%", overflow: "auto" } }} maxWidth="md">
+      <Dialog
+        open={open}
+        PaperProps={{ style: { width: "100%", overflow: "auto" } }}
+        maxWidth="md"
+      >
         <FormWrapper
           key={"DeleteDialog"}
-          metaData={DeleteDialogMetaData} as MetaDataType
+          metaData={DeleteDialogMetaData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
           initialValues={{}}
           controlsAtBottom
@@ -88,11 +94,7 @@ export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) =>
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <GradientButton
-                onClick={handleSubmit}
-              >
-                Ok
-              </GradientButton>
+              <GradientButton onClick={handleSubmit}>Ok</GradientButton>
               <GradientButton onClick={() => closeDialog()}>
                 Cancel
               </GradientButton>
@@ -100,8 +102,6 @@ export const DeleteDialog = ({ closeDialog, open, rowData, slipdataRefetch }) =>
           )}
         </FormWrapper>
       </Dialog>
-
     </>
   );
 };
-

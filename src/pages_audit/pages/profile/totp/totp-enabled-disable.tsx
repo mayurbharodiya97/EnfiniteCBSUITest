@@ -1,12 +1,11 @@
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { Transition } from "pages_audit/common";
 import { PasswordVerifyMetaData } from "./metaData";
-import { Alert } from "components/common/alert";
+import { Alert, Transition } from "@acuteinfo/common-base";
 import OTPInput from "otp-input-react";
 import QRCode from "react-qr-code";
 import { useStyles } from "../../../auth/style";
@@ -26,10 +25,9 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { MetaDataType } from "components/dyanmicForm";
-import { useTranslation } from "react-i18next";
 
+import { useTranslation } from "react-i18next";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 interface UpdateTOTPAuthFnType {
   data: object;
   displayData?: object;
@@ -295,7 +293,9 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                     </GradientButton>
                     <GradientButton
                       disabled={mutationAuth.isLoading}
-                      endicon={mutationAuth.isLoading ? null : "VerifiedUser"}
+                      endicon={
+                        mutationAuth.isLoading ? undefined : "VerifiedUser"
+                      }
                       rotateIcon="scale(1.4)"
                       onClick={ClickEventHandler}
                       ref={inputButtonRef}
@@ -348,7 +348,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                 onClick={(e) => {
                   formRef.current?.handleSubmit?.(e);
                 }}
-                endicon={mutation.isLoading ? null : "TaskAlt"}
+                endicon={mutation.isLoading ? undefined : "TaskAlt"}
                 rotateIcon="scale(1.4) "
               >
                 {t("Biometric.Verify")}{" "}

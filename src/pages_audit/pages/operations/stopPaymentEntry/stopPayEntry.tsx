@@ -15,24 +15,29 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { StopPayGridMetaData } from "./stopPayGridMetadata";
-import { ClearCacheProvider, queryClient } from "cache";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { ReleaseCheque } from "./releaseCheque/releaseCheque";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  RemarksAPIWrapper,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 const StopPaymentEntryCustom = () => {
   const [isData, setIsData] = useState({
@@ -190,12 +195,12 @@ const StopPaymentEntryCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  StopPayGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-                    authState?.companyID +
-                    res?.BRANCH_CD +
-                    res?.ACCT_TYPE +
-                    res?.ACCT_CD
-                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  // StopPayGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+                  //   authState?.companyID +
+                  //   res?.BRANCH_CD +
+                  //   res?.ACCT_TYPE +
+                  //   res?.ACCT_CD
+                  // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const RequestPara = {
                     COMP_CD: authState?.companyID,
@@ -265,8 +270,7 @@ const StopPaymentEntryCustom = () => {
           >
             <FormWrapper
               key={"stopPayEntry"}
-              metaData={StopPayEntryMetadata ?? []}
-              initialValues={{}}
+              metaData={StopPayEntryMetadata as MetaDataType}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
                 reqDataRef.current.insertReq = {
                   ...data,

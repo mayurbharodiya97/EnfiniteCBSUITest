@@ -1,17 +1,20 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { confirmFormMetaData } from "./confirmationFormMetadata";
 import { useMutation } from "react-query";
 import { chequeBookCfm } from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -131,6 +134,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
+          onSubmitHandler={() => {}}
           formStyle={{
             background: "white",
             height: "calc(100vh - 543px)",

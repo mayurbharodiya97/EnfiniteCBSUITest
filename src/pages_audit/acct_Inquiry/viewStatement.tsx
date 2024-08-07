@@ -1,15 +1,20 @@
 import { Dialog } from "@mui/material";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { useContext, useEffect, useRef } from "react";
 import { PassbookStatement, PassbookStatementInq } from "./metaData";
-import { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+
+import {
+  LoaderPaperComponent,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  MetaDataType,
+  queryClient,
+  FormWrapper,
+} from "@acuteinfo/common-base";
+
 export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -85,9 +90,9 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
         <FormWrapper
           key={`ViewStatement`}
           metaData={finalMetadata}
-          initialValues={acctInqData?.data?.[0] as InitialValuesType}
+          initialValues={acctInqData?.data?.[0] ?? ({} as InitialValuesType)}
           onSubmitHandler={onSubmitHandler}
-          loading={acctInqData.isLoading}
+          // loading={acctInqData.isLoading}
           formStyle={{
             background: "white",
           }}

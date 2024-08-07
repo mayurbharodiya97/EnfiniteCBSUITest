@@ -1,8 +1,7 @@
-import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import { t } from "i18next";
-import { lessThanDate } from "registry/rulesEngine";
+import { lessThanDate, utilFunction } from "@acuteinfo/common-base";
 export const temporaryODentryMetadata = {
   masterForm: {
     form: {

@@ -17,18 +17,21 @@ import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
 import { TRN002_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
-import { queryClient } from "cache";
+import {
+  queryClient,
+  RemarksAPIWrapper,
+  PopupMessageAPIWrapper,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   // {
@@ -159,8 +162,7 @@ export const Trn002 = () => {
   const getConfirmDataValidation = useMutation(
     trn2Api.getConfirmDataValidation,
     {
-      onSuccess: (data) => {
-      },
+      onSuccess: (data) => {},
       onError: (error) => {},
     }
   );
@@ -402,8 +404,8 @@ export const Trn002 = () => {
           refetchData={() => handleGetTRN002List()}
           actions={actions} /// /// /// /// ///
           setAction={setCurrentAction}
-          onlySingleSelectionAllow={true}
-          isNewRowStyle={true}
+          disableMultipleRowSelect={true}
+          variant={"standard"}
           defaultSelectedRowId={rows2?.[0]?.TRAN_CD ? rows2?.[0]?.TRAN_CD : ""}
           // headerToolbarStyle={{
           //   background: "var(--theme-color2)",

@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { validateAccountAndGetDetail } from "../api";
 
 export const TransferAcctDetailFormMetadata = {

@@ -30,18 +30,20 @@ import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { MessageBoxWrapper } from "components/custom/messageBox";
 import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
 import { useLocation } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
-import { queryClient } from "cache";
-
+import {
+  queryClient,
+  usePopupContext,
+  MessageBoxWrapper,
+  PopupMessageAPIWrapper,
+  MessageBoxNavigateWrapper,
+} from "@acuteinfo/common-base";
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -1405,7 +1407,7 @@ export const Trn001 = () => {
           />
         ) : null}
 
-        {scrollSaveDialog ? (
+        {/* {scrollSaveDialog ? (
           <MessageBoxWrapper
             MessageTitle={isArray ? "Scroll Saved" : "Transaction Saved"}
             Message={scrollSaveHtml()}
@@ -1419,9 +1421,24 @@ export const Trn001 = () => {
           />
         ) : (
           <></>
+        )} */}
+        {/* //as per npm package */}
+        {scrollSaveDialog ? (
+          <MessageBoxWrapper
+            isOpen={scrollSaveDialog}
+            validMessage={amountValidHtml()}
+            onActionYes={() => {
+              setScrollSaveDialog(false);
+              setScrollSaveRes([]);
+            }}
+            onActionNo={() => {}}
+            rows={[]}
+          />
+        ) : (
+          <></>
         )}
-
-        {accValidDialog ? (
+        {/* as per old cbs */}
+        {/* {accValidDialog ? (
           <MessageBoxWrapper
             MessageTitle="A/C Info"
             Message={acInfoHtml()}
@@ -1435,9 +1452,24 @@ export const Trn001 = () => {
           />
         ) : (
           <></>
+        )} */}
+        {/* //as per npm package */}
+        {accValidDialog ? (
+          <MessageBoxWrapper
+            isOpen={scrollSaveDialog}
+            validMessage={acInfoHtml()}
+            onActionYes={() => {
+              setAccValidDialog(false);
+              setAccValidMsg("");
+            }}
+            onActionNo={() => {}}
+            rows={[]}
+          />
+        ) : (
+          <></>
         )}
-
-        {amountValidDialog ? (
+        {/* as per old cbs base */}
+        {/* {amountValidDialog ? (
           <MessageBoxWrapper
             MessageTitle="Amount Info"
             Message={amountValidHtml()}
@@ -1448,6 +1480,21 @@ export const Trn001 = () => {
             }}
             rows={[]}
             open={amountValidDialog}
+          />
+        ) : (
+          <></>
+        )} */}
+        {/* //as per accutecommonbase package */}
+        {amountValidDialog ? (
+          <MessageBoxWrapper
+            isOpen={amountValidDialog}
+            validMessage={amountValidHtml()}
+            onActionYes={() => {
+              setAmountValidDialog(false);
+              setAmountValidMsg([]);
+            }}
+            onActionNo={() => {}}
+            rows={[]}
           />
         ) : (
           <></>

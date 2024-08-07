@@ -110,9 +110,7 @@ export const Prorityform = ({
     <>
       <FormWrapper
         key={"Prorityform" + formMode}
-        metaData={extractMetaData(Viewformmetadata, formMode)}
-        as
-        MetaDataType
+        metaData={extractMetaData(Viewformmetadata, formMode) as MetaDataType}
         displayMode={formMode}
         formStyle={{
           overflowX: "auto",

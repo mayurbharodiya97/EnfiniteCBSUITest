@@ -15,31 +15,32 @@ import React, {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { usePopupContext } from "components/custom/popupContext";
+import { FormWrapper, MetaDataType, queryClient } from "@acuteinfo/common-base";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { StockEditViewWrapper } from "./documents/documentViewUpload";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { StockEntryMetaData } from "./stockEntryMetadata";
 import { StockGridMetaData } from "./stockGridMetadata";
-import { ActionTypes } from "components/dataTable";
 import { ForceExpireStock } from "./forceExpire/forceExpire";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
+import { ClearCacheProvider, RemarksAPIWrapper } from "@acuteinfo/common-base";
 import {
   crudStockData,
   insertValidate,
   securityFieldDTL,
   stockGridData,
 } from "./api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const StockEntryCustom = () => {
   const [isData, setIsData] = useState({
@@ -229,25 +230,25 @@ const StockEntryCustom = () => {
             stockEntryGridData.data = [];
             if (newValue === "tab2") {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
-              myMasterRef?.current?.getFieldData().then((res) => {
-                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  StockGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-                    authState?.companyID +
-                    res?.BRANCH_CD +
-                    res?.ACCT_TYPE +
-                    res?.ACCT_CD
-                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
-                  const RequestPara = {
-                    COMP_CD: authState?.companyID,
-                    ACCT_CD: res?.ACCT_CD,
-                    ACCT_TYPE: res?.ACCT_TYPE,
-                    BRANCH_CD: res?.BRANCH_CD,
-                    A_USER_LEVEL: authState?.role,
-                    A_GD_DATE: authState?.workingDate,
-                  };
-                  stockEntryGridData.mutate(RequestPara);
-                }
-              });
+              // myMasterRef?.current?.getFieldData().then((res) => {
+              //   if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+              //     StockGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+              //       authState?.companyID +
+              //       res?.BRANCH_CD +
+              //       res?.ACCT_TYPE +
+              //       res?.ACCT_CD
+              //     ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+              //     const RequestPara = {
+              //       COMP_CD: authState?.companyID,
+              //       ACCT_CD: res?.ACCT_CD,
+              //       ACCT_TYPE: res?.ACCT_TYPE,
+              //       BRANCH_CD: res?.BRANCH_CD,
+              //       A_USER_LEVEL: authState?.role,
+              //       A_GD_DATE: authState?.workingDate,
+              //     };
+              //     stockEntryGridData.mutate(RequestPara);
+              //   }
+              // });
             }
           }}
           textColor="secondary"

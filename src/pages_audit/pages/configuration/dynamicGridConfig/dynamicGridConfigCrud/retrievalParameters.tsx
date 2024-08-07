@@ -1,5 +1,5 @@
 import { AppBar, Button, Dialog, Toolbar, Typography } from "@mui/material";
-import { Transition } from "pages_audit/common";
+import { Transition } from "@acuteinfo/common-base";
 import { useContext, useEffect, useRef, useState } from "react";
 import { RetrievalParametersGridMetaData } from "./retrievalParametersMetadata";
 import { makeStyles } from "@mui/styles";

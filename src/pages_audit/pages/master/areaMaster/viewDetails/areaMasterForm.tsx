@@ -90,6 +90,7 @@ const AreaMasterForm = ({
         //@ts-ignore
         const errorMessage = `Area & Pin Code already entered at Sr No - ${
           duplicateIndex + 1
+          //@ts-ignore
         } - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
         await MessageBox({
           message: errorMessage,

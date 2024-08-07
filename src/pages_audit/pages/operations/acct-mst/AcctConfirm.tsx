@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
-import { ActionTypes } from "components/dataTable";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AcctModal from "./AcctModal";
 import { Grid } from "@mui/material";

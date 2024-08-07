@@ -1,19 +1,30 @@
-import { FC, useRef, useCallback, useContext, Fragment, useState, useEffect } from "react";
+import {
+  FC,
+  useRef,
+  useCallback,
+  useContext,
+  Fragment,
+  useState,
+  useEffect,
+} from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { ClearCacheProvider } from "cache";
 import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
 import { Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import GridWrapper from "components/dataTableStatic";
-import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import {
+  ActionTypes,
+  Alert,
+  GridWrapper,
+  GradientButton,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -36,8 +47,8 @@ export const RetrieveClearing: FC<{
     "getRtgsRetrieveData",
     API.getRtgsRetrieveData,
     {
-      onSuccess: (data) => { },
-      onError: (error: any) => { },
+      onSuccess: (data) => {},
+      onError: (error: any) => {},
     }
   );
 
@@ -51,44 +62,31 @@ export const RetrieveClearing: FC<{
     delete data["RETRIEVE"];
     delete data["VIEW_ALL"];
     if (Boolean(data["FROM_DT"])) {
-      data["FROM_DT"] = format(
-        new Date(data["FROM_DT"]),
-        "dd/MMM/yyyy"
-      );
+      data["FROM_DT"] = format(new Date(data["FROM_DT"]), "dd/MMM/yyyy");
     }
     if (Boolean(data["TO_DT"])) {
-      data["TO_DT"] = format(
-        new Date(data["TO_DT"]),
-        "dd/MMM/yyyy"
-      );
+      data["TO_DT"] = format(new Date(data["TO_DT"]), "dd/MMM/yyyy");
     }
     data = {
       ...data,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
       FLAG: actionFlag === "RETRIEVE" ? "P" : "A",
-      FLAG_RTGSC: ""
+      FLAG_RTGSC: "",
     };
     mutation.mutate(data);
     endSubmit(true);
   };
   useEffect(() => {
     mutation.mutate({
-      FROM_DT: format(
-        new Date(authState?.workingDate),
-        "dd/MMM/yyyy"
-      ),
-      TO_DT: format(
-        new Date(authState?.workingDate),
-        "dd/MMM/yyyy"
-      ),
+      FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+      TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
       FLAG: "P",
-      FLAG_RTGSC: ""
-
-    })
-  }, [])
+      FLAG_RTGSC: "",
+    });
+  }, []);
 
   return (
     <>
@@ -106,24 +104,20 @@ export const RetrieveClearing: FC<{
             key={`retrieveForm`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
             initialValues={{
-              FROM_DT:
-                authState?.workingDate ?? "",
-              TO_DT:
-                authState?.workingDate ?? "",
-
+              FROM_DT: authState?.workingDate ?? "",
+              TO_DT: authState?.workingDate ?? "",
             }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => { } };
+              let event: any = { preventDefault: () => {} };
               if (id === "RETRIEVE") {
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
               } else if (id === "VIEW_ALL") {
                 formRef?.current?.handleSubmit(event, "VIEW_ALL");
               }
-
             }}
             ref={formRef}
           >
@@ -169,9 +163,7 @@ export const RetrieveClearing: FC<{
 export const RetrieveClearingForm = ({ onClose }) => {
   return (
     <ClearCacheProvider>
-      <RetrieveClearing
-        onClose={onClose}
-      />
+      <RetrieveClearing onClose={onClose} />
     </ClearCacheProvider>
   );
 };

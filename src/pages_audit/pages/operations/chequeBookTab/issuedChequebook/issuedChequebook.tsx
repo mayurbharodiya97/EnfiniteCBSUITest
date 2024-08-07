@@ -1,15 +1,16 @@
 import { AppBar, Dialog, Paper } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { useQuery } from "react-query";
-import { ActionTypes } from "components/dataTable";
-import { queryClient } from "cache";
 import { issuedChequeBkDTL } from "../api";
-import { Alert } from "components/common/alert";
 import { issuedChequeBkGridMetaData } from "./issuedCheqBkMetadata";
-
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 export const IssuedChequebook = ({ navigate }) => {
   const closeAction: ActionTypes[] = [
     {
@@ -41,17 +42,17 @@ export const IssuedChequebook = ({ navigate }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (rows) {
-      issuedChequeBkGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 
-      ${(
-        rows?.COMP_CD +
-        rows?.BRANCH_CD +
-        rows?.ACCT_TYPE +
-        rows?.ACCT_CD
-      ).replace(/\s/g, "")}`;
-    }
-  }, [rows]);
+  // useEffect(() => {
+  //   if (rows) {
+  //     issuedChequeBkGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0
+  //     ${(
+  //       rows?.COMP_CD +
+  //       rows?.BRANCH_CD +
+  //       rows?.ACCT_TYPE +
+  //       rows?.ACCT_CD
+  //     ).replace(/\s/g, "")}`;
+  //   }
+  // }, [rows]);
 
   return (
     <Dialog

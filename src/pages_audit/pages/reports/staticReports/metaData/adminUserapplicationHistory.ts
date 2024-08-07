@@ -1,4 +1,4 @@
-import { components } from "components/report";
+import { components } from "@acuteinfo/common-base";
 
 export const appUsageHistoryMetaData = {
   title: "Admin User Application Usage History",

@@ -8,7 +8,7 @@ import {
   ProtectedRoutes,
 } from "./auth";
 import { BranchSelectionGridWrapper } from "./auth/branchSelection";
-import { CustomPropertiesConfigurationProvider } from "components/propertiesconfiguration/customPropertiesConfig";
+import { CustomPropertiesConfigurationProvider } from "@acuteinfo/common-base";
 //alert("EntryPoint");
 const EntryPoint = () => (
   <Fragment>
