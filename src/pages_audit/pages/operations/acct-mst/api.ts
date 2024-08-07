@@ -786,3 +786,77 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const accountSave = async (reqData) => {
+  const {
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID,
+    ACCT_TYPE,
+    ACCT_CD,
+    COMP_CD,
+    formData
+  } = reqData;
+
+  // console.log("wefhiwheifhweihf", formData)
+  const jointTabs = [
+    "JOINT_HOLDER_DTL", 
+    "JOINT_NOMINEE_DTL", 
+    "JOINT_GUARDIAN_DTL", 
+    "JOINT_GUARANTOR_DTL", 
+    "JOINT_HYPOTHICATION_DTL", 
+    "JOINT_SIGNATORY_DTL", 
+    "JOINT_INTRODUCTOR_DTL"
+  ]
+
+  let payload = {};
+
+//   MAIN_DETAIL
+// JOINT_ACCOUNT_DTL
+// DOC_MST
+// MOBILE_REG_DTL
+// RELATIVE_DTL
+// OTHER_ADDRESS_DTL
+
+  let joint_account_dtl:any[] = [];
+  if(Object.keys(formData)?.length>0) {
+    Object.keys(formData).forEach((tab:string) => {
+      if(tab === "MAIN_DETAIL") {
+        payload["MAIN_DETAIL"] = formData["MAIN_DETAIL"];
+      }
+      if(jointTabs.includes(tab)) {
+        joint_account_dtl = [...joint_account_dtl, ...formData[tab]]
+      } else if(tab === "DOC_MST" || tab === "MOBILE_REG_DTL" || tab === "RELATIVE_DTL" || tab === "OTHER_ADDRESS") {
+        if(tab === "DOC_MST") {
+          payload[tab] = formData[tab]?.DOC_MST;
+        } else {
+          payload[tab] = formData[tab];
+        }
+      }
+    });
+    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl;
+    const ENTRY_TYPE = 1;
+    payload = {
+      ...payload,
+      IsNewRow,
+      REQ_CD,
+      REQ_FLAG,
+      SAVE_FLAG,
+      CUSTOMER_ID,
+      ACCT_TYPE,
+      ACCT_CD,
+      COMP_CD, 
+      ENTRY_TYPE 
+    }
+    // console.log("AcctMSTContextwadqwdwq. woiuioehfiuwhefwef", payload)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("SAVEACCOUNTDATA", payload);
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+};

@@ -1459,6 +1459,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETDIRECTORLIST",
     packageName: "",
   },
+  SAVEACCOUNTDATA: {
+    url: "accountServiceAPI/SAVEACCOUNTDATA",
+    packageName: "",
+  },
   GETACTCHQSIGNAUTHODDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
     packageName: "",
