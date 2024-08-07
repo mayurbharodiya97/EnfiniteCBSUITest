@@ -84,7 +84,7 @@ const IntroductorJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_INTRODUCTOR_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "I"};
         })
         newData["JOINT_INTRODUCTOR_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -119,7 +119,9 @@ const IntroductorJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_INTRODUCTOR_DTL: [AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"]?.length >0
+          ? {JOINT_INTRODUCTOR_DTL: [...AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"] ?? []]}
+          : {JOINT_INTRODUCTOR_DTL: [{}]}
         : AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"]
           ? {JOINT_INTRODUCTOR_DTL: [...AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"] ?? []]}
           : {JOINT_INTRODUCTOR_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_INTRODUCTOR_DTL"] ?? []]}

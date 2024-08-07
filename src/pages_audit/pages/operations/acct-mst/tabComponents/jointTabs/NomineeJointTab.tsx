@@ -77,7 +77,7 @@ const NomineeJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_NOMINEE_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "N"};
         })
         newData["JOINT_NOMINEE_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -112,7 +112,9 @@ const NomineeJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_NOMINEE_DTL : [AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]?.length >0
+          ? {JOINT_NOMINEE_DTL : [...AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? []]}
+          : {JOINT_NOMINEE_DTL : [{}]}
         : AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"]
           ? {JOINT_NOMINEE_DTL : [...AcctMSTState?.formDatactx["JOINT_NOMINEE_DTL"] ?? []]}
           : {JOINT_NOMINEE_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_NOMINEE_DTL"] ?? []]}

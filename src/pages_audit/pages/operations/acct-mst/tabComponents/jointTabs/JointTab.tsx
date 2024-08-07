@@ -78,7 +78,7 @@ const JointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "J"};
         })
         newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -113,7 +113,9 @@ const JointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_HOLDER_DTL: [AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]?.length>0 
+          ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
+          : {JOINT_HOLDER_DTL: [{}]}
         : AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
           ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
           : {JOINT_HOLDER_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"] ?? []]}

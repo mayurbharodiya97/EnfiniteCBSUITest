@@ -84,7 +84,7 @@ const GuardianJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_GUARDIAN_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "U"};
         })
         newData["JOINT_GUARDIAN_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -119,7 +119,9 @@ const GuardianJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_GUARDIAN_DTL: [AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"]?.length >0
+          ? {JOINT_GUARDIAN_DTL: [...AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"] ?? []]}
+          : {JOINT_GUARDIAN_DTL: [{}]}
         : AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"]
           ? {JOINT_GUARDIAN_DTL: [...AcctMSTState?.formDatactx["JOINT_GUARDIAN_DTL"] ?? []]}
           : {JOINT_GUARDIAN_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_GUARDIAN_DTL"] ?? []]}

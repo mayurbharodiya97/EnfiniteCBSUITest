@@ -22,37 +22,37 @@ const OtherAddTab = () => {
   ) => {
     if(data && !hasError) {
       let newData = AcctMSTState?.formDatactx
-      if(data?.OTHER_ADDRESS) {
+      if(data?.OTHER_ADDRESS_DTL) {
         let filteredCols:any[]=[]
-        filteredCols = Object.keys(data.OTHER_ADDRESS[0])
+        filteredCols = Object.keys(data.OTHER_ADDRESS_DTL[0])
         filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
         if(AcctMSTState?.isFreshEntryctx) {
           filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
         }
-        let newFormatOtherAdd = data?.OTHER_ADDRESS?.map((formRow, i) => {
+        let newFormatOtherAdd = data?.OTHER_ADDRESS_DTL?.map((formRow, i) => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
-          const formData = _.pick(data?.OTHER_ADDRESS[i], formFields)
+          const formData = _.pick(data?.OTHER_ADDRESS_DTL[i], formFields)
           return {...formData};
         })
-        newData["OTHER_ADDRESS"] = [...newFormatOtherAdd]
+        newData["OTHER_ADDRESS_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
               ...tabModifiedCols,
-              OTHER_ADDRESS: [...filteredCols]
+              OTHER_ADDRESS_DTL: [...filteredCols]
           }
           handleModifiedColsctx(tabModifiedCols)
         }
       } else {
-        newData["OTHER_ADDRESS"] = []
+        newData["OTHER_ADDRESS_DTL"] = []
         handleFormDataonSavectx(newData)
         if(!AcctMSTState?.isFreshEntryctx) {
           let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
           tabModifiedCols = {
             ...tabModifiedCols,
-            OTHER_ADDRESS: []
+            OTHER_ADDRESS_DTL: []
           }
           handleModifiedColsctx(tabModifiedCols)
         }  
@@ -68,15 +68,17 @@ const OtherAddTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["OTHER_ADDRESS"] ?? {OTHER_ADDRESS: [{}]}
-        : AcctMSTState?.formDatactx["OTHER_ADDRESS"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS"] ?? {}, ...AcctMSTState?.formDatactx["OTHER_ADDRESS"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS"] ?? {}}
+        ? AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]?.length >0
+          ? {OTHER_ADDRESS_DTL: [...AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []]}
+          : {OTHER_ADDRESS_DTL: [{}]}
+        : AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]
+          ? {OTHER_ADDRESS_DTL: [...AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []]}
+          : {OTHER_ADDRESS_DTL: [...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["OTHER_ADDRESS"]
+    AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS_DTL"],
+    AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]
   ])
 
   const handleSave = (e) => {
@@ -96,6 +98,7 @@ const OtherAddTab = () => {
       isLoading: false,
     })
   }, [])
+  
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
@@ -127,7 +130,7 @@ const OtherAddTab = () => {
         onSubmitHandler={onSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-tab-other-add-form" + initialVal}
         metaData={otherAdd_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{GPARAM155: AcctMSTState?.gparam155 }}

@@ -83,7 +83,7 @@ const CollateralJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_HYPOTHICATION_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "M"};
         })
         newData["JOINT_HYPOTHICATION_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -118,7 +118,9 @@ const CollateralJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_HYPOTHICATION_DTL : [AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"]?.length >0
+          ? {JOINT_HYPOTHICATION_DTL : [...AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"] ?? []]}
+          : {JOINT_HYPOTHICATION_DTL : [{}]}
         : AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"]
           ? {JOINT_HYPOTHICATION_DTL : [...AcctMSTState?.formDatactx["JOINT_HYPOTHICATION_DTL"] ?? []]}
           : {JOINT_HYPOTHICATION_DTL : [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HYPOTHICATION_DTL"] ?? []]}

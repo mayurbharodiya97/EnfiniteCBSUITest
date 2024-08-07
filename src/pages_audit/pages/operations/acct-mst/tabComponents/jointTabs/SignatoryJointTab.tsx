@@ -84,7 +84,7 @@ const SignatoryJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_SIGNATORY_DTL[i], formFields)
-          return {...formData};
+          return {...formData, j_type: "S"};
         })
         newData["JOINT_SIGNATORY_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -119,7 +119,9 @@ const SignatoryJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {JOINT_SIGNATORY_DTL: [AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"]?.length >0
+          ? {JOINT_SIGNATORY_DTL: [...AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"] ?? []]}
+          : {JOINT_SIGNATORY_DTL: [{}]}
         : AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"]
           ? {JOINT_SIGNATORY_DTL: [...AcctMSTState?.formDatactx["JOINT_SIGNATORY_DTL"] ?? []]}
           : {JOINT_SIGNATORY_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_SIGNATORY_DTL"] ?? []]}

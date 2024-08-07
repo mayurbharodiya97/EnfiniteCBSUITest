@@ -69,7 +69,9 @@ const RelativeDtlTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? {RELATIVE_DTL: [AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? {}]}
+        ? AcctMSTState?.formDatactx["RELATIVE_DTL"]?.length >0
+          ? {RELATIVE_DTL: [...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? []]}
+          : {RELATIVE_DTL: [{}]}
         : AcctMSTState?.formDatactx["RELATIVE_DTL"]
           ? {RELATIVE_DTL: [...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? []]}
           : {RELATIVE_DTL: [...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? []]}
