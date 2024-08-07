@@ -173,7 +173,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       }
       if (typeof result === "object") {
         allow = result?.allow ?? false;
-        reason = result?.reason ?? "Required value missing ,Please enter a value";
+        reason =
+          result?.reason ?? "Required value missing ,Please enter a value";
       }
       if (allow) {
         unshift();
@@ -478,6 +479,9 @@ export const ArrayFieldRow = ({
     if (typeof formState?.onArrayFieldRowClickHandle === "function") {
       formState?.onArrayFieldRowClickHandle(wrapperData);
     }
+    if (typeof formState?.onArrayFieldRowDoubleClickHandle === "function") {
+      formState?.onArrayFieldRowDoubleClickHandle(wrapperData);
+    }
   };
   return (
     <Fragment key={row.fieldIndexKey}>
@@ -514,6 +518,9 @@ export const ArrayFieldRow = ({
       ) : null}
       <div
         onClick={formState?.onArrayFieldRowClickHandle && handleWrapperClick}
+        onDoubleClick={
+          formState?.onArrayFieldRowDoubleClickHandle && handleWrapperClick
+        }
         className={
           selectedRowIndex === rowIndex
             ? classes?.arrayFieldSelected

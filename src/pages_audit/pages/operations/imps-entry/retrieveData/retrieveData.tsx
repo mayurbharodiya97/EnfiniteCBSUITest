@@ -21,12 +21,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-const RetrieveDataCustom = ({
-  navigate,
-  parameter,
-  setFormMode,
-  setRetrieveData,
-}) => {
+const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -40,15 +35,17 @@ const RetrieveDataCustom = ({
       });
     };
   const mutation: any = useMutation(
-    "getRtgsRetrieveData",
+    "getRtgsData",
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
+        console.log("<<<reteet", data);
         if (data?.length <= 0) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
           setFormMode("view");
           navigate(".");
+          data[0].RETRIEVE_DATA = "Y";
           setRetrieveData(data);
         }
       },
@@ -65,39 +62,17 @@ const RetrieveDataCustom = ({
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
+    endSubmit
   ) => {
-    let apiReq = {
-      RET_FLAG: data?.A_RET_FLAG ?? "",
-      CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
-      BRANCH_CD: data?.BRANCH_CD ?? "",
-      ACCT_TYPE: data?.ACCT_TYPE ?? "",
-      ACCT_CD: data?.ACCT_CD ?? "",
-      PARA_602: parameter?.PARA_602 ?? "",
-      PARA_610: parameter?.PARA_610 ?? "",
-      FROM_DT: data?.A_RET_FLAG === "A" ? data?.FROM_DT ?? "" : "",
-      TO_DT: data?.A_RET_FLAG === "A" ? data?.TO_DT ?? "" : "",
-      SCREEN_REF: "MST/846",
-    };
-
     mutation.mutate({
-      data: apiReq,
+      data: {
+        CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
+        COMP_CD: authState?.companyID,
+      },
       endSubmit,
     });
     endSubmit(true);
   };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //     FLAG: "P",
-  //     FLAG_RTGSC: "",
-  //   });
-  // }, []);
 
   return (
     <>
@@ -107,7 +82,7 @@ const RetrieveDataCustom = ({
           fullWidth={true}
           PaperProps={{
             style: {
-              maxWidth: "800px",
+              maxWidth: "450px",
               padding: "5px",
             },
           }}
@@ -120,10 +95,7 @@ const RetrieveDataCustom = ({
           <FormWrapper
             key={`retrieve-Form`}
             metaData={retrieveFormMetaData as MetaDataType}
-            initialValues={{
-              PARA_602: parameter?.PARA_602,
-              PARA_946: parameter?.PARA_946,
-            }}
+            initialValues={{}}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
@@ -147,16 +119,10 @@ const RetrieveDataCustom = ({
   );
 };
 
-export const RetrieveData = ({
-  navigate,
-  parameter,
-  setFormMode,
-  setRetrieveData,
-}) => {
+export const RetrieveData = ({ navigate, setFormMode, setRetrieveData }) => {
   return (
     <ClearCacheProvider>
       <RetrieveDataCustom
-        parameter={parameter}
         navigate={navigate}
         setFormMode={setFormMode}
         setRetrieveData={setRetrieveData}
