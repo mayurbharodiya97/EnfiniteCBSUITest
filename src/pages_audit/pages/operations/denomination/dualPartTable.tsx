@@ -608,8 +608,10 @@ import {
   formatCurrency,
   GradientButton,
 } from "@acuteinfo/common-base";
-import { usePropertiesConfigContext } from "@acuteinfo/common-base";
-import getCurrencySymbol from "components/common/custom/getCurrencySymbol";
+import {
+  usePropertiesConfigContext,
+  getCurrencySymbol,
+} from "@acuteinfo/common-base";
 const DualPartTable = ({
   data,
   columnDefinitions,
