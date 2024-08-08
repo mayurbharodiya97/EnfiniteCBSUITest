@@ -16,6 +16,7 @@ pipeline {
         BRANCH = 'devops_main'
         IMAGE_NAME = 'actdocker123/cbs-micro-service'
         DEPLOYMENTNAME = 'cbs-ui-microservice-deployment'
+        EMAIL_RECIPIENT = 'jaid.shaikh@acuteinformatics.in,krishna.chauhan@acuteinformatics.in,jayendra.sathwara@acuteinformatics.in,sajid.sachawala@acuteinformatics.in,mayur.bharodiya@acuteinformatics.in,pradeep.suthar@acuteinformatics.in'
     }
 
     tools {
@@ -88,6 +89,14 @@ pipeline {
             steps {
                 deployToKubernetes(env.FILENAME, env.DEPLOYMENTNAME)
             }
+        }
+    }
+    post {
+        success {
+            notification('SUCCESS', env.EMAIL_RECIPIENT)
+        }
+        failure {
+            notification('FAILURE', env.EMAIL_RECIPIENT)
         }
     }
 }

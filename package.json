@@ -142,6 +142,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.4",
+    "cross-env": "^7.0.3",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react-app-rewired": "^2.2.1"
   }
