@@ -13,15 +13,14 @@ import { SubmitFnType } from "packages/form";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { PositivePayFormWrapper } from "./positvePayForm";
 import { CircularProgress } from "@mui/material";
 import { utilFunction } from "components/utils";
 import { ShareDividendFormWrapper } from "./shareDividendForm";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 export const ChequeReturnPostForm: FC<{
   onClose?: any;
   inwardGridData?: any;
@@ -47,6 +46,7 @@ export const ChequeReturnPostForm: FC<{
     const [isPositivePay, setIsPositvePay] = useState(false);
     // const [noFlag, setNoFlag] = useState(false);
     const { authState } = useContext(AuthContext);
+    const { t } = useTranslation();
 
     const result: any = useQueries([
       {
@@ -102,8 +102,8 @@ export const ChequeReturnPostForm: FC<{
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "0") {
             const buttonName = await MessageBox({
-              messageTitle: "Validation Successful",
-              message: "Are you sure to post this Cheque?",
+              messageTitle: t("ValidationSuccessful"),
+              message: t("AreYouSurePostThisCheque"),
               buttonNames: ["No", "Yes"],
               loadingBtnName: ["Yes"],
             });
@@ -138,12 +138,12 @@ export const ChequeReturnPostForm: FC<{
             }
           } else if (data[i]?.O_STATUS === "9") {
             MessageBox({
-              messageTitle: "Alert",
+              messageTitle: t("Alert"),
               message: data[i]?.O_MESSAGE,
             });
           } else if (data[i]?.O_STATUS === "99") {
             const buttonName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: t("Confirmation"),
               message: data[i]?.O_MESSAGE,
               buttonNames: ["No", "Yes"],
               loadingBtnName: ["Yes"],
@@ -178,7 +178,7 @@ export const ChequeReturnPostForm: FC<{
             }
           } else if (data[i]?.O_STATUS === "999") {
             MessageBox({
-              messageTitle: "Validation Failed",
+              messageTitle: t("ValidationFailed"),
               message: data[i]?.O_MESSAGE,
             });
           }
@@ -199,8 +199,8 @@ export const ChequeReturnPostForm: FC<{
       onSuccess: async (data, variables) => {
         if (data?.[0]?.O_STATUS === "0" && data?.[0]?.O_MESSAGE) {
           const buttonName = await MessageBox({
-            messageTitle: "Validation Successful",
-            message: "Are you sure to return this Cheque??",
+            messageTitle: t("ValidationSuccessful"),
+            message: t("AreYouReturnThisCheque"),
             buttonNames: ["No", "Yes"],
             loadingBtnName: ["Yes"],
           });
@@ -251,7 +251,7 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
           MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: t("ValidationFailed"),
             message: data?.[0]?.O_MESSAGE,
           });
         }
@@ -286,9 +286,9 @@ export const ChequeReturnPostForm: FC<{
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "0") {
             const buttonName = await MessageBox({
-              messageTitle: "Validation Successful",
+              messageTitle: t("ValidationSuccessful"),
               message:
-                "Do you want to allow this transaction - Voucher No." +
+                t("DoYouWantAllowTransactionVoucherNo") +
                 variables?.DAILY_TRN_CD +
                 "?",
               buttonNames: ["No", "Yes"],
@@ -301,12 +301,12 @@ export const ChequeReturnPostForm: FC<{
             }
           } else if (data[i]?.O_STATUS === "9") {
             MessageBox({
-              messageTitle: "Alert",
+              messageTitle: t("Alert"),
               message: data[i]?.O_MESSAGE,
             });
           } else if (data[i]?.O_STATUS === "99") {
             const buttonName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: t("Confirmation"),
               message: data[i]?.O_MESSAGE,
               buttonNames: ["No", "Yes"],
               loadingBtnName: ["Yes"],
@@ -318,7 +318,7 @@ export const ChequeReturnPostForm: FC<{
             }
           } else if (data[i]?.O_STATUS === "999") {
             MessageBox({
-              messageTitle: "Validation Failed",
+              messageTitle: t("ValidationFailed"),
               message: data[i]?.O_MESSAGE,
             });
           }
@@ -437,12 +437,12 @@ export const ChequeReturnPostForm: FC<{
         }
         if (data?.ACCT_TYPE.trim()?.length === 0) {
           setFieldErrors({
-            ACCT_TYPE: "Please Enter A/c Type",
+            ACCT_TYPE: t("PleaseEnterACType"),
           });
           return;
         } else if (data?.ACCT_CD.trim()?.length === 0) {
           setFieldErrors({
-            ACCT_CD: "Please Enter A/c Number",
+            ACCT_CD: t("PleaseEnterACNumber"),
           });
           return;
         }
@@ -465,7 +465,6 @@ export const ChequeReturnPostForm: FC<{
           MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
         });
       } else if (actionFlag === "RETURN") {
-        console.log("acImageData", acImageData)
         viewDetailValidateReturnData.mutate({
           COMP_CD: inwardGridData?.COMP_CD ?? "",
           BRANCH_CD: data?.BRANCH_CD ?? "",
@@ -549,11 +548,11 @@ export const ChequeReturnPostForm: FC<{
                   // setIsDraft(true);
 
                   const buttonName = await MessageBox({
-                    messageTitle: "Confirmation",
+                    messageTitle: t("Confirmation"),
                     message:
                       authState?.role < "2"
-                        ? "Do you want to realize Draft?"
-                        : "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+                        ? t("DoYouWantRealizeDraft")
+                        : t("DoWantRealizeDraftOrDirectPostInGL"),
                     buttonNames:
                       authState?.role < "2"
                         ? ["Yes", "No"]
@@ -598,7 +597,6 @@ export const ChequeReturnPostForm: FC<{
             ref={formRef}
             setDataOnFieldChange={(action, payload) => {
               let event: any = { preventDefault: () => { } };
-              console.log("action", action, payload)
               // if (action === "ACCT_CD_VALID") {
               setAcImageData(payload?.[0]?.SIGN_IMG);
               // }
@@ -619,7 +617,7 @@ export const ChequeReturnPostForm: FC<{
                     if (currentIndex && currentIndex !== totalData) handlePrev();
                   }}
                 >
-                  Previous
+                  {t("Previous")}
                 </GradientButton>
                 {inwardGridData?.DRAFT_DIV.length === 0 ||
                   inwardGridData?.DRAFT_DIV === "DRAFT" ? (
@@ -635,11 +633,11 @@ export const ChequeReturnPostForm: FC<{
                     }
                     color={"primary"}
                   >
-                    Save & Close
+                   { t("SaveClose")}
                   </GradientButton>
                 ) : null}
 
-                <GradientButton onClick={onClose}>Close</GradientButton>
+                <GradientButton onClick={onClose}>{t("Close")}</GradientButton>
               </>
             )}
           </FormWrapper>

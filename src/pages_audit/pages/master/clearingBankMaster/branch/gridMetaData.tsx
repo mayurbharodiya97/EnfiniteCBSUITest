@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AddBranchGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ClearingBankMaster",
+    gridLabel: "",
     rowIdColumn: "BRANCH_CD",
     defaultColumnConfig: {
       width: 440,

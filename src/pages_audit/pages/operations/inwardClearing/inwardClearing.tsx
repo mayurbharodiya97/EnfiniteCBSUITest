@@ -63,7 +63,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-detail",
-    actionLabel: t("ViewDetails"),
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -227,7 +227,7 @@ export const InwardClearing = () => {
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
             buttonNames: ["No", "Yes"],
             loadingBtnName: ["Yes"],
@@ -249,7 +249,7 @@ export const InwardClearing = () => {
           }
         } else if (data[i]?.O_STATUS === "999") {
           MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: t("ValidationFailed"),
             message: data[i]?.O_MESSAGE,
           });
         }
@@ -270,9 +270,9 @@ export const InwardClearing = () => {
       for (let i = 0; i < data?.length; i++) {
         if (data[i]?.O_STATUS === "0") {
           const buttonName = await MessageBox({
-            messageTitle: "Validation Successful",
+            messageTitle: t("ValidationSuccessful"),
             message:
-              "Do you want to allow this transaction - Voucher No." +
+              t("DoYouWantAllowTransactionVoucherNo") +
               variables?.DAILY_TRN_CD +
               "?",
             buttonNames: ["No", "Yes"],
@@ -294,12 +294,12 @@ export const InwardClearing = () => {
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: "Alert",
+            messageTitle: t("Alert"),
             message: data[i]?.O_MESSAGE,
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
             buttonNames: ["No", "Yes"],
             loadingBtnName: ["Yes"],
@@ -319,7 +319,7 @@ export const InwardClearing = () => {
           }
         } else if (data[i]?.O_STATUS === "999") {
           MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: t("ValidationFailed"),
             message: data[i]?.O_MESSAGE,
           });
         }
@@ -513,9 +513,9 @@ export const InwardClearing = () => {
               hideHeader={true}
             />
             <TextField
-              placeholder="Search"
+              placeholder={t("Search")}
               id=""
-              name={"Search"}
+              name={t("Search")}
               size="small"
               value={searchQuery}
               onChange={handleSearchInputChange}
@@ -587,10 +587,10 @@ export const InwardClearing = () => {
                         }}
                       >
                         <>
-                          <div>Bank</div>
-                          <div>Branch</div>
-                          <div>Branch Name</div>
-                          <div style={{ marginLeft: "24px" }}>Status</div>
+                          <div>{t("Bank")}</div>
+                          <div>{t("Branch")}</div>
+                          <div>{t("BranchName")}</div>
+                          <div style={{ marginLeft: "24px" }}>{t("status")}</div>
                         </>
                       </Box>
                       <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
@@ -632,7 +632,7 @@ export const InwardClearing = () => {
                                   selectedRowsData?.length === 0
                                 ) {
                                   enqueueSnackbar(
-                                    "Please select at least one row.",
+                                    t("PleaseSelectAtLeastOneRow"),
                                     {
                                       variant: "error",
                                     }
@@ -674,8 +674,8 @@ export const InwardClearing = () => {
                   }}
                 >
                   {getInwardClearingData?.status === "success" && selectAll
-                    ? "Deselect All"
-                    : "Select All"}
+                    ? t("DeselectAll")
+                    : t("SelectAll")}
                 </GradientButton>
                 <GradientButton
                   endIcon={
@@ -688,7 +688,7 @@ export const InwardClearing = () => {
                       selectedRows?.length === 0 ||
                       selectedRowsData?.length === 0
                     ) {
-                      enqueueSnackbar("Please select at least one row.", {
+                      enqueueSnackbar( t("PleaseSelectAtLeastOneRow"), {
                         variant: "error",
                       });
                     } else {
@@ -702,7 +702,8 @@ export const InwardClearing = () => {
                   }}
                   ref={inputButtonRef}
                 >
-                  Ok
+                  {t("Ok")}
+
                 </GradientButton>
 
                 <GradientButton
@@ -713,7 +714,7 @@ export const InwardClearing = () => {
                     }));
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             </DialogActions>
@@ -778,11 +779,11 @@ export const InwardClearing = () => {
               } else {
                 if (data && data?.DRAFT_DIV === "DRAFT") {
                   const buttonName = await MessageBox({
-                    messageTitle: "Confirmation",
+                    messageTitle: t("Confirmation"),
                     message:
                       authState?.role < "2"
-                        ? "Do you want to realize Draft?"
-                        : "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+                        ? t("DoYouWantRealizeDraft")
+                        : t("DoWantRealizeDraftOrDirectPostInGL"),
                     buttonNames:
                       authState?.role < "2"
                         ? ["Yes", "No"]

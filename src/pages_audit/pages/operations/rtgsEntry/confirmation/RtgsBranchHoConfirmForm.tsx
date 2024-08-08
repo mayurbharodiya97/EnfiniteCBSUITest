@@ -148,6 +148,7 @@ const RtgsBranchHoConfirmationForm: FC<{
   handleNext?: any;
   currentIndex?: number;
   totalData?: number;
+  formLabel?: any
 }> = ({
   flag,
   formMode,
@@ -158,6 +159,7 @@ const RtgsBranchHoConfirmationForm: FC<{
   handleNext,
   currentIndex,
   totalData,
+  formLabel
 }) => {
     const { authState } = useContext(AuthContext);
     const headerClasses = useTypeStyles();
@@ -418,11 +420,7 @@ const RtgsBranchHoConfirmationForm: FC<{
       };
       document.addEventListener("keydown", handleKeyDown);
     }, []);
-    // if (flag === "BO") {
-    //   CTSOutwardClearingConfirmMetaData.form.label = "RTGS Branch Confirmation";
-    // } else if (flag === "HO") {
-    //   CTSOutwardClearingConfirmMetaData.form.label = "Inward Return Confirmation";
-    // } 
+
 
     const shouldHideButton =
       flag === "BO" ? rowsData?.BR_CONFIRMED === "Y" ||
@@ -474,9 +472,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                     }}
                   >
                     {flag === "BO"
-                      ? "RTGS Branch Confirmation"
+                      ? formLabel
                       : flag === "HO"
-                        ? "RTGS HO Confirmation"
+                        ? formLabel
                         : null}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: "wrap" }}>
@@ -554,6 +552,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                                     ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
                                     ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
                                     AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
+                                    TRAN_BAL: result[0]?.data?.hdrData?.TRAN_BAL,
                                     COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
                                     BRANCH_CD: result[0]?.data?.hdrData?.BRANCH_CD,
                                     TRN_DT: result[0]?.data?.hdrData?.TRAN_DT,
@@ -856,58 +855,6 @@ const RtgsBranchHoConfirmationForm: FC<{
                     <>
                       {isPhotoSign ? (
                         <>
-                          {/* <Dialog
-                          fullWidth
-                          maxWidth="lg"
-                          open={true} // Assuming this is controlled by a state
-                          onKeyUp={(event) => {
-                            if (event.key === "Escape") {
-                              onClose();
-                            }
-                          }}
-                          key="photoSignDialog"
-                          PaperProps={{
-                            style: {
-                              width: "100%",
-                              // height: "78%",
-                              // height: "70%",
-                            },
-                          }}
-                        >
-                          <AppBar position="relative" color="secondary">
-                            <Toolbar
-                              className={headerClasses.root}
-                              variant={"dense"}
-                            >
-                              <Typography
-                                className={headerClasses.title}
-                                color="inherit"
-                                variant={"h6"}
-                                component="div"
-                              >
-                                Account Level Photo/Signature
-                              </Typography>
-                              <GradientButton
-                                onClick={() => {
-                                  setIsPhotoSign(false);
-                                }}
-                              >
-                                Close
-                              </GradientButton>
-                            </Toolbar>
-                          </AppBar> */}
-
-                          {/* {mutation.isLoading ? (
-                            <LoaderPaperComponent />
-                          ) : mutation.isError ? (
-                            <Alert
-                              severity="error"
-                              errorMsg={
-                                mutation.error?.error_msg ?? "Unknown error occured"
-                              }
-                              errorDetail={mutation.error?.error_detail ?? ""}
-                            />
-                          ) : ( */}
                           <div style={{ paddingTop: 10 }}>
                             <PhotoSignWithHistory data={result[0]?.data?.hdrData}
                               onClose={() => {
@@ -916,13 +863,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                               screenRef={"MST/552"}
                             />
                           </div>
-                          {/* )} */}
-                          {/* </Dialog> */}
                         </>
                       ) : null}
                     </>
-
-
                     <>
                       {isOTP ? (
                         <>
@@ -939,8 +882,6 @@ const RtgsBranchHoConfirmationForm: FC<{
                             PaperProps={{
                               style: {
                                 width: "36%",
-                                // height: "78%",
-                                // height: "70%",
                               },
                             }}
                           >
@@ -1062,6 +1003,7 @@ export const RTGSBranchHoConfirmFormWrapper = ({
   handleNext,
   currentIndexRef,
   totalData,
+  formLabel
 }) => {
   const { state: rows } = useLocation();
   currentIndexRef.current = rows?.index;
@@ -1078,6 +1020,7 @@ export const RTGSBranchHoConfirmFormWrapper = ({
         currentIndex={rows.index}
         isDataChangedRef={isDataChangedRef}
         totalData={totalData}
+        formLabel={formLabel}
       />
     </ClearCacheProvider>
   );

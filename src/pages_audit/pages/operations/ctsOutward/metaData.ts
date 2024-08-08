@@ -11,7 +11,7 @@ import { GeneralAPI } from "registry/fns/functions";
 export const CTSOutwardClearingFormMetaData = {
   form: {
     name: "ctsOWClearing",
-    label: "CTS O/W Clearing",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -158,6 +158,7 @@ export const CTSOutwardClearingFormMetaData = {
             dependentFieldsValues?.["ACCT_TYPE"]?.value &&
             dependentFieldsValues?.["BRANCH_CD"]?.value
           ) {
+            if (formState?.isSubmitting) return {};
             let Apireq = {
               COMP_CD: auth?.companyID,
               ACCT_CD: utilFunction.getPadAccountNumber(
@@ -172,37 +173,70 @@ export const CTSOutwardClearingFormMetaData = {
             let postData = await getAccountSlipJoinDetail(Apireq);
             formState.setDataOnFieldChange("API_REQ", { ...Apireq, ...postData });
 
-            if (postData?.[0]?.MESSAGE1) {
-              formState?.MessageBox({
-                messageTitle: "Information",
-                message: postData?.[0]?.MESSAGE1,
-              });
-            } else if (postData?.[0]?.RESTRICT_MESSAGE) {
-              formState?.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.[0]?.RESTRICT_MESSAGE,
-              });
-              formState.setDataOnFieldChange("ACCT_CD_VALID", []);
-              return {
-                ACCT_CD: { value: "", isFieldFocused: true },
-                AMOUNT: { isFieldFocused: false },
-                ACCT_NAME: { value: "" },
-                TRAN_BAL: { value: "" },
-              };
+            let btn99, returnVal;
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
+              console.log("postData", postData?.[0]?.MSG?.length)
+              if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
+
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
+
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = postData?.[0];
+              } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
+
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Confirmation",
+                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData?.[0];
+                } else {
+                  returnVal = "";
+                }
+              }
             }
-            formState.setDataOnFieldChange("ACCT_CD_VALID", postData?.[0]);
+            btn99 = 0;
             return {
-              ACCT_CD: {
-                value: postData?.[0]?.ACCT_NUMBER ?? "",
-                isFieldFocused: false,
-                // ||
-                // field.value.padStart(6, "0")?.padEnd(20, " "),
-                ignoreUpdate: true,
-              },
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentFieldsValues?.ACCT_TYPE?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  }
+                  : {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               ACCT_NAME: {
-                value: postData?.[0]?.ACCT_NAME ?? "",
+                value: returnVal?.ACCT_NM ?? "",
               },
-              TRAN_BAL: { value: postData?.[0].TRAN_BAL ?? "" },
+              TRAN_BAL: { value: returnVal.TRAN_BAL ?? "" },
             };
           } else {
             formState.setDataOnFieldChange("ACCT_CD_BLANK");
@@ -473,7 +507,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
   form: {
     refID: 1667,
     name: "ChequeDetailFormMetaData",
-    label: "Cheque Detail",
+    label: "",
     resetFieldOnUmnount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -1014,7 +1048,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
   form: {
     refID: 1667,
     name: "ChequeDetailFormMetaData",
-    label: "Cheque Detail",
+    label: "",
     resetFieldOnUmnount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -1756,7 +1790,7 @@ export const AddNewBankMasterFormMetadata = {
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "Retrieve CTS O/W Clearing Data",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
