@@ -67,6 +67,10 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
         if (buttonName === "Yes") {
           recurringPaymentEntrySaveMutation.mutate({
             ...saveDataRef.current?.data,
+            TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+            CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
+            SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
+            ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
             PAY_SLIP_NEFT_DTL: [],
             PAYSLIP_NO: "",
             REC_DTL: [...data?.RECPAYTRANS],

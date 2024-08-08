@@ -104,6 +104,15 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     });
   }, [entryScreenFlagRefetch, refetch]);
 
+  const handleDialogClose: any = useCallback(() => {
+    navigate(".");
+    if (isDataChangedRef.current === true) {
+      refetchData();
+      isDataChangedRef.current = false;
+    }
+    resetAllData();
+  }, [navigate]);
+
   //Mutation for delete recurring payment data
   const entryDeleteMutation = useMutation(API.recurringPaymentEntryDML, {
     onError: async (error: any) => {
@@ -124,6 +133,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       CloseMessageBox();
       navigate(".");
       refetchData();
+      handleDialogClose();
     },
   });
 
@@ -187,15 +197,6 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       ]);
     };
   }, []);
-
-  const handleDialogClose: any = useCallback(() => {
-    navigate(".");
-    if (isDataChangedRef.current === true) {
-      refetchData();
-      isDataChangedRef.current = false;
-    }
-    resetAllData();
-  }, [navigate]);
 
   useEffect(() => {
     if (initialRender.current && screenFlag === "recurringPmtEntry") {

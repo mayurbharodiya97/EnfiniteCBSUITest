@@ -12,8 +12,8 @@ export const ClosingAdviceGridMetaData: GridMetaDataType = {
     hideHeader: true,
     disableGroupBy: true,
     containerHeight: {
-      min: "30vh",
-      max: "30vh",
+      min: "30.5vh",
+      max: "30.5vh",
     },
     allowRowSelection: false,
     hideFooter: true,

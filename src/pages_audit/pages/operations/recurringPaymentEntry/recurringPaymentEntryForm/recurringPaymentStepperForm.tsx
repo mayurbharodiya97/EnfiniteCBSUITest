@@ -184,6 +184,10 @@ const RecurringPaymentStepperForm = ({
           ? Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
             Number(rpState?.recurPmtEntryData?.PAYMENT_AMT)
           : "",
+      TRF_AMT:
+        Number(rpState?.recurPmtEntryData?.TRF_AMT) > 0
+          ? rpState?.recurPmtEntryData?.TRF_AMT
+          : "0",
       PAYSLIP: Boolean(rpState?.recurPmtEntryData?.PAYSLIP) ? "Y" : "N",
       RTGS_NEFT: Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT) ? "Y" : "N",
       INT_FROM_DT: isValidDate(rpState?.recurPmtEntryData?.INT_FROM_DT)
@@ -198,10 +202,6 @@ const RecurringPaymentStepperForm = ({
             "yyyy-MMM-dd"
           ) ?? ""
         : format(new Date(), "yyyy-MMM-dd") ?? "",
-      TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
-      CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
-      SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
-      ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
       SCREEN_REF: "TRN/053",
       COMM_TYPE_CD: "",
       TOT_DD_NEFT_AMT:
@@ -307,6 +307,7 @@ const RecurringPaymentStepperForm = ({
                 });
                 if (buttonName === "No") {
                   resetAllData();
+                  closeDialog();
                   break;
                 }
               } else if (voucherMsg.O_STATUS === "0") {
@@ -342,7 +343,7 @@ const RecurringPaymentStepperForm = ({
     "onSaveRecurValueValidation",
     API.onSaveRecurValueValidation,
     {
-      onSuccess: async (data, variable) => {},
+      onSuccess: () => {},
       onError: async (error: any) => {
         let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
@@ -359,6 +360,7 @@ const RecurringPaymentStepperForm = ({
   const handleCloseAdviceDetails = () => {
     setOpenClosingAdvice(false);
     resetAllData();
+    closeDialog();
   };
 
   //Entry form submit handler
@@ -421,6 +423,10 @@ const RecurringPaymentStepperForm = ({
                 ) {
                   recurringPaymentEntrySaveMutation.mutate({
                     ...saveDataRef.current?.data,
+                    TRAN_CD: saveData?.[0]?.TRAN_CD ?? "",
+                    CONFIRMED: saveData?.[0]?.CONFIRMED ?? "",
+                    SCROLL1: saveData?.[0]?.SCROLL1 ?? "",
+                    ACCOUNT_CLOSE: saveData?.[0]?.ACCOUNT_CLOSE ?? "",
                     PAY_SLIP_NEFT_DTL: [],
                     PAYSLIP_NO: "",
                     REC_DTL: [],
@@ -452,6 +458,10 @@ const RecurringPaymentStepperForm = ({
                 ) {
                   recurringPaymentEntrySaveMutation.mutate({
                     ...saveDataRef.current?.data,
+                    TRAN_CD: saveData?.[0]?.TRAN_CD ?? "",
+                    CONFIRMED: saveData?.[0]?.CONFIRMED ?? "",
+                    SCROLL1: saveData?.[0]?.SCROLL1 ?? "",
+                    ACCOUNT_CLOSE: saveData?.[0]?.ACCOUNT_CLOSE ?? "",
                     PAY_SLIP_NEFT_DTL: [],
                     PAYSLIP_NO: "",
                     REC_DTL: [],
@@ -471,6 +481,10 @@ const RecurringPaymentStepperForm = ({
                 ) {
                   recurringPaymentEntrySaveMutation.mutate({
                     ...saveDataRef.current?.data,
+                    TRAN_CD: saveData?.[0]?.TRAN_CD ?? "",
+                    CONFIRMED: saveData?.[0]?.CONFIRMED ?? "",
+                    SCROLL1: saveData?.[0]?.SCROLL1 ?? "",
+                    ACCOUNT_CLOSE: saveData?.[0]?.ACCOUNT_CLOSE ?? "",
                     PAY_SLIP_NEFT_DTL: [],
                     PAYSLIP_NO: "",
                     REC_DTL: [],
@@ -519,6 +533,10 @@ const RecurringPaymentStepperForm = ({
           updatePayslipAndDDData([...data?.PAYSLIPDD]);
           recurringPaymentEntrySaveMutation.mutate({
             ...saveDataRef.current?.data,
+            TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+            CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
+            SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
+            ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
             REC_DTL: [...rpState?.recurPmtTransferData.RECPAYTRANS],
             PAY_SLIP_NEFT_DTL: [...data?.PAYSLIPDD],
             PAYSLIP_NO: data?.PAYSLIPDD?.[0]?.PAYSLIP_NO
@@ -546,6 +564,10 @@ const RecurringPaymentStepperForm = ({
           updateBeneficiaryAcctData([...data?.BENEFIACCTDTL]);
           recurringPaymentEntrySaveMutation.mutate({
             ...saveDataRef.current?.data,
+            TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+            CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
+            SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
+            ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
             REC_DTL: [...rpState?.recurPmtTransferData.RECPAYTRANS],
             PAY_SLIP_NEFT_DTL: [...data?.BENEFIACCTDTL],
             PAYSLIP_NO: "",
