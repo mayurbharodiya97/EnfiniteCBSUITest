@@ -1835,7 +1835,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
-  DODUALCONFIRMATION : {
+  DODUALCONFIRMATION: {
     url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",
   },
@@ -1959,23 +1959,23 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS:{
+  GETCRACCOUNTDETAILS: {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
-  DODELETESIEXECDTL:{
+  DODELETESIEXECDTL: {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY:{
+  SAVESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION:{
+  DOSIEXECUTION: {
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW:{
+  DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
@@ -2059,6 +2059,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
     packageName: "",
   },
+  RECURRINGPAYMENTENTRYDML: {
+    url: "/transactionServiceAPI/RECURRINGPAYMENTENTRYDML",
+    packageName: "",
+  },
   RECURRINGPAYMENTGETADVICEDTLJASPER: {
     url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
     packageName: "",
@@ -2069,6 +2073,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETATMDTLDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
+    packageName: "",
+  },
+  GETRECURPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTDTL",
+    packageName: "",
+  },
+  DORECURRINGPAYMENTCONFIMRATION: {
+    url: "/transactionServiceAPI/DORECURRINGPAYMENTCONFIMRATION",
     packageName: "",
   },
 };

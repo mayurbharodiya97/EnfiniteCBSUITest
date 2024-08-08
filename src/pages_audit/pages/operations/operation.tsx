@@ -5,6 +5,7 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
+import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -45,6 +46,7 @@ const Form15GHConfirmationGrid = lazy(
 //   () => import("./positivePayEntry/confirmation")
 // );
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -177,5 +179,21 @@ export const OperationsMenu = () => (
       path="positivepay-confirmation/*"
       element={<PositivePayConfirmationGrid screenFlag="C" />}
     /> */}
+    <Route
+      path="recurring-payment-entry/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtEntry" />
+        </RecurringContextWrapper>
+      }
+    />
+    <Route
+      path="recurring-payment-confirmation/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtConf" />
+        </RecurringContextWrapper>
+      }
+    />
   </Routes>
 );
