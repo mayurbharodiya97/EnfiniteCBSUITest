@@ -48,7 +48,7 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "numberFormat",
+        componentType: "textField",
       },
       name: "ACCOUNT",
       label: "AccountNo",
@@ -891,6 +891,7 @@ export const PassbookStatementInq = {
       render: {
         componentType: "spacer",
       },
+      name: "SPCR",
       GridProps: {
         xs: 12,
         md: 0.5,
