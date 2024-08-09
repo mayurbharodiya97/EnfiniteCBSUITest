@@ -20,8 +20,8 @@ const actions: ActionTypes[] = [
   {
     actionName: "confirm",
     actionLabel: "Confirm",
-    multiple: undefined,
-   rowDoubleClick:true,
+    multiple: false,
+    rowDoubleClick:true,
   },
   {
     actionName: "reject",
@@ -38,48 +38,38 @@ const HoldTrnsConfirmation = ()=>{
     const { MessageBox, CloseMessageBox } = usePopupContext();
 
     const navigate = useNavigate();
-
-      const confirmMutation = useMutation(
-        "holdtrnsCnfm",
+    const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
+      ["getHoldTrnsData"],
+      () =>
+        API.getHoldTrnsData({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        })
+    );
+      const confRejectMutation = useMutation(
+        "confRejectMutation",
         API.getTransactionConfmReject,
         {
           onSuccess: (data) => {
             enqueueSnackbar("success", {
               variant: "success",
             });
-          
+            SetDeleteRemark(false);
+            refetch();
             CloseMessageBox();
+            
           },
           onError: (error: any) => {
             CloseMessageBox();
           },
         }
       );
-      const deleteMutation = useMutation("holdtrnsreject", API.getTransactionConfmReject, {
-        onError: (error: any) => {
-          let errorMsg = "Unknown Error occured";
-          if (typeof error === "object") {
-            errorMsg = error?.error_msg ?? errorMsg;
-          }
-          enqueueSnackbar(errorMsg, {
-            variant: "error",
-          });
-          CloseMessageBox();
-          SetDeleteRemark(false);
-        },
-        onSuccess: (data) => {
-          enqueueSnackbar(typeof (t("RecordSuccessfullyDeleted")), {
-            variant: "success",
-          });
-          CloseMessageBox();
-          SetDeleteRemark(false);
-        },
-      });
+    
       const setCurrentAction = useCallback(
         async (data) => {
           if (data?.name === "reject") {
             SetDeleteRemark(true);
-            setRowData(data?.rows[0]?.data[0])
+            setRowData(data?.rows[0]?.data)
           }  
           if (data?.name === "confirm") {
              if (authState?.user?.id === data?.rows[0]?.data?.ENTERED_BY) {
@@ -93,16 +83,25 @@ const HoldTrnsConfirmation = ()=>{
             const btnName = await MessageBox({
               messageTitle: t("Confirmation"),
               message: t("DoYouWantToAllowTheTransaction"),
-              buttonNames: ["No", "Yes"],
+              buttonNames: ["Yes", "No"],
               loadingBtnName: ["Yes"],
             });
             if (btnName === "Yes") {
-              const confirmPara = {
-                ...data.rows[0].data[0],    
-                CONFIRM:"Y",                          
-                TRAN_TYPE:"Delete"
+              const confirmPara:any = {
+                ...data?.rows[0]?.data, 
+                CONFIRM:"Y",  
+                ACTIVITY_DONE_BY:authState?.user?.id,
+                ENT_BRANCH_CD:data?.rows[0]?.data?.ENTERED_BRANCH_CD,
+                ENT_COMP_CD:data?.rows[0]?.data?.ENTERED_COMP_CD,
+                ACTIVITY_DATE:authState?.workingDate,
+                ACTIVITY_TYPE:"",
+                TRAN_TYPE:"",
+                TRAN_AMOUNT:"0",
+                
              };
-              confirmMutation.mutate(confirmPara)
+             console.log(confirmPara);
+             
+             confRejectMutation.mutate({...confirmPara})
             }
            }
           }
@@ -113,14 +112,7 @@ const HoldTrnsConfirmation = ()=>{
         [navigate]
       );
 
-    const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
-        ["getHoldTrnsData"],
-        () =>
-          API.getHoldTrnsData({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-          })
-      );
+
       useEffect(() => {
         return () => {
           queryClient.removeQueries(["getHoldTrnsData"]);
@@ -142,7 +134,7 @@ const HoldTrnsConfirmation = ()=>{
             finalMetaData={holdTrnsGridMetaData as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
-            actions={[]}
+            actions={actions}
             loading={isLoading || isFetching}
             ReportExportButton={true}
             setAction={setCurrentAction}
@@ -150,28 +142,37 @@ const HoldTrnsConfirmation = ()=>{
           {isDeleteRemark && (
                       <RemarksAPIWrapper
                         TitleText={
-                          t("EnterRemovalRemarksForRTGSBRANCHCONFIRMATION")
+                        "WRONG ENTRY FROM HOLD TRANSACTION CONFIRMATION(TRN/579)"
                         }
                         onActionNo={() => SetDeleteRemark(false)}
                         onActionYes={async (val, rows) => {
                           const buttonName = await MessageBox({
-                            messageTitle: t("Confirmation"),
+                            messageTitle: t("confirmation"),
                             message: t("DoYouWantDeleteRow"),
                             buttonNames: ["Yes", "No"],
                             defFocusBtnName: "Yes",
                             loadingBtnName: ["Yes"],
                           });
                           if (buttonName === "Yes") {
-                            let deleteReqPara:any = {
+                            const deleteReqPara:any = {
                               ...rowData,                             
                               USER_DEF_REMARKS: val
                                 ? val
                                 : "WRONG ENTRY FROM HOLD TRANSACTION CONFIRMATION(TRN/579)",
-                              ACTIVITY_DONE_BY:rows.VERIFIED_BY,
-                              ACTIVITY_DATE:rows.VERIFIED_DATE,
-                              TRAN_TYPE:"Delete"
+                              ACTIVITY_DONE_BY:authState?.user?.id,
+                              //@ts-ignore
+                              ENT_COMP_CD: rowData?.ENTERED_COMP_CD,
+                              //@ts-ignore
+                              ENT_BRANCH_CD:rowData?.ENTERED_BRANCH_CD,
+                              ACTIVITY_DATE:authState?.workingDate,
+                              ACTIVITY_TYPE:"Delete",
+                              TRAN_AMOUNT:"0",
+                              TRAN_TYPE:"Delete",
+                                CONFIRM:"N"
                             };
-                            deleteMutation.mutate(deleteReqPara);
+                            console.log(deleteReqPara);
+                            SetDeleteRemark(false);
+                            confRejectMutation.mutate({...deleteReqPara});
                           }
                         }}
                         isEntertoSubmit={true}

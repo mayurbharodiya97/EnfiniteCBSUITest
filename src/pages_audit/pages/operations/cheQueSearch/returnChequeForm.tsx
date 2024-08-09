@@ -68,7 +68,7 @@ export const ReturnChequeForm = ({open,onclose})=>
           OW_ENT_BR:rows[0]?.data?.ENTERED_BRANCH_CD,
           DTL2_SR_CD:rows[0]?.data?.DTL2_SR_CD,
           DESCRIPTION:data?.DESCRIPTION,
-          RBI_CLG_TRAN:"W",
+          RBI_CLG_TRAN:"0",
           SCREEN_REF:"TRN/038",
 
 

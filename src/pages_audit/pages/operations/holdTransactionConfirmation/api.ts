@@ -14,23 +14,36 @@ export const getHoldTrnsData = async ({
     });
     
     if (status === "0") {
+        let responseData = data;
+        if (Array.isArray(responseData)) {
+          responseData = responseData.map(
+            ({ ...items }) => {
+              return {
+                ...items,
     
-    return data;
+                ACCT_CD:`${items?.BRANCH_CD} ${items?.ACCT_TYPE} ${items?.ACCT_CD} ${items?.ACCT_NM}`,
+                TO_ACCT_CD:`${items?.TO_BRANCH_CD} ${items?.TO_ACCT_TYPE} ${items?.TO_ACCT_CD} ${items?.TO_ACCT_NM}`,
+                PAID:items?.PAID==="Y"?"Paid":"Unpaid"
+    
+              };
+    
+            }
+          );
+        }
+        return responseData;
     } else {
     throw DefaultErrorObject(message, messageDetails);
     }
     
     };
 export const getTransactionConfmReject = async ({
-COMP_CD,
-BRANCH_CD,
+...reqPara
 
 }) => {
 
 const { data, status, message, messageDetails } =
-await AuthSDK.internalFetcher("GETHOLDTRNCONFGRID", {
-COMP_CD:COMP_CD,
-BRANCH_CD:BRANCH_CD,
+await AuthSDK.internalFetcher("DAILYHOLDTRANSACTIONCONFIRMATION", {
+...reqPara
 });
 
 if (status === "0") {
