@@ -3,7 +3,7 @@ import { t } from "i18next";
 export const ClearingBankMstFormMetaData = {
   form: {
     name: "clearingBankMaster",
-    label: "ClearingBankMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -43,6 +43,7 @@ export const ClearingBankMstFormMetaData = {
       required: true,
       autoComplete: "off",
       type: "text",
+      isFieldFocused: true,
       preventSpecialCharInput: true,
       __EDIT__: { isReadOnly: true },
       schemaValidation: {

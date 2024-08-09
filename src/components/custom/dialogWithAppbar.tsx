@@ -58,7 +58,7 @@ const DialogWithAppbar = ({
         </DialogTitle>
       )}
       {Boolean(content) && (
-        <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+        <DialogContent sx={{ paddingTop: "0px", paddingBottom: "0px" }}>
           {content}
         </DialogContent>
       )}

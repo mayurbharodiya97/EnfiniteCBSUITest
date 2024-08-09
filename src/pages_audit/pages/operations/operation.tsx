@@ -5,6 +5,7 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
+import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -13,6 +14,7 @@ const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
+const ImpsEntry = lazy(() => import("./imps-entry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -37,7 +39,18 @@ const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
+const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
+const Form15GHConfirmationGrid = lazy(
+  () => import("./form15G-HEntry/confirmation")
+);
+const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
+const PositivePayConfirmationGrid = lazy(
+  () => import("./positivePayEntry/confirmation")
+);
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
+const PassbookPrint = lazy(() => import("./passbookPrint"));
+// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -48,6 +61,7 @@ export const OperationsMenu = () => (
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
+    <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
 
     <Route
       path="chequebook-confirmation/*"
@@ -161,5 +175,36 @@ export const OperationsMenu = () => (
         </FixDepositProvider>
       }
     />
+    <Route
+      path="form-15g-h-entry/*"
+      element={<Form15GHEntryGrid screenFlag="E" />}
+    />
+    <Route
+      path="form-15g-h-confirmation/*"
+      element={<Form15GHConfirmationGrid screenFlag="C" />}
+    />
+    <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} />
+    <Route
+      path="positivepay-confirmation/*"
+      element={<PositivePayConfirmationGrid screenFlag="C" />}
+    />
+    <Route
+      path="recurring-payment-entry/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtEntry" />
+        </RecurringContextWrapper>
+      }
+    />
+    <Route
+      path="recurring-payment-confirmation/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtConf" />
+        </RecurringContextWrapper>
+      }
+    />
+    <Route path="passbook-printing/*" element={<PassbookPrint />} />
+    {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
   </Routes>
 );

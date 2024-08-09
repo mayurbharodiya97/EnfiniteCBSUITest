@@ -227,8 +227,8 @@ export const AcctMSTContext = React.createContext<any>({
     apiRes.forEach((element:any) => {
       steps.push({tabName: element?.TAB_DISPL_NAME, icon: element?.ICON, isVisible: element?.isVisible ?? true})
     })
-    const PARAM320 = apiRes?.[0]?.PARA_320;
-    const GPARAM155 = apiRes?.[0]?.GPARA_155;
+    const PARAM320 = apiRes?.[0]?.PARA_320; // enable/disable fields in main tab
+    const GPARAM155 = apiRes?.[0]?.GPARA_155; // hide/display fields
 
     dispatch({
         type: "update_ApiResctx",
@@ -260,12 +260,12 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormModalOpenOnEditctx = (recordData:any[]) => {
     if(
       Array.isArray(recordData) && 
-      recordData?.[0]?.data && 
-      Boolean(recordData?.[0]?.data?.REQUEST_ID)
+      recordData?.[0]?.data 
+      // && Boolean(recordData?.[0]?.data?.REQUEST_ID)
     ) {
       let payload = {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
-        acctNumberctx: recordData[0].data?.ACCOUNT_NUMBER ?? "",
+        acctNumberctx: recordData[0].data?.ACCT_CD ?? "",
         accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
         isFormModalOpenctx: true, isFreshEntryctx: false
       };
@@ -339,6 +339,65 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormDataonRetrievectx = (data) => {
     let retrieveApiRes = data
     let payload = {};
+    if(Array.isArray(data?.JOINT_ACCOUNT_DTL) && data?.JOINT_ACCOUNT_DTL?.length>0) {
+      data?.JOINT_ACCOUNT_DTL.forEach(jointRow => {
+        if(jointRow?.J_TYPE) {
+          // J, I, N, G, M, U, S
+          if(jointRow?.J_TYPE === "J   ") {
+            // Joint Holder
+            if(retrieveApiRes["JOINT_HOLDER_DTL"]) {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [...retrieveApiRes["JOINT_HOLDER_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "I   ") {
+            // Introductor
+            if(retrieveApiRes["JOINT_INTRODUCTOR_DTL"]) {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [...retrieveApiRes["JOINT_INTRODUCTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "N   ") {
+            // Nominee
+            if(retrieveApiRes["JOINT_NOMINEE_DTL"]) {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [...retrieveApiRes["JOINT_NOMINEE_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "G   ") {
+            // Guarantor
+            if(retrieveApiRes["JOINT_GUARANTOR_DTL"]) {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [...retrieveApiRes["JOINT_GUARANTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "M   ") {
+            // Hypothication
+            if(retrieveApiRes["JOINT_HYPOTHICATION_DTL"]) {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [...retrieveApiRes["JOINT_HYPOTHICATION_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "U   ") {
+            // Guardian
+            if(retrieveApiRes["JOINT_GUARDIAN_DTL"]) {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [...retrieveApiRes["JOINT_GUARDIAN_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "S   ") {
+            // Signatory
+            if(retrieveApiRes["JOINT_SIGNATORY_DTL"]) {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [...retrieveApiRes["JOINT_SIGNATORY_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [jointRow]
+            }
+          }
+        } else {
+          console.log("joint type not found")
+        }
+      });
+    }
     payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
     dispatch({
         type: "update_retrieveFormData",

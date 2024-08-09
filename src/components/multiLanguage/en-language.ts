@@ -78,6 +78,148 @@ export const en_language_data = {
   HandHeldMachineConfiguration: "Hand Held Machine Configuration",
   HandHeldMachineTDSRate: "Hand Held Machine TDS Rate",
 
+  //Recurring Payment Entry
+  BeneficiaryACDetails: "Beneficiary A/C Details",
+  PaymentAmount: "Payment Amount",
+  DDRequest: "DD Request",
+  SelectAccountNumber: "SelectAccountNumber",
+  AccountNumberRequired: "Account Number is required",
+  EnterAmount: "Enter Amount",
+  AmountShouldGreaterThanZero: "Amount should be greater than zero",
+  FavouringDetail: "Favouring Detail",
+  EnterPayeeACNo: "Enter Payee A/c No.",
+  PayeeBank: "Payee Bank",
+  EnterPayeeBank: "Enter Payee Bank",
+  PayableAt: "Payable At",
+  EnterPayableAt: "Enter Payable At",
+  PayslipAndDemandDraft: "Payslip & Demand Draft",
+  SelectBillType: "Select Bill Type",
+  InfavourOf: "Infavour Of",
+  SelectInfavourOf: "Select Infavour Of",
+  InfavourOfRequired: "Infavour Of is required",
+  EnterInstructionRemarks: "Enter Instruction Remarks",
+  EnterPayslipNumber: "Enter Payslip Number",
+  SelectRegion: "Select Region",
+  EnterCommision: "Enter Commision",
+  Commision: "Commision",
+  OtherCommision: "Other Commision",
+  EnterOtherCommision: "Enter Other Commision",
+  SelectBankCode: "Select Bank Code",
+  SelectSignature1: "Select Signature 1",
+  SelectSignature2: "Select Signature 2",
+  AccountInformation: "Account Information",
+  InstallmentAmount: "Installment Amount",
+  DueAmount: "Due Amount",
+  DueDate: "Due Date",
+  InstallmentDepositedAmount: "Installment Deposited Amount",
+  DepositedInstallment: "Deposited Installment",
+  Interest: "Interest",
+  InterestDetail: "Interest Detail",
+  NoOfDays: "No of Day(s)",
+  LastProvisionDate: "Last Provision Date",
+  ProvisionalAmount: "Provisional Amount",
+  DateFrom: "Date From",
+  DateTo: "Date To",
+  InterestRate: "Interest Rate",
+  InterestAmount: "Interest Amount",
+  TDS: "TDS",
+  TDSAmount: "TDS Amount",
+  AfterMatureInterest: "After Mature Interest",
+  CalculatedTDS: "Calculated TDS",
+  FinancialInterestAmount: "Financial Interest Amount",
+  PaidTDS: "Paid TDS",
+  PenalInterest: "Penal Interest",
+  ClosingAdvice: "Closing Advice",
+  ExplicitDeductTDS: "Explicit Deduct TDS",
+  PaymentDetail: "Payment Detail",
+  TDSSurcharge: "TDS Surcharge",
+  EnterTransferAmount: "Enter Transfer Amount",
+  CashPaymentTokenNumber: "Cash Payment Token Number",
+  EnterCashPaymentTokenNumber: "Enter Cash Payment Token Number",
+  EnterCashAmount: "Enter Cash Amount",
+  Cash: "Cash",
+  DDAmount: "DD Amount",
+  NEFTAmount: "NEFT Amount",
+  ByPayslipDD: "By Payslip/DD",
+  ByNEFT: "By NEFT",
+  AmountCannotExceeded: "Amount cannot be exceeded.",
+  DiffAmount: "Diff. Amount",
+  TransferToAccount: "Transfer To Account",
+  RecurringPaymentEntry: "Recurring Payment Entry",
+  RecurringPaymentTransfer: "Recurring Payment Transfer",
+  VouchersConfirmation: "Voucher(s) Confirmation",
+  PayslipAmountShouldTallyWithPaymentAmount:
+    "Payslip amount should be tally with Payment amount.",
+  PaymentAmountNotTally: "Payment Amount Not Tally",
+  AreYouSureToContinue: "Are you sure to Continue?",
+  NEFTAmountShouldTallyWithPaymentAmount:
+    "NEFT amount should be tally with Payment amount.",
+  TransferPaymentNotTally: "Transfer Payment is not Tally",
+  PleaseDoFullTransferAmountToMoveForward:
+    "Please do the full transfer amount to move forward.",
+  TransferPaymentAmountIsTallySureToContinue:
+    "Transfer Payment Amount is tally, \nAre you sure to continue?",
+  AcctNo: "Acct No.",
+  AcctName: "Acct Name",
+  Instruction: "Instruction",
+  InsStartDate: "Ins. Start Date",
+  LastCrDate: "Last Cr. Date",
+  NoOfInst: "No. Of Inst.",
+  InstAmt: "Inst. Amt.",
+  TotalDepositAsOn: "Total Deposit As on {{workingDate}}",
+  NEFTandDDPaymentOptionsAreUnavailableForDiffValueAmount:
+    "NEFT and DD payment options are unavailable for {{diffValue}} Amount.",
+  PleaseEnterNEFTDetailForAmountDiffValueByClickingOnNext:
+    "Please enter NEFT detail for Amount {{diffValue}} by clicking on next.",
+  PleaseEnterDDDetailForAmountDiffValueByClickingOnNext:
+    "Please enter DD detail for Amount {{diffValue}} by clicking on next.",
+  PleaseEnterDDorNEFTDetailForAmountDiffValueByClickingOnNext:
+    "Please enter DD or NEFT detail for Amount {{diffValue}} by clicking on next.",
+  TotalInterestPaidOrProvision: "Total Interest Paid Or Provision",
+  RecoverInterest: "Recover Interest",
+  RemainingIntToPaid: "Remaining Int. to Paid",
+  LessPenalty: "Less Penalty",
+  LessTDS: "Less TDS",
+  AmountPayableToParty: "Amount Payable to Party",
+  VouchersDetail: "Vouchers Detail",
+  UserName: "User Name",
+  Confidential: "confidential",
+  RecurringClosingAdvice: "Recurring Closing Advice",
+  RecurringDepositAccountClosingAdviceAsOn:
+    "Recurring Deposit Account Closing Advice As on {{workingDate}}",
+  IdealBalance: "Ideal Balance",
+  ActualDeposit: "Actual Deposit",
+  Difference: "Difference",
+  Penalty: "Penalty",
+  EnterRemovalRemarksForRecurringPaymentEntry:
+    "Enter Removal Remarks For Recurring Payment Entry (TRN/053)",
+  EnterRemovalRemarksForRecurringPaymentConfirmation:
+    "Enter Removal Remarks For Recurring Payment Confirmation (TRN/385)",
+  RecurringPaymentConfirmation: "Recurring Payment Confirmation",
+  DeleteFromRecurringPaymentEntry: "Delete From Recurring Payment Entry",
+  DeleteFromRecurringPaymentConfirmation:
+    "Delete From Recurring Payment Confirmation",
+  WRONGENTRYFROMRECURRINGPAYMENTENTRY:
+    "WRONG ENTRY FROM RECURRING PAYMENT ENTRY (TRN/053)",
+  WRONGENTRYFROMRECURRINGPAYMENTCONFIRMATION:
+    "WRONG ENTRY FROM RECURRING PAYMENT CONFIRMATION (TRN/385)",
+  CalcTDS: "Calc. TDS",
+  CashPaymentTokenNo: "Cash Payment Token No.",
+  PayslipDraftNeedToConfirmFromPayslipDraftIssueConfirmationScreen:
+    "Payslip/Draft need to Confirm from Payslip/Draft Issue Confirmation screen.",
+  NEFTNeedToConfirmFromRTGSNEFTConfirmationScreen:
+    "NEFT need to Confirm from RTGS/NEFT Confirmation screen.",
+  DoYouWantToCloseAccount: "Do you want to close account?",
+  AccountClose: "Account Close",
+  PrintAdvice: "Print Advice",
+  ViewSignature: "View Signature",
+  PaymentThroughDDWillConfirmFromDDIssueConfirmationScreen:
+    'Payment through DD will confirm from "DD Issue confirmation screen"',
+  VoucherNumber: "Voucher Number",
+  TotalRecords: "Total Records",
+  AccountBranch: "Account Branch",
+  PrematurePayment: "Premature Payment",
+
   // GridWrapper
   Search: "Search",
   NoDataFound: " No data found..!",
@@ -182,24 +324,24 @@ export const en_language_data = {
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
-  ParentGroup:"Parent Group",
-  SubPriority:"Sub Priority",
-  SanctionFromLimit:"Sanction From Limit",
-  SanctionToLimit:"Sanction To Limit",
-  ProvisionSecured:"Provision Secured %",
-  ProvisionUnSecured:"Provision Unsecured %",
-  ToLimitValidation:"To Limit should be greater than or equal to From Limit",
-  codeisRequired:"code is Required",
-  Somethingwenttowrong:"Something went to wrong..",
+  ParentGroup: "Parent Group",
+  SubPriority: "Sub Priority",
+  SanctionFromLimit: "Sanction From Limit",
+  SanctionToLimit: "Sanction To Limit",
+  ProvisionSecured: "Provision Secured %",
+  ProvisionUnSecured: "Provision Unsecured %",
+  ToLimitValidation: "To Limit should be greater than or equal to From Limit",
+  codeisRequired: "code is Required",
+  Somethingwenttowrong: "Something went to wrong..",
   //priority master sub
-  ParentWeaker:"Parent Weaker",
+  ParentWeaker: "Parent Weaker",
   //trade master
-  CKYCGroup:"C-KYC Group",
-  Constitution:"Constitution",
+  CKYCGroup: "C-KYC Group",
+  Constitution: "Constitution",
   //area master
-  PinCode:"Pin Code",
-  FROMLIMIT:"FROM LIMIT",
-  TOLIMIT:"TO LIMIT",
+  PinCode: "Pin Code",
+  FROMLIMIT: "FROM LIMIT",
+  TOLIMIT: "TO LIMIT",
 
   //
   Delete: "Remove",
@@ -686,7 +828,7 @@ export const en_language_data = {
   Select: "Select",
   DisplayName: "Display Name",
   CTS: "CTS",
-  AddBranch:"Add Branch",
+  AddBranch: "Add Branch",
 
   sidebar: {
     Dashboard: "Dashboard",
@@ -778,7 +920,8 @@ export const en_language_data = {
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
 
-  PressCtrlJToViewJointInformation: "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
+  PressCtrlJToViewJointInformation:
+    "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do You Want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
@@ -793,11 +936,11 @@ export const en_language_data = {
   BranchIfscCode: "Branch Ifsc Code",
   AddRow: "Add Row",
   SignView: "Sign View",
-
-
+  UnknownErrorOccured: "Unknown error occured",
+  Update: "Update",
+  Pincode: "Pincode",
   SpecialCharactersNotAllowedRemarks:
     "Special Characters (! &) not Allowed in Remarks",
-
 
   // cheque book
 
@@ -1037,6 +1180,41 @@ export const en_language_data = {
   ToDateGreaterThanOrEqualToFromDate:
     "Effective To Date should be greater than or equal to From Date.",
 
+  // ATM registration Entry
+
+  CardDetails: "Card Details",
+  RequestDate: "Request Date",
+  CardStatus: "Card Status",
+  IssueTo: "Issue To",
+  IssueRejectDate: "Issue/Reject Date",
+  CitizenId: "Citizen Id",
+  CardNo: "Card No",
+  CardType: "Card Type",
+  DeactiveDate: "De-active(Lost/Destroy) Date",
+  ATMRegistrationEntryMST846: "ATM Registration Entry MST/846",
+  CardPrinting: "Card Printing",
+  AcctOrignalName: "A/C Orignal Name",
+  NameOnCard: "Name On Card",
+  SMSAlert: "SMS Alert",
+  SBAccountBranch: "SB Account Branch",
+  SBAccountType: "SB Account Type",
+  SBAccountCode: "SB Account Code",
+  SBAccountName: "SB Account Name",
+  CAAccountBranch: "CA Account Branch",
+  CAAccountType: "CA Account Type",
+  CAAccountCodeh: "CA Account Code",
+  CAAccountName: "CA Account Name",
+  ODAccountBranch: "OD Account Branch",
+  ODAccountType: "OD Account Type",
+  ODAccountCode: "OD Account Code",
+  ODAccountName: "OD Account Name",
+  ApplicationDate: "Application Date",
+  AtmCardDetails: "Atm Card Details",
+  Surname: "Surname",
+  Prev: "Prev",
+  New: "New",
+  PhotoSign: "Photo/Sign",
+
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
@@ -1052,6 +1230,8 @@ export const en_language_data = {
   Facility: "Facility",
   MICRCode: "MICR Code",
   Add1: "Add 1",
+  Add2: "Add 2",
+  Add3: "Add 3",
   ContactDetail: "Contact Detail",
   DistrictName: "District Name",
   StateName: "State Name",
@@ -1067,7 +1247,8 @@ export const en_language_data = {
   RecordUpdatedSuccessfully: "Record Updated successfully",
   VoucherConfirmation: "Voucher Confirmation",
   RecordSuccessfullyDeleted: "Records successfully deleted",
-  PleaseEnterAcTypeForOrderingAcNo: "Please enter A/c Type For Ordering A / c No.",
+  PleaseEnterAcTypeForOrderingAcNo:
+    "Please enter A/c Type For Ordering A / c No.",
   RemovalRemarksForRTGS: "Enter Removal Remarks For RTGS ENTRY (MST/552)",
   RTGSNEFTTransNo: "RTGS/NEFT. Trans.No",
   RTGSNEFT: "RTGS/NEFT",
@@ -1085,7 +1266,8 @@ export const en_language_data = {
   PleaseEnterOrderingAcName: "Please enter Ordering A/c Name",
   ACAddress: "A/C Address",
   PleaseEnterOrderingAcAddress: "Please enter Ordering A/c Address",
-  PleaseEnterOrderingAcContactInformation: "Please enter Ordering A/c Contact Information",
+  PleaseEnterOrderingAcContactInformation:
+    "Please enter Ordering A/c Contact Information",
   PleaseEnterChequeNumber: "Please enter Cheque Number",
   PleaseEnterRTGSNEFTOrderingAmount: "Please Enter RTGS/NEFT Ordering Amount",
   EnterAccountInformation: "Enter Account Information",
@@ -1108,16 +1290,21 @@ export const en_language_data = {
   PleaseEnterTheBeneficiaryIFSCCode: "Please enter the Beneficiary IFSC Code",
   PleaseEnterTheBeneficiaryAcNumber: "Please enter the Beneficiary A/c Number",
   PleaseEnterTheBeneficiaryAcName: "Please enter the Beneficiary A/c Name",
-  PleaseEnterTheBeneficiaryAcAddress: "Please enter the Beneficiary A/c Address",
-  PleaseEnterTheBeneficiaryAcEmailID: "Please enter the Beneficiary A/c Email ID",
+  PleaseEnterTheBeneficiaryAcAddress:
+    "Please enter the Beneficiary A/c Address",
+  PleaseEnterTheBeneficiaryAcEmailID:
+    "Please enter the Beneficiary A/c Email ID",
   PleaseEnterValidEmailID: "Please enter valid Email ID",
   PleaseEnterTheBeneficiaryLEINo: "Please enter the Beneficiary LEI No.",
   LEINoShouldBeAlphaNumeric: "LEI No. should be Alpha-numeric",
   LEINoShouldBeExactlyCharacters: "LEI No. should be exactly 20 characters",
   FLAG: "FLAG",
-  ThisRecordWillNotSaveBeneficiaryMaster: "This Record will not save in Beneficiary Master",
-  Bank: "Bank", Center: "Center",
-  RTGSNEFTRetrieveInformation: "RTGS/NEFT Retrieve Information", RetrieveGrid: "Retrieve Grid",
+  ThisRecordWillNotSaveBeneficiaryMaster:
+    "This Record will not save in Beneficiary Master",
+  Bank: "Bank",
+  Center: "Center",
+  RTGSNEFTRetrieveInformation: "RTGS/NEFT Retrieve Information",
+  RetrieveGrid: "Retrieve Grid",
   EntryType: "Entry Type",
   MsgFlow: "Msg Flow",
   TranDate: "Tran Date",
@@ -1137,7 +1324,7 @@ export const en_language_data = {
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are You sure to Save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
-  ProceedGen :"Proceed ?",
+  ProceedGen: "Proceed ?",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1147,22 +1334,29 @@ export const en_language_data = {
   BrConfirmedBy: "Br.Confirmed By",
   ACBalance: "A/C Balance",
   BeneficiaryDetail: "Beneficiary Detail",
-  BranchRejectedTransactionNotAllowConfirmed: "Branch Rejected Transaction Not Allow to Confirmed",
-  BranchConfirmationPendingTransactionNotAllowedToConfirm: "Branch Confirmation Pending Transaction not allowed to Confirm",
+  BranchRejectedTransactionNotAllowConfirmed:
+    "Branch Rejected Transaction Not Allow to Confirmed",
+  BranchConfirmationPendingTransactionNotAllowedToConfirm:
+    "Branch Confirmation Pending Transaction not allowed to Confirm",
   TransationAlreadyConfirmed: "Transation already Confirmed",
-  RejectedTransactionNotAllowToConfirm: "Rejected Transaction Not Allow to Confirm",
+  RejectedTransactionNotAllowToConfirm:
+    "Rejected Transaction Not Allow to Confirm",
   CannotConfirmBackDatedEntry: "Cannot Confirm Back Dated Entry",
-  YouCantConfirmYourOwnBranchConfirmation: "You can't Confirm your own Branch confirmation",
+  YouCantConfirmYourOwnBranchConfirmation:
+    "You can't Confirm your own Branch confirmation",
   DoYouWantToAllowTheTransaction: "Do you want to allow the Transaction?",
-  YouCantDeleteRejectHOConfirmedTransaction: " You Can't Delete/ Reject HO Confirmed Transaction",
+  YouCantDeleteRejectHOConfirmedTransaction:
+    " You Can't Delete/ Reject HO Confirmed Transaction",
   TransactionAlreadyRejected: "Transaction Already Rejected",
   YouCantDeleteConfirmedTransaction: "You Can't Delete Confirmed Transaction",
-  YouCantRejectEntryAlreadyConfirmedByHO: "You Can't Reject Entry Already Confirmed by HO",
+  YouCantRejectEntryAlreadyConfirmedByHO:
+    "You Can't Reject Entry Already Confirmed by HO",
   DoYouWantToRejectThisTransaction: "Do You Want to reject this transaction?",
   MoveForward: "Move Forward",
   ConfHistory: "Conf.History",
   ViewMemo: " View Memo",
-  EnterRemovalRemarksForRTGSBRANCHCONFIRMATION: "Enter Removal Remarks For RTGS BRANCH CONFIRMATION (MST/553)",
+  EnterRemovalRemarksForRTGSBRANCHCONFIRMATION:
+    "Enter Removal Remarks For RTGS BRANCH CONFIRMATION (MST/553)",
   RTGSHOConfirmation: "RTGS HO Confirmation",
 
   // Photo & Signature History
@@ -1178,20 +1372,22 @@ export const en_language_data = {
   CustName: "Cust. Name",
   ScanBy: "Scan By",
   ScanDate: "Scan Date",
-  ToZoomInOnTheImagesClickOnItOnce: "To zoom in on the images, simply click on it once...",
+  ToZoomInOnTheImagesClickOnItOnce:
+    "To zoom in on the images, simply click on it once...",
   NoImageFound: " No Image Found",
   SignatureImage: "Signature Image",
   Rotate: "Rotate",
   Reset: "Reset",
-
 
   // cts o/w entry
 
   PleaseEnterSlipAmount: "Please Enter Slip Amount",
   PleaseCheckAmount: "Please Check Amount",
   AreYouSureToAddBank: "Are You sure To Add Bank?",
-  EnterRemovalRemarksForCTSOWCLEARING: "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
-  EnterRemovalRemarksINWARDRETURNENTRY: "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
+  EnterRemovalRemarksForCTSOWCLEARING:
+    "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
+  EnterRemovalRemarksINWARDRETURNENTRY:
+    "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
   PresentmentDate: "Presentment Date",
   Zone: "Zone",
   SlipAmount: "Slip Amount",
@@ -1219,9 +1415,12 @@ export const en_language_data = {
 
   // cts o/w confirmation
 
-  EnterRemovalRemarksCTSOWCONFIRMATION: "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)",
-  EnterRemovalRemarksINWARDRETURNCONFIRMATION: "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
-  EnterRemovalRemarksOUTWARDRETURNCONFIRMATION: "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
+  EnterRemovalRemarksCTSOWCONFIRMATION:
+    "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)",
+  EnterRemovalRemarksINWARDRETURNCONFIRMATION:
+    "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
+  EnterRemovalRemarksOUTWARDRETURNCONFIRMATION:
+    "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
   ClearingRetrieveInformation: "Clearing Retrieve Information",
 
   // date clearing transfer
@@ -1231,53 +1430,82 @@ export const en_language_data = {
   AreYouSuretransfer: "Are you sure to transfer?  Clearing from date/zone",
   ClearingTodateZone: "Clearing To date/zone",
   ThereAre: "There are",
-  ChequeAvailableforClearingDateTransferAreYouSureContinue: "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
-  FromZone: "From Zone", ToZone: "To Zone", Count: "Count",
+  ChequeAvailableforClearingDateTransferAreYouSureContinue:
+    "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  FromZone: "From Zone",
+  ToZone: "To Zone",
+  Count: "Count",
+  ClearingRetrieveGrid: "Clearing Retrieve Grid",
+  SlipRetrieveGrid: "Slip Retrieve Grid",
 
   // inward clearing
 
-  ValidationSuccessful:"Validation Successful",
-  AreYouSurePostThisCheque:"Are you sure to post this Cheque?",
-  ModeisRequired:"Mode is Required",
-  PeriodNameisRequired:"Period Name is Required",
-  InstNoisRequired:"Installment is Required",
-  IFSCCodeisRequired:"IFSC Code is Required",
-  IfscValidate:"IFSC code should be of eleven digits",
+  ValidationSuccessful: "Validation Successful",
+  AreYouSurePostThisCheque: "Are you sure to post this Cheque?",
+  ModeisRequired: "Mode is Required",
+  PeriodNameisRequired: "Period Name is Required",
+  InstNoisRequired: "Installment is Required",
+  IFSCCodeisRequired: "IFSC Code is Required",
+  IfscValidate: "IFSC code should be of eleven digits",
   BankNameisRequired: "Bank Name is Required",
-  DoYouWantAllowTransactionVoucherNo: "Do you want to allow this transaction - Voucher No.",
+
+  // inward clearing
+
+  DoYouWantAllowTransactionVoucherNo:
+    "Do you want to allow this transaction - Voucher No.",
   PleaseSelectAtLeastOneRow: "Please select at least one row.",
   SelectAll: "Select All",
   DeselectAll: "Deselect All",
   DoYouWantRealizeDraft: "Do you want to realize Draft?",
-  DoWantRealizeDraftOrDirectPostInGL: "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+  DoWantRealizeDraftOrDirectPostInGL:
+    "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
   OnlyError: "Only Error",
-  All: "All", ConfirmationPending: "Confirmation Pending", DraftBankerCheques: "Draft/Banker Cheques",
+  All: "All",
+  ConfirmationPending: "Confirmation Pending",
+  DraftBankerCheques: "Draft/Banker Cheques",
   ShareDividendWarrant: "Share Dividend Warrant",
-  EnterBranch: "Enter Branch", ACBranch: "A/C Branch",
-  ChequeSign: "Cheque/Sign", FromBank: "From Bank",
+  EnterBranch: "Enter Branch",
+  ACBranch: "A/C Branch",
+  ChequeSign: "Cheque/Sign",
+  FromBank: "From Bank",
   MICR: "MICR",
   InwardClearingProcess: "Inward Clearing Process",
   DividendAmountMatch: "Dividend Amount not match",
   InwardClearingChequeDetail: "Inward Clearing Cheque Detail",
-  Post: "Post", PositivePay: "Positive Pay", Return: "Return",
+  Post: "Post",
+  PositivePay: "Positive Pay",
+  Return: "Return",
   ReturnBranch: "Return Branch",
   ReturnAccountType: "Return Account Type",
-  ReturnACNumber: "Return A/C Number", OtherReason: "Other Reason",
-  Year: "Year", WarrantNumber: "Warrant Number", Dr: "Dr.",
-  DividendAmount: "Dividend Amount", Shares: "Shares", SharesAmount: "Shares Amount",
-  Paid: "Paid", PaidDate: "Paid Date", CreditAccount: "Credit Account",
-  Id: "Id", OpeningDateRequired: "Opening Date is required.",
-  JointName: "Joint Name", OpeningBalance: "Opening Balance",
-  ClosingBalance: "Closing Balance", NoOfShares: "No.of Shares",
-  Nominee: "Nominee", ModeName: "Mode Name",
-  Category: "Category", AlternatePhone: "Alternate Phone",
-  IssuedBranch: "Issued Branch", FrontGrey: "Front Grey", BackImage: "Back Image",
+  ReturnACNumber: "Return A/C Number",
+  OtherReason: "Other Reason",
+  Year: "Year",
+  WarrantNumber: "Warrant Number",
+  Dr: "Dr.",
+  DividendAmount: "Dividend Amount",
+  Shares: "Shares",
+  SharesAmount: "Shares Amount",
+  Paid: "Paid",
+  PaidDate: "Paid Date",
+  CreditAccount: "Credit Account",
+  Id: "Id",
+  OpeningDateRequired: "Opening Date is required.",
+  JointName: "Joint Name",
+  OpeningBalance: "Opening Balance",
+  ClosingBalance: "Closing Balance",
+  NoOfShares: "No.of Shares",
+  Nominee: "Nominee",
+  ModeName: "Mode Name",
+  Category: "Category",
+  AlternatePhone: "Alternate Phone",
+  IssuedBranch: "Issued Branch",
+  FrontGrey: "Front Grey",
+  BackImage: "Back Image",
   BlackWhite: "Black & White",
   AreYouReturnThisCheque: "Are you sure to return this Cheque?? ",
   PleaseEnterACType: "Please Enter A/c Type",
   PleaseEnterACNumber: "Please Enter A / c Number",
   SaveClose: "Save & Close",
-
 
   //payslip issue entry
   branchCode: "Branch Code",
@@ -1331,12 +1559,30 @@ export const en_language_data = {
   amount: "Amount",
   regionBtn: "Region Add",
   region: "Region",
-  dateValidationMessage: "To Date should be greater than or equal to From Date.",
+  dateValidationMessage:
+    "To Date should be greater than or equal to From Date.",
   ChequeNoisrequired: "Cheque No. is required",
   amountRequired: "Amount is Required",
   infavourofrequired: "InFavourof is Required",
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
+
+  // Positive pay
+  AccountNum: "Account Number",
+  ChequeNumber: "Cheque Number",
+  RequestFrom: "Request From",
+  TransactionDate: "Transaction Date",
+  UploadImage: "Upload Image",
+  ResponseParameters: "Response Parameters",
+  SelectCofiguration: "Select Cofiguration",
+  EnterPayeeName: "Enter Payee Name",
+  ChequeNumberIsRequired: "Cheque Number is Required.",
+  ChequeDateIsRequired: "Cheque Date is Required.",
+  AmountIsRequired: "Amount is Required.",
+  ChequeImage: "Cheque Image",
+  ChequeImageIsNotUploaded: "Cheque Image is not uploaded.",
+  RemovalRemarksPositivePay: "Removal Remarks For Positive Pay Confirmation",
+  Unknownerroroccured: "Unknown error occured",
 
   // Form 15GH entry and confirmation
   NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
@@ -1371,11 +1617,11 @@ export const en_language_data = {
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",
-  ////
   ConfirmFormData: "Are you sure to confirm this Form?",
   ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
+  Success: "Success",
+  DataUpdatedSuccessfully: "Data Updated Successfully",
 };
-

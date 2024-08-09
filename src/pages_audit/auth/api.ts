@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
 import { DefaultErrorObject } from "components/utils";
+import CRC32C from "crc-32";
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
@@ -100,7 +101,15 @@ export const verifyOTP = async (
     }
   );
   if (status === "0") {
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
     localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
@@ -178,6 +187,7 @@ export const RefreshTokenData = async (refreshToken) => {
 export const LogoutAPI = async ({ userID }) => {
   const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
     USER_ID: userID,
+    APP_TRAN_CD: 51,
   });
   //if (status === "0") {
   return message;
@@ -524,4 +534,3 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   );
   return { status, data };
 };
-

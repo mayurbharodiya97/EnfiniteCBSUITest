@@ -138,6 +138,7 @@ export const CourtMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
+        ReportExportButton={true}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

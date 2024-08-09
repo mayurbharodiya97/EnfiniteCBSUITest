@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AuditorMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Auditor Master (MST/083)",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 350,

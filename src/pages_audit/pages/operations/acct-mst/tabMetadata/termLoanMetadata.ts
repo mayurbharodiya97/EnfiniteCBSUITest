@@ -49,11 +49,11 @@ export const termLoan_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Recommended By",
             name: "recommendbydivider_ignoreField",
-            label: ""
+            label: "Recommended By",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -91,11 +91,11 @@ export const termLoan_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Advances Belongs to Director",
             name: "Advancesdivider_ignoreField",
-            label: ""
+            label: "Advances Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -295,11 +295,11 @@ export const termLoan_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Loan Detail",
             name: "loanDTLdivider_ignoreField",
-            label: ""
+            label: "Loan Detail",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -422,11 +422,11 @@ export const termLoan_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Amount",
             name: "amountdivider_ignoreField",
-            label: ""
+            label: "Amount",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -550,11 +550,11 @@ export const termLoan_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Rates(%)",
             name: "ratesdivider_ignoreField",
-            label: ""
+            label: "Rates(%)",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {

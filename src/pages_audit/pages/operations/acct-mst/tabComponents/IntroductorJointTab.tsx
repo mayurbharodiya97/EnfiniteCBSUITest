@@ -58,15 +58,15 @@ const IntroductorJointTab = () => {
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["INTRODUCTORY_DTL"] ?? {INTRODUCTORY_DTL: [{}]}
-        : AcctMSTState?.formDatactx["INTRODUCTORY_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["INTRODUCTORY_DTL"] ?? {}, ...AcctMSTState?.formDatactx["INTRODUCTORY_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["INTRODUCTORY_DTL"] ?? {}}
+        ? {JOINT_INTRODUCTOR_DTL: [AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"] ?? {}]}
+        : AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"]
+          ? {JOINT_INTRODUCTOR_DTL: [...AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"] ?? []]}
+          : {JOINT_INTRODUCTOR_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_INTRODUCTOR_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["INTRODUCTORY_DTL"]
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_INTRODUCTOR_DTL"],
+    AcctMSTState?.formDatactx["JOINT_INTRODUCTOR_DTL"]
   ])
 
   return (

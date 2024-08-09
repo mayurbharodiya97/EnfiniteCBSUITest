@@ -10,7 +10,7 @@ import { t } from "i18next";
 export const AgentMasterFormMetaData = {
   form: {
     name: "agentMaster",
-    label: "AgentMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -154,6 +154,17 @@ export const AgentMasterFormMetaData = {
         name: "AGENT_TYPE_CD",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
+        disableCaching: true,
+        dependentFields: ["AGENT_BRANCH_CD"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.AGENT_BRANCH_CD?.value,
+            DOC_CD: "MST/041",
+            USER_NAME: authState?.user?.id,
+          });
+        },
+        _optionsKey: "getAccountType",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -372,6 +383,17 @@ export const AgentMasterFormMetaData = {
         name: "SECURITY_TYPE_CD",
         required: false,
         schemaValidation: {},
+        disableCaching: true,
+        dependentFields: ["SECURITY_BRANCH"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.SECURITY_BRANCH?.value,
+            DOC_CD: "MST/041",
+            USER_NAME: authState?.user?.id,
+          });
+        },
+        _optionsKey: "getAccountType",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
@@ -678,6 +700,17 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         validationRun: "onChange",
+        disableCaching: true,
+        dependentFields: ["OTH_BRANCH_CD"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.OTH_BRANCH_CD?.value,
+            DOC_CD: "MST/041",
+            USER_NAME: authState?.user?.id,
+          });
+        },
+        _optionsKey: "getAccountType",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -900,6 +933,17 @@ export const AgentMasterFormMetaData = {
         name: "PTAX_ACCT_TYPE",
         required: false,
         schemaValidation: {},
+        disableCaching: true,
+        dependentFields: ["PTAX_BRANCH_CD"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.PTAX_BRANCH_CD?.value,
+            DOC_CD: "MST/041",
+            USER_NAME: authState?.user?.id,
+          });
+        },
+        _optionsKey: "getAccountType",
         validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (

@@ -1247,6 +1247,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETPENDINGACCTLIST",
     packageName: "",
   },
+  GETACCOUNTLIST: {
+    url: "accountServiceAPI/GETACCOUNTLIST",
+    packageName: "",
+  },
   GETACCOUNTDETAILS: {
     url: "accountServiceAPI/GETACCOUNTDETAILS",
     packageName: "",
@@ -1411,8 +1415,40 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTRETRIVE",
     packageName: "",
   },
+  GETSECMSTGRPNMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTGRPNMDDW",
+    packageName: "",
+  },
+  GETSECMSTCOMPDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTCOMPDDW",
+    packageName: "",
+  },
+  GETSECMSTBRANCHDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECMSTBRANCHDDW",
+    packageName: "",
+  },
+  GETNEWUSERSECAPPACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWUSERSECAPPACCESS",
+    packageName: "",
+  },
+  GETSECAPPLIACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECAPPLIACCESS",
+    packageName: "",
+  },
+  GETSECUSERBRANCHACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBRANCHACCESS",
+    packageName: "",
+  },
+  GETSECUSERRODUCTACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPRODUCTACCESS",
+    packageName: "",
+  },
   VALIDATEPARAVALUE: {
     url: "/enfinityCommonServiceAPI/VALIDATEPARAVALUE",
+    packageName: "",
+  },
+  USERACCESSDATADML: {
+    url: "/commonMasterServiceAPI/USERACCESSDATADML",
     packageName: "",
   },
   GETSYSPARAAUDBTN: {
@@ -1575,8 +1611,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYDML",
     packageName: "",
   },
-  GETPRINTFORMDETAILS: {
-    url: "/enfinityFDServiceAPI/GETPRINTFORMDETAILS",
+  GETPRINT15GFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15GANNEXUREFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15GANNEXUREFORMDETAILS",
+    packageName: "",
+  },
+  GETPRINT15HFORMDETAILS: {
+    url: "/enfinityReportServiceAPI/GETPRINT15HFORMDETAILS",
     packageName: "",
   },
   GETFORM15GHCONFPENDING: {
@@ -1585,6 +1629,14 @@ export const ActionWiseAPIConfiguration = {
   },
   FORM15GHENTRYCONFIRMATION: {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYCONFIRMATION",
+    packageName: "",
+  },
+  GETLOANSCHEDULEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEHDR",
+    packageName: "",
+  },
+  GETLOANSCHEDULEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEDTL",
     packageName: "",
   },
   GETAGENTMSTCONFIGPIGMYDDW: {
@@ -1847,6 +1899,30 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOKISSUED",
     packageName: "",
   },
+  GETPOSITIVEPAYGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYGRID",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYVALIDATION: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYVALIDATION",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYDML: {
+    url: "chequeServiceAPI/POSITIVEPAYENTRYDML",
+    packageName: "",
+  },
+  GETPOSITIVEPAYCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYCNF",
+    packageName: "",
+  },
+  IMPORTFILEDATA: {
+    url: "/enfinityCommonServiceAPI/IMPORTFILEDATA",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYCONFIRMATION: {
+    url: "/chequeServiceAPI/POSITIVEPAYENTRYCONFIRMATION",
+    packageName: "",
+  },
   GETRECURPAYMENTSCREENPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTSCREENPARA",
     packageName: "",
@@ -1923,6 +1999,46 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
+  GETNEWSECUSERBRANCHACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
+    packageName: "",
+  },
+  GETNEWSECUSERPRODUCTACCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERPRODUCTACCESS",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTDDW",
+    packageName: "",
+  },
+  CHECKUSERNAME: {
+    url: "/commonMasterServiceAPI/CHECKUSERNAME",
+    packageName: "",
+  },
+  GETSECUSERPENDINGUSERGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPENDINGUSERGRID",
+    packageName: "",
+  },
+  CONFIRMUSERADATA: {
+    url: "/commonMasterServiceAPI/CONFIRMUSERADATA",
+    packageName: "",
+  },
+  GETSECUSERLOGINSHIFTEXIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERLOGINSHIFTEXIST",
+    packageName: "",
+  },
+  GETSECUSERDIGITALSIGN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERDIGITALSIGN",
+    packageName: "",
+  },
+  GETSECUSERBIODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERBIODTL",
+    packageName: "",
+  },
+  GETSECUSERPARAS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECUSERPARAS",
+    packageName: "",
+  },
   GETSTRDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRDATA",
     packageName: "",
@@ -1994,13 +2110,141 @@ export const ActionWiseAPIConfiguration = {
   GETATMREGPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGPARA",
     packageName: "",
-  },    
+  },
   SAVERECURRINGPAYMENTENTRY: {
     url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
     packageName: "",
   },
+  RECURRINGPAYMENTENTRYDML: {
+    url: "/transactionServiceAPI/RECURRINGPAYMENTENTRYDML",
+    packageName: "",
+  },
   RECURRINGPAYMENTGETADVICEDTLJASPER: {
     url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
+    packageName: "",
+  },
+  GETATMACCTTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMACCTTYPEDDDW",
+    packageName: "",
+  },
+  GETATMDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
+    packageName: "",
+  },
+  GETRECURPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTDTL",
+    packageName: "",
+  },
+  DORECURRINGPAYMENTCONFIMRATION: {
+    url: "/transactionServiceAPI/DORECURRINGPAYMENTCONFIMRATION",
+    packageName: "",
+  },
+  GETPASSBKPRINTDATA: {
+    url: "/accountServiceAPI/GETPASSBKPRINTDATA",
+    packageName: "",
+  },
+  DOPASSBOOKPRINTINGVALIDATION: {
+    url: "accountServiceAPI/DOPASSBOOKPRINTINGVALIDATION",
+    packageName: "",
+  },
+  GETPASSBOOKACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETPASSBOOKACCOUNTDETAILS",
+    packageName: "",
+  },
+  DOPASSBOOKDUPDATAINSERT: {
+    url: "accountServiceAPI/DOPASSBOOKDUPDATAINSERT",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCTRANTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCTRANTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCMEMTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCMEMTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCPARKEDTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCPARKEDTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCREASON: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCREASON",
+    packageName: "",
+  },
+  GETACCTCLOSEDPRDATA: {
+    url: "accountServiceAPI/GETACCTCLOSEDPRDATA",
+    packageName: "",
+  },
+  GETSETTLECHARGES: {
+    url: "accountServiceAPI/GETSETTLECHARGES",
+    packageName: "",
+  },
+  VALIDATEACCTCLOSEBT: {
+    url: "accountServiceAPI/VALIDATEACCTCLOSEBT",
+    packageName: "",
+  },
+  DOACCTCLOSEENTRY: {
+    url: "accountServiceAPI/DOACCTCLOSEENTRY",
+    packageName: "",
+  },
+  GETACCTCLOSECNFDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSECNFDTL",
+    packageName: "",
+  },
+  GETACCTCLOSECNFVOUCHERDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSECNFVOUCHERDTL",
+    packageName: "",
+  },
+  DONEFTDDENTRY: {
+    url: "accountServiceAPI/DONEFTDDENTRY",
+    packageName: "",
+  },
+  DOACCTCLOSECONFRIMREOPEN: {
+    url: "accountServiceAPI/DOACCTCLOSECONFRIMREOPEN",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRPAIDFDDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRPAIDFDDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRTOACDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRTOACDDW",
+    packageName: "",
+  },
+  DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML: {
+    url: "/enfinityFDServiceAPI/DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  RETRIVEATMREGISTRATIONDATA: {
+    url: "/commonMasterServiceAPI/RETRIVEATMREGISTRATIONDATA",
+    packageName: "",
+  },
+  VALIDATECITIZENID: {
+    url: "/commonMasterServiceAPI/VALIDATECITIZENID",
+    packageName: "",
+  },
+  GETIMPSACCTLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSACCTLIST",
+    packageName: "",
+  },
+  IMPSCUSTIDVALIDATION: {
+    url: "/commonMasterServiceAPI/IMPSCUSTIDVALIDATION",
+    packageName: "",
+  },
+  GETIMPSHDRDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSHDRDATA",
+    packageName: "",
+  },
+  GETIMPSDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSDTLDATA",
+    packageName: "",
+  },
+  IMPSDAILYSPENDLIMIT: {
+    url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
 };
@@ -2018,17 +2262,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-    PackageName +
-    (url.startsWith("./")
-      ? url.substring(1)
-      : url.startsWith("/")
+      PackageName +
+      (url.startsWith("./")
+        ? url.substring(1)
+        : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-      ? url
-      : url.startsWith("/")
-        ? "." + url
-        : "./" + url;
+    ? url
+    : url.startsWith("/")
+    ? "." + url
+    : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };
