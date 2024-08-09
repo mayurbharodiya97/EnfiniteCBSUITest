@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { t } from "i18next";
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
@@ -23,6 +23,7 @@ import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSp
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { DayLimit } from "./dayLimit/dayLimit";
+import { extractMetaData } from "components/utils";
 
 export const ImpsEntryCustom = () => {
   const [isData, setIsData] = useState({
@@ -100,13 +101,10 @@ export const ImpsEntryCustom = () => {
   //   endSubmit(true);
   // };
   const RowData = (rowData) => {
-    console.log("<<<rowdatat", rowData);
-
     if (formMode === "edit") {
       navigate("daylimit-form", { state: rowData });
     }
   };
-  // console.log("<<<accountList", accountList, retrieveData);
   return (
     <>
       <Container>
@@ -141,7 +139,9 @@ export const ImpsEntryCustom = () => {
           )}
           <FormWrapper
             key={"imps-entry" + formMode}
-            metaData={impsEntryMetadata as MetaDataType}
+            metaData={
+              extractMetaData(impsEntryMetadata, formMode) as MetaDataType
+            }
             initialValues={
               formMode === "view" || formMode === "edit"
                 ? retrieveData?.[0]
@@ -157,7 +157,11 @@ export const ImpsEntryCustom = () => {
             }}
             displayMode={formMode}
             onFormButtonClickHandel={(id, dependentFields) => {
-              if (dependentFields?.CUSTOMER_ID?.value !== "") {
+              console.log("<<<formbutt", dependentFields);
+              if (
+                dependentFields?.CUSTOMER_ID &&
+                dependentFields?.CUSTOMER_ID?.value !== ""
+              ) {
                 accountList.mutate({
                   COMP_CD: authState?.companyID,
                   CUSTOMER_ID: dependentFields?.CUSTOMER_ID?.value,
@@ -219,7 +223,7 @@ export const ImpsEntryCustom = () => {
               formMode +
               rowData
             }
-            metaData={impsRegDetails as MetaDataType}
+            metaData={extractMetaData(impsRegDetails, formMode) as MetaDataType}
             initialValues={
               { accMapping: rowData ?? {} }
               // { accMapping: accountList?.data }

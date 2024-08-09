@@ -49,44 +49,47 @@ export const impsEntryMetadata = {
       name: "CUSTOMER_ID",
       fullWidth: true,
       label: "CustomerId",
-      // isFieldFocused: true,
+      isFieldFocused: true,
       required: true,
       placeholder: "Enter Customer Id",
-      dependentFields: ["PARA_602", "PARA_946"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
+      dependentFields: ["PARA_602", "PARA_946", "RETRIEVE_DATA"],
+      isReadOnly: (fieldData, dependentFields) => {
+        if (dependentFields?.RETRIEVE_DATA?.value === "Y") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      postValidationSetCrossFieldValues: async (field, formState) => {
         if (field?.value) {
           let postData = await API.validateCustId({
             SCREEN_REF: "MST/843",
-            CUSTOMER_ID: field?.value,
+            CUST_ID: field?.value,
           });
-
-          console.log("<<<postdata", postData);
           if (postData?.length) {
-            if (postData?.MSG?.[0]?.O_STATUS === "999") {
+            let message = postData?.[0]?.MSG?.[0];
+            if (message.O_STATUS !== "0") {
               let buttonName = await formState.MessageBox({
                 messageTitle: "ValidationAlert",
-                message: postData?.MSG?.[0]?.O_MESSAGE,
+                message: message?.O_MESSAGE,
               });
               if (buttonName === "Ok") {
                 return {
-                  CITIZEN_ID: { value: "", isFieldFocused: true },
+                  CUSTOMER_ID: { value: "", isFieldFocused: true },
                   ORGINAL_NM: { value: "" },
                   UNIQUE_ID: { value: "" },
                   MOB_NO: { value: "" },
                   PAN_NO: { value: "" },
+                  POPULATE: { value: "N" },
                 };
               }
-            } else if (postData?.MSG?.[0]?.O_STATUS === "0") {
+            } else if (message?.O_STATUS === "0") {
               return {
-                ORGINAL_NM: { value: postData?.ORIGINAL_NM },
-                UNIQUE_ID: { value: postData?.UNIQUE_ID },
-                MOB_NO: { value: postData?.MOB_NO },
-                PAN_NO: { value: postData?.PAN_NO },
+                ORGINAL_NM: { value: postData?.[0]?.ORIGINAL_NM },
+                UNIQUE_ID: { value: postData?.[0]?.UNIQUE_ID },
+                MOB_NO: { value: postData?.[0]?.MOB_NO },
+                PAN_NO: { value: postData?.[0]?.PAN_NO },
+                POPULATE: { value: "Y" },
               };
             }
           }
@@ -96,6 +99,7 @@ export const impsEntryMetadata = {
             UNIQUE_ID: { value: "" },
             MOB_NO: { value: "" },
             PAN_NO: { value: "" },
+            POPULATE: { value: "N" },
           };
         }
         return {};
@@ -138,6 +142,7 @@ export const impsEntryMetadata = {
       type: "string",
       fullWidth: true,
       required: true,
+      isReadOnly: true,
       // startsIcon: Mobile_Number_Svg,
       startsIcon: "PhoneAndroidSharp",
       iconStyle: {
@@ -275,13 +280,21 @@ export const impsEntryMetadata = {
       },
       name: "POPULATE",
       label: "Populate",
-      dependentFields: ["CUSTOMER_ID"],
-      // shouldExclude: (field, defaultValue) => {
-      //   if (defaultValue?.CUSTOMER_ID?.value) {
-      //     return false;
-      //   }
-      //   return true;
-      // },
+      __VIEW__: {
+        render: {
+          componentType: "hidden",
+        },
+      },
+      dependentFields: ["RETRIEVE_DATA", "CUSTOMER_ID"],
+      shouldExclude: (field, dependentFields) => {
+        if (
+          field?.value === "Y" ||
+          dependentFields?.RETRIEVE_DATA?.value === "Y"
+        ) {
+          return false;
+        }
+        return true;
+      },
       GridProps: {
         xs: 12,
         sm: 1,
@@ -702,13 +715,18 @@ export const impsRegDetails = {
           },
         },
 
-        // {
-        //   render: {
-        //     componentType: "spacer",
-        //   },
-        //   name: "SPACER_ST",
-        //   GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
-        // },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "SPACER_ST",
+          GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
+          __VIEW__: {
+            render: {
+              componentType: "spacer",
+            },
+          },
+        },
 
         {
           render: {
@@ -716,6 +734,11 @@ export const impsRegDetails = {
           },
           name: "JOINT_DETAILS",
           label: "Joint Details",
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
           GridProps: {
             xs: 12,
             sm: 1,
@@ -730,6 +753,11 @@ export const impsRegDetails = {
           },
           name: "PHOTO_SIGN",
           label: "Photo/sign",
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
           GridProps: {
             xs: 12,
             sm: 1,

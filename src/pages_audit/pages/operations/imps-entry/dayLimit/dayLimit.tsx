@@ -1,33 +1,20 @@
-import { Button, Dialog } from "@mui/material";
+import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query";
 import { dayLimitData } from "../api";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const DayLimit = ({ navigate }) => {
   const { state: rows }: any = useLocation();
+  const { MessageBox } = usePopupContext();
 
-  const { authState } = useContext(AuthContext);
-  console.log("<<<rows", rows);
-
-  // delete rows["FULL_ACCT_NO_NM"];
-  // delete rows["IFT_LIMIT_SPACER"];
-  // delete rows["RTGS_LIMIT_SPACER"];
-  // delete rows["NEFT_LIMIT_SPACER"];
-  // delete rows["OWN_ACT_LIMIT_SPACER"];
-  // delete rows["JOINT_DETAILS"];
-  // delete rows["PHOTO_SIGN"];
-  // delete rows["BBPS_LIMIT_SPACER"];
-  // delete rows["PG_TRN_LIMIT_SPACER"];
-  // delete rows["IMPS_LIMIT_SPACER"];
-  // delete rows["IMPS_LIMIT_SPACER2"];
-
-  const { isError, error, isLoading } = useQuery<any, any>(
+  const { data, isError, isSuccess, error, isLoading } = useQuery<any, any>(
     ["daylimit"],
     () =>
       dayLimitData({
@@ -53,11 +40,11 @@ export const DayLimit = ({ navigate }) => {
             PERDAY_P2A_LIMIT: rows?.PERDAY_P2A_LIMIT ?? "",
             PERDAY_P2P_LIMIT: rows?.PERDAY_P2P_LIMIT ?? "",
             PERDAY_PG_AMT: rows?.PERDAY_PG_AMT ?? "",
+            TRAN_CD: rows?.TRAN_CD,
+            SR_CD: rows?.SR_CD,
+            ENTERED_BRANCH_CD: rows?.ENTERED_BRANCH_CD,
           },
         ],
-        TRAN_CD: rows?.TRAN_CD,
-        SR_CD: rows?.SR_CD,
-        ENTERED_BRANCH_CD: rows?.ENTERED_BRANCH_CD,
         SCREEN_REF: "MST/843",
       }),
     {
@@ -87,34 +74,50 @@ export const DayLimit = ({ navigate }) => {
             },
           }}
         >
+          {isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : isError ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={error?.error_msg ?? "Unknow Error"}
+                  errorDetail={error?.error_detail ?? ""}
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
+
           <FormWrapper
-            key={`day-limit-Form`}
+            key={`day-limit-Form` + isSuccess}
             metaData={dayLimitFormMetaData as MetaDataType}
-            initialValues={{}}
+            initialValues={data?.[0] ?? {}}
+            displayMode={data?.[0]?.READ_ONLY === "Y" ? "view" : null}
             onSubmitHandler={onSubmitHandler}
+            formState={{ MessageBox: MessageBox }}
             formStyle={{
               background: "white",
             }}
-            subHeaderLable={`\u00A0\u00A0\u00A0   ${(
-              authState?.companyID +
-              rows?.BRANCH_CD +
-              rows?.ACCT_TYPE +
-              rows?.ACCT_CD
-            ).replace(/\s/g, "")} -  ${rows?.ACCT_NM}`}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <Button
-                  color={"primary"}
-                  // onClick={(event) =>
-                  //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
-                  // }
-                  // endIcon={
-                  //   mutation?.isLoading ? <CircularProgress size={20} /> : null
-                  // }
-                >
-                  {t("Save")}
-                </Button>
+                {data?.[0]?.READ_ONLY !== "Y" && (
+                  <Button
+                    color={"primary"}
+                    // onClick={(event) =>
+                    //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
+                    // }
+                    // endIcon={
+                    //   mutation?.isLoading ? <CircularProgress size={20} /> : null
+                    // }
+                  >
+                    {t("Save")}
+                  </Button>
+                )}
+
                 <Button onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
                 </Button>
