@@ -2079,6 +2079,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/SAVERECURRINGPAYMENTENTRY",
     packageName: "",
   },
+  RECURRINGPAYMENTENTRYDML: {
+    url: "/transactionServiceAPI/RECURRINGPAYMENTENTRYDML",
+    packageName: "",
+  },
   RECURRINGPAYMENTGETADVICEDTLJASPER: {
     url: "/enfinityReportServiceAPI/RECURRINGPAYMENTGETADVICEDTLJASPER",
     packageName: "",
@@ -2089,6 +2093,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETATMDTLDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
+    packageName: "",
+  },
+  GETRECURPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTDTL",
+    packageName: "",
+  },
+  DORECURRINGPAYMENTCONFIMRATION: {
+    url: "/transactionServiceAPI/DORECURRINGPAYMENTCONFIMRATION",
     packageName: "",
   },
   GETPASSBKPRINTDATA: {

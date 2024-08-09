@@ -11,6 +11,7 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import { extractMetaData } from "components/utils";
 import { BeneficiaryAcctDetailsFormMetaData } from "./metaData/beneficiaryAcctDetailsMetada";
+import { useTranslation } from "react-i18next";
 
 export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
   ({ accountDetailsForBen, onSubmitHandler, defaultView }, ref: any) => {
@@ -18,6 +19,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
     const { authState } = useContext(AuthContext);
     const [openAuditTrail, setOpenAuditTrail] = useState(false);
     const [isBenAuditTrailData, setIsBenAuditTrailData] = useState({});
+    const { t } = useTranslation();
 
     const {
       data: NEFTFlagsData,
@@ -53,7 +55,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
         ) : isError ? (
           <Alert
             severity="error"
-            errorMsg={error?.error_msg ?? "Something went to wrong.."}
+            errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
             errorDetail={error?.error_detail ?? ""}
             color="error"
           />

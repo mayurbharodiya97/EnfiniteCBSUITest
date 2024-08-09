@@ -5,6 +5,7 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
+import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -46,6 +47,7 @@ const PositivePayConfirmationGrid = lazy(
   () => import("./positivePayEntry/confirmation")
 );
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
 // const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 
@@ -180,6 +182,23 @@ export const OperationsMenu = () => (
     <Route
       path="positivepay-confirmation/*"
       element={<PositivePayConfirmationGrid screenFlag="C" />}
+    />
+    <Route
+      path="recurring-payment-entry/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtEntry" />
+        </RecurringContextWrapper>
+      }
+    />
+    <Route
+      path="recurring-payment-confirmation/*"
+      element={
+        <RecurringContextWrapper>
+          <RecurringPaymentEntryGrid screenFlag="recurringPmtConf" />
+        </RecurringContextWrapper>
+      }
+    />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
   </Routes>
