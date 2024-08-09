@@ -14,12 +14,13 @@ export const getSecurityUserGrid = async () => {
     const { status, message, messageDetails } = await AuthSDK.internalFetcher(
       "USERACCESSDATADML",
       {
+        IsNewRow:true,
         USER_DTL: onboard,
-        APPLICATION_ACCESS_DTL: applicationdata,
-        BRANCH_TYPE_ACCESS_DTL: branchdata,
-        ACCT_TYPE_ACCESS_DTL: productdata,
+        APPLICATION_ACCESS_DTL: {"DETAILS_DATA":applicationdata},
+        BRANCH_TYPE_ACCESS_DTL: {"DETAILS_DATA":branchdata},
+        ACCT_TYPE_ACCESS_DTL: {"DETAILS_DATA":productdata},
         USER_SHIFT_DTL: loginshiftdata,
-        BIOMETRIC_DATA_DTL:biometricdata,
+        BIOMETRIC_DATA_DTL: {"DETAILS_DATA":biometricdata},
       }
     );
     if (status === "0") {
@@ -29,22 +30,26 @@ export const getSecurityUserGrid = async () => {
     }
   };
   export const UpdateDMLData = async ({ onboard, applicationdata, branchdata, productdata, loginshiftdata ,biometricdata }) => {
-    const grids = [applicationdata, branchdata, productdata, loginshiftdata ,biometricdata];
+    const grids = [onboard,applicationdata, branchdata, productdata, loginshiftdata ,biometricdata];
   const requestData = {
-    USER_DTL: onboard,
   };
   
   grids.forEach((grid, index) => {
-    const gridKey = ['APPLICATION_ACCESS_DTL', 'BRANCH_TYPE_ACCESS_DTL', 'ACCT_TYPE_ACCESS_DTL' , 'USER_SHIFT_DTL', 'BIOMETRIC_DATA_DTL'][index];
-    const gridConditions = ['isNewRow', 'isDeleteRow', 'isUpdatedRow'];
+    const gridKey = ['USER_DTL','APPLICATION_ACCESS_DTL', 'BRANCH_TYPE_ACCESS_DTL', 'ACCT_TYPE_ACCESS_DTL' , 'USER_SHIFT_DTL', 'BIOMETRIC_DATA_DTL'][index];
+    const gridConditions = ['isNewRow', 'isDeleteRow', 'isUpdatedRow', '_UPDATEDCOLUMNS'];
   
     if (gridConditions.some(condition => grid?.[condition]?.length > 0)) {
-      requestData[gridKey] = { DETAILS_DATA: grid };
+      if (gridKey === 'USER_DTL') {
+        requestData[gridKey] = grid;
+      } else {
+        requestData[gridKey] = { DETAILS_DATA: grid };
+      }
     }
-  });
+  });  
     const { status, message, messageDetails } = await AuthSDK.internalFetcher(
       "USERACCESSDATADML",
      {
+      IsNewRow:false,
       ...requestData
      }
     );

@@ -35,14 +35,16 @@ const RetrieveDataCustom = ({
   const updateFnWrapper =
     (update) =>
     async ({ data }) => {
-      return update({ ...data });
+      return update({
+        ...data,
+      });
     };
   const mutation: any = useMutation(
     "getRtgsRetrieveData",
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
-        if (Array.isArray(data) && data?.length <= 0) {
+        if (data?.length <= 0) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
           setFormMode("view");
@@ -67,25 +69,21 @@ const RetrieveDataCustom = ({
     setFieldError,
     actionFlag
   ) => {
-    console.log("<<<reteteee", data, parameter);
-    // delete data["RETRIEVE"];
-    // delete data["VIEW_ALL"];
-    // if (Boolean(data["FROM_DT"])) {
-    //   data["FROM_DT"] = format(new Date(data["FROM_DT"]), "dd/MMM/yyyy");
-    // }
-    // if (Boolean(data["TO_DT"])) {
-    //   data["TO_DT"] = format(new Date(data["TO_DT"]), "dd/MMM/yyyy");
-    // }
-    // data = {
-    //   ...data,
-    //   COMP_CD: authState.companyID,
-    //   BRANCH_CD: authState.user.branchCode,
-    //   FLAG: actionFlag === "RETRIEVE" ? "P" : "A",
-    //   FLAG_RTGSC: "",
-    // };
+    let apiReq = {
+      RET_FLAG: data?.A_RET_FLAG ?? "",
+      CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
+      BRANCH_CD: data?.BRANCH_CD ?? "",
+      ACCT_TYPE: data?.ACCT_TYPE ?? "",
+      ACCT_CD: data?.ACCT_CD ?? "",
+      PARA_602: parameter?.PARA_602 ?? "",
+      PARA_610: parameter?.PARA_610 ?? "",
+      FROM_DT: data?.A_RET_FLAG === "A" ? data?.FROM_DT ?? "" : "",
+      TO_DT: data?.A_RET_FLAG === "A" ? data?.TO_DT ?? "" : "",
+      SCREEN_REF: "MST/846",
+    };
 
     mutation.mutate({
-      data: data,
+      data: apiReq,
       endSubmit,
     });
     endSubmit(true);

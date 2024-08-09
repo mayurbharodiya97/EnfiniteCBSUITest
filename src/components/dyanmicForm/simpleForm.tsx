@@ -158,13 +158,7 @@ export const SimpleFormTitle = ({
           ""
         )}
       </Typography>
-      <Typography
-        component="span"
-        variant="h3"
-        color="primary"
-        sx={{ ...subHeaderLableStyle }}
-        px={2}
-      >
+      <Typography variant="h6" color="primary" sx={{ ...subHeaderLableStyle }}>
         {subHeaderLable}
       </Typography>
       <div className={classes.formControlLabelSpacer} />

@@ -1631,6 +1631,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYCONFIRMATION",
     packageName: "",
   },
+  GETLOANSCHEDULEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEHDR",
+    packageName: "",
+  },
+  GETLOANSCHEDULEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEDTL",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
@@ -1835,7 +1843,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
-  DODUALCONFIRMATION : {
+  DODUALCONFIRMATION: {
     url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",
   },
@@ -1903,6 +1911,18 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/POSITIVEPAYENTRYDML",
     packageName: "",
   },
+  GETPOSITIVEPAYCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYCNF",
+    packageName: "",
+  },
+  IMPORTFILEDATA: {
+    url: "/enfinityCommonServiceAPI/IMPORTFILEDATA",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYCONFIRMATION: {
+    url: "/chequeServiceAPI/POSITIVEPAYENTRYCONFIRMATION",
+    packageName: "",
+  },
   GETRECURPAYMENTSCREENPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTSCREENPARA",
     packageName: "",
@@ -1959,23 +1979,23 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS:{
+  GETCRACCOUNTDETAILS: {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
-  DODELETESIEXECDTL:{
+  DODELETESIEXECDTL: {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY:{
+  SAVESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION:{
+  DOSIEXECUTION: {
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW:{
+  DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
@@ -2149,6 +2169,34 @@ export const ActionWiseAPIConfiguration = {
   },
   DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML: {
     url: "/enfinityFDServiceAPI/DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  RETRIVEATMREGISTRATIONDATA: {
+    url: "/commonMasterServiceAPI/RETRIVEATMREGISTRATIONDATA",
+    packageName: "",
+  },
+  VALIDATECITIZENID: {
+    url: "/commonMasterServiceAPI/VALIDATECITIZENID",
+    packageName: "",
+  },
+  GETIMPSACCTLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSACCTLIST",
+    packageName: "",
+  },
+  IMPSCUSTIDVALIDATION: {
+    url: "/commonMasterServiceAPI/IMPSCUSTIDVALIDATION",
+    packageName: "",
+  },
+  GETIMPSHDRDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSHDRDATA",
+    packageName: "",
+  },
+  GETIMPSDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSDTLDATA",
+    packageName: "",
+  },
+  IMPSDAILYSPENDLIMIT: {
+    url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
 };

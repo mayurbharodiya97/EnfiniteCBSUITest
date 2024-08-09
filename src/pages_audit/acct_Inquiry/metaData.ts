@@ -53,7 +53,7 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "numberFormat",
+        componentType: "textField",
       },
       name: "ACCOUNT",
       label: "AccountNo",
@@ -963,6 +963,7 @@ export const AccountInquiry = {
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value = Number(dependentFieldsValues?.REPRINT?.value);
         return value === 1 ? "Y" : "N";
+
       },
     },
 
