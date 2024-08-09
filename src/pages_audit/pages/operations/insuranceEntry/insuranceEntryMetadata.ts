@@ -389,15 +389,10 @@ export const InsuranceEntryFormMetaData = {
           if (formState?.isSubmitting) return {};
           if (
             field.value
-            // &&
-            // dependentFieldsValues?.["INSURANCE_AMOUNT"]?.value
           ) {
-            console.log("field", field.value, dependentFieldsValues?.["INSURANCE_AMOUNT"]?.value,
-
-              
-            )
             if (
-              parseFloat(dependentFieldsValues?.["INSURANCE_AMOUNT"]?.value || "0") > parseFloat(field.value)
+              Number(field.value) >
+              Number(dependentFieldsValues?.INSURANCE_AMOUNT?.value)
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "Alert",
@@ -418,7 +413,12 @@ export const InsuranceEntryFormMetaData = {
                   },
                 };
               }
-            } else {
+            } else if (field.value &&
+              dependentFieldsValues?.["ACCT_CD"]?.value &&
+              dependentFieldsValues?.["ACCT_TYPE"]?.value &&
+              dependentFieldsValues?.["BRANCH_CD"]?.value &&
+              dependentFieldsValues?.["INSURANCE_AMOUNT"]?.value) {
+              console.log("auth", auth)
               let Validate = await GeneralAPI.getCalGstAmountData({
                 BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
                 ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
@@ -429,7 +429,7 @@ export const InsuranceEntryFormMetaData = {
                 AMOUNT: field.value,
                 MODULE: "INSU",
                 COMP_CD: auth?.companyID,
-                LOGIN_BRANCH: auth?.User.branchCode
+                ENT_BRANCH_CD: auth?.user?.branchCode
               });
 
 
@@ -506,8 +506,6 @@ export const InsuranceEntryFormMetaData = {
               //       SER_CHRG_AMT: { value: postData?.[0]?.GST_AMT },
               //       ENABLE_DISABLE: { value: postData?.[0]?.ENABLE_DISABLE },
               //     };
-              //   }
-              // }
             }
           } else if (!field?.value) {
             return {
@@ -516,7 +514,7 @@ export const InsuranceEntryFormMetaData = {
               ENABLE_DISABLE: { value: "" },
             };
           }
-        },
+        }
       },
 
       {
