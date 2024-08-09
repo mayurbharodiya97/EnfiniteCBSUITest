@@ -12,66 +12,6 @@ const MobileRegTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
-  const onSubmitPDHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag,
-    hasError
-  ) => {
-    if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
-
-
-
-      let newData = AcctMSTState?.formDatactx;
-      const commonData = {
-        IsNewRow: true,
-        COMP_CD: "",
-        BRANCH_CD: "",
-        REQ_FLAG: "",
-        REQ_CD: "",
-        // SR_CD: "",
-      };
-      newData["MOBILE_REG_DTL"] = {
-        ...newData["MOBILE_REG_DTL"],
-        ...formData,
-        ...commonData,
-      };
-      handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.MOBILE_REG_DTL ? _.uniq([...tabModifiedCols.MOBILE_REG_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
-
-        tabModifiedCols = {
-          ...tabModifiedCols,
-          MOBILE_REG_DTL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
-      }
-      // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
-      // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
-      // }
-      // setIsNextLoading(false)
-    } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: AcctMSTState?.colTabValuectx,
-      });
-      // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
-    }
-    endSubmit(true);
-  };
-  const initialVal:any= {}
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -90,6 +30,7 @@ const MobileRegTab = () => {
       isLoading: false,
     })
   }, [])
+
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
@@ -114,14 +55,83 @@ const MobileRegTab = () => {
     }
   }, [formStatus])
 
+  const onFormSubmitHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+    hasError
+  ) => {
+    if(data && !hasError) {
+      let newData = AcctMSTState?.formDatactx
+      if(data?.MOBILE_REG) {
+        let filteredCols:any[]=[]
+        filteredCols = Object.keys(data.MOBILE_REG[0])
+        filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+        if(AcctMSTState?.isFreshEntryctx) {
+          filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
+        }
+        let newFormatOtherAdd = data?.MOBILE_REG?.map((formRow, i) => {
+          let formFields = Object.keys(formRow)
+          formFields = formFields.filter(field => !field.includes("_ignoreField"))
+          const formData = _.pick(data?.MOBILE_REG[i], formFields)
+          return {...formData};
+        })
+        newData["MOBILE_REG_DTL"] = [...newFormatOtherAdd]
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+              ...tabModifiedCols,
+              MOBILE_REG_DTL: [...filteredCols]
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }
+      } else {
+        newData["MOBILE_REG_DTL"] = []
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            MOBILE_REG_DTL: []
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }  
+      }
+      setFormStatus(old => [...old, true])
+    } else {
+      handleStepStatusctx({status: "error", coltabvalue: AcctMSTState?.colTabValuectx})
+      setFormStatus(old => [...old, false])
+    }
+    endSubmit(true)
+  }
+
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["MOBILE_REG_DTL"]?.length >0
+          ? {MOBILE_REG: [...AcctMSTState?.formDatactx["MOBILE_REG_DTL"] ?? []]}
+          : {MOBILE_REG: [{}]}
+        : AcctMSTState?.formDatactx["MOBILE_REG_DTL"]
+          ? {MOBILE_REG: [...AcctMSTState?.formDatactx["MOBILE_REG_DTL"] ?? []]}
+          : {MOBILE_REG: [...AcctMSTState?.retrieveFormDataApiRes["MOBILE_REG_DTL"] ?? []]}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes["MOBILE_REG_DTL"],
+    AcctMSTState?.formDatactx["MOBILE_REG_DTL"]
+  ])
+
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
         ref={formRef}
-        onSubmitHandler={onSubmitPDHandler}
+        onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-mobile-reg-form" + initialVal}
         metaData={mobileReg_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{GPARAM155: AcctMSTState?.gparam155 }}

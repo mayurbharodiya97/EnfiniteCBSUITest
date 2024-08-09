@@ -596,7 +596,7 @@ export const hypothication_metadata = {
             render: {
               componentType: "formbutton",
             },
-            name: "landDTL_ignoreField",
+            name: "landDTL2_ignoreField",
             label: "Ornament",
             placeholder: "",
             type: "text",
