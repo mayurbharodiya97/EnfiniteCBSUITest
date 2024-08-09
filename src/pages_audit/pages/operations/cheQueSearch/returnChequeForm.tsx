@@ -11,6 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import { useLocation } from "react-router-dom";
 import { GradientButton } from "components/styledComponent/button";
 import {t} from "i18next";
+import { format } from "date-fns";
 export const ReturnChequeForm = ({open,onclose})=>
 {
   const { authState } = useContext(AuthContext);
@@ -18,11 +19,12 @@ export const ReturnChequeForm = ({open,onclose})=>
   const { state: rows }: any = useLocation();
 
 
-  const returnChequeMutation = useMutation(API.getCheckDuplicate, {
+  const returnChequeMutation = useMutation(API.cheQueReturn, {
     onSuccess: async (data) => {
         enqueueSnackbar("Sucess", {
             variant: "success",
           });
+          onclose();
     },
     onError: (error: any) => {
         let errorMsg = "Unknownerroroccured";
@@ -32,9 +34,10 @@ export const ReturnChequeForm = ({open,onclose})=>
         enqueueSnackbar(errorMsg, {
           variant: "error",
         });
-        CloseMessageBox();
+        onclose();
       },
   });
+
 
     const onSubmitHandler: SubmitFnType = async (
         data: any,
@@ -44,13 +47,34 @@ export const ReturnChequeForm = ({open,onclose})=>
         actionFlag
       ) => {
       
-        data = {
-          ...data,
-          COMP_CD: authState.companyID,
-          BRANCH_CD: authState.user.branchCode,
+      const reqPara:any= {
+          // ...data,
+          COMP_CD: rows[0]?.data?.COMP_CD,
+          BRANCH_CD: rows[0]?.data?.BRANCH_CD,
+          ACCT_CD:data?.ACCT_CD,
+          ACCT_TYPE:data?.ACCT_TYPE,
+          TRAN_CD:rows[0]?.data?.TRAN_CD,
+          AMOUNT:rows[0]?.data?.AMOUNT,
+          CHEQUE_NO:data?.CHEQUE_NO,
+          CHEQUE_DATE: format(new Date(rows[0]?.data?.CHEQUE_DATE), "dd/MMM/yyyy"),
+          BANK_CD:rows[0]?.data?.BANK_CD,
+          TRAN_TYPE:rows[0]?.data?.TRAN_TYPE,
+          ZONE:data?.ZONE_CD,
+          REASON:data?.REASON,
+          CHQ_MICR_CD:rows[0]?.data?.CHQ_MICR_CD,
+          ACCT_NM:data?.ACCT_NM,
+          SLIP_CD:rows[0]?.data?.SLIP_CD,
+          BRANCH:rows[0]?.data?.BRANCH,
+          OW_ENT_BR:rows[0]?.data?.ENTERED_BRANCH_CD,
+          DTL2_SR_CD:rows[0]?.data?.DTL2_SR_CD,
+          DESCRIPTION:data?.DESCRIPTION,
+          RBI_CLG_TRAN:"W",
+          SCREEN_REF:"TRN/038",
+
+
         };
     
-        returnChequeMutation.mutate(data);
+        returnChequeMutation.mutate(reqPara);
         endSubmit(true);
       };
     
@@ -72,6 +96,7 @@ export const ReturnChequeForm = ({open,onclose})=>
         metaData={returnChequeFormMetaData as MetaDataType}
         initialValues={{
           ...rows?.[0]?.data,
+          ZONE_TRAN_TYPE:rows?.[0]?.data?.TRAN_TYPE
         }}
         onSubmitHandler={onSubmitHandler}
         controlsAtBottom={true}
@@ -97,7 +122,7 @@ export const ReturnChequeForm = ({open,onclose})=>
                     endIcon={returnChequeMutation.isLoading ? <CircularProgress size={20} /> : null}
                     color={"primary"}
                   >
-                    Save
+                    Ok
                   </GradientButton>
                  <GradientButton
                  onClick={() => {

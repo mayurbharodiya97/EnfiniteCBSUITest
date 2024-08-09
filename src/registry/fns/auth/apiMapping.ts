@@ -2127,6 +2127,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
     packageName: "",
   },
+  RETURNCHEQUE: {
+    url: "/chequeServiceAPI//RETURNCHEQUE",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

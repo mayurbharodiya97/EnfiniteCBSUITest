@@ -31,13 +31,14 @@ COMP_CD,BRANCH_CD
 
 };
 export const getClgZoneData = async ({
-COMP_CD,BRANCH_CD
+COMP_CD,BRANCH_CD,ZONE_TRAN_TYPE
 }) => {
 
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCLGZONELIST", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
+      ZONE_TRAN_TYPE:ZONE_TRAN_TYPE,
       CLG:"W"
     });
     if (status === "0") {
@@ -121,3 +122,20 @@ export const getCheckDuplicate = async ({
     }
 
 };
+export const cheQueReturn = async ({
+  ...reqData
+   }) => {
+   
+     const { data, status, message, messageDetails } =
+       await AuthSDK.internalFetcher("RETURNCHEQUE", {
+         ...reqData
+       });
+       if (status === "0") {
+         let responseData = data;
+         
+         return responseData;
+       } else {
+         throw DefaultErrorObject(message, messageDetails);
+       }
+   
+   };

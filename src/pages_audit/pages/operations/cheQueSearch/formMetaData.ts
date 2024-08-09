@@ -33,7 +33,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         render: {
           componentType: "spacer",
         },
-  
+        name:"Spacer",
         GridProps: {
           xs: 0,
           md: 1,
@@ -51,7 +51,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         placeholder: "",
         fullWidth: true,
         format: "dd/MM/yyyy",
-        GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+        GridProps: { xs: 2, sm: 2, md: 2, lg: 1.4, xl: 1.4 },
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["FromDateRequired."] }],
@@ -91,7 +91,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         // },
         dependentFields: ["FROM_DT"],
         runValidationOnDependentFieldsChange: true,
-        GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+        GridProps: { xs: 2, sm: 2, md: 2, lg: 1.4, xl: 1.4 },
       },
       {
         render: {
@@ -99,7 +99,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         },
         name: "CHEQUE_NO",
         label: "Chequeno",
-        GridProps: { xs: 1.2, sm: 1.2, md: 1.2, lg: 1, xl: 1 },
+        GridProps: { xs: 2, sm: 2, md: 1.4, lg: 1.4, xl: 1.4 },
       },
       {
         render: { componentType: "autocomplete" },
@@ -111,15 +111,11 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
           return getClearingTypeDDW({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
-  
           });
         },
-        defaultOptionLabel: "N",
-        GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-     
+        defaultValue: "S",
         fullWidth: true,
-        autoComplete: "on",
-        isFieldFocused: false,
+        GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 1.4 },
       },
       {
         render: {
@@ -176,6 +172,7 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         name: "ACCT_CD",
         label: "AccountNo",
         isReadOnly: true,
+        fullWidth: true,
         dateFormat: "dd/MM/yyyy",
         GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
       },
@@ -187,25 +184,28 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         label: "",
         type: "text",
         isReadOnly: true,
+        fullWidth: true,
         GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
       },
       {
         render: {
-          componentType: "numberformat",
+          componentType: "numberFormat",
         },
         name: "ACCT_TYPE",
         label: "",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
       },
       {
         render: {
-          componentType: "numberformat",
+          componentType: "numberFormat",
         },
         name: "ACCT_CD",
         label: "",
         type: "text",
+        fullWidth: true,
         isReadOnly: true,
         GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
       },
@@ -217,7 +217,8 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         label: "AccountName",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 5, xl: 5 },
       },
       {
         render: {
@@ -227,14 +228,15 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         label: "Balance",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
       },
       {
         render: {
           componentType: "spacer",
         },
         name: "SPACER",
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        GridProps: { xs: 0, sm: 0, md: 0, lg: 3, xl: 3 },
       },
       {
         render: {
@@ -244,7 +246,8 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         label: "phone",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 5, xl: 5 },
       },
       {
         render: {
@@ -254,45 +257,59 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         label: "Bank",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 6, xl: 6 },
       },
       {
         render: {
           componentType: "amountField",
         },
-        name: "FROM",
-        label: "from",
+        name: "CHEQUE_NO",
+        label: "Chequeno",
         type: "text",
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        fullWidth: true,
+        GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
       },
       {
         render: {
           componentType: "amountField",
         },
-        name: "FROM",
+        name: "ENTERED_BRANCH_CD",
         label: "from",
         type: "text",
+        fullWidth: true,
         isReadOnly: true,
-        GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
+        GridProps: { xs: 6, sm: 6, md: 6, lg: 3, xl: 3 },
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ZONE_TRAN_TYPE",
       },
         {
         render: { componentType: "autocomplete" },
-        name: "DESCRIPTION",
+        name: "ZONE_CD",
         label: "Zone",
-        _optionsKey: "getRetrievalType",
+        dependentFields: ["ZONE_TRAN_TYPE"],
+        _optionsKey: "getClgZoneData",
         options: (dependentValue, formState, _, authState) => {
+          console.log(dependentValue);
+          
           return getClgZoneData({
             COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user,
+            BRANCH_CD: authState?.user?.branchCode,
+            ZONE_TRAN_TYPE:"W"
           });
+       
         },
         GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
         fullWidth: true,
       },
       {
         render: { componentType: "autocomplete" },
-        name: "DESCRIPTION",
+        name: "REASON",
         label: "Reason",
         _optionsKey: "getReasonDdwData",
         options: (dependentValue, formState, _, authState) => {
@@ -312,7 +329,6 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         name: "DESCRIPTION",
         label: "Description",
         type: "text",
-        isReadOnly: true,
         GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       },
   

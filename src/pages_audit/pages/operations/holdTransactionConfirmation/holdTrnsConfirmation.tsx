@@ -17,18 +17,18 @@ import { holdTrnsGridMetaData } from "./holdTrnsGridMetaData";
 
 
 const actions: ActionTypes[] = [
-    {
-      actionName: "Confirm",
-      actionLabel: "Confirm",
-      multiple: undefined,
-     rowDoubleClick:true
-    },
-    {
-        actionName: "reject",
-        actionLabel: "Reject",
-        multiple: undefined,
-       rowDoubleClick:true
-      },
+  {
+    actionName: "confirm",
+    actionLabel: "Confirm",
+    multiple: undefined,
+   rowDoubleClick:true,
+  },
+  {
+    actionName: "reject",
+    actionLabel: "Reject",
+    multiple: false,
+    rowDoubleClick:true,
+  },
 ];
 const HoldTrnsConfirmation = ()=>{
     const { authState } = useContext(AuthContext);
@@ -79,9 +79,9 @@ const HoldTrnsConfirmation = ()=>{
         async (data) => {
           if (data?.name === "reject") {
             SetDeleteRemark(true);
-            setRowData(data?.rows[0]?.data)
+            setRowData(data?.rows[0]?.data[0])
           }  
-          if (data?.name === "Confirm") {
+          if (data?.name === "confirm") {
              if (authState?.user?.id === data?.rows[0]?.data?.ENTERED_BY) {
               await MessageBox({
                 messageTitle: t("ValidationFailed"),
@@ -98,10 +98,8 @@ const HoldTrnsConfirmation = ()=>{
             });
             if (btnName === "Yes") {
               const confirmPara = {
-                ...data.rows[0].data,    
+                ...data.rows[0].data[0],    
                 CONFIRM:"Y",                          
-                ACTIVITY_DONE_BY:data.rows[0].data.VERIFIED_BY,
-                ACTIVITY_DATE:data.rows[0].data.VERIFIED_DATE,
                 TRAN_TYPE:"Delete"
              };
               confirmMutation.mutate(confirmPara)
@@ -164,8 +162,8 @@ const HoldTrnsConfirmation = ()=>{
                             loadingBtnName: ["Yes"],
                           });
                           if (buttonName === "Yes") {
-                            let deleteReqPara = {
-                               ...rows,                              
+                            let deleteReqPara:any = {
+                              ...rowData,                             
                               USER_DEF_REMARKS: val
                                 ? val
                                 : "WRONG ENTRY FROM HOLD TRANSACTION CONFIRMATION(TRN/579)",

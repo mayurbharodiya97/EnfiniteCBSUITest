@@ -19,7 +19,7 @@ import {t} from "i18next";
 
 const actions: ActionTypes[] = [
 {
-    actionName: "viewdetail",
+    actionName: "view-details",
     actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
@@ -38,7 +38,7 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
     async (data) => {
       console.log(data);
       
-      if (data?.name === "viewdetail") {
+      if (data?.name === "view-details") {
         console.log(data?.rows[0]?.data?.ALLOW_RETURN);
         
         if(data?.rows[0]?.data?.ALLOW_RETURN==="Y")
@@ -48,8 +48,8 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
         A_BRANCH_CD:authState?.user?.branchCode,
         A_ACCT_TYPE:data?.rows[0]?.data?.ACCT_TYPE,
         A_ACCT_CD:data?.rows[0]?.data?.ACCT_CD,
-        A_TRAN_TYPE: format(new Date(data?.rows[0]?.data?.TRAN_TYPE), "dd/MMM/yyyy"),
-        A_TRAN_DT:data?.rows[0]?.data?.TRAN_DT,
+        A_TRAN_TYPE:data?.rows[0]?.data?.TRAN_TYPE,
+        A_TRAN_DT: format(new Date(data?.rows[0]?.data?.TRAN_DT), "dd/MMM/yyyy"),
         A_BANK_CD:data?.rows[0]?.data?.BANK_CD,
         A_CHEQUE_NO:data?.rows[0]?.data?.CHEQUE_NO,
         A_AMOUNT:data?.rows[0]?.data?.AMOUNT,
@@ -67,29 +67,9 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
 
   const checkDuplicateMutation = useMutation(API.getCheckDuplicate, {
     onSuccess: async (response) => {
-      const deletValidData = response?.data; // Assuming response contains data array
-      for (const data of deletValidData ?? []) {
-        if (data?.O_STATUS === "999") {
-          await MessageBox({
-            messageTitle: "ValidationFailed",
-            message: response?.O_MESSAGE ?? "",
-          });
-        } else if (response?.O_STATUS === "9") {
-          await MessageBox({
-            messageTitle: "Alert",
-            message: response?.O_MESSAGE ?? "",
-          });
-        } else if (response?.O_STATUS === "99") {
-          const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
-            message: response?.O_MESSAGE ?? "",
-            buttonNames: ["Yes", "No"],
-            defFocusBtnName: "Yes",
-          });
-          if (buttonName === "No") {
-            break;
-          }
-        } else if (response?.O_STATUS === "0") {
+  
+        if(response[0]?.O_MESSAGE==="SUCCESS")
+        {
           const buttonName = await MessageBox({
             messageTitle: "Confirmation",
             message:t("GenerateOutwardReturnEntry"),
@@ -98,11 +78,19 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
           if (buttonName === "Yes") {
           setReturnChequeForm(true);
           } 
+       
         }
-      }
+        else{
+          const buttonName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: response[0]?.O_MESSAGE ?? "",
+            buttonNames: ["Ok"],
+          });
+        }
     },
     onError: (error: any) => {},
   });
+
 
   const retrieveMutation = useMutation(API.getChequeSearchData, {
     onSuccess: (data) => {},
@@ -171,30 +159,22 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
               />
             )}
               <GridWrapper
-              key={"RetrieveGridMetaData"}
+              key={"chequesearchGrid"}
               finalMetaData={RetrieveGridMetaData as GridMetaDataType}
               data={retrieveMutation?.data ?? []}
               setData={() => null}
               loading={retrieveMutation.isLoading}
               actions={actions}
-              hideHeader={true}
               setAction={setCurrentAction}
             />
-           <Routes>
          {
           returnChequeForm? (
-
-          <Route path="view-details/*" 
-          element={
-          <ReturnChequeForm
-          open={returnChequeForm}
-          onclose={()=>setReturnChequeForm(false)}
-          />
-          }
-          />
+            <ReturnChequeForm
+            open={returnChequeForm}
+            onclose={()=>setReturnChequeForm(false)}
+            />
           ):""
          }     
-          </Routes>
   
      
     </Fragment>

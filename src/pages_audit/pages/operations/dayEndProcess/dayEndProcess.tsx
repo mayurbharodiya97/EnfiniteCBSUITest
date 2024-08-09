@@ -86,7 +86,8 @@ const DayEndProcess = ()=>{
         color={"primary"}
         >
         {
-        data[0]?.Flag==="D"?t("DayEndHover"):"Day Hand Over"
+       "   day end process"
+        // data[0]?.Flag==="D"?t("DayEndHover"):"Day Hand Over"
         }
         </GradientButton>
         <GradientButton
