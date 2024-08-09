@@ -46,6 +46,7 @@ const PositivePayConfirmationGrid = lazy(
   () => import("./positivePayEntry/confirmation")
 );
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const PassbookPrint = lazy(() => import("./passbookPrint"));
 // const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 
 export const OperationsMenu = () => (
@@ -179,7 +180,7 @@ export const OperationsMenu = () => (
     <Route
       path="positivepay-confirmation/*"
       element={<PositivePayConfirmationGrid screenFlag="C" />}
-    />
+    <Route path="passbook-printing/*" element={<PassbookPrint />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
   </Routes>
 );

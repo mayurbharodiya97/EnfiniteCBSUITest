@@ -103,25 +103,26 @@ export const CourtMasterFormMetadata = {
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
         const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
+        if (Boolean(columnValue?.value?.trim())) {
+          if (fieldValue === rowColumnValue) {
+            return "";
+          }
 
-        if (fieldValue === rowColumnValue) {
-          return "";
-        }
+          if (gridData) {
+            for (let i = 0; i < gridData.length; i++) {
+              const ele = gridData[i];
+              const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
-        if (gridData) {
-          for (let i = 0; i < gridData.length; i++) {
-            const ele = gridData[i];
-            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
-
-            if (trimmedColumnValue === fieldValue) {
-              return `${t(`DuplicateValidation`, {
-                fieldValue: fieldValue,
-                rowNumber: i + 1,
-              })}`;
+              if (trimmedColumnValue === fieldValue) {
+                return `${t(`DuplicateValidation`, {
+                  fieldValue: fieldValue,
+                  rowNumber: i + 1,
+                })}`;
+              }
             }
           }
+          return "";
         }
-        return "";
       },
       GridProps: {
         xs: 12,
