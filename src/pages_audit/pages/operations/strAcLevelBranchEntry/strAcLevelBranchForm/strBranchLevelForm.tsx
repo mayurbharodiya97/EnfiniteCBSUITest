@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useRef, useState } from "react";
+import { FC, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import { GradientButton } from "components/styledComponent/button";
@@ -6,102 +6,101 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { strLevelBranchEditFormMetaData, suspiciousTransactionGridMetaData } from "./metadata";
-import GridWrapper from "components/dataTableStatic";
+import { strLevelBranchEditFormMetaData } from "./metadata";
 import { ActionTypes } from "components/dataTable/types";
-import { CreateDetailsRequestData } from "components/utils";
-
+import { utilFunction } from "components/utils";
+import { useMutation } from "react-query";
+import * as API from "../api";
+import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
+import { StrMarkAsPerSuspiciousGrid } from "./suspiciousTransactionGrid";
 
 const actions: ActionTypes[] = [
     {
         actionName: "refresh",
         actionLabel: "Refresh",
         multiple: false,
-        // rowDoubleClick: true,
         alwaysAvailable: true,
     },
     {
         actionName: "save-close",
         actionLabel: "Save & Close",
         multiple: false,
-        // rowDoubleClick: true,
         alwaysAvailable: true,
     },
     {
         actionName: "close",
         actionLabel: "Close",
         multiple: false,
-        // rowDoubleClick: true,
         alwaysAvailable: true,
     },
 
 ];
-export const ChequeReturnPostForm: FC<{
+export const StrBranchLevelForm: FC<{
     onClose?: any
-    data?: any
+    rowsData?: any
+    isDataChangedRef?: any
 }> = ({
-    onClose, data
+    onClose, rowsData, isDataChangedRef
 }) => {
+        const { MessageBox, CloseMessageBox } = usePopupContext();
         const [suspiciousTran, IsSuspiciousTran] = useState<any>(false)
         const { t } = useTranslation();
-        const myGridRef = useRef<any>(null);
-        const [girdData, setGridData] = useState<any>([]);
 
-        const setCurrentAction = useCallback(async (data) => {
-            if (data?.name === "close") {
-                IsSuspiciousTran(false);
-            } else if (data.name === "save-close") {
-                let { hasError, data: dataold } = await myGridRef.current?.validate();
-                if (hasError === true) {
-                    if (dataold) {
-                        setGridData(dataold);
-                    }
-                } else {
-                    let result = myGridRef?.current?.cleanData?.();
-                    if (!Array.isArray(result)) {
-                        result = [result];
-                    }
-                    let finalResult = result.filter(
-                        (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
-                    );
-                    if (finalResult.length === 0) {
-                        // setMode("view");
-                    } else {
-                        finalResult = CreateDetailsRequestData(finalResult);
-                        if (
-                            finalResult?.isDeleteRow?.length === 0 &&
-                            finalResult?.isNewRow?.length === 0 &&
-                            finalResult?.isUpdatedRow?.length === 0
-                        ) {
-
-                        } else {
-                            let reqData = {
-                                _isNewRow: false,
-                                _UPDATEDCOLUMNS: [],
-                                _OLDROWVALUE: {},
-                                DETAILS_DATA: finalResult,
-                            };
-
-                            // isSubmitDataRef.current = reqData;
-                            // setIsOpenSave(true);
-                        }
-                    }
+        const updateBranhcDetailData: any = useMutation(API.updateBranhcDetailData, {
+            onError: (error: any) => {
+                let errorMsg = "Unknown Error occured";
+                if (typeof error === "object") {
+                    errorMsg = error?.error_msg ?? errorMsg;
                 }
+                enqueueSnackbar(errorMsg, {
+                    variant: "error",
+                });
+                CloseMessageBox()
+            },
+
+            onSuccess: (data) => {
+                enqueueSnackbar(data, {
+                    variant: "success",
+                });
+                CloseMessageBox()
+                isDataChangedRef.current = true
+                onClose()
+            },
+        });
 
 
 
-
-            }
-        }, []);
         const onSubmitHandler: SubmitFnType = async (
             data: any,
             displayData,
             endSubmit,
-            setFieldErrors,
+            setFieldError,
             actionFlag
         ) => {
+            // @ts-ignore
             endSubmit(true);
-        }
+            let upd: any = utilFunction.transformDetailsData(data, rowsData ?? {});
+            if (upd?._UPDATEDCOLUMNS?.length > 0) {
+                const buttonName = await MessageBox({
+                    messageTitle: t("Confirmation"),
+                    message: t("ProceedGen"),
+                    buttonNames: ["No", "Yes"],
+                    loadingBtnName: ["Yes"],
+                });
+                if (buttonName === "Yes") {
+                    updateBranhcDetailData.mutate({
+                        ...data,
+                        ...upd,
+                        _isNewRow: false,
+                        ENTERED_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD,
+                        ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
+                        TRAN_CD: rowsData?.TRAN_CD,
+                        SR_CD: rowsData?.SR_CD,
+                    });
+                }
+            }
+        };
 
         return (
             <>
@@ -109,7 +108,7 @@ export const ChequeReturnPostForm: FC<{
                     <FormWrapper
                         key={`strBranchLevelForm`}
                         metaData={strLevelBranchEditFormMetaData as unknown as MetaDataType}
-                        initialValues={data ?? {}}
+                        initialValues={rowsData ?? {}}
                         onSubmitHandler={onSubmitHandler}
                         formStyle={{
                             background: "white",
@@ -118,6 +117,7 @@ export const ChequeReturnPostForm: FC<{
                             if (action === "IS_VISIBLE") {
                                 if (payload === "Y") {
                                     IsSuspiciousTran(true)
+
                                 }
                             }
                         }}
@@ -125,7 +125,16 @@ export const ChequeReturnPostForm: FC<{
                         {({ isSubmitting, handleSubmit }) => (
                             <>
                                 <GradientButton onClick={onClose}>{t("Close")}</GradientButton>
-                                <GradientButton onClick={onClose}> Save & Close</GradientButton>
+                                <GradientButton
+                                    onClick={(event) => {
+                                        handleSubmit(event, "Save");
+                                    }}
+                                    disabled={isSubmitting}
+                                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                                    color={"primary"}
+                                >
+                                    Save & Close
+                                </GradientButton>
                             </>
                         )}
                     </FormWrapper>
@@ -133,38 +142,12 @@ export const ChequeReturnPostForm: FC<{
                 {
                     suspiciousTran ?
                         <>
-                            <Dialog
-                                open={true}
-                                PaperProps={{
-                                    style: {
-                                        width: "90%",
-                                    },
+                            <StrMarkAsPerSuspiciousGrid
+                                onClose={() => {
+                                    IsSuspiciousTran(false)
                                 }}
-                                maxWidth="lg"
-                            >
-                                <>
-                                    {/* {isError && (
-                                        <Alert
-                                            severity="error"
-                                            errorMsg={error?.error_msg ?? "Something went to wrong.."}
-                                            errorDetail={error?.error_detail}
-                                            color="error"
-                                        />
-                                    )} */}
-                                    <GridWrapper
-                                        key={"suspiciousTransactionGridMetaDataGrid"}
-                                        finalMetaData={suspiciousTransactionGridMetaData}
-                                        data={[]}
-                                        setData={() => null}
-                                        // loading={isLoading || isFetching}
-                                        actions={actions}
-                                        setAction={setCurrentAction}
-                                    // ref={gridRef}
-                                    // refetchData={() => refetch()}
-                                    />
-
-                                </>
-                            </Dialog>
+                                rowsData={rowsData}
+                            />
                         </> : null
                 }
             </>
@@ -172,7 +155,7 @@ export const ChequeReturnPostForm: FC<{
     };
 
 export const StrBranchLevelFormWrapper = ({
-    onClose
+    onClose, isDataChangedRef
 }) => {
     const { state: rows } = useLocation();
 
@@ -186,7 +169,7 @@ export const StrBranchLevelFormWrapper = ({
             }}
             maxWidth="md"
         >
-            <ChequeReturnPostForm onClose={onClose} data={rows?.[0]?.data} />
+            <StrBranchLevelForm onClose={onClose} rowsData={rows?.[0]?.data} isDataChangedRef={isDataChangedRef} />
         </Dialog>
     );
 };

@@ -91,7 +91,6 @@ export const Form15GHConfirmationGrid = ({ screenFlag }) => {
               closeDialog={handleDialogClose}
               defaultView={"view"}
               screenFlag={screenFlag}
-              dataRefetch={refetch}
             />
           }
         />

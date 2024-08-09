@@ -149,53 +149,66 @@ const PhotoSignWithHistory = ({
         }}
       >
 
-        {isLatestDtlLoading ? (
-          <LoaderPaperComponent color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
-        ) :
-          isLatestDtlError ? (
-            <AppBar position="relative" color="primary">
-              <Alert
-                severity="error"
-                errorMsg={LatestDtlError?.error_msg ?? "Unknown Error"}
-                errorDetail={LatestDtlError?.error_detail ?? ""}
-                color="error"
-              />
-            </AppBar>
-          ) : (
 
-            <>
-              <AppBar position="relative" color="secondary">
-                <Toolbar
-                  className={headerClasses.root}
-                  variant={"dense"}
-                >
-                  <Typography
-                    className={headerClasses.title}
-                    color="inherit"
-                    variant={"h4"}
-                    component="div"
-                  >
-                    {
-                      LatestPhotoSignData?.[0]?.AC_CUST_LEVEL === "A" ? t("AccountLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", LatestPhotoSignData?.[0]?.ACCT_NM, " ", t("ACMode") + ":", LatestPhotoSignData?.[0]?.ACCT_MODE)
-                        : t("CustomerLevelPhotoSignature") + "" + t("ACNo") + ".:".concat(data?.COMP_CD, "-", data?.BRANCH_CD, "-", data?.ACCT_TYPE, "-", data?.ACCT_CD, t("Account_Name") + ":", LatestPhotoSignData?.[0]?.ACCT_NM, " ", t("ACMode") + ":", LatestPhotoSignData?.[0]?.ACCT_MODE)
-                    }
-                  </Typography>
-                  <GradientButton
-                    onClick={() => {
-                      showAll ? setShowAll(false) : setShowAll(true); LatestDtlRefetch()
-                    }}
-                  >
-                    {showAll ? t("Back") : t("ViewAll")}
-                  </GradientButton>
-                  <GradientButton
-                    onClick={() => {
-                      onClose();
-                    }}
-                  >
-                    {t("Close")}
-                  </GradientButton>
-                </Toolbar>
+
+        <>
+          <AppBar position="relative" color="secondary">
+            <Toolbar
+              className={headerClasses.root}
+              variant={"dense"}
+            >
+              <Typography
+                className={headerClasses.title}
+                color="inherit"
+                variant={"h4"}
+                component="div"
+              >
+                {
+                  LatestPhotoSignData?.[0]?.AC_CUST_LEVEL === "A"
+                    ? (
+                      <>
+                        {t("AccountLevelPhotoSignature")} {t("ACNo")}: {data?.COMP_CD.trim()}-{data?.BRANCH_CD.trim()}-{data?.ACCT_TYPE.trim()}-{data?.ACCT_CD} {t("ACMode")}: {LatestPhotoSignData?.[0]?.ACCT_MODE}<br />
+                        {t("Account_Name")}: {LatestPhotoSignData?.[0]?.ACCT_NM}
+                      </>
+                    )
+                    : (
+                      <>
+                        {t("CustomerLevelPhotoSignature")} {t("ACNo")}: {data?.COMP_CD.trim()}-{data?.BRANCH_CD.trim()}-{data?.ACCT_TYPE.trim()}-{data?.ACCT_CD} {t("ACMode")}: {LatestPhotoSignData?.[0]?.ACCT_MODE}<br />
+                        {t("Account_Name")}: {LatestPhotoSignData?.[0]?.ACCT_NM}
+                      </>
+                    )
+                }
+
+              </Typography>
+              <GradientButton
+                onClick={() => {
+                  showAll ? setShowAll(false) : setShowAll(true); LatestDtlRefetch()
+                }}
+              >
+                {showAll ? t("Back") : t("ViewAll")}
+              </GradientButton>
+              <GradientButton
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                {t("Close")}
+              </GradientButton>
+            </Toolbar>
+          </AppBar>
+          {isLatestDtlLoading ? (
+            <LoaderPaperComponent color="secondary" size={30} sx={{ marginRight: '8px' }} variant="indeterminate" />
+          ) :
+            isLatestDtlError ? (
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={LatestDtlError?.error_msg ?? "Unknown Error"}
+                  errorDetail={LatestDtlError?.error_detail ?? ""}
+                  color="error"
+                />
               </AppBar>
+            ) : (
               <Box sx={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)', paddingBottom: '20px' }}>
                 <Grid container sx={{ px: "1" }}>
                   <Grid container spacing={3} sx={{ padding: 2 }}>
@@ -465,8 +478,8 @@ const PhotoSignWithHistory = ({
                 </Grid>
 
               </Box >
-            </>
-          )}
+            )}
+        </>
 
         {
           getPhotoSignHistory?.isError && (

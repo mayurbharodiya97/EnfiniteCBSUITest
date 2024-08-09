@@ -16,6 +16,7 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
 import { extractGridMetaData } from "components/utils";
+import { Alert } from "reactstrap";
 const actions: ActionTypes[] = [
   {
     actionName: "populate",
@@ -29,33 +30,36 @@ const actions: ActionTypes[] = [
 const BranchAccessRights = forwardRef<any, any>(
   ({ defaultView, username }, ref) => {
     const { authState } = useContext(AuthContext);
-    const { userState, dispatchCommon, updateoldData1 } =
-      useContext(SecurityContext);
+    const { userState, dispatchCommon } = useContext(SecurityContext);
     let Username = username?.USER_NAME;
     const [gridData, setGridData] = useState<any>([]);
-    const [grid1Data, setGrid1Data] = useState<any>([]);
-    const [combinedData, setCombinedData] = useState<any>([]);
+    const [populateDataset, setpopulateDataset] = useState<any>([]);
     const navigate = useNavigate();
     const {
       data: mainData,
-      isLoading,
-      isFetching,
-      isError,
-      error,
-      refetch,
-    } = useQuery<any, any>(["getNewUserBranchAccess"], () => {
-      if (defaultView === "new") {
-        return API.getNewUserBranchAccess({
-          comp_cd: authState?.companyID,
-        });
+      isLoading: newloading,
+      isFetching: newfetching,
+      isError: newisError,
+      error: newerror,
+      refetch: newRefetch,
+    }: any = useQuery<any, any>(
+      ["getNewUserBranchAccess", userState?.formData?.USER_NAME],
+      () => {
+        if (defaultView === "new") {
+          return API.getNewUserBranchAccess({
+            comp_cd: authState?.companyID,
+          });
+        }
       }
-    });
+    );
     const {
-      data: populateData,
-      isLoading: loading,
-      isFetching: fetching,
-      refetch: Refetch,
-    } = useQuery<any, any>(["getUserAccessBranch", Username], () => {
+      data: branchData,
+      isLoading: editloading,
+      isFetching: editfetching,
+      isError: editisError,
+      error: editerror,
+      refetch: editRefetch,
+    }: any = useQuery<any, any>(["getUserAccessBranch", Username], () => {
       if (defaultView === "edit" || defaultView === "view") {
         return API.getUserAccessBranch({
           userid: Username,
@@ -70,98 +74,59 @@ const BranchAccessRights = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        setGrid1Data(data);
-        dispatchCommon("commonType", {
-          initPopulateData1: data,
-        });
+        const updatedGrid1Data = data.map((gridItem) => ({
+          ...gridItem,
+          BRANCH_CD: gridItem.BRANCH_CD,
+          LOGIN_ACCESS: gridItem.LOGIN_ACCESS === "Y" ? true : false,
+          REPORT_ACCESS: gridItem.REPORT_ACCESS === "Y" ? true : false,
+        }));
+        let filteredGrid1Data = updatedGrid1Data.filter(
+          (gridItem) =>
+            !branchData.some(
+              (dataItem) => dataItem.BRANCH_NM === gridItem.BRANCH_NM
+            )
+        );
+        const last = filteredGrid1Data.map((row) => ({
+          ...row,
+          _isNewRow: true,
+        }));
+        const MergeData = [...branchData, ...last];
+        setpopulateDataset(MergeData);
       },
     });
-
-    // For showing Updated Grid Data in New Mode.
     useEffect(() => {
-      if (defaultView === "new" && userState?.grid2?.DETAILS_DATA?.isNewRow?.length > 0) {
-        const contextGrid = userState?.grid2?.DETAILS_DATA?.isNewRow;
-        const updatedData = mainData.map((item) => {
-          const contextItem = contextGrid.find(
-            (gridItem) => gridItem.BRANCH_CD === item.BRANCH_CD
-          );
-        const loginAccessValue = contextItem ? contextItem.LOGIN_ACCESS === "Y" : false;
-        const reportAccessValue = contextItem ? contextItem.REPORT_ACCESS === "Y" : false;
-        return { ...item, LOGIN_ACCESS: loginAccessValue, REPORT_ACCESS: reportAccessValue };
-        });
-        setGridData(updatedData);
-      }else {
-        setGridData(mainData)
-      }
-    }, [mainData, userState?.grid2?.DETAILS_DATA?.isNewRow, defaultView]);
-
-    // For showing Populate Data when user come after save.
-    useEffect(() => {
-      if (defaultView === "edit" || defaultView === "view" && userState?.initPopulateData1) {
-        setGrid1Data(userState?.initPopulateData1);
-      }
-    }, [userState?.initPopulateData1, defaultView]);
-
-    // Saving Updated API response of Existing User for Edit Mode.
-    useEffect(() => {
-      if (populateData) {
-        updateoldData1(populateData);
-      }
-    }, [populateData, grid1Data]);
-
-    // For Combine API response data and Populated response data  and show combined data on grid Edit and View Mode.
-    useEffect(() => {
-      if (defaultView === "edit" || defaultView === "view") {
-        if (populateData && grid1Data) {
-          setGridData(populateData);
-          updateoldData1(populateData);
-  
-          const updatedGrid1Data = grid1Data.map((gridItem) => ({
-            ...gridItem,
-            BRANCH_CD: gridItem.BRANCH_CD,
-            LOGIN_ACCESS: gridItem.LOGIN_ACCESS === "Y" ? true : false,
-            REPORT_ACCESS: gridItem.REPORT_ACCESS === "Y" ? true : false,
-          }));
-  
-          let filteredGrid1Data = updatedGrid1Data.filter(
-            (gridItem) => !populateData.some((dataItem) => dataItem.BRANCH_NM === gridItem.BRANCH_NM)
-          );
-  
-          filteredGrid1Data = filteredGrid1Data.map((row) => ({ ...row, _isNewRow: true }));
-          const combined = [...populateData, ...filteredGrid1Data];
-          setGridData(combined);
-          setCombinedData(combined);
+      if (defaultView === "new") {
+        if (userState?.branchUpdatedData?.length > 0) {
+          setGridData(userState?.branchUpdatedData);
+        } else {
+          setGridData(mainData);
         }
       }
-    }, [populateData, grid1Data, defaultView]);
-
-      // For getting Previous Saved Records from Context in Edit and View Mode.
+    }, [defaultView, userState?.branchUpdatedData, mainData]);
     useEffect(() => {
-      if (
-        (defaultView === "edit" || defaultView === "view") &&
-        (userState?.grid2?.isUpdatedRow?.length > 0 || userState?.grid2?.isNewRow?.length > 0 )
-      ) {
-        const contextGrid = [
-          ...(userState?.grid2?.isNewRow || []),
-          ...(userState?.grid2?.isUpdatedRow || []),
-        ];
-        const updatedData = combinedData.map((item) => {
-          const contextItem = contextGrid.find((gridItem) => gridItem.BRANCH_CD === item.BRANCH_CD);
-          let loginAccessValues = item.LOGIN_ACCESS;
-          let reportAccessValues = item.REPORT_ACCESS;
-          if(contextItem) {
-            loginAccessValues = contextItem?.LOGIN_ACCESS === "Y" || contextItem?.LOGIN_ACCESS === true ? true : false;
-            reportAccessValues = contextItem?.REPORT_ACCESS === "Y" || contextItem?.REPORT_ACCESS === true ? true : false;
-          }
-          return { ...item, LOGIN_ACCESS: loginAccessValues, REPORT_ACCESS: reportAccessValues };
-        });
-        setGridData(updatedData);
+      if (defaultView === "edit" || defaultView === "view") {
+        if (
+          userState?.branchUpdatedData.length === 0 &&
+          populateDataset.length === 0
+        ) {
+          setGridData(branchData);
+          dispatchCommon("commonType", { oldbranchContextData: branchData });
+        } else if (populateDataset.length > 0) {
+          setGridData(populateDataset);
+        } else {
+          setGridData(userState?.branchUpdatedData);
+        }
       }
-    }, [combinedData, userState?.grid2?.isNewRow, userState?.grid2?.isUpdatedRow, defaultView]);
+    }, [
+      userState?.branchUpdatedData,
+      branchData,
+      populateDataset,
+      defaultView,
+    ]);
     const setCurrentAction = useCallback(
       (data) => {
         if (data.name === "populate") {
-          mutation.mutate({ comp_cd: authState?.companyID});
+          mutation.mutate({ comp_cd: authState?.companyID });
         } else {
           navigate(data?.name, {
             state: data?.rows,
@@ -172,23 +137,41 @@ const BranchAccessRights = forwardRef<any, any>(
     );
     return (
       <Fragment>
+        {newisError ||
+          (editisError && (
+            <Alert
+              severity="error"
+              errorMsg={
+                newerror?.error_msg ??
+                editerror?.error_msg ??
+                "Somethingwenttowrong"
+              }
+              errorDetail={newerror?.error_detail ?? editerror?.error_detail}
+              color="error"
+            />
+          ))}
         <GridWrapper
           key={`userAccessbranch`}
-          finalMetaData={ extractGridMetaData(userAccessbranch, defaultView) as GridMetaDataType}
+          finalMetaData={
+            extractGridMetaData(
+              userAccessbranch,
+              defaultView
+            ) as GridMetaDataType
+          }
           data={gridData || []}
           actions={defaultView === "edit" ? actions : []}
           setAction={setCurrentAction}
           loading={
-            fetching ||
-            loading ||
-            mutation?.isLoading ||
-            isLoading ||
-            isFetching
+            newloading ||
+            editloading ||
+            newfetching ||
+            editfetching ||
+            mutation?.isLoading
           }
           setData={setGridData}
           refetchData={() => {
-            refetch();
-            Refetch();
+            newRefetch();
+            editRefetch();
           }}
           ref={ref}
         />

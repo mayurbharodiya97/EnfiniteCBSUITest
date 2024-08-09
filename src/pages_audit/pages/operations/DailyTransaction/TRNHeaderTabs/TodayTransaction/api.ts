@@ -131,9 +131,17 @@ export const getAcctDtlList = async (reqParaMeters) => {
       let matchedRecord = null;
       const remainingRecords: any = [];
       for (let i = 0; i < gridData?.length; i++) {
+        const abc = rowData?.ACCT_NO?.trim() ?? rowData?.ACCT_CD?.trim();
+        const concatedAcctNo =
+          rowData?.COMP_CD.trim() +
+          rowData?.BRANCH_CD.trim() +
+          rowData?.ACCT_TYPE.trim() +
+          rowData?.ACCT_CD.trim();
         if (
+          //this AC_CD is always full(1320990004000006)
           gridData[i]?.AC_CD?.trim()?.replace(/\s+/g, "") ===
-          rowData?.ACCT_NO?.trim()
+          //this line for if full ACCT_NO(1320990004000006) not get and get only ACCT_CD(000006)
+          (rowData?.ACCT_NO?.trim() ?? concatedAcctNo)
         ) {
           matchedRecord = gridData[i];
         } else {

@@ -1,22 +1,34 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { denoTableMetadataTotal } from "../metadataTeller";
 import { AuthContext } from "pages_audit/auth";
 import DailyTransTabs from "../../DailyTransaction/TRNHeaderTabs";
 import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../../DailyTransaction/TRNHeaderTabs/cacheMutate";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
-import { LinearProgress } from "@mui/material";
+import { DialogActions, Fab, LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { extractMetaData } from "components/utils";
 import { useMutation } from "react-query";
-
+import { GradientButton } from "components/styledComponent/button";
+import DualTableCalc from "../dualTableCalc";
+import * as API from "../api";
+import TellerDenoTableCalc from "../tellerDenoTableCalc";
+import { format, parse } from "date-fns";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+import getCurrencySymbol from "components/custom/getCurrencySymbol";
 export const SingleDeno = () => {
   const myFormRef = useRef<any>(null);
+  const prevCardReq = useRef<any>(null);
+  const endSubmitRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
   const [cardDetails, setCardDetails] = useState([]);
   const [cardTabsReq, setCardTabsReq] = useState({});
+  const [openDenoTable, setOpenDenoTable] = useState(false);
+  const [formData, setFormData] = useState<any>({});
   const [singleDenoRows, setSingleDenoRows] = useState({
     singleDenoRow: [
       {
@@ -40,6 +52,8 @@ export const SingleDeno = () => {
     "getTabsByParentTypeKeySingleDeno",
     CommonApi.getTabsByParentType
   );
+  const { denoTableType, dynamicAmountSymbol, currencyFormat, decimalCount } =
+    customParameter;
   // console.log(isTabsError, tabsErorr, "rdjnbvoidvkmvdknmvvkmdv");
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
@@ -84,7 +98,10 @@ export const SingleDeno = () => {
           ACCT_CD: arrFieldData?.ACCT_CD,
           PARENT_TYPE: "",
         };
-        getCarousalCards.mutate({ reqData: req });
+        if (JSON.stringify(req) !== JSON.stringify(prevCardReq.current)) {
+          getCarousalCards.mutate({ reqData: req });
+          prevCardReq.current = req;
+        }
       }
     }
   }, [arrFieldData]);
@@ -95,15 +112,26 @@ export const SingleDeno = () => {
     setFieldError,
     actionFlag
   ) => {
-    endSubmit(true);
-    // console.log(
-    //   "it's work!!",
-    //   data,
-    //   displayData,
-    //   endSubmit,
-    //   setFieldError,
-    //   actionFlag
-    // );
+    endSubmitRef.current = { endSubmit };
+    if (Object?.keys(data)?.length > 0) {
+      if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT > 0) {
+        data.TRN = "1";
+      } else if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT < 0) {
+        data.TRN = "4";
+      }
+      setFormData(data);
+      const formattedDate = format(
+        parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+        "dd/MMM/yyyy"
+      ).toUpperCase();
+      getData?.mutate({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        USER_NAME: authState?.user?.id,
+        TRAN_DT: formattedDate,
+        endSubmit: endSubmit,
+      });
+    }
   };
 
   useEffect(() => {
@@ -125,6 +153,46 @@ export const SingleDeno = () => {
     }
   };
 
+  const getData: any = useMutation(API.CashReceiptEntrysData, {
+    onSuccess: (response: any, variables?: any) => {
+      setOpenDenoTable(true);
+      // variables?.endSubmit(true);
+    },
+    onError: (error: any, variables?: any) => {
+      // variables?.endSubmit(true);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
+  const data: any = useMemo(() => {
+    if (Array.isArray(getData.data)) {
+      return [...getData.data];
+    }
+  }, [getData.data]);
+  // useEffect(() => {
+  //   // if(formData?.FINAL_AMOUNT && formData?.FINAL_AMOUNT > 0){
+  //   //   {...formData,formData.TRN:"P"}
+  //   // }
+  // }, [formData?.FINAL_AMOUNT, formData]);
+
+  const getFomattedCurrency = (values) => {
+    const formatedValue = formatCurrency(
+      parseFloat(values || "0"),
+      getCurrencySymbol(dynamicAmountSymbol),
+      currencyFormat,
+      decimalCount
+    );
+    return formatedValue;
+  };
+
+  useEffect(() => {
+    if (!getData?.isLoading) {
+      endSubmitRef?.current?.endSubmit(true);
+    }
+  }, [getData?.isLoading]);
+
   return (
     <>
       <DailyTransTabs
@@ -133,7 +201,7 @@ export const SingleDeno = () => {
         reqData={cardTabsReq}
         tabsData={tabsDetails}
       />
-      {isTabsLoading || getCarousalCards?.isLoading ? (
+      {isTabsLoading || getCarousalCards?.isLoading || getData?.isLoading ? (
         <LinearProgress
           color="secondary"
           sx={{ margin: "0px 10px 0px 10px" }}
@@ -149,6 +217,11 @@ export const SingleDeno = () => {
         formState={{
           MessageBox: MessageBox,
           onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
+          setCardDetails,
+        }}
+        onFormButtonClickHandel={() => {
+          let event: any = { preventDefault: () => {} };
+          myFormRef?.current?.handleSubmit(event, "SAVE");
         }}
         setDataOnFieldChange={(action, payload) => {
           if (action === "ACCT_CD") {
@@ -157,12 +230,6 @@ export const SingleDeno = () => {
             }
             if (payload) {
               const { dependentFieldValues, accountCode } = payload;
-              // console.log(
-              //   dependentFieldValues,
-              //   "dependentFieldValues",
-              //   "payload",
-              //   accountCode
-              // );
               setCardTabsReq({
                 COMP_CD: authState?.companyID,
                 ACCT_TYPE:
@@ -197,6 +264,60 @@ export const SingleDeno = () => {
         }}
         ref={myFormRef}
       />
+      {/* <DialogActions>
+        {" "}
+        <GradientButton
+          // ref={buttonRef}
+          style={{ marginRight: "5px", color: "var(--theme-color2)" }}
+          onClick={(event) => {
+            myFormRef?.current?.handleSubmit(event, "SAVE");
+          }}
+          color={"primary"}
+          disabled={false}
+        >
+          Denomination
+        </GradientButton>
+      </DialogActions> */}
+      {openDenoTable && denoTableType === "dual" && (
+        <DualTableCalc
+          data={data ?? []}
+          displayTableDual={openDenoTable}
+          // displayTable={openDenoTable}
+          formData={formData}
+          initRemainExcess={Math.abs(formData?.FINAL_AMOUNT ?? "0")}
+          gridLable={
+            formData?.FINAL_AMOUNT > 0
+              ? `Receipt Single Denomination : ${getFomattedCurrency(
+                  formData?.FINAL_AMOUNT
+                )}`
+              : `Payment Single Denomination : ${getFomattedCurrency(
+                  formData?.FINAL_AMOUNT
+                )}`
+          }
+          isLoading={false}
+          onCloseTable={() => setOpenDenoTable(false)}
+        />
+      )}
+      {openDenoTable && denoTableType === "single" && (
+        <TellerDenoTableCalc
+          data={data ?? []}
+          // displayTableDual={openDenoTable}
+          displayTable={openDenoTable}
+          formData={formData}
+          initRemainExcess={Math.abs(formData?.FINAL_AMOUNT ?? "0")}
+          gridLable={
+            formData?.FINAL_AMOUNT > 0
+              ? `Receipt Single Denomination : ${getFomattedCurrency(
+                  formData?.FINAL_AMOUNT
+                )}`
+              : `Payment Single Denomination : ${getFomattedCurrency(
+                  formData?.FINAL_AMOUNT
+                )}`
+          }
+          isLoading={getData?.isLoading}
+          onCloseTable={() => setOpenDenoTable(false)}
+        />
+      )}
     </>
   );
 };

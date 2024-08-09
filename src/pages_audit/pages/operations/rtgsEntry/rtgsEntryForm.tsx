@@ -1,4 +1,4 @@
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { extractMetaData, utilFunction } from "components/utils";
@@ -141,6 +141,7 @@ const RtgsEntryForm: FC<{}> = () => {
       }));
     }
   }, []);
+  
   const getIfscBankGridData: any = useMutation(API.getIfscBankGridData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";

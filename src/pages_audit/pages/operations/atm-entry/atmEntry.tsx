@@ -1,92 +1,32 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  FormControl,
-  FormLabel,
-  Grid,
-  InputLabel,
-  LinearProgress,
-  Paper,
-  Tab,
-  Tabs,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { AppBar, Button, Dialog, Grid, Paper } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { enqueueSnackbar } from "notistack";
 import { ClearCacheProvider, queryClient } from "cache";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { usePopupContext } from "components/custom/popupContext";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { useTranslation } from "react-i18next";
-import { AtmEntryMetaData602 } from "./atmEntryMetadata";
+import { AtmEntryMetaData } from "./metaData/atmEntryMetadata";
 import * as API from "./api";
-import { makeStyles } from "@mui/styles";
-import { atmGridMetaData } from "./atmEntryGridMetadata";
+import { atmGridMetaData } from "./metaData/atmEntryGridMetadata";
 import { CardDetails } from "./cardDetails/cardDetails";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { gridClasses } from "@mui/system";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Draggable from "react-draggable";
+import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import { atmentrymetadata } from "./metaData/atmEntryMetadata2";
+import { CardPrinting } from "./cardPrinting";
+import { RetrieveData } from "./retrieveData/retrieveData";
+import { t } from "i18next";
 
-const useStyles: any = makeStyles((theme: any) => ({
-  box: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    // marginBottom: theme.spacing(2),
-  },
-  label: {
-    fontWeight: 600,
-    fontSize: "14px",
-    marginRight: theme.spacing(1),
-    // alignSelf: "center",
-    // marginRight: "",
-  },
-  textField: {
-    padding: "5px",
-    borderRadius: "5px",
-    width: "calc(100% - 132px)",
-  },
-  input: {
-    // background: "var(--theme-color7)",
-    fontWeight: 500,
-    padding: "3px 8px",
-    fontColor: "black",
-  },
-  header: {
-    background: "var(--theme-color5)",
-    color: "var(--theme-color2)",
-    display: "flex",
-    justifyContent: "space-between",
-    "& .MuiButtonBase-root": {
-      color: "var(--theme-color2) !important",
-    },
-  },
-}));
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const AtmEntryCustom = (parameter) => {
+const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "card-details",
@@ -98,276 +38,275 @@ const AtmEntryCustom = (parameter) => {
   ];
 
   const [isData, setIsData] = useState<any>({
-    closeAlert: true,
     cardData: {},
     gridData: [],
     isVisible: false,
+    isOpenPhotoSign: false,
+    isOpenCard: false,
   });
-
-  console.log("<<<isisissis", isData);
-  const { authState } = useContext(AuthContext);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [formMode, setFormMode] = useState<any>("add");
+  const [retrieveData, setRetrieveData] = useState<any>();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const classes = useStyles();
+  const { authState } = useContext(AuthContext);
+
+  let newMetadata: any =
+    parameter?.PARA_602 === "Y"
+      ? AtmEntryMetaData
+      : parameter?.PARA_602 === "N"
+      ? atmentrymetadata
+      : {};
+
+  const { isError, error, isFetching, isLoading, refetch } = useQuery<any, any>(
+    ["getNotificationData"],
+    () =>
+      API.getATMcardDetails({
+        A_COMP_CD: authState?.companyID,
+        A_BRANCH_CD: authState?.user?.branchCode,
+        A_TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
+      }),
+    {
+      enabled: !!retrieveData?.[currentIndex]?.TRAN_CD,
+      onSuccess(data) {
+        let newData;
+        if (Array.isArray(data) && data?.length > 0) {
+          newData = data.map((item) => {
+            return {
+              ...item,
+              EDIT_STATUS: retrieveData?.[currentIndex]?.EDIT_STATUS,
+            };
+          });
+        }
+        setIsData((old) => ({ ...old, gridData: newData }));
+      },
+    }
+  );
+
+  const changeIndex = (direction) => {
+    refetch();
+    setCurrentIndex((prevIndex) => {
+      if (direction === "next") {
+        return prevIndex === retrieveData.length - 1 ? 0 : prevIndex + 1;
+      } else {
+        return prevIndex === 0 ? retrieveData.length - 1 : prevIndex - 1;
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (retrieveData?.length) {
+      setIsData((old) => ({ ...old, cardData: retrieveData?.[currentIndex] }));
+    }
+  }, [retrieveData, currentIndex]);
 
   const onSubmitHandler = ({ data, displayData, endSubmit }) => {
     //@ts-ignore
     endSubmit(true);
   };
-
   return (
     <>
-      <AppBar position="relative">
-        <Toolbar variant="dense" className={classes.header}>
-          <Typography component="span" variant="h6" color="primary">
-            ATM Registration Entry MST/846
-          </Typography>
-
-          <DialogActions>
-            {isData?.isVisible && (
-              <>
-                <Button
-                  onClick={() => navigate("joint-details")}
-                  color={"primary"}
-                >
-                  Joint Details
-                </Button>
-                <Button color="primary">Photo/Sign </Button>
-              </>
-            )}
-            <Button
-              color={"primary"}
-              // onClick={(event) =>
-              //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
-              // }
-              // endIcon={
-              //   mutation?.isLoading ? <CircularProgress size={20} /> : null
-              // }
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Toolbar>
-      </AppBar>
-
       <Grid container>
-        <Grid
-          item
-          xs={8}
-          sm={8}
-          sx={{
-            backgroundColor: "var(--theme-color2)",
-            padding: "0px",
-            borderRadius: "10px",
+        <FormWrapper
+          key={"atm-reg-entry" + currentIndex + formMode}
+          metaData={newMetadata as MetaDataType}
+          displayMode={formMode}
+          initialValues={
+            formMode === "view" || formMode === "edit"
+              ? {
+                  ...retrieveData?.[currentIndex],
+                  TOTAL: `\u00A0 ${currentIndex + 1} of ${
+                    retrieveData?.length
+                  }`,
+                }
+              : {
+                  PARA_602: parameter?.PARA_602,
+                  PARA_946: parameter?.PARA_946,
+                  PARA_311: parameter?.PARA_311,
+                }
+          }
+          onSubmitHandler={onSubmitHandler}
+          ref={formRef}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 403px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+          formState={{ MessageBox: MessageBox, auth: authState }}
+          onFormButtonClickHandel={() => {
+            if (!isData?.isOpenCard) {
+              setIsData((old) => ({ ...old, isOpenCard: true }));
+            }
+          }}
+          setDataOnFieldChange={(action, payload) => {
+            if (action === "RES_DATA") {
+              setIsData((old) => ({
+                ...old,
+                cardData: payload?.validateData,
+                isVisible: payload?.isVisible,
+              }));
+            }
           }}
         >
-          {/* {crudTempOD?.isLoading ? (
-              <LinearProgress color="secondary" />
-            ) : (temporaryODDetail?.isError && isData.closeAlert) ||
-              (crudTempOD?.isError && isData.closeAlert) ? (
-              <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                <AppBar position="relative" color="primary">
-                  <Alert
-                    severity="error"
-                    errorMsg={
-                      temporaryODDetail?.error?.error_msg ??
-                      crudTempOD?.error?.error_msg ??
-                      "Unknow Error"
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "view" && retrieveData?.length > 0 && (
+                <>
+                  <Button
+                    startIcon={<ArrowBackIosNewIcon />}
+                    disabled={1 === currentIndex + 1}
+                    onClick={() => changeIndex("previous")}
+                    color={"primary"}
+                  >
+                    {t("Prev")}
+                  </Button>
+                  <Button
+                    endIcon={<ArrowForwardIosIcon />}
+                    disabled={currentIndex + 1 === retrieveData.length}
+                    onClick={() => changeIndex("next")}
+                    color={"primary"}
+                  >
+                    {t("Next")}
+                  </Button>
+                </>
+              )}
+              {retrieveData?.length > 0 && (
+                <>
+                  <Button
+                    onClick={() =>
+                      setFormMode(formMode === "edit" ? "view" : "edit")
                     }
-                    errorDetail={
-                      temporaryODDetail?.error?.error_detail ??
-                      crudTempOD?.error?.error_detail ??
-                      ""
-                    }
-                    color="error"
-                  />
-                </AppBar>
-              </div>
-            ) : (
-              <LinearProgressBarSpacer />
-            )} */}
+                    color={"primary"}
+                  >
+                    {formMode === "edit" ? t("View") : t("Edit")}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setFormMode("add");
+                      setRetrieveData(null);
+                      setIsData((old) => ({
+                        ...old,
+                        cardData: {},
+                        gridData: [],
+                      }));
+                    }}
+                    color={"primary"}
+                  >
+                    {t("New")}
+                  </Button>
+                </>
+              )}
+              <Button
+                onClick={() => navigate("retrieve-form")}
+                color={"primary"}
+              >
+                {t("Retrieve")}
+              </Button>
 
-          <FormWrapper
-            key={"atm-reg-entry"}
-            metaData={AtmEntryMetaData602 as MetaDataType}
-            initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
-            ref={formRef}
-            hideHeader={true}
-            formStyle={{
-              background: "white",
-              height: "calc(100vh - 442px)",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}
-            formState={{ MessageBox: MessageBox }}
-            setDataOnFieldChange={(action, payload) => {
-              if (action === "RES_DATA") {
-                setIsData((old) => ({
-                  ...old,
-                  cardData: payload?.validateData,
-                  isVisible: payload?.isVisible,
-                }));
+              {isData?.isVisible && (
+                <>
+                  <Button
+                    onClick={() => navigate("joint-details")}
+                    color={"primary"}
+                  >
+                    {t("JointDetails")}
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() =>
+                      setIsData((old) => ({ ...old, isOpenPhotoSign: true }))
+                    }
+                  >
+                    {t("PhotoSign")}
+                  </Button>
+                </>
+              )}
+              <Button
+                color={"primary"}
+                // onClick={(event) =>
+                //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
+                // }
+                // endIcon={
+                //   mutation?.isLoading ? <CircularProgress size={20} /> : null
+                // }
+              >
+                {t("Save")}
+              </Button>
+            </>
+          )}
+        </FormWrapper>
+        <Grid px={"10px"} container>
+          {isError && (
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={error?.error_msg ?? t("UnknownErrorOccured")}
+                errorDetail={error?.error_detail ?? ""}
+                color="error"
+              />
+            </AppBar>
+          )}
+          <GridWrapper
+            key={`atmGridData` + isData?.gridData}
+            finalMetaData={atmGridMetaData as GridMetaDataType}
+            data={isData?.gridData ?? []}
+            loading={isLoading || isFetching}
+            setData={() => null}
+            actions={actions}
+            setAction={(data) => {
+              if (data?.name === "card-details") {
+                navigate(data?.name, {
+                  state: data?.rows,
+                });
               }
             }}
-          ></FormWrapper>
-        </Grid>
-
-        <Grid item xs={4} sm={4} padding={1}>
-          <Grid item xs={12}>
-            <Typography align="center" variant="h6">
-              Card Printing
-            </Typography>
-          </Grid>
-          <Grid item xs={12} spacing={1} className={classes.box}>
-            <FormLabel className={classes.label}>Surname : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.SUR_NAME ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>First Name : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.FIRST_NAME ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>Last Name : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.MIDDLE_NAME ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>Add1 : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.ADDRESS1 ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>Add2 : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.ADDRESS2 ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>Add3 : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.ADDRESS3 ?? ""}
-              style={{ width: "calc(100% - 277px)" }}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-            <FormLabel className={classes.label}>Pincode : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.PINCODE ?? ""}
-              style={{ width: "calc(100% - 397px)" }}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>City : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.CITY ?? ""}
-              style={{ width: "calc(100% - 321px)" }}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-            <FormLabel className={classes.label}>State : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.STATE ?? ""}
-              style={{ width: "calc(100% - 334px)" }}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.box}>
-            <FormLabel className={classes.label}>Branch : </FormLabel>
-            <TextField
-              disabled
-              className={classes.textField}
-              value={isData?.cardData?.BRANCH_NAME ?? ""}
-              InputProps={{
-                classes: { input: classes.input },
-              }}
-              variant="outlined"
-            />
-          </Grid>
+            onClickActionEvent={(index, id, data) => {
+              setIsData((old) => {
+                let deleteData = old?.gridData.filter((item) => item !== data);
+                return { ...old, gridData: deleteData };
+              });
+            }}
+          />
         </Grid>
       </Grid>
 
-      <GridWrapper
-        key={`atmGridData` + isData?.gridData}
-        finalMetaData={atmGridMetaData as GridMetaDataType}
-        data={isData?.gridData ?? []}
-        setData={() => null}
-        actions={actions}
-        setAction={(data) => {
-          if (data?.name === "card-details") {
-            navigate(data?.name, {
-              state: data?.rows,
-            });
-          }
-        }}
-        onClickActionEvent={(index, id, data) => {
-          setIsData((old) => {
-            let deleteData = old?.gridData.filter((item) => item !== data);
-            return { ...old, gridData: deleteData };
-          });
-        }}
-      />
+      {isData?.isOpenPhotoSign && (
+        <PhotoSignWithHistory
+          data={isData?.cardData ?? {}}
+          onClose={() => {
+            setIsData((old) => ({ ...old, isOpenPhotoSign: false }));
+          }}
+          screenRef={"MST/846"}
+        />
+      )}
+
+      {isData?.isOpenCard && (
+        <CardPrinting cardData={isData.cardData} setIsData={setIsData} />
+      )}
+
       <Routes>
         <Route
           path="card-details/*"
-          element={<CardDetails navigate={navigate} setIsData={setIsData} />}
+          element={
+            <CardDetails
+              navigate={navigate}
+              setIsData={setIsData}
+              parameter={parameter}
+            />
+          }
+        />
+        <Route
+          path="retrieve-form/*"
+          element={
+            <RetrieveData
+              navigate={navigate}
+              parameter={parameter}
+              setFormMode={setFormMode}
+              setRetrieveData={setRetrieveData}
+            />
+          }
         />
         <Route
           path="joint-details/*"
@@ -393,7 +332,7 @@ const AtmEntryCustom = (parameter) => {
               <div id="draggable-dialog-title">
                 <JointDetails
                   reqData={{
-                    COMP_CD: authState?.companyID,
+                    COMP_CD: isData?.cardData?.COMP_CD,
                     BRANCH_CD: isData?.cardData?.BRANCH_CD,
                     ACCT_TYPE: isData?.cardData?.ACCT_TYPE,
                     ACCT_CD: isData?.cardData?.ACCT_CD,
@@ -428,7 +367,7 @@ export const AtmEntry = () => {
         <AppBar position="relative" color="primary">
           <Alert
             severity="error"
-            errorMsg={error?.error_msg ?? "Unknow Error"}
+            errorMsg={error?.error_msg ?? t("UnknownErrorOccured")}
             errorDetail={error?.error_detail ?? ""}
             color="error"
           />

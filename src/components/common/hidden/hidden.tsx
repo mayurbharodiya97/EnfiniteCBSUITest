@@ -19,13 +19,21 @@ const MyHiddenField: FC<MyHiddenFieldProps> = ({
   fieldKey: fieldID,
   setValueOnDependentFieldsChange,
   dependentFields,
+  postValidationSetCrossFieldValues,
 }) => {
-  const { handleBlur, handleChange, dependentValues, incomingMessage } =
-    useField({
-      name: fieldName,
-      fieldKey: fieldID,
-      dependentFields,
-    });
+  const {
+    handleBlur,
+    handleChange,
+    dependentValues,
+    incomingMessage,
+    runValidation,
+    whenToRunValidation,
+  } = useField({
+    name: fieldName,
+    fieldKey: fieldID,
+    dependentFields,
+    postValidationSetCrossFieldValues,
+  });
   //set touch property to true of the field
   useEffect(() => {
     handleBlur();
@@ -47,9 +55,12 @@ const MyHiddenField: FC<MyHiddenFieldProps> = ({
       const { value } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
+        if (whenToRunValidation === "onBlur") {
+          runValidation({ value: value }, true);
+        }
       }
     }
-  }, [incomingMessage, handleChange]);
+  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
 
   return null;
 };

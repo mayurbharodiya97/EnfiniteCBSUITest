@@ -131,7 +131,7 @@ export const AgentMasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />
@@ -145,6 +145,7 @@ export const AgentMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        ReportExportButton={true}
       />
       <Routes>
         <Route

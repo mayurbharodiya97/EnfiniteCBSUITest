@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DualPartTable from "./dualPartTable";
 import { useStyles } from "./style";
+import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
 
 const DualTableCalc = ({
   data,
@@ -10,6 +12,7 @@ const DualTableCalc = ({
   isLoading,
   gridLable,
   formData,
+  initRemainExcess,
 }) => {
   const columnDefinitions = [
     {
@@ -18,7 +21,13 @@ const DualTableCalc = ({
       isTotalWord: true,
       uniqueID: "1",
     },
-    { label: "Receipt", fieldName: "receipt", isEditable: true, uniqueID: "2" },
+    {
+      label: "Receipt",
+      fieldName: "receipt",
+      isEditable: true,
+      uniqueID: "2",
+      isCurrency: true,
+    },
     { label: "Amount", fieldName: "amount", isCurrency: true, uniqueID: "3" },
     {
       label: "Denomination",
@@ -26,7 +35,13 @@ const DualTableCalc = ({
       isTotalWord: true,
       uniqueID: "4",
     },
-    { label: "Payment", fieldName: "payment", isEditable: true, uniqueID: "5" },
+    {
+      label: "Payment",
+      fieldName: "payment",
+      isEditable: true,
+      uniqueID: "5",
+      isCurrency: true,
+    },
     { label: "Amount", fieldName: "amount2", isCurrency: true, uniqueID: "6" },
     { label: "Available Note(s)", fieldName: "AVAIL_QTY", uniqueID: "7" },
     {
@@ -45,7 +60,7 @@ const DualTableCalc = ({
   const [remainExcess, setRemainExcess] = useState<any>(0);
   // const remainExcess: any = useRef({});
   const fixedDataTotal: any = useRef({});
-  const classes = useStyles();
+  const { authState } = useContext(AuthContext);
 
   const inputRestrictions = {
     min: 0,
@@ -66,15 +81,14 @@ const DualTableCalc = ({
     fixedDataTotal.current = newTotalAmounts;
   }, [data]);
 
-  const finalReceiptPayment =
-    (formData?.RECEIPT ? formData?.RECEIPT : formData?.PAYMENT) || 0;
+  const finalReceiptPayment = initRemainExcess;
 
   useEffect(() => {
     if (Boolean(formData)) {
       // remainExcess.current = finalReceiptPayment;
       setRemainExcess(finalReceiptPayment);
     }
-  }, [formData]);
+  }, [formData, finalReceiptPayment]);
 
   const handleBlur = (event, fieldName, index) => {
     if (data) {
@@ -100,8 +114,7 @@ const DualTableCalc = ({
             {
               index,
               fieldName,
-              message:
-                "Denomination 5000 should be less than or equal to balance amount.",
+              message: `Denomination ${data?.[index]?.DENO_VAL} should be less than or equal to balance amount.`,
             },
           ];
           performCalculation(newTotalAmounts, updatedErrors);
@@ -122,12 +135,12 @@ const DualTableCalc = ({
   const performCalculation = (newTotalAmounts, currentErrors) => {
     if (currentErrors.length === 0) {
       let calcRemainExcess;
-      if (formData?.TRN === "R") {
+      if (formData?.TRN === "1") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) -
           parseInt(newTotalAmounts["amount"]) +
           parseInt(newTotalAmounts["amount2"]);
-      } else if (formData?.TRN === "P") {
+      } else if (formData?.TRN === "4") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) +
           parseInt(newTotalAmounts["amount"]) -
@@ -143,9 +156,68 @@ const DualTableCalc = ({
   // }, [remainExcess]);
 
   //for open confirmation after match remain/eccess 0
-  const openConfirmation = () => {
-    if (remainExcess === 0) {
+
+  const getRowData = () => {
+    const getRowsViseData = data
+      ?.map((apiRow, index) => {
+        if (Object?.hasOwn(inputValues, index)) {
+          const { TRN } = formData;
+          const newRowsReceipt = {
+            ...apiRow,
+            DENO_QTY:
+              TRN === "4"
+                ? "-" + inputValues[index]?.receipt
+                : TRN === "1"
+                ? inputValues[index]?.receipt
+                : "",
+            AMOUNT: inputValues[index]?.amount?.toString(),
+          };
+          const newRowsPayment = {
+            ...apiRow,
+            DENO_QTY____PY:
+              TRN === "1"
+                ? "-" + inputValues[index]?.payment
+                : TRN === "4"
+                ? inputValues[index]?.payment
+                : "",
+            AMOUNT: inputValues[index]?.amount2?.toString(),
+          };
+          if (
+            Boolean(inputValues[index]?.receipt) &&
+            Boolean(inputValues[index]?.payment)
+          ) {
+            return [newRowsReceipt, newRowsPayment];
+          } else if (inputValues[index]?.receipt) {
+            return newRowsReceipt;
+          } else if (inputValues[index]?.payment) {
+            return newRowsPayment;
+          }
+        }
+      })
+      ?.filter((row) => {
+        return Boolean(row);
+      });
+    return getRowsViseData?.flat();
+  };
+  const openConfirmation = async () => {
+    if (remainExcess === 0 && displayTableDual) {
       setConfirmation(true);
+      //   const res = await MessageBox({
+      //     messageTitle: "Confirmation",
+      //     message: "All Transactions are Completed. Do you want to proceed?",
+      //     buttonNames: ["Yes", "No"],
+      //     defFocusBtnName: "No",
+      //     icon: "INFO",
+      //   });
+      //   if (res === "Yes") {
+      //     console.log("Form Submitted");
+      //     const DDT = getRowData();
+      //     console.log(DDT, "DDtjanbdvjbnjsdbnvjksvdb");
+      //   } else if (res === "No") {
+      //     CloseMessageBox();
+      //   }
+      // } else {
+      //   CloseMessageBox();
     }
   };
 
@@ -158,11 +230,15 @@ const DualTableCalc = ({
 
   const handleChange = (e, index, fieldName) => {
     const { value } = e.target;
+    const { TRN } = formData;
     setInputValues((prevInputValues) => {
       const updatedValues = {
         ...prevInputValues,
         [index]: {
-          ...prevInputValues[index],
+          receipt: prevInputValues[index]?.receipt || "",
+          amount: prevInputValues[index]?.amount || 0,
+          payment: prevInputValues[index]?.payment || "",
+          amount2: prevInputValues[index]?.amount2 || 0,
           [fieldName]: value ?? "0",
         },
       };
@@ -170,10 +246,19 @@ const DualTableCalc = ({
       // Calculate the multiplied values
       if (fieldName === "receipt") {
         const denomination = parseFloat(data[index]["DENO_VAL"]);
-        updatedValues[index]["amount"] = denomination * parseFloat(value);
+        updatedValues[index]["amount"] =
+          denomination * parseFloat(value || "0");
       } else if (fieldName === "payment") {
         const denomination = parseFloat(data[index]["DENO_VAL"]);
-        updatedValues[index]["amount2"] = denomination * parseFloat(value);
+        updatedValues[index]["amount2"] =
+          denomination * parseFloat(value || "0");
+      }
+
+      if (
+        updatedValues[index].receipt === "" &&
+        updatedValues[index].payment === ""
+      ) {
+        delete updatedValues[index];
       }
 
       return updatedValues;
@@ -207,6 +292,21 @@ const DualTableCalc = ({
     // setRemainExcess(finalReceiptPayment);
   };
 
+  const datasa = {
+    BRANCH_CD: formData?.BRANCH_CD ?? "",
+    ACCT_TYPE: formData?.ACCT_TYPE ?? "",
+    ACCT_CD: formData?.ACCT_CD ?? "",
+    TYPE_CD:
+      formData?.TRN === "1" ? "1" : formData?.TRN === "4" ? "4" : "" ?? "",
+    COMP_CD: authState?.companyID,
+    CHEQUE_NO: formData?.CHEQUE_NO ? formData?.CHEQUE_NO : "" ?? "",
+    SDC: formData?.SDC?.trim() ?? "",
+    SCROLL1: "" ?? "",
+    CHEQUE_DT: formData?.CHEQUE_DT ? formData?.CHEQUE_DT : "" ?? "",
+    REMARKS: formData?.REMARK ?? "",
+    AMOUNT: formData?.RECEIPT ? formData?.RECEIPT : formData?.PAYMENT ?? "",
+  };
+
   return (
     <DualPartTable
       data={data || []}
@@ -230,6 +330,8 @@ const DualTableCalc = ({
       errors={errors}
       confirmation={confirmation}
       closeConfirmation={closeConfirmation}
+      getRowData={getRowData}
+      formData={formData}
     />
   );
 };

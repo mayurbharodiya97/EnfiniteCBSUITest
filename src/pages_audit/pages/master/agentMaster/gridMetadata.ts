@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const AgentMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "AgentMaster",
+    gridLabel: "",
     rowIdColumn: "AGENT_CD",
     defaultColumnConfig: {
       width: 400,
