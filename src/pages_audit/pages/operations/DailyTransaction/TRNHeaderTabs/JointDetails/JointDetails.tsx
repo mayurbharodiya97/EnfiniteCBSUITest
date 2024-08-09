@@ -17,25 +17,37 @@ import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AccDetailContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
-const actions: ActionTypes[] = [
-  {
-    actionName: "scroll",
-    actionLabel: "Scroll",
-    multiple: false,
-    rowDoubleClick: true,
-    actionTextColor: "var(--theme-color3)",
-    alwaysAvailable: false,
-    actionBackground: "inherit",
-  },
-];
 export const JointDetails = ({ reqData }) => {
+  const actions: ActionTypes[] = [
+    {
+      actionName: "scroll",
+      actionLabel: "Scroll",
+      multiple: false,
+      rowDoubleClick: true,
+      actionTextColor: "var(--theme-color3)",
+      alwaysAvailable: false,
+      actionBackground: "inherit",
+    },
+  ];
+  const actions2: ActionTypes[] = [
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: false,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+  ];
+
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { tempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
+  const navigate = useNavigate();
 
   // //api define
 
@@ -63,7 +75,11 @@ export const JointDetails = ({ reqData }) => {
   );
 
   const setCurrentAction = useCallback((data) => {
-    setOpen(true);
+    if (data?.name === "close") {
+      navigate(-1);
+    } else {
+      setOpen(true);
+    }
   }, []);
 
   return (
@@ -85,7 +101,7 @@ export const JointDetails = ({ reqData }) => {
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
           data={data ?? []}
           setData={() => null}
-          actions={actions}
+          actions={reqData?.BTN_FLAG === "Y" ? actions2 : actions}
           setAction={setCurrentAction}
           // refetchData={() => {}}
           ref={myGridRef}
