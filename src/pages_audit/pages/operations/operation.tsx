@@ -45,6 +45,7 @@ const Form15GHConfirmationGrid = lazy(
 //   () => import("./positivePayEntry/confirmation")
 // );
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const PassbookPrint = lazy(() => import("./passbookPrint"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -177,5 +178,6 @@ export const OperationsMenu = () => (
       path="positivepay-confirmation/*"
       element={<PositivePayConfirmationGrid screenFlag="C" />}
     /> */}
+    <Route path="passbook-printing/*" element={<PassbookPrint />} />
   </Routes>
 );

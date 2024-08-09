@@ -2071,6 +2071,86 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
     packageName: "",
   },
+  GETPASSBKPRINTDATA: {
+    url: "/accountServiceAPI/GETPASSBKPRINTDATA",
+    packageName: "",
+  },
+  DOPASSBOOKPRINTINGVALIDATION: {
+    url: "accountServiceAPI/DOPASSBOOKPRINTINGVALIDATION",
+    packageName: "",
+  },
+  GETPASSBOOKACCOUNTDETAILS: {
+    url: "accountServiceAPI/GETPASSBOOKACCOUNTDETAILS",
+    packageName: "",
+  },
+  DOPASSBOOKDUPDATAINSERT: {
+    url: "accountServiceAPI/DOPASSBOOKDUPDATAINSERT",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCTRANTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCTRANTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCMEMTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCMEMTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCPARKEDTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCPARKEDTAB",
+    packageName: "",
+  },
+  GETACCTCLOSEPROCREASON: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSEPROCREASON",
+    packageName: "",
+  },
+  GETACCTCLOSEDPRDATA: {
+    url: "accountServiceAPI/GETACCTCLOSEDPRDATA",
+    packageName: "",
+  },
+  GETSETTLECHARGES: {
+    url: "accountServiceAPI/GETSETTLECHARGES",
+    packageName: "",
+  },
+  VALIDATEACCTCLOSEBT: {
+    url: "accountServiceAPI/VALIDATEACCTCLOSEBT",
+    packageName: "",
+  },
+  DOACCTCLOSEENTRY: {
+    url: "accountServiceAPI/DOACCTCLOSEENTRY",
+    packageName: "",
+  },
+  GETACCTCLOSECNFDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSECNFDTL",
+    packageName: "",
+  },
+  GETACCTCLOSECNFVOUCHERDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTCLOSECNFVOUCHERDTL",
+    packageName: "",
+  },
+  DONEFTDDENTRY: {
+    url: "accountServiceAPI/DONEFTDDENTRY",
+    packageName: "",
+  },
+  DOACCTCLOSECONFRIMREOPEN: {
+    url: "accountServiceAPI/DOACCTCLOSECONFRIMREOPEN",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRPAIDFDDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRPAIDFDDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRTOACDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRTOACDDW",
+    packageName: "",
+  },
+  DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML: {
+    url: "/enfinityFDServiceAPI/DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
