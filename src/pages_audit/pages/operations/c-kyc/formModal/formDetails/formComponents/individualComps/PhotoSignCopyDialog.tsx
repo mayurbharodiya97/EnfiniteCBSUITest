@@ -151,7 +151,7 @@ export const PhotoSignCommonComp = ({onClose, viewMode}) => {
     refetch: photoHistoryRefetch,
     error: photoHistoryError,
   } = useQuery<any, any>(["getPhotoSignHistory"], () =>
-    GeneralAPI.getPhotoSignHistory({
+    API.getPhotoSignHistory({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
       REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
@@ -166,7 +166,7 @@ export const PhotoSignCommonComp = ({onClose, viewMode}) => {
     refetch: LatestDtlRefetch,
     error: LatestDtlError,
   } = useQuery<any, any>(["getLatestPhotoSign"], () =>
-    GeneralAPI.getCustLatestDtl({
+    API.getCustLatestDtl({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
       REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
