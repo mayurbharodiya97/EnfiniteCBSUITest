@@ -1631,6 +1631,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/FORM15GHENTRYCONFIRMATION",
     packageName: "",
   },
+  GETLOANSCHEDULEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEHDR",
+    packageName: "",
+  },
+  GETLOANSCHEDULEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEDTL",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
@@ -1901,6 +1909,18 @@ export const ActionWiseAPIConfiguration = {
   },
   POSITIVEPAYENTRYDML: {
     url: "chequeServiceAPI/POSITIVEPAYENTRYDML",
+    packageName: "",
+  },
+  GETPOSITIVEPAYCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYCNF",
+    packageName: "",
+  },
+  IMPORTFILEDATA: {
+    url: "/enfinityCommonServiceAPI/IMPORTFILEDATA",
+    packageName: "",
+  },
+  POSITIVEPAYENTRYCONFIRMATION: {
+    url: "/chequeServiceAPI/POSITIVEPAYENTRYCONFIRMATION",
     packageName: "",
   },
   GETRECURPAYMENTSCREENPARA: {
