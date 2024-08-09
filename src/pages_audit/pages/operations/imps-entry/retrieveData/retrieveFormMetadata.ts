@@ -54,10 +54,10 @@ export const retrieveFormMetaData = {
       name: "SPACERSS",
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
     },
     {
@@ -86,57 +86,11 @@ export const retrieveFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 6,
-        sm: 6,
-        lg: 6,
-        xl: 6,
+        md: 7,
+        sm: 7,
+        lg: 7,
+        xl: 7,
       },
-    },
-    {
-      render: {
-        componentType: "spacer",
-      },
-      name: "SPACERSS",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "spacer",
-      },
-      name: "SPACERSS",
-      GridProps: {
-        xs: 12,
-        md: 6,
-        sm: 6,
-        lg: 6,
-        xl: 6,
-      },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "RETRIEVE",
-      label: "Retrieve",
-      // endsIcon: "YoutubeSearchedFor",
-      // rotateIcon: "scale(1.5)",
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "CANCEL",
-      label: "Cancel",
-      // endsIcon: "YoutubeSearchedFor",
-      // rotateIcon: "scale(1.5)",
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
     },
   ],
 };

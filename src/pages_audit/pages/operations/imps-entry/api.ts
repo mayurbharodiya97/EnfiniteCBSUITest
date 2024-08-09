@@ -143,7 +143,24 @@ export const dayLimitData = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
-    return data;
+    // return data;
+    let newResp = data.map((item) => {
+      return {
+        ...item,
+        IFT: item?.IFT === "Y" ? true : false,
+        RTGS: item?.RTGS === "Y" ? true : false,
+        UPI: item?.UPI === "Y" ? true : false,
+        NEFT: item?.NEFT === "Y" ? true : false,
+        OWN_ACT: item?.OWN_ACT === "Y" ? true : false,
+        PG_TRN: item?.PG_TRN === "Y" ? true : false,
+        POS: item?.POS === "Y" ? true : false,
+        ECOM: item?.ECOM === "Y" ? true : false,
+        ATM: item?.ATM === "Y" ? true : false,
+        IMPS: item?.IMPS === "Y" ? true : false,
+        BBPS: item?.BBPS === "Y" ? true : false,
+      };
+    });
+    return newResp;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

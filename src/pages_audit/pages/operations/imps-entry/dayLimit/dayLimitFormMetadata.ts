@@ -44,7 +44,7 @@ export const dayLimitFormMetaData = {
   fields: [
     {
       render: { componentType: "datetimePicker" },
-      name: "EFF_DATE",
+      name: "EFFECTIVE_DT",
       type: "date",
       label: "Effective Date",
       format: "dd/MM/yyyy HH:mm:ss",
@@ -119,6 +119,38 @@ export const dayLimitFormMetaData = {
         xl: 5.5,
       },
     },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FLAG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      label: "",
+      name: "COMMON",
+      dependentFields: ["FLAG"],
+      validationRun: "onChange",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (typeof field?.value === "number") {
+          formState.MessageBox({
+            messageTitle: "ValidationFailed",
+            message: `Account Level ${dependentFields?.FLAG?.incomingMessage?.value} Transaction rights not assign`,
+            icon: "ERROR",
+            defFocusBtnName: "Ok",
+          });
+        }
+        return {};
+      },
+    },
     {
       render: { componentType: "checkbox" },
       type: "checkbox",
@@ -126,20 +158,43 @@ export const dayLimitFormMetaData = {
       label: "IFT",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_IFT"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_IFT?.value === "N" && Boolean(field?.value)) {
+          return {
+            IFT: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "IFT" },
+          };
+        }
+        return {};
+      },
     },
 
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_IFT_LIMIT",
+      name: "IFT_LIMIT",
       type: "text",
       label: "IFT/Daily Limit",
-      dependentFields: ["IFT"],
+      dependentFields: ["IFT", "PERDAY_IFT_LIMIT"],
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
-      // required: true,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["This field is required"] }],
-      // },
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_IFT_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_IFT_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
+
       FormatProps: {
         thousandSeparator: false,
         thousandsGroupStyle: "",
@@ -190,12 +245,29 @@ export const dayLimitFormMetaData = {
       name: "RTGS",
       label: "RTGS",
       defaultValue: false,
-
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_RTGS"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        console.log("<<<rtgs", field, dependentFields);
+        if (dependentFields?.DTL_RTGS?.value === "N" && Boolean(field?.value)) {
+          return {
+            RTGS: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "RTGS" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_RTGS_LIMIT",
+      name: "RTGS_LIMIT",
       type: "text",
       label: "RTGS/Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -215,7 +287,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["RTGS"],
+      dependentFields: ["RTGS", "PERDAY_RTGS_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_RTGS_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_RTGS_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["RTGS"]?.value
           .toString()
@@ -251,10 +333,27 @@ export const dayLimitFormMetaData = {
       label: "NEFT",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_NEFT"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_NEFT?.value === "N" && Boolean(field?.value)) {
+          return {
+            NEFT: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "NEFT" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_NEFT_LIMIT",
+      name: "NEFT_LIMIT",
       type: "text",
       label: "NEFT/Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -274,7 +373,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["NEFT"],
+      dependentFields: ["NEFT", "PERDAY_NEFT_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_NEFT_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_NEFT_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["NEFT"]?.value
           .toString()
@@ -311,10 +420,30 @@ export const dayLimitFormMetaData = {
       label: "Own A/c",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_OWN_ACT"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (
+          dependentFields?.DTL_OWN_ACT?.value === "N" &&
+          Boolean(field?.value)
+        ) {
+          return {
+            OWN_ACT: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "OWN A/c" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_OWN_LIMIT",
+      name: "OWN_LIMIT",
       type: "text",
       label: "OWN/Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -334,7 +463,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["OWN_ACT"],
+      dependentFields: ["OWN_ACT", "PERDAY_OWN_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_OWN_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_OWN_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["OWN_ACT"]?.value
           .toString()
@@ -364,14 +503,6 @@ export const dayLimitFormMetaData = {
       },
     },
 
-    // {
-    //   render: {
-    //     componentType: "spacer",
-    //   },
-    //   name: "SPACER_ST",
-    //   GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
-    // },
-
     {
       render: { componentType: "checkbox" },
       type: "checkbox",
@@ -379,10 +510,27 @@ export const dayLimitFormMetaData = {
       label: "BBPS",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_BBPS"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_BBPS?.value === "N" && Boolean(field?.value)) {
+          return {
+            BBPS: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "BBPS" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_BBPS_LIMIT",
+      name: "BBPS_LIMIT",
       type: "text",
       label: "BBPS/Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -402,7 +550,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["BBPS"],
+      dependentFields: ["BBPS", "PERDAY_BBPS_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_BBPS_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_BBPS_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["BBPS"]?.value
           .toString()
@@ -439,10 +597,30 @@ export const dayLimitFormMetaData = {
       defaultValue: false,
       label: "Payment Gateway",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_PG_TRN"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (
+          dependentFields?.DTL_PG_TRN?.value === "N" &&
+          Boolean(field?.value)
+        ) {
+          return {
+            PG_TRN: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "Payment Gateway" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_PG_AMT",
+      name: "PG_AMT",
       type: "text",
       label: "P.Gateway/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -462,7 +640,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["PG_TRN"],
+      dependentFields: ["PG_TRN", "PERDAY_PG_AMT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_PG_AMT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_PG_AMT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["PG_TRN"]?.value
           .toString()
@@ -499,10 +687,27 @@ export const dayLimitFormMetaData = {
       defaultValue: false,
       label: "ATM",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_ATM"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_ATM?.value === "N" && Boolean(field?.value)) {
+          return {
+            ATM: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "ATM" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_ATM_LIMIT",
+      name: "ATM_LIMIT",
       type: "text",
       label: "ATM/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -522,7 +727,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["ATM"],
+      dependentFields: ["ATM", "PERDAY_ATM_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_ATM_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_ATM_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["ATM"]?.value
           .toString()
@@ -559,10 +774,27 @@ export const dayLimitFormMetaData = {
       defaultValue: false,
       label: "POS",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_POS"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_POS?.value === "N" && Boolean(field?.value)) {
+          return {
+            POS: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "POS" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_POS_LIMIT",
+      name: "POS_LIMIT",
       type: "text",
       label: "POS/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -582,7 +814,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["POS"],
+      dependentFields: ["POS", "PERDAY_POS_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_POS_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_POS_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["POS"]?.value
           .toString()
@@ -619,10 +861,27 @@ export const dayLimitFormMetaData = {
       defaultValue: false,
       label: "ECOM",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_ECOM"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_ECOM?.value === "N" && Boolean(field?.value)) {
+          return {
+            ECOM: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "ECOM" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_ECOM_LIMIT",
+      name: "ECOM_LIMIT",
       type: "text",
       label: "ECOM/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -642,7 +901,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["ECOM"],
+      dependentFields: ["ECOM", "PERDAY_ECOM_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_ECOM_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_ECOM_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["ECOM"]?.value
           .toString()
@@ -679,10 +948,27 @@ export const dayLimitFormMetaData = {
       defaultValue: false,
       label: "UPI",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_UPI"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_UPI?.value === "N" && Boolean(field?.value)) {
+          return {
+            UPI: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "UPI" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_UPI_LIMIT",
+      name: "UPI_LIMIT",
       type: "text",
       label: "UPI/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -702,7 +988,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["UPI"],
+      dependentFields: ["UPI", "PERDAY_UPI_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_UPI_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_UPI_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["UPI"]?.value
           .toString()
@@ -738,10 +1034,27 @@ export const dayLimitFormMetaData = {
       label: "IMPS",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+      validationRun: "onChange",
+      dependentFields: ["DTL_IMPS"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (dependentFields?.DTL_IMPS?.value === "N" && Boolean(field?.value)) {
+          return {
+            IMPS: { value: false },
+            COMMON: { value: Date.now() },
+            FLAG: { value: "IMPS" },
+          };
+        }
+        return {};
+      },
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_P2P_LIMIT",
+      name: "P2P_LIMIT",
       type: "text",
       label: "IMPS P2P Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -761,7 +1074,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["IMPS"],
+      dependentFields: ["IMPS", "PERDAY_P2P_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_P2P_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_P2P_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["IMPS"]?.value
           .toString()
@@ -792,7 +1115,7 @@ export const dayLimitFormMetaData = {
     },
     {
       render: { componentType: "amountField" },
-      name: "PERDAY_P2A_LIMIT",
+      name: "P2A_LIMIT",
       type: "text",
       label: "IMPR P2A Day Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -812,7 +1135,17 @@ export const dayLimitFormMetaData = {
           return true;
         },
       },
-      dependentFields: ["IMPS"],
+      dependentFields: ["IMPS", "PERDAY_P2A_LIMIT"],
+      validate: (columnValue, allField, flag) => {
+        let limitValue = Number(allField?.PERDAY_P2A_LIMIT?.value);
+        if (Number(columnValue.value) > limitValue && limitValue > 0) {
+          return `limit amount should be less than ${Number(
+            allField?.PERDAY_P2A_LIMIT?.value
+          )}`;
+        }
+
+        return "";
+      },
       shouldExclude: (_, dependentFieldsValues, __) => {
         const dependentValue = dependentFieldsValues?.["IMPS"]?.value
           .toString()
@@ -840,6 +1173,144 @@ export const dayLimitFormMetaData = {
         }
         return false;
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_IFT_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_RTGS_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_UPI_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_NEFT_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_OWN_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_PG_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_POS_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_ECOM_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_ATM_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_P2A_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_P2P_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERDAY_BBPS_LIMIT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_IFT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_RTGS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_UPI",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_NEFT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_OWN_ACT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_PG_TRN",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_POS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_ECOM",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_ATM",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_IMPS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DTL_BBPS",
     },
   ],
 };

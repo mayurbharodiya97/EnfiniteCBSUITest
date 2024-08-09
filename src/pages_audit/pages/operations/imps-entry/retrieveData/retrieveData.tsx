@@ -2,30 +2,18 @@ import { useRef, useContext } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { ClearCacheProvider } from "cache";
-import { AppBar, Dialog, LinearProgress } from "@mui/material";
+import { CircularProgress, Dialog } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-const actions: ActionTypes[] = [
-  {
-    actionName: "view-details",
-    actionLabel: "ViewDetails",
-    multiple: false,
-    rowDoubleClick: true,
-  },
-];
+import { GradientButton } from "components/styledComponent/button";
 
 const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
-  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const updateFnWrapper =
     (update) =>
@@ -39,7 +27,6 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
-        console.log("<<<reteet", data);
         if (data?.length <= 0) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
@@ -64,14 +51,14 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
     displayData,
     endSubmit
   ) => {
+    endSubmit(true);
     mutation.mutate({
       data: {
         CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
         COMP_CD: authState?.companyID,
+        endSubmit,
       },
-      endSubmit,
     });
-    endSubmit(true);
   };
 
   return (
@@ -87,11 +74,6 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
             },
           }}
         >
-          {mutation?.isLoading ? (
-            <LinearProgress color="inherit" />
-          ) : (
-            <LinearProgressBarSpacer />
-          )}
           <FormWrapper
             key={`retrieve-Form`}
             metaData={retrieveFormMetaData as MetaDataType}
@@ -100,18 +82,26 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
             formStyle={{
               background: "white",
             }}
-            formState={{ MessageBox: MessageBox }}
-            onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => {} };
-              if (id === "RETRIEVE") {
-                formRef?.current?.handleSubmit(event, "RETRIEVE");
-              } else if (id === "CANCEL") {
-                navigate(".");
-              }
-            }}
+            controlsAtBottom={true}
             ref={formRef}
           >
-            {({ isSubmitting, handleSubmit }) => <></>}
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton
+                  color={"primary"}
+                  onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
+                  endIcon={
+                    mutation?.isLoading ? <CircularProgress size={20} /> : null
+                  }
+                >
+                  {t("Retrieve")}
+                </GradientButton>
+
+                <GradientButton onClick={() => navigate(".")} color={"primary"}>
+                  {t("Cancel")}
+                </GradientButton>
+              </>
+            )}
           </FormWrapper>
         </Dialog>
       </>
