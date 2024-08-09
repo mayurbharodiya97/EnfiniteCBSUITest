@@ -161,7 +161,7 @@ export const MyAppBar = ({
       elevation={0}
       className={clsx(classes.appBar, open && classes.appBarShift)}
     >
-      <Toolbar className={classes.toolbar}>
+      <Toolbar className={isNewStyle ? classes?.toolbarNew : classes.toolbar}>
         <Box
           sx={{
             display: "flex",
@@ -184,24 +184,25 @@ export const MyAppBar = ({
             <p className={classes.version01}>{logos?.version}</p>
           </div>
 
-          {open ? (
-            <IconButton
-              disableRipple
-              onClick={handleDrawerClose}
-              className={classes.DrawerClose_icon}
-            >
-              <MenuOutlinedIcon fontSize="large" />
-            </IconButton>
-          ) : (
-            <IconButton
-              disableRipple
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={classes.DrawerClose_icon}
-            >
-              <MenuOutlinedIcon fontSize="large" />
-            </IconButton>
-          )}
+          {!hideSidebarIcon &&
+            (open ? (
+              <IconButton
+                disableRipple
+                onClick={handleDrawerClose}
+                className={classes.DrawerClose_icon}
+              >
+                <MenuOutlinedIcon fontSize="large" />
+              </IconButton>
+            ) : (
+              <IconButton
+                disableRipple
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                className={classes.DrawerClose_icon}
+              >
+                <MenuOutlinedIcon fontSize="large" />
+              </IconButton>
+            ))}
         </Box>
         <Stack direction="row" spacing={4} mx={2}>
           <Box className={classes.heading_user_img_border}>
@@ -272,7 +273,10 @@ export const MyAppBar = ({
             </div>
           </div>
         </Typography>
-        <Box>
+        <Box
+          display={isNewStyle ? "flex" : ""}
+          alignItems={isNewStyle ? "center" : ""}
+        >
           <Box sx={{ marginBottom: "3px", paddingRight: "15px" }}>
             <Stack
               direction="row"

@@ -59,7 +59,7 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
       showTooltip: true,
     },
     {
-      accessor: "DISP_DATA",
+      accessor: "SEC_TYPE_DESC",
       columnName: "SecurityType",
       sequence: 4,
       alignment: "left",

@@ -492,7 +492,7 @@ export const form15GHEntryMetaData = {
           "VALID_AMT",
           "INT_AMT_LIMIT",
           "FIN_INT_AMT",
-          "OTH_BANK_AMT",
+          "TOT_INCOME",
           "FORM_NM",
         ],
         __NEW__: {
@@ -505,7 +505,7 @@ export const form15GHEntryMetaData = {
             const sumOfAllDependentField = Number(
               (parseFloat(dependentFieldValues?.FIN_INT_AMT?.value) || 0) +
                 (parseFloat(dependentFieldValues?.VALID_AMT?.value) || 0) +
-                (parseFloat(dependentFieldValues?.OTH_BANK_AMT?.value) || 0) +
+                (parseFloat(dependentFieldValues?.TOT_INCOME?.value) || 0) +
                 (parseFloat(currentField?.value) || 0)
             );
             const formName = dependentFieldValues?.FORM_NM?.value || "null";
