@@ -41,11 +41,12 @@ const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
 const Form15GHConfirmationGrid = lazy(
   () => import("./form15G-HEntry/confirmation")
 );
-// const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
-// const PositivePayConfirmationGrid = lazy(
-//   () => import("./positivePayEntry/confirmation")
-// );
+const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
+const PositivePayConfirmationGrid = lazy(
+  () => import("./positivePayEntry/confirmation")
+);
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -174,10 +175,11 @@ export const OperationsMenu = () => (
       path="form-15g-h-confirmation/*"
       element={<Form15GHConfirmationGrid screenFlag="C" />}
     />
-    {/* <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} />
+    <Route path="positivepay-entry/*" element={<PositivePayEntryGrid />} />
     <Route
       path="positivepay-confirmation/*"
       element={<PositivePayConfirmationGrid screenFlag="C" />}
-    /> */}
+    />
+    {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
   </Routes>
 );
