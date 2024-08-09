@@ -23,6 +23,9 @@ import { CardPrinting } from "./cardPrinting";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { t } from "i18next";
 
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
 const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
     {
@@ -152,6 +155,7 @@ const AtmEntryCustom = ({ parameter }) => {
               {formMode === "view" && retrieveData?.length > 0 && (
                 <>
                   <Button
+                    startIcon={<ArrowBackIosNewIcon />}
                     disabled={1 === currentIndex + 1}
                     onClick={() => changeIndex("previous")}
                     color={"primary"}
@@ -159,6 +163,7 @@ const AtmEntryCustom = ({ parameter }) => {
                     {t("Prev")}
                   </Button>
                   <Button
+                    endIcon={<ArrowForwardIosIcon />}
                     disabled={currentIndex + 1 === retrieveData.length}
                     onClick={() => changeIndex("next")}
                     color={"primary"}

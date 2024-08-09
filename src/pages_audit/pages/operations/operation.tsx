@@ -13,6 +13,7 @@ const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
+const ImpsEntry = lazy(() => import("./imps-entry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -56,6 +57,7 @@ export const OperationsMenu = () => (
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
+    <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
 
     <Route
       path="chequebook-confirmation/*"

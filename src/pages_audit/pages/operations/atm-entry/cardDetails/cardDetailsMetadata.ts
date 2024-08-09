@@ -1,5 +1,10 @@
 import { utilFunction } from "components/utils";
-import { cardStatusList, cardTypeList, validateAcctAndCustId } from "../api";
+import {
+  cardStatusList,
+  cardTypeList,
+  validateAcctAndCustId,
+  validateCitizenId,
+} from "../api";
 export const CardDetailsMetaData = {
   form: {
     name: "atm-card-details",
@@ -264,7 +269,7 @@ export const CardDetailsMetaData = {
 
     {
       render: {
-        componentType: "numberFormat",
+        componentType: "textField",
       },
       name: "CITIZEN_ID",
       label: "CitizenID",
@@ -276,6 +281,7 @@ export const CardDetailsMetaData = {
         lg: 2.5,
         xl: 2.5,
       },
+      txtTransform: "uppercase",
       dependentFields: ["STATUS", "CITIZEN_ID_VISIBLE"],
       shouldExclude(fieldData, dependentFields) {
         if (
@@ -287,6 +293,49 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          let apiRequest = {
+            CITIZEN_ID: field?.value,
+            CITIZENID_DATA: "IA00377209,IA00357709",
+            SCREEN_REF: "MST/846",
+          };
+
+          let postData = await validateCitizenId(apiRequest);
+          console.log("<<<postdarf", postData);
+          if (postData?.length) {
+            if (postData?.[0]?.O_STATUS === "999") {
+              let buttonName = await formState.MessageBox({
+                messageTitle: "ValidationAlert",
+                message: postData?.[0]?.O_MESSAGE,
+              });
+              if (buttonName === "Ok") {
+                return {
+                  CITIZEN_ID: { value: "", isFieldFocused: true },
+                  M_CARD_NO: { value: "" },
+                  CARD_TYPE: { value: "" },
+                };
+              }
+            } else {
+              return {
+                M_CARD_NO: { value: postData?.[0]?.M_CARD_NO },
+                CARD_TYPE: { value: postData?.[0]?.CARD_TYPE },
+              };
+            }
+          }
+        } else if (!field?.value) {
+          return {
+            ACCT_NM: { value: "" },
+          };
+        }
+        return {};
+      },
+      runPostValidationHookAlways: true,
     },
     {
       render: {

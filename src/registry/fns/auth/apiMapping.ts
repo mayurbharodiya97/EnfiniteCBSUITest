@@ -1843,7 +1843,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
-  DODUALCONFIRMATION : {
+  DODUALCONFIRMATION: {
     url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",
   },
@@ -1979,23 +1979,23 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/VALIDATEDELETESIEXECDTL",
     packageName: "",
   },
-  GETCRACCOUNTDETAILS:{
+  GETCRACCOUNTDETAILS: {
     url: "/transactionServiceAPI/GETCRACCOUNTDETAILS",
     packageName: "",
   },
-  DODELETESIEXECDTL:{
+  DODELETESIEXECDTL: {
     url: "/transactionServiceAPI/DODELETESIEXECDTL",
     packageName: "",
   },
-  SAVESTANDINGINSTRUCTIONENTRY:{
+  SAVESTANDINGINSTRUCTIONENTRY: {
     url: "/transactionServiceAPI/SAVESTANDINGINSTRUCTIONENTRY",
     packageName: "",
   },
-  DOSIEXECUTION:{
+  DOSIEXECUTION: {
     url: "/transactionServiceAPI/DOSIEXECUTION",
     packageName: "",
   },
-  DOSIEXECUTIONDETAILVIEW:{
+  DOSIEXECUTIONDETAILVIEW: {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
@@ -2089,6 +2089,34 @@ export const ActionWiseAPIConfiguration = {
   },
   GETATMDTLDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
+    packageName: "",
+  },
+  RETRIVEATMREGISTRATIONDATA: {
+    url: "/commonMasterServiceAPI/RETRIVEATMREGISTRATIONDATA",
+    packageName: "",
+  },
+  VALIDATECITIZENID: {
+    url: "/commonMasterServiceAPI/VALIDATECITIZENID",
+    packageName: "",
+  },
+  GETIMPSACCTLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSACCTLIST",
+    packageName: "",
+  },
+  IMPSCUSTIDVALIDATION: {
+    url: "/commonMasterServiceAPI/IMPSCUSTIDVALIDATION",
+    packageName: "",
+  },
+  GETIMPSHDRDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSHDRDATA",
+    packageName: "",
+  },
+  GETIMPSDTLDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSDTLDATA",
+    packageName: "",
+  },
+  IMPSDAILYSPENDLIMIT: {
+    url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
 };
