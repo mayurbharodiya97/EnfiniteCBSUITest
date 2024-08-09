@@ -1872,7 +1872,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETSIGNPHOTOVIEW: {
-    url: "/transactionServiceAPI/GETSIGNPHOTOVIEW",
+    url: "/enfinityCommonServiceAPI/GETSIGNPHOTOVIEW",
     packageName: "",
   },
   GETCUSTSIGNPHOTOHISTORY: {
@@ -2057,6 +2057,42 @@ export const ActionWiseAPIConfiguration = {
   },
   GETSTRACCTHISTORY: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTRACCTHISTORY",
+    packageName: "",
+  },
+  GETSTRTRANDTL: {
+    url: "/transactionServiceAPI/GETSTRTRANDTL",
+    packageName: "",
+  },
+  GETINSUCOMPMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUCOMPMSTDATADISP",
+    packageName: "",
+  },
+  GETSECURITYTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSECURITYTYPEDDDW",
+    packageName: "",
+  },
+  GETLIMITSECMSTDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECMSTDDDW",
+    packageName: "",
+  },
+  GETINSUENTRYMSTVIEW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUENTRYMSTVIEW",
+    packageName: "",
+  },
+  UPDATESTRBRANCHDTL: {
+    url: "/transactionServiceAPI/UPDATESTRBRANCHDTL",
+    packageName: "",
+  },
+  DOSTRTRANDML: {
+    url: "/transactionServiceAPI/DOSTRTRANDML ",
+    packageName: "",
+  },
+  VALIDATEINSURANCEDTL: {
+    url: "/loanServiceAPI/VALIDATEINSURANCEDTL ",
+    packageName: "",
+  },
+  GETCALCGSTAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCALCGSTAMT",
     packageName: "",
   },
   GETATMCARDSTATUSDDDW: {

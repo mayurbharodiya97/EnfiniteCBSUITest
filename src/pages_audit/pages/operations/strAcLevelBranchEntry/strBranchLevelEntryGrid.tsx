@@ -24,6 +24,7 @@ import { AppBar, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Toolb
 import { GradientButton } from "components/styledComponent/button";
 import { makeStyles, styled } from "@mui/styles";
 import { StrAcLevelBranchHistoryGridWrapper } from "./strHistoryGrid";
+import { StrMarkAsPerSuspiciousGrid } from "./strAcLevelBranchForm/suspiciousTransactionGrid";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -70,12 +71,13 @@ const StrBranchLevelEntryGrid = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isPrint, setIsPrint] = useState<any>(false)
+  const [isRowsData, setIsRowsData] = useState<any>([])
   const [rowData, setRowData] = useState<any>([])
   const headerClasses = useTypeStyles();
   const [actionMenu, setActionMenu] = useState(actions);
   const [paraType, setParaType] = useState("S");
   const isDataChangedRef = useRef(false);
-
+  const [suspiciousTran, IsSuspiciousTran] = useState<any>(false)
 
   useEffect(() => {
     if (authState?.hoLogin === "Y") {
@@ -223,6 +225,9 @@ const StrBranchLevelEntryGrid = () => {
             })
             setIsPrint(true)
             setRowData(data)
+          } else if (id === "TRANSACTION_DETAIL") {
+            IsSuspiciousTran(true)
+            setIsRowsData(data)
           }
         }
         }
@@ -231,7 +236,7 @@ const StrBranchLevelEntryGrid = () => {
         <Route
           path="view-detail/*"
           element={
-            <StrBranchLevelFormWrapper onClose={handleDialogClose} />
+            <StrBranchLevelFormWrapper onClose={handleDialogClose} isDataChangedRef={isDataChangedRef} />
           }
         />
         <Route
@@ -241,6 +246,20 @@ const StrBranchLevelEntryGrid = () => {
           }
         />
       </Routes >
+      <>
+        {
+          suspiciousTran ?
+            <>
+              <StrMarkAsPerSuspiciousGrid
+                onClose={() => {
+                  IsSuspiciousTran(false)
+                }}
+                rowsData={isRowsData}
+              />
+            </> : null
+        }
+      </>
+
       {
         isPrint ?
           <>

@@ -47,27 +47,36 @@ export const strLevelBranchEditFormMetaData = {
     fields: [
         {
             render: {
-                componentType: "_accountNumber",
+                componentType: "textField",
             },
-            branchCodeMetadata: {
-                name: "ACCT_BRANCH_CD",
-                required: true,
-                isReadOnly: true,
-                GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+            name: "ACCT_BRANCH_CD",
+            label: "Branch Code",
+            type: "text",
+            fullWidth: true,
+            isReadOnly: true,
+            GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+        },
+        {
+            render: {
+                componentType: "textField",
             },
-            accountTypeMetadata: {
-                name: "ACCT_TYPE",
-                isReadOnly: true,
-                GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+            name: "ACCT_TYPE",
+            label: "Account Type",
+            type: "text",
+            fullWidth: true,
+            isReadOnly: true,
+            GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+        },
+        {
+            render: {
+                componentType: "textField",
             },
-            accountCodeMetadata: {
-                name: "ACCT_CD",
-                label: "ACNumber",
-                placeholder: "",
-                fullWidth: true,
-                isReadOnly: true,
-                GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
-            },
+            name: "ACCT_CD",
+            label: "ACNumber",
+            type: "text",
+            fullWidth: true,
+            isReadOnly: true,
+            GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
         },
         {
             render: {
@@ -96,7 +105,7 @@ export const strLevelBranchEditFormMetaData = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "SUSP_DESC",
+            name: "SUSPICIOUS_FLAG",
             label: "Suspicious Status",
             type: "text",
             fullWidth: true,
@@ -139,15 +148,7 @@ export const strLevelBranchEditFormMetaData = {
                 });
             },
             _optionsKey: "getSuspReasonData",
-            dependentFields: ["DISABLE_SUSP_STATUS"],
-            isReadOnly: (fieldValue, dependentFields, formState) => {
-                if (dependentFields?.DISABLE_SUSP_STATUS?.value === "Y") {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
-
+            isReadOnly: true,
         },
 
         {
@@ -178,12 +179,13 @@ export const strLevelBranchEditFormMetaData = {
             label: "Investigation Detail",
             type: "text",
             fullWidth: true,
-            required: true,
-            isReadOnly: (fieldValue, dependentFields, formState) => {
-                if (dependentFields?.REMARKS2_VISIBLE?.value === "N") {
-                    return true;
-                } else {
+            // required: true,
+            dependentFields: ["REMARKS2_VISIBLE"],
+            shouldExclude: (_, dependentFieldsValues, __) => {
+                if (dependentFieldsValues?.REMARKS2_VISIBLE?.value === "Y") {
                     return false;
+                } else {
+                    return true;
                 }
             },
             GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
@@ -206,7 +208,7 @@ export const suspiciousTransactionGridMetaData: GridMetaDataType = {
     gridConfig: {
         dense: true,
         gridLabel: "Suspicious Transaction",
-        rowIdColumn: "index",
+        rowIdColumn: "LINE_ID",
         defaultColumnConfig: {
             width: 400,
             maxWidth: 450,
@@ -239,90 +241,91 @@ export const suspiciousTransactionGridMetaData: GridMetaDataType = {
             sequence: 1,
             alignment: "rigth",
             componentType: "default",
-            width: 100,
-            minWidth: 100,
-            maxWidth: 120,
+            width: 50,
+            minWidth: 80,
+            maxWidth: 100,
             isAutoSequence: true,
         },
 
         {
-            accessor: "TRN_DATE",
+            accessor: "TRAN_DT",
             columnName: "TRN. Date",
-            sequence: 1,
+            sequence: 2,
             alignment: "center",
             componentType: "date",
-            width: 200,
-            minWidth: 250,
-            maxWidth: 300,
+            width: 100,
+            minWidth: 150,
+            maxWidth: 200,
         },
         {
-            accessor: "REASON_DESC",
+            accessor: "REF_TRAN_CD",
             columnName: "V. No.",
-            sequence: 2,
+            sequence: 3,
             alignment: "right",
             componentType: "default",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            width: 80,
+            minWidth: 100,
+            maxWidth: 150,
         },
         {
-            accessor: "SUSPICIOUS",
+            accessor: "SUSPICIOUS_FLAG",
             columnName: "Suspicious",
-            sequence: 2,
+            sequence: 4,
             alignment: "center",
             componentType: "editableCheckbox",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            defaultValue: false,
+            width: 80,
+            minWidth: 90,
+            maxWidth: 100,
         },
         {
             accessor: "REMARKS",
             columnName: "Remarks",
-            sequence: 3,
+            sequence: 4,
             alignment: "right",
             componentType: "default",
-            width: 450,
-            minWidth: 460,
-            maxWidth: 500,
+            width: 200,
+            minWidth: 250,
+            maxWidth: 280,
         },
         {
-            accessor: "TRX",
+            accessor: "TYPE_CD",
             columnName: "Trx.",
-            sequence: 2,
+            sequence: 6,
             alignment: "left",
             componentType: "default",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            width: 50,
+            minWidth: 60,
+            maxWidth: 80,
         }, {
             accessor: "AMOUNT",
             columnName: "Amount",
-            sequence: 2,
+            sequence: 7,
             alignment: "right",
             componentType: "currency",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            width: 100,
+            minWidth: 150,
+            maxWidth: 200,
         },
         {
             accessor: "CHEQUE_NO",
             columnName: "cheque No.",
-            sequence: 2,
+            sequence: 8,
             alignment: "right",
-            componentType: "currency",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            componentType: "default",
+            width: 100,
+            minWidth: 150,
+            maxWidth: 200,
         },
         {
-            accessor: "VERIFIED_BY",
+            accessor: "M_VERIFIED_BY",
             columnName: "verified By",
-            sequence: 2,
+            sequence: 9,
             alignment: "left",
             componentType: "default",
-            width: 300,
-            minWidth: 310,
-            maxWidth: 350,
+            width: 100,
+            minWidth: 150,
+            maxWidth: 200,
         },
     ],
 };
