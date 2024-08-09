@@ -440,7 +440,7 @@ const ClosingAdvice = ({ handleCloseAdviceDetails }) => {
 
         <Box className={classes.contentBox}>
           <Typography color="inherit" variant={"h6"} className={classes.title}>
-            {t("VouchersDetail")} : {`\u00A0`}
+            {`${t("VouchersDetail")}\u00A0:\u00A0`}
           </Typography>
           <pre>{`${rpState?.closingAdviceData?.[0]?.VOUCHER_SET ?? ""}`}</pre>
         </Box>
@@ -453,18 +453,6 @@ const ClosingAdvice = ({ handleCloseAdviceDetails }) => {
             {`\u00A0\u00A0${authState?.user?.name ?? ""}`}
           </Typography>
         </Box>
-
-        <Typography
-          color="inherit"
-          variant={"h6"}
-          sx={{
-            fontWeight: "500",
-            fontSize: "0.875rem",
-            margin: "5px 0 0 15px",
-          }}
-        >
-          {t("Confidential")}
-        </Typography>
       </Container>
 
       {adviceDetailsJasperMutation?.isLoading ? (

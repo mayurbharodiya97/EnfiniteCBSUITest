@@ -99,11 +99,9 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
       const branchCode = rpState?.recurPmtEntryData?.BRANCH_CD?.trim() ?? "";
       const accountType = rpState?.recurPmtEntryData?.ACCT_TYPE?.trim() ?? "";
       const accountNo = rpState?.recurPmtEntryData?.ACCT_CD?.trim() ?? "";
-      const label2 = `${t("RecurringPaymentTransfer")}\u00A0\u00A0 ${t(
-        "Branch"
-      )}: ${branchCode}\u00A0\u00A0 ${t(
-        "AcctType"
-      )}: ${accountType}\u00A0\u00A0 ${t("ACNo")}: ${accountNo}\u00A0\u00A0`;
+      const label2 = `${t(
+        "RecurringPaymentTransfer"
+      )} for A/C No.:\u00A0${branchCode}-${accountType}-${accountNo} `;
       RecurringPaymentTransferFormMetaData.form.label = label2;
     }, []);
 

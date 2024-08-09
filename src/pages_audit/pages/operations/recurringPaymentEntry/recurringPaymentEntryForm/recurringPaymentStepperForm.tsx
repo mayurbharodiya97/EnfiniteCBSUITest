@@ -306,7 +306,7 @@ const RecurringPaymentStepperForm = ({
                   defFocusBtnName: "Yes",
                 });
                 if (buttonName === "No") {
-                  resetAllData();
+                  isDataChangedRef.current = true;
                   closeDialog();
                   break;
                 }
@@ -406,21 +406,20 @@ const RecurringPaymentStepperForm = ({
       {
         onSuccess: async (data, variables) => {
           let saveData = data;
+          updateSaveValidationData(saveData);
           for (const obj of saveData) {
-            if (saveData?.[0]?.O_STATUS === "0") {
-              const buttonName = await MessageBox({
-                messageTitle: "Confirmation",
-                message: "Proceed?",
-                buttonNames: ["Yes", "No"],
-                defFocusBtnName: "Yes",
-                loadingBtnName: ["Yes"],
-              });
-              if (buttonName === "Yes") {
-                updateSaveValidationData(saveData);
-                if (
-                  Number(recurData?.CASH_AMT) ===
-                  Number(recurData?.TOTAL_AMOUNT)
-                ) {
+            if (obj?.O_STATUS === "0") {
+              if (
+                Number(recurData?.CASH_AMT) === Number(recurData?.TOTAL_AMOUNT)
+              ) {
+                const buttonName = await MessageBox({
+                  messageTitle: "Confirmation",
+                  message: "AreYouSureToContinue",
+                  buttonNames: ["Yes", "No"],
+                  defFocusBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
+                });
+                if (buttonName === "Yes") {
                   recurringPaymentEntrySaveMutation.mutate({
                     ...saveDataRef.current?.data,
                     TRAN_CD: saveData?.[0]?.TRAN_CD ?? "",
@@ -431,20 +430,20 @@ const RecurringPaymentStepperForm = ({
                     PAYSLIP_NO: "",
                     REC_DTL: [],
                   });
-                } else {
-                  setActiveStep(rpState.activeStep + 1);
-                  CloseMessageBox();
                 }
+              } else {
+                setActiveStep(rpState.activeStep + 1);
+                CloseMessageBox();
               }
-            } else if (saveData?.[0]?.O_STATUS === "9") {
+            } else if (obj?.O_STATUS === "9") {
               await MessageBox({
                 messageTitle: "validationAlert",
-                message: saveData?.[0]?.O_MESSAGE,
+                message: obj?.O_MESSAGE,
               });
-            } else if (saveData?.[0]?.O_STATUS === "99") {
+            } else if (obj?.O_STATUS === "99") {
               const buttonName = await MessageBox({
                 messageTitle: "Confirmation",
-                message: saveData?.[0]?.O_MESSAGE,
+                message: obj?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
               });
               if (buttonName === "Yes") {
@@ -493,10 +492,10 @@ const RecurringPaymentStepperForm = ({
                   setActiveStep(rpState.activeStep + 1);
                 }
               }
-            } else if (saveData?.[0]?.O_STATUS === "999") {
+            } else if (obj?.O_STATUS === "999") {
               await MessageBox({
                 messageTitle: "ValidationFailed",
-                message: saveData?.[0]?.O_MESSAGE,
+                message: obj?.O_MESSAGE,
               });
             }
           }
@@ -671,7 +670,7 @@ const RecurringPaymentStepperForm = ({
                 {utilFunction.getDynamicLabel(
                   currentPath,
                   authState?.menulistdata,
-                  false
+                  true
                 )}
               </Typography>
 
@@ -738,13 +737,11 @@ const RecurringPaymentStepperForm = ({
                         >
                           {`${
                             accountDetailsForPayslip?.SCREEN_NAME
-                          }\u00A0\u00A0 ${t("Branch")}: ${
-                            accountDetailsForPayslip?.BRANCH_CD ?? ""
-                          }\u00A0\u00A0   ${t("AcctType")}: ${
-                            accountDetailsForPayslip?.ACCT_TYPE ?? ""
-                          }\u00A0\u00A0   ${t("ACNo")}: ${
-                            accountDetailsForPayslip?.ACCT_CD ?? ""
-                          }\u00A0\u00A0`}
+                          } for A/C No.:\u00A0${
+                            accountDetailsForPayslip?.BRANCH_CD?.trim() ?? ""
+                          }-${
+                            accountDetailsForPayslip?.ACCT_TYPE.trim() ?? ""
+                          }-${accountDetailsForPayslip?.ACCT_CD.trim() ?? ""} `}
                           <Chip
                             variant="outlined"
                             color="primary"
@@ -776,13 +773,11 @@ const RecurringPaymentStepperForm = ({
                         >
                           {`${
                             accountDetailsForBen?.SCREEN_NAME
-                          }\u00A0\u00A0 ${t("Branch")}: ${
-                            accountDetailsForBen?.BRANCH_CD ?? ""
-                          }\u00A0\u00A0   ${t("AcctType")}: ${
-                            accountDetailsForBen?.ACCT_TYPE ?? ""
-                          }\u00A0\u00A0   ${t("ACNo")}: ${
-                            accountDetailsForBen?.ACCT_CD ?? ""
-                          }\u00A0\u00A0`}
+                          } for A/C No.:\u00A0${
+                            accountDetailsForBen?.BRANCH_CD?.trim() ?? ""
+                          }-${accountDetailsForBen?.ACCT_TYPE.trim() ?? ""}-${
+                            accountDetailsForBen?.ACCT_CD.trim() ?? ""
+                          } `}
                           <Chip
                             variant="outlined"
                             color="primary"
@@ -825,13 +820,11 @@ const RecurringPaymentStepperForm = ({
                         >
                           {`${
                             accountDetailsForPayslip?.SCREEN_NAME
-                          }\u00A0\u00A0 ${t("Branch")}: ${
-                            accountDetailsForPayslip?.BRANCH_CD ?? ""
-                          }\u00A0\u00A0  ${t("AcctType")}: ${
-                            accountDetailsForPayslip?.ACCT_TYPE ?? ""
-                          }\u00A0\u00A0   ${t("ACNo")}: ${
-                            accountDetailsForPayslip?.ACCT_CD ?? ""
-                          }\u00A0\u00A0`}
+                          } for A/C No.:\u00A0${
+                            accountDetailsForPayslip?.BRANCH_CD?.trim() ?? ""
+                          }-${
+                            accountDetailsForPayslip?.ACCT_TYPE.trim() ?? ""
+                          }-${accountDetailsForPayslip?.ACCT_CD.trim() ?? ""} `}
                           <Chip
                             variant="outlined"
                             color="primary"
@@ -863,13 +856,11 @@ const RecurringPaymentStepperForm = ({
                         >
                           {`${
                             accountDetailsForBen?.SCREEN_NAME
-                          }\u00A0\u00A0 ${t("Branch")}: ${
-                            accountDetailsForBen?.BRANCH_CD ?? ""
-                          }\u00A0\u00A0   ${t("AcctType")}: ${
-                            accountDetailsForBen?.ACCT_TYPE ?? ""
-                          }\u00A0\u00A0   ${t("ACNo")}: ${
-                            accountDetailsForBen?.ACCT_CD ?? ""
-                          }\u00A0\u00A0`}
+                          } for A/C No.:\u00A0${
+                            accountDetailsForBen?.BRANCH_CD?.trim() ?? ""
+                          }-${accountDetailsForBen?.ACCT_TYPE.trim() ?? ""}-${
+                            accountDetailsForBen?.ACCT_CD.trim() ?? ""
+                          } `}
                           <Chip
                             variant="outlined"
                             color="primary"
