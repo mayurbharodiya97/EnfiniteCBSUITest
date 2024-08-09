@@ -22,21 +22,18 @@ const actions: ActionTypes[] = [
         actionName: "all",
         actionLabel: "All",
         multiple: undefined,
-        rowDoubleClick: false,
         alwaysAvailable: true,
     },
     {
         actionName: "extraction",
         actionLabel: "As per Extraction",
         multiple: undefined,
-        rowDoubleClick: false,
         alwaysAvailable: true,
     },
     {
         actionName: "suspicious",
         actionLabel: "Suspicious",
         multiple: undefined,
-        rowDoubleClick: false,
         alwaysAvailable: true,
 
     },
@@ -44,7 +41,6 @@ const actions: ActionTypes[] = [
         actionName: "white-listed",
         actionLabel: "White Listed",
         multiple: undefined,
-        rowDoubleClick: false,
         alwaysAvailable: true,
 
     },
@@ -52,7 +48,6 @@ const actions: ActionTypes[] = [
         actionName: "close",
         actionLabel: "Close",
         multiple: false,
-        rowDoubleClick: true,
         alwaysAvailable: true,
     },
 ];
@@ -104,7 +99,7 @@ const StrBranchLevelHistoryGrid = ({ onClose }) => {
     }, []);
 
     if (strBranchLevelHistoryGridMetaData) {
-        strBranchLevelHistoryGridMetaData.gridConfig.gridLabel = "STR History" + "for A/c" + "-" + rows?.[0]?.data?.ACCT_CD_NEW + "" + rows?.[0]?.data?.ACCT_NM
+        strBranchLevelHistoryGridMetaData.gridConfig.gridLabel = "STR History" + "for A/c" + "-" + rows?.[0]?.data?.ACCT_CD_NEW + " " + rows?.[0]?.data?.ACCT_NM
     }
     return (
         <>

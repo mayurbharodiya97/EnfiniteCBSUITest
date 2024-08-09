@@ -30,6 +30,7 @@ const StrAcLevelBranchEntryGridWrapper = lazy(
   () => import("./strAcLevelBranchEntry")
 );
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
+const InsuranceEntryForm = lazy(() => import("./insuranceEntry"));
 const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
@@ -146,6 +147,10 @@ export const OperationsMenu = () => (
     <Route
       path="rtgs-ho-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="HO" />}
+    />
+    <Route
+      path="insurance-entry/*"
+      element={<InsuranceEntryForm  />}
     />
     <Route
       path="fix-deposit/*"

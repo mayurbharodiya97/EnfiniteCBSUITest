@@ -230,6 +230,15 @@ export const chequeReturnPostFormMetaData = {
             return;
           }
         },
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "TRN/650",
+          });
+        },
+        _optionsKey: "get_Account_Type",
         dependentFields: ["DISABLE_MAIN_AC", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -679,8 +688,15 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
+      options: (dependentValue, formState, _, authState) => {
+        return GeneralAPI.get_Account_Type({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          USER_NAME: authState?.user?.id,
+          DOC_CD: "TRN/650",
+        });
+      },
+      _optionsKey: "get_Account_Type",
     },
     {
       render: {
