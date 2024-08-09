@@ -607,7 +607,7 @@ import { GradientButton } from "components/styledComponent/button";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { PopupRequestWrapper } from "components/custom/popupRequest";
 const DualPartTable = ({
   data,
   columnDefinitions,
@@ -626,6 +626,8 @@ const DualPartTable = ({
   errors,
   confirmation,
   closeConfirmation,
+  getRowData,
+  formData,
 }) => {
   const classes = useStyles();
   const inputRefs = useRef<any>({});
@@ -668,6 +670,7 @@ const DualPartTable = ({
             <StyledTableCell
               key={`${column.fieldName}-${index}`}
               className="cellBordered"
+              align={column.isCurrency && "right"}
             >
               {column.label}
             </StyledTableCell>
@@ -954,17 +957,36 @@ const DualPartTable = ({
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}
           Message={"All Transaction are Completed Want to Proceed"}
-          onClickButton={(rows, buttonNames) => {
+          onClickButton={(buttonNames) => {
             if (Boolean(buttonNames === "Yes")) {
               console.log("form Submitted");
+              const A = getRowData();
+
+              const extractedValue = A?.map((item) => {
+                return {
+                  TYPE_CD:
+                    formData?.TRN === "1"
+                      ? "1"
+                      : formData?.TRN === "4"
+                      ? "4"
+                      : "",
+                  DENO_QTY: item?.DENO_QTY,
+                  DENO_TRAN_CD: item?.TRAN_CD,
+                  DENO_VAL: item?.DENO_VAL,
+                  AMOUNT: item?.AMOUNT,
+                };
+              });
             } else if (Boolean(buttonNames === "No")) {
               closeConfirmation();
             }
           }}
           buttonNames={["Yes", "No"]}
           rows={[]}
-          loading={{ Yes: false, No: false }}
+          // loading={"Yes"}
           open={Boolean(confirmation)}
+          defFocusBtnName={"Yes"}
+          loadingBtnName={"Yes"}
+          icon={"INFO"}
         />
       ) : null}
     </Dialog>
