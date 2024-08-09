@@ -140,7 +140,6 @@ const GuardianJointTab = () => {
         metaData={guardianjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
         initialValues={initialVal}
-        formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: AcctMSTState?.customerIDctx ?? "", REQ_FLAG: (AcctMSTState?.isFreshEntryctx || AcctMSTState?.isDraftSavedctx) ? "F" : "E"}}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
       ></FormWrapper>

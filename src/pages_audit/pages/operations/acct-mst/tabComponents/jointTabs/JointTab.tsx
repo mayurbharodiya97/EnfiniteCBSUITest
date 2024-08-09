@@ -135,7 +135,6 @@ const JointTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: AcctMSTState?.customerIDctx ?? "", REQ_FLAG: (AcctMSTState?.isFreshEntryctx || AcctMSTState?.isDraftSavedctx) ? "F" : "E"}}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
       ></FormWrapper>
