@@ -86,6 +86,7 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
         });
         if (Boolean(retrievalParaRef.current)) {
           retrievalParaRef.current = null;
+          setIsDataRetrieved(false);
           refetch();
         }
       } else if (data?.name === "retrieve") {

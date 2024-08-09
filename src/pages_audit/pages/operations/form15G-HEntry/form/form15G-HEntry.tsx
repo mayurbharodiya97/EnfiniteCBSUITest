@@ -80,7 +80,9 @@ const Form15GHEntry = ({
       );
       const label2 = `${label ?? ""}\u00A0\u00A0 ${
         formData?.CONFIRMED_DIS ?? ""
-      }\u00A0\u00A0 Uploaded: ${formData?.UPLOAD_DIS ?? ""}\u00A0\u00A0`;
+      }\u00A0\u00A0 ${t("Uploaded")}: ${
+        formData?.UPLOAD_DIS ?? ""
+      }\u00A0\u00A0`;
       setMetadata((prevMetadata) => {
         const newMetadata = cloneDeep(prevMetadata);
         newMetadata.masterForm.form.label = label2;
@@ -102,7 +104,7 @@ const Form15GHEntry = ({
       onSuccess: (data) => {
         const updatedData = data.map((item) => ({
           ...item,
-          INT_AMOUNT: parseFloat(item.INT_AMOUNT).toFixed(2),
+          INT_AMOUNT: Number(item?.INT_AMOUNT ?? 0).toFixed(2),
         }));
         setState((old) => ({
           ...old,
@@ -362,6 +364,12 @@ const Form15GHEntry = ({
       } else {
         data["TOT_INCOME"] = data["TOT_INCOME"];
       }
+      if (Boolean(data["FIN_INT_AMT"] === "")) {
+        data["FIN_INT_AMT"] = "0";
+      } else {
+        data["FIN_INT_AMT"] = data["FIN_INT_AMT"];
+      }
+
       if (formMode === "new") {
         let newData = fdGridDatawithNewRow.map((item: any) => {
           const { SR_CD, FIN_INT_AMT, ...rest } = item;
@@ -421,10 +429,7 @@ const Form15GHEntry = ({
           );
           data._OLDROWVALUE = filteredOldRowValue;
         }
-        if (
-          data._OLDROWVALUE &&
-          typeof data._OLDROWVALUE["ACTIVE"] !== "undefined"
-        ) {
+        if (data._OLDROWVALUE && Boolean(data._OLDROWVALUE["ACTIVE"])) {
           if (data._OLDROWVALUE["ACTIVE"] === true) {
             data._OLDROWVALUE["ACTIVE"] = "Y";
           } else if (data._OLDROWVALUE["ACTIVE"] === false) {
@@ -482,7 +487,10 @@ const Form15GHEntry = ({
   };
 
   const handleRemove = async (event) => {
-    if (formMode === "edit" && formData?.CONFIRMED === "Y") {
+    if (
+      (formMode === "edit" || formMode === "view") &&
+      formData?.CONFIRMED === "Y"
+    ) {
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
@@ -607,7 +615,7 @@ const Form15GHEntry = ({
           if (action === "GRID_DATA" && statusCheck) {
             const updatedData = payload.map((item) => ({
               ...item,
-              FIN_INT_AMT: parseFloat(item.FIN_INT_AMT).toFixed(2),
+              FIN_INT_AMT: Number(item?.FIN_INT_AMT ?? 0).toFixed(2),
             }));
             setState((old) => ({
               ...old,
@@ -631,7 +639,11 @@ const Form15GHEntry = ({
             <>
               {formMode === "edit" ? (
                 <>
-                  <GradientButton color={"primary"} onClick={handleRemove}>
+                  <GradientButton
+                    color={"primary"}
+                    disabled={updateMutation?.isLoading}
+                    onClick={handleRemove}
+                  >
                     {t("Delete")}
                   </GradientButton>
                   <GradientButton
@@ -653,6 +665,7 @@ const Form15GHEntry = ({
                       setFormMode("view");
                     }}
                     color={"primary"}
+                    disabled={updateMutation?.isLoading}
                   >
                     {t("Cancel")}
                   </GradientButton>
