@@ -2131,6 +2131,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI//RETURNCHEQUE",
     packageName: "",
   },
+  GETFDTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDTYPEDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

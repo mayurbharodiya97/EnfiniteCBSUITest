@@ -50,15 +50,43 @@ const HoldTrnsConfirmation = ()=>{
         "confRejectMutation",
         API.getTransactionConfmReject,
         {
-          onSuccess: (data) => {
-            enqueueSnackbar("success", {
-              variant: "success",
-            });
-            SetDeleteRemark(false);
-            refetch();
-            CloseMessageBox();
-            
+          onSuccess: async (data) => {
+            for (const response of data ?? []) {
+              const status = response[0]?.STATUS;
+              const message = response[0]?.MESSAGE;
+          
+              if (status === "999") {
+                await MessageBox({
+                  messageTitle: "Validation Failed",
+                  message: message,
+                });
+              } else if (status === "9") {
+                await MessageBox({
+                  messageTitle: "Alert",
+                  message: message,
+                });
+              } else if (status === "99") {
+                const buttonName = await MessageBox({
+                  messageTitle: "Confirmation",
+                  message: message,
+                  buttonNames: ["Yes", "No"],
+                  defFocusBtnName: "Yes",
+                });
+                if (buttonName === "No") {
+                  break;
+                }
+              } else {
+                enqueueSnackbar("insertSuccessfully", {
+                  variant: "success",
+                });
+                SetDeleteRemark(false);
+                refetch();
+                CloseMessageBox();
+              }
+            }
           },
+          
+          
           onError: (error: any) => {
             CloseMessageBox();
           },

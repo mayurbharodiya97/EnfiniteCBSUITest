@@ -1500,5 +1500,15 @@ GenerateOutwardReturnEntry:"Are You Sure to Generate Outward Return Entry ?",
 enteredBranch:"Entered Branch",
 Success: "Success",
 DataUpdatedSuccessfully: "Data Updated Successfully",
+//fd interest calculator
+normalPremature:"Normal/Premature",
+asonDate:"As on Date",
+maturityDate:"Maturity Date",
+term:"Term",
+interestRs:"Interest Rs.",
+rateDefination:"Rate Defination",
+Customer:"Customer",
+proposedto:"Proposed To"
+
 };
 
