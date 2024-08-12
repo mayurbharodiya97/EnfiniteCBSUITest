@@ -182,24 +182,24 @@ export const en_language_data = {
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
 
   //for priority master main
-  ParentGroup:"Parent Group",
-  SubPriority:"Sub Priority",
-  SanctionFromLimit:"Sanction From Limit",
-  SanctionToLimit:"Sanction To Limit",
-  ProvisionSecured:"Provision Secured %",
-  ProvisionUnSecured:"Provision Unsecured %",
-  ToLimitValidation:"To Limit should be greater than or equal to From Limit",
-  codeisRequired:"code is Required",
-  Somethingwenttowrong:"Something went to wrong..",
+  ParentGroup: "Parent Group",
+  SubPriority: "Sub Priority",
+  SanctionFromLimit: "Sanction From Limit",
+  SanctionToLimit: "Sanction To Limit",
+  ProvisionSecured: "Provision Secured %",
+  ProvisionUnSecured: "Provision Unsecured %",
+  ToLimitValidation: "To Limit should be greater than or equal to From Limit",
+  codeisRequired: "code is Required",
+  Somethingwenttowrong: "Something went to wrong..",
   //priority master sub
-  ParentWeaker:"Parent Weaker",
+  ParentWeaker: "Parent Weaker",
   //trade master
-  CKYCGroup:"C-KYC Group",
-  Constitution:"Constitution",
+  CKYCGroup: "C-KYC Group",
+  Constitution: "Constitution",
   //area master
-  PinCode:"Pin Code",
-  FROMLIMIT:"FROM LIMIT",
-  TOLIMIT:"TO LIMIT",
+  PinCode: "Pin Code",
+  FROMLIMIT: "FROM LIMIT",
+  TOLIMIT: "TO LIMIT",
 
   //
   Delete: "Remove",
@@ -257,6 +257,8 @@ export const en_language_data = {
   },
   // For Profile
   profile: {
+    Searchin: "Search in",
+    screens: "screens",
     UserProfile: "User Profile",
     EnableTOTPAuth: "Enable T-OTP Auth",
     DisableTOTPAuth: "Disabled T-OTP Auth",
@@ -270,8 +272,6 @@ export const en_language_data = {
     AllowedAccess: "Allowed Access",
     ActivityDetail: "Activity Detail",
     Personalizedashboard: "Personalize dashboard",
-    Searchin: "Search in",
-    screens: "screens",
   },
   // For Profile in User Profile
   UserId: "User Id",
@@ -686,7 +686,7 @@ export const en_language_data = {
   Select: "Select",
   DisplayName: "Display Name",
   CTS: "CTS",
-  AddBranch:"Add Branch",
+  AddBranch: "Add Branch",
 
   sidebar: {
     Dashboard: "Dashboard",
@@ -778,7 +778,8 @@ export const en_language_data = {
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
 
-  PressCtrlJToViewJointInformation: "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
+  PressCtrlJToViewJointInformation:
+    "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do You Want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
@@ -794,10 +795,62 @@ export const en_language_data = {
   AddRow: "Add Row",
   SignView: "Sign View",
 
-
   SpecialCharactersNotAllowedRemarks:
     "Special Characters (! &) not Allowed in Remarks",
+  ShowLess: "Show Less",
+  ShowMore: "Show More",
+  ErrorDetails: "Error Details",
+  NoRecordsFoundclicktheaddbuttontoaddone:
+    "No Records Found, click the add button to add one",
+  Recordsuccessfullydeleted: "Record successfully deleted",
+  Pleasewaitdeletingrecord: "Please wait deleting record",
+  AreyouSureyouwanttodeletethisrecord:
+    "Are you Sure you want to delete this record?",
+  Wouldyouliketodeletetheselectedrecord:
+    "Would you like to delete the selected record?",
+  Print: "Print",
+  SelectAll: "Select All",
+  SelectOption: "Select Option",
+  Nodatafound: "No data found..!",
+  Selected: "Selected",
+  Filter: "Filter",
+  Apply: "Apply",
+  Clear: "Clear",
+  AppliedFilters: "Applied Filters",
+  TotalNoofRecords: "Total No. of Records",
+  RetrievalParameters: "Retrieval Parameters",
+  Searched: "Search",
+  Showexportoptions: "Show export options",
+  RetrieveData: "Retrieve Data",
+  RequiredValueMissingForLoginID: "Required Value Missing For LoginID",
+  rowswillbeexported: "row(s) will be exported.",
+  Nodatafoundtoexport: "No data found to export",
+  ReportExportStatus: "Report Export Status",
+  FileUpload: "File Upload",
+  FailedToAddFollowingFilesForUpload:
+    "Failed To Add Following Files For Upload",
+  FileViewer: "File Viewer",
+  File: "File",
+  DropFileshere: "Drop Files here",
+  DragandDropor: "Drag and Drop or",
+  Browse: "Browse",
+  Atleastonerowmustbeindetail: "Atleast one row must be in detail.",
+  All: "All",
+  Futuredatesarenotallowed: "Future dates are not allowed.",
+  FromDateshouldbelessthanorequaltoToDate:
+    "From Date should be less than or equal to To Date.",
 
+  Whichformatdoyouwanttodownload: "Which format do you want to download?",
+  Excel: "Excel",
+  CSV: "CSV",
+  Nodatafoundtoexports: "No data found to export!",
+  Pleaseselectatleastonecolumn: "Please select atleast one column!",
+  ColumnstoExport: "Columns to Export",
+  AreyousureyouwanttodeletetheselectedRecords:
+    "Are you sure you want to delete the selected Records",
+  AllRecordssuccessfullydeleted: "All Records successfully deleted",
+  Disagree: "Disagree",
+  Agree: "Agree",
 
   // cheque book
 
@@ -931,7 +984,6 @@ export const en_language_data = {
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
     "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
-  Print: "Print",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1067,7 +1119,8 @@ export const en_language_data = {
   RecordUpdatedSuccessfully: "Record Updated successfully",
   VoucherConfirmation: "Voucher Confirmation",
   RecordSuccessfullyDeleted: "Records successfully deleted",
-  PleaseEnterAcTypeForOrderingAcNo: "Please enter A/c Type For Ordering A / c No.",
+  PleaseEnterAcTypeForOrderingAcNo:
+    "Please enter A/c Type For Ordering A / c No.",
   RemovalRemarksForRTGS: "Enter Removal Remarks For RTGS ENTRY (MST/552)",
   RTGSNEFTTransNo: "RTGS/NEFT. Trans.No",
   RTGSNEFT: "RTGS/NEFT",
@@ -1085,7 +1138,8 @@ export const en_language_data = {
   PleaseEnterOrderingAcName: "Please enter Ordering A/c Name",
   ACAddress: "A/C Address",
   PleaseEnterOrderingAcAddress: "Please enter Ordering A/c Address",
-  PleaseEnterOrderingAcContactInformation: "Please enter Ordering A/c Contact Information",
+  PleaseEnterOrderingAcContactInformation:
+    "Please enter Ordering A/c Contact Information",
   PleaseEnterChequeNumber: "Please enter Cheque Number",
   PleaseEnterRTGSNEFTOrderingAmount: "Please Enter RTGS/NEFT Ordering Amount",
   EnterAccountInformation: "Enter Account Information",
@@ -1108,16 +1162,21 @@ export const en_language_data = {
   PleaseEnterTheBeneficiaryIFSCCode: "Please enter the Beneficiary IFSC Code",
   PleaseEnterTheBeneficiaryAcNumber: "Please enter the Beneficiary A/c Number",
   PleaseEnterTheBeneficiaryAcName: "Please enter the Beneficiary A/c Name",
-  PleaseEnterTheBeneficiaryAcAddress: "Please enter the Beneficiary A/c Address",
-  PleaseEnterTheBeneficiaryAcEmailID: "Please enter the Beneficiary A/c Email ID",
+  PleaseEnterTheBeneficiaryAcAddress:
+    "Please enter the Beneficiary A/c Address",
+  PleaseEnterTheBeneficiaryAcEmailID:
+    "Please enter the Beneficiary A/c Email ID",
   PleaseEnterValidEmailID: "Please enter valid Email ID",
   PleaseEnterTheBeneficiaryLEINo: "Please enter the Beneficiary LEI No.",
   LEINoShouldBeAlphaNumeric: "LEI No. should be Alpha-numeric",
   LEINoShouldBeExactlyCharacters: "LEI No. should be exactly 20 characters",
   FLAG: "FLAG",
-  ThisRecordWillNotSaveBeneficiaryMaster: "This Record will not save in Beneficiary Master",
-  Bank: "Bank", Center: "Center",
-  RTGSNEFTRetrieveInformation: "RTGS/NEFT Retrieve Information", RetrieveGrid: "Retrieve Grid",
+  ThisRecordWillNotSaveBeneficiaryMaster:
+    "This Record will not save in Beneficiary Master",
+  Bank: "Bank",
+  Center: "Center",
+  RTGSNEFTRetrieveInformation: "RTGS/NEFT Retrieve Information",
+  RetrieveGrid: "Retrieve Grid",
   EntryType: "Entry Type",
   MsgFlow: "Msg Flow",
   TranDate: "Tran Date",
@@ -1137,7 +1196,7 @@ export const en_language_data = {
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are You sure to Save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
-  ProceedGen :"Proceed ?",
+  ProceedGen: "Proceed ?",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1147,22 +1206,29 @@ export const en_language_data = {
   BrConfirmedBy: "Br.Confirmed By",
   ACBalance: "A/C Balance",
   BeneficiaryDetail: "Beneficiary Detail",
-  BranchRejectedTransactionNotAllowConfirmed: "Branch Rejected Transaction Not Allow to Confirmed",
-  BranchConfirmationPendingTransactionNotAllowedToConfirm: "Branch Confirmation Pending Transaction not allowed to Confirm",
+  BranchRejectedTransactionNotAllowConfirmed:
+    "Branch Rejected Transaction Not Allow to Confirmed",
+  BranchConfirmationPendingTransactionNotAllowedToConfirm:
+    "Branch Confirmation Pending Transaction not allowed to Confirm",
   TransationAlreadyConfirmed: "Transation already Confirmed",
-  RejectedTransactionNotAllowToConfirm: "Rejected Transaction Not Allow to Confirm",
+  RejectedTransactionNotAllowToConfirm:
+    "Rejected Transaction Not Allow to Confirm",
   CannotConfirmBackDatedEntry: "Cannot Confirm Back Dated Entry",
-  YouCantConfirmYourOwnBranchConfirmation: "You can't Confirm your own Branch confirmation",
+  YouCantConfirmYourOwnBranchConfirmation:
+    "You can't Confirm your own Branch confirmation",
   DoYouWantToAllowTheTransaction: "Do you want to allow the Transaction?",
-  YouCantDeleteRejectHOConfirmedTransaction: " You Can't Delete/ Reject HO Confirmed Transaction",
+  YouCantDeleteRejectHOConfirmedTransaction:
+    " You Can't Delete/ Reject HO Confirmed Transaction",
   TransactionAlreadyRejected: "Transaction Already Rejected",
   YouCantDeleteConfirmedTransaction: "You Can't Delete Confirmed Transaction",
-  YouCantRejectEntryAlreadyConfirmedByHO: "You Can't Reject Entry Already Confirmed by HO",
+  YouCantRejectEntryAlreadyConfirmedByHO:
+    "You Can't Reject Entry Already Confirmed by HO",
   DoYouWantToRejectThisTransaction: "Do You Want to reject this transaction?",
   MoveForward: "Move Forward",
   ConfHistory: "Conf.History",
   ViewMemo: " View Memo",
-  EnterRemovalRemarksForRTGSBRANCHCONFIRMATION: "Enter Removal Remarks For RTGS BRANCH CONFIRMATION (MST/553)",
+  EnterRemovalRemarksForRTGSBRANCHCONFIRMATION:
+    "Enter Removal Remarks For RTGS BRANCH CONFIRMATION (MST/553)",
   RTGSHOConfirmation: "RTGS HO Confirmation",
 
   // Photo & Signature History
@@ -1178,20 +1244,22 @@ export const en_language_data = {
   CustName: "Cust. Name",
   ScanBy: "Scan By",
   ScanDate: "Scan Date",
-  ToZoomInOnTheImagesClickOnItOnce: "To zoom in on the images, simply click on it once...",
+  ToZoomInOnTheImagesClickOnItOnce:
+    "To zoom in on the images, simply click on it once...",
   NoImageFound: " No Image Found",
   SignatureImage: "Signature Image",
   Rotate: "Rotate",
   Reset: "Reset",
-
 
   // cts o/w entry
 
   PleaseEnterSlipAmount: "Please Enter Slip Amount",
   PleaseCheckAmount: "Please Check Amount",
   AreYouSureToAddBank: "Are You sure To Add Bank?",
-  EnterRemovalRemarksForCTSOWCLEARING: "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
-  EnterRemovalRemarksINWARDRETURNENTRY: "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
+  EnterRemovalRemarksForCTSOWCLEARING:
+    "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
+  EnterRemovalRemarksINWARDRETURNENTRY:
+    "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
   PresentmentDate: "Presentment Date",
   Zone: "Zone",
   SlipAmount: "Slip Amount",
@@ -1219,9 +1287,12 @@ export const en_language_data = {
 
   // cts o/w confirmation
 
-  EnterRemovalRemarksCTSOWCONFIRMATION: "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)",
-  EnterRemovalRemarksINWARDRETURNCONFIRMATION: "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
-  EnterRemovalRemarksOUTWARDRETURNCONFIRMATION: "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
+  EnterRemovalRemarksCTSOWCONFIRMATION:
+    "Enter Removal Remarks For CTS O/W CONFIRMATION (TRN/560)",
+  EnterRemovalRemarksINWARDRETURNCONFIRMATION:
+    "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
+  EnterRemovalRemarksOUTWARDRETURNCONFIRMATION:
+    "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
   ClearingRetrieveInformation: "Clearing Retrieve Information",
 
   // date clearing transfer
@@ -1231,53 +1302,75 @@ export const en_language_data = {
   AreYouSuretransfer: "Are you sure to transfer?  Clearing from date/zone",
   ClearingTodateZone: "Clearing To date/zone",
   ThereAre: "There are",
-  ChequeAvailableforClearingDateTransferAreYouSureContinue: "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
-  FromZone: "From Zone", ToZone: "To Zone", Count: "Count",
+  ChequeAvailableforClearingDateTransferAreYouSureContinue:
+    "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  FromZone: "From Zone",
+  ToZone: "To Zone",
+  Count: "Count",
 
   // inward clearing
 
-  ValidationSuccessful:"Validation Successful",
-  AreYouSurePostThisCheque:"Are you sure to post this Cheque?",
-  ModeisRequired:"Mode is Required",
-  PeriodNameisRequired:"Period Name is Required",
-  InstNoisRequired:"Installment is Required",
-  IFSCCodeisRequired:"IFSC Code is Required",
-  IfscValidate:"IFSC code should be of eleven digits",
+  ValidationSuccessful: "Validation Successful",
+  AreYouSurePostThisCheque: "Are you sure to post this Cheque?",
+  ModeisRequired: "Mode is Required",
+  PeriodNameisRequired: "Period Name is Required",
+  InstNoisRequired: "Installment is Required",
+  IFSCCodeisRequired: "IFSC Code is Required",
+  IfscValidate: "IFSC code should be of eleven digits",
   BankNameisRequired: "Bank Name is Required",
-  DoYouWantAllowTransactionVoucherNo: "Do you want to allow this transaction - Voucher No.",
+  DoYouWantAllowTransactionVoucherNo:
+    "Do you want to allow this transaction - Voucher No.",
   PleaseSelectAtLeastOneRow: "Please select at least one row.",
-  SelectAll: "Select All",
   DeselectAll: "Deselect All",
   DoYouWantRealizeDraft: "Do you want to realize Draft?",
-  DoWantRealizeDraftOrDirectPostInGL: "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
+  DoWantRealizeDraftOrDirectPostInGL:
+    "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
   OnlyError: "Only Error",
-  All: "All", ConfirmationPending: "Confirmation Pending", DraftBankerCheques: "Draft/Banker Cheques",
+  ConfirmationPending: "Confirmation Pending",
+  DraftBankerCheques: "Draft/Banker Cheques",
   ShareDividendWarrant: "Share Dividend Warrant",
-  EnterBranch: "Enter Branch", ACBranch: "A/C Branch",
-  ChequeSign: "Cheque/Sign", FromBank: "From Bank",
+  EnterBranch: "Enter Branch",
+  ACBranch: "A/C Branch",
+  ChequeSign: "Cheque/Sign",
+  FromBank: "From Bank",
   MICR: "MICR",
   InwardClearingProcess: "Inward Clearing Process",
   DividendAmountMatch: "Dividend Amount not match",
   InwardClearingChequeDetail: "Inward Clearing Cheque Detail",
-  Post: "Post", PositivePay: "Positive Pay", Return: "Return",
+  Post: "Post",
+  PositivePay: "Positive Pay",
+  Return: "Return",
   ReturnBranch: "Return Branch",
   ReturnAccountType: "Return Account Type",
-  ReturnACNumber: "Return A/C Number", OtherReason: "Other Reason",
-  Year: "Year", WarrantNumber: "Warrant Number", Dr: "Dr.",
-  DividendAmount: "Dividend Amount", Shares: "Shares", SharesAmount: "Shares Amount",
-  Paid: "Paid", PaidDate: "Paid Date", CreditAccount: "Credit Account",
-  Id: "Id", OpeningDateRequired: "Opening Date is required.",
-  JointName: "Joint Name", OpeningBalance: "Opening Balance",
-  ClosingBalance: "Closing Balance", NoOfShares: "No.of Shares",
-  Nominee: "Nominee", ModeName: "Mode Name",
-  Category: "Category", AlternatePhone: "Alternate Phone",
-  IssuedBranch: "Issued Branch", FrontGrey: "Front Grey", BackImage: "Back Image",
+  ReturnACNumber: "Return A/C Number",
+  OtherReason: "Other Reason",
+  Year: "Year",
+  WarrantNumber: "Warrant Number",
+  Dr: "Dr.",
+  DividendAmount: "Dividend Amount",
+  Shares: "Shares",
+  SharesAmount: "Shares Amount",
+  Paid: "Paid",
+  PaidDate: "Paid Date",
+  CreditAccount: "Credit Account",
+  Id: "Id",
+  OpeningDateRequired: "Opening Date is required.",
+  JointName: "Joint Name",
+  OpeningBalance: "Opening Balance",
+  ClosingBalance: "Closing Balance",
+  NoOfShares: "No.of Shares",
+  Nominee: "Nominee",
+  ModeName: "Mode Name",
+  Category: "Category",
+  AlternatePhone: "Alternate Phone",
+  IssuedBranch: "Issued Branch",
+  FrontGrey: "Front Grey",
+  BackImage: "Back Image",
   BlackWhite: "Black & White",
   AreYouReturnThisCheque: "Are you sure to return this Cheque?? ",
   PleaseEnterACType: "Please Enter A/c Type",
   PleaseEnterACNumber: "Please Enter A / c Number",
   SaveClose: "Save & Close",
-
 
   //payslip issue entry
   branchCode: "Branch Code",
@@ -1331,7 +1424,8 @@ export const en_language_data = {
   amount: "Amount",
   regionBtn: "Region Add",
   region: "Region",
-  dateValidationMessage: "To Date should be greater than or equal to From Date.",
+  dateValidationMessage:
+    "To Date should be greater than or equal to From Date.",
   ChequeNoisrequired: "Cheque No. is required",
   amountRequired: "Amount is Required",
   infavourofrequired: "InFavourof is Required",
@@ -1367,7 +1461,6 @@ export const en_language_data = {
   PrintForm: "Print Form",
   FDNo: "FD No.",
   FinInterest: "Fin Interest",
-  RetrievalParameters: "Retrieval Parameters",
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",
@@ -1378,4 +1471,3 @@ export const en_language_data = {
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
 };
-

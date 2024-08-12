@@ -99,7 +99,7 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
         sx={{
           m: 1,
           p: 0,
-          background: "var(--theme-color5)",
+          background: "var(--theme-color1)",
           color: "var(--theme-color2)",
           display: "flex",
           justifyContent: "space-between",

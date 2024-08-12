@@ -59,8 +59,6 @@ import Document from "./DocumentTab/Document";
 import PhotoSignatureCpy from "./formDetails/formComponents/individualComps/PhotoSignCopy2";
 import { format } from "date-fns";
 import { ckyc_confirmation_form_metadata } from "./formDetails/metadata/confirmation";
-import { TextField } from "components/styledComponent";
-import { ActionDialog } from "./dialog/ActionDialog";
 import { CloseFormDialog } from "./dialog/CloseFormDialog";
 import { PreventUpdateDialog } from "./dialog/PreventUpdateDialog";
 import { ConfirmUpdateDialog } from "./dialog/ConfirmUpdateDialog";

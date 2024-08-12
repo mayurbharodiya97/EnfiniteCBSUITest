@@ -9,7 +9,7 @@ import {
   Toolbar,
 } from "@mui/material";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { TextField } from "components/styledComponent";
+import { TextField } from "@acuteinfo/common-base";
 import { CkycContext } from "../CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";

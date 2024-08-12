@@ -2,8 +2,7 @@ import { FC, useContext, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import * as API from "../api";
-import { Tab } from "components/styledComponent/tab";
-import { Tabs } from "components/styledComponent/tabs";
+import { Tab, Tabs } from "@acuteinfo/common-base";
 import {
   PaidWarrantGridMetaData,
   shareDividendMetaData,

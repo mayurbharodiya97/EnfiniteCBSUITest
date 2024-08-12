@@ -31,7 +31,13 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
   );
 
   return (
-    <Dialog open={open} maxWidth={"xl"}>
+    <Dialog
+      open={open}
+      maxWidth={"xl"}
+      sx={{
+        "& .MuiToolbar-root": { width: "100%" },
+      }}
+    >
       <ReportGrid
         reportID={"scrollDetail"}
         reportName={"scrollDetail"}

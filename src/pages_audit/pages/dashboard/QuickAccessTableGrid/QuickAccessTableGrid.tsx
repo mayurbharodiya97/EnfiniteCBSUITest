@@ -191,11 +191,13 @@ const QuickAccessTableGrid = () => {
           <GradientButton
             onClick={() => handleButtonClick("Recent")}
             textColor={
-              activeButton === "Recent" ? "var(--theme-color2)" : "#ffffffb3"
+              activeButton === "Recent"
+                ? "var(--theme-color2)"
+                : "var(--theme-color1)"
             }
             style={{
               backgroundColor:
-                activeButton === "Recent" ? "var(--theme-color3)" : "inherit",
+                activeButton === "Recent" ? "var(--theme-color1)" : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
@@ -212,7 +214,7 @@ const QuickAccessTableGrid = () => {
             textColor={
               activeButton === "Favourites"
                 ? "var(--theme-color2)"
-                : "#ffffffb3"
+                : "var(--theme-color1)"
             }
             style={{
               backgroundColor:
