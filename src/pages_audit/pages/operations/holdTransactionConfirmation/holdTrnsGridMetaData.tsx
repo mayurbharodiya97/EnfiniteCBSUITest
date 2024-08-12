@@ -40,7 +40,7 @@ export const holdTrnsGridMetaData : GridMetaDataType = {
         isAutoSequence: true,
       },
       {
-        accessor: "ACCT_CD",
+        accessor: "ACCT_CD_NM",
         columnName: "A/C NO.",
         sequence: 2,
         alignment: "left",
@@ -50,7 +50,7 @@ export const holdTrnsGridMetaData : GridMetaDataType = {
         maxWidth: 230,
       },
       {
-        accessor: "TO_ACCT_CD",
+        accessor: "TO_ACCT_CD_NM",
         columnName: "To A/c No.",
         sequence: 3,
         alignment: "left",

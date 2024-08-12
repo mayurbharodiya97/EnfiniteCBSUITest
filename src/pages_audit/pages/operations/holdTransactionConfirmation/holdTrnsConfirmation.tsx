@@ -47,47 +47,59 @@ const HoldTrnsConfirmation = ()=>{
         })
     );
       const confRejectMutation = useMutation(
-        "confRejectMutation",
+        "getTransactionConfmReject",
         API.getTransactionConfmReject,
         {
           onSuccess: async (data) => {
-            for (const response of data ?? []) {
-              const status = response[0]?.STATUS;
-              const message = response[0]?.MESSAGE;
-          
-              if (status === "999") {
-                await MessageBox({
-                  messageTitle: "Validation Failed",
-                  message: message,
-                });
-              } else if (status === "9") {
-                await MessageBox({
-                  messageTitle: "Alert",
-                  message: message,
-                });
-              } else if (status === "99") {
-                const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
-                  message: message,
-                  buttonNames: ["Yes", "No"],
-                  defFocusBtnName: "Yes",
-                });
-                if (buttonName === "No") {
-                  break;
+            console.log(data);
+        
+            const responses = Array.isArray(data) ? data : [data];
+        
+            for (const response of responses) {
+                const status = response.STATUS;
+                const message = response.MESSAGE;
+        
+                if (status === "999") {
+                    await MessageBox({
+                        messageTitle: "Validation Failed",
+                        message: message,
+                    });
+                } else if (status === "9") {
+                    await MessageBox({
+                        messageTitle: "Alert",
+                        message: message,
+                    });
+                } else if (status === "99") {
+                    const buttonName = await MessageBox({
+                        messageTitle: "Confirmation",
+                        message: message,
+                        buttonNames: ["Yes", "No"],
+                        defFocusBtnName: "Yes",
+                    });
+                    if (buttonName === "No") {
+                        break; // Exit the loop if "No" is selected
+                    }
+                } else {
+                  enqueueSnackbar(message, {
+                    variant: "success",
+                  });
+                    SetDeleteRemark(false);
+                    refetch();
+                    CloseMessageBox();
                 }
-              } else {
-                enqueueSnackbar("insertSuccessfully", {
-                  variant: "success",
-                });
-                SetDeleteRemark(false);
-                refetch();
-                CloseMessageBox();
-              }
             }
-          },
+        },
+        
           
           
           onError: (error: any) => {
+            let errorMsg = "Unknownerroroccured";
+            if (typeof error === "object") {
+              errorMsg = error?.error_msg ?? errorMsg;
+            }
+            enqueueSnackbar(errorMsg, {
+              variant: "error",
+            });
             CloseMessageBox();
           },
         }
@@ -127,7 +139,6 @@ const HoldTrnsConfirmation = ()=>{
                 TRAN_AMOUNT:"0",
                 
              };
-             console.log(confirmPara);
              
              confRejectMutation.mutate({...confirmPara})
             }
@@ -163,6 +174,7 @@ const HoldTrnsConfirmation = ()=>{
             data={data ?? []}
             setData={() => null}
             actions={actions}
+            refetchData={() => refetch()}
             loading={isLoading || isFetching}
             ReportExportButton={true}
             setAction={setCurrentAction}
@@ -198,7 +210,6 @@ const HoldTrnsConfirmation = ()=>{
                               TRAN_TYPE:"Delete",
                                 CONFIRM:"N"
                             };
-                            console.log(deleteReqPara);
                             SetDeleteRemark(false);
                             confRejectMutation.mutate({...deleteReqPara});
                           }

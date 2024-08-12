@@ -21,8 +21,8 @@ export const getHoldTrnsData = async ({
               return {
                 ...items,
     
-                ACCT_CD:`${items?.BRANCH_CD} ${items?.ACCT_TYPE} ${items?.ACCT_CD} ${items?.ACCT_NM}`,
-                TO_ACCT_CD:`${items?.TO_BRANCH_CD} ${items?.TO_ACCT_TYPE} ${items?.TO_ACCT_CD} ${items?.TO_ACCT_NM}`,
+                ACCT_CD_NM:`${items?.BRANCH_CD} ${items?.ACCT_TYPE} ${items?.ACCT_CD} ${items?.ACCT_NM}`,
+                TO_ACCT_CD_NM:`${items?.TO_BRANCH_CD} ${items?.TO_ACCT_TYPE} ${items?.TO_ACCT_CD} ${items?.TO_ACCT_NM}`,
                 PAID:items?.PAID==="Y"?"Paid":"Unpaid"
     
               };
@@ -45,10 +45,15 @@ const { data, status, message, messageDetails } =
 await AuthSDK.internalFetcher("DAILYHOLDTRANSACTIONCONFIRMATION", {
 ...reqPara
 });
+console.log(message);
+
 
 if (status === "0") {
-
-return data;
+const RESPONSE ={
+  MESSAGE:message,
+  STATUS:status
+}
+return RESPONSE;
 } else {
 throw DefaultErrorObject(message, messageDetails);
 }
