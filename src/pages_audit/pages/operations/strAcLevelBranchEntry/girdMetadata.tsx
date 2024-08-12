@@ -126,6 +126,23 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
       maxWidth: 280,
     },
     {
+      columnName: "Transaction Detail",
+      componentType: "buttonRowCell",
+      accessor: "TRANSACTION_DETAIL",
+      sequence: 7,
+      buttonLabel: "Transaction Detail",
+      isVisible: true,
+      width: 200,
+      minWidth: 250,
+      maxWidth: 280,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.TRN_DTL_BUT_VISIBLE === "Y") {
+          return false;
+        }
+        return true;
+      },
+    },
+    {
       accessor: "ACT_FROM_DT",
       columnName: "From Date",
       sequence: 8,

@@ -246,6 +246,24 @@ export const cashReportData = async (reportID, filter, otherAPIRequestPara) => {
   }
 };
 
+export const getChqValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
+      // COMP_CD: reqData?.branch?.info?.COMP_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData.ACCT_CD,
+      CHEQUE_NO: reqData?.CHEQUE_NO,
+      TYPE_CD: reqData?.TYPE_CD,
+      SCREEN_REF: "TRN/039",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const justForTestings = async () => {
   const data = [
     {

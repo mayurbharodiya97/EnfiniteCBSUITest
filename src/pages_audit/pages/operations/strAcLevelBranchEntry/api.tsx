@@ -15,11 +15,45 @@ export const getStrBranchLevelData = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getStrSuspiciousTransactionData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`GETSTRTRANDTL`, { ...Apireq });
+  if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        SUSPICIOUS_FLAG: item?.SUSPICIOUS_FLAG === "Y" ? true : false,
+        _isNewRow: item["NEW_INSERT"] === "N" ? false : true,
+      }
+
+    })
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getGroundSuspicionData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETSTRGOSDTL`, { ...Apireq });
   if (status === "0") {
     return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateBranhcDetailData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`UPDATESTRBRANCHDTL`, { ...Apireq });
+  if (status === "0") {
+    return message
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const susTransactionDetailDML = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`DOSTRTRANDML`, { ...Apireq });
+  if (status === "0") {
+    return message
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

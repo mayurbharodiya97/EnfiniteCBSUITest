@@ -4,7 +4,7 @@ import * as API from "../api";
 export const PayslipAndDDFormMetaData = {
   form: {
     name: "PayslipAndDD",
-    label: "Payslip & Demand Draft",
+    label: "PayslipAndDemandDraft",
     validationRun: "onBlur",
     submitAction: "home",
     render: {
@@ -58,7 +58,7 @@ export const PayslipAndDDFormMetaData = {
         componentType: "amountField",
       },
       name: "PAYMENT_AMOUNT",
-      label: "Payment Amount",
+      label: "PaymentAmount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -84,7 +84,7 @@ export const PayslipAndDDFormMetaData = {
         componentType: "amountField",
       },
       name: "TOTAL_AMOUNT",
-      label: "Total Amount",
+      label: "TotalAmount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -153,7 +153,7 @@ export const PayslipAndDDFormMetaData = {
       },
       name: "PAYSLIPDD",
       isScreenStyle: true,
-      displayCountName: "Payslip & Demand Draft",
+      displayCountName: "PayslipAndDemandDraft",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       removeRowFn: "deleteFormArrayFieldData",
       addRowFn: (data) => {
@@ -164,7 +164,7 @@ export const PayslipAndDDFormMetaData = {
             if (
               item.DEF_TRAN_CD.trim() &&
               item.INFAVOUR_OF.trim() &&
-              item.AMOUNT.trim() &&
+              String(item.AMOUNT).trim() &&
               item.PAYSLIP_NO.trim()
             ) {
               return true;
@@ -182,8 +182,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "DEF_TRAN_CD",
-          label: "Bill Type",
-          placeholder: "Select Bill Type",
+          label: "billType",
+          placeholder: "SelectBillType",
           required: true,
           defaultValue: "532",
           fullWidth: true,
@@ -287,7 +287,7 @@ export const PayslipAndDDFormMetaData = {
           },
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Bill Type is required"] }],
+            rules: [{ name: "required", params: ["billtypeRequired"] }],
           },
           GridProps: {
             xs: 12,
@@ -316,8 +316,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "INFAVOUR_OF",
-          label: "Infavour Of",
-          placeholder: "Select Infavour Of",
+          label: "InfavourOf",
+          placeholder: "SelectInfavourOf",
           options: API.getPayslipInfavourOfList,
           _optionsKey: "getPayslipInfavourOfList",
           postValidationSetCrossFieldValues: async (
@@ -340,7 +340,7 @@ export const PayslipAndDDFormMetaData = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Infavour Of is required"] }],
+            rules: [{ name: "required", params: ["InfavourOfRequired"] }],
           },
           GridProps: {
             xs: 12,
@@ -356,8 +356,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "textField",
           },
           name: "INSTRUCTION_REMARKS",
-          label: "Instruction Remarks",
-          placeholder: "Enter Instruction Remarks",
+          label: "instRemarks",
+          placeholder: "EnterInstructionRemarks",
           type: "text",
           GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
         },
@@ -367,8 +367,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "numberFormat",
           },
           name: "PAYSLIP_NO",
-          label: "Payslip Number",
-          placeholder: "Enter Payslip Number",
+          label: "payslipNumber",
+          placeholder: "EnterPayslipNumber",
           type: "number",
           maxLength: 12,
           disableCaching: true,
@@ -471,14 +471,11 @@ export const PayslipAndDDFormMetaData = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["Payslip Number is required"] },
-            ],
+            rules: [{ name: "required", params: ["payslipNoRequired"] }],
           },
           FormatProps: {
             allowLeadingZeros: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 12) {
                 return false;
               }
@@ -497,10 +494,9 @@ export const PayslipAndDDFormMetaData = {
           },
           name: "AMOUNT",
           label: "Amount",
-          placeholder: "Enter Amount",
+          placeholder: "EnterAmount",
           autoComplete: "off",
           required: true,
-          maxLength: 15,
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: false,
             touchAndValidate: false,
@@ -509,7 +505,6 @@ export const PayslipAndDDFormMetaData = {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 15) {
                 return false;
               }
@@ -584,7 +579,7 @@ export const PayslipAndDDFormMetaData = {
 
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Amount is required"] }],
+            rules: [{ name: "required", params: ["amountRequired"] }],
           },
           validate: (currentField, dependentField) => {
             if (Number(currentField?.value) <= 0) {
@@ -606,8 +601,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "REGION",
-          label: "Region",
-          placeholder: "Select Region",
+          label: "region",
+          placeholder: "SelectRegion",
           dependentFields: ["DEF_TRAN_CD"],
           disableCaching: true,
           options: (...arg) => {
@@ -644,7 +639,7 @@ export const PayslipAndDDFormMetaData = {
           },
           name: "COMMISSION",
           label: "Commision",
-          placeholder: "Enter Commision",
+          placeholder: "EnterCommision",
           autoComplete: "off",
           maxLength: 13,
           dependentFields: ["TAX_RATE", "GST_ROUND"],
@@ -709,7 +704,6 @@ export const PayslipAndDDFormMetaData = {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 13) {
                 return false;
               }
@@ -734,15 +728,14 @@ export const PayslipAndDDFormMetaData = {
             componentType: "amountField",
           },
           name: "OTHER_COMISSION",
-          label: "Other Commision",
-          placeholder: "Enter Other Commision",
+          label: "OtherCommision",
+          placeholder: "EnterOtherCommision",
           autoComplete: "off",
           maxLength: 13,
           FormatProps: {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 13) {
                 return false;
               }
@@ -782,8 +775,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "COL_BANK_CD",
-          label: "Bank Code",
-          placeholder: "Select Bank Code",
+          label: "BankCode",
+          placeholder: "SelectBankCode",
           options: API.getPayslipBankCodeList,
           _optionsKey: "getPayslipBankCodeList",
           GridProps: {
@@ -800,7 +793,7 @@ export const PayslipAndDDFormMetaData = {
             componentType: "textField",
           },
           name: "BANK_NM",
-          label: "Bank Name",
+          label: "BankName",
           type: "text",
           dependentFields: ["COL_BANK_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
@@ -834,8 +827,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "SIGNATURE1_CD",
-          label: "Signature 1",
-          placeholder: "Select Signature 1",
+          label: "signature1",
+          placeholder: "SelectSignature1",
           disableCaching: true,
           dependentFields: ["DEF_TRAN_CD"],
           options: (...arg) => {
@@ -869,8 +862,8 @@ export const PayslipAndDDFormMetaData = {
             componentType: "autocomplete",
           },
           name: "SIGNATURE2_CD",
-          label: "Signature 2",
-          placeholder: "Select Signature 2",
+          label: "signature2",
+          placeholder: "SelectSignature2",
           disableCaching: true,
           dependentFields: ["DEF_TRAN_CD"],
           options: (...arg) => {

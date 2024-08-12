@@ -196,6 +196,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authDetails");
     localStorage.removeItem("tokenchecksum");
     localStorage.removeItem("token_status");
+    localStorage.removeItem("charchecksum");
     localStorage.removeItem("specialChar");
     dispatch({
       type: "logout",
@@ -233,8 +234,13 @@ export const AuthProvider = ({ children }) => {
       if (result === null) {
         //logout();
       } else {
-        // localStorage.getItem("tokenchecksum");
-        let checksumdata = localStorage.getItem("tokenchecksum");
+        let checksumdata: any;
+        if (keyNm === "specialChar") {
+          checksumdata = localStorage.getItem("charchecksum");
+        } else {
+          // localStorage.getItem("tokenchecksum");
+          checksumdata = localStorage.getItem("tokenchecksum");
+        }
         let genChecksum = await GenerateCRC32(
           localStorage.getItem(keyNm) || ""
         );

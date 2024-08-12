@@ -12,7 +12,7 @@ const CurrentTab = () => {
   const formRef = useRef<any>(null);
   const [formStatus, setFormStatus] = useState<any[]>([])
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
-  const onSubmitPDHandler = (
+  const onFormSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
@@ -25,7 +25,6 @@ const CurrentTab = () => {
       formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
-
 
 
 
@@ -45,7 +44,7 @@ const CurrentTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
+      if(!AcctMSTState?.isFreshEntryctx) {
         let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
         let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
 
@@ -71,7 +70,6 @@ const CurrentTab = () => {
     }
     endSubmit(true);
   };
-  const initialVal:any= {}
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -114,14 +112,28 @@ const CurrentTab = () => {
     }
   }, [formStatus])
 
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
+          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes, 
+    AcctMSTState?.formDatactx["MAIN_DETAIL"]
+  ])
+
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
         ref={formRef}
-        onSubmitHandler={onSubmitPDHandler}
+        onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-tab-current-form" + initialVal}
         metaData={current_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{GPARAM155: AcctMSTState?.gparam155 }}

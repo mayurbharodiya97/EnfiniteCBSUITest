@@ -3,7 +3,7 @@ import * as API from "../api";
 export const BeneficiaryAcctDetailsFormMetaData = {
   form: {
     name: "BeneficiaryAcctDetails",
-    label: "Beneficiary A/c Details",
+    label: "BeneficiaryACDetails",
     validationRun: "onBlur",
     submitAction: "home",
     render: {
@@ -60,7 +60,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         componentType: "amountField",
       },
       name: "PAYMENT_AMOUNT",
-      label: "Payment Amount",
+      label: "PaymentAmount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -87,7 +87,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         componentType: "amountField",
       },
       name: "TOTAL_AMOUNT",
-      label: "Total Amount",
+      label: "TotalAmount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -143,7 +143,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
       },
       name: "BENEFIACCTDTL",
       isScreenStyle: true,
-      displayCountName: "Beneficiary A/c Detail",
+      displayCountName: "BeneficiaryACDetails",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.BENEFIACCTDTL)
@@ -152,7 +152,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         if (dataArray?.length > 0) {
           for (let i = 0; i < dataArray?.length; i++) {
             const item = dataArray[0];
-            if (item.TO_ACCT_NO.trim() && item.AMOUNT.trim()) {
+            if (item.TO_ACCT_NO.trim() && String(item.AMOUNT).trim()) {
               return true;
             }
           }
@@ -189,7 +189,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         {
           render: { componentType: "checkbox" },
           name: "DD_REQUEST",
-          label: "DD Request",
+          label: "DDRequest",
           defaultValue: false,
           shouldExclude: (_, dependentFieldsValues, formState) => {
             return formState?.NEFTFlagsData?.[0]?.DD_REQ_VISIBLE === "N"
@@ -204,8 +204,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "autocomplete",
           },
           name: "TO_ACCT_NO",
-          label: "Account Number",
-          placeholder: "Select Account Number",
+          label: "AccountNum",
+          placeholder: "SelectAccountNumber",
           dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
           options: async (dependentValue, formState, _, authState) => {
             return API.getRtgsBenfDtlList({
@@ -328,9 +328,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["Account Number is required"] },
-            ],
+            rules: [{ name: "required", params: ["AccountNumberRequired"] }],
           },
           GridProps: {
             xs: 12,
@@ -346,7 +344,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "formbutton",
           },
           name: "BENEFICIARY",
-          label: "Audit Trail",
+          label: "AuditTrail",
           placeholder: "",
           type: "text",
           tabIndex: "-1",
@@ -378,7 +376,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "TO_ACCT_TYPE",
-          label: "Account Type",
+          label: "accountType",
           type: "text",
           isReadOnly: true,
           fullWidth: true,
@@ -390,7 +388,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "CONTACT_NO",
-          label: "Mobile Number",
+          label: "MobileNo",
           type: "text",
           isReadOnly: true,
           fullWidth: true,
@@ -401,7 +399,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "TO_EMAIL_ID",
-          label: "Email ID",
+          label: "EmailID",
           type: "text",
           isReadOnly: true,
           fullWidth: true,
@@ -414,14 +412,12 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           },
           name: "AMOUNT",
           label: "Amount",
-          placeholder: "Enter Amount",
+          placeholder: "EnterAmount",
           autoComplete: "off",
-          maxLength: 12,
           FormatProps: {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (currentField) => {
-              //@ts-ignore
               if (currentField?.value?.length > 12) {
                 return false;
               }
@@ -434,11 +430,11 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Amount is required"] }],
+            rules: [{ name: "required", params: ["amountRequired"] }],
           },
           validate: (currentField, dependentField) => {
             if (Number(currentField?.value) <= 0) {
-              return "Amount should be greater than zero";
+              return "AmountShouldGreaterThanZero";
             }
             return "";
           },
@@ -469,7 +465,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           },
           name: "REMARKS",
           label: "Remarks",
-          placeholder: "Enter Remarks",
+          placeholder: "EnterRemarks",
           type: "text",
           autoComplete: "off",
           fullWidth: true,
@@ -480,7 +476,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           render: {
             componentType: "divider",
           },
-          label: "IFSC Bank Detail",
+          label: "IFSCBankDetail",
           name: "IFSCBankDetail",
           GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
         },
@@ -584,7 +580,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
           render: {
             componentType: "divider",
           },
-          label: "Favouring Detail",
+          label: "FavouringDetail",
           name: "FavouringDetail",
           dependentFields: ["DD_REQUEST"],
           shouldExclude: (_, dependentFieldsValues, __) => {
@@ -602,8 +598,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "numberFormat",
           },
           name: "PAYEE_ACCT_CD",
-          label: "Payee A/c No.",
-          placeholder: "Enter Payee A/c No.",
+          label: "PayeeACNo",
+          placeholder: "EnterPayeeACNo",
           type: "text",
           maxLength: 20,
           fullWidth: true,
@@ -643,8 +639,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "PAYEE_BANK",
-          label: "Payee Bank",
-          placeholder: "Enter Payee Bank",
+          label: "PayeeBank",
+          placeholder: "EnterPayeeBank",
           type: "text",
           maxLength: 50,
           autoComplete: false,
@@ -672,8 +668,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "PAYABLE_AT",
-          label: "Payable At",
-          placeholder: "Enter Payable At",
+          label: "PayableAt",
+          placeholder: "EnterPayableAt",
           type: "text",
           maxLength: 50,
           autoComplete: false,
@@ -701,8 +697,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
             componentType: "textField",
           },
           name: "PAYEE_NAME",
-          label: "Payee Name",
-          placeholder: "Enter Payee Name",
+          label: "PayeeName",
+          placeholder: "EnterPayeeName",
           type: "text",
           maxLength: 50,
           autoComplete: false,

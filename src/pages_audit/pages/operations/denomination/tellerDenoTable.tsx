@@ -180,7 +180,7 @@ const TellerDenoTable = ({
                         }
                       </Box>
                     </StyledTableCell>
-                    <StyledTableCell className="cellBordered" align="left">
+                    <StyledTableCell className="cellBordered" align="right">
                       Note count
                     </StyledTableCell>
                     <StyledTableCell className="cellBordered" align="right">
@@ -303,7 +303,7 @@ const TellerDenoTable = ({
                     </StyledTableCell>
 
                     <StyledTableCell
-                      align="left"
+                      align="right"
                       sx={{
                         maxWidth: "167px",
                         padding: "4px 17px !important",

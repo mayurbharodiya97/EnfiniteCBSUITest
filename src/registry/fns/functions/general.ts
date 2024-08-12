@@ -769,27 +769,7 @@ const GeneralAPISDK = () => {
     }
   };
 
-  const getCustLatestDtl = async ({ COMP_CD, CUSTOMER_ID, REQ_CD }) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
-        COMP_CD: COMP_CD,
-        CUSTOMER_ID: CUSTOMER_ID,
-        REQ_CD: REQ_CD,
-      });
-    if (status === "0") {
-      return data;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-  const getCustAccountLatestDtl = async ({
-    COMP_CD,
-    BRANCH_CD,
-    ACCT_TYPE,
-    ACCT_CD,
-    AMOUNT,
-    SCREEN_REF,
-  }) => {
+  const getCustAccountLatestDtl = async ({ COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_CD, AMOUNT, SCREEN_REF }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
         COMP_CD: COMP_CD,
@@ -817,7 +797,19 @@ const GeneralAPISDK = () => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  }
+  const getCalGstAmountData = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCALCGSTAMT", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
   };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -849,9 +841,9 @@ const GeneralAPISDK = () => {
     get_Account_Type,
     getChequeNoValidation,
     getCommTypeList,
-    getCustLatestDtl,
     getPhotoSignHistory,
     getCustAccountLatestDtl,
+    getCalGstAmountData
   };
 };
 export const GeneralAPI = GeneralAPISDK();

@@ -328,7 +328,6 @@ export const main_tab_metadata = {
         {
             render: {
                 componentType: "autocomplete",
-                sequence: 7,
             },
             name: "MARITAL_STATUS",
             label: "MaritalStatus",
@@ -517,7 +516,7 @@ export const main_tab_metadata = {
           label: "SubArea",
           dependentFields: ["PIN_CODE"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["PIN_CODE"]?.value, formState, _, authState),
           _optionsKey: "indSubareaMainOp",
         isReadOnly: (fieldValue, dependentFields, formState) => {
             const PARAM320 = formState?.PARAM320;

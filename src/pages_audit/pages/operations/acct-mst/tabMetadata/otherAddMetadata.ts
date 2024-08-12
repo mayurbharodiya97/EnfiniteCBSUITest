@@ -51,7 +51,7 @@ export const otherAdd_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "OTHER_ADDRESS",
+            name: "OTHER_ADDRESS_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
@@ -163,10 +163,10 @@ export const otherAdd_tab_metadata = {
                     label: "SubArea",
                     dependentFields: ["PIN_CODE"],
                     disableCaching: true,
-                    options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+                    options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value, formState, _, authState),
                     _optionsKey: "indSubareaCollateralOp",
                     isReadOnly: (fieldValue, dependentFields, formState) => {
-                    const pin_code = dependentFields?.PIN_CODE?.value;
+                    const pin_code = dependentFields?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value;
                     if(!Boolean(pin_code)) {
                         return true;
                     } else if(Boolean(pin_code) && pin_code.length<6) {
@@ -175,7 +175,7 @@ export const otherAdd_tab_metadata = {
                     return false;
                 },
                 setValueOnDependentFieldsChange: (dependentFields) => {
-                    const pincode = dependentFields?.PIN_CODE?.value
+                    const pincode = dependentFields?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value;
                     // console.log("siudbcsiudbcisbdc setvalue", pincode)
                     if(Boolean(pincode)) {
                         if(pincode.length<6) {
@@ -228,7 +228,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].CITY_NM;
@@ -243,7 +243,7 @@ export const otherAdd_tab_metadata = {
                     name: "CITY_CD",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
+                        const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                         // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                         if(optionData && optionData.length>0) {
                             return optionData[0].CITY_CD;
@@ -261,7 +261,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].DISTRICT_NM;
@@ -277,7 +277,7 @@ export const otherAdd_tab_metadata = {
                     label: "hidden district",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
+                        const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                         // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                         if(optionData && optionData.length>0) {
                             return optionData[0].DISTRICT_CD;
@@ -295,7 +295,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].STATE_NM;
@@ -314,7 +314,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].COUNTRY_NM;
@@ -333,7 +333,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].STATE_CD;
@@ -352,7 +352,7 @@ export const otherAdd_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
+                    const optionData = dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
                     // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
                     if(optionData && optionData.length>0) {
                         return optionData[0].COUNTRY_CD;
