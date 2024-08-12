@@ -1,10 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { AcctMSTContext } from "../AcctMSTContext";
-import { joint_tab_metadata } from "../tabMetadata/jointTabMetadata";
+import { AcctMSTContext } from "../../AcctMSTContext";
+import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
 import { AuthContext } from "pages_audit/auth";
-import TabNavigate from "../TabNavigate";
+import TabNavigate from "../../TabNavigate";
 import _ from "lodash";
 
 const JointTab = () => {
@@ -14,73 +14,6 @@ const JointTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
-
-  const onSubmitHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag,
-    hasError
-  ) => {
-    if(data && !hasError) {
-      let newData = AcctMSTState?.formDatactx
-      if(data?.JOINT_ACCOUNT_DTL) {
-        let filteredCols:any[]=[]
-        filteredCols = Object.keys(data.JOINT_ACCOUNT_DTL[0])
-        filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
-        if(AcctMSTState?.isFreshEntryctx) {
-          filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
-        }
-        let newFormatOtherAdd = data?.JOINT_ACCOUNT_DTL?.map((formRow, i) => {
-          let formFields = Object.keys(formRow)
-          formFields = formFields.filter(field => !field.includes("_ignoreField"))
-          const formData = _.pick(data?.JOINT_ACCOUNT_DTL[i], formFields)
-          return {...formData};
-        })
-        newData["JOINT_ACCOUNT_DTL"] = [...newFormatOtherAdd]
-        handleFormDataonSavectx(newData)
-        if(!AcctMSTState?.isFreshEntryctx) {
-          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-          tabModifiedCols = {
-              ...tabModifiedCols,
-              JOINT_ACCOUNT_DTL: [...filteredCols]
-          }
-          handleModifiedColsctx(tabModifiedCols)
-        }
-      } else {
-        newData["JOINT_ACCOUNT_DTL"] = []
-        handleFormDataonSavectx(newData)
-        if(!AcctMSTState?.isFreshEntryctx) {
-          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-          tabModifiedCols = {
-            ...tabModifiedCols,
-            JOINT_ACCOUNT_DTL: []
-          }
-          handleModifiedColsctx(tabModifiedCols)
-        }  
-      }
-      setFormStatus(old => [...old, true])
-    } else {
-      handleStepStatusctx({status: "error", coltabvalue: AcctMSTState?.colTabValuectx})
-      setFormStatus(old => [...old, false])
-    }
-    endSubmit(true)
-  }
-  
-  const initialVal = useMemo(() => {
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {JOINT_ACCOUNT_DTL: [{}]}
-        : AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}, ...AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["JOINT_ACCOUNT_DTL"] ?? {}}
-    )
-  }, [
-    AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
-    AcctMSTState?.formDatactx["JOINT_ACCOUNT_DTL"]
-  ])
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -99,6 +32,7 @@ const JointTab = () => {
       isLoading: false,
     })
   }, [])
+
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
@@ -123,16 +57,84 @@ const JointTab = () => {
     }
   }, [formStatus])
 
+  const onFormSubmitHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+    hasError
+  ) => {
+    if(data && !hasError) {
+      let newData = AcctMSTState?.formDatactx
+      if(data?.JOINT_HOLDER_DTL) {
+        let filteredCols:any[]=[]
+        filteredCols = Object.keys(data.JOINT_HOLDER_DTL[0])
+        filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+        if(AcctMSTState?.isFreshEntryctx) {
+          filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
+        }
+        let newFormatOtherAdd = data?.JOINT_HOLDER_DTL?.map((formRow, i) => {
+          let formFields = Object.keys(formRow)
+          formFields = formFields.filter(field => !field.includes("_ignoreField"))
+          const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields)
+          return {...formData, j_type: "J"};
+        })
+        newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd]
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+              ...tabModifiedCols,
+              JOINT_HOLDER_DTL: [...filteredCols]
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }
+      } else {
+        newData["JOINT_HOLDER_DTL"] = []
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            JOINT_HOLDER_DTL: []
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }  
+      }
+      setFormStatus(old => [...old, true])
+    } else {
+      handleStepStatusctx({status: "error", coltabvalue: AcctMSTState?.colTabValuectx})
+      setFormStatus(old => [...old, false])
+    }
+    endSubmit(true)
+  }
+  
+  const initialVal = useMemo(() => {
+    return (
+      AcctMSTState?.isFreshEntryctx
+        ? AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]?.length>0 
+          ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
+          : {JOINT_HOLDER_DTL: [{}]}
+        : AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
+          ? {JOINT_HOLDER_DTL: [...AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"] ?? []]}
+          : {JOINT_HOLDER_DTL: [...AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"] ?? []]}
+    )
+  }, [
+    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.retrieveFormDataApiRes["JOINT_HOLDER_DTL"],
+    AcctMSTState?.formDatactx["JOINT_HOLDER_DTL"]
+  ])
+
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-joint-tab-form" + initialVal}
         ref={formRef}
         metaData={joint_tab_metadata as MetaDataType}
-        onSubmitHandler={onSubmitHandler}
+        onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: AcctMSTState?.customerIDctx ?? "", REQ_FLAG: (AcctMSTState?.isFreshEntryctx || AcctMSTState?.isDraftSavedctx) ? "F" : "E"}}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
       ></FormWrapper>

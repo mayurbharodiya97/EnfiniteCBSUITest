@@ -93,7 +93,7 @@ const ReportExportScreen = ({
       columns.map((column, index) => {
         return {
           id: index + 1,
-          cname: column.columnName,
+          cname: t(column.columnName),
           [column.accessor]: column.accessor,
           cellType:
             column?.Cell === components.DateTimeCell ||

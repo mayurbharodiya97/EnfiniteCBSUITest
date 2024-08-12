@@ -1641,6 +1641,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             }
           },
           options: async (dependentValue, formState, _, authState) => {
+            // return formState?.rtgsAcData
             return API.getRtgsBenfDtlList({
               COMP_CD: authState?.companyID,
               BRANCH_CD:
@@ -1659,6 +1660,10 @@ export const rtgsAccountDetailFormMetaData: any = {
               FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
             });
           },
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
           _optionsKey: "getRtgsBenfDtlList",
           postValidationSetCrossFieldValues: async (
             field,
@@ -1666,6 +1671,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            console.log("formState", formState)
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&
@@ -2288,22 +2294,75 @@ export const AuditBenfiDetailFormMetadata = {
           if (
             field?.value
           ) {
+
             let postData = await getIfscBenDetail({
               IFSC_CODE: field?.value ?? "",
               ENTRY_TYPE: "",
             });
-            return {
-              BANK_NM: { value: postData?.[0].BANK_NM ?? "" },
-              BRANCH_NM: { value: postData?.[0].BRANCH_NM ?? "" },
-              CONTACT_DTL: { value: postData?.[0].CONTACT_DTL ?? "" },
-              CENTRE_NM: { value: postData?.[0].CENTRE_NM ?? "" },
-              ADDR: { value: postData?.[0].ADDR ?? "" },
-              DISTRICT_NM: { value: postData?.[0].DISTRICT_NM ?? "" },
-              STATE_NM: { value: postData?.[0].STATE_NM ?? "" },
-              MICR_CODE: { value: postData?.[0].MICR_CODE ?? "" },
+            let btn99, returnVal;
+
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
             };
-          }
-          else if (!field?.value) {
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.O_STATUS === "999") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "ValidationFailed",
+                  message: postData[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "9") {
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "99") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Confirmation",
+                  message: postData[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData[i];
+                } else {
+                  returnVal = "";
+                }
+              }
+            }
+            btn99 = 0;
+
+            return {
+              TO_IFSCCODE: returnVal !== ""
+                ? {
+                  value: field?.value,
+                  ignoreUpdate: true,
+                  isFieldFocused: false,
+                }
+                : {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              BANK_NM: { value: returnVal.BANK_NM ?? "" },
+              BRANCH_NM: { value: returnVal.BRANCH_NM ?? "" },
+              CONTACT_DTL: { value: returnVal.CONTACT_DTL ?? "" },
+              CENTRE_NM: { value: returnVal.CENTRE_NM ?? "" },
+              ADDR: { value: returnVal.ADDR ?? "" },
+              DISTRICT_NM: { value: returnVal.DISTRICT_NM ?? "" },
+              STATE_NM: { value: returnVal.STATE_NM ?? "" },
+              MICR_CODE: { value: returnVal.MICR_CODE ?? "" },
+            };
+          } else if (!field?.value) {
             return {
               MICR_CODE: { value: "" },
               BANK_NM: { value: "" },

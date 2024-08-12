@@ -1,5 +1,5 @@
 import { FC, useRef, useEffect, useContext } from "react";
-import { useField, UseFieldHookProps } from "packages/form";
+import { useField, UseFieldHookProps ,transformDependentFieldsState } from "packages/form";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
 import { Omit, Merge } from "../types";
 import { theme2 } from "app/audit/theme";
@@ -79,6 +79,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
   isWorkingDate = false,
+  setValueOnDependentFieldsChange,
   format,
   //disableTimestamp,
   ...others
@@ -99,6 +100,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     incomingMessage,
     whenToRunValidation,
     runValidation,
+    dependentValues,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -116,6 +118,17 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     //@ts-ignore
   });
 
+
+  useEffect(() => {
+    if (typeof setValueOnDependentFieldsChange === "function") {
+      let result = setValueOnDependentFieldsChange(
+        transformDependentFieldsState(dependentValues)
+      );
+      if (result !== undefined && result !== null) {
+        handleChange(result);
+      }
+    }
+  }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
   // below code added for run validation if max or min date specified in metadata
   useEffect(() => {
     if (geaterThanDate(value, others?.maxDate)) {

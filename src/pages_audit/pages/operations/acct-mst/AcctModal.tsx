@@ -23,13 +23,13 @@ import TabStepper from "./TabStepper";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
 import MainTab from "./tabComponents/MainTab";
-import JointTab from "./tabComponents/JointTab";
-import NomineeJointTab from "./tabComponents/NomineeJointTab";
-import GuardianJointTab from "./tabComponents/GuardianJointTab";
-import GuarantorJointTab from "./tabComponents/GuarantorJointTab";
-import CollateralJointTab from "./tabComponents/CollateralJointTab";
-import SignatoryJointTab from "./tabComponents/SignatoryJointTab";
-import IntroductorJointTab from "./tabComponents/IntroductorJointTab";
+import JointTab from "./tabComponents/jointTabs/JointTab";
+import NomineeJointTab from "./tabComponents/jointTabs/NomineeJointTab";
+import GuardianJointTab from "./tabComponents/jointTabs/GuardianJointTab";
+import GuarantorJointTab from "./tabComponents/jointTabs/GuarantorJointTab";
+import CollateralJointTab from "./tabComponents/jointTabs/CollateralJointTab";
+import SignatoryJointTab from "./tabComponents/jointTabs/SignatoryJointTab";
+import IntroductorJointTab from "./tabComponents/jointTabs/IntroductorJointTab";
 import TermLoanTab from "./tabComponents/TermLoanTab";
 import SavingsDepositTab from "./tabComponents/SavingsDepositTab";
 import HypothicationTab from "./tabComponents/HypothicationTab";
@@ -40,12 +40,13 @@ import MobileRegTab from "./tabComponents/MobileRegTab";
 import RelativeDtlTab from "./tabComponents/RelativeDtlTab";
 import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
-import DocumentTab from "./tabComponents/DocumentTab";
+import Document from "./tabComponents/DocumentTab/Document";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
 import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
 import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
 import { useMutation } from "react-query";
 import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
+import { Alert } from "components/common/alert";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -85,6 +86,12 @@ const AcctModal = ({ onClose, formmode, from }) => {
     onError: (error: any) => {},
   });  
 
+  // save new account entry  
+  const saveAcctMutation: any = useMutation(API.accountSave, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });  
+
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
   }, []);
@@ -100,7 +107,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
         if(Array.isArray(location.state) && location.state.length>0) {
           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
           const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
-          const acctCD = location.state?.[0]?.data.ACCOUNT_NUMBER ?? "";
+          const acctCD = location.state?.[0]?.data.ACCT_CD ?? "";
           let payload: {
             COMP_CD?: string, 
             CUSTOMER_ID?:string,
@@ -112,7 +119,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           } = {
             BRANCH_CD: authState?.user?.branchCode ?? "",
             REQUEST_CD: reqCD,  
-            J_TYPE: "J",
+            J_TYPE: "J   ",
             ACCT_TYPE: acctType,  
             ACCT_CD: acctCD,
           }
@@ -187,41 +194,57 @@ const AcctModal = ({ onClose, formmode, from }) => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
       const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
       const totalTab:any = Array.isArray(steps) && steps.length;
-      // handleCurrFormctx({
-      //   // currentFormRefctx: [],
-      //   currentFormSubmitted: null,
-      //   // colTabValuectx: null,
-      //   // isLoading: false,
-      // })
-      if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
-        const getUpdatedTabs = async () => {
-          const {updated_tab_format, update_type} = await handleUpdatectx({
-            COMP_CD: authState?.companyID ?? ""
-          })
-          if(typeof updated_tab_format === "object") {
-            // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
-            if (Object.keys(updated_tab_format)?.length === 0) {
-                setAlertOnUpdate(true)
-            } else if(Object.keys(updated_tab_format)?.length>0) {
-              setUpdateDialog(true)
-            }
-          }
+      // console.log(AcctMSTState?.currentFormctx, "wkeuhjfiowehfiweuifh", AcctMSTState?.currentFormctx.currentFormSubmitted, "---- ", steps, totalTab)
+      if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+        handleCurrFormctx({
+          colTabValuectx: AcctMSTState?.colTabValuectx + 1,
+        })
+        handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
+      } else if(Boolean(AcctMSTState?.isFreshEntryctx && (totalTab - 1) === AcctMSTState?.colTabValuectx)) {
+        const reqPara = {
+          IsNewRow: true,
+          REQ_CD: AcctMSTState?.req_cd_ctx,
+          REQ_FLAG: "F",
+          SAVE_FLAG: "F",
+          CUSTOMER_ID: AcctMSTState?.customerIDctx,
+          ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+          ACCT_CD: AcctMSTState?.acctNumberctx,
+          COMP_CD: authState?.companyID ?? "",
+          formData: AcctMSTState?.formDatactx,
         }
-        getUpdatedTabs().catch(err => console.log("update error", err.message))
-        // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
-        //   setUpdateDialog(true)
-        //   // setCancelDialog(true)
-        // } else {
-        //   setAlertOnUpdate(true)
-        // }
-      } else {
-        if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
-          handleCurrFormctx({
-            colTabValuectx: AcctMSTState?.colTabValuectx + 1,
-          })
-          handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
-        }
-      }      
+        // console.log("oifjwoiejfowiejf", reqPara)
+        saveAcctMutation.mutate(reqPara)
+      }
+
+      // if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
+      //   const getUpdatedTabs = async () => {
+      //     const {updated_tab_format, update_type} = await handleUpdatectx({
+      //       COMP_CD: authState?.companyID ?? ""
+      //     })
+      //     if(typeof updated_tab_format === "object") {
+      //       // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+      //       if (Object.keys(updated_tab_format)?.length === 0) {
+      //           setAlertOnUpdate(true)
+      //       } else if(Object.keys(updated_tab_format)?.length>0) {
+      //         setUpdateDialog(true)
+      //       }
+      //     }
+      //   }
+      //   getUpdatedTabs().catch(err => console.log("update error", err.message))
+      //   // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
+      //   //   setUpdateDialog(true)
+      //   //   // setCancelDialog(true)
+      //   // } else {
+      //   //   setAlertOnUpdate(true)
+      //   // }
+      // } else {
+      //   if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+      //     handleCurrFormctx({
+      //       colTabValuectx: AcctMSTState?.colTabValuectx + 1,
+      //     })
+      //     handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
+      //   }
+      // }      
     }
   }, [AcctMSTState?.currentFormctx.currentFormSubmitted, AcctMSTState?.tabNameList, AcctMSTState?.isFinalUpdatectx])
 
@@ -253,7 +276,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
       case "Other Address":
         return <OtherAddTab />
       case "Documents":
-        return <DocumentTab />
+        return <Document />
       case "Advance Configuration":
         return <AdvConfigTab />
       case "Joint Holder":
@@ -430,6 +453,21 @@ const AcctModal = ({ onClose, formmode, from }) => {
             AcctMSTState?.tabsApiResctx.length > 0 &&
             (AcctMSTState?.isFreshEntryctx ||
               AcctMSTState?.fromctx === "new-draft") && <TabStepper />}
+          {mutation.isError ? (
+            <Alert
+              severity={mutation.error?.severity ?? "error"}
+              errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={mutation.error?.error_detail}
+              color="error"
+            />
+          ) : saveAcctMutation.isError && (
+            <Alert
+              severity={saveAcctMutation.error?.severity ?? "error"}
+              errorMsg={saveAcctMutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={saveAcctMutation.error?.error_detail}
+              color="error"
+            />
+          )}
           {steps &&
             steps.length > 0 &&
             steps.map((element, i) => {

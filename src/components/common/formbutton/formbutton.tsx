@@ -156,6 +156,7 @@ export const FormButton = ({
       <GradientButton
         color="secondary"
         onClick={ClickEventCall}
+        disabled={readOnly ?? false}
         style={{ width: "100%", paddingX: "10px", marginTop: "17px" }}
         starticon={startsIcon}
         endicon={endsIcon}

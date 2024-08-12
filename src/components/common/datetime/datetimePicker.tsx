@@ -146,6 +146,13 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         inputRef={focusRef}
         closeOnSelect={true}
         // orientation={"portrait"}
+        sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
+        }}
         value={
           value === ""
             ? null

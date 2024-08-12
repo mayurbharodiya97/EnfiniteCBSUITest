@@ -25,7 +25,6 @@ interface Form15GHEntryFormWrapperProps {
   retrieveData?: object;
   defaultView: string;
   screenFlag?: string;
-  dataRefetch?: any;
 }
 const Form15GHEntry = ({
   isDataChangedRef,
@@ -33,7 +32,6 @@ const Form15GHEntry = ({
   defaultView,
   retrieveData = {},
   screenFlag,
-  dataRefetch,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -69,8 +67,8 @@ const Form15GHEntry = ({
   let currentPath = useLocation().pathname;
 
   const formData =
-    Object.keys(retrieveData)?.length > 0
-      ? retrieveData
+    rows?.retrieveData && Object.keys(rows?.retrieveData).length > 0
+      ? rows?.retrieveData
       : rows?.[0]?.data || {};
 
   useEffect(() => {
@@ -82,7 +80,9 @@ const Form15GHEntry = ({
       );
       const label2 = `${label ?? ""}\u00A0\u00A0 ${
         formData?.CONFIRMED_DIS ?? ""
-      }\u00A0\u00A0 Uploaded: ${formData?.UPLOAD_DIS ?? ""}\u00A0\u00A0`;
+      }\u00A0\u00A0 ${t("Uploaded")}: ${
+        formData?.UPLOAD_DIS ?? ""
+      }\u00A0\u00A0`;
       setMetadata((prevMetadata) => {
         const newMetadata = cloneDeep(prevMetadata);
         newMetadata.masterForm.form.label = label2;
@@ -104,7 +104,7 @@ const Form15GHEntry = ({
       onSuccess: (data) => {
         const updatedData = data.map((item) => ({
           ...item,
-          INT_AMOUNT: parseFloat(item.INT_AMOUNT).toFixed(2),
+          INT_AMOUNT: Number(item?.INT_AMOUNT ?? 0).toFixed(2),
         }));
         setState((old) => ({
           ...old,
@@ -183,7 +183,6 @@ const Form15GHEntry = ({
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
-      // dataRefetch();
     },
   });
 
@@ -283,7 +282,6 @@ const Form15GHEntry = ({
         isDataChangedRef.current = true;
         CloseMessageBox();
         closeDialog();
-        dataRefetch();
       }
     },
   });
@@ -355,8 +353,21 @@ const Form15GHEntry = ({
       }
       if (Boolean(data["ACTIVE"] === true)) {
         data["ACTIVE"] = "Y";
-      } else {
+      } else if (Boolean(data["ACTIVE"] === false)) {
         data["ACTIVE"] = "N";
+      } else {
+        data["ACTIVE"] = "";
+      }
+
+      if (Boolean(data["TOT_INCOME"] === "")) {
+        data["TOT_INCOME"] = "0";
+      } else {
+        data["TOT_INCOME"] = data["TOT_INCOME"];
+      }
+      if (Boolean(data["FIN_INT_AMT"] === "")) {
+        data["FIN_INT_AMT"] = "0";
+      } else {
+        data["FIN_INT_AMT"] = data["FIN_INT_AMT"];
       }
 
       if (formMode === "new") {
@@ -418,14 +429,13 @@ const Form15GHEntry = ({
           );
           data._OLDROWVALUE = filteredOldRowValue;
         }
-        if (
-          data._OLDROWVALUE &&
-          typeof data._OLDROWVALUE["ACTIVE"] !== "undefined"
-        ) {
+        if (data._OLDROWVALUE && Boolean(data._OLDROWVALUE["ACTIVE"])) {
           if (data._OLDROWVALUE["ACTIVE"] === true) {
             data._OLDROWVALUE["ACTIVE"] = "Y";
-          } else {
+          } else if (data._OLDROWVALUE["ACTIVE"] === false) {
             data._OLDROWVALUE["ACTIVE"] = "N";
+          } else {
+            data._OLDROWVALUE["ACTIVE"] = "";
           }
         }
         isErrorFuncRef.current = {
@@ -477,7 +487,10 @@ const Form15GHEntry = ({
   };
 
   const handleRemove = async (event) => {
-    if (formMode === "edit" && formData?.CONFIRMED === "Y") {
+    if (
+      (formMode === "edit" || formMode === "view") &&
+      formData?.CONFIRMED === "Y"
+    ) {
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
@@ -602,7 +615,7 @@ const Form15GHEntry = ({
           if (action === "GRID_DATA" && statusCheck) {
             const updatedData = payload.map((item) => ({
               ...item,
-              FIN_INT_AMT: parseFloat(item.FIN_INT_AMT).toFixed(2),
+              FIN_INT_AMT: Number(item?.FIN_INT_AMT ?? 0).toFixed(2),
             }));
             setState((old) => ({
               ...old,
@@ -626,7 +639,11 @@ const Form15GHEntry = ({
             <>
               {formMode === "edit" ? (
                 <>
-                  <GradientButton color={"primary"} onClick={handleRemove}>
+                  <GradientButton
+                    color={"primary"}
+                    disabled={updateMutation?.isLoading}
+                    onClick={handleRemove}
+                  >
                     {t("Delete")}
                   </GradientButton>
                   <GradientButton
@@ -648,6 +665,7 @@ const Form15GHEntry = ({
                       setFormMode("view");
                     }}
                     color={"primary"}
+                    disabled={updateMutation?.isLoading}
                   >
                     {t("Cancel")}
                   </GradientButton>
@@ -668,7 +686,11 @@ const Form15GHEntry = ({
                   >
                     {t("Save")}
                   </GradientButton>
-                  <GradientButton onClick={closeDialog} color={"primary"}>
+                  <GradientButton
+                    onClick={closeDialog}
+                    disabled={mutation?.isLoading}
+                    color={"primary"}
+                  >
                     {t("Close")}
                   </GradientButton>
                 </>
@@ -683,7 +705,6 @@ const Form15GHEntry = ({
                           messageTitle: "InvalidConfirmation",
                           message: "ConfirmRestrictionMessage",
                           buttonNames: ["Ok"],
-                          icon: "WARNING",
                         });
                       } else {
                         const confirmation = await MessageBox({
@@ -709,7 +730,6 @@ const Form15GHEntry = ({
                         messageTitle: "DeleteWarning",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
-                        icon: "WARNING",
                       });
                       if (confirmation === "Yes") {
                         handleSubmit(event, "Reject");
@@ -864,7 +884,6 @@ export const Form15GHEntryWrapper: React.FC<Form15GHEntryFormWrapperProps> = ({
   defaultView,
   retrieveData = {},
   screenFlag,
-  dataRefetch,
 }) => {
   return (
     <Dialog
@@ -884,7 +903,6 @@ export const Form15GHEntryWrapper: React.FC<Form15GHEntryFormWrapperProps> = ({
         defaultView={defaultView}
         retrieveData={retrieveData}
         screenFlag={screenFlag}
-        dataRefetch={dataRefetch}
       />
     </Dialog>
   );

@@ -4,18 +4,17 @@ import { useMutation } from "react-query";
 import { Alert } from "components/common/alert";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
-import * as API from "../../../acct_Inquiry/api";
+import * as API from "./api";
 import { GradientButton } from "components/styledComponent/button";
-import { AccountInquiryGridMetaData, AccountInquiryMetadata } from "pages_audit/acct_Inquiry/metaData";
+import { retrieveAcctFormMetaData, retrieveAcctGridMetaData } from "./metadata/retrieveAcctMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
-import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
-import Dependencies from "pages_audit/acct_Inquiry/dependencies";
-import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
 import AcctModal from "./AcctModal";
+import { usePopupContext } from "components/custom/popupContext";
+import { utilFunction } from "components/utils";
 
 const actions: ActionTypes[] = [
     {
@@ -24,152 +23,181 @@ const actions: ActionTypes[] = [
       multiple: false,
       rowDoubleClick: true,
     },
-    {
-      actionName: "dependencies",
-      actionLabel: "Dependencies",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "view-statement",
-      actionLabel: "View Statement",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "view-interest",
-      actionLabel: "View Interest",
-      multiple: false,
-      rowDoubleClick: false,
-    },
 ];
+
 const RetrieveAcct = () => {
-    const formRef = useRef<any>(null);
-    const formbtnRef = useRef<any>(null);
-    const navigate = useNavigate();
-    const { authState }: any = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { authState } = useContext(AuthContext);
+  const [rowsData, setRowsData] = useState<any[]>([]);
+  const { MessageBox } = usePopupContext();
 
-    const [componentToShow, setComponentToShow] = useState("");
-    const [showGridData, setShowGridData] = useState(false);
-    const [acctOpen, setAcctOpen] = useState(false);
-    const [rowsData, setRowsData] = useState([]);
+  const formRef = useRef<any>(null);
+  const [formMode, setFormMode] = useState("edit");
 
-    const mutation: any = useMutation(API.getAccountInquiry, {
-        onSuccess: () => {},
-        onError: () => {},
-    });
-    const ClickEventManage = () => {
-        let event: any = { preventDefault: () => {} };
-        formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-    };
-    const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-        if (
-          !Boolean(data?.MOBILE) &&
-          !Boolean(data?.CUSTOMER) &&
-          !Boolean(data?.ACCOUNT) &&
-          !Boolean(data?.PAN) &&
-          !Boolean(data?.NAME)
-        ) {
-          //@ts-ignore
-          endSubmit(true, "Please enter any value");
-          setShowGridData(true);
-        } else {
-          //@ts-ignore
-          setShowGridData(false);
-          endSubmit(true);
-          const payload = { ...data, COMP_CD: authState?.companyID };
-          mutation.mutate(payload);
-        }
-    };
+  const setCurrentAction = useCallback(
+    (data) => {
+      const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
+      const maker = data?.rows?.[0]?.data?.MAKER ?? "";
+      const loggedinUser = authState?.user?.id;
 
-    const setCurrentAction = useCallback(
-        (data) => {
-          if (data.name === "view-detail") {
-            setComponentToShow("ViewDetail");
-            setAcctOpen(true);
-            setRowsData(data?.rows);
-          } else if (data.name === "dependencies") {
-            setComponentToShow("Dependencies");
-            setAcctOpen(true);
-            setRowsData(data?.rows);
-          } else if (data.name === "view-statement") {
-            setComponentToShow("ViewStatement");
-            setAcctOpen(true);
-            setRowsData(data?.rows);
-          } else if (data.name === "view-interest") {
-            setComponentToShow("ViewInterest");
-            setAcctOpen(true);
+      if(Boolean(confirmed)) {
+        // P=SENT TO CONFIRMATION
+        if(confirmed.includes("P")) {
+          if(maker === loggedinUser) {
+            setFormMode("edit")
           } else {
-            navigate(data?.name, {
-              state: data?.rows,
-            });
+            setFormMode("view")
           }
-        },
-        [navigate]
-    );
+        } else if(confirmed.includes("M")) {
+          // M=SENT TO MODIFICATION
+          setFormMode("edit")
+        } else if(confirmed.includes("Y") || confirmed.includes("R")) {
+          setFormMode("edit")
+        } else {
+          setFormMode("view")
+        }
+      }
+      setRowsData(data?.rows);
 
-    return (
-        <Grid>
-        {mutation.isError && (
-          <Alert
-            severity={mutation.error?.severity ?? "error"}
-            errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
-            errorDetail={mutation.error?.error_detail}
-            color="error"
-          />
-        )}
-        <div
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              let target: any = e?.target;
-              if (target?.value) {
-                ClickEventManage();
+      if (data.name === "view-detail") {
+        navigate(data?.name, {
+          state: data?.rows,
+        })
+        // setComponentToShow("ViewDetail");
+        // setAcctOpen(true);
+        // setRowsData(data?.rows);
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
+    },
+    [navigate]
+);
+
+  const mutation: any = useMutation(API.getAccountList, {
+    onSuccess: () => {},
+    onError: () => {},
+  });
+
+  const onFormSubmit: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+  ) => {
+      if (
+        !Boolean(data?.BRANCH_CD) &&
+        !Boolean(data?.ACCT_TYPE) &&
+        !Boolean(data?.ACCT_CD) &&
+        !Boolean(data?.CONTACT2) &&
+        !Boolean(data?.CUSTOMER_ID) &&
+        !Boolean(data?.PAN_NO)
+      ) {
+        //@ts-ignore
+        endSubmit(true, "Please enter any value");
+      } else {
+        if(
+          ((Boolean(data?.BRANCH_CD) ||
+          Boolean(data?.ACCT_TYPE) ||
+          Boolean(data?.ACCT_CD)) && (
+          !Boolean(data?.BRANCH_CD) ||
+          !Boolean(data?.ACCT_TYPE) ||
+          !Boolean(data?.ACCT_CD)
+          ))
+        ) {
+          endSubmit(true, "Please enter Branch Code, Account Type and Account Code");
+        } else {
+          endSubmit(true)
+          let payload = {SELECT_COLUMN: {}};
+          let {PID_DESCRIPTION, ...others} = data;
+          Object.keys(others)?.forEach(key => {
+            if(Boolean(data[key])) {
+              if(key === "ACCT_CD") {
+                payload["SELECT_COLUMN"]["ACCT_CD"] = utilFunction.getPadAccountNumber(
+                  data?.ACCT_CD,
+                  null
+                )
+              } else {
+                payload["SELECT_COLUMN"][key] = data?.[key];
               }
             }
-          }}
-        >
-          <FormWrapper
-            key={`MerchantOnboardConfig`}
-            metaData={AccountInquiryMetadata as MetaDataType}
-            initialValues={[]}
-            onSubmitHandler={onSubmitHandler}
-            formStyle={{
-              background: "white",
-            }}
-            onFormButtonClickHandel={() => {
-              let event: any = { preventDefault: () => {} };
-              formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-            }}
-            // onFormButtonCicular={mutation.isLoading}
-            ref={formRef}
-          >
-            {() => (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    // onClose();
-                    navigate("new-account", {
-                      state: {
-                        isFormModalOpen: true,
-                        // entityType: "I",
-                        isFreshEntry: true,    
-                      }
-                    })
-                  }}
-                  // disabled={isSubmitting}
-                  color={"primary"}
-                  ref={formbtnRef}
-                >
-                  NEW ACCOUNT
-                </GradientButton>
-              </>
-            )}
-          </FormWrapper>
-        </div>
-        <GridWrapper
-          key={`customerSearchingGrid`}
-          finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
-          data={showGridData ? [] : mutation.data ?? []}
+          });
+          mutation.mutate(payload)
+        }
+      }
+  };
+
+  return (
+    <Grid>
+      <FormWrapper
+        key={"retrieveAcctForm"}
+        metaData={retrieveAcctFormMetaData as MetaDataType}
+        initialValues={{}}
+        onSubmitHandler={onFormSubmit}
+        formState={{
+          MessageBox: MessageBox,
+          docCD: "MST/002"
+        }}
+        formStyle={{
+          background: "white",
+          height: "200px",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+        ref={formRef}
+        setDataOnFieldChange={(action, payload) => {
+          if (action === "BUTTON_CLICK_ACCTCD") {
+            const {ACCT_TYPE, BRANCH_CD, ACCT_CD} = payload;
+            mutation.mutate({SELECT_COLUMN: {
+              ACCT_TYPE: ACCT_TYPE, 
+              BRANCH_CD: BRANCH_CD,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                ACCT_CD,
+                null
+              )
+            }})
+          }
+        }}
+        onFormButtonClickHandel={() => {
+          let event: any = { preventDefault: () => {} };
+          formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+        }}
+      >
+        {() => (
+          <>
+            <GradientButton
+              onClick={() => {
+                // onClose();
+                navigate("new-account", {
+                  state: {
+                    isFormModalOpen: true,
+                    // entityType: "I",
+                    isFreshEntry: true,    
+                  }
+                })
+              }}
+              // disabled={isSubmitting}
+              color={"primary"}
+            >
+              NEW ACCOUNT
+            </GradientButton>
+          </>
+        )}
+      </FormWrapper>
+      {mutation.isError && (
+        <Alert
+          severity={mutation.error?.severity ?? "error"}
+          errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+          errorDetail={mutation.error?.error_detail}
+          color="error"
+        />
+      )}
+      <GridWrapper
+          key={`retrieveAcctGrid`}
+          finalMetaData={retrieveAcctGridMetaData as GridMetaDataType}
+          data={mutation.data ?? []}
           setData={() => null}
           loading={mutation.isLoading}
           actions={actions}
@@ -177,33 +205,7 @@ const RetrieveAcct = () => {
           headerToolbarStyle={{
             fontSize: "1.20rem",
           }}
-          // refetchData={() => {}}
-          // ref={myGridRef}
         />
-
-        {componentToShow === "ViewDetail" ? (
-          <ViewDetail
-            rowsData={rowsData}
-            open={acctOpen}
-            onClose={() => setAcctOpen(false)}
-          />
-        ) : componentToShow === "Dependencies" ? (
-          <Dependencies
-            rowsData={rowsData}
-            open={acctOpen}
-            onClose={() => setAcctOpen(false)}
-          />
-        ) : componentToShow === "ViewStatement" ? (
-          <ViewStatement
-            rowsData={rowsData}
-            open={acctOpen}
-            onClose={() => setAcctOpen(false)}
-            screenFlag={"ACCT_INQ"}
-          />
-        ) : //   componentToShow === "ViewInterest" ? (
-        // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
-        // ) :
-        null}
 
         <Routes>
           <Route
@@ -216,11 +218,19 @@ const RetrieveAcct = () => {
               />
             }
           />
+          <Route
+            path="view-detail/*"
+            element={
+              <AcctModal
+                onClose={() => navigate(".")}
+                formmode={formMode ?? "edit"}
+                from={"acct-retrieve"}
+              />
+            }
+          />
         </Routes>
-
-
     </Grid>
-    )
+  )
 }
 
 export default RetrieveAcct;

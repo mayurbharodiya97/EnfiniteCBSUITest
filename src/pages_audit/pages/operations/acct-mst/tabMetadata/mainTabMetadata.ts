@@ -274,11 +274,11 @@ export const main_tab_metadata = {
         },
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Personal Details",
             name: "persondtldivider_ignoreField",
-            label: ""
+            label: "Personal Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -328,7 +328,6 @@ export const main_tab_metadata = {
         {
             render: {
                 componentType: "autocomplete",
-                sequence: 7,
             },
             name: "MARITAL_STATUS",
             label: "MaritalStatus",
@@ -350,11 +349,11 @@ export const main_tab_metadata = {
         },
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Professional Details",
             name: "professionaldtldivider_ignoreField",
-            label: ""
+            label: "Professional Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -419,11 +418,11 @@ export const main_tab_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Address",
             name: "addressdivider_ignoreField",
-            label: "addDivider"
+            label: "Address",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -517,7 +516,7 @@ export const main_tab_metadata = {
           label: "SubArea",
           dependentFields: ["PIN_CODE"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["PIN_CODE"]?.value, formState, _, authState),
           _optionsKey: "indSubareaMainOp",
         isReadOnly: (fieldValue, dependentFields, formState) => {
             const PARAM320 = formState?.PARAM320;
@@ -781,11 +780,11 @@ export const main_tab_metadata = {
     // },
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {
@@ -1185,11 +1184,11 @@ export const main_tab_metadata = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
         },
-        dividerText: "Nominal/Share Member",
         name: "nominalShareDivider_ignoreField",
-        label: "contactDivider"
+        label: "Nominal/Share Member",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     // {
     //     render: {

@@ -67,3 +67,89 @@ export const cardTypeList = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const acctTypeList = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETATMACCTTYPEDDDW", { ...apiReq });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ ACCT_TYPE, ...other }) => {
+        return {
+          value: ACCT_TYPE,
+          label: ACCT_TYPE + " - " + other.DESCRIPTION,
+          ...other,
+        };
+      });
+    }
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getATMcardDetails = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETATMDTLDATA", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    // return data;
+    let newData;
+    if (Array.isArray(data) && data?.length > 0) {
+      newData = data.map((item) => ({
+        ...item,
+        DISPLAY_CARD_ISSUE_TYPE:
+          item?.CARD_ISSUE_TYPE === "A"
+            ? "Account"
+            : item?.CARD_ISSUE_TYPE === "J"
+            ? "Join A/C"
+            : "",
+        DISPLAY_STATUS:
+          item?.STATUS === "B"
+            ? "Block"
+            : item?.STATUS === "D"
+            ? "Destroy"
+            : item?.STATUS === "A"
+            ? "Issued"
+            : item?.STATUS === "L"
+            ? "Lost"
+            : item?.STATUS === "N"
+            ? "OFF"
+            : item?.STATUS === "P"
+            ? "Pending Issue"
+            : item?.STATUS === "R"
+            ? "Reject (OFF)"
+            : item?.STATUS === "C"
+            ? "Replace"
+            : "",
+      }));
+    }
+    return newData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const retrieveData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("RETRIVEATMREGISTRATIONDATA", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateCitizenId = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECITIZENID", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

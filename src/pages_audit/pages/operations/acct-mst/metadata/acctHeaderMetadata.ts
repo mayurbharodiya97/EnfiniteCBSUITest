@@ -114,9 +114,9 @@ export const acctMSTHeaderFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 2,
-        md: 1,
-        lg: 1,
-        xl: 1,
+        md: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
       shouldExclude: () => {
         return true;

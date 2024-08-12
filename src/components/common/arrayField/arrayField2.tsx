@@ -66,6 +66,7 @@ export interface ArrayField2Props {
   runExternalFunction?: Boolean;
   isRemoveButton?: Boolean;
   onFormDataChange?: any;
+  changeRowOrder?: Boolean;
 }
 
 const metaDataTransform = (
@@ -110,6 +111,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   displayCountName,
   isScreenStyle,
   isRemoveButton,
+  changeRowOrder,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -154,6 +156,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
     formState,
     formName,
     excluded,
+    push,
   } = useFieldArray({
     arrayFieldName: name,
     template: template.current,
@@ -173,16 +176,17 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       }
       if (typeof result === "object") {
         allow = result?.allow ?? false;
-        reason = result?.reason ?? "Required value missing ,Please enter a value";
+        reason =
+          result?.reason ?? "Required value missing ,Please enter a value";
       }
       if (allow) {
-        unshift();
+        Boolean(changeRowOrder) ? push() : unshift();
       } else {
         setShowAddDialog(true);
         setDialogMsg(reason);
       }
     } else {
-      unshift();
+      Boolean(changeRowOrder) ? push() : unshift();
     }
   }, [unshift, getAllRowsValues]);
 
@@ -478,6 +482,9 @@ export const ArrayFieldRow = ({
     if (typeof formState?.onArrayFieldRowClickHandle === "function") {
       formState?.onArrayFieldRowClickHandle(wrapperData);
     }
+    if (typeof formState?.onArrayFieldRowDoubleClickHandle === "function") {
+      formState?.onArrayFieldRowDoubleClickHandle(wrapperData);
+    }
   };
   return (
     <Fragment key={row.fieldIndexKey}>
@@ -514,6 +521,9 @@ export const ArrayFieldRow = ({
       ) : null}
       <div
         onClick={formState?.onArrayFieldRowClickHandle && handleWrapperClick}
+        onDoubleClick={
+          formState?.onArrayFieldRowDoubleClickHandle && handleWrapperClick
+        }
         className={
           selectedRowIndex === rowIndex
             ? classes?.arrayFieldSelected

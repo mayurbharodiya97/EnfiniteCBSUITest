@@ -72,9 +72,6 @@ export const userAccessbranch: GridMetaDataType = {
         hideHeader: false,
         hideFooter: false,
         disableGroupBy: true,
-        enablePagination: true,
-        pageSizes: [10, 20, 30],
-        defaultPageSize: 10,
         containerHeight: {
             min: "48vh",
             max: "48vh",

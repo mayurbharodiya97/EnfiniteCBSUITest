@@ -12,7 +12,8 @@ const RelativeDtlTab = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
-  const onSubmitPDHandler = (
+
+  const onSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
@@ -20,68 +21,64 @@ const RelativeDtlTab = () => {
     actionFlag,
     hasError
   ) => {
-    if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
-
-
-
-      let newData = AcctMSTState?.formDatactx;
-      const commonData = {
-        IsNewRow: true,
-        COMP_CD: "",
-        BRANCH_CD: "",
-        REQ_FLAG: "",
-        REQ_CD: "",
-        // SR_CD: "",
-      };
-      newData["RELATIVE_DTL"] = {
-        ...newData["RELATIVE_DTL"],
-        ...formData,
-        ...commonData,
-      };
-      handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.RELATIVE_DTL ? _.uniq([...tabModifiedCols.RELATIVE_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
-
-        tabModifiedCols = {
-          ...tabModifiedCols,
-          RELATIVE_DTL: [...updatedCols]
+    if(data && !hasError) {
+      let newData = AcctMSTState?.formDatactx
+      if(data?.RELATIVE_DTL) {
+        let filteredCols:any[]=[]
+        filteredCols = Object.keys(data.RELATIVE_DTL[0])
+        filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+        if(AcctMSTState?.isFreshEntryctx) {
+          filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
         }
-        handleModifiedColsctx(tabModifiedCols)
+        let newFormatOtherAdd = data?.RELATIVE_DTL?.map((formRow, i) => {
+          let formFields = Object.keys(formRow)
+          formFields = formFields.filter(field => !field.includes("_ignoreField"))
+          const formData = _.pick(data?.RELATIVE_DTL[i], formFields)
+          return {...formData};
+        })
+        newData["RELATIVE_DTL"] = [...newFormatOtherAdd]
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+              ...tabModifiedCols,
+              RELATIVE_DTL: [...filteredCols]
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }
+      } else {
+        newData["RELATIVE_DTL"] = []
+        handleFormDataonSavectx(newData)
+        if(!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            RELATIVE_DTL: []
+          }
+          handleModifiedColsctx(tabModifiedCols)
+        }  
       }
-      // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus(old => [...old, true])
-      // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
-      // }
-      // setIsNextLoading(false)
     } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: AcctMSTState?.colTabValuectx,
-      });
-      // setIsNextLoading(false);
+      handleStepStatusctx({status: "error", coltabvalue: AcctMSTState?.colTabValuectx})
       setFormStatus(old => [...old, false])
     }
-    endSubmit(true);
-  };
+    endSubmit(true)
+  }
+  
   const initialVal = useMemo(() => {
     return (
       AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? {RELATIVE_DTL: [{}]}
+        ? AcctMSTState?.formDatactx["RELATIVE_DTL"]?.length >0
+          ? {RELATIVE_DTL: [...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? []]}
+          : {RELATIVE_DTL: [{}]}
         : AcctMSTState?.formDatactx["RELATIVE_DTL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? {}, ...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? {}}
+          ? {RELATIVE_DTL: [...AcctMSTState?.formDatactx["RELATIVE_DTL"] ?? []]}
+          : {RELATIVE_DTL: [...AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"] ?? []]}
     )
   }, [
     AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.retrieveFormDataApiRes["RELATIVE_DTL"],
     AcctMSTState?.formDatactx["RELATIVE_DTL"]
   ])
 
@@ -130,7 +127,7 @@ const RelativeDtlTab = () => {
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
         ref={formRef}
-        onSubmitHandler={onSubmitPDHandler}
+        onSubmitHandler={onSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         key={"pd-form-kyc" + initialVal}

@@ -49,11 +49,11 @@ export const hypothication_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Recommended By",
             name: "recommendbydivider_ignoreField",
-            label: ""
+            label: "Recommended By",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -92,11 +92,11 @@ export const hypothication_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Advances Belongs to Director",
             name: "recommendbydivider_ignoreField",
-            label: ""
+            label: "Advances Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},        
         },
         {
             render: {
@@ -439,11 +439,11 @@ export const hypothication_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Rates(%)",
             name: "recommendbydivider_ignoreField",
-            label: ""
+            label: "Rates(%)",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -596,7 +596,7 @@ export const hypothication_metadata = {
             render: {
               componentType: "formbutton",
             },
-            name: "landDTL_ignoreField",
+            name: "landDTL2_ignoreField",
             label: "Ornament",
             placeholder: "",
             type: "text",

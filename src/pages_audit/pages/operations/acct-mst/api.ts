@@ -52,6 +52,18 @@ export const getAcctModeOptions = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+export const getAccountList = async ({SELECT_COLUMN}) => {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCOUNTLIST", {
+      SELECT_COLUMN: SELECT_COLUMN,
+    });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getCustomerData = async ({ 
   CUSTOMER_ID,
   ACCT_TYPE,
@@ -666,5 +678,185 @@ export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// retrieving document medatory docs in grid for new entry
+export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, ACCT_TYPE, CONSTITUTION_TYPE}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
+      CUSTOMER_TYPE: null,
+      ACCT_TYPE: ACCT_TYPE ?? null, 
+      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      // TRAN_CD: "42"
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DOC_DESCRIPTION, TEMPLATE_CD, ...other }) => {
+          return {
+            ...other,
+            DOC_DESCRIPTION:DOC_DESCRIPTION,
+            TEMPLATE_CD: TEMPLATE_CD,
+            label: DOC_DESCRIPTION,
+            value: TEMPLATE_CD,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getDocumentImagesList = async ({TRAN_CD, SR_CD, REQ_CD}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", {
+    TRAN_CD : TRAN_CD,
+    SR_CD : SR_CD,
+    REQ_CD : REQ_CD
+  });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ LINE_CD, ...other }) => {
+          return {
+            ...other,
+            LINE_CD: LINE_CD,
+            LINE_ID: LINE_CD
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
+  const {gridData, rowsData} = formState;
+  // console.log("qekuwhdiuwehdw", formState)
+  let selectedDoc:any[] = []
+  if(rowsData && rowsData.length>0) {
+    selectedDoc = rowsData.map(el => {
+      return el.data.TEMPLATE_CD ?? "";
+    })
+  } else if(gridData && gridData.length>0) {
+    selectedDoc = gridData.map(el => {
+      return el.TEMPLATE_CD ?? "";
+    })
+  }
+  // console.log(gridData, "auedhniuwehdwe", formMode)
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
+    });
+  if (status === "0") {
+    let responseData = data;
+    if(rowsData && rowsData.length>0) {
+      responseData = responseData.filter(el => selectedDoc.includes(el.SR_CD))
+    } else if(gridData && gridData.length>0) {
+      responseData = responseData.filter(el => !selectedDoc.includes(el.SR_CD))
+    }
+    // console.log("auedhniuwehdwe  qwed", data)
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
+          // if(selectedDoc.includes(SR_CD)) {
+
+          // } else {
+            return {
+              ...other,
+              DESCRIPTION:DESCRIPTION,
+              SR_CD: SR_CD,
+              label: DESCRIPTION,
+              value: SR_CD,
+            };
+          // }
+        // }
+      });
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const accountSave = async (reqData) => {
+  const {
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID,
+    ACCT_TYPE,
+    ACCT_CD,
+    COMP_CD,
+    formData
+  } = reqData;
+
+  // console.log("wefhiwheifhweihf", formData)
+  const jointTabs = [
+    "JOINT_HOLDER_DTL", 
+    "JOINT_NOMINEE_DTL", 
+    "JOINT_GUARDIAN_DTL", 
+    "JOINT_GUARANTOR_DTL", 
+    "JOINT_HYPOTHICATION_DTL", 
+    "JOINT_SIGNATORY_DTL", 
+    "JOINT_INTRODUCTOR_DTL"
+  ]
+
+  let payload = {};
+
+//   MAIN_DETAIL
+// JOINT_ACCOUNT_DTL
+// DOC_MST
+// MOBILE_REG_DTL
+// RELATIVE_DTL
+// OTHER_ADDRESS_DTL
+
+  let joint_account_dtl:any[] = [];
+  if(Object.keys(formData)?.length>0) {
+    Object.keys(formData).forEach((tab:string) => {
+      if(tab === "MAIN_DETAIL") {
+        payload["MAIN_DETAIL"] = formData["MAIN_DETAIL"];
+      }
+      if(jointTabs.includes(tab)) {
+        joint_account_dtl = [...joint_account_dtl, ...formData[tab]]
+      } else if(tab === "DOC_MST" || tab === "MOBILE_REG_DTL" || tab === "RELATIVE_DTL" || tab === "OTHER_ADDRESS") {
+        if(tab === "DOC_MST") {
+          payload[tab] = formData[tab]?.DOC_MST;
+        } else {
+          payload[tab] = formData[tab];
+        }
+      }
+    });
+    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl;
+    const ENTRY_TYPE = 1;
+    payload = {
+      ...payload,
+      IsNewRow,
+      REQ_CD,
+      REQ_FLAG,
+      SAVE_FLAG,
+      CUSTOMER_ID,
+      ACCT_TYPE,
+      ACCT_CD,
+      COMP_CD, 
+      ENTRY_TYPE 
+    }
+    // console.log("AcctMSTContextwadqwdwq. woiuioehfiuwhefwef", payload)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("SAVEACCOUNTDATA", payload);
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
   }
 };

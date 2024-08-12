@@ -92,7 +92,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
     // }, [])
 
     // to get photo/sign history, on edit
-    const mutation: any = useMutation(GeneralAPI.getPhotoSignHistory, {
+    const mutation: any = useMutation(API.getPhotoSignHistory, {
         onSuccess: (data) => {
 
             // console.log("photohistory", data)

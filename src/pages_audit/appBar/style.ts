@@ -80,12 +80,11 @@ export const useStyles = makeStyles((theme: any) => ({
     borderRadius: "50%",
     padding: "4px",
   },
-  // toolbar: (props?: StylesProps) => ({
-  //   minHeight: props?.isNewStyle ? "57px" : "80px",
-  //   paddingLeft: "0px",
-  //   height: props?.isNewStyle ? "57px" : "80px",
-  //   // Add other toolbar styles as needed...
-  // }),
+  toolbarNew: {
+    minHeight: "57px",
+    paddingLeft: "0px",
+    height: "57px",
+  },
   toolbar: {
     minHeight: "80px",
     paddingLeft: "0px",

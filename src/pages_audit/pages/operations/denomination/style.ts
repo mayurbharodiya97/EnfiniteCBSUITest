@@ -25,7 +25,7 @@ const useStyles = makeStyles({
       "& .MuiInputBase-input": {
         padding: "0px 7px",
         height: "22px",
-        textAlign: "left",
+        textAlign: "right",
       },
     },
   },

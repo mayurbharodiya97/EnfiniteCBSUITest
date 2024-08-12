@@ -48,11 +48,11 @@ export const savingsDeposit_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "A/c Belongs to Director",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "A/c Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {

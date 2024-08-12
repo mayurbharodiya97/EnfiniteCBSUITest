@@ -44,11 +44,11 @@ import * as API from "../../../../api";
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "AnnualIncome",
             name: "AnnualIncomeDivider_ignoreField",
-            label: "AnnualIncomeDivider",
+            label: "AnnualIncome",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -140,11 +140,11 @@ import * as API from "../../../../api";
   
           {
               render: {
-                  componentType: "Divider",
+                  componentType: "divider",
               },
-              dividerText: "ExposureInfo",
               name: "ExposureInfoDivider_ignoreField",
-              label: "ExposureInfoDivider",
+              label: "ExposureInfo",
+              GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
           },
           {
               render: {
