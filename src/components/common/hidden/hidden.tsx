@@ -10,6 +10,7 @@ interface MyGridExtendedProps {
   GridProps?: GridProps;
   enableGrid: boolean;
   setValueOnDependentFieldsChange?: any;
+  ignoreInSubmit?: boolean;
 }
 
 export type MyHiddenFieldProps = UseFieldHookProps & MyGridExtendedProps;
@@ -20,6 +21,7 @@ const MyHiddenField: FC<MyHiddenFieldProps> = ({
   setValueOnDependentFieldsChange,
   dependentFields,
   postValidationSetCrossFieldValues,
+  ignoreInSubmit = false,
 }) => {
   const {
     handleBlur,
@@ -28,6 +30,7 @@ const MyHiddenField: FC<MyHiddenFieldProps> = ({
     incomingMessage,
     runValidation,
     whenToRunValidation,
+    setIgnoreInSubmit,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -38,6 +41,10 @@ const MyHiddenField: FC<MyHiddenFieldProps> = ({
   useEffect(() => {
     handleBlur();
   }, [handleBlur]);
+
+  useEffect(() => {
+    setIgnoreInSubmit(ignoreInSubmit);
+  }, [ignoreInSubmit]);
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
