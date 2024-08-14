@@ -67,6 +67,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   const [OpenSignature, setOpenSignature] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
   const [openForm, setopenForm] = useState(true);
+  const [accNumber, setAccNumber] = useState({});
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [mstState, setMstState] = useState<any>({
     PAYSLIP_MST_DTL: [{ CHEQUE_DATE: authState?.workingDate ?? "", PENDING_FLAG: "Y" }],
@@ -207,6 +208,15 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         isErrorFuncRef.current?.endSubmit(false);
       },
       onSuccess: async (data) => {
+        console.log(data);
+        const dummyCheckInfo:any={
+          ACCT_CD: data?.ACCT_CD,
+          ACCT_TYPE:data?.ACCT_TYPE,
+          COMP_CD:data?.COMP_CD,
+          BRANCH_CD:data?.BRANCH_CD,
+        }
+        setAccNumber(dummyCheckInfo)
+        
         let btn99, returnVal;
         const getButtonName = async (obj) => {
           let btnName = await MessageBox(obj);
@@ -315,6 +325,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   ) => {
     //@ts-ignore
     endSubmit(true);
+console.log(accNumber);
 
     const filteredDraftData: any[] = [];
     const filteredAcctData: any[] = [];
@@ -391,6 +402,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
       PAYSLIP_MST_DTL: filteredDraftData,
       PAYSLIP_DRAFT_DTL: filteredAcctData,
       SCREEN_REF: "RPT/14",
+      ENTRY_TYPE:formMode==="add"?"N":"M"
     };
     isErrorFuncRef.current = {
       validatePayslipReq,
@@ -420,10 +432,21 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         delete item.SR_CD;
         delete item.ENTERED_BRANCH_CD;
         delete item.ENTERED_COMP_CD;
-        item.BRANCH_CD = authState.user.branchCode;
+        
+        //@ts-ignore
+        item.BRANCH_CD = accNumber?.ACCT_CD;    
+         //@ts-ignore             
+        item.ACCT_TYPE = accNumber?.ACCT_TYPE;  
+         //@ts-ignore               
+        item.COMP_CD = accNumber?.COMP_CD;    
+         //@ts-ignore             
+        item.BRANCH_CD = accNumber?.BRANCH_CD;                 
+        
       });
 
     }
+   
+    
     // @ts-ignore
     if (formMode === "edit") {
       if (updPara2.isUpdatedRow.length === 0) {
