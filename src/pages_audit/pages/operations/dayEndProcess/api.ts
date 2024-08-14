@@ -1,7 +1,7 @@
 import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getDayendprocessFlag = async ({ ENT_COMP_CD, ENT_BRANCH_CD, BASE_COMP_CD, BASE_BRANCH_CD,GD_DATE
+export const getDayendprocessFlag = async ({ ENT_COMP_CD, ENT_BRANCH_CD, BASE_COMP_CD, BASE_BRANCH_CD,A_GD_DATE
 }) => {
 
 const { data, status, message, messageDetails } =
@@ -10,7 +10,7 @@ await AuthSDK.internalFetcher("GETEODHANDOVER", {
   ENT_BRANCH_CD: ENT_BRANCH_CD,
   BASE_COMP_CD: BASE_COMP_CD,
   BASE_BRANCH_CD:BASE_BRANCH_CD,
-  GD_DATE:GD_DATE,
+  A_GD_DATE:A_GD_DATE,
 
 
 });
@@ -46,16 +46,15 @@ throw DefaultErrorObject(message, messageDetails);
 }
 
 };
-export const getPendingTrns = async ({ ENT_COMP_CD, ENT_BRANCH_CD, BASE_COMP_CD, BASE_BRANCH_CD,GD_DATE
+export const getPendingTrns = async ({ COMP_CD, BRANCH_CD, BASE_BRANCH,TRAN_DT       
 }) => {
 
 const { data, status, message, messageDetails } =
-await AuthSDK.internalFetcher("GETEODHANDOVER", {
-  ENT_COMP_CD: ENT_COMP_CD,
-  ENT_BRANCH_CD: ENT_BRANCH_CD,
-  BASE_COMP_CD: BASE_COMP_CD,
-  BASE_BRANCH_CD:BASE_BRANCH_CD,
-  GD_DATE:GD_DATE,
+await AuthSDK.internalFetcher("PENDINGTRANSACTION", {
+  COMP_CD: COMP_CD,
+  BRANCH_CD: BRANCH_CD,
+  BASE_BRANCH:BASE_BRANCH,
+  TRAN_DT:TRAN_DT,
 
 
 });
@@ -115,7 +114,6 @@ export const getVerifyDayEndCheksumsData = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
   export const getDayEnderrLog = async ({
     COMP_CD,
     BASE_BRANCH_CD,
@@ -138,4 +136,63 @@ export const getVerifyDayEndCheksumsData = async ({
     throw DefaultErrorObject(message, messageDetails);
     }
     
+    };
+  export const getValidateEod = async ({
+      SCREEN_REF,
+      FLAG,
+    }) => {
+      const { data, status, message, messageDetails } = await AuthSDK.internalFetcher("VALIDATEEOD", {
+        SCREEN_REF,
+        FLAG,
+      });
+    
+      if (status === "0") {
+        return data;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
+    };
+  export const getCheckSums = async ({
+      SCREEN_REF,
+      FLAG,
+      EOD_EOS_FLG,
+      FOR_BRANCH
+    }) => {
+      const { data, status, message, messageDetails } = await AuthSDK.internalFetcher("GETCHECKSUM", {
+        SCREEN_REF:SCREEN_REF,
+        FLAG:FLAG,
+        FOR_BRANCH:FOR_BRANCH,
+        EOD_EOS_FLG:EOD_EOS_FLG
+      });
+    
+      if (status === "0") {
+        return data;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
+    };
+    export const executeChecksums = async ({
+      SCREEN_REF,
+      FOR_BRANCH,
+      EOD_EOS_FLG,
+      CHKSM_TYPE,
+      SR_CD,
+      MENDETORY,
+      EOD_VER_ID
+    }) => {
+      const { data, status, message, messageDetails } = await AuthSDK.internalFetcher("EXECUTECHECKSUM", {
+        SCREEN_REF:SCREEN_REF,
+      FOR_BRANCH:FOR_BRANCH,
+      EOD_EOS_FLG:EOD_EOS_FLG,
+      CHKSM_TYPE:CHKSM_TYPE,
+      SR_CD:SR_CD,
+      MENDETORY:MENDETORY,
+      EOD_VER_ID:EOD_VER_ID
+      });
+    
+      if (status === "0") {
+        return data;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
     };

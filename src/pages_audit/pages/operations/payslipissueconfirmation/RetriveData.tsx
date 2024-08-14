@@ -15,7 +15,6 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
 
   const mutation = useMutation(API.getPayslipCnfRetrieveData, {
     onSuccess: (data) => {
-      console.log(data);
       onUpload(data);
       closeDialog();
     },
@@ -45,12 +44,16 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
       FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
       TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
       GD_DATE: authState?.workingDate,
-      FLAG: "P",      
+      FLAG: "P",    
+      A_LANG:"en"  
     };
 
 
     mutation.mutate(payload);
   };
+  const handleRefe =()=>{
+ 
+  }
 
   return (
     <>

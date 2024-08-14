@@ -11,6 +11,7 @@ import { PendinGTrns } from "./pendingTransactions";
 import { usePopupContext } from "components/custom/popupContext";
 import { VerifyDayendChecksums } from "./verifyDayendChecksums";
 import {t} from "i18next";
+import { DayendExecute } from "./dayendExecute";
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({
     root: {
@@ -44,7 +45,7 @@ const DayEndProcess = ()=>{
             ENT_BRANCH_CD: authState?.user?.branchCode,
             BASE_COMP_CD: authState?.baseCompanyID,
             BASE_BRANCH_CD: authState?.user?.baseBranchCode,
-            GD_DATE: authState?.workingDate
+            A_GD_DATE: authState?.workingDate
           })
       );
 
@@ -68,7 +69,7 @@ const DayEndProcess = ()=>{
         onClick={async(event) => {
         const btnName = await MessageBox({
         message: "DeleteData",
-        messageTitle: "Do you want to proceed pending transactions?",
+        messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         });
         if (btnName === "Yes") {
@@ -86,8 +87,7 @@ const DayEndProcess = ()=>{
         color={"primary"}
         >
         {
-       "   day end process"
-        // data[0]?.Flag==="D"?t("DayEndHover"):"Day Hand Over"
+            data&& data[0]?.EOD_FLAG==="D"?t("DayEndHover"):t("DayEndProcess")
         }
         </GradientButton>
         <GradientButton
@@ -106,20 +106,21 @@ const DayEndProcess = ()=>{
              open={openPendingTrns}
              close={()=>setOpenPendingTrns(false)}
             />
+
             :""
         }
          {
             openDayendProcess? 
-            <VerifyDayendChecksums
+            <DayendExecute
              open={openDayendProcess}
-             close={()=>setOpenVerifyChecksums(false)}
+             close={()=>setOpenDayendProcess(false)}
             />
             :"" 
         }
            {
             openVerifyChecksums? 
             <VerifyDayendChecksums
-             open={openPendingTrns}
+             open={openVerifyChecksums}
              close={()=>setOpenVerifyChecksums(false)}
             />
             :""

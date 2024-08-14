@@ -56,6 +56,7 @@ const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmatio
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
 // const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -69,6 +70,7 @@ export const OperationsMenu = () => (
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
+    <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route
       path="chequebook-confirmation/*"

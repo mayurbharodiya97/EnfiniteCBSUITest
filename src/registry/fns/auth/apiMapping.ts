@@ -1860,7 +1860,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETCONFIRMEDHISTORY: {
-    url: "transactionServiceAPI/GETCONFIRMEDHISTORY",
+    url: "enfinityCommonServiceAPI/GETCONFIRMEDHISTORY",
     packageName: "",
   },
   GETGENERATEOTP: {
@@ -2313,6 +2313,22 @@ export const ActionWiseAPIConfiguration = {
   },
   IMPSDAILYSPENDLIMIT: {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
+    packageName: "",
+  },
+  PENDINGTRANSACTION: {
+    url: "/enfinityBankProcessingServiceAPI/PENDINGTRANSACTION",
+    packageName: "",
+  },
+  VALIDATEEOD: {
+    url: "/enfinityBankProcessingServiceAPI/VALIDATEEOD",
+    packageName: "",
+  },
+  GETCHECKSUM: {
+    url: "/enfinityBankProcessingServiceAPI/GETCHECKSUM",
+    packageName: "",
+  },
+  EXECUTECHECKSUM: {
+    url: "/enfinityBankProcessingServiceAPI/EXECUTECHECKSUM",
     packageName: "",
   },
 };

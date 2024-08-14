@@ -1,8 +1,8 @@
 export const pendingTrnsMetadata = {
 gridConfig: {
 dense: true,
-gridLabel: "",
-rowIdColumn: "TRAN_CD",
+gridLabel: "Pending Transactions",
+rowIdColumn: "SR_NO",
 defaultColumnConfig: {
 width: 400,
 maxWidth: 450,
@@ -38,7 +38,7 @@ maxWidth: 120,
 isAutoSequence: true,
 },
 {
-accessor: "PAYSLIP_NO",
+accessor: "DOCU_CD",
 columnName: "ScreenName",
 sequence: 2,
 alignment: "left",
@@ -48,7 +48,7 @@ minWidth: 100,
 maxWidth: 200,
 },
 {
-accessor: "COMM_TYPE_DESC",
+accessor: "SCREEN_NM",
 columnName: "",
 sequence: 3,
 alignment: "left",
@@ -58,7 +58,7 @@ minWidth: 250,
 maxWidth: 320,
 },
 {
-accessor: "PENDING_FLAG",
+accessor: "ERR_CNT",
 columnName: "Count",
 sequence: 4,
 alignment: "left",

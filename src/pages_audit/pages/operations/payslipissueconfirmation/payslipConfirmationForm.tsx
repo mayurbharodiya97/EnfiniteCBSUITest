@@ -14,7 +14,7 @@ import { usePopupContext } from 'components/custom/popupContext';
 import { GradientButton } from 'components/styledComponent/button';
 import { DeleteDialog } from '../payslip-issue-entry/deleteDialog';
 import { LoaderPaperComponent } from 'components/common/loaderPaper';
-import { AccdetailsFormMetaData, PayslipdetailsFormMetaData } from './AccdetailsFormMetaData';
+import { AccdetailsFormMetaData, PayslipdetailsFormMetaData } from './confirmationFormMetaData';
 import {t} from "i18next";
 import { OpenWithSharp } from '@mui/icons-material';
 import { ConFirmedHistory } from './conFirmedHistory';
@@ -22,6 +22,7 @@ import { format } from 'date-fns';
 import * as API from './api';
 import { enqueueSnackbar } from 'notistack';
 import { RemarksAPIWrapper } from 'components/custom/Remarks';
+import PhotoSignWithHistory from 'components/custom/photoSignWithHistory/photoSignWithHistory';
 function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
 
     const [formMode, setFormMode] = useState(defaultView);
@@ -29,9 +30,10 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
   const [jointDtl, setjointDtl] = useState(false);
   const [openConfmHistory, setopenConfmHistory] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
+  const [SignData, setSignData] = useState();
   const { state: rows } = useLocation();
   const myChequeFormRef = useRef<any>(null);
-  const [openDltDialogue, setopenDltDialogue] = useState(false);
+  const [isPhotoSign, setIsPhotoSign] = useState(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
 
@@ -67,10 +69,14 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         API.getEntryConfirmed,
         {
           onSuccess: (data) => {
-            enqueueSnackbar(data, {
-              variant: "success",
-            });
-            CloseMessageBox();
+ 
+          enqueueSnackbar(data, {
+            variant: "success",
+          });
+          slipdataRefetch();
+          CloseMessageBox();
+          closeDialog();
+         
           },
           onError: (error: any) => {
             CloseMessageBox();
@@ -82,13 +88,25 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         API.getEntryReject,
         {
           onSuccess: (data) => {
-            enqueueSnackbar(data, {
+            SetDeleteRemark(false);
+            enqueueSnackbar(`${data}`, {
               variant: "success",
             });
+            slipdataRefetch();
             CloseMessageBox();
+            closeDialog();
+            
           },
           onError: (error: any) => {
+            let errorMsg = "Unknownerroroccured";
+            if (typeof error === "object") {
+              errorMsg = error?.error_msg ?? errorMsg;
+            }
+            enqueueSnackbar(errorMsg, {
+              variant: "error",
+            });
             CloseMessageBox();
+            closeDialog();
           },
         }
       );
@@ -118,34 +136,20 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
               }}
               formStyle={{ background: "white" }}
             >
-                 <GradientButton
+              {
+                rows[0]?.data?.ALLOW_CONFIRM==="Y" &&  draftDtlData && acctDtlData?(
+                  <GradientButton
                   color={"primary"}
                   onClick={async(event) => {
-                     if (rows?.RESTRICT_CNFIRM_MSG !=="") {
+                     if (rows[0]?.data?.RESTRICT_CNFIRM_MSG !=="") {
                       await MessageBox({
                         messageTitle: t("ValidationFailed"),
                         message: rows?.RESTRICT_CNFIRM_MSG,
                         buttonNames: ["Ok"],
                       });
                     }
-                    else if (
-                      !(
-                        format(
-                          new Date(rows?.TRAN_DT),
-                          "dd/MMM/yyyy"
-                        ) ===
-                        format(
-                          new Date(authState?.workingDate),
-                          "dd/MMM/yyyy"
-                        )
-                      )
-                    ) {
-                      await MessageBox({
-                        messageTitle: t("ValidationFailed"),
-                        message: t("CannotConfirmBackDatedEntry"),
-                        buttonNames: ["Ok"],
-                      });
-                    } else if (authState?.user?.id === rows?.ENTERED_BY) {
+                    
+                    else if (authState?.user?.id === rows[0]?.data?.ENTERED_BY) {
                       await MessageBox({
                         messageTitle: t("ValidationFailed"),
                         message: t("ConfirmRestrictMsg"),
@@ -156,22 +160,41 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
                         message: t("DoYouWantToAllowTheTransaction"),
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
                       });
                       if (buttonName === "Yes") {
                         confirmMutation.mutate({
-                          ...rows
+                          ...rows[0].data,
+                          ENTERED_COMP_CD: draftDtlData?draftDtlData[0]?.ENTERED_COMP_CD:"",
+                          ENTERED_BRANCH_CD: draftDtlData?draftDtlData[0]?.ENTERED_BRANCH_CD:"",
+                            TRAN_CD:rows[0].data?.TRAN_CD,
+                            COMP_CD: authState?.companyID,
+                            BRANCH_CD: authState?.user?.branchCode,
+                            ACCT_TYPE: rows[0].data?.ACCT_TYPE,
+                            ACCT_CD: rows[0].data?.ACCT_CD,
+                            TRN_DT:  format(new Date(rows[0].data?.TRAN_DT), "dd/MMM/yyyy") ,
+                            AMOUNT: `${rows[0].data?.TOTAL_AMT}`,
+                            SCREEN_REF: "RPT/15",
+                            TYPE_CD:"",
+                            TRN_FLAG:"",
+                            TRAN_BAL:""
                         })
                       }
-                             
+                    
                   }
                 }}
                   >
                         {t("Confirm")}
                     </GradientButton>
-                    <GradientButton color={"primary"} onClick={(event) => {
-                        setopenDltDialogue(true);
+                ) :""
+              }
+
+                {
+                  draftDtlData && acctDtlData ?(
+                    <>
+                     <GradientButton color={"primary"} onClick={(event) => {
+                        SetDeleteRemark(true);
                     }}>
                         {t("Reject")}
                     </GradientButton>
@@ -180,7 +203,9 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
                     }}>
                         {t("ConfHistory")}
                     </GradientButton>
-
+</>
+                  ):""
+                }
                 <GradientButton onClick={closeDialog} color={"primary"}>
                 {t("Close")}
                 </GradientButton>
@@ -198,17 +223,15 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
               displayMode={formMode}
               onSubmitHandler={() => { }}
               onFormButtonClickHandel={async (id) => {
+                
                 let startIndex = id.indexOf("[") + 1;
                 let endIndex = id.indexOf("]");
                 let btnIndex = parseInt(id.substring(startIndex, endIndex)); // 
-                const formDadata = await myChequeFormRef?.current?.getFieldData();
-                if (formDadata && formDadata.PAYSLIP_MST_DTL) {
-                  let arrayIndex = formDadata.PAYSLIP_MST_DTL.length - 1 - btnIndex;
-                  if (arrayIndex >= 0 && arrayIndex < formDadata.PAYSLIP_MST_DTL.length) {
-                    const selectedObject = formDadata ? formDadata.PAYSLIP_MST_DTL[arrayIndex] : [];
+                  if(id===`PAYSLIP_MST_DTL[${btnIndex}].JOINT_DTL`)
+                  {
                     const retrivedObj = acctDtlData ? acctDtlData[btnIndex] : [];
-                    const ACCT_CD = formMode === "add" ? selectedObject.ACCT_CD : retrivedObj.ACCT_CD;
-                    const ACCT_TYPE = formMode === "add" ? selectedObject.ACCT_TYPE : retrivedObj.ACCT_TYPE
+                    const ACCT_CD =  retrivedObj.ACCT_CD;
+                    const ACCT_TYPE =  retrivedObj.ACCT_TYPE
                     jointDetailMutation.mutate({
                       ACCT_CD,
                       ACCT_TYPE,
@@ -218,7 +241,12 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
 
                     setjointDtl(true);
                   }
-                }
+                  if(id===`PAYSLIP_MST_DTL[${btnIndex}].SIGN`)
+                  {
+                    const retrievedObject = acctDtlData ? acctDtlData[btnIndex] : [];
+                    setSignData(retrievedObject);
+                    setIsPhotoSign(true);
+                  }
               }}
 
               initialValues={{
@@ -277,24 +305,13 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
           />
 
         </Dialog>
-        <DeleteDialog
-        closeDialog={closeDialog}
-        open={openDltDialogue}
-        rowData={{
-          ...(rows?.[0]?.data || {}),
-          draftDtlData: draftDtlData,
-          acctDtlData: acctDtlData,
-          SCREEN_REF:"RPT/15"
-        }}
-        slipdataRefetch={slipdataRefetch}
-      />
         </Dialog>
-        {isDeleteRemark && (
+        {isDeleteRemark ? (
                       <RemarksAPIWrapper
                         TitleText={
                           "Enter Removal Remarks For PAYSLP ISSUE CONFIRMATION RPT/15"
                         }
-                        onActionNo={() => SetDeleteRemark(false)}
+                        onActionNo={() =>{SetDeleteRemark(false) }}
                         onActionYes={async (val, rows) => {
                           const buttonName = await MessageBox({
                             messageTitle: t("Confirmation"),
@@ -304,22 +321,22 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
                             loadingBtnName: ["Yes"],
                           });
                           if (buttonName === "Yes") {
-                            let deleteReqPara = {
-                              REQ_FLAG: "A",
-                              TRAN_TYPE: "Delete",
-                              COMP_CD: acctDtlData[0].ENTERED_COMP_CD,
-                              BRANCH_CD: acctDtlData[0].ENTERED_BRANCH_CD,
-                              ACCT_CD: rows.ACCT_CD,
-                              ACCT_TYPE: rows.ACCT_TYPE,
-                              AMOUNT: rows.AMOUNT,
-                              REMARKS: acctDtlData[0].REMARKS,
-                              SCREEN_REF: "RPT/15",
-                              CONFIRMED: rows.CONFIRMED,
-                              USER_DEF_REMARKS: val,
-                              TRAN_CD: rows.TRAN_CD,
-                              ENTERED_BY: rows.draftDtlData[0].ENTERED_BY,
-                              PAYSLIP_NO: rows.PAYSLIP_NO,
-                              _isNewRow: false,                             
+         let deleteReqPara = {
+        REQ_FLAG: "A",
+        TRAN_TYPE: "Delete",
+        COMP_CD: acctDtlData[0].ENTERED_COMP_CD,
+        BRANCH_CD: acctDtlData[0].ENTERED_BRANCH_CD,
+        ACCT_CD: rows[0]?.data?.ACCT_CD,
+        ACCT_TYPE: rows[0]?.data?.ACCT_TYPE,
+        AMOUNT:`${rows[0].data?.TOTAL_AMT}`,
+        REMARKS: acctDtlData[0].REMARKS,
+        SCREEN_REF: "RPT/15",
+        CONFIRMED: rows[0]?.data?.CONFIRMED,
+        USER_DEF_REMARKS: val,
+        TRAN_CD: rows[0]?.data?.TRAN_CD,
+        ENTERED_BY: draftDtlData[0].ENTERED_BY,
+        PAYSLIP_NO: rows[0]?.data?.PAYSLIP_NO,
+        _isNewRow: false,                        
                             
                              
                             };
@@ -330,11 +347,12 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
                         AcceptbuttonLabelText="Ok"
                         CanceltbuttonLabelText="Cancel"
                         open={isDeleteRemark}
-                        defaultValue={"WRONG ENTRY FROM PAYSLIP ISSUE ENTRY CONFIRMATION (RPT/15)"
+                        defaultValue={"WRONG ENTRY FROM PAYSLIP ISSUE CONFIRMATION (RPT/15) CONFIRMATION"
                         }
                         rows={rows}
                       />
-                    )}
+                    ):""
+                  }
         {
           openConfmHistory?(
           <ConFirmedHistory
@@ -343,6 +361,18 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
           />
           ):""
         }
+           {isPhotoSign ? (
+                        <>
+                          <div style={{ paddingTop: 10 }}>
+                            <PhotoSignWithHistory data={SignData? SignData:{}}
+                              onClose={() => {
+                                setIsPhotoSign(false)
+                              }}
+                              screenRef={"RPT/015"}
+                            />
+                          </div>
+                        </>
+                      ) : null}
     </>
   )
 }

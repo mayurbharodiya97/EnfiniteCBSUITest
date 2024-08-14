@@ -1566,7 +1566,7 @@ export const en_language_data = {
   infavourofrequired: "InFavourof is Required",
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
-
+  entryType:"Entry Type",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",

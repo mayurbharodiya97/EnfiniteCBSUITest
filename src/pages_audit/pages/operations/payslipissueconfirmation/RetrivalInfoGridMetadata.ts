@@ -59,7 +59,7 @@ export const RetrievedinfoGridMetaData:GridMetaDataType = {
         maxWidth: 500,
       },
       {
-        accessor: "CONFIRMED",
+        accessor: "CONFIRMED_FLG",
         columnName: "status",
         sequence: 4,
         alignment: "left",

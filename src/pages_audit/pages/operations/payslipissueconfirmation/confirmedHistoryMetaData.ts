@@ -1,7 +1,7 @@
 export const confirmedHistoryMetaData = {
     gridConfig: {
       dense: true,
-      gridLabel: "",
+      gridLabel: "Dual Confirmation History",
       rowIdColumn: "TRAN_CD",
       defaultColumnConfig: {
         width: 400,
@@ -19,9 +19,9 @@ export const confirmedHistoryMetaData = {
         min: "67vh",
         max: "67vh",
       },
-      allowFilter: true,
+      allowFilter: false,
       allowColumnHiding: true,
-      allowRowSelection: true,
+      allowRowSelection: false,
       isCusrsorFocused: true,
     },
     filters: [],
@@ -38,44 +38,27 @@ export const confirmedHistoryMetaData = {
         isAutoSequence: true,
       },
       {
-        accessor: "PAYSLIP_NO",
-        columnName: "ddNo",
+        accessor: "ENTRY_TYPE",
+        columnName: "entryType",
         sequence: 2,
-        alignment: "right",
+        alignment: "left",
         componentType: "default",
         width: 100,
         minWidth: 100,
         maxWidth: 150,
       },
       {
-        accessor: "COMM_TYPE_DESC",
-        columnName: "commissionType",
+        accessor: "ENTERED_BY",
+        columnName: "User",
         sequence: 3,
         alignment: "left",
         componentType: "default",
-        width: 300,
+        width: 120,
         minWidth: 100,
-        maxWidth: 500,
+        maxWidth: 130,
       },
       {
-        accessor: "PENDING_FLAG",
-        columnName: "status",
-        sequence: 4,
-        alignment: "left",
-        componentType: "default",
-        width: 150,
-        minWidth: 100,
-        maxWidth: 200,
-        color: (val, data) => {
-          let PENDING_FLAG = data?.original?.CONFIRMED ?? "";
-          return PENDING_FLAG === "Y"
-            ? "green" : "red"
-  
-  
-        },
-      },
-      {
-        accessor: "TRAN_DT",
+        accessor: "ENTERED_DATE",
         columnName: "date",
         sequence: 5,
         alignment: "left",
@@ -85,45 +68,17 @@ export const confirmedHistoryMetaData = {
         maxWidth: 200,
       },
       {
-        accessor: "AMOUNT",
-        columnName: "amount",
-        sequence: 6,
-        alignment: "right",
-        componentType: "currency",
+        accessor: "MACHINE_NM",
+        columnName: "Machine",
+        sequence: 4,
+        alignment: "left",
+        componentType: "default",
         width: 150,
-        minWidth: 150,
-        maxWidth: 250,
-      },
-  
-      {
-        accessor: "INFAVOUR_OF",
-        columnName: "inFavourOf",
-        sequence: 7,
-        alignment: "left",
-        componentType: "default",
-        width: 300,
         minWidth: 100,
-        maxWidth: 500,
-      },
-      {
-        accessor: "ENTERED_BY",
-        columnName: "enteredBy",
-        sequence: 8,
-        alignment: "left",
-        componentType: "default",
-        width: 110,
-        minWidth: 80,
         maxWidth: 200,
+      
       },
-      {
-        accessor: "VERIFIED_BY",
-        columnName: "verifiedBy",
-        sequence: 9,
-        alignment: "left",
-        componentType: "default",
-        width: 110,
-        minWidth: 80,
-        maxWidth: 200,
-      },
+    
+    
     ],
   };

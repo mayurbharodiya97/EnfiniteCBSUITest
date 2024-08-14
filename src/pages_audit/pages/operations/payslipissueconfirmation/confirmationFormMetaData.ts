@@ -1,6 +1,7 @@
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
-import { geTrxDdw } from "../payslip-issue-entry/api";
+import { getBankCodeData, getCustDocData, getInfavourOfData, getRetrievalType, geTrxDdw } from "../payslip-issue-entry/api";
+import { getRegionDDData, getSignatureDdnData } from "./api";
 export const PayslipdetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -135,7 +136,7 @@ export const PayslipdetailsFormMetaData = {
     },
 
   ]
-}
+};
 export const AccdetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -201,132 +202,29 @@ export const AccdetailsFormMetaData = {
         {
           render: { componentType: "_accountNumber" },
 
-          branchCodeMetadata: {
-            name: "BRANCH_CD",
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            isReadOnly: true,
-          },
-          accountTypeMetadata: {
-            name: "ACCT_TYPE",
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-          },
-          accountCodeMetadata: {
-            name: "ACCT_CD",
-            autoComplete: "off",
-            maxLength: 20,
-            dependentFields: ["PAYSLIP_MST_DTL", "ACCT_TYPE", "BRANCH_CD"],
-            runPostValidationHookAlways: true,
-            runValidationOnDependentFieldsChange:false,
-            validationRun: "all",
-            postValidationSetCrossFieldValues: async (
-              currentField,
-              formState,
-              authState,
-              dependentFieldValues
-            ) => {
-
-              if (formState?.isSubmitting) return {};
-              if (
-                currentField?.value &&
-                dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value &&
-                dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
-              ) {
-                const reqParameters = {
-                  BRANCH_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
-                  COMP_CD: authState?.companyID,
-                  ACCT_TYPE: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    currentField?.value,
-                    dependentFieldValues?.ACCT_TYPE?.optionData
-                  ),
-                  SCREEN_REF: "RPT/14",
-                };
-                let postData = await GeneralAPI.getAccNoValidation(reqParameters);
-
-                let btn99, returnVal;
-
-                const getButtonName = async (obj) => {
-                  let btnName = await formState.MessageBox(obj);
-                  return { btnName, obj };
-                };
-
-                for (let i = 0; i < postData.MSG.length; i++) {
-
-                  if (postData.MSG[i]?.O_STATUS === "999") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "Validation Failed",
-                      message: postData.MSG[i]?.O_MESSAGE,
-                    });
-                    returnVal = "";
-                  } else if (postData.MSG[i]?.O_STATUS === "99") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
-                      message: postData[i]?.O_MESSAGE,
-                      buttonNames: ["Yes", "No"],
-                    });
-                    btn99 = btnName;
-                    if (btnName === "No") {
-                      returnVal = "";
-                    }
-                  } else if (postData.MSG[i]?.O_STATUS === "9") {
-                    if (btn99 !== "No") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
-                        message: postData.MSG[i]?.O_MESSAGE,
-                      });
-                    }
-                    returnVal = postData[i];
-                  } else if (postData.MSG[i]?.O_STATUS === "0") {
-                    if (btn99 !== "No") {
-                      returnVal = postData[i];
-                    } else {
-                      returnVal = "";
-                    }
-                  }
-                }
-                btn99 = 0;
-                return {
-                  ACCT_CD:
-                    returnVal !== ""
-                      ? {
-                        value: currentField?.value.padStart(6, "0")?.padEnd(20, " "),
-                        ignoreUpdate: true,
-                        isFieldFocused: false,
-                      }
-                      : {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                  ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                  TYPE_CD: {
-                    value: postData?.TYPE_CD ?? "",
-                  },
-                  LIMIT_AMT: {
-                    value: postData?.LIMIT_AMT ?? "",
-                  },
-                  WIDTH_BAL: {
-                    value: postData?.WIDTH_BAL ?? "",
-                  },
-                  TRAN_BAL: {
-                    value: postData?.TRAN_BAL ?? "",
-                  }
-
-                };
-              } else if (!currentField?.value) {
-                return {
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" }
-                };
-              }
+          __VIEW__: {
+            branchCodeMetadata: {
+              render: {
+                componentType: "textField",
+              },
+              isReadOnly: true,
+              GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
             },
-            fullWidth: true,
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-          },
-       
-
+            accountTypeMetadata: {
+              render: {
+                componentType: "textField",
+              },
+              isReadOnly: true,
+              GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+            },
+            accountCodeMetadata: {
+              render: {
+                componentType: "textField",
+              },
+              isReadOnly: true,
+              GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+            }
+          }
         },
         {
           render: {
@@ -366,8 +264,7 @@ export const AccdetailsFormMetaData = {
           type: "text",
           GridProps: { lg: 1, xl: 1 },
           dependentFields: ["INFAVOUR_OF"],
-          __EDIT__: { isReadOnly: true },
-          __NEW__: { isReadOnly: false },
+        
         },
         {
             render: {
@@ -376,92 +273,6 @@ export const AccdetailsFormMetaData = {
             name: "SIGN",
             label: "Sign",
             GridProps: { lg: 1, xl: 1 },
-          },
-        {
-            render: {
-              componentType: "amountField",
-            },
-            name: "WIDTH_BAL",
-            label: "Withdrawal Balance",
-            required: true,
-            fullWidth: true,
-            placeholder: "",
-            type: "text",
-            FormatProps: {
-              allowNegative: false,
-            },
-            dependentFields: ["PAYSLIP_MST_DTL", "ACCT_TYPE", "BRANCH_CD","ACCT_CD"],
-            setValueOnDependentFieldsChange:async (dependentFieldValues) => {
-              const reqParameters = {
-                BRANCH_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
-                COMP_CD: "132",
-                ACCT_TYPE: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
-                ACCT_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value,
-                SCREEN_REF: "RPT/15",
-              };
-              
-              let postData = await GeneralAPI.getAccNoValidation(reqParameters);
-              console.log("reqParameters",postData);
-            
-              return postData?.WIDTH_BAL ?? "";
-            },  
-         
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-           
-  
-          },
-        {
-            render: {
-              componentType: "amountField",
-            },
-            name: "LIMIT_AMT",
-            label: "Withdrawable Amount",
-            required: true,
-            fullWidth: true,
-            placeholder: "",
-            type: "text",
-            FormatProps: {
-              allowNegative: false,
-            },
-            __EDIT__: { isReadOnly: true, required: false, },
-           
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            dependentFields: ["PAYSLIP_MST_DTL", "ACCT_TYPE", "BRANCH_CD","ACCT_CD"],
-            setValueOnDependentFieldsChange:async (dependentFieldValues) => {
-              const reqParameters = {
-                BRANCH_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
-                COMP_CD: "132",
-                ACCT_TYPE: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
-                ACCT_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value,
-                SCREEN_REF: "RPT/15",
-              };
-              
-              let postData = await GeneralAPI.getAccNoValidation(reqParameters);
-              console.log("reqParameters",postData);
-            
-              return postData?.LIMIT_AMT ?? "";
-            }, 
-  
-          },
-          {
-            render: {
-              componentType: "amountField",
-            },
-            name: "LIMIT_AMT",
-            label: "Limit Amount",
-            required: true,
-            dependentFields: ["COMMISSION", "SERVICE_CHARGE", "C_C_T"],
-            fullWidth: true,
-            placeholder: "",
-            type: "text",
-            FormatProps: {
-              allowNegative: false,
-            },
-            __EDIT__: { isReadOnly: true, required: false, },
-           
-            GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-           
-  
           },
         {
           render: {
@@ -561,130 +372,8 @@ export const AccdetailsFormMetaData = {
             }
             return false;
           },
-          postValidationSetCrossFieldValues: async (
-            field,
-            formState,
-            auth,
-            dependentFieldsValues
-          ) => {
-            if (
-              field.value &&
-              dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value.length === 0
-            ) {
-              let buttonName = await formState?.MessageBox({
-                messageTitle: "Information",
-                message: "Enter Account Information",
-                buttonNames: ["Ok"],
-              });
-
-              if (buttonName === "Ok") {
-                return {
-                  CHEQUE_NO: {
-                    value: "",
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                  ACCT_TYPE: {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
-                };
-              }
-            } else if (
-              field.value &&
-              dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value.length
-            ) {
-              if (formState?.isSubmitting) return {};
-              let postData = await GeneralAPI.getChequeNoValidation({
-                BRANCH_CD: dependentFieldsValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
-                ACCT_TYPE: dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
-                ACCT_CD: utilFunction.getPadAccountNumber(
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value,
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.optionData
-                ),
-                CHEQUE_NO: field.value,
-                TYPE_CD: dependentFieldsValues?.["PAYSLIP_MST_DTL.TYPE_CD"]?.value,
-                SCREEN_REF: "Rpt/14"
-              });
-              let btn99;
-
-              const getButtonName = async (obj) => {
-                let btnName = await formState.MessageBox(obj);
-                return { btnName, obj };
-              };
-              for (let i = 0; i < postData.length; i++) {
-                if (postData[i]?.ERR_CODE === "999") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Account Validation Failed",
-                    message: postData[i]?.ERR_MSG,
-                  });
-                  if (btnName === "Ok") {
-                    return {
-                      CHEQUE_NO: {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                      CHEQUE_DT: {
-                        value: "",
-                        isFieldFocused: false,
-                        ignoreUpdate: true,
-                      },
-                    };
-                  }
-                } else if (postData[i]?.ERR_CODE === "9") {
-                  if (btn99 !== "No") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "HNI Alert",
-                      message: postData[i]?.ERR_MSG,
-                    });
-                  }
-                } else if (postData[i]?.ERR_CODE === "99") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Risk Category Alert",
-                    message: postData[i]?.ERR_MSG,
-                    buttonNames: ["Yes", "No"],
-                  });
-
-                  btn99 = btnName;
-                  if (btnName === "No") {
-                    return {
-                      CHEQUE_NO: {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                      CHEQUE_DT: {
-                        value: "",
-                        isFieldFocused: false,
-                        ignoreUpdate: true,
-                      },
-                    };
-                  }
-                } else if (postData[i]?.ERR_CODE === "0") {
-                  return {
-                    CHEQUE_NO: {
-                      value: field?.value,
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-              }
-            }
-          },
-          __EDIT__: {
-            isReadOnly: true, required: false,
-            postValidationSetCrossFieldValues: async (
-              currentField,
-              formState,
-              authState,
-              dependentFieldValues
-            ) => {
-
-            },
-          },
+        
+         
         },
         {
           render: {
@@ -837,4 +526,4 @@ export const AccdetailsFormMetaData = {
     },
 
   ]
-}
+};

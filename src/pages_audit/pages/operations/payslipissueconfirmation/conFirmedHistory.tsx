@@ -11,6 +11,7 @@ import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
 import { confirmedHistoryMetaData } from "./confirmedHistoryMetaData";
 import { Dialog } from "@mui/material";
+import { format } from "date-fns";
 
  
 
@@ -45,16 +46,33 @@ export const ConFirmedHistory = ({open,close}) => {
   >(["getShowConfirmedHistory"], () =>
     API.getShowConfirmedHistory({
     ENTERED_COMP_CD: authState?.companyID,
-    TRAN_DT: authState?.workingDate,
+    TRAN_DT:format(new Date(rows[0].data?.TRAN_DT), "dd/MMM/yyyy"),
     ENTERED_BRANCH_CD: authState?.user?.baseBranchCode,
-    SCREEN_REF: "RPT/15",
-    TRAN_CD: rows?.TRAN_CD
+    SCREEN_REF: "PAYSLIP",
+    TRAN_CD: rows[0].data?.TRAN_CD
     })
   );
-
+  const  modifyArray=(data)=> {
+    if (data) {
+      data.forEach((item, index) => {
+        if (index === 0) {
+          item.ENTRY_TYPE = "Entry";
+        } else {
+          item.ENTRY_TYPE = "confirmation";
+        }
+      });
+      return data;
+    }
+    
+   else{
+    return[];
+   }
+  };
+  const modifiedData = modifyArray(data);
+  
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getConfirmedHistory"]);
+      queryClient.removeQueries(["getShowConfirmedHistory"]);
     };
   }, []);
 
@@ -63,7 +81,7 @@ export const ConFirmedHistory = ({open,close}) => {
          <Dialog
           open={open}
           fullWidth
-          maxWidth="lg"
+          maxWidth="md"
         >
       {isError && (
         <Alert
@@ -76,7 +94,7 @@ export const ConFirmedHistory = ({open,close}) => {
       <GridWrapper
         key={"modeMasterGrid"}
         finalMetaData={confirmedHistoryMetaData as GridMetaDataType}
-        data={data ?? []}
+        data={modifiedData ?? []}
         loading={isLoading||isFetching}
         setData={() => null}
         actions={actions}

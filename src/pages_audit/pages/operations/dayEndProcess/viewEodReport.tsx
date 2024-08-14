@@ -43,7 +43,7 @@ export const ViewEodReport = ({open,close,metaData,reportData,reportLabel})=>{
             ENT_BRANCH_CD: authState?.user?.branchCode,
             BASE_COMP_CD: authState?.baseCompanyID,
             BASE_BRANCH_CD: authState?.user?.baseBranchCode,
-            GD_DATE: authState?.workingDate
+            A_GD_DATE: authState?.workingDate
           })
       );
 
