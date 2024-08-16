@@ -56,9 +56,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 117,
+      width: 142,
       minWidth: 90,
-      maxWidth: 130,
+      maxWidth: 180,
     },
     {
       accessor: "CHEQUE_TO",
@@ -66,9 +66,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 115,
+      width: 129,
       minWidth: 90,
-      maxWidth: 120,
+      maxWidth: 170,
     },
     {
       accessor: "CHEQUE_DT",

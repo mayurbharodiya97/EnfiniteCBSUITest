@@ -180,7 +180,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
         fullWidth={true}
         PaperProps={{
           style: {
-            maxWidth: "1150px",
+            maxWidth: "1250px",
           },
         }}
       >
@@ -219,6 +219,13 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                 ...rows?.[0]?.data,
                 DETAILS_DATA: viewDocuments?.data,
               }}
+              subHeaderLable={`\u00A0\u00A0 
+          ${(
+            rows?.[0]?.data?.COMP_CD +
+            rows?.[0]?.data?.BRANCH_CD +
+            rows?.[0]?.data?.ACCT_TYPE +
+            rows?.[0]?.data?.ACCT_CD
+          ).replace(/\s/g, "")} -  ${rows?.[0]?.data?.ACCT_NM} `}
               onSubmitData={onSubmitHandler}
               isLoading={uploadDocuments?.isLoading}
               isNewRow={false}

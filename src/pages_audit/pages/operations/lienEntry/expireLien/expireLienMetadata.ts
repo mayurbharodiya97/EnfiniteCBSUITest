@@ -39,68 +39,32 @@ export const lienExpireMetadata = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "BRANCH_CD",
-      label: "BranchCode",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_TYPE",
-      label: "AccountType",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_CD",
-      label: "AccountNumber",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_NM",
-      label: "AccountName",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
 
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "textField",
       },
       name: "LIEN_CD",
       label: "LienCode",

@@ -80,6 +80,21 @@ export const retrieveFormMetaData = {
         lg: 12,
         xl: 12,
       },
+      validationRun: "onChange",
+      dependentFields: ["ACCT_TYPE", "CUSTOMER_ID", "FROM_DT"],
+      postValidationSetCrossFieldValues: (field) => {
+        return {
+          ACCT_TYPE: {
+            value: "",
+            isFieldFocused: field?.value === "A" ? true : false,
+          },
+          CUSTOMER_ID: {
+            value: "",
+            isFieldFocused: field?.value === "C" ? true : false,
+          },
+          FROM_DT: { isFieldFocused: field?.value === "D" ? true : false },
+        };
+      },
     },
 
     {
@@ -122,6 +137,7 @@ export const retrieveFormMetaData = {
       },
       accountTypeMetadata: {
         runValidationOnDependentFieldsChange: true,
+
         schemaValidation: {
           type: "string",
           rules: [{ name: "", params: [""] }],
@@ -134,7 +150,7 @@ export const retrieveFormMetaData = {
           xl: 2.5,
         },
         dependentFields: ["A_RET_FLAG"],
-        validate: (columnValue, allField, flag) => {
+        validate: (columnValue, allField) => {
           if (
             columnValue.value.length <= 0 &&
             allField?.A_RET_FLAG.value === "A"
@@ -143,7 +159,7 @@ export const retrieveFormMetaData = {
           }
           return "";
         },
-        shouldExclude(fieldData, dependentFieldsValues, formState) {
+        shouldExclude(fieldData, dependentFieldsValues) {
           if (dependentFieldsValues?.A_RET_FLAG?.value === "A") {
             return false;
           } else {
@@ -160,7 +176,7 @@ export const retrieveFormMetaData = {
           });
         },
         // _optionsKey: "get_Account_Type",
-        postValidationSetCrossFieldValues: (field, formState) => {
+        postValidationSetCrossFieldValues: () => {
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },

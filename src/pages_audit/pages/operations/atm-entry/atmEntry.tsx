@@ -105,6 +105,22 @@ const AtmEntryCustom = ({ parameter }) => {
     //@ts-ignore
     endSubmit(true);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "s" && event.ctrlKey) {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      } else if (event.key === "r" && event.ctrlKey) {
+        event.preventDefault();
+        navigate("retrieve-form");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <Grid container>

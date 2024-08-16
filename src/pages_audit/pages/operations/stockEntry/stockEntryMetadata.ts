@@ -69,6 +69,13 @@ export const StockEntryMetaData = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -94,6 +101,13 @@ export const StockEntryMetaData = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
         render: {
@@ -221,6 +235,13 @@ export const StockEntryMetaData = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -233,10 +254,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
 
@@ -249,10 +270,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -264,10 +285,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {

@@ -293,21 +293,22 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
+      postValidationSetCrossFieldValues: async (field, formState) => {
         if (field?.value) {
+          let CitizenIdData: any = [];
+          formState?.setIsData((old) => {
+            old?.gridData?.map((item) => {
+              return CitizenIdData.push(item?.CITIZEN_ID);
+            });
+          });
           let apiRequest = {
             CITIZEN_ID: field?.value,
-            CITIZENID_DATA: "IA00377209,IA00357709",
+            // CITIZENID_DATA: "IA00377209,IA00357709",
+            CITIZENID_DATA: CitizenIdData.join(","),
             SCREEN_REF: "MST/846",
           };
 
           let postData = await validateCitizenId(apiRequest);
-          console.log("<<<postdarf", postData);
           if (postData?.length) {
             if (postData?.[0]?.O_STATUS === "999") {
               let buttonName = await formState.MessageBox({
@@ -552,7 +553,7 @@ export const CardDetailsMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ID_NO",
     },

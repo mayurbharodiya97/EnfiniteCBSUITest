@@ -2251,6 +2251,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  VALIDATECHQBKCONFRIMATIONDATA: {
+    url: "/chequeServiceAPI/VALIDATECHQBKCONFRIMATIONDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

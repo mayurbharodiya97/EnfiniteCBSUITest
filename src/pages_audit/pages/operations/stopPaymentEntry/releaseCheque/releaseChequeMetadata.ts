@@ -39,63 +39,27 @@ export const releaseChequeMetadata = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "BRANCH_CD",
-      label: "Branch",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_TYPE",
-      label: "AccountType",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_CD",
-      label: "AccountNumber",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_NM",
-      label: "AccountName",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
 
     {
@@ -107,10 +71,10 @@ export const releaseChequeMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -123,10 +87,10 @@ export const releaseChequeMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -145,10 +109,10 @@ export const releaseChequeMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -167,10 +131,10 @@ export const releaseChequeMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -182,10 +146,10 @@ export const releaseChequeMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -197,10 +161,54 @@ export const releaseChequeMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "SERVICE_TAX",
+      label: "ChargeAmount",
+      isReadOnly: true,
+      // shouldExclude(fieldData, dependentFields, formState) {
+      //   if (fieldData?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "AMOUNT",
+      label: "GSTAmount",
+      isReadOnly: true,
+      // shouldExclude(fieldData, dependentFields, formState) {
+      //   if (fieldData?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -210,7 +218,7 @@ export const releaseChequeMetadata = {
       name: "REASON_CD",
       label: "Reason",
       disableCaching: true,
-      dependentFields: ["FLAG", "BRANCH_CD", "ALLOW_RELEASE"],
+      dependentFields: ["FLAG", "BRANCH_CD"],
       options: (dependentValue, formState, any, authState) => {
         if (dependentValue?.BRANCH_CD?.value && dependentValue?.FLAG?.value) {
           return API.reasonDropdown({
@@ -228,66 +236,16 @@ export const releaseChequeMetadata = {
         }
         return [];
       },
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
       _optionsKey: "reasonDropdown",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "SERVICE_TAX",
-      label: "ChargeAmount",
-      isReadOnly: true,
-      shouldExclude(fieldData, dependentFields, formState) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "AMOUNT",
-      label: "GSTAmount",
-      isReadOnly: true,
-      shouldExclude(fieldData, dependentFields, formState) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
+
     {
       render: {
         componentType: "datePicker",
@@ -297,10 +255,10 @@ export const releaseChequeMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -311,19 +269,19 @@ export const releaseChequeMetadata = {
       name: "CHEQUE_AMOUNT",
       label: "ChequeAmount",
       isReadOnly: true,
-      shouldExclude(fieldData, dependentFields, formState) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      // shouldExclude(fieldData, dependentFields, formState) {
+      //   if (fieldData?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -333,22 +291,13 @@ export const releaseChequeMetadata = {
       },
       name: "INFAVOUR_OF",
       label: "Infavour",
-      type: "text",
-      // placeholder: "Infavour",
-      dependentFields: ["ALLOW_RELEASE"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -357,21 +306,13 @@ export const releaseChequeMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      // placeholder: "Enter Remarks",
-      dependentFields: ["ALLOW_RELEASE"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
+
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -382,15 +323,13 @@ export const releaseChequeMetadata = {
       label: "ReleaseDate",
       isMaxWorkingDate: true,
       isWorkingDate: true,
+      __EDIT__: {
+        render: {
+          componentType: "datePicker",
+        },
+      },
       dependentFields: ["ALLOW_RELEASE"],
-      // isReadOnly(fieldData, dependentFieldsValues, formState) {
-      //   if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
-      shouldExclude(fieldData, dependentFields, formState) {
+      shouldExclude(fieldData, dependentFields) {
         if (dependentFields?.ALLOW_RELEASE?.value === "Y") {
           return false;
         } else {
@@ -399,10 +338,10 @@ export const releaseChequeMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {

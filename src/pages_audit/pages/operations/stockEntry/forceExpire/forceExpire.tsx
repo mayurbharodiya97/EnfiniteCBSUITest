@@ -130,7 +130,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           }}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 367px)",
+            height: "calc(100vh - 455px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

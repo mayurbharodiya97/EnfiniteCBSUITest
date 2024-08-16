@@ -336,6 +336,7 @@ const LimitEntryCustom = () => {
         >
           {securityLimitData.isLoading ||
           validateInsertData?.isLoading ||
+          crudLimitData?.isLoading ||
           validateDeleteData.isLoading ? (
             <LinearProgress color="secondary" />
           ) : (securityLimitData?.isError && isData.closeAlert) ||
@@ -379,14 +380,13 @@ const LimitEntryCustom = () => {
               metaData={isData.newFormMTdata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
-                console.log("<<<datalim", data);
+                //@ts-ignore
+                endSubmit(true);
                 let apiReq = {
                   ...data,
                   ...reqDataRef.current.securityDetails,
                 };
                 validateInsertData.mutate(apiReq);
-                //@ts-ignore
-                endSubmit(true);
               }}
               hideHeader={false}
               ref={myMasterRef}

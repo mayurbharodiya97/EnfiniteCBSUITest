@@ -78,6 +78,13 @@ export const LienEntryMetadata = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -106,6 +113,13 @@ export const LienEntryMetadata = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
         FormatProps: {
@@ -220,6 +234,13 @@ export const LienEntryMetadata = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -277,10 +298,10 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
     },
 
@@ -295,10 +316,10 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -319,10 +340,10 @@ export const LienEntryMetadata = {
       _optionsKey: "LIEN_STATUS",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -334,10 +355,10 @@ export const LienEntryMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -351,10 +372,10 @@ export const LienEntryMetadata = {
       label: "EffectiveDate",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -384,10 +405,10 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -411,10 +432,10 @@ export const LienEntryMetadata = {
       _optionsKey: "LIEN_REASON_CD",
       GridProps: {
         xs: 12,
-        md: 3.6,
-        sm: 3.6,
-        lg: 3.6,
-        xl: 3.6,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 
@@ -439,10 +460,10 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 3.6,
-        sm: 3.6,
-        lg: 3.6,
-        xl: 3.6,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

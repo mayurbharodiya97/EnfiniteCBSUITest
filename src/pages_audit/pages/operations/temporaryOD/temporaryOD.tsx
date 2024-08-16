@@ -123,8 +123,8 @@ export const TemporaryOD = () => {
     [navigate]
   );
 
-  let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
-  metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
+  // let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
+  let metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
 
   return (
     <>

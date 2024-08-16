@@ -76,6 +76,13 @@ export const StopPayEntryMetadata = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -103,6 +110,13 @@ export const StopPayEntryMetadata = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
         render: {
@@ -219,6 +233,13 @@ export const StopPayEntryMetadata = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -232,10 +253,10 @@ export const StopPayEntryMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
 
@@ -246,13 +267,12 @@ export const StopPayEntryMetadata = {
       name: "TRAN_BAL",
       label: "Balance",
       isReadOnly: true,
-      type: "text",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -286,10 +306,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -310,10 +330,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -333,10 +353,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -420,10 +440,10 @@ export const StopPayEntryMetadata = {
       required: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -540,10 +560,10 @@ export const StopPayEntryMetadata = {
       required: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -576,10 +596,10 @@ export const StopPayEntryMetadata = {
       _optionsKey: "reasonDropdown",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 5,
+        sm: 5,
+        lg: 5,
+        xl: 5,
       },
     },
     {
@@ -644,10 +664,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -671,10 +691,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -685,10 +705,10 @@ export const StopPayEntryMetadata = {
       label: "ChequeDate",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -712,10 +732,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -736,10 +756,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -758,10 +778,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 

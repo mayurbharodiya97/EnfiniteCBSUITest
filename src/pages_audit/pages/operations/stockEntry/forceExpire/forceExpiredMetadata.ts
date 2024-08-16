@@ -54,67 +54,27 @@ export const forceExpireStockMetaData = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "BRANCH_CD",
-      label: "BranchCode",
-      isReadOnly: true,
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_TYPE",
-      label: "AccountType",
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_CD",
-      label: "AccountNumber",
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 3,
-        xl: 3,
-      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "ACCT_NM",
-      label: "AccountName",
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
 
     {
