@@ -72,22 +72,20 @@ pipeline {
                 buildAndPushDockerImage(env.IMAGE_NAME, env.NEW_TAG)
             }
         }
-
+        stage('Update Manifest and K8s Deployment') {
+            steps {
+                updateManifestDeploy(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
+            }
+        }
         stage('Update Deployment Tags') {
             steps {
                 updateDeploymentTags(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
             }
         }
 
-        stage('Push Deployment File to Git And Copy To K8s Cluster') {
+        stage('Push Deployment File to Git') {
             steps {
                 pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL, )
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                deployToKubernetes(env.FILENAME, env.DEPLOYMENTNAME)
             }
         }
     }
