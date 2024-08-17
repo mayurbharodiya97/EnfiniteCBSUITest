@@ -1,5 +1,8 @@
 import { createTheme } from "@mui/material/styles";
-
+const getCssVariable = (variableName: string) =>
+  getComputedStyle(document.documentElement)
+    .getPropertyValue(variableName)
+    .trim();
 export const theme = createTheme({
   palette: {
     //@ts-ignore
@@ -8,7 +11,8 @@ export const theme = createTheme({
     },
     //@ts-ignore
     secondary: {
-      main: "#07288e",
+      // main: "#07288e",
+      main: getCssVariable("--theme-color3"),
       // }
     },
   },
