@@ -7,16 +7,13 @@ import { commonDataRetrive, getJointDetailsList, headerDataRetrive } from '../pa
 import FormWrapper, { MetaDataType } from 'components/dyanmicForm';
 import { extractMetaData } from 'components/utils';
 import { DraftdetailsFormMetaData, TotaldetailsFormMetaData } from '../payslip-issue-entry/paySlipMetadata';
-import { LoadingTextAnimation } from 'components/common/loader';
 import { Dialog, Paper } from '@mui/material';
 import JointDetails from '../payslip-issue-entry/JointDetails';
 import { usePopupContext } from 'components/custom/popupContext';
 import { GradientButton } from 'components/styledComponent/button';
-import { DeleteDialog } from '../payslip-issue-entry/deleteDialog';
 import { LoaderPaperComponent } from 'components/common/loaderPaper';
 import { AccdetailsFormMetaData, PayslipdetailsFormMetaData } from './confirmationFormMetaData';
 import {t} from "i18next";
-import { OpenWithSharp } from '@mui/icons-material';
 import { ConFirmedHistory } from './conFirmedHistory';
 import { format } from 'date-fns';
 import * as API from './api';
@@ -336,6 +333,13 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         TRAN_CD: rows[0]?.data?.TRAN_CD,
         ENTERED_BY: draftDtlData[0].ENTERED_BY,
         PAYSLIP_NO: rows[0]?.data?.PAYSLIP_NO,
+        DRAFT_MST_DATA:[{
+          COMP_CD: "",
+          BRANCH_CD:"",
+          ACCT_CD: "",
+          ACCT_TYPE: "",
+        }],
+         ADD_DRAFT_DATA: "N",
         _isNewRow: false,                        
                             
                              

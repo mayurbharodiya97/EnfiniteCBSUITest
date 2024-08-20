@@ -49,11 +49,11 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
     };
 
 
-    mutation.mutate(payload);
+    // mutation.mutate(payload);
+    onUpload(payload);
+    closeDialog();
   };
-  const handleRefe =()=>{
  
-  }
 
   return (
     <>

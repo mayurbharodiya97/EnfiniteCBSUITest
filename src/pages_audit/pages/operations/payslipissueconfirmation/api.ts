@@ -2,41 +2,62 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getPayslipCnfRetrieveData = async ({
-  ENT_COMP_CD,ENT_BRANCH_CD,GD_DATE,FROM_DT,TO_DT,FLAG,A_LANG
+  ENT_COMP_CD,
+  ENT_BRANCH_CD,
+  GD_DATE,
+  FROM_DT,
+  TO_DT,
+  FLAG,
+  A_LANG
+}: {
+  ENT_COMP_CD: string;
+  ENT_BRANCH_CD: string;
+  GD_DATE: string;
+  FROM_DT: string;
+  TO_DT: string;
+  FLAG: string;
+  A_LANG: string;
 }) => {
-
+  // Fetch data from the API
   const { data, status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "GETPAYSLIPCNFRETRIVEGRID",
-      {
-        ENT_COMP_CD: ENT_COMP_CD,
-        ENT_BRANCH_CD: ENT_BRANCH_CD,
-        GD_DATE: GD_DATE,
-        FROM_DT: FROM_DT,
-        TO_DT:TO_DT,
-        FLAG: FLAG,
-        A_LANG:A_LANG
-      }
-    );
-   
+    "GETPAYSLIPCNFRETRIVEGRID",
+    {
+      ENT_COMP_CD,
+      ENT_BRANCH_CD,
+      GD_DATE,
+      FROM_DT,
+      TO_DT,
+      FLAG,
+      A_LANG
+    }
+  );
+
   if (status === "0") {
     let responseData = data;
+
+    // Check if the responseData is an array
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ ...items }) => {
-          return {
-            ...items,
-            CONFIRMED_FLG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending"
+      // Calculate totals for each TRAN_CD
+      const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
+        const amount = parseFloat(obj.AMOUNT || "0");
+        acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
+        return acc;
+      }, {} as Record<string, number>);
 
-          };
-
-        }
-      );
+      // Process data to include CONFIRMED_FLG and TOTAL_AMT
+      responseData = responseData.map((items) => ({
+        ...items,
+        CONFIRMED_FLG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+        TOTAL_AMT: totals[items.TRAN_CD]
+      }));
     }
+
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 
 export const getEntryConfirmed = async ({...reqdata}) => {
 

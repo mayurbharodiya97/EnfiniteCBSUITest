@@ -1,7 +1,4 @@
-import { utilFunction } from "components/utils";
-import { GeneralAPI } from "registry/fns/functions";
-import { getBankCodeData, getCustDocData, getInfavourOfData, getRetrievalType, geTrxDdw } from "../payslip-issue-entry/api";
-import { getRegionDDData, getSignatureDdnData } from "./api";
+import {geTrxDdw } from "../payslip-issue-entry/api";
 export const PayslipdetailsFormMetaData = {
   form: {
     name: "payslip entry",

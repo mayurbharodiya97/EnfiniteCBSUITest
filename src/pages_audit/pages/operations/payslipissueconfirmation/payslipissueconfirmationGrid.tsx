@@ -7,29 +7,32 @@ import { ActionTypes } from 'components/dataTable';
 import { AuthContext } from 'pages_audit/auth';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import * as API from './api';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Alert } from 'components/common/alert';
 import { DataRetrival } from './RetriveData';
 import { PayslipConfirmationFormDetails } from './payslipConfirmationForm';
+import { enqueueSnackbar } from 'notistack';
 
 const actions: ActionTypes[] = [
   {
-    actionName: "view-All",
+    actionName: "view-all",
     actionLabel: "View All",
     multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+  {
+    actionName: "retrive",
+    actionLabel: "Retrive",
+    multiple: undefined,
+    rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "View Details",
     multiple: false,
     rowDoubleClick: true,
-  },
-  {
-    actionName: "Retrive",
-    actionLabel: "Retrive",
-    multiple: undefined,
-    alwaysAvailable: true,
   },
 ];
 
@@ -43,44 +46,49 @@ const PayslipissueconfirmationGrid = () => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dateDialog, setDateDialog] = useState(true); // Changed to false to not show dialog initially
-  const [retrivedValues, setRetrivedValues] = useState<PayslipData[]>([]);
   const [actionMenu, setActionMenu] = useState(actions);
-  const [activeFlag, setActiveFlag] = useState("P");
+  const [activeSiFlag, setActiveSiFlag] = useState("Y");
   const isDataChangedRef = useRef(false);
+  const retrievalParaRef = useRef<any>(null);
+  const [gridData, setGridData] = useState<any[]>([]);
+  const [isDataRetrieved, setIsDataRetrieved] = useState(false);
 
-  const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<PayslipData[], Error>(
-    ["getPayslipCnfRetrieveData", activeFlag],
+  const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<PayslipData[]>(
+    ["getPayslipCnfRetrieveData", activeSiFlag],
     () =>
       API.getPayslipCnfRetrieveData({
         A_LANG: "en",
         ENT_COMP_CD: authState?.companyID ?? "",
         ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
         GD_DATE: authState?.workingDate ?? "",
-        FROM_DT: authState?.workingDate ?? "",
-        TO_DT: authState?.workingDate ?? "",
-        FLAG: activeFlag,
+        FROM_DT: authState?.workingDate,
+        TO_DT: authState?.workingDate,
+        FLAG: activeSiFlag === "Y" ? "P" : "A",
       }),
     {
-      enabled: !!authState?.companyID && !!authState?.user?.branchCode && !!authState?.workingDate,
-    }
+      enabled: activeSiFlag === "Y" || activeSiFlag === "N"
+    },
   );
 
-  useEffect(() => {
-    if (data) {
-      const totals = data.reduce<Record<string, number>>((acc, obj) => {
-        const amount = parseFloat(obj.AMOUNT);
-        acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
-        return acc;
-      }, {});
+  const retrieveDataMutation = useMutation(API.getPayslipCnfRetrieveData, {
+    onError: (error: any) => {
+      setGridData([]);
+      let errorMsg = "Unknown error occurred";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+    onSuccess: (data) => {
+      setGridData(data);
+    },
+  });
 
-      const processedData = data.map(obj => ({
-        ...obj,
-        TOTAL_AMT: totals[obj.TRAN_CD],
-      }));
 
-      setRetrivedValues(processedData);
-    }
-  }, [data]);
+
+
 
   useEffect(() => {
     return () => {
@@ -89,69 +97,68 @@ const PayslipissueconfirmationGrid = () => {
   }, []);
 
   const setCurrentAction = useCallback(
-    async (data) => {
-      if (data.name === "Retrive") {
+    async (data: { name: string; rows?: any[] }) => {
+      const { name, rows } = data;
+      if (name === "retrive") {
         setDateDialog(true);
-      } else if (data.name === "view-All" || data.name === "view-Pending") {
-        setActiveFlag(prevActiveFlag => {
-          const newFlag = prevActiveFlag === "A" ? "P" : "A";
-          setActionMenu(prevActions => [
-            {
-              ...prevActions[0],
-              actionLabel: newFlag === "P" ? "View All" : "View Pending",
-              actionName: newFlag === "P" ? "view-All" : "view-Pending",
-            },
-            ...prevActions.slice(1),
-          ]);
-          return newFlag;
+        retrievalParaRef.current = null;
+        setGridData([]);
+      } else if (name === "view-all" || name === "view-pending") {
+        setActiveSiFlag(prevActiveSiFlag => {
+          const newActiveSiFlag = prevActiveSiFlag === "Y" ? "N" : "Y";
+          setActionMenu(prevActions => {
+            const newActions = [...prevActions];
+            newActions[0].actionLabel = newActiveSiFlag === "Y" ? "View All" : "View Pending";
+            newActions[0].actionName = newActiveSiFlag === "Y" ? "view-all" : "view-pending";
+
+            return newActions;
+          });
+          return newActiveSiFlag;
         });
-      } else {
-        navigate(data.name, {
-          state: data.rows,
+      } else if (name === "view-details") {
+        navigate(name, {
+          state: rows,
         });
       }
     },
     [navigate]
   );
 
-  const handleRetrivedData = (data: PayslipData[] | null) => {
-    if (!Array.isArray(data)) {
-      console.error("Invalid data format:", data);
-      return;
-    }
 
-    const totals = data.reduce<Record<string, number>>((acc, obj) => {
-      const amount = parseFloat(obj.AMOUNT);
-      acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
-      return acc;
-    }, {});
 
-    const processedData = data.map(obj => ({
-      ...obj,
-      TOTAL_AMT: totals[obj.TRAN_CD],
-    }));
 
-    setRetrivedValues(processedData);
+  const selectedDatas = (dataObj: PayslipData[] | null) => {
+    setDateDialog(false);
+    if (dataObj) retrievalParaRef.current = dataObj;
+    retrieveDataMutation.mutate(retrievalParaRef.current);
   };
 
-  const handleRefetch = (refetchFn: () => void) => {
-    refetchFn();
-  }
-
-  const ClosedEventCall = () => {
-    if (isDataChangedRef.current) {
-      slipdataRefetch();
-      isDataChangedRef.current = false;
+  useEffect(() => {
+    if (data && !isLoading && !isFetching) {
+      setGridData(data);
+      setIsDataRetrieved(false);
     }
+  }, [data, isLoading, isFetching]);
+
+  const handleDialogClose = useCallback(() => {
     navigate(".");
-  };
+    if (isDataChangedRef.current === true) {
+      isDataRetrieved
+        ? retrieveDataMutation.mutate(retrievalParaRef.current)
+        : slipdataRefetch();
+    }
+    isDataChangedRef.current = false;
+  }, [navigate, slipdataRefetch, isDataRetrieved]);
+
 
   return (
     <Fragment>
       {isError && (
         <Alert
           severity="error"
+          //@ts-ignore
           errorMsg={error?.message ?? "Something went wrong"}
+              //@ts-ignore
           errorDetail={error?.message}
           color="error"
         />
@@ -159,10 +166,10 @@ const PayslipissueconfirmationGrid = () => {
       <GridWrapper
         key={"PayslipCnfRetrieveDataGrid"}
         finalMetaData={RetrievedinfoGridMetaData as GridMetaDataType}
-        data={retrivedValues}
-        setData={() => null}
+        data={gridData}
+        setData={setGridData}
         actions={actionMenu}
-        loading={isLoading || isFetching}
+        loading={isLoading || isFetching || retrieveDataMutation?.isLoading}
         setAction={setCurrentAction}
         refetchData={() => {
           slipdataRefetch();
@@ -174,7 +181,7 @@ const PayslipissueconfirmationGrid = () => {
           element={
             <PayslipConfirmationFormDetails
               defaultView={"view"}
-              closeDialog={ClosedEventCall}
+              closeDialog={handleDialogClose}
               slipdataRefetch={slipdataRefetch}
             />
           }
@@ -184,9 +191,7 @@ const PayslipissueconfirmationGrid = () => {
         closeDialog={() => setDateDialog(false)}
         open={dateDialog}
         onUpload={(data) => {
-          if (data) {
-            handleRetrivedData(data);
-          }
+          selectedDatas(data);
         }}
       />
     </Fragment>

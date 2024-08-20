@@ -13,6 +13,14 @@ export const AdditionalcollumnMetadata: GridColumnType[] = [
         width: 350,
         minWidth: 50,
         maxWidth: 600,
+        required: true,
+        validation: (values) => {
+
+            
+            if(!Boolean(values))
+                return "This field is requried"
+            return ""
+        }
     },
  
 ];
