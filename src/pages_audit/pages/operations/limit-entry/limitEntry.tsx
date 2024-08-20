@@ -299,12 +299,12 @@ const LimitEntryCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  // limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
-                  //   authState?.companyID +
-                  //   res?.BRANCH_CD +
-                  //   res?.ACCT_TYPE +
-                  //   res?.ACCT_CD
-                  // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const limitDTLRequestPara = {
                     COMP_CD: authState?.companyID,

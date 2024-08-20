@@ -230,25 +230,25 @@ const StockEntryCustom = () => {
             stockEntryGridData.data = [];
             if (newValue === "tab2") {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
-              // myMasterRef?.current?.getFieldData().then((res) => {
-              //   if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-              //     StockGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-              //       authState?.companyID +
-              //       res?.BRANCH_CD +
-              //       res?.ACCT_TYPE +
-              //       res?.ACCT_CD
-              //     ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
-              //     const RequestPara = {
-              //       COMP_CD: authState?.companyID,
-              //       ACCT_CD: res?.ACCT_CD,
-              //       ACCT_TYPE: res?.ACCT_TYPE,
-              //       BRANCH_CD: res?.BRANCH_CD,
-              //       A_USER_LEVEL: authState?.role,
-              //       A_GD_DATE: authState?.workingDate,
-              //     };
-              //     stockEntryGridData.mutate(RequestPara);
-              //   }
-              // });
+              myMasterRef?.current?.getFieldData().then((res) => {
+                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                  StockGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  const RequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: res?.ACCT_CD,
+                    ACCT_TYPE: res?.ACCT_TYPE,
+                    BRANCH_CD: res?.BRANCH_CD,
+                    A_USER_LEVEL: authState?.role,
+                    A_GD_DATE: authState?.workingDate,
+                  };
+                  stockEntryGridData.mutate(RequestPara);
+                }
+              });
             }
           }}
           textColor="secondary"

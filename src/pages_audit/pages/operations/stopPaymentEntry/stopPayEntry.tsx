@@ -195,12 +195,12 @@ const StopPaymentEntryCustom = () => {
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  // StopPayGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-                  //   authState?.companyID +
-                  //   res?.BRANCH_CD +
-                  //   res?.ACCT_TYPE +
-                  //   res?.ACCT_CD
-                  // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  StopPayGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const RequestPara = {
                     COMP_CD: authState?.companyID,

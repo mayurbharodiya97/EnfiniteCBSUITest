@@ -4,7 +4,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "LimitDetail",
-    // subGridLabel: "",
+    subGridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

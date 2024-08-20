@@ -229,12 +229,12 @@ const LienEntryCustom = () => {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  // LienGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
-                  //   authState?.companyID +
-                  //   res?.BRANCH_CD +
-                  //   res?.ACCT_TYPE +
-                  //   res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
-                  // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  LienGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const RequestPara = {
                     COMP_CD: authState?.companyID,

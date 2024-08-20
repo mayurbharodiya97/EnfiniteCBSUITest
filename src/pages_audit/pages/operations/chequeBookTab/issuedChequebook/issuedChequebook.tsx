@@ -42,17 +42,17 @@ export const IssuedChequebook = ({ navigate }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (rows) {
-  //     issuedChequeBkGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0
-  //     ${(
-  //       rows?.COMP_CD +
-  //       rows?.BRANCH_CD +
-  //       rows?.ACCT_TYPE +
-  //       rows?.ACCT_CD
-  //     ).replace(/\s/g, "")}`;
-  //   }
-  // }, [rows]);
+  useEffect(() => {
+    if (rows) {
+      issuedChequeBkGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0
+      ${(
+        rows?.COMP_CD +
+        rows?.BRANCH_CD +
+        rows?.ACCT_TYPE +
+        rows?.ACCT_CD
+      ).replace(/\s/g, "")}`;
+    }
+  }, [rows]);
 
   return (
     <Dialog

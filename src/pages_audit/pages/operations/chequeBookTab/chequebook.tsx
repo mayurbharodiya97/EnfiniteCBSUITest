@@ -329,24 +329,24 @@ const ChequebookTabCustom = () => {
             }));
             getChequeDetail.data = [];
             if (newValue === "tab2") {
-              // API calling for issued chequebook Grid-details and set account-number and name inside the header
-              // myMasterRef?.current?.getFieldData().then((res) => {
-              //   if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-              //     ChequebookDtlGridMetaData.gridConfig.subGridLabel = ` \u00A0\u00A0 ${(
-              //       authState?.companyID +
-              //       res?.BRANCH_CD +
-              //       res?.ACCT_TYPE +
-              //       res?.ACCT_CD
-              //     ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
-              //     const chequeDTLRequestPara = {
-              //       COMP_CD: authState?.companyID,
-              //       ACCT_CD: res?.ACCT_CD,
-              //       ACCT_TYPE: res?.ACCT_TYPE,
-              //       BRANCH_CD: res?.BRANCH_CD,
-              //     };
-              //     getChequeDetail.mutate(chequeDTLRequestPara);
-              //   }
-              // });
+              //API calling for issued chequebook Grid-details and set account-number and name inside the header
+              myMasterRef?.current?.getFieldData().then((res) => {
+                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                  ChequebookDtlGridMetaData.gridConfig.subGridLabel = ` \u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+                  const chequeDTLRequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: res?.ACCT_CD,
+                    ACCT_TYPE: res?.ACCT_TYPE,
+                    BRANCH_CD: res?.BRANCH_CD,
+                  };
+                  getChequeDetail.mutate(chequeDTLRequestPara);
+                }
+              });
             }
           }}
           textColor="secondary"
