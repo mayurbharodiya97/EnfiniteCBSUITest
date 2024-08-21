@@ -1860,7 +1860,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETCONFIRMEDHISTORY: {
-    url: "transactionServiceAPI/GETCONFIRMEDHISTORY",
+    url: "enfinityCommonServiceAPI/GETCONFIRMEDHISTORY",
     packageName: "",
   },
   GETGENERATEOTP: {
@@ -2003,6 +2003,62 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
+  GETPAYSLIPCNFRETRIVEGRID:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCNFRETRIVEGRID",
+    packageName: "",
+  },
+  GETEODHANDOVER:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEODHANDOVER",
+    packageName: "",
+  },
+  GETTBGDOCURL:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGDOCURL",
+    packageName: "",
+  },
+  GETDAYENDPENDINGTRNERRLOG:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDPENDINGTRNERRLOG",
+    packageName: "",
+  },
+  GETDAYENDVERIFYBTN:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDVERIFYBTN",
+    packageName: "",
+  },
+  GETDAYENDERRLOG:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDERRLOG",
+    packageName: "",
+  },
+  GETHOLDTRNCONFGRID:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETHOLDTRNCONFGRID",
+    packageName: "",
+  },
+  DAILYHOLDTRANSACTIONCONFIRMATION:
+  {
+    url: "transactionServiceAPI/DAILYHOLDTRANSACTIONCONFIRMATION",
+    packageName: "",
+  },
+  GETCHQSEARCHTRANTYP:
+  {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHTRANTYP",
+    packageName: "",
+  },
+  GETCHQSEARCHDATA:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHDATA",
+    packageName: "",
+  },
+  GETDUPLICATECLGENTRY:
+  {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDUPLICATECLGENTRY",
+    packageName: "",
+  },
+  
   GETNEWSECUSERBRANCHACCESS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
     packageName: "",
@@ -2135,6 +2191,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMDTLDATA",
     packageName: "",
   },
+  RETURNCHEQUE: {
+    url: "/chequeServiceAPI/RETURNCHEQUE",
+    packageName: "",
+  },
+  GETFDTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDTYPEDDW",
+    packageName: "",
+  },
   GETRECURPAYMENTDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECURPAYMENTDTL",
     packageName: "",
@@ -2249,6 +2313,22 @@ export const ActionWiseAPIConfiguration = {
   },
   IMPSDAILYSPENDLIMIT: {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
+    packageName: "",
+  },
+  PENDINGTRANSACTION: {
+    url: "/enfinityBankProcessingServiceAPI/PENDINGTRANSACTION",
+    packageName: "",
+  },
+  VALIDATEEOD: {
+    url: "/enfinityBankProcessingServiceAPI/VALIDATEEOD",
+    packageName: "",
+  },
+  GETCHECKSUM: {
+    url: "/enfinityBankProcessingServiceAPI/GETCHECKSUM",
+    packageName: "",
+  },
+  EXECUTECHECKSUM: {
+    url: "/enfinityBankProcessingServiceAPI/EXECUTECHECKSUM",
     packageName: "",
   },
 };
