@@ -24,7 +24,8 @@ const actions: ActionTypes[] = [
 export const PendinGTrns = ({open,close})=>{
     const { authState } = useContext(AuthContext);
     const [openReport, setOpenReport] = useState(false);
-    const [rowData, setRowData] = useState({});
+    const [rowData, setRowData] = useState<any>([]);
+    const [docData, setDocData] = useState<any>({});
     const { MessageBox, CloseMessageBox } = usePopupContext();
 
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ export const PendinGTrns = ({open,close})=>{
         [navigate]
       );
 
+
     const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<any, any>(
         ["getPendingTrns"],
         () =>
@@ -54,15 +56,16 @@ export const PendinGTrns = ({open,close})=>{
       const docUrlPayload:any ={
         BASE_COMP:authState?.baseCompanyID,
         BASE_BRANCH:authState?.user?.baseBranchCode,
-        DOC_CD:"TRN/399"
+        DOC_CD:docData?.DOC_CD
       };
       const reportPayload ={
         COMP_CD:authState?.companyID,
         BRANCH_CD:authState?.user?.branchCode,
         TRAN_DT:authState?.workingDate,
         A_GD_DATE:authState?.workingDate,
-        VERSION:"1.0",
-        DOCU_CD:"doc_cd"
+        VERSION:data?.VERSION,
+        DOCU_CD:data?.DOCU_CD,
+      
       }
       const docurlMutation = useMutation(API.getDocUrl,
         {
@@ -76,7 +79,10 @@ export const PendinGTrns = ({open,close})=>{
     
           },
           onSuccess: async (data) => {
-            
+            // console.log(data);
+            setDocData(data);
+            window.open(`/cbsenfinity/${data[0]?.DOCUMENT_URL}`);
+     
           },
         }
       );
@@ -92,7 +98,7 @@ export const PendinGTrns = ({open,close})=>{
     
           },
           onSuccess: async (data) => {
-               setRowData(data);
+            setRowData(data)
           },
         }
       );
@@ -122,10 +128,22 @@ export const PendinGTrns = ({open,close})=>{
                 if (id === "REPORT") {
                     setRowData(currentData);
                     setOpenReport(true);
-                    reportMutation.mutate(reportPayload)
+                    reportMutation.mutate({
+                      COMP_CD:authState?.companyID,
+                      BRANCH_CD:authState?.user?.branchCode,
+                      TRAN_DT:authState?.workingDate,
+                      VERSION:currentData?.VERSION,
+                      DOCU_CD:currentData?.DOCU_CD,
+                    })
                 }
                 if (id === "OPEN") {
-                    docurlMutation.mutate(docUrlPayload)
+                  console.log(currentData);
+                  
+                    docurlMutation.mutate({
+                      BASE_COMP:authState?.baseCompanyID,
+                      BASE_BRANCH:authState?.user?.baseBranchCode,
+                      DOC_CD:currentData?.DOCU_CD
+                    })
                 }
                 }}
             loading={isLoading || isFetching}
@@ -140,7 +158,7 @@ export const PendinGTrns = ({open,close})=>{
                   close={()=>{setOpenReport(false)}}
                   metaData={pendingTrnsEodReportMetaData}
                   reportData={rowData}
-                  reportLabel={`Pending Transaction for ${authState?.workingDate},Version:${rowData},KYC Review Due Date Report`}
+                  reportLabel={`Pending Transaction for ${authState?.workingDate},Version:${rowData?.VERSION},KYC Review Due Date Report`}
                  />
                 ): ""
             }

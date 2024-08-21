@@ -49,9 +49,9 @@ export const metaData = {
           componentType: "radio",
         },
         name: "CALCSWITCH",
-        label: "WhetherAssessedToIncomeTaxAct",
+        label: "",
         RadioGroupProps: { row: true },
-        defaultValue: "N",
+        defaultValue: "P",
         options: [
           {
             label: "Date",
@@ -67,7 +67,7 @@ export const metaData = {
           },
           {
             label: "Recurring To FD",
-            value: "R",
+            value: "F",
           },
         ],
         GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },

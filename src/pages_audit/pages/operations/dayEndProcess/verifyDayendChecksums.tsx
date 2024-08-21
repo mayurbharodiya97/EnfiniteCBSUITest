@@ -12,6 +12,7 @@ import { usePopupContext } from "components/custom/popupContext";
 import { Alert } from "components/common/alert";
 import { Dialog } from "@mui/material";
 import { LoadingTextAnimation } from "components/common/loader";
+import { enqueueSnackbar } from "notistack";
 
 const actions: ActionTypes[] = [
   {
@@ -27,7 +28,8 @@ export const VerifyDayendChecksums = ({ open, close }) => {
   const [openReport, setOpenReport] = useState(false);
   const [rowData, setRowData] = useState([]);
   const [gridData, setGridData] = useState([]);
-  const { MessageBox } = usePopupContext();
+  const [reqData, setReqData] = useState({});
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const navigate = useNavigate();
 
   const handleAction = useCallback(
@@ -40,61 +42,170 @@ export const VerifyDayendChecksums = ({ open, close }) => {
     },
     [navigate, close]
   );
+  const executeEodMutation = useMutation(API.executeChecksums,
 
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknownerroroccured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox();
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar("insertSuccessfully", {
+          variant: "success",
+        });
+       
+     
+        CloseMessageBox();
+      },
+    }
+  );
+  const checkSumsDataMutation = useMutation(API.getCheckSums,
+
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknownerroroccured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox();
+      },
+      onSuccess: async (data) => {
+        setGridData(data);
+        // If 'data' is already the RESPONSE array, you can use it directly.
+        // Otherwise, extract it from the first element if 'data' is wrapped in an array.
+        const responses = Array.isArray(data) ? data : data;
+    
+        // Filter the responses to get objects where MENDETORY is "Y"
+        const mandatoryResponses = responses.filter(item => item.MENDETORY === "Y");
+         const payload:any={
+          FLAG:"C",
+          SCREEN_REF:"TRN/399",
+          FOR_BRANCH:"099 ",
+          EOD_EOS_FLG:reqData[0]?.EOD_EOS_FLG,
+          CHKSM_TYPE:mandatoryResponses[0]?.CHKSM_TYPE,
+          SR_CD:mandatoryResponses[0]?.SR_CD,
+          MENDETORY:mandatoryResponses[0]?.MENDETORY,
+          EOD_VER_ID:mandatoryResponses[0]?.EOD_VER_ID
+         }
+        executeEodMutation.mutate({
+             ...payload
+        })
+        // Log the mandatory responses to the console
+        console.log('Mandatory responses:', mandatoryResponses);
+    
+        // If you need to perform any additional actions with the mandatoryResponses, you can do so here.
+    },
+    
+    }
+  );
   const { data: validatedData, isLoading: validateLoading, isError: validateError, error: validateErrorDetails, isSuccess: validateSuccess } = useQuery(
     ["getValidateEod"],
     () => API.getValidateEod({ 
       SCREEN_REF: "TRN/399",
-       FLAG: "C" 
+      FLAG: "C" 
     }),
-
-  );
-
-  const { data: checkSumsData, isLoading: checksumsLoading, isError: checksumsError, error: checksumsErrorDetails, isSuccess: checksumsSuccess } = useQuery(
-    ["getCheckSums"],
-    () => API.getCheckSums({
-      FLAG:"C",
-      SCREEN_REF:"TRN/399",
-         FOR_BRANCH:"099 ",
-         EOD_EOS_FLG:"E"
-       }),
     {
-      enabled: validateSuccess, // Only run if validation is successful
+      onSuccess: async (data) => {
+        const responseData = Array.isArray(data) ? data[0] : {};
+        
+        const responses = Array.isArray(responseData?.V_MSG) ? responseData.V_MSG : [responseData?.V_MSG];
+        for (const response of responses) {
+            const status = response.O_STATUS; // Use O_STATUS
+            const message = response.O_MESSAGE; // Use O_MESSAGE
+            
+            if (status === "999") {
+                await MessageBox({
+                    messageTitle: "Validation Failed",
+                    message: message,
+                });
+            } else if (status === "9") {
+                await MessageBox({
+                    messageTitle: "Alert",
+                    message: message,
+                });
+            } else if (status === "99") {
+                const buttonName = await MessageBox({
+                    messageTitle: "Confirmation",
+                    message: message,
+                    buttonNames: ["Yes", "No"],
+                    defFocusBtnName: "Yes",
+                });
+                if (buttonName === "No") {
+                    break; // Exit loop if user selects "No"
+                }
+                if (buttonName === "Yes") {
+                  checkSumsDataMutation.mutate({
+                      FLAG:"C",
+                      SCREEN_REF:"TRN/399",
+                      FOR_BRANCH:data[0]?.BRANCH_LIST[0],
+                      EOD_EOS_FLG:data[0]?.EOD_EOS_FLG
+                  })
+                    enqueueSnackbar("Success", {
+                        variant: "success",
+                    });
+                    CloseMessageBox();
+                }
+            } else {
+                // Handle other statuses if necessary
+            }
+        }
+    
+        console.log('Data validated successfully:', data);
+    },
+    
+      onError: (error) => {
+      
+    
+      }
     }
   );
+useEffect(()=>{
+  setReqData(validatedData)
+},[validatedData])
 
-  const { data: gridDataResponse, isLoading: gridDataLoading, isError: gridDataError, error: gridDataErrorDetails } = useQuery(
-    ["executeChecksums"],
-    () => API.executeChecksums({
-      //@ts-ignore
-      FLAG:"C",
-      SCREEN_REF:"TRN/399",
-     FOR_BRANCH:"099 ",
-     EOD_EOS_FLG:"E",
-     CHKSM_TYPE:"B",
-     SR_CD:"48",
-     MENDETORY:"Y",
-     EOD_VER_ID:"212"
-       }),
-    {
-      enabled: checksumsSuccess, // Only run if checksums data retrieval is successful
-      onSuccess: (data) => setGridData(data),
-    }
-  );
 
-  const docUrlPayload = {
-    BASE_COMP: authState?.baseCompanyID,
-    BASE_BRANCH: authState?.user?.baseBranchCode,
-    DOC_CD: "TRN/399",
-  };
 
-  const reportPayload = {
-    COMP_CD: authState?.companyID,
-    BRANCH_CD: authState?.user?.branchCode,
-    TRAN_DT: authState?.workingDate,
-    VERSION: "1.0",
-    DOCU_CD: "doc_cd",
-  };
+  // const { data: gridDataResponse, isLoading: gridDataLoading, isError: gridDataError, error: gridDataErrorDetails } = useQuery(
+  //   ["executeChecksums"],
+  //   () => API.executeChecksums({
+  //     //@ts-ignore
+  //     FLAG:"C",
+  //     SCREEN_REF:"TRN/399",
+  //    FOR_BRANCH:"099 ",
+  //    EOD_EOS_FLG:"E",
+  //    CHKSM_TYPE:"B",
+  //    SR_CD:"48",
+  //    MENDETORY:"Y",
+  //    EOD_VER_ID:"212"
+  //      }),
+  //   {
+  //     enabled: checksumsSuccess, // Only run if checksums data retrieval is successful
+  //     onSuccess: (data) => setGridData(data),
+  //   }
+  // );
+
+  // const docUrlPayload = {
+  //   BASE_COMP: authState?.baseCompanyID,
+  //   BASE_BRANCH: authState?.user?.baseBranchCode,
+  //   DOC_CD: "TRN/399",
+  // };
+
+  // const reportPayload = {
+  //   COMP_CD: authState?.companyID,
+  //   BRANCH_CD: authState?.user?.branchCode,
+  //   TRAN_DT: authState?.workingDate,
+  //   VERSION: "1.0",
+  //   DOCU_CD: "doc_cd",
+  // };
 
   const docUrlMutation = useMutation(API.getDocUrl, {
     onError: async (error) => {
@@ -145,31 +256,10 @@ export const VerifyDayendChecksums = ({ open, close }) => {
             color="error"
           />
         )}
-        {checksumsError && (
-          <Alert
-            severity="error"
-            //@ts-ignore
-            errorMsg={checksumsErrorDetails?.error_msg ?? "Something went wrong"}
-              //@ts-ignore
-            errorDetail={checksumsErrorDetails?.error_detail}
-            color="error"
-          />
-        )}
-        {gridDataError && (
-          <Alert
-            severity="error"
-              //@ts-ignore
-            errorMsg={gridDataErrorDetails?.error_msg ?? "Something went wrong"}
-              //@ts-ignore
-            errorDetail={gridDataErrorDetails?.error_detail}
-            color="error"
-          />
-        )}
-        {
+      
 
-        }
         {
-          gridDataLoading ? 
+          "gridDataLoading" ? 
      
         <GridWrapper
           key={"pendingtrns"}
@@ -179,13 +269,13 @@ export const VerifyDayendChecksums = ({ open, close }) => {
           actions={actions}
           onClickActionEvent={(index, id, currentData) => {
             if (id === "REPORT") {
-              reportMutation.mutate(reportPayload);
+              // reportMutation.mutate(reportPayload);
             }
             if (id === "OPEN") {
-              docUrlMutation.mutate(docUrlPayload);
+              // docUrlMutation.mutate(docUrlPayload);
             }
           }}
-          loading={gridDataLoading || validateLoading || checksumsLoading}
+          // loading={gridDataLoading || validateLoading || checksumsLoading}
           ReportExportButton={true}
           setAction={handleAction}
         />:

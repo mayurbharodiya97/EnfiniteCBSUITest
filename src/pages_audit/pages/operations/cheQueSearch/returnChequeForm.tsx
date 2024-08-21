@@ -24,7 +24,9 @@ export const ReturnChequeForm = ({open,onclose})=>
         enqueueSnackbar("Sucess", {
             variant: "success",
           });
+          CloseMessageBox();
           onclose();
+   
     },
     onError: (error: any) => {
         let errorMsg = "Unknownerroroccured";
@@ -34,6 +36,7 @@ export const ReturnChequeForm = ({open,onclose})=>
         enqueueSnackbar(errorMsg, {
           variant: "error",
         });
+        CloseMessageBox();
         onclose();
       },
   });

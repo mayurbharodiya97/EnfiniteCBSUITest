@@ -50,13 +50,13 @@ const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
 const PositivePayConfirmationGrid = lazy(
   () => import("./positivePayEntry/confirmation")
 );
+const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
+const PassbookPrint = lazy(() => import("./passbookPrint"));
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
-const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
-const PassbookPrint = lazy(() => import("./passbookPrint"));
-// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
+const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -165,6 +165,7 @@ export const OperationsMenu = () => (
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route path="payslip-issue-entry/*" element={<PayslipIsuueEntry />} />
     <Route path="payslip-issue-confirmation/*" element={<Payslipissueconfirmation />} />
+    <Route path="fdint-calculator/*" element={<FdInterestCalculator />} />
     <Route
       path="rtgs-branch-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="BO" />}

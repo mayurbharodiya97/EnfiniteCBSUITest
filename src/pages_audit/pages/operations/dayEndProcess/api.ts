@@ -178,10 +178,12 @@ export const getVerifyDayEndCheksumsData = async ({
       CHKSM_TYPE,
       SR_CD,
       MENDETORY,
-      EOD_VER_ID
+      EOD_VER_ID,
+      FLAG
     }) => {
       const { data, status, message, messageDetails } = await AuthSDK.internalFetcher("EXECUTECHECKSUM", {
-        SCREEN_REF:SCREEN_REF,
+       FLAG:FLAG,
+       SCREEN_REF:SCREEN_REF,
       FOR_BRANCH:FOR_BRANCH,
       EOD_EOS_FLG:EOD_EOS_FLG,
       CHKSM_TYPE:CHKSM_TYPE,

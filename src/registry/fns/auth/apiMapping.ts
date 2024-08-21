@@ -2192,7 +2192,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   RETURNCHEQUE: {
-    url: "/chequeServiceAPI//RETURNCHEQUE",
+    url: "/chequeServiceAPI/RETURNCHEQUE",
     packageName: "",
   },
   GETFDTYPEDDW: {

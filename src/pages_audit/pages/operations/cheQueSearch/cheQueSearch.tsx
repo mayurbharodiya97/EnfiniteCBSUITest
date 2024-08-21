@@ -16,6 +16,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
 import { ReturnChequeForm } from "./returnChequeForm";
 import {t} from "i18next";
+import { enqueueSnackbar } from "notistack";
 
 const actions: ActionTypes[] = [
 {
@@ -93,8 +94,19 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
 
 
   const retrieveMutation = useMutation(API.getChequeSearchData, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
+    onSuccess: (data) => {
+   
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
   });
 
   const onSubmitHandler: SubmitFnType = async (

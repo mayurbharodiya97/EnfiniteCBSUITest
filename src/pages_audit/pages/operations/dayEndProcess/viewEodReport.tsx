@@ -72,7 +72,7 @@ export const ViewEodReport = ({open,close,metaData,reportData,reportLabel})=>{
           overflow: "auto",
         },
       }}
-      maxWidth="md"
+      maxWidth="lg"
     >
            <GridWrapper
             key={"ViewEodReport"}

@@ -508,7 +508,6 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   const updatedDraftDtlData = draftDtlData ? draftDtlData.map(item => ({
     ...item,
     HIDDEN_PAYSLIPNO: item.PAYSLIP_NO,
-    REGION_CD: item.REGION
   })) : [];
 
   useEffect(() => {
@@ -871,7 +870,6 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
     }],
     ADD_DRAFT_DATA: "N",
     _isNewRow: false,                        
-
 
     };
     deleteMutation.mutate(deleteReqPara);

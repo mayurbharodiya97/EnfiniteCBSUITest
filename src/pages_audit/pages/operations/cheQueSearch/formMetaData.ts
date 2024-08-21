@@ -99,6 +99,11 @@ import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
         },
         name: "CHEQUE_NO",
         label: "Chequeno",
+        required:true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["ChequeNorequired"] }],
+        },
         GridProps: { xs: 2, sm: 2, md: 1.4, lg: 1.4, xl: 1.4 },
       },
       {

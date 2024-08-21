@@ -475,47 +475,45 @@ export const AccdetailsFormMetaData = {
         },
         {
           render: {
-            componentType: "checkbox",
+            componentType: "amountField",
           },
-          name: "DUMMY_CHECK",
-          defaultValue: true,
-          dependentFields: ["PAYSLIP_MST_DTL", "C_C_T"],
-          __EDIT__: {
-            isReadOnly: true
+          name: "WITHDRAWABLE",
+          label: "withdrawable",
+          placeholder: "",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+          __EDIT__: { isReadOnly: true },
+          __NEW__: { isReadOnly: false },
+
+        },
+        {
+          render: {
+            componentType: "amountField",
           },
-          shouldExclude: (val1, dependentFields) => {
+          name: "LIMIT_AMOUNT",
+          label: "limitamount",
+          placeholder: "",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+          __EDIT__: { isReadOnly: true },
+          __NEW__: { isReadOnly: false },
 
-            if (dependentFields["PAYSLIP_MST_DTL"].length === 1) {
-              return true
-            }
-            else {
-              const cctValue = dependentFields["PAYSLIP_MST_DTL.C_C_T"]?.value;
-
-              if (cctValue === "R") {
-                return true;
-              }
-              return false
-            }
-
-
-
+        },
+        {
+          render: {
+            componentType: "amountField",
           },
-          // setValueOnDependentFieldsChange: (dependentFields) => {
+          name: "DRAWING_POWER",
+          label: "drawingPower",
+          placeholder: "",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+          __EDIT__: { isReadOnly: true },
+          __NEW__: { isReadOnly: false },
 
-          //   if (dependentFields["PAYSLIP_MST_DTL"].length === 1) {
-          //     return ""
-          //   }
-          //   else {
-          //     const cctValue = dependentFields["PAYSLIP_MST_DTL.C_C_T"]?.value;
-
-          //     if (cctValue === "R") {
-          //       return false
-          //     }
-          //     return true
-          //   }
-          // },
-
-          GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
         },
 
 

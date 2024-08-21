@@ -1920,10 +1920,10 @@ export const DraftdetailsFormMetaData = {
             _optionsKey: "getPayslipSignatureList1",
             shouldExclude: (val1, dependentFields) => {
                 
-              if (dependentFields?.FORM_MODE?.value !== "View") {
-                return true;
+              if (dependentFields?.FORM_MODE?.value !== "view") {
+                return false;
               }
-              return false;
+              return true;
             },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
@@ -1935,10 +1935,10 @@ export const DraftdetailsFormMetaData = {
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
              
-            if (dependentFields?.FORM_MODE?.value === "View") {
-              return true;
+            if (dependentFields?.FORM_MODE?.value === "view") {
+              return false;
             }
-            return false;
+            return true;
           },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
@@ -1994,12 +1994,12 @@ export const DraftdetailsFormMetaData = {
         
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           shouldExclude: (val1, dependentFields) => {
-           
-         if (dependentFields?.FORM_MODE?.value !== "View") {
-           return true;
-         }
-         return false;
-       },
+                
+            if (dependentFields?.FORM_MODE?.value !== "view") {
+              return false;
+            }
+            return true;
+          },
         },
         {
           render: {
@@ -2008,11 +2008,11 @@ export const DraftdetailsFormMetaData = {
           name:"DISP_SIGN2",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
-          
-            if (dependentFields?.FORM_MODE?.value === "View") {
-              return true;
+             
+            if (dependentFields?.FORM_MODE?.value === "view") {
+              return false;
             }
-            return false;
+            return true;
           },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
@@ -2063,12 +2063,12 @@ export const DraftdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           fullWidth: true,
           shouldExclude: (val1, dependentFields) => {
-         
-         if (dependentFields?.FORM_MODE?.value !== "View") {
-           return true;
-         }
-         return false;
-       },
+                
+            if (dependentFields?.FORM_MODE?.value !== "view") {
+              return false;
+            }
+            return true;
+          },
         },
         {
           render: {
@@ -2077,10 +2077,11 @@ export const DraftdetailsFormMetaData = {
           name:"DISP_REGION",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
-            if (dependentFields?.FORM_MODE?.value === "View") {
-              return true;
+             
+            if (dependentFields?.FORM_MODE?.value === "view") {
+              return false;
             }
-            return false;
+            return true;
           },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },

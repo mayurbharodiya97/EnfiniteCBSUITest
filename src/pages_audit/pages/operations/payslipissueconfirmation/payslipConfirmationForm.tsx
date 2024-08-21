@@ -22,7 +22,7 @@ import { RemarksAPIWrapper } from 'components/custom/Remarks';
 import PhotoSignWithHistory from 'components/custom/photoSignWithHistory/photoSignWithHistory';
 function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
 
-    const [formMode, setFormMode] = useState(defaultView);
+    const [formMode, setFormMode] = useState("view");
   const { authState } = useContext(AuthContext);
   const [jointDtl, setjointDtl] = useState(false);
   const [openConfmHistory, setopenConfmHistory] = useState(false);
@@ -49,12 +49,15 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
         {
           onError: async (error: any) => {
     
-            const btnName = await MessageBox({
-              message: error?.error_msg,
-              messageTitle: "error",
-              buttonNames: ["Ok"],
-            });
-    
+            let errorMsg = "Unknownerroroccured";
+              if (typeof error === "object") {
+                errorMsg = error?.error_msg ?? errorMsg;
+              }
+              enqueueSnackbar(errorMsg, {
+                variant: "error",
+              });
+              CloseMessageBox();
+              closeDialog();
           },
           onSuccess: async (data) => {
             setjointDtlData(data)
@@ -76,7 +79,15 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
          
           },
           onError: (error: any) => {
-            CloseMessageBox();
+            let errorMsg = "Unknownerroroccured";
+              if (typeof error === "object") {
+                errorMsg = error?.error_msg ?? errorMsg;
+              }
+              enqueueSnackbar(errorMsg, {
+                variant: "error",
+              });
+              CloseMessageBox();
+              closeDialog();
           },
         }
       );
@@ -175,7 +186,7 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
                             SCREEN_REF: "RPT/15",
                             TYPE_CD:"",
                             TRN_FLAG:"",
-                            TRAN_BAL:""
+                            TRAN_BAL:acctDtlData?acctDtlData[0]?.TRAN_BAL:""
                         })
                       }
                     
@@ -266,6 +277,7 @@ function PayslipConfirmationForm({defaultView,closeDialog,slipdataRefetch}) {
               onSubmitHandler={() => { }}
               initialValues={{
                 PAYSLIP_DRAFT_DTL:draftDtlData ?? [],
+                FORM_MODE:"view",
               }}
 
 
