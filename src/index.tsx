@@ -7,6 +7,7 @@ import "registry"; //register functions to be used across application
 import "typeface-roboto";
 import "components/multiLanguage/languagesConfiguration";
 import { FullScreenLoader } from "components/common/loaderPaper";
+import { ThemeProviders } from "app/audit/ThemeProvider";
 const AUD = lazy(() => import("app/audit"));
 const ErrorPage = lazy(() => import("app/error"));
 
@@ -23,15 +24,17 @@ const App = () => {
     <StrictMode>
       <DndProvider backend={HTML5Backend}>
         <BrowserRouter>
-          <Suspense fallback={<FullScreenLoader />}>
-            {/* <ErrorBoundary> */}
-            <Routes>
-              <Route path="cbsenfinity/*" element={<AUD />} />
-              <Route path="error/*" element={<ErrorPage />} />
-              <Route path="*" element={<Redirect />} />
-            </Routes>
-            {/* </ErrorBoundary> */}
-          </Suspense>
+          <ThemeProviders>
+            <Suspense fallback={<FullScreenLoader />}>
+              {/* <ErrorBoundary> */}
+              <Routes>
+                <Route path="cbsenfinity/*" element={<AUD />} />
+                <Route path="error/*" element={<ErrorPage />} />
+                <Route path="*" element={<Redirect />} />
+              </Routes>
+              {/* </ErrorBoundary> */}
+            </Suspense>
+          </ThemeProviders>
         </BrowserRouter>
       </DndProvider>
     </StrictMode>

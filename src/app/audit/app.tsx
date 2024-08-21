@@ -18,11 +18,12 @@ import {
 } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CustomSnackbarContent } from "components/customNotification/customNotistack";
-import { ThemeProviders } from "./ThemeProvider";
+import { useTheme } from "./ThemeProvider";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme);
 
 export const App = () => {
+  const { themeObj } = useTheme();
   return (
     <RecoilRoot>
       <ThemeProvider theme={themeObj}>
@@ -31,15 +32,13 @@ export const App = () => {
           <QueryClientProvider client={queryClient}>
             <PopupContextProvider>
               <WorkerContextProvider>
-                <ThemeProviders>
-                  <SnackbarProviderWrapper
-                    maxSnack={3}
-                    autoHideDuration={5000}
-                    Components={{ exportReportSnackbar: CustomSnackbarContent }}
-                  >
-                    <IndexPage />
-                  </SnackbarProviderWrapper>
-                </ThemeProviders>
+                <SnackbarProviderWrapper
+                  maxSnack={3}
+                  autoHideDuration={5000}
+                  Components={{ exportReportSnackbar: CustomSnackbarContent }}
+                >
+                  <IndexPage />
+                </SnackbarProviderWrapper>
               </WorkerContextProvider>
               {/* {process.env.NODE_ENV !== "production" ? (
                 <ReactQueryDevtools />
