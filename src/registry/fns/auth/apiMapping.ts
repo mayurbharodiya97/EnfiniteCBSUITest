@@ -2251,6 +2251,30 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  GETSIHDRCNF    : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDRCNF",
+    packageName: "",
+  }, 
+  DOSICONFIRMATION: {
+    url: "/transactionServiceAPI/DOSICONFIRMATION",
+    packageName: "",
+  },
+  GETRECCALCINTTYPEDDW:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTTYPEDDW",
+    packageName: "",
+  },
+  GETRECCALCINTRATE:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTRATE",
+    packageName: "",
+  },
+  GETRECCALCDUEDATE:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCDUEDATE",
+    packageName: "",
+  },
+  GETRECURRINGCALCULATEDAMOUNT:{
+    url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
+    packageName: "",
+  }
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
