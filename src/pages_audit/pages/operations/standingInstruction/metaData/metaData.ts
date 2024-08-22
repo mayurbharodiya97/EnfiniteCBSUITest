@@ -546,7 +546,9 @@ export const StandingInstructionMainMetaData = {
             const postData = await API.getSiCharge(reqParameters);
             return {
               SI_CHARGE: {
-                // value:,
+                value:postData
+                ? postData[0]?.SI_CHARGE ?? ""
+                : "",
                 isFieldFocused: true,
                 ignoreUpdate: true,
               },
@@ -1317,7 +1319,10 @@ export const StandingInstructionViewMetaData: any = {
                 // }
                 }
               },
-      
+      AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: false,
+            },
               runPostValidationHookAlways: false,
               runValidationOnDependentFieldsChange: false,
               FormatProps: {
@@ -1527,8 +1532,12 @@ export const StandingInstructionViewMetaData: any = {
             
             },
             GridProps: { xs: 6, sm: 6,md: 2, lg: 2, xl:2 },
-            // runPostValidationHookAlways: true,
+            runPostValidationHookAlways: false,
             runValidationOnDependentFieldsChange: false,
+            AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: false,
+            },
       
           },
           {
@@ -1742,7 +1751,10 @@ export const siasExecute = {
             };
           }
         },
-
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         runPostValidationHookAlways: true,
         FormatProps: {
           isAllowed: (values) => {
@@ -2160,7 +2172,7 @@ export const AddSubDataMetaData = {
                   messageTitle: t("ValidationFailed"),
                   message: postData[i]?.O_MESSAGE,
                 });
-                // returnVal = "";
+                returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: t("Confirmation"),
@@ -2208,7 +2220,10 @@ export const AddSubDataMetaData = {
           }
           }
         },
-
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         runPostValidationHookAlways: false,
         FormatProps: {
           isAllowed: (values) => {
@@ -2503,7 +2518,7 @@ export const EditSubDataMetaData = {
                   messageTitle: t("ValidationFailed"),
                   message: postData[i]?.O_MESSAGE,
                 });
-                returnVal = postData[i];
+                returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: t("Confirmation"),
@@ -2771,7 +2786,10 @@ export const EditSubDataMetaData = {
           }
           }
         },
-
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         runPostValidationHookAlways: false,
         FormatProps: {
           isAllowed: (values) => {
