@@ -11,13 +11,11 @@ export const getCategoryType = async ({ COMP_CD, BRANCH_CD }) => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CATEG_CD, DISPLAY_NM, ...other }) => {
+        responseData = responseData.map(({ CATEG_CD, CATEG_NM, ...other }) => {
           return {
             ...other,
-            CATEG_CD: CATEG_CD,
-            DISPLAY_NM: DISPLAY_NM, 
             value: CATEG_CD,
-            label: DISPLAY_NM,
+            label: CATEG_NM,
           };
         });
       }
