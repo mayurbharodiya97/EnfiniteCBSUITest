@@ -122,7 +122,7 @@ export const relativeDtl_tab_metadata = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "EDUCATION_QUALIFICATION",
+                    name: "EDUCATIONAL_QUALIFICATION",
                     label: "EduQualification",
                     placeholder: "",
                     type: "text",
