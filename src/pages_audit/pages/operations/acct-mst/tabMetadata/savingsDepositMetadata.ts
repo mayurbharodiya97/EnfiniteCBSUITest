@@ -119,10 +119,12 @@ export const savingsDeposit_metadata = {
         },
         {
             render: {
-                componentType: "datePicker",
+            componentType: "rateOfInt",
             },
             name: "INT_RATE",
             label: "Interest (%)",
+            placeholder: "",
+            type: "text",
             required: true,
             schemaValidation: {
                 type: "string",
@@ -130,7 +132,19 @@ export const savingsDeposit_metadata = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            FormatProps: {
+                isAllowed: (values) => {
+                  //@ts-ignore
+                  if (values.floatValue > 999.99) {
+                    return false;
+                  }
+                  if (values.floatValue === 0) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
             render: {
@@ -163,7 +177,8 @@ export const savingsDeposit_metadata = {
             name: "TYPE_CD",
             label: "Cheque Book",
             options: [
-                {label: "", value: ""}
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
             ], //api 
             // _optionsKey: "npaReasonTermLoanOp",
             required: true,
