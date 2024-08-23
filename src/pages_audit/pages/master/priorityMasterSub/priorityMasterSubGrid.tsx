@@ -11,6 +11,7 @@ import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -22,7 +23,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -45,8 +46,8 @@ const Prioritymastersub = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -77,7 +78,7 @@ const Prioritymastersub = () => {
 
   const deleteMutation = useMutation(API.deletePriorityMasterSubData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -87,7 +88,7 @@ const Prioritymastersub = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -110,7 +111,7 @@ const Prioritymastersub = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />

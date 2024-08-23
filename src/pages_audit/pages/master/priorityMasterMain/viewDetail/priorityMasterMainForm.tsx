@@ -11,6 +11,7 @@ import * as API from "../api";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 export const Prorityform = ({
   isDataChangedRef,
@@ -27,7 +28,7 @@ export const Prorityform = ({
 
   const mutation = useMutation(API.updatePriorityMasterMainData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -38,7 +39,7 @@ export const Prorityform = ({
     },
     onSuccess: () => {
 
-      enqueueSnackbar("insertSuccessfully", {
+      enqueueSnackbar(t("insertSuccessfully"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -87,8 +88,8 @@ export const Prorityform = ({
         setFormMode("view");
       } else {
         const btnName = await MessageBox({
-          message: "SaveData",
-          messageTitle: "Confirmation",
+          message: t("SaveData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
