@@ -153,53 +153,54 @@ export const StopPayEntryMetadata = {
             let postData = await GeneralAPI.getAccNoValidation(
               otherAPIRequestPara
             );
+            let apiRespMSGdata = postData?.MSG;
+            let isReturn;
+            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+              return { buttonName, status };
+            };
+            if (apiRespMSGdata?.length) {
+              for (let i = 0; i < apiRespMSGdata?.length; i++) {
+                if (apiRespMSGdata[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    apiRespMSGdata[i]?.O_MESSAGE,
+                    apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? ["Yes", "No"]
+                      : ["Ok"],
+                    apiRespMSGdata[i]?.O_STATUS
+                  );
 
-            if (postData?.RESTRICTION) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.RESTRICTION,
-                defFocusBtnName: "Ok",
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                };
+                  if (btnName.buttonName === "No" || btnName.status === "999") {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: false,
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                    };
+                  } else {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: true,
+                    });
+                    isReturn = true;
+                  }
+                } else {
+                  formState.setDataOnFieldChange("IS_VISIBLE", {
+                    IS_VISIBLE: true,
+                  });
+                  isReturn = true;
+                }
               }
-            } else if (postData?.MESSAGE1) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.MESSAGE1,
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                  TRAN_BAL: {
-                    value: postData?.WIDTH_BAL ?? "",
-                  },
-                };
-              }
-            } else {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
+            }
+            if (Boolean(isReturn)) {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -432,7 +433,7 @@ export const StopPayEntryMetadata = {
         }
         return {};
       },
-      // runPostValidationHookAlways: true,
+      runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -462,12 +463,8 @@ export const StopPayEntryMetadata = {
         "TYPE_CD",
       ],
       validate: (field, dependentFields) => {
-        console.log("<<<", field);
-        if (
-          Number(field?.value) &&
-          dependentFields?.CHEQUE_FROM?.value < Number(field?.value)
-        ) {
-          return "";
+        if (!field?.value) {
+          return "ThisFieldisrequired";
         } else if (
           Number(dependentFields?.CHEQUE_FROM?.value) > Number(field?.value)
         ) {
@@ -523,6 +520,8 @@ export const StopPayEntryMetadata = {
                 CHEQUE_TO: { value: "", isFieldFocused: true },
                 SERVICE_TAX: { value: "" },
                 AMOUNT: { value: "" },
+                SERVICE_C_FLAG: { value: "" },
+                GST: { value: "" },
               };
             }
           } else {
@@ -552,11 +551,6 @@ export const StopPayEntryMetadata = {
         return {};
       },
       // runPostValidationHookAlways: true,
-
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
       required: true,
       GridProps: {
         xs: 12,
@@ -572,7 +566,6 @@ export const StopPayEntryMetadata = {
       },
       name: "REASON_CD",
       label: "Reason",
-
       placeholder: "SelectReason",
       disableCaching: true,
       dependentFields: ["FLAG", "BRANCH_CD"],

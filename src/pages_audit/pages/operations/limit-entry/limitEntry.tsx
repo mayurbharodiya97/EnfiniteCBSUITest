@@ -2,7 +2,6 @@ import {
   AppBar,
   Box,
   Button,
-  CircularProgress,
   Container,
   Grid,
   LinearProgress,
@@ -37,7 +36,6 @@ import { FdDetails } from "./fdDetail/fdDetails";
 import { NscDetails } from "./nscDetail/nscDetails";
 import { useTranslation } from "react-i18next";
 import { SecurityDetailForm } from "./securityDetail/securityDetail";
-import { use } from "i18next";
 
 const LimitEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -172,10 +170,7 @@ const LimitEntryCustom = () => {
             messageTitle: "InvalidDeleteOperation",
             message: data?.[0]?.O_RESTRICT,
           });
-        } else if (
-          data?.[0]?.O_STATUS === "0" &&
-          data?.[0]?.O_RESTRICT === "SUCCESS"
-        ) {
+        } else if (data?.[0]?.O_STATUS === "0") {
           reqDataRef.current.deleteReq = variables;
           setIsData((old) => {
             return { ...old, isDelete: true };
@@ -564,20 +559,5 @@ export const LimitEntry = () => {
     <ClearCacheProvider>
       <LimitEntryCustom />
     </ClearCacheProvider>
-  );
-};
-
-export const PinkColor: any = () => {
-  return (
-    <>
-      <div
-        style={{
-          background: "red",
-          borderRadius: "50%",
-          height: "15px",
-          width: "15px",
-        }}
-      ></div>
-    </>
   );
 };

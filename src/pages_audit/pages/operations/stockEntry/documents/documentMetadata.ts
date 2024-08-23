@@ -1,5 +1,5 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
+export const stockViewEditMSTMetaData = {
   masterForm: {
     form: {
       name: "Upload-View-doc",
@@ -50,7 +50,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
 
       {
         render: {
-          componentType: "textField",
+          componentType: "amountField",
         },
         name: "TRAN_BAL",
         label: "Balance",
@@ -58,28 +58,13 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
-      {
-        render: {
-          componentType: "textField",
-        },
-        name: "ACCT_MST_LIMIT",
-        fullWidth: true,
-        label: "AccountLimitAmt",
-        isReadOnly: true,
-        GridProps: {
-          xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
-        },
-      },
+
       {
         render: {
           componentType: "textField",
@@ -87,17 +72,31 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         fullWidth: true,
         name: "SECURITY_CD",
         label: "Security",
-
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 4,
+          sm: 4,
+          lg: 4,
+          xl: 4,
         },
       },
-
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "ACCT_MST_LIMIT",
+        fullWidth: true,
+        label: "AccountLimitAmt",
+        isReadOnly: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
+      },
       {
         render: {
           componentType: "datePicker",
@@ -108,12 +107,13 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         label: "StatementDate",
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
+
       {
         render: {
           componentType: "datePicker",
@@ -124,10 +124,26 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         label: "StatementValidTillDate",
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
+      },
+      {
+        render: {
+          componentType: "datePicker",
+        },
+        fullWidth: true,
+        name: "WITHDRAW_DT",
+        isReadOnly: true,
+        label: "Withdraw Date",
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
       {
@@ -140,49 +156,81 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 4,
+          sm: 4,
+          lg: 4,
+          xl: 4,
         },
       },
+
       {
         render: {
-          componentType: "textField",
+          componentType: "numberFormat",
         },
         name: "NO_OF_SHARE",
         fullWidth: true,
         label: "NoOfShare",
         isReadOnly: true,
+        textFieldStyle: {
+          "& .MuiInputBase-input": {
+            textAlign: "right",
+          },
+        },
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
 
       {
         render: {
-          componentType: "textField",
+          componentType: "numberFormat",
         },
         name: "STOCK_VALUE",
         fullWidth: true,
         label: "StockValue",
         isReadOnly: true,
+        textFieldStyle: {
+          "& .MuiInputBase-input": {
+            textAlign: "right",
+          },
+        },
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
+        },
+      },
+      {
+        render: {
+          componentType: "numberFormat",
+        },
+        name: "NET_VALUE",
+        fullWidth: true,
+        label: "Net value",
+        textFieldStyle: {
+          "& .MuiInputBase-input": {
+            textAlign: "right",
+          },
+        },
+        isReadOnly: true,
+        GridProps: {
+          xs: 12,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
 
       {
         render: {
-          componentType: "textField",
+          componentType: "rateOfInt",
         },
         name: "MARGIN",
         fullWidth: true,
@@ -190,26 +238,10 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
-        },
-      },
-      {
-        render: {
-          componentType: "datePicker",
-        },
-        name: "RECEIVED_DT",
-        label: "RecievedDate",
-        fullWidth: true,
-        isReadOnly: true,
-        GridProps: {
-          xs: 12,
-          md: 2.4,
-          sm: 2.4,
-          lg: 2.4,
-          xl: 2.4,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -222,10 +254,31 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 3.2,
-          sm: 3.2,
-          lg: 3.2,
-          xl: 3.2,
+          md: 4,
+          sm: 4,
+          lg: 4,
+          xl: 4,
+        },
+      },
+      {
+        render: {
+          componentType: "numberFormat",
+        },
+        fullWidth: true,
+        name: "DRAWING_POWER",
+        label: "DrawingPower",
+        textFieldStyle: {
+          "& .MuiInputBase-input": {
+            textAlign: "right",
+          },
+        },
+        isReadOnly: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
       {
@@ -238,28 +291,29 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 3.2,
-          sm: 3.2,
-          lg: 3.2,
-          xl: 3.2,
+          md: 4,
+          sm: 4,
+          lg: 4,
+          xl: 4,
         },
       },
       {
         render: {
-          componentType: "textField",
+          componentType: "datePicker",
         },
+        name: "RECEIVED_DT",
+        label: "RecievedDate",
         fullWidth: true,
-        name: "DRAWING_POWER",
-        label: "DrawingPower",
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 3.2,
-          sm: 3.2,
-          lg: 3.2,
-          xl: 3.2,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
+
       {
         render: {
           componentType: "hidden",
@@ -381,8 +435,8 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         alignment: "center",
         buttonLabel: "Download",
         sequence: 3,
-        width: 160,
-        maxWidth: 180,
+        width: 180,
+        maxWidth: 220,
         minWidth: 120,
         isVisible: true,
         isVisibleInNew: true,

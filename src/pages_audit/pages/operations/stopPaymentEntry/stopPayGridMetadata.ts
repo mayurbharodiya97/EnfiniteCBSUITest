@@ -98,9 +98,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "left",
       componentType: "default",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 250,
+      minWidth: 200,
+      maxWidth: 300,
     },
     {
       accessor: "FLAG",
@@ -156,22 +156,22 @@ export const StopPayGridMetaData: GridMetaDataType = {
     //   minWidth: 60,
     //   maxWidth: 130,
     // },
-    {
-      accessor: "PRINT",
-      columnName: "Print",
-      buttonLabel: "Print",
-      sequence: 8,
-      alignment: "center",
-      componentType: "buttonRowCell",
-      // shouldExclude: (initialValue, original, prevRows, nextRows) => {
-      //   if (initialValue === "Y") {
-      //     return false;
-      //   }
-      //   return true;
-      // },
-      width: 90,
-      minWidth: 60,
-      maxWidth: 130,
-    },
+    // {
+    //   accessor: "PRINT",
+    //   columnName: "Print",
+    //   buttonLabel: "Print",
+    //   sequence: 8,
+    //   alignment: "center",
+    //   componentType: "buttonRowCell",
+    //   // shouldExclude: (initialValue, original, prevRows, nextRows) => {
+    //   //   if (initialValue === "Y") {
+    //   //     return false;
+    //   //   }
+    //   //   return true;
+    //   // },
+    //   width: 90,
+    //   minWidth: 60,
+    //   maxWidth: 130,
+    // },
   ],
 };

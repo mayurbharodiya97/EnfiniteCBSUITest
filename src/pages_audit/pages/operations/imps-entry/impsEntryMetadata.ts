@@ -529,7 +529,6 @@ export const impsRegDetails = {
           name: "RTGS",
           label: "RTGS",
           defaultValue: false,
-
           GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
         },
         {

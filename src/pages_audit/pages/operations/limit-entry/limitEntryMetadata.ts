@@ -80,6 +80,13 @@ export const limitEntryMetaData = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -103,6 +110,13 @@ export const limitEntryMetaData = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
         render: {
@@ -173,18 +187,18 @@ export const limitEntryMetaData = {
                     };
                   }
                 } else {
-                  formState.setDataOnFieldChange("NSC_FD_BTN", {
-                    NSC_FD_BTN: true,
-                    HDN_CHARGE_AMT: responseData?.[0]?.CHARGE_AMT || 0,
-                    HDN_GST_AMT: responseData?.[0]?.GST_AMT || 0,
-                    HDN_GST_ROUND: responseData?.[0]?.GST_ROUND,
-                    HDN_TAX_RATE: responseData?.[0]?.TAX_RATE || 0,
-                  });
                   responseData.push(postData[i]);
                 }
               }
             }
             if (responseData?.length) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: true,
+                HDN_CHARGE_AMT: responseData?.[0]?.CHARGE_AMT || 0,
+                HDN_GST_AMT: responseData?.[0]?.GST_AMT || 0,
+                HDN_GST_ROUND: responseData?.[0]?.GST_ROUND || "",
+                HDN_TAX_RATE: responseData?.[0]?.TAX_RATE || 0,
+              });
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -212,6 +226,13 @@ export const limitEntryMetaData = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
     {
@@ -221,14 +242,12 @@ export const limitEntryMetaData = {
       name: "ACCT_NM",
       label: "AccountName",
       isReadOnly: true,
-      placeholder: "Account Name",
-      type: "text",
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
     {
@@ -241,10 +260,10 @@ export const limitEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -258,10 +277,10 @@ export const limitEntryMetaData = {
       sequence: 0,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -308,10 +327,10 @@ export const limitEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2.9,
+        sm: 2.9,
+        lg: 2.9,
+        xl: 2.9,
       },
     },
     {
@@ -331,10 +350,23 @@ export const limitEntryMetaData = {
       _optionsKey: "limitTypeList",
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 1.6,
+        sm: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER",
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -355,10 +387,10 @@ export const limitEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        sm: 3,
-        md: 1,
-        lg: 1,
-        xl: 1,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -378,6 +410,69 @@ export const limitEntryMetaData = {
         componentType: "hidden",
       },
       name: "GET_LIMIT_RATE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PENAL_INT_RATE",
+      dependentFields: [
+        "BRANCH_CD",
+        "ACCT_TYPE",
+        "ACCT_CD",
+        "PANEL_FLAG",
+        "LIMIT_AMOUNT",
+        "SECURITY_CD",
+      ],
+      validationRun: "onChange",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentFields
+      ) => {
+        console.log("<<<ppppp", dependentFields);
+        setTimeout(async () => {
+          if (
+            dependentFields?.LIMIT_AMOUNT?.value &&
+            dependentFields?.ACCT_CD?.value &&
+            dependentFields?.SECURITY_CD?.value &&
+            dependentFields?.PANEL_FLAG?.value
+          ) {
+            let secirityType =
+              dependentFields?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim();
+            let ApiReq = {
+              BRANCH_CD: dependentFields?.BRANCH_CD?.value,
+              ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
+              ACCT_CD: dependentFields?.ACCT_CD?.value,
+              PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
+              SECURITY_CD: dependentFields?.SECURITY_CD?.value,
+              SECURITY_TYPE: secirityType,
+              LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
+              SCREEN_REF: "ETRN/047",
+            };
+
+            let postData = await API.limitRate(ApiReq);
+
+            if (postData.status && postData?.status !== "0") {
+              formState.MessageBox({
+                messageTitle: "Error Message",
+                message: `API Name :- GETLIMITRATE\n${postData?.messageDetails}`,
+              });
+            } else {
+              return {
+                PENAL_RATE: { value: postData?.[0]?.PENAL_RATE ?? "" },
+                INT_RATE: {
+                  value:
+                    secirityType !== "BFD" && secirityType !== "BRD"
+                      ? postData?.[0]?.INT_RATE ?? ""
+                      : "",
+                },
+              };
+            }
+          }
+        }, 1000);
+      },
     },
   ],
 };

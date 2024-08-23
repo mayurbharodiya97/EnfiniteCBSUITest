@@ -1,5 +1,3 @@
-import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
-
 export const en_language_data = {
   //For Ornament Type master
   OrnamentTypeMaster: "Ornament Type Master (MST/247)",

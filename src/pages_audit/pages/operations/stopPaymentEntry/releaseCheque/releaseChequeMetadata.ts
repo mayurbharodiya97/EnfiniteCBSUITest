@@ -218,9 +218,21 @@ export const releaseChequeMetadata = {
       name: "REASON_CD",
       label: "Reason",
       disableCaching: true,
-      dependentFields: ["FLAG", "BRANCH_CD"],
+      dependentFields: ["FLAG", "BRANCH_CD", "ALLOW_RELEASE"],
+
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       options: (dependentValue, formState, any, authState) => {
-        if (dependentValue?.BRANCH_CD?.value && dependentValue?.FLAG?.value) {
+        if (
+          dependentValue?.BRANCH_CD?.value &&
+          dependentValue?.FLAG?.value &&
+          dependentValue?.ALLOW_RELEASE?.value === "Y"
+        ) {
           return API.reasonDropdown({
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -291,7 +303,14 @@ export const releaseChequeMetadata = {
       },
       name: "INFAVOUR_OF",
       label: "Infavour",
-      isReadOnly: true,
+      dependentFields: ["ALLOW_RELEASE"],
+      isReadOnly(fieldData, dependentFields, formState) {
+        if (dependentFields?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 4,
@@ -306,7 +325,14 @@ export const releaseChequeMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-
+      dependentFields: ["ALLOW_RELEASE"],
+      isReadOnly(fieldData, dependentFields, formState) {
+        if (dependentFields?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 4,
@@ -323,11 +349,6 @@ export const releaseChequeMetadata = {
       label: "ReleaseDate",
       isMaxWorkingDate: true,
       isWorkingDate: true,
-      __EDIT__: {
-        render: {
-          componentType: "datePicker",
-        },
-      },
       dependentFields: ["ALLOW_RELEASE"],
       shouldExclude(fieldData, dependentFields) {
         if (dependentFields?.ALLOW_RELEASE?.value === "Y") {

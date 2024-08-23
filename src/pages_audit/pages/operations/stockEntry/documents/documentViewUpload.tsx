@@ -24,6 +24,8 @@ import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { cloneDeep } from "lodash";
 
 export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const [isopenImgViewer, setOpenImgViewer] = useState<boolean>(false);
@@ -32,6 +34,19 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const myRef = useRef<any>(null);
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
+
+  let newInitialData = {
+    ...rows?.[0]?.data,
+    DRAWING_POWER:
+      rows?.[0]?.data?.DRAWING_POWER &&
+      parseFloat(rows?.[0]?.data?.DRAWING_POWER).toFixed(2),
+    NET_VALUE:
+      rows?.[0]?.data?.NET_VALUE &&
+      parseFloat(rows?.[0]?.data?.NET_VALUE).toFixed(2),
+    STOCK_VALUE:
+      rows?.[0]?.data?.STOCK_VALUE &&
+      parseFloat(rows?.[0]?.data?.STOCK_VALUE).toFixed(2),
+  };
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
     viewDocument({
@@ -173,6 +188,8 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     fileInput.click();
   };
 
+  let metadata = cloneDeep(stockViewEditMSTMetaData) as MasterDetailsMetaData;
+
   return (
     <>
       <Dialog
@@ -213,10 +230,10 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
           ) : (
             <MasterDetailsForm
               key={"stockEntryUploadDOC" + viewDocuments.isSuccess}
-              metaData={stockViewEditMSTMetaData}
+              metaData={metadata}
               initialData={{
                 _isNewRow: false,
-                ...rows?.[0]?.data,
+                ...newInitialData,
                 DETAILS_DATA: viewDocuments?.data,
               }}
               subHeaderLable={`\u00A0\u00A0 
@@ -246,7 +263,6 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "43vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
