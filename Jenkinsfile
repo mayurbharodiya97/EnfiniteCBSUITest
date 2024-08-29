@@ -82,12 +82,6 @@ pipeline {
                 updateManifestDeploy(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
             }
         }
-        stage('Update Deployment Tags') {
-            steps {
-                updateDeploymentTags(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
-            }
-        }
-
         stage('Push Deployment File to Git') {
             steps {
                 pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL, )
