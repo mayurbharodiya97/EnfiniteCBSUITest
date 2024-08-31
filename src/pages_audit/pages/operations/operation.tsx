@@ -15,6 +15,7 @@ const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
+const ATMconfirmation = lazy(() => import("./atm-entry/confirm/confirmation"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -62,6 +63,7 @@ export const OperationsMenu = () => (
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
+    <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
 
     <Route
       path="chequebook-confirmation/*"
@@ -163,10 +165,7 @@ export const OperationsMenu = () => (
       path="rtgs-ho-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="HO" />}
     />
-    <Route
-      path="insurance-entry/*"
-      element={<InsuranceEntryForm  />}
-    />
+    <Route path="insurance-entry/*" element={<InsuranceEntryForm />} />
     <Route
       path="fix-deposit/*"
       element={

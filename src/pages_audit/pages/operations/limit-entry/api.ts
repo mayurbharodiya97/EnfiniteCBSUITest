@@ -264,7 +264,9 @@ export const LimitSecurityData = async (apiReqPara) => {
                         value: responseData?.[0]?.PENAL_RATE,
                         ignoreUpdate: true,
                       },
-                      PENAL_INT_RATE: { value: new Date() },
+                      // PENAL_INT_RATE: {
+                      //   value: Date.now(),
+                      // },
                     };
                   }
                 }
@@ -530,8 +532,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                     : Number(field.value),
                   ignoreUpdate: true,
                 },
-
-                PENAL_INT_RATE: { value: new Date() },
               };
             };
           } else if (item.name === "MARGIN") {
@@ -560,7 +560,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                       100,
                   ignoreUpdate: true,
                 },
-                PENAL_INT_RATE: { value: new Date() },
               };
             };
           } else if (item.name === "SEC_AMT") {
@@ -583,7 +582,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                         Number(dependentFields?.SECURITY_VALUE?.value),
                     ignoreUpdate: true,
                   },
-                  PENAL_INT_RATE: { value: new Date() },
                 };
               }
             };
@@ -614,7 +612,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                     : Number(field.value),
                   ignoreUpdate: true,
                 },
-                PENAL_INT_RATE: { value: new Date() },
               };
             };
           } else if (item.name === "SEC_INT_MARGIN") {
@@ -634,7 +631,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                       100,
                   ignoreUpdate: true,
                 },
-                PENAL_INT_RATE: { value: new Date() },
               };
             };
           } else if (item.name === "SEC_INT_AMT") {
@@ -656,7 +652,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                         Number(dependentFields?.INT_AMT?.value),
                     ignoreUpdate: true,
                   },
-                  PENAL_INT_RATE: { value: new Date() },
                 };
               }
             };
@@ -670,11 +665,63 @@ export const LimitSecurityData = async (apiReqPara) => {
               return "";
             };
           } else if (item.name === "LIMIT_AMOUNT") {
-            item.dependentFields = ["SEC_AMT", "SEC_INT_AMT"];
             item.setValueOnDependentFieldsChange = (dependentFields) => {
               let secAmt = Number(dependentFields?.SEC_AMT?.value) ?? 0;
               let secIntAmt = Number(dependentFields?.SEC_INT_AMT?.value) ?? 0;
               return secAmt + secIntAmt;
+            };
+            item.validationRun = "onChange";
+            item.dependentFields = [
+              "SEC_AMT",
+              "SEC_INT_AMT",
+              "BRANCH_CD",
+              "ACCT_TYPE",
+              "ACCT_CD",
+              "PANEL_FLAG",
+              "SECURITY_CD",
+              "PENAL_INT_RATE",
+            ];
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              console.log("<<<LIMIT_AMOUNT", field, dependentFields);
+
+              if (
+                typeof field?.value === "string" &&
+                dependentFields?.PENAL_INT_RATE?.value === "Y" &&
+                dependentFields?.ACCT_CD?.value &&
+                dependentFields?.SECURITY_CD?.value &&
+                dependentFields?.PANEL_FLAG?.value
+              ) {
+                let ApiReq = {
+                  BRANCH_CD: dependentFields?.BRANCH_CD?.value,
+                  ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
+                  ACCT_CD: dependentFields?.ACCT_CD?.value,
+                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
+                  SECURITY_CD: dependentFields?.SECURITY_CD?.value,
+                  SECURITY_TYPE: apiReqPara?.SECURITY_TYPE,
+                  LIMIT_AMOUNT: field?.value,
+                  SCREEN_REF: "ETRN/047",
+                };
+
+                let postData = await limitRate(ApiReq);
+
+                if (postData?.length) {
+                  return {
+                    PENAL_RATE: { value: postData?.[0]?.PENAL_RATE ?? "" },
+                    INT_RATE: {
+                      value:
+                        apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                        apiReqPara?.SECURITY_TYPE !== "BRD"
+                          ? postData?.[0]?.INT_RATE ?? ""
+                          : "",
+                    },
+                  };
+                }
+              }
             };
           } else if (item.name === "CHARGE_AMT") {
             item.dependentFields = ["SECURITY_CD"];
@@ -958,7 +1005,7 @@ export const limitRate = async (apiReq) => {
   if (status === "0") {
     return data;
   } else {
-    return { status, messageDetails };
+    throw DefaultErrorObject(message, messageDetails);
   }
 };
 

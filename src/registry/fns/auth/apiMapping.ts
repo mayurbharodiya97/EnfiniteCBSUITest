@@ -2255,6 +2255,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI/VALIDATECHQBKCONFRIMATIONDATA",
     packageName: "",
   },
+  GETATMREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGCONFGRID",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -41,7 +41,6 @@ const AtmEntryCustom = ({ parameter }) => {
     cardData: {},
     gridData: [],
     isVisible: false,
-    isOpenPhotoSign: false,
     isOpenCard: false,
   });
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -231,9 +230,7 @@ const AtmEntryCustom = ({ parameter }) => {
                   </Button>
                   <Button
                     color="primary"
-                    onClick={() =>
-                      setIsData((old) => ({ ...old, isOpenPhotoSign: true }))
-                    }
+                    onClick={() => navigate("photo-sign")}
                   >
                     {t("PhotoSign")}
                   </Button>
@@ -288,16 +285,6 @@ const AtmEntryCustom = ({ parameter }) => {
         </Grid>
       </Grid>
 
-      {isData?.isOpenPhotoSign && (
-        <PhotoSignWithHistory
-          data={isData?.cardData ?? {}}
-          onClose={() => {
-            setIsData((old) => ({ ...old, isOpenPhotoSign: false }));
-          }}
-          screenRef={"MST/846"}
-        />
-      )}
-
       {isData?.isOpenCard && (
         <CardPrinting cardData={isData.cardData} setIsData={setIsData} />
       )}
@@ -321,6 +308,16 @@ const AtmEntryCustom = ({ parameter }) => {
               parameter={parameter}
               setFormMode={setFormMode}
               setRetrieveData={setRetrieveData}
+            />
+          }
+        />
+        <Route
+          path="photo-sign/*"
+          element={
+            <PhotoSignWithHistory
+              data={isData?.cardData ?? {}}
+              onClose={() => navigate(".")}
+              screenRef={"MST/846"}
             />
           }
         />

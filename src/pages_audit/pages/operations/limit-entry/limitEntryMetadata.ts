@@ -416,62 +416,12 @@ export const limitEntryMetaData = {
         componentType: "hidden",
       },
       name: "PENAL_INT_RATE",
-      dependentFields: [
-        "BRANCH_CD",
-        "ACCT_TYPE",
-        "ACCT_CD",
-        "PANEL_FLAG",
-        "LIMIT_AMOUNT",
-        "SECURITY_CD",
-      ],
-      validationRun: "onChange",
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentFields
-      ) => {
-        console.log("<<<ppppp", dependentFields);
-        setTimeout(async () => {
-          if (
-            dependentFields?.LIMIT_AMOUNT?.value &&
-            dependentFields?.ACCT_CD?.value &&
-            dependentFields?.SECURITY_CD?.value &&
-            dependentFields?.PANEL_FLAG?.value
-          ) {
-            let secirityType =
-              dependentFields?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim();
-            let ApiReq = {
-              BRANCH_CD: dependentFields?.BRANCH_CD?.value,
-              ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
-              ACCT_CD: dependentFields?.ACCT_CD?.value,
-              PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
-              SECURITY_CD: dependentFields?.SECURITY_CD?.value,
-              SECURITY_TYPE: secirityType,
-              LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
-              SCREEN_REF: "ETRN/047",
-            };
-
-            let postData = await API.limitRate(ApiReq);
-
-            if (postData.status && postData?.status !== "0") {
-              formState.MessageBox({
-                messageTitle: "Error Message",
-                message: `API Name :- GETLIMITRATE\n${postData?.messageDetails}`,
-              });
-            } else {
-              return {
-                PENAL_RATE: { value: postData?.[0]?.PENAL_RATE ?? "" },
-                INT_RATE: {
-                  value:
-                    secirityType !== "BFD" && secirityType !== "BRD"
-                      ? postData?.[0]?.INT_RATE ?? ""
-                      : "",
-                },
-              };
-            }
-          }
-        }, 1000);
+      dependentFields: ["FD_ACCT_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        if (dependentFields?.FD_ACCT_CD?.value === "") {
+          return "N";
+        }
+        return "Y";
       },
     },
   ],

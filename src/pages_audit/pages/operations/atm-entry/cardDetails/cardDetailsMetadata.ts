@@ -297,9 +297,14 @@ export const CardDetailsMetaData = {
         if (field?.value) {
           let CitizenIdData: any = [];
           formState?.setIsData((old) => {
-            old?.gridData?.map((item) => {
-              return CitizenIdData.push(item?.CITIZEN_ID);
-            });
+            if (old?.gridData?.length) {
+              old?.gridData?.map((item) => {
+                if (item?.CITIZEN_ID) {
+                  CitizenIdData.push(item?.CITIZEN_ID);
+                }
+              });
+            }
+            return old;
           });
           let apiRequest = {
             CITIZEN_ID: field?.value,

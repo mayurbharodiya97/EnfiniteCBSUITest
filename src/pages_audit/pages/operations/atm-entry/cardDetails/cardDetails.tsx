@@ -40,14 +40,13 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
           setIsData((old) => {
             const updatedGridData =
               rows?.[0]?.data?.TRAN_CD || rows?.[0]?.data?.ID_NO
-                ? old.gridData.map((item) =>
+                ? old?.gridData.map((item) =>
                     item.TRAN_CD === rows?.[0]?.data?.TRAN_CD ||
                     item.ID_NO === rows?.[0]?.data?.ID_NO
                       ? { ...item, ...data }
                       : item
                   )
                 : [...old.gridData, { ...data, ID_NO: idNumber }];
-
             return {
               ...old,
               gridData: updatedGridData,
