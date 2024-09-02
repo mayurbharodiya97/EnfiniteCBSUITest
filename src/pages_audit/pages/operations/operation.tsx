@@ -57,6 +57,7 @@ const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
 const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
 const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
+const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -217,5 +218,6 @@ export const OperationsMenu = () => (
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="account-close-process/*" element={<AccountCloseProcess />} />    
   </Routes>
 );
