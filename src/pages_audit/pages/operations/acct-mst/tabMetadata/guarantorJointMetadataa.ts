@@ -274,7 +274,7 @@ export const guarantorjoint_tab_metadata = {
                     render: {
                         componentType: "dob"
                     },
-                    name: "BIIRTH_DATE",
+                    name: "BIRTH_DATE",
                     label: "Birth Date",
                     maxDate: new Date(), 
                     isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
