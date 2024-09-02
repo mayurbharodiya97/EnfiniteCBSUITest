@@ -46,7 +46,7 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 4,
       autoComplete: "off",
       isFieldFocused: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       required: true,
       schemaValidation: {
         type: "string",
@@ -88,7 +88,7 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 50,
       type: "text",
       autoComplete: "off",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();

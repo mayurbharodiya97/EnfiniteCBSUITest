@@ -1,5 +1,4 @@
-
-import * as API from '../api';
+import * as API from "../api";
 export const AreaMasterMetaData = {
   form: {
     name: "Area Master",
@@ -15,14 +14,14 @@ export const AreaMasterMetaData = {
           xs: 12,
           sm: 12,
           md: 12,
-          lg:12,
-          xl:12
+          lg: 12,
+          xl: 12,
         },
         container: {
           direction: "row",
           spacing: 2,
-          width:200,
-          maxwidth:500
+          width: 200,
+          maxwidth: 500,
         },
       },
     },
@@ -48,58 +47,57 @@ export const AreaMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl:3  },
-      __EDIT__:{isReadOnly:true}
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+      __EDIT__: { isReadOnly: true },
     },
     {
       render: { componentType: "textField" },
       name: "AREA_NM",
       label: "Name",
       type: "text",
-      required: true, 
+      required: true,
       placeholder: "Name",
-      maxLength:100,
-      preventSpecialCharInput: true,
+      maxLength: 100,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
-      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
       render: { componentType: "numberFormat" },
       name: "PIN_CODE",
       label: "PinCode",
       placeholder: "PinCode",
-      require:false,
-      preventSpecialCharInput: true,
-      GridProps: {  xs: 12, sm: 3, md: 3, lg: 3, xl:3 },
+      require: false,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "CITY_CD",
-      label: "City", 
-      placeholder:"City",
-      options:API.GETAREAMSTCITYDDW,
+      label: "City",
+      placeholder: "City",
+      options: API.GETAREAMSTCITYDDW,
       _optionsKey: "getAreaMstCityddw",
       __VIEW__: { isReadOnly: true },
-      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6},
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "PARENT_AREA",
       label: "ParentArea",
-      placeholder:"ParentArea",
+      placeholder: "ParentArea",
       options: API.GETAREAMSTPARENTDDW,
       __VIEW__: { isReadOnly: true },
       _optionsKey: "getAreaMstParentddw",
-      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl: 6 }
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
   ],
 };
-

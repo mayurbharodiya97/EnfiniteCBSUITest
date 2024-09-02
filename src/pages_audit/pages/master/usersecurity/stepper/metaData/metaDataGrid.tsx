@@ -45,14 +45,14 @@ export const applicationAccess: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      // SelectAllColumn:true,
+      enableColumnSelection: true,
       width: 125,
       minWidth: 100,
       maxWidth: 125,
       isReadOnly: false,
       // __VIEW__: {
       //     isReadOnly: true,
-      //     SelectAllColumn: false
+      //     enableColumnSelection: false
       // },
     },
   ],
@@ -108,14 +108,14 @@ export const userAccessbranch: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      // SelectAllColumn:true,
+      enableColumnSelection: true,
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
       // __VIEW__: {
       //     isReadOnly: true,
-      //     SelectAllColumn: false
+      //     enableColumnSelection: false
       // },
     },
     {
@@ -124,14 +124,14 @@ export const userAccessbranch: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      // SelectAllColumn:true,
+      enableColumnSelection: true,
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
       // __VIEW__: {
       //     isReadOnly: true,
-      //     SelectAllColumn: false
+      //     enableColumnSelection: false
       // },
     },
   ],
@@ -199,15 +199,15 @@ export const productaccess: GridMetaDataType = {
       sequence: 5,
       alignment: "left",
       componentType: "editableCheckbox",
-      // SelectAllColumn:true,
+      enableColumnSelection: true,
       width: 100,
       minWidth: 100,
       maxWidth: 100,
       isReadOnly: false,
-      // __VIEW__: {
-      //     isReadOnly: true,
-      //     SelectAllColumn: false
-      // },
+      __VIEW__: {
+        isReadOnly: true,
+        enableColumnSelection: false,
+      },
     },
   ],
 };

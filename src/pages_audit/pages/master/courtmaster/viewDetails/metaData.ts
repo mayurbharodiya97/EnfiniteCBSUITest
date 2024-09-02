@@ -49,7 +49,7 @@ export const CourtMasterFormMetadata = {
       txtTransform: "uppercase",
       placeholder: "EnterCode",
       isFieldFocused: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         // Duplication validation
 

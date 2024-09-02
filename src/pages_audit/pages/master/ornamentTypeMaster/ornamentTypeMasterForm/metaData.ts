@@ -43,7 +43,7 @@ export const OrnamentTypeMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -85,7 +85,7 @@ export const OrnamentTypeMasterFormMetaData = {
       type: "text",
       autoComplete: "off",
       required: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],

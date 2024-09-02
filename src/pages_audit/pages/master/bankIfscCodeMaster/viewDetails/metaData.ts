@@ -59,12 +59,12 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["IFSCCodeisRequired"] }],
       },
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const IFSC = columnValue.value;
         console.log(IFSC);
         if (IFSC.length < 11 || IFSC.length > 11) {
-          return "IfscValidate"
+          return "IfscValidate";
         }
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
@@ -112,7 +112,8 @@ export const metaData = {
       type: "text",
       txtTransform: "uppercase",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },
@@ -122,7 +123,8 @@ export const metaData = {
       placeholder: "BranchName",
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },
@@ -132,7 +134,8 @@ export const metaData = {
       placeholder: "Add1",
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },
@@ -143,7 +146,8 @@ export const metaData = {
       maxLength: 10,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },
@@ -153,7 +157,8 @@ export const metaData = {
       txtTransform: "uppercase",
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },
@@ -163,7 +168,8 @@ export const metaData = {
       txtTransform: "uppercase",
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    }, {
+    },
+    {
       render: {
         componentType: "textField",
       },

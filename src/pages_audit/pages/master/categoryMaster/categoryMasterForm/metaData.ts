@@ -55,7 +55,7 @@ export const CategoryMasterFormMetaData = {
       isFieldFocused: true,
       required: true,
       autoComplete: "off",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -99,7 +99,7 @@ export const CategoryMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
