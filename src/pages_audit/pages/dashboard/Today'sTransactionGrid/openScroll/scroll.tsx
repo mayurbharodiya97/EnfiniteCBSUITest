@@ -60,10 +60,10 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
           BRANCH_CD,
           SCROLL1,
         }}
-        // dataTransformer={(data) => {
-        //   setScrollData(data);
-        //   return data;
-        // }}
+        dataTransformer={(data) => {
+          setScrollData(data);
+          return data;
+        }}
       />
       <Grid
         sx={{
