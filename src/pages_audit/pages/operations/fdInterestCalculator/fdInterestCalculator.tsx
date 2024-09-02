@@ -1,60 +1,52 @@
 import { ClearCacheProvider } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData } from "components/utils";
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import { metaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
 
-const FdInterestCalculator = ()=>{
+const FdInterestCalculator = () => {
   const [formMode, setFormMode] = useState("add");
+  const [calcSwitch, setCalcSwitch] = useState("P");
   const { authState } = useContext(AuthContext);
-  const formRef = useRef<any>(null);
-    return(
-        <>
-         <FormWrapper
-          key={"modeMasterForm" + formMode}
-          metaData={
-            extractMetaData(
-             metaData,
-              formMode
-            ) as MetaDataType
-          }
-          displayMode={formMode}
-          onSubmitHandler={()=>{}}
-          initialValues={{
-            COMP_CD: authState.companyID,
-            BRANCH_CD: authState.user.branchCode,
-            CALCSWITCH:"P"
-          }}
-          onFormButtonClickHandel={async (id) => {
-            let event: any = { preventDefault: () => { } };
-            if(id==="NEW_DATE_BTN")
-            {
-              formRef?.current?.handleFormReset(event, "Reset");
-            }
-            else if(id==="NEW_PERIOD_BTN")
-            {
-              formRef?.current?.handleFormReset(event, "Reset");
-            }
-          }}
-          formStyle={{
-            background: "white",
-          }}
-          ref={formRef}
-        >
-       
-        </FormWrapper>
-        </>
-    )
-}
+  const [formKey, setFormKey] = useState(Date.now());
 
-export const FdInterestCalculatorMain = () => {
-    return (
-      <ClearCacheProvider>
-        <FdInterestCalculator />
-      </ClearCacheProvider>
-    );
+  const handleButtonClick = async (id: string) => {
+    let event: any = { preventDefault: () => {} };
+    if (id === "NEW_DATE_BTN") {
+      setCalcSwitch("D");
+      setFormKey(Date.now());
+    } else if (id === "NEW_PERIOD_BTN") {
+      setCalcSwitch("P");
+      setFormKey(Date.now());
+    }
   };
 
-  
-  
+  return (
+    <>
+      <FormWrapper
+        key={formKey}
+        metaData={extractMetaData(metaData, formMode) as MetaDataType}
+        displayMode={formMode}
+        onSubmitHandler={() => {}}
+        initialValues={{
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState.user.branchCode,
+          CALCSWITCH: calcSwitch,
+        }}
+        onFormButtonClickHandel={handleButtonClick} // Updated handler
+        formStyle={{
+          background: "white",
+        }}
+      ></FormWrapper>
+    </>
+  );
+};
+
+export const FdInterestCalculatorMain = () => {
+  return (
+    <ClearCacheProvider>
+      <FdInterestCalculator />
+    </ClearCacheProvider>
+  );
+};
