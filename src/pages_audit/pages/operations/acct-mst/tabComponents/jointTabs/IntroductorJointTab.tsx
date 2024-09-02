@@ -139,6 +139,7 @@ const IntroductorJointTab = () => {
         ref={formRef}
         metaData={introductorjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
+        formState={{PARAM320: AcctMSTState?.param320}}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         hideHeader={true}

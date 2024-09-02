@@ -139,6 +139,7 @@ const GuardianJointTab = () => {
         ref={formRef}
         metaData={guardianjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
+        formState={{PARAM320: AcctMSTState?.param320}}
         initialValues={initialVal}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
