@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueries } from "react-query";
 import * as API from "../api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
@@ -24,16 +24,7 @@ import {
   TipsMessageBox,
 } from "assets/icons/svgIcons";
 
-interface updateAUTHDetailDataType {
-  userID: any;
-  COMP_CD: any;
-}
 
-const updateAUTHDetailDataWrapperFn =
-  (updateMasterData) =>
-  async ({ userID, COMP_CD }: updateAUTHDetailDataType) => {
-    return updateMasterData({ userID, COMP_CD });
-  };
 export const MessageBox = ({ screenFlag = "" }: any) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext<any>(AuthContext);
@@ -41,53 +32,35 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
   const { t } = useTranslation();
   const refData = useRef<any>(null);
   const isDataChangedRef = useRef(false);
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(
-    [
-      "getDashboardMessageBoxData",
-      {
-        screenFlag,
-        userID: authState?.user?.id ?? "",
-        // transactionID,
-      },
-    ],
-    () =>
-      API.getDashboardMessageBoxData({
-        screenFlag,
-        userID: authState?.user?.id ?? "",
-      })
-  );
-  const mutation = useMutation(
-    updateAUTHDetailDataWrapperFn(API.getNoteCountData),
+
+  const result = useQueries([
     {
-      onError: (error: any) => {},
-      onSuccess: (data) => {},
-    }
-  );
+      queryKey: ["getDashboardMessageBoxData",screenFlag],
+      queryFn: () =>
+        API.getDashboardMessageBoxData({
+          screenFlag,
+          userID: authState?.user?.id ?? "",
+        }),
+    },
+    {
+      queryKey: ["getNoteCountData"],
+      queryFn: () =>
+        API.getNoteCountData({
+          COMP_CD: authState?.companyID ?? "",
+          userID: authState?.user?.id ?? "",
+        }),
+    },
+  ]);
 
-  useEffect(() => {
-    const mutationArguments: any = {
-      userID: authState?.user?.id ?? "",
-      COMP_CD: authState?.companyID ?? "",
-    };
-    mutation.mutate(mutationArguments);
-  }, []);
+  const dataLength = result?.[0]?.isLoading 
+  ? <CircularProgress size={20} thickness={4.6} /> 
+  : result?.[0]?.data?.length || "0";
 
-  const dataLength = isLoading ? (
-    <CircularProgress size={20} thickness={4.6} />
-  ) : data ? (
-    data.length
-  ) : (
-    ""
-  );
+const dataNoteLength = result?.[1]?.isLoading 
+  ? <CircularProgress size={20} thickness={4.6} /> 
+  : result?.[1]?.data?.[0]?.CNT || "0";
 
-  const dataNoteLength: any = mutation?.isLoading ? (
-    <CircularProgress size={20} thickness={4.6} />
-  ) : (
-    mutation?.data?.[0]?.CNT
-  );
+
 
   useEffect(() => {
     return () => {
@@ -96,10 +69,9 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
         {
           screenFlag,
           userID: authState?.user?.id ?? "",
-          // transactionID: data?.transactionID,
         },
       ]);
-      // queryClient.removeQueries(["getNoteCountData"]);
+      queryClient.removeQueries(["getNoteCountData"]);
     };
   }, []);
 
@@ -116,11 +88,8 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
       screenFlag === "Notes"
-        ? mutation.mutate({
-            userID: authState?.user?.id ?? "",
-            COMP_CD: authState?.companyID ?? "",
-          })
-        : refetch();
+        ? result?.[1]?.refetch()
+        : result?.[0]?.refetch();
       isDataChangedRef.current = false;
     }
     setIsOpenSave(false);
@@ -309,7 +278,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
       </Grid>
       {toggle ? (
         <>
-          {isLoading || isFetching ? (
+          {result?.[0]?.isLoading || result?.[0]?.isFetching ? (
             <LoaderPaperComponent />
           ) : (
             <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
@@ -331,7 +300,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
                       paddingBottom: "0px",
                     }}
                   >
-                    {data.map((item, _index) => (
+                    {result?.[0]?.data.map((item, _index) => (
                       <ListItemData
                         key={"listItemforannounce" + _index}
                         name={item?.DESCRIPTION}
@@ -359,7 +328,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               formView={"view"}
               screenFlag={screenFlag}
               isDataChangedRef={isDataChangedRef}
-              isAnnouncementLoading={isLoading || isFetching}
+              isAnnouncementLoading={result?.[0]?.isLoading || result?.[0]?.isFetching}
             />
           ) : null}
         </>
@@ -381,7 +350,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               closeDialog={handleDialogClose}
               data={refData.current}
               formView={"view"}
-              isLoading={isLoading || isFetching}
+              isLoading={result?.[0]?.isLoading || result?.[0]?.isFetching}
               isDataChangedRef={isDataChangedRef}
             />
           ) : null}

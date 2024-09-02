@@ -34,6 +34,7 @@ const StrAcLevelBranchEntryGridWrapper = lazy(
 );
 const RtgsEntryFormWrapper = lazy(() => import("./rtgsEntry"));
 const InsuranceEntryForm = lazy(() => import("./insuranceEntry"));
+const DailyTransactionImportForm = lazy(() => import("./dailyTransactionImport"));
 const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
@@ -86,6 +87,10 @@ export const OperationsMenu = () => (
     <Route
       path="tempOd-confirmation/*"
       element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
+    />
+    <Route
+      path="insurance-confirmation/*"
+      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
@@ -165,7 +170,11 @@ export const OperationsMenu = () => (
     />
     <Route
       path="insurance-entry/*"
-      element={<InsuranceEntryForm  />}
+      element={<InsuranceEntryForm />}
+    />
+    <Route
+      path="daily-transaction-import/*"
+      element={<DailyTransactionImportForm />}
     />
     <Route
       path="fix-deposit/*"

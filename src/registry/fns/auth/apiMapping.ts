@@ -2251,6 +2251,38 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  GETINSURANCECNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSURANCECNFDATADISP",
+    packageName: "",
+  },
+  GETINSUENTRYDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUENTRYDTL",
+    packageName: "",
+  },
+  GETINSUENTRYSECDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUENTRYSECDTL",
+    packageName: "",
+  },
+  DOINSURANCEDML: {
+    url: "/loanServiceAPI/DOINSURANCEDML",
+    packageName: "",
+  },
+  DOINSURANCEENTCONFIRMATION: {
+    url: "/loanServiceAPI/DOINSURANCEENTCONFIRMATION",
+    packageName: "",
+  },
+  GETFDPAYMENTINSTRTOTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRTOTYPEDDW",
+    packageName: "",
+  },
+  GETDAILYIMPDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYIMPDDDW",
+    packageName: "",
+  },
+  DODAILYTRNIMPORT: {
+    url: "/transactionServiceAPI/DODAILYTRNIMPORT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -2266,17 +2298,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

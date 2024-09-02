@@ -1624,4 +1624,64 @@ export const en_language_data = {
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+
+
+  // str ac level branch entry
+
+  AsperExtraction: "As per Extraction",
+  Suspicious: "Suspicious",
+  WhiteListed: "White Listed",
+  STRHistory: "STR History",
+  SuspiciousStatus: "Suspicious Status",
+  SuspiciousReasons: "Suspicious Reasons",
+  InvestigationDetail: "Investigation Detail",
+  EditDetail: "Edit-Detail",
+  GroundOfSuspicion: "Ground Of Suspicion",
+  TransactionDetail: "Transaction Detail",
+  PanNo: "Pan no.",
+  Refresh: "Refresh",
+  AtleastOneRecordMustMarkedSuspicious: "Atleast one record must be marked suspicious",
+  AreYouSureRefreshTransactionDetails: "Are You Sure to refresh transaction details?",
+  TRNDate: "TRN. Date",
+  VNo: "V. No.",
+
+
+  // insurance entry screen 
+
+  InsuranceView: "Insurance View",
+  InsuranceDetail: "Insurance Detail",
+  InsuranceEntry: "Insurance Entry",
+  InsuranceDate: "Insurance Date",
+  CoverNote: "Cover Note",
+  PleaseEnterCoverNote: "Please enter Cover Note.",
+  Company: "Company",
+  PleaseEnterInsuranceCompany: "Please enter Insurance Company",
+  InsuranceType: "Insurance Type",
+  PolicyNo: "Policy No.",
+  PleaseEnterPolicyNo: "Please enter Policy No",
+  InsuranceAmount: "Insurance Amount",
+  PleaseEnterInsuranceAmount: "Please enter Insurance Amount",
+  NetPremium: "Net Premium",
+  GSTShouldLessThanNetPremiumAmount: "GST should be less than Net Premium Amount",
+  NetPremiumAmountCanGreaterThanInsuranceAmount: "Net Premium amount can not greater than insurance amount",
+  TotalPremium: "Total Premium",
+  Proposer1: "Proposer1", Proposer2: "Proposer2",
+  PleaseEnterSecurityType: "Please enter Security Type",
+  PleaseEnterSecurity: "Please Enter Security",
+  PleaseEnterNetPremiumAmount: "Please enter Net Premium Amount",
+  SecurityAlreadyEnteredLine: "Security is Already entered at Line",
+  LedgerNo: "Ledger No.",
+  CurrentBalance: "Current Balance",
+  InactiveDate: "Inactive Date",
+  Mode: "Mode", TypeOfSec: "Type Of Security", Confirmerd: "Confirmerd", ConfirmerdStatus: "Confirmerd Status",
+  EnterRemovalRemarksForInsuranceMaster: "Enter Removal Remarks For Insurance Master",
+  DoYouWantAllowTheTransaction: "Do You Want to allow the transaction ?",
+  EnterRemovalRemarksForInsuranceConfirmation: "Enter Removal Remarks For Insurance Confirmation",
+  InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+  EnterParameters: "Enter Parameters"
+
+
+
+
+
 };

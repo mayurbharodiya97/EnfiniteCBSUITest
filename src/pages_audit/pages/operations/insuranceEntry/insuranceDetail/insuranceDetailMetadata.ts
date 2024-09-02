@@ -2,11 +2,12 @@ import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/ty
 import { utilFunction } from "components/utils";
 import { render } from "react-dom";
 import { GeneralAPI } from "registry/fns/functions/general";
-import * as API from "./api";
+import * as API from "../api";
 import { addMonths, format, subDays } from "date-fns";
 import { GridMetaDataType } from "components/dataTableStatic";
+import { capitalize } from "lodash";
 
-export const InsuranceEntryFormMetaData = {
+export const InsuranceDetailFormMetaData = {
   masterForm: {
     form: {
       name: "InsuranceMaster",
@@ -55,7 +56,7 @@ export const InsuranceEntryFormMetaData = {
         accountTypeMetadata: {
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
           isFieldFocused: true,
-          defaultfocus: true,
+          defaultfocus: true, isReadOnly: true,
           defaultValue: "",
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
@@ -73,17 +74,18 @@ export const InsuranceEntryFormMetaData = {
             auth,
             dependentFieldsValues
           ) => {
-            // if (!field?.value) {
-            //   formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-            //   return {
-            //     ACCT_CD: { value: "", ignoreUpdate: true },
-            //     ACCT_NM: { value: "" },
-            //   };
-            // }
+            if (!field?.value) {
+              formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+              return {
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                ACCT_NM: { value: "" },
+              };
+            }
+
           },
         },
         accountCodeMetadata: {
-          fullWidth: true,
+          fullWidth: true, isReadOnly: true,
           FormatProps: {
             allowNegative: false,
             isAllowed: (values) => {
@@ -193,13 +195,15 @@ export const InsuranceEntryFormMetaData = {
             } else {
               formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
               return {
-                ACCT_CD: { value: "" },
+                ACCT_CD: {
+                  value: "",
+                },
                 ACCT_NM: { value: "" },
 
               };
             }
           },
-          // runPostValidationHookAlways: true,
+          runPostValidationHookAlways: true,
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         },
       },
@@ -267,7 +271,7 @@ export const InsuranceEntryFormMetaData = {
         required: true,
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["PleaseEnterCoverNote"] }],
+          rules: [{ name: "required", params: ["Please enter Cover Note."] }],
         },
         validate: (columnValue, allField, flag) => {
           let regex = /^[a-zA-Z0-9 ]*$/;
@@ -310,6 +314,7 @@ export const InsuranceEntryFormMetaData = {
         },
         name: "INSURANCE_TYPE_CD",
         label: "InsuranceType",
+        // defaultValue: "RTGS",
         fullWidth: true,
         options: async (dependentValue, formState, _, authState) => {
           return API.getInsuranceTypeData({
@@ -333,6 +338,18 @@ export const InsuranceEntryFormMetaData = {
         },
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
       },
+      // {
+      //   render: {
+      //     componentType: "hidden",
+      //   },
+      //   name: "TRAN_CD",
+      // },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "CONFIRMED",
+      },
       {
         render: {
           componentType: "textField",
@@ -355,6 +372,7 @@ export const InsuranceEntryFormMetaData = {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterInsuranceAmount"] }],
         },
+
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
       },
 
@@ -535,6 +553,74 @@ export const InsuranceEntryFormMetaData = {
         label: "Proposer2",
         GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
       },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ALLOW_EDIT"
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ALLOW_RENEW"
+      },
+      // {
+      //   render: {
+      //     componentType: "hidden",
+      //   },
+      //   name: "RENEWED_FLAG",
+      //   label: "Inactive",
+      //   fullWidth: true,
+      //   __EDIT__: {
+      //     render: {
+      //       componentType: "checkbox",
+      //     },
+      //     defaultValue: false,
+      //     dependentFields: ["ALLOW_EDIT", "ALLOW_RENEW"],
+      //     shouldExclude: (field, dependent) => {
+      //       if (dependent?.ALLOW_RENEW?.value === "N") {
+      //         console.log("renew", dependent?.ALLOW_RENEW?.value, dependent?.ALLOW_RENEW?.value === "Y")
+      //         return false
+      //       } else if (dependent?.ALLOW_EDIT?.value === "Y") {
+      //         console.log("edit", dependent?.ALLOW_EDIT?.value, dependent?.ALLOW_EDIT?.value === "Y")
+      //         return false;
+      //       }
+      //       return true;
+      //     },
+      //   },
+      //   GridProps: {
+      //     xs: 12,
+      //     md: 1.2,
+      //     sm: 1.2,
+      //     lg: 1.2,
+      //     xl: 1.2,
+      //   },
+      // },
+
+      // {
+      //   render: {
+      //     componentType: "hidden",
+      //   },
+      //   __EDIT__: {
+      //     render: {
+      //       componentType: "datePicker",
+      //     },
+      //     name: "INACTIVE_DATE",
+      //     fullWidth: true,
+      //     label: "InactiveDate",
+      //     GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+      //     dependentFields: ["RENEWED_FLAG"],
+      //     shouldExclude: (_, dependent, __) => {
+      //       if (
+      //         !Boolean(dependent?.RENEWED_FLAG?.value)
+      //       ) {
+      //         return true;
+      //       }
+      //       return false;
+      //     },
+      //   },
+      // }
     ],
   },
   detailsGrid: {
@@ -575,7 +661,7 @@ export const InsuranceEntryFormMetaData = {
         width: 250,
         minWidth: 300,
         maxWidth: 400,
-
+        isReadOnly: true,
         options: async (_, authState) => {
           return API.getSecurityTypeData({
             COMP_CD: authState?.companyID,
@@ -583,13 +669,14 @@ export const InsuranceEntryFormMetaData = {
           });
         },
         _optionsKey: "getSecurityTypeData",
-
+        __VIEW__: { isReadOnly: true },
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterSecurityType"] }],
         },
         // isReadOnly: true,
-        // __EDIT__: { isReadOnly: false, componentType: "editableTextField" },
+        __EDIT__: { isReadOnly: false },
+        __NEW__: { isReadOnly: false },
       },
       {
         accessor: "SECURITY_CD",
@@ -630,13 +717,23 @@ export const InsuranceEntryFormMetaData = {
           }
           return "";
         },
+        // schemaValidation: {
+        //   type: "string",
+        //   rules: [{ name: "required", params: ["This field is required"] }],
+        // },
+        // isReadOnly: true,
+        __EDIT__: { isReadOnly: false },
+        __VIEW__: { isReadOnly: true },
+        __NEW__: { isReadOnly: false },
       },
       {
         accessor: "AMOUNT",
         columnName: "Amount",
         componentType: "editableNumberFormat",
         alignment: "center",
-        isReadOnly: true,
+        // defaultValue: "Y",
+        __VIEW__: { isReadOnly: true },
+        __EDIT__: { isReadOnly: false },
         sequence: 4,
         width: 250,
         minWidth: 300,
@@ -660,6 +757,15 @@ export const InsuranceEntryFormMetaData = {
             return true;
           },
         },
+        // validation: (value, data) => {
+        //   if (!Boolean(value) || !Boolean(data["MAX_AMT"])) {
+        //     return "";
+        //   }
+        //   if (Number.parseFloat(value) > Number.parseFloat(data["MAX_AMT"])) {
+        //     return "Minimum Amount should be Less than or equal To Maximum Amount.";
+        //   }
+        //   return "";
+        // },
       },
       {
         columnName: "Action",
@@ -672,646 +778,3 @@ export const InsuranceEntryFormMetaData = {
 };
 
 
-export const ViewInsuranceMetaData = {
-  form: {
-    name: "Insurance-View",
-    label: "InsuranceView",
-    resetFieldOnUnmount: false,
-    validationRun: "onBlur",
-    submitAction: "home",
-    render: {
-      ordering: "sequence",
-      renderType: "simple",
-      gridConfig: {
-        item: {
-          xs: 12,
-          sm: 4,
-          md: 4,
-        },
-        container: {
-          direction: "row",
-          spacing: 1,
-        },
-      },
-    },
-    componentProps: {
-      textField: {
-        fullWidth: true,
-      },
-      select: {
-        fullWidth: true,
-      },
-      datePicker: {
-        fullWidth: true,
-      },
-      numberFormat: {
-        fullWidth: true,
-      },
-      inputMask: {
-        fullWidth: true,
-      },
-      datetimePicker: {
-        fullWidth: true,
-      },
-      Divider: {
-        fullWidth: true,
-      },
-    },
-  },
-  fields: [
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "BRANCH_CD",
-      label: "BranchCode",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_TYPE",
-      label: "AccountType",
-      type: "text",
-
-      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "AccountNo",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_NM",
-      label: "AccountName",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CUSTOMER_ID",
-      label: "CustomerId",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "OP_DATE",
-      label: "OpeningDate",
-      placeholder: "",
-      format: "dd/MM/yyyy",
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
-    },
-
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "LF_NO",
-      label: "LedgerNo",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
-    },
-
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "CONF_BAL",
-      label: "CurrentBalance",
-      placeholder: "",
-      isFieldFocused: true,
-      required: true,
-      type: "text",
-      FormatProps: {
-        allowNegative: false,
-      },
-
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "TRAN_BAL",
-      label: "ShadowBalance",
-      placeholder: "",
-      isFieldFocused: true,
-      required: true,
-      type: "text",
-      FormatProps: {
-        allowNegative: false,
-      },
-
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "MODE_NM",
-      label: "Mode",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 3.5, md: 3.5, lg: 3.5, xl: 3.5 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CATEG_NM",
-      label: "Category",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 3.5, md: 3.5, lg: 3.5, xl: 3.5 },
-    },
-
-    {
-      render: {
-        componentType: "divider",
-      },
-      dividerText: "Address",
-      name: "Address",
-      label: "Address",
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ADD1",
-      label: "Address",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ADD2",
-      label: "Address2",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "AREA_NM",
-      label: "Area",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "PIN_CODE",
-      label: "PinCode",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-    },
-
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CITY_NM",
-      label: "City",
-      type: "text",
-      fullWidth: true,
-      required: true,
-
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "DIST_NM",
-      label: "District",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "STATE_NM",
-      label: "State",
-      type: "text",
-      fullWidth: true,
-      required: true,
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "COUNTRY_NM",
-      label: "Country",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CONTACT1",
-      label: "Phone",
-      placeholder: "",
-      type: "text",
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CONTACT2",
-      label: "MobileNo",
-      placeholder: "",
-      type: "text",
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-  ],
-};
-export const DetailInsuranceGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Insurance Detail",
-    rowIdColumn: "TRAN_CD",
-    defaultColumnConfig: {
-      width: 150,
-      maxWidth: 250,
-      minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    // hideHeader: true,
-    disableGroupBy: true,
-    enablePagination: true,
-    hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
-    containerHeight: {
-      min: "63vh",
-      max: "63vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    hiddenFlag: "_hidden",
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "ID",
-      columnName: "SrNo",
-      sequence: 1,
-      alignment: "center",
-      componentType: "default",
-      width: 75,
-      minWidth: 70,
-      maxWidth: 100,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "POLICY_NO",
-      columnName: "PolicyNo",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 220,
-      minWidth: 150,
-      maxWidth: 290,
-    },
-    {
-      accessor: "INSURANCE_DATE",
-      columnName: "InsuranceDate",
-      sequence: 3,
-      alignment: "center",
-      componentType: "date",
-      dateFormat: "dd/MM/yyyy",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 170,
-    },
-    {
-      accessor: "DUE_DATE",
-      columnName: "DueDate",
-      sequence: 4,
-      alignment: "center",
-      componentType: "date",
-      dateFormat: "dd/MM/yyyy",
-      width: 162,
-      minWidth: 90,
-      maxWidth: 170,
-    },
-
-    {
-      accessor: "INSURANCE_AMOUNT",
-      columnName: "InsuranceAmount",
-      sequence: 5,
-      alignment: "right",
-      componentType: "currency",
-      width: 150,
-      minWidth: 150,
-      maxWidth: 180,
-    },
-
-    {
-      accessor: "TOT_PREMIUM_AMT",
-      columnName: "TotalPremium",
-      sequence: 6,
-      alignment: "right",
-      componentType: "currency",
-      width: 150,
-      minWidth: 150,
-      maxWidth: 180,
-    },
-    {
-      accessor: "INSURANCE_TYPE",
-      columnName: "InsuranceType",
-      sequence: 7,
-      alignment: "center",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Company",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 220,
-      minWidth: 150,
-      maxWidth: 290,
-    },
-    {
-      accessor: "SEC",
-      columnName: "TypeOfSec",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 220,
-      minWidth: 150,
-      maxWidth: 290,
-    },
-    {
-      accessor: "CONFIRMED",
-      columnName: "Confirmerd",
-      sequence: 10,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 150,
-      maxWidth: 190,
-    },
-    {
-      accessor: "CM_RENEW",
-      columnName: "ConfirmerdStatus",
-      sequence: 10,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 150,
-      maxWidth: 190,
-    },
-  ],
-};
-
-export const insuranceAccountRetrievemetaData = {
-  form: {
-    name: "accountNumber",
-    label: "EnterParameters",
-    resetFieldOnUnmount: false,
-    validationRun: "onBlur",
-    submitAction: "home",
-    render: {
-      ordering: "auto",
-      renderType: "simple",
-      gridConfig: {
-        item: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-        container: {
-          direction: "row",
-          spacing: 1,
-        },
-      },
-    },
-    componentProps: {
-      textField: {
-        fullWidth: true,
-      },
-      _accountNumber: {
-        fullWidth: true,
-      },
-    },
-  },
-  fields: [
-    {
-      render: { componentType: "_accountNumber" },
-      branchCodeMetadata: {
-        GridProps: { xs: 12, sm: 12, md: 2.2, lg: 2.2, xl: 2.2 },
-        runPostValidationHookAlways: true,
-        render: {
-          componentType: "textField",
-        },
-        isReadOnly: true,
-      },
-      accountTypeMetadata: {
-        name: "ACCT_TYPE",
-        GridProps: { xs: 12, sm: 12, md: 3, lg: 3, xl: 3 },
-        isFieldFocused: true,
-      },
-      accountCodeMetadata: {
-        name: "ACCT_CD",
-        autoComplete: "off",
-        dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
-        postValidationSetCrossFieldValues: async (
-          field,
-          formState,
-          auth,
-          dependentFieldsValues
-        ) => {
-          if (
-            field.value &&
-            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            dependentFieldsValues?.["BRANCH_CD"]?.value
-          ) {
-            if (formState?.isSubmitting) return {};
-            let Apireq = {
-              COMP_CD: auth?.companyID,
-              ACCT_CD: utilFunction.getPadAccountNumber(
-                field?.value,
-                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-              ),
-              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-              SCREEN_REF: "RPT/70",
-            };
-            let postData = await GeneralAPI.getAccNoValidation(Apireq);
-
-            formState.setDataOnFieldChange("TAB_REQUEST", Apireq);
-
-            let btn99, returnVal;
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
-            for (let i = 0; i < postData?.MSG?.length; i++) {
-              if (postData?.MSG?.[i]?.O_STATUS === "999") {
-                formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
-                });
-                returnVal = "";
-              } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
-                formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-                if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
-                  });
-                }
-                returnVal = postData
-              } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
-                formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
-                  buttonNames: ["Yes", "No"],
-                });
-
-                btn99 = btnName;
-                if (btnName === "No") {
-                  returnVal = "";
-                }
-              } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
-                formState.setDataOnFieldChange("IS_VISIBLE", {
-                  IS_VISIBLE: true,
-                });
-                if (btn99 !== "No") {
-                  returnVal = postData
-                } else {
-                  returnVal = "";
-                }
-              }
-            }
-            btn99 = 0;
-            return {
-              ACCT_CD:
-                returnVal !== ""
-                  ? {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentFieldsValues?.ACCT_TYPE?.optionData
-                    ),
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  }
-                  : {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
-              ACCT_NM: {
-                value: returnVal?.ACCT_NM ?? "",
-              },
-              WIDTH_BAL: {
-                value: returnVal?.WIDTH_BAL ?? "",
-
-              },
-            };
-          } else {
-            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-            return {
-              ACCT_CD: {
-                value: "",
-              },
-              ACCT_NM: { value: "" },
-
-            };
-          }
-        },
-        fullWidth: true,
-        GridProps: { xs: 12, sm: 12, md: 3.3, lg: 3.3, xl: 3.3 },
-      },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "WIDTH_BAL",
-      label: "WithdrawBalance",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_NM",
-      label: "AccountName",
-      placeholder: "AccountName",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    },
-  ],
-};
