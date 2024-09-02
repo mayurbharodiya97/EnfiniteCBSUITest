@@ -5,19 +5,29 @@ import { format } from "date-fns/esm";
 import { useMutation } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { RetrievalParameterFormMetaData } from "./paySlipMetadata";
+import { RetrievalParameterFormMetaData } from "./RetriveGridMetadata";
 import * as API from "./api";
+import { enqueueSnackbar } from "notistack";
 
 export const DataRetrival = ({ closeDialog, open, onUpload }) => {
   const formRef = useRef(null);
   const { authState } = useContext(AuthContext);
 
-  const mutation = useMutation(API.getRetrievalDateWise, {
+  const mutation = useMutation(API.getPayslipCnfRetrieveData, {
     onSuccess: (data) => {
       onUpload(data);
       closeDialog();
     },
-    onError: () => { },
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      closeDialog();
+    },
   });
 
   const onSubmitHandler = (
@@ -29,18 +39,21 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
     endSubmit(true);
 
     const payload = {
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: authState?.user?.branchCode,
-      TRAN_CD: data?.DESCRIPTION,
+      ENT_COMP_CD: authState?.companyID,
+      ENT_BRANCH_CD: authState?.user?.branchCode,
       FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
       TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
-      USER_LEVEL: authState?.role,
-      GD_DATE: authState?.workingDate
+      GD_DATE: authState?.workingDate,
+      FLAG: "P",    
+      A_LANG:"en"  
     };
 
 
-    mutation.mutate(payload);
+    // mutation.mutate(payload);
+    onUpload(payload);
+    closeDialog();
   };
+ 
 
   return (
     <>
