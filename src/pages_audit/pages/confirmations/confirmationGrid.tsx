@@ -31,6 +31,8 @@ import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirma
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
 import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmationForm";
 import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confirmationForm";
+import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
+import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
 
 export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
@@ -113,6 +115,8 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = lienConfirmGridMetaData;
   } else if (screenFlag === "tempOdCFM") {
     gridMetaData = tempODConfirmGridMetaData;
+  }else if (screenFlag=== "insuranceCFM"){
+    gridMetaData = insuranceEntryConfirmGridMetaData;
   }
 
   return (
@@ -178,7 +182,12 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ) : (
+              ) : screenFlag === "insuranceCFM" ? (
+                <InsuranceConfirmationFormWrapper
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
+              ): (
                 <></>
               )
             }

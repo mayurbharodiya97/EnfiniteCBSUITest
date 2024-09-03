@@ -105,10 +105,17 @@ export const hypothication_metadata = {
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
             placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmHypoOp",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -141,6 +148,13 @@ export const hypothication_metadata = {
             _optionsKey: "ptsHypoOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -248,6 +262,13 @@ export const hypothication_metadata = {
             name: "PRIORITY_CD",
             label: "",
             isReadOnly: true,
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -461,6 +482,13 @@ export const hypothication_metadata = {
             label: "Interest",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
@@ -587,6 +615,13 @@ export const hypothication_metadata = {
             label: "Chq. Sign Autho",
             options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
             _optionsKey: "chqSignAuthoHypoOp", 
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -668,6 +703,13 @@ export const hypothication_metadata = {
             _optionsKey: "RECREHypoOp", 
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -680,6 +722,13 @@ export const hypothication_metadata = {
             _optionsKey: "businessHypoOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -725,6 +774,13 @@ export const hypothication_metadata = {
             // _optionsKey: "npaReasonTermLoanOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },        
     ],

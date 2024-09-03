@@ -41,6 +41,7 @@ import RelativeDtlTab from "./tabComponents/RelativeDtlTab";
 import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
+// import Document from "./tabComponents/DocumentTab2/Document";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
 import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
 import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
@@ -113,15 +114,16 @@ const AcctModal = ({ onClose, formmode, from }) => {
             CUSTOMER_ID?:string,
             BRANCH_CD: string, 
             REQUEST_CD:string, 
-            J_TYPE: string, 
             ACCT_TYPE: string, 
-            ACCT_CD: string
+            ACCT_CD: string,
+            SCREEN_REF: string,
           } = {
             BRANCH_CD: authState?.user?.branchCode ?? "",
             REQUEST_CD: reqCD,  
-            J_TYPE: "J   ",
             ACCT_TYPE: acctType,  
             ACCT_CD: acctCD,
+            SCREEN_REF: "MST/002",
+            COMP_CD: authState?.companyID ?? "",
           }
           if(Object.keys(payload)?.length > 1) {
             mutation.mutate(payload)
@@ -315,8 +317,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
               height: "30px",
               minWidth: "30px !important",
               display:
-                AcctMSTState?.isFreshEntryctx ||
-                AcctMSTState?.fromctx === "new-draft"
+                AcctMSTState?.isFreshEntryctx
                   ? "none"
                   : "flex",
               alignItems: "center",
@@ -349,13 +350,22 @@ const AcctModal = ({ onClose, formmode, from }) => {
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               } */}
-            {AcctMSTState?.formmodectx === "view" && (
+            {/* {AcctMSTState?.formmodectx === "view" && (
               <Chip
                 style={{ color: "white", marginLeft: "8px" }}
                 variant="outlined"
                 color="primary"
                 size="small"
                 label={`view mode`}
+              />
+            )} */}
+            {Boolean(AcctMSTState?.formmodectx) && (
+              <Chip
+                style={{ color: "white", marginLeft: "8px" }}
+                variant="outlined"
+                color="primary"
+                size="small"
+                label={`${AcctMSTState?.formmodectx} mode`}
               />
             )}
           </Typography>
@@ -380,8 +390,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           xs="auto"
           sx={{
             display:
-              AcctMSTState?.isFreshEntryctx ||
-              AcctMSTState?.fromctx === "new-draft"
+              AcctMSTState?.isFreshEntryctx
                 ? "none"
                 : "flex",
             flexDirection: "column",
@@ -451,8 +460,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
         >
           {AcctMSTState?.tabsApiResctx &&
             AcctMSTState?.tabsApiResctx.length > 0 &&
-            (AcctMSTState?.isFreshEntryctx ||
-              AcctMSTState?.fromctx === "new-draft") && <TabStepper />}
+            AcctMSTState?.isFreshEntryctx && <TabStepper />}
           {mutation.isError ? (
             <Alert
               severity={mutation.error?.severity ?? "error"}

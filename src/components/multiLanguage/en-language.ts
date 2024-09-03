@@ -340,9 +340,8 @@ export const en_language_data = {
   PinCode: "Pin Code",
   FROMLIMIT: "FROM LIMIT",
   TOLIMIT: "TO LIMIT",
-  AreaNameisRequired:"Area Name is Required",
- 
-  
+  AreaNameisRequired: "Area Name is Required",
+
   //
   Delete: "Remove",
   Loading: "Loading..",
@@ -1622,6 +1621,19 @@ export const en_language_data = {
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
+  Success: "Success",
+  DataUpdatedSuccessfully: "Data Updated Successfully",
+
+  // GST Outward Entry
+  TranCd: "Tran Cd",
+  taxAmount:"Tax Amount",
+  taxValue: "Taxable Value",
+  Mode:"Mode",
+  Gstin:"GSTIN",
+  ConfirmTransactionRestrictionMessage:"You can not confirm your own transaction.",
+  ConfirmRightsRestrictionMessage:"You have no rights to confirm this transaction.",
+  ConfirmRecord:"Are you sure to confirm this record?",
+  RejectDeleteRecord:"Are you sure to reject/delete this record?",
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",
@@ -1642,6 +1654,69 @@ export const en_language_data = {
   enteredBranch: "Entered Branch",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+
+  // str ac level branch entry
+
+  AsperExtraction: "As per Extraction",
+  Suspicious: "Suspicious",
+  WhiteListed: "White Listed",
+  STRHistory: "STR History",
+  SuspiciousStatus: "Suspicious Status",
+  SuspiciousReasons: "Suspicious Reasons",
+  InvestigationDetail: "Investigation Detail",
+  EditDetail: "Edit-Detail",
+  GroundOfSuspicion: "Ground Of Suspicion",
+  TransactionDetail: "Transaction Detail",
+  PanNo: "Pan no.",
+  Refresh: "Refresh",
+  AtleastOneRecordMustMarkedSuspicious:
+    "Atleast one record must be marked suspicious",
+  AreYouSureRefreshTransactionDetails:
+    "Are You Sure to refresh transaction details?",
+  TRNDate: "TRN. Date",
+  VNo: "V. No.",
+
+  // insurance entry screen
+
+  InsuranceView: "Insurance View",
+  InsuranceDetail: "Insurance Detail",
+  InsuranceEntry: "Insurance Entry",
+  InsuranceDate: "Insurance Date",
+  CoverNote: "Cover Note",
+  PleaseEnterCoverNote: "Please enter Cover Note.",
+  Company: "Company",
+  PleaseEnterInsuranceCompany: "Please enter Insurance Company",
+  InsuranceType: "Insurance Type",
+  PolicyNo: "Policy No.",
+  PleaseEnterPolicyNo: "Please enter Policy No",
+  InsuranceAmount: "Insurance Amount",
+  PleaseEnterInsuranceAmount: "Please enter Insurance Amount",
+  NetPremium: "Net Premium",
+  GSTShouldLessThanNetPremiumAmount:
+    "GST should be less than Net Premium Amount",
+  NetPremiumAmountCanGreaterThanInsuranceAmount:
+    "Net Premium amount can not greater than insurance amount",
+  TotalPremium: "Total Premium",
+  Proposer1: "Proposer1",
+  Proposer2: "Proposer2",
+  PleaseEnterSecurityType: "Please enter Security Type",
+  PleaseEnterSecurity: "Please Enter Security",
+  PleaseEnterNetPremiumAmount: "Please enter Net Premium Amount",
+  SecurityAlreadyEnteredLine: "Security is Already entered at Line",
+  LedgerNo: "Ledger No.",
+  CurrentBalance: "Current Balance",
+  InactiveDate: "Inactive Date",
+  Mode: "Mode",
+  TypeOfSec: "Type Of Security",
+  Confirmerd: "Confirmerd",
+  ConfirmerdStatus: "Confirmerd Status",
+  EnterRemovalRemarksForInsuranceMaster:
+    "Enter Removal Remarks For Insurance Master",
+  DoYouWantAllowTheTransaction: "Do You Want to allow the transaction ?",
+  EnterRemovalRemarksForInsuranceConfirmation:
+    "Enter Removal Remarks For Insurance Confirmation",
+  InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+
   //standing instruction entry
   CommisionType:"Commision Type",
   NoofRecords:"No. of Records",
@@ -1718,6 +1793,38 @@ InstallmentTypeisrequired:"Installment Type is required",
 InstAmount:"Installment Amount",
 RunningIntAmt:"Running Int. Amt.",
 
+  CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
+  DataNotFound:"Data Not Found",
+  TotalNoofActiveSI:"Total No. of Active SI",
+  EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+
+  //standing instruction Confirmation
+  SInotConfirmByYou:"You can not confirm SI entered by you.",
+  confirmSI:"Are you sure to confirm SI?",
+
+  //Recurring Interest Calculator
+  Categoryisrequired:"Category is required",
+  IntType:"InterestType",
+  InstallmentType:"Installment Type",
+  InstallmentTypeisrequired:"Installment Type is required",
+  InstAmount:"Installment Amount",
+  RunningIntAmt:"Running Int. Amt.",
+  //EMI Calculator
+  InterestFunded:"Interest Funded",
+  LoanAmount:"Loan Amount",
+  Calculate:"Calculate",
+  DisburseDate:"Disburse Date",
+  InstStartDate:"Inst. Start Date",
+  FromInst:"From Inst.",
+  ToInst:"To Inst.",
+  NoofInstallment:"No.of Installment",
+  InstallmentDetails:"Installment Details",
+  InterestRateisrequired:"Interest Rate is Required",
+  LoanAmountisrequired:"Loan Amount is required",
+  NoofInstallmentisrequired:"No. of Installment is required",
+  InstallmentPeriodisrequired:"Installment Period is required",
+  DisburseAmountisrequired:"Disburse Amount is required",
+ 
   //fd interest calculator
   normalPremature: "Normal/Premature",
   asonDate: "As on Date",
@@ -1806,5 +1913,5 @@ RunningIntAmt:"Running Int. Amt.",
   BeneficiaryAccountNumber:"Beneficiary Account Number",
   BeneficiaryAccountName:"Beneficiary Account Name",
   BeneficiaryAddress:"Beneficiary Address",
-  maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date"
+  maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
 };

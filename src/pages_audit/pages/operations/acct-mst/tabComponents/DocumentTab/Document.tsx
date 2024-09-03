@@ -92,6 +92,7 @@ const Document = () => {
         if (data?.name === "add") {
           setFormMode("new");
           setIsOpen(true);
+          // currRowRef.current = {}; //should be clear if there is no row selcted
         } else if (data?.name === "edit-details") {
           currRowRef.current = data?.rows?.[0]?.data ?? {};
           setFormMode("view");

@@ -19,6 +19,7 @@ import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN3
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
+import TRN001Provider from "./pages/operations/DailyTransaction/TRN001/Trn001Reducer";
 // import { AccDetailContext } from "./auth";
 
 export const PagesAudit = (props, { columns }) => {
@@ -84,10 +85,21 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                <Route path="operation/daily_tran_F1" element={<Trn001 />} />
+                <Route
+                  path="operation/daily_tran_F1"
+                  element={
+                    <TRN001Provider>
+                      <Trn001 />
+                    </TRN001Provider>
+                  }
+                />
                 <Route
                   path="operation/cnf_daily_tran_F2"
-                  element={<Trn002 />}
+                  element={
+                    <TRN001Provider>
+                      <Trn002 />
+                    </TRN001Provider>
+                  }
                 />
 
                 {/* <Route

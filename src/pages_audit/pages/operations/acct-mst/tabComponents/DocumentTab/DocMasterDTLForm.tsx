@@ -42,10 +42,6 @@ export const DocMasterDTLForm = ({
     const myRef = useRef<any>(null);
     const fileRowRef = useRef<any>(null);
 
-    const mutationRet: any = useMutation(API.getDocumentImagesList, {
-        onSuccess: (data) => {
-        },
-    });
 
     const AddNewRow = async () => {
         myRef.current?.addNewRow(false);
@@ -89,8 +85,20 @@ export const DocMasterDTLForm = ({
             } else {
               newData["SUBMIT"] = data.SUBMIT;
             }
+            if(typeof data.ACTIVE === "boolean") {
+              if(Boolean(data.ACTIVE)) {
+                newData["ACTIVE"] = "Y";
+              } else {
+                newData["ACTIVE"] = "N";
+              }
+            } else {
+              newData["ACTIVE"] = data.ACTIVE;
+            }
             if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
               newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
+            }
+            if(Object.hasOwn(data._OLDROWVALUE, "ACTIVE") && typeof data._OLDROWVALUE?.ACTIVE !== "undefined") {
+              newData._OLDROWVALUE.ACTIVE = Boolean(data._OLDROWVALUE?.ACTIVE) ? "Y" : "N";
             }
             newData["REQ_CD"] = reqCD ?? "";
             console.log(data, "dtaa on sibmitg", newData)
@@ -99,15 +107,15 @@ export const DocMasterDTLForm = ({
             if(AcctMSTState?.isFreshEntryctx) {
                 let imgGridData = await myRef?.current?.GetGirdData?.();
                 imgGridData = imgGridData?.map(imageDoc => {
-                    const {LINE_CD, ...others} = imageDoc;
-                    return {...others};
+                    // const {LINE_CD, ...others} = imageDoc;
+                    return {...imageDoc};
                 })
                 let masterFormData = await myRef?.current?.getFieldData?.();
                 newData.docImages = [...imgGridData];
                 if(Boolean(newData?.DETAILS_DATA?.isNewRow) && newData?.DETAILS_DATA?.isNewRow?.length>0) {
                     let rmvLineCd = newData?.DETAILS_DATA?.isNewRow?.map(row => {
-                        const {LINE_CD, ...others} = row;
-                        return {...others};
+                        // const {LINE_CD, ...others} = row;
+                        return {...row};
                     })
                     newData["DETAILS_DATA"]["isNewRow"] = [...rmvLineCd];
                 }
@@ -182,8 +190,8 @@ export const DocMasterDTLForm = ({
                 console.log("wekfhiweuhfiwuehf",imgGridData)
                 imgGridData = imgGridData?.map(imageDoc => {
                     if(Boolean(imageDoc?._isNewRow)) {
-                        const {LINE_CD, ...others} = imageDoc;
-                        return {...others};
+                        // const {LINE_CD, ...others} = imageDoc;
+                        return {...imageDoc};
                     } else {
                         return imageDoc;
                     } 
@@ -255,23 +263,26 @@ export const DocMasterDTLForm = ({
         }
       }
 
-      useEffect(() => {
-          console.log("not new formmode",currentData)
-        if (!Boolean(AcctMSTState?.isFreshEntryctx) && formMode !== "new" && !Boolean(currentData?.current?._isNewRow)) {
-          console.log("not new formmode2",currentData)
-          mutationRet.mutate({
-            TRAN_CD: currentData?.current?.TRAN_CD,
-            SR_CD: currentData?.current?.SR_CD,
-            REQ_CD: `${AcctMSTState?.req_cd_ctx}` ?? "",
-          });
-        //   mysubdtlRef.current = {
-        //     ...mysubdtlRef.current,
-        //     TRAN_CD: rows[0]?.data?.TRAN_CD,
-        //     SR_CD: rows[0]?.data?.SR_CD,
-        //     REQ_CD: reqCD,
-        //   };
-        }
-      }, [])
+    //   useEffect(() => {
+    //       console.log("not new formmode",currentData)
+    //     //   if row is not fresh, its retrieved, and its opened in view mode.
+    //     // api is getting called here, which is not going to be
+    //     if (!Boolean(AcctMSTState?.isFreshEntryctx) && formMode !== "new" && !Boolean(currentData?.current?._isNewRow)) {
+    //         // will not execute, entry will be fresh only all the time.
+    //       console.log("not new formmode2",currentData)
+    //       mutationRet.mutate({
+    //         TRAN_CD: currentData?.current?.TRAN_CD,
+    //         SR_CD: currentData?.current?.SR_CD,
+    //             REQ_CD: `${AcctMSTState?.req_cd_ctx}` ?? "",
+    //       });
+    //     //   mysubdtlRef.current = {
+    //     //     ...mysubdtlRef.current,
+    //     //     TRAN_CD: rows[0]?.data?.TRAN_CD,
+    //     //     SR_CD: rows[0]?.data?.SR_CD,
+    //     //     REQ_CD: reqCD,
+    //     //   };
+    //     }
+    //   }, [])
 
     return (
         <Fragment>
@@ -290,66 +301,23 @@ export const DocMasterDTLForm = ({
                 paperScrollBody: classes.topPaperScrollBody,
                 }}
             >
-                {
-                    AcctMSTState?.isFreshEntryctx
-                    && (mutationRet.isLoading ? (
-                        <div style={{ height: 100, paddingTop: 10 }}>
-                            <div style={{ padding: 10 }}>
-                            <LoaderPaperComponent />
-                            </div>
-                            {typeof ClosedEventCall === "function" ? (
-                            <div style={{ position: "absolute", right: 0, top: 0 }}>
-                                <IconButton onClick={ClosedEventCall}>
-                                <HighlightOffOutlinedIcon />
-                                </IconButton>
-                            </div>
-                            ) : null}
-                        </div>
-                    ) : mutationRet.isError && (
-                        <>
-                            <div
-                            style={{
-                                paddingRight: "10px",
-                                paddingLeft: "10px",
-                                height: 100,
-                                paddingTop: 10,
-                            }}
-                            >
-                            <AppBar position="relative" color="primary">
-                                <Alert
-                                severity="error"
-                                errorMsg={mutationRet.error?.error_msg ?? "Unknow Error"}
-                                errorDetail={mutationRet.error?.error_detail ?? ""}
-                                color="error"
-                                />
-                                {typeof ClosedEventCall === "function" ? (
-                                <div style={{ position: "absolute", right: 0, top: 0 }}>
-                                    <IconButton onClick={ClosedEventCall}>
-                                    <HighlightOffOutlinedIcon />
-                                    </IconButton>
-                                </div>
-                                ) : null}
-                            </AppBar>
-                            </div>
-                        </>
-                    ))
-                }
                 {formMode === "view" ? (
                 <MasterDetailsForm
-                    key={"extDocumentMasterDTL-" + formMode + currentData?.current + mutationRet.data}
+                    key={"extDocumentMasterDTL-" + formMode + currentData?.current}
                     metaData={DocMasterDTLMetadata as MasterDetailsMetaData}
                     ref={myRef}
                     initialData={{
                     _isNewRow: false,
+                    DOC_TYPE: "ACCT",
                     ...(currentData?.current ?? {}),
                     DETAILS_DATA: AcctMSTState?.isFreshEntryctx 
                     ? currentData?.current?.DETAILS_DATA?.isNewRow ?? currentData?.current?.docImages
                     // ? currentData?.current?.docImages ?? []
                     // : [] 
-                    : Boolean(currentData?.current?._isNewRow) ? currentData?.current?.docImages ?? [] : mutationRet.data ?? [],
+                    : Boolean(currentData?.current?._isNewRow) ? currentData?.current?.docImages ?? [] : [],
                     }}
                     displayMode={"view"}
-                    isLoading={(AcctMSTState?.isFreshEntryctx && mutationRet?.isLoading) ? true : false }
+                    isLoading={false}
                     onSubmitData={onSubmitHandler}
                     isNewRow={true}
                     containerstyle={{
@@ -386,21 +354,22 @@ export const DocMasterDTLForm = ({
                 ) :formMode === "edit" ? (
                     <>
                         <MasterDetailsForm
-                        key={"extDocumentMasterDTL-" + formMode + currentData?.current + mutationRet.data}
+                        key={"extDocumentMasterDTL-" + formMode + currentData?.current}
                         metaData={DocMasterDTLMetadata as MasterDetailsMetaData}
                         ref={myRef}
                         initialData={{
                             _isNewRow: AcctMSTState?.isFreshEntryctx ? true : false,
+                            DOC_TYPE: "ACCT",
                             ...(currentData?.current ?? {}),
                             DETAILS_DATA: AcctMSTState?.isFreshEntryctx 
                             ? currentData?.current?.DETAILS_DATA?.isNewRow ?? currentData?.current?.docImages
                             // ? currentData?.current?.docImages ?? [] 
                             // : [],
                             // : mutationRet.data ?? [],
-                            : Boolean(currentData?.current?._isNewRow) ? currentData?.current?.docImages ?? [] : mutationRet.data ?? [],
+                            : Boolean(currentData?.current?._isNewRow) ? currentData?.current?.docImages ?? [] : [],
                         }}
                         displayMode={formMode}
-                        isLoading={(AcctMSTState?.isFreshEntryctx && mutationRet?.isLoading) ? true : false }
+                        isLoading={false}
                         onSubmitData={onSubmitHandler}
                         // isNewRow={ckycState?.isFreshEntryctx ? true : false}
                         isNewRow={
@@ -487,6 +456,7 @@ export const DocMasterDTLForm = ({
                         ref={myRef}
                         initialData={{
                             _isNewRow: true,
+                            DOC_TYPE: "ACCT",
                             DETAILS_DATA: [],
                         }}
                         // initialData={{
@@ -581,7 +551,7 @@ export const DocMasterDTLForm = ({
                 open={isFileViewOpen}
                 setOpen={setIsFileViewOpen}
                 detailsDataRef={fileRowRef.current}
-                filesGridData={mutationRet.data || []}
+                filesGridData={[]}
                 // mainDocRow={mysubdtlRef.current}
             />
             ) : null}

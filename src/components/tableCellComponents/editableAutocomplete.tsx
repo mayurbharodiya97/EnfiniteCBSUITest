@@ -1,5 +1,5 @@
 import { AutoCompleteGrid } from "components/common/autocomplete/autocompleteGrid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
 import { FormHelperText } from "@mui/material";
 import { t } from "i18next";
@@ -9,7 +9,7 @@ export const EditableAutocomplete = (props) => {
     value: initialValue,
     rows,
     row: { index, original },
-    column: { id, options, validation, _optionsKey, disableCachingOptions },
+    column: { id, options, validation, _optionsKey, disableCachingOptions, isReadOnly, __EDIT__ },
     updateGridData,
     gridProps,
     hiddenFlag,
@@ -27,6 +27,15 @@ export const EditableAutocomplete = (props) => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
 
+  const isReadOnlyLocal = useMemo(() => {
+    if (isReadOnly) {
+      return true;
+    }
+    if (original?._isNewRow === false && __EDIT__?.isReadOnly === true) {
+      return true;
+    }
+    return false;
+  }, [isReadOnly, original?._isNewRow, __EDIT__]);
   const onChange = (value) => {
     setValue(value);
   };
@@ -62,6 +71,7 @@ export const EditableAutocomplete = (props) => {
         disableCaching={disableCachingOptions}
         showCheckbox={false}
         renderInput={() => null}
+        readOnly={isReadOnlyLocal}
       />
       {Boolean(externalTouched) && Boolean(externalError) ? (
         <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>

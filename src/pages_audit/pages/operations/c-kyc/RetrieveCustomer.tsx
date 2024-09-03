@@ -320,6 +320,7 @@ const RetrieveCustomer = () => {
               open={true}
               onClose={() => navigate(".")}
               viewMode={formMode ?? "edit"}
+              from={"ckyc-retrieve"}
             />
             // <ExtDocument
             //   open={true}

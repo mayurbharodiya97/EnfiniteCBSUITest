@@ -202,6 +202,7 @@ export const RecurringPaymentTransferFormMetaData = {
           branchCodeMetadata: {
             name: "DC_BRANCH_CD",
             fullWidth: true,
+            isFieldFocused: true,
             runPostValidationHookAlways: true,
             validationRun: "onChange",
             postValidationSetCrossFieldValues: async (
@@ -225,9 +226,9 @@ export const RecurringPaymentTransferFormMetaData = {
             disableCaching: true,
             options: (...arg) => {
               return GeneralAPI.get_Account_Type({
-                COMP_CD: arg?.[3]?.companyID,
-                BRANCH_CD: arg?.[2]?.["RECPAYTRANS.DC_BRANCH_CD"]?.value,
-                USER_NAME: arg?.[3]?.user?.id,
+                COMP_CD: arg?.[3]?.companyID ?? "",
+                BRANCH_CD: arg?.[2]?.["RECPAYTRANS.DC_BRANCH_CD"]?.value ?? "",
+                USER_NAME: arg?.[3]?.user?.id ?? "",
                 DOC_CD: "RECCRTYPE",
               });
             },
@@ -261,7 +262,6 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
-
               if (
                 currentField?.value &&
                 dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value &&
@@ -270,10 +270,12 @@ export const RecurringPaymentTransferFormMetaData = {
                 formState.handleDisableButton(true);
                 const reqParameters = {
                   BRANCH_CD:
-                    dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value,
-                  COMP_CD: authState?.companyID,
+                    dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]
+                      ?.value ?? "",
+                  COMP_CD: authState?.companyID ?? "",
                   ACCT_TYPE:
-                    dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]?.value,
+                    dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
+                      ?.value ?? "",
                   ACCT_CD: utilFunction.getPadAccountNumber(
                     currentField?.value,
                     dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
@@ -336,7 +338,8 @@ export const RecurringPaymentTransferFormMetaData = {
                       ? {
                           value: utilFunction.getPadAccountNumber(
                             currentField?.value,
-                            dependentFieldsValues?.DC_ACCT_TYPE?.optionData
+                            dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
+                              ?.optionData
                           ),
                           isFieldFocused: false,
                           ignoreUpdate: true,

@@ -157,6 +157,7 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
             },
           ],
         },
+        isReadOnly: true,
       },
       // {
       //   accessor: "DB_COLUMN",

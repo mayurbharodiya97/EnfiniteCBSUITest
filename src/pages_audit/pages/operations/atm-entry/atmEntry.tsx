@@ -58,8 +58,8 @@ const AtmEntryCustom = ({ parameter }) => {
       ? atmentrymetadata
       : {};
 
-  const { isError, error, isFetching, isLoading, refetch } = useQuery<any, any>(
-    ["getNotificationData"],
+  const cardDetails: any = useMutation(
+    "getATMcardDetails",
     () =>
       API.getATMcardDetails({
         A_COMP_CD: authState?.companyID,
@@ -67,7 +67,6 @@ const AtmEntryCustom = ({ parameter }) => {
         A_TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
       }),
     {
-      enabled: !!retrieveData?.[currentIndex]?.TRAN_CD,
       onSuccess(data) {
         let newData;
         if (Array.isArray(data) && data?.length > 0) {
@@ -84,7 +83,6 @@ const AtmEntryCustom = ({ parameter }) => {
   );
 
   const changeIndex = (direction) => {
-    refetch();
     setCurrentIndex((prevIndex) => {
       if (direction === "next") {
         return prevIndex === retrieveData.length - 1 ? 0 : prevIndex + 1;
@@ -97,6 +95,7 @@ const AtmEntryCustom = ({ parameter }) => {
   useEffect(() => {
     if (retrieveData?.length) {
       setIsData((old) => ({ ...old, cardData: retrieveData?.[currentIndex] }));
+      cardDetails.mutate();
     }
   }, [retrieveData, currentIndex]);
 
@@ -251,12 +250,14 @@ const AtmEntryCustom = ({ parameter }) => {
           )}
         </FormWrapper>
         <Grid px={"10px"} container>
-          {isError && (
+          {cardDetails?.isError && (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={error?.error_msg ?? t("UnknownErrorOccured")}
-                errorDetail={error?.error_detail ?? ""}
+                errorMsg={
+                  cardDetails?.error?.error_msg ?? t("UnknownErrorOccured")
+                }
+                errorDetail={cardDetails?.error?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
@@ -265,13 +266,16 @@ const AtmEntryCustom = ({ parameter }) => {
             key={`atmGridData` + isData?.gridData}
             finalMetaData={atmGridMetaData as GridMetaDataType}
             data={isData?.gridData ?? []}
-            loading={isLoading || isFetching}
+            loading={cardDetails?.isLoading || cardDetails?.isFetching}
             setData={() => null}
             actions={actions}
             setAction={(data) => {
               if (data?.name === "card-details") {
                 navigate(data?.name, {
-                  state: data?.rows,
+                  state: {
+                    rows: data?.rows,
+                    retrieveData: retrieveData?.[currentIndex],
+                  },
                 });
               }
             }}

@@ -61,11 +61,18 @@ export const shareNominal_tab_metadata = {
             },
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmShareOp",
+            placeholder: "",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -142,6 +149,13 @@ export const shareNominal_tab_metadata = {
             },
             name: "SANCTION_DT",
             label: "Sanction/Meeting Date",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -153,6 +167,13 @@ export const shareNominal_tab_metadata = {
             type: "text",
             FormatProps: {
               allowNegative: true,
+            },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },
@@ -176,6 +197,13 @@ export const shareNominal_tab_metadata = {
             // FormatProps: {
             //   allowNegative: true,
             // },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },
         {
@@ -229,6 +257,13 @@ export const shareNominal_tab_metadata = {
             ], //api 
             // _optionsKey: "npaReasonTermLoanOp",
             placeholder: "",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },

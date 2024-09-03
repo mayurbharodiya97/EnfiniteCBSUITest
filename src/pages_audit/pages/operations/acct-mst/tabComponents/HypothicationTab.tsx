@@ -31,11 +31,11 @@ const HypothicationTab = () => {
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
-        IsNewRow: true,
+        IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
         COMP_CD: "",
-        BRANCH_CD: "",
+        // BRANCH_CD: "",
         REQ_FLAG: "",
-        REQ_CD: "",
+        // REQ_CD: "",
         // SR_CD: "",
       };
       newData["MAIN_DETAIL"] = {

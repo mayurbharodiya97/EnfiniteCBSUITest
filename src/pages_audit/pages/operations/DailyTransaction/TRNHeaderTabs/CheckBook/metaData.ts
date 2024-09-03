@@ -83,8 +83,8 @@ export const JointDetailIssueEntry = {
       placeholder: "EnterAccountType",
       type: "text",
       required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
+      options: GeneralAPI.get_Account_Type,
+      _optionsKey: "get_Account_Type",
       GridProps: {
         xs: 12,
         md: 3,

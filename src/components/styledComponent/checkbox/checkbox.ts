@@ -3,8 +3,8 @@ import { withStyles } from "@mui/styles";
 
 const StyledCheckbox = withStyles({
   root: {
-    color: "#0063A3",
-    alignSelf: "flex-start",
+    color: "var(--theme-color1)",
+    alignSelf: "center",
     padding: "0 9px",
     "&$checked": {
       color: "var(--theme-color1)", // "#26A456",

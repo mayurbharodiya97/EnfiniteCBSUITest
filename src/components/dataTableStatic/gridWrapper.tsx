@@ -135,77 +135,86 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     const myDefaultGroupBy = useMemo(() => defaultGroupBy, []);
     //console.log("data", data);
     const updateGridData = useCallback(
-      (rowIndex, columnID, value, touched, error) => {
+      (rowIndex, columnID, value, touched, error, updateFlag = "S") => {
         let displaySeqNumber = 0;
         setData((old) =>
           old.map((row, index) => {
-            if (index === rowIndex) {
-              let isChanged = true;
-              let isOldData = "";
-              //console.log(old[rowIndex]?.[columnID], value);
-              if (
-                Boolean(old[rowIndex]?.[columnID]) &&
-                Boolean(value) &&
-                old[rowIndex][columnID] === value
-              ) {
-                isChanged = false;
-              } else {
-                isChanged = Boolean(value)
-                  ? true
-                  : Boolean(old?.[rowIndex]?.["_isTouchedCol"]?.[columnID])
-                  ? true
-                  : Boolean(old[rowIndex]?.[columnID]) && !Boolean(value)
-                  ? true
-                  : false;
-                //console.log(old?.[rowIndex]?.["_isTouchedCol"], isChanged);
+            const isUpdateAllRows = updateFlag === "A";
+            const shouldUpdateRow = isUpdateAllRows || index === rowIndex;
+
+            if (!shouldUpdateRow) {
+              if (!Boolean(row?._hidden)) {
+                displaySeqNumber += 1;
               }
-              if (isChanged) {
-                let oldValue = old?.[rowIndex]?.["_oldData"]?.[columnID];
-                if (typeof oldValue === "undefined" || oldValue === null) {
-                  isOldData = old?.[rowIndex]?.[columnID] ?? "";
-                } else {
-                  isOldData = oldValue;
-                }
-              } else {
-                isOldData = old?.[rowIndex]?.["_oldData"]?.[columnID] ?? "";
-              }
-              //console.log(isChanged, isOldData);
-              let returnData = {
-                ...old[rowIndex],
-                [columnID]: value,
-                _touched: {
-                  ...old?.[rowIndex]?.["_touched"],
-                  [columnID]: touched,
-                },
-                _error: {
-                  ...old?.[rowIndex]?.["_error"],
-                  [columnID]: error,
-                },
-                _isTouchedCol: {
-                  ...old?.[rowIndex]?.["_isTouchedCol"],
-                  [columnID]: isChanged,
-                },
-                _oldData: {
-                  ...old?.[rowIndex]?.["_oldData"],
-                },
-              };
-              if (isChanged) {
-                returnData = {
-                  ...returnData,
-                  _oldData: { ...returnData._oldData, [columnID]: isOldData },
-                };
-              }
-              if (!(columnID === "_hidden")) {
-                displaySeqNumber = displaySeqNumber + 1;
-              }
-              return { ...returnData, _displaySequence: displaySeqNumber };
+              return { ...row, _displaySequence: displaySeqNumber };
             }
-            if (!Boolean(row?._hidden)) {
+
+            let isChanged = true;
+            let isOldData = "";
+            if (
+              Boolean(old?.[index]?.["_oldData"]?.[columnID]) &&
+              Boolean(value) &&
+              old?.[index]?.["_oldData"]?.[columnID] === value
+            ) {
+              isChanged = false;
+            } else {
+              isChanged = Boolean(
+                old?.[index]?.["_isTouchedCol"]?.[columnID]
+              )
+                ? true
+                : Boolean(old[index]?.[columnID]) && !Boolean(value)
+                  ? true
+                  : Boolean(old[index]?.[columnID]) &&
+                    Boolean(value) &&
+                    old[index]?.[columnID] != value
+                    ? true
+                    : !Boolean(old[index]?.[columnID]) && Boolean(value)
+                      ? true
+                      : false;
+
+            }
+            if (isChanged) {
+              let oldValue = old?.[index]?.["_oldData"]?.[columnID];
+              if (typeof oldValue === "undefined" || oldValue === null) {
+                isOldData = old?.[index]?.[columnID] ?? "";
+              } else {
+                isOldData = oldValue;
+              }
+            } else {
+              isOldData = old?.[index]?.["_oldData"]?.[columnID] ?? "";
+            }
+            let returnData = {
+              ...old[index],
+              [columnID]: value,
+              _touched: {
+                ...old?.[index]?.["_touched"],
+                [columnID]: touched,
+              },
+              _error: {
+                ...old?.[index]?.["_error"],
+                [columnID]: error,
+              },
+              _isTouchedCol: {
+                ...old?.[index]?.["_isTouchedCol"],
+                [columnID]: isChanged,
+              },
+              _oldData: {
+                ...old?.[index]?.["_oldData"],
+              },
+            };
+            if (isChanged) {
+              returnData = {
+                ...returnData,
+                _oldData: { ...returnData._oldData, [columnID]: isOldData },
+              };
+            }
+            if (!(columnID === "_hidden")) {
               displaySeqNumber = displaySeqNumber + 1;
             }
-            return { ...row, _displaySequence: displaySeqNumber };
+            return { ...returnData, _displaySequence: displaySeqNumber };
           })
         );
+
       },
       [setData]
     );

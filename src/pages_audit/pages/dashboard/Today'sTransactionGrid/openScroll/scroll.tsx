@@ -56,7 +56,7 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
           SCROLL1,
         }}
         dataTransformer={(data) => {
-          setScrollData(data);
+          if (data?.length) setScrollData(data);
           return data;
         }}
       />

@@ -76,7 +76,7 @@ const MobileRegTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.MOBILE_REG[i], formFields)
-          return {...formData};
+          return {...formData, IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false};
         })
         newData["MOBILE_REG_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
