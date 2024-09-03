@@ -7,9 +7,12 @@ import { useLocation } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
 
 export const CardDetails = ({ navigate, setIsData, parameter }) => {
-  const { state: rows }: any = useLocation();
+  const {
+    state: { rows, retrieveData },
+  }: any = useLocation();
   const [idNumber, setIdNumber] = useState(1);
   const { MessageBox } = usePopupContext();
+  console.log("<<<rrr", rows, retrieveData);
 
   return (
     <Dialog
@@ -25,14 +28,24 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
       <FormWrapper
         key={"atm-card-details"}
         metaData={CardDetailsMetaData as MetaDataType}
-        initialValues={
-          rows?.[0]?.data ?? {
+        initialValues={rows?.[0]?.data ?? {}}
+        formState={{
+          MessageBox: MessageBox,
+          setIsData: setIsData,
+          reqData: {
             PARA_602: parameter?.PARA_602,
             PARA_946: parameter?.PARA_946,
             PARA_200: parameter?.PARA_200,
-          }
-        }
-        formState={{ MessageBox: MessageBox, setIsData: setIsData }}
+            PARA_320: parameter?.PARA_320,
+            OLD_STATUS: rows?.[0]?.data?.OLD_STATUS,
+            CONFIRMED: rows?.[0]?.data?.CONFIRMED,
+            ENTERED_BRANCH_CD: retrieveData?.ENTERED_BRANCH_CD,
+            ENTERED_COMP_CD: retrieveData?.ENTERED_COMP_CD,
+            LAST_MODIFIED_DATE: retrieveData?.LAST_MODIFIED_DATE,
+            ENTERED_DATE: retrieveData?.ENTERED_DATE,
+            ISSUE_DT: retrieveData?.ISSUE_DT,
+          },
+        }}
         onSubmitHandler={(data: any, displayData, endSubmit) => {
           // @ts-ignore
           endSubmit(true);

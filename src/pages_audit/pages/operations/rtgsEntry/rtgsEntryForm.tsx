@@ -34,6 +34,7 @@ import {
   IconButton,
   Collapse,
   Dialog,
+  CircularProgress,
 } from "@mui/material";
 import { SubmitFnType } from "packages/form";
 import { ActionTypes } from "components/dataTable";
@@ -141,7 +142,7 @@ const RtgsEntryForm: FC<{}> = () => {
       }));
     }
   }, []);
-  
+
   const getIfscBankGridData: any = useMutation(API.getIfscBankGridData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -522,6 +523,11 @@ const RtgsEntryForm: FC<{}> = () => {
                             let event: any = { preventDefault: () => { } };
                             myBenFormRef?.current?.handleSubmit(event, "FINAL");
                           }}
+                          endIcon={
+                            validateRtgsDetail?.isLoading ? (
+                              <CircularProgress size={20} />
+                            ) : null
+                          }
                         >
                           {t("Save")}
                         </GradientButton>
@@ -648,6 +654,11 @@ const RtgsEntryForm: FC<{}> = () => {
                             let event: any = { preventDefault: () => { } };
                             myBenFormRef?.current?.handleSubmit(event, "FINAL");
                           }}
+                          endIcon={
+                            validateRtgsDetail?.isLoading ? (
+                              <CircularProgress size={20} />
+                            ) : null
+                          }
                         >
                           {t("Save")}
                         </GradientButton>
@@ -1066,6 +1077,12 @@ const RtgsEntryForm: FC<{}> = () => {
                     }));
                   }}
                   isBenAuditTrailData={formData}
+                  isRefresh={() => {
+                    setState((old) => ({
+                      ...old,
+                      beneficiaryDtlRefresh: old.beneficiaryDtlRefresh + 1,
+                    }))
+                  }}
                 />
               ) : null}
               {isOpenRetrieve ? (
@@ -1105,7 +1122,6 @@ const RtgsEntryForm: FC<{}> = () => {
                     t("RemovalRemarksForRTGS")
                   }
                   onActionNo={() => setState((old) => ({
-                    ...old,
                     isDeleteRemark: false,
                   }))}
                   onActionYes={async (val, rows) => {

@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { FC, useCallback,  useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import { useTranslation } from "react-i18next";
@@ -12,25 +12,26 @@ import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
+import { t } from "i18next";
 
 const actions: ActionTypes[] = [
     {
         actionName: "refresh",
-        actionLabel: "Refresh",
+        actionLabel: t("Refresh"),
         multiple: false,
         // rowDoubleClick: true,
         alwaysAvailable: true,
     },
     {
         actionName: "save-close",
-        actionLabel: "Save & Close",
+        actionLabel: t("SaveClose"),
         multiple: false,
         // rowDoubleClick: true,
         alwaysAvailable: true,
     },
     {
         actionName: "close",
-        actionLabel: "Close",
+        actionLabel: t("Close"),
         multiple: false,
         // rowDoubleClick: true,
         alwaysAvailable: true,
@@ -139,8 +140,8 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
                     }))
                     if (result.every(item => item.SUSPICIOUS_FLAG === "N")) {
                         await MessageBox({
-                            message: "Atleast one record must be marked suspicious",
-                            messageTitle: "Validation Failed",
+                            message:t("AtleastOneRecordMustMarkedSuspicious"),
+                            messageTitle: t("ValidationFailed"),
                         });
                         return
                     } else {
@@ -207,8 +208,8 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
                                     DETAILS_DATA: finalResult,
                                 };
                                 const btnName = await MessageBox({
-                                    message: "Are You Sure to save record?",
-                                    messageTitle: "Confirmation",
+                                    message: t("AreYouSaveThisRecord"),
+                                    messageTitle: t("Confirmation"),
                                     buttonNames: ["Yes", "No"],
                                     loadingBtnName: ["Yes"],
                                 });
@@ -221,8 +222,8 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
                 }
             } else if (data.name === "refresh") {
                 const btnName = await MessageBox({
-                    message: "Are You Sure to refresh transaction details?",
-                    messageTitle: "Confirmation",
+                    message: t("AreYouSureRefreshTransactionDetails?"),
+                    messageTitle: t("Confirmation"),
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
                 });
@@ -246,7 +247,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
 
 
         if (suspiciousTransactionGridMetaData) {
-            suspiciousTransactionGridMetaData.gridConfig.gridLabel = "Suspicious Transaction" + " " + "for A/c" + "-" + rowsData?.ACCT_CD_NEW + " " + "From" + " " + format(new Date(rowsData?.ACT_FROM_DT), "dd/MMM/yyyy") + " " + "To" + " " + format(new Date(rowsData?.ACT_TO_DT), "dd/MMM/yyyy")
+            suspiciousTransactionGridMetaData.gridConfig.gridLabel = t("SuspiciousTransaction") + " " + "for A/c" + "-" + rowsData?.ACCT_CD_NEW + " " + t("From") + " " + format(new Date(rowsData?.ACT_FROM_DT), "dd/MMM/yyyy") + " " + t("To") + " " + format(new Date(rowsData?.ACT_TO_DT), "dd/MMM/yyyy")
         }
         return (
             <>

@@ -4,7 +4,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "ATM Confirmation Retrieve Data",
-    rowIdColumn: "CUSTOMER_ID",
+    rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,

@@ -1,10 +1,5 @@
 import { utilFunction } from "components/utils";
-import {
-  cardStatusList,
-  cardTypeList,
-  validateAcctAndCustId,
-  validateCitizenId,
-} from "../api";
+import * as API from "../api";
 export const CardDetailsMetaData = {
   form: {
     name: "atm-card-details",
@@ -73,7 +68,100 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
-      options: () => cardStatusList(),
+      options: () => API.cardStatusList(),
+      dependentFields: ["STATUS_EDIT_FLAG", "TRAN_CD"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          let statusData: any = [];
+          formState?.setIsData((old) => {
+            if (old?.gridData?.length) {
+              old?.gridData?.map((item) => {
+                if (item?.STATUS) {
+                  statusData.push(item?.STATUS);
+                }
+              });
+            }
+            return old;
+          });
+          let apiReq = {
+            ENTRY_TYPE: dependentValue?.TRAN_CD?.value ? "M" : "F",
+            OLD_STATUS: formState?.reqData?.OLD_STATUS ?? "",
+            NEW_STATUS: field?.value,
+            EXISTING_ROWS: statusData.join(","),
+            ENTERED_BRANCH_CD: formState?.reqData?.ENTERED_BRANCH_CD ?? "",
+            ENTERED_COMP_CD: formState?.reqData?.ENTERED_COMP_CD ?? "",
+            LAST_MODIFIED_DATE: formState?.reqData?.LAST_MODIFIED_DATE ?? "",
+            ENTERED_DATE: formState?.reqData?.ENTERED_DATE ?? "",
+            ISSUE_DT: formState?.reqData?.ISSUE_DT ?? "",
+            CONFIRMED: formState?.reqData?.CONFIRMED ?? "",
+            PARA_320: formState?.reqData?.PARA_320,
+            SCREEN_REF: "MST/846",
+          };
+          let { resp, status } = await API.validateCardStatus(apiReq);
+
+          if (status === "0" && resp) {
+            if (resp?.O_STATUS === "999") {
+              let buttonName = await formState.MessageBox({
+                messageTitle: "ValidationAlert",
+                message: resp?.O_MESSAGE,
+              });
+              if (buttonName === "Ok") {
+                return {
+                  STATUS: { value: "", isFieldFocused: true },
+                  EXPIRY_DT_DISABLE: { value: "" },
+                  ISSUE_DT_VISIBLE: { value: "" },
+                  DEACTIVE_DT_DISABLE: { value: "" },
+                  CITIZEN_ID_VISIBLE: { value: "" },
+                  M_CARD_NO_VISIBLE: { value: "" },
+                  DEACTIVE_DT: { value: "" },
+                  DEACTIVE_DT_VISIBLE: { value: "" },
+                  ISSUE_DT: { value: "" },
+                  REMARKS_DISABLE: { value: "" },
+                  REMARKS_VISIBLE: { value: "" },
+                };
+              }
+            } else if (resp?.O_STATUS === "0") {
+              return {
+                EXPIRY_DT_DISABLE: { value: resp?.EXPIRY_DT_DISABLE },
+                ISSUE_DT_VISIBLE: { value: resp?.ISSUE_DT_VISIBLE },
+                DEACTIVE_DT_DISABLE: { value: resp?.DEACTIVE_DT_DISABLE },
+                CITIZEN_ID_VISIBLE: { value: resp?.CITIZEN_ID_VISIBLE },
+                M_CARD_NO_VISIBLE: { value: resp?.M_CARD_NO_VISIBLE },
+                DEACTIVE_DT: { value: resp?.DEACTIVE_DT },
+                DEACTIVE_DT_VISIBLE: { value: resp?.DEACTIVE_DT_VISIBLE },
+                REMARKS_DISABLE: { value: resp?.REMARKS_DISABLE },
+                REMARKS_VISIBLE: { value: resp?.REMARKS_VISIBLE },
+                ISSUE_DT: {
+                  value: resp?.SET_ISSUE_DT === "Y" ? resp?.ISSUE_DT : "",
+                },
+
+                // O_COLUMN_NM: "",
+                // SET_NULL: "N",
+              };
+            }
+            return {};
+          }
+        } else if (!field?.value) {
+          return {
+            EXPIRY_DT_DISABLE: { value: "" },
+            ISSUE_DT_VISIBLE: { value: "" },
+            DEACTIVE_DT_DISABLE: { value: "" },
+            CITIZEN_ID_VISIBLE: { value: "" },
+            M_CARD_NO_VISIBLE: { value: "" },
+            DEACTIVE_DT: { value: "" },
+            DEACTIVE_DT_VISIBLE: { value: "" },
+            ISSUE_DT: { value: "" },
+            REMARKS_DISABLE: { value: "" },
+            REMARKS_VISIBLE: { value: "" },
+          };
+        }
+      },
+      runPostValidationHookAlways: true,
       _optionsKey: "cardStatusList",
       GridProps: {
         xs: 12,
@@ -125,7 +213,7 @@ export const CardDetailsMetaData = {
           return true;
         },
       },
-      dependentFields: ["PARA_602", "PARA_946", "CARD_ISSUE_TYPE"],
+      dependentFields: ["CARD_ISSUE_TYPE"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -137,13 +225,13 @@ export const CardDetailsMetaData = {
             ACCT_CD: "",
             ACCT_TYPE: "",
             BRANCH_CD: "",
-            PARA_602: dependentValue?.PARA_602?.value,
-            PARA_946: dependentValue?.PARA_946?.value,
+            PARA_602: formState?.reqData?.PARA_602,
+            PARA_946: formState?.reqData?.PARA_946,
             SCREEN_REF: "MST/846",
             CUSTOMER_ID: field?.value,
           };
 
-          let postData = await validateAcctAndCustId(apiRequest);
+          let postData = await API.validateAcctAndCustId(apiRequest);
           let apiRespMSGdata = postData?.[0]?.MSG;
           let isReturn;
           const messagebox = async (msgTitle, msg, buttonNames, status) => {
@@ -241,7 +329,7 @@ export const CardDetailsMetaData = {
       ) => {
         let resultDate = new Date(field?.value);
         resultDate.setDate(
-          resultDate.getDate() + Number(dependentValue?.PARA_200?.value)
+          resultDate.getDate() + Number(formState?.reqData?.PARA_200)
         );
         return {
           EXPIRE_DT: { value: resultDate },
@@ -254,7 +342,7 @@ export const CardDetailsMetaData = {
         lg: 2,
         xl: 2,
       },
-      dependentFields: ["STATUS", "PARA_200", "ISSUE_DT_VISIBLE"],
+      dependentFields: ["STATUS", "ISSUE_DT_VISIBLE"],
       shouldExclude(fieldData, dependentFields) {
         if (
           dependentFields?.STATUS?.value === "P" ||
@@ -313,7 +401,7 @@ export const CardDetailsMetaData = {
             SCREEN_REF: "MST/846",
           };
 
-          let postData = await validateCitizenId(apiRequest);
+          let postData = await API.validateCitizenId(apiRequest);
           if (postData?.length) {
             if (postData?.[0]?.O_STATUS === "999") {
               let buttonName = await formState.MessageBox({
@@ -376,7 +464,7 @@ export const CardDetailsMetaData = {
       name: "CARD_TYPE",
       label: "CardType",
       placeholder: "Select Card Type",
-      options: () => cardTypeList(),
+      options: () => API.cardTypeList(),
       _optionsKey: "cardTypeList",
       GridProps: {
         xs: 12,
@@ -481,24 +569,6 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "PARA_602",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "PARA_946",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "PARA_200",
     },
 
     {

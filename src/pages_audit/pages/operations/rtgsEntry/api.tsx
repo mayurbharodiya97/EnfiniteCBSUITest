@@ -295,6 +295,25 @@ export const getRtgsBenDetailData = async (ApiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getAcctTypeData = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+        return {
+          value: DATA_VALUE,
+          label: DISPLAY_VALUE,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 // export const getIfscBenDetail = async (reqObj: reqObjTypes) => {
 //   const { reqData, controllerFinal } = reqObj;

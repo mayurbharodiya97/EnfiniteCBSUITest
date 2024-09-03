@@ -7,7 +7,6 @@ import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { strLevelBranchEditFormMetaData } from "./metadata";
-import { ActionTypes } from "components/dataTable/types";
 import { utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
@@ -15,27 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { StrMarkAsPerSuspiciousGrid } from "./suspiciousTransactionGrid";
 
-const actions: ActionTypes[] = [
-    {
-        actionName: "refresh",
-        actionLabel: "Refresh",
-        multiple: false,
-        alwaysAvailable: true,
-    },
-    {
-        actionName: "save-close",
-        actionLabel: "Save & Close",
-        multiple: false,
-        alwaysAvailable: true,
-    },
-    {
-        actionName: "close",
-        actionLabel: "Close",
-        multiple: false,
-        alwaysAvailable: true,
-    },
 
-];
 export const StrBranchLevelForm: FC<{
     onClose?: any
     rowsData?: any
@@ -133,7 +112,7 @@ export const StrBranchLevelForm: FC<{
                                     //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                                     color={"primary"}
                                 >
-                                    Save & Close
+                                  { t("SaveClose")}
                                 </GradientButton>
                             </>
                         )}
