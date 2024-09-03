@@ -22,6 +22,7 @@ export const Form15GHEntryGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
+    allowColumnHiding: true,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
     footerNote: "NoteDoubleClickOnViewDetails",
