@@ -549,7 +549,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "ACCT_TYPE",
     label: "AccountType",
     placeholder: "AccountTypePlaceHolder",
-    // options: GeneralAPI.getAccountTypeList,
     options: (dependentValue, formState, _, authState) => {
       return GeneralAPI.get_Account_Type({
         COMP_CD: authState?.companyID ?? "",
@@ -558,7 +557,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         DOC_CD: formState?.docCD ?? "",
       });
     },
-    _optionsKey: "getAccountTypeList",
+    _optionsKey: "get_Account_Type",
     defaultAcctTypeTrue: true,
     defaultValue: "",
     GridProps: {
