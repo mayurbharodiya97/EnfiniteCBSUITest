@@ -1925,10 +1925,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/DODUALCONFIRMATION",
     packageName: "",
   },
-  DODUALCONFIRMATION: {
-    url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
-    packageName: "",
-  },
   DORTGSHOCONFIRMATION: {
     url: "transactionServiceAPI/DORTGSHOCONFIRMATION",
     packageName: "",
