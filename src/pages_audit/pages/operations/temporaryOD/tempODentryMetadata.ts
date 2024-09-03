@@ -50,6 +50,13 @@ export const temporaryODentryMetadata = {
             }
           },
           runPostValidationHookAlways: true,
+          GridProps: {
+            xs: 12,
+            md: 2,
+            sm: 2,
+            lg: 2,
+            xl: 2,
+          },
         },
         accountTypeMetadata: {
           isFieldFocused: true,
@@ -73,6 +80,13 @@ export const temporaryODentryMetadata = {
             }
           },
           runPostValidationHookAlways: true,
+          GridProps: {
+            xs: 12,
+            md: 2,
+            sm: 2,
+            lg: 2,
+            xl: 2,
+          },
         },
 
         accountCodeMetadata: {
@@ -110,50 +124,59 @@ export const temporaryODentryMetadata = {
               let postData = await GeneralAPI.getAccNoValidation(
                 otherAPIRequestPara
               );
+              let apiRespMSGdata = postData?.MSG;
+              let isReturn;
+              const messagebox = async (msgTitle, msg, buttonNames, status) => {
+                let buttonName = await formState.MessageBox({
+                  messageTitle: msgTitle,
+                  message: msg,
+                  buttonNames: buttonNames,
+                });
+                return { buttonName, status };
+              };
+              if (apiRespMSGdata?.length) {
+                for (let i = 0; i < apiRespMSGdata?.length; i++) {
+                  if (apiRespMSGdata[i]?.O_STATUS !== "0") {
+                    let btnName = await messagebox(
+                      apiRespMSGdata[i]?.O_STATUS === "999"
+                        ? "validation fail"
+                        : "ALert message",
+                      apiRespMSGdata[i]?.O_MESSAGE,
+                      apiRespMSGdata[i]?.O_STATUS === "99"
+                        ? ["Yes", "No"]
+                        : ["Ok"],
+                      apiRespMSGdata[i]?.O_STATUS
+                    );
 
-              if (postData?.RESTRICTION) {
-                formState.setDataOnFieldChange("IS_VISIBLE", {
-                  IS_VISIBLE: false,
-                });
-                let res = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.RESTRICTION,
-                  defFocusBtnName: "Ok",
-                });
-
-                if (res === "Ok") {
-                  return {
-                    ACCT_CD: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-                  };
+                    if (
+                      btnName.buttonName === "No" ||
+                      btnName.status === "999"
+                    ) {
+                      formState.setDataOnFieldChange("IS_VISIBLE", {
+                        IS_VISIBLE: false,
+                      });
+                      return {
+                        ACCT_CD: {
+                          value: "",
+                          isFieldFocused: true,
+                          ignoreUpdate: true,
+                        },
+                      };
+                    } else {
+                      formState.setDataOnFieldChange("IS_VISIBLE", {
+                        IS_VISIBLE: true,
+                      });
+                      isReturn = true;
+                    }
+                  } else {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: true,
+                    });
+                    isReturn = true;
+                  }
                 }
-              } else if (postData?.MESSAGE1) {
-                formState.setDataOnFieldChange("IS_VISIBLE", {
-                  IS_VISIBLE: true,
-                });
-                let res = await formState.MessageBox({
-                  messageTitle: "RiskCategoryAlert",
-                  message: postData?.MESSAGE1,
-                });
-                if (res === "Ok") {
-                  return {
-                    ACCT_CD: {
-                      value: utilFunction.getPadAccountNumber(
-                        field?.value,
-                        dependentValue?.ACCT_TYPE?.optionData
-                      ),
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    },
-                  };
-                }
-              } else {
-                formState.setDataOnFieldChange("IS_VISIBLE", {
-                  IS_VISIBLE: true,
-                });
+              }
+              if (Boolean(isReturn)) {
                 return {
                   ACCT_CD: {
                     value: utilFunction.getPadAccountNumber(
@@ -179,6 +202,13 @@ export const temporaryODentryMetadata = {
           },
           runPostValidationHookAlways: true,
           fullWidth: true,
+          GridProps: {
+            xs: 12,
+            md: 2.5,
+            sm: 2.5,
+            lg: 2.5,
+            xl: 2.5,
+          },
         },
       },
       {
@@ -216,6 +246,18 @@ export const temporaryODentryMetadata = {
 
       {
         render: {
+          componentType: "spacer",
+        },
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
+      },
+      {
+        render: {
           componentType: "datePicker",
         },
         name: "FROM_EFF_DATE",
@@ -246,10 +288,10 @@ export const temporaryODentryMetadata = {
         label: "EffectiveFromDate",
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
-          lg: 3,
-          xl: 3,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
       {
@@ -291,10 +333,10 @@ export const temporaryODentryMetadata = {
         label: "EffectiveToDate",
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
-          lg: 3,
-          xl: 3,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
 
@@ -315,10 +357,10 @@ export const temporaryODentryMetadata = {
         fullWidth: true,
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
-          lg: 3,
-          xl: 3,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
         },
       },
       {
@@ -344,7 +386,7 @@ export const temporaryODentryMetadata = {
     gridConfig: {
       dense: true,
       gridLabel: "Documents",
-      rowIdColumn: "TEMPLATE_CD",
+      rowIdColumn: "SR_CD",
       defaultColumnConfig: { width: 150, maxWidth: 250, minWidth: 100 },
       allowColumnReordering: true,
       hideHeader: false,
@@ -358,17 +400,6 @@ export const temporaryODentryMetadata = {
       // paginationText: "Configured Messages",
     },
     columns: [
-      // {
-      //   accessor: "SR_NO",
-      //   columnName: "Sr No.",
-      //   componentType: "default",
-      //   sequence: 1,
-      //   alignment: "center",
-      //   width: 75,
-      //   minWidth: 50,
-      //   maxWidth: 100,
-      //   isAutoSequence: true,
-      // },
       {
         accessor: "TEMPLATE_CD",
         columnName: "Documents",
@@ -379,33 +410,28 @@ export const temporaryODentryMetadata = {
             BRANCH_CD: auth?.user?.branchCode,
           });
         },
-        _optionsKey: "documentsListDD",
+        // _optionsKey: "documentsListDD",
         required: true,
         sequence: 2,
         alignment: "left",
         width: 350,
         minWidth: 200,
         maxWidth: 400,
-        enableDefaultOption: true,
-        // validation: (value, data, prev, next) => {
-        //   console.log("<<<prnext", value, data, prev, next);
-        //   let concatenatedArray = [prev, next].flat();
-        //   console.log("<<<concal", concatenatedArray);
-        //   let nextMsg: any = concatenatedArray?.some((item) => {
-        //     if (value) {
-        //       return value === item?.SR_CD;
-        //     }
-        //     return false;
-        //   });
+        validation: (value, data, prev, next) => {
+          let concatenatedArray = [prev, next].flat();
+          let nextMsg: any = concatenatedArray?.some((item) => {
+            if (value) {
+              return value === item?.TEMPLATE_CD;
+            }
+            return false;
+          });
 
-        //   if (nextMsg) {
-        //     return t("OptionIsAlreadyEntered");
-        //   }
-        //   return "";
-        // },
-        schemaValidation: {
-          type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          if (!value) {
+            return t("ThisFieldisrequired");
+          } else if (nextMsg) {
+            return t("OptionIsAlreadyEntered");
+          }
+          return "";
         },
       },
       {
@@ -425,15 +451,19 @@ export const temporaryODentryMetadata = {
         columnName: "ValidTillDate",
         componentType: "editableDatePicker",
         alignment: "center",
-        validation: (value, data, prev) => {
+        validation: (value, data, prev, next, auth) => {
+          let inputDate = new Date(value);
+          let workingDate = new Date(auth.workingDate);
           if (!Boolean(value)) {
             return t("ThisFieldisrequired");
+          } else if (inputDate < workingDate) {
+            return t("Valid Till date should not be less than Working Date");
           }
         },
         sequence: 2,
-        width: 150,
-        minWidth: 70,
-        maxWidth: 200,
+        width: 210,
+        minWidth: 100,
+        maxWidth: 300,
       },
       {
         columnName: "Action",

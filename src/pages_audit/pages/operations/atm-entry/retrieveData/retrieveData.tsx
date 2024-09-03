@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { ClearCacheProvider } from "cache";
@@ -88,17 +88,19 @@ const RetrieveDataCustom = ({
     });
     endSubmit(true);
   };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //     FLAG: "P",
-  //     FLAG_RTGSC: "",
-  //   });
-  // }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <>

@@ -15,6 +15,7 @@ const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
+const ATMconfirmation = lazy(() => import("./atm-entry/confirm/confirmation"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -52,6 +53,10 @@ const PositivePayConfirmationGrid = lazy(
 );
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
+// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const StandingInstructionGridWrapper = lazy(()=> import ("./standingInstruction"))
+const StandingInstructionConfirmationGridWrapper = lazy(()=> import ("./standingInstruction/confirmation/"))
+const RecurringCalculatorFormWrapper = lazy(()=> import ("./recurringCalculator"))
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
@@ -72,6 +77,7 @@ export const OperationsMenu = () => (
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
+    <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
     <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route
@@ -176,10 +182,7 @@ export const OperationsMenu = () => (
       path="rtgs-ho-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="HO" />}
     />
-    <Route
-      path="insurance-entry/*"
-      element={<InsuranceEntryForm  />}
-    />
+    <Route path="insurance-entry/*" element={<InsuranceEntryForm />} />
     <Route
       path="fix-deposit/*"
       element={
@@ -224,6 +227,17 @@ export const OperationsMenu = () => (
       path="account-close-confirmation/*"
       element={<AccountCloseConfirm />}
     />
-  
+      <Route
+      path="standing-instruction-entry/*"
+      element={<StandingInstructionGridWrapper />}
+    />
+          <Route
+      path="standing-instruction-confirmation/*"
+      element={<StandingInstructionConfirmationGridWrapper />}
+    />
+    <Route
+      path="recint-calculator/*"
+      element={<RecurringCalculatorFormWrapper />}
+    />
   </Routes>
 );

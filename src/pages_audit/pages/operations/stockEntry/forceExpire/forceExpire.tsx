@@ -31,6 +31,15 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
       rows?.[0]?.data?.ASON_DT === ""
         ? authState?.workingDate
         : rows?.[0]?.data?.ASON_DT,
+    DRAWING_POWER:
+      rows?.[0]?.data?.DRAWING_POWER &&
+      parseFloat(rows?.[0]?.data?.DRAWING_POWER).toFixed(2),
+    NET_VALUE:
+      rows?.[0]?.data?.NET_VALUE &&
+      parseFloat(rows?.[0]?.data?.NET_VALUE).toFixed(2),
+    STOCK_VALUE:
+      rows?.[0]?.data?.STOCK_VALUE &&
+      parseFloat(rows?.[0]?.data?.STOCK_VALUE).toFixed(2),
   };
 
   const forceExpire: any = useMutation("crudStockData", crudStockData, {
@@ -71,7 +80,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "1150px",
+          maxWidth: "1250px",
         },
       }}
     >
@@ -130,7 +139,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           }}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 367px)",
+            height: "calc(100vh - 455px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

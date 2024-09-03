@@ -79,6 +79,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         metaData: finalMetaData,
         actions,
         setAction,
+        authController,
       });
     }
     let currentPath = useLocation().pathname;
@@ -302,7 +303,13 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         label={
           metaData.gridConfig?.gridLabel
             ? t(metaData.gridConfig.gridLabel)
-            : t(utilFunction.getDynamicLabel(currentPath, authController?.authState?.menulistdata, true))
+            : t(
+                utilFunction.getDynamicLabel(
+                  currentPath,
+                  authController?.authState?.menulistdata,
+                  true
+                )
+              )
         }
         dense={true}
         getRowId={getRowId}
@@ -365,6 +372,7 @@ const transformMetaData = ({
   metaData: freshMetaData,
   actions,
   setAction,
+  authController,
 }): GridMetaDataType => {
   let metaData = cloneDeep(freshMetaData) as GridMetaDataType;
   //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as GridMetaDataType;
@@ -380,7 +388,7 @@ const transformMetaData = ({
   //   return { ...item, columnName: lanTranstlet(item.columnName) };
   // });
   //call this function after attaching yup schema and methods to metaData
-  columns = attachcombinedValidationFns(columns);
+  columns = attachcombinedValidationFns(columns, authController.authState);
   columns = sortColumnsBySequence(columns);
   let filters = metaData.filters as any;
   //make sure extract functions are called before attach and lastly sort

@@ -1,5 +1,3 @@
-import { PinkColor } from "pages_audit/pages/operations/limit-entry/limitEntry";
-
 export const en_language_data = {
   //For Ornament Type master
   OrnamentTypeMaster: "Ornament Type Master (MST/247)",
@@ -342,7 +340,9 @@ export const en_language_data = {
   PinCode: "Pin Code",
   FROMLIMIT: "FROM LIMIT",
   TOLIMIT: "TO LIMIT",
-
+  AreaNameisRequired:"Area Name is Required",
+ 
+  
   //
   Delete: "Remove",
   Loading: "Loading..",
@@ -1566,7 +1566,7 @@ export const en_language_data = {
   infavourofrequired: "InFavourof is Required",
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
-  entryType:"Entry Type",
+  entryType: "Entry Type",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",
@@ -1642,6 +1642,82 @@ export const en_language_data = {
   enteredBranch: "Entered Branch",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  //standing instruction entry
+  CommisionType:"Commision Type",
+  NoofRecords:"No. of Records",
+  CreditBranchCode:"Credit A/C Branch Code",
+  CreditAcctType:"Credit A/C Type",
+  CreditAcctNo:"Credit A/c No.",
+  CreditPhotoSign:"Credit Photo/Sign",
+  StartDate:"Start Date",
+  ExecuteOnDay:"Execute On Day",
+  FrequncyType:"Frequncy Type",
+  FrequencyValue:"Frequency Value",
+  DebitBranchCode:"Credit A/C Branch Code",
+  DebitAcctType:"Debit A/C Type",
+  DebitAcctNo:"Debit A/c No.",
+  DebitPhotoSign:"Debit Photo/Sign",
+  SIAmount:"SI Amount",
+  SICharge:"SI Charge",
+  Remark:"Remark",
+  ValidUpTo:"Valid UpTo",
+  SINumber:"SI Number",
+  CreditAcctName:"Credit A/C Name",
+  DebitAcctName:"Debit A/C Name",
+  Executedate:"Execute Date",
+  Processed:"Processed",
+  CreditFromAcct:"Credit From A/C",
+  DeletetheTransaction:"Double Click on Records to Delete the Transaction",
+  SIExecuteProcess:"SI Execute Process",
+  Populate:"Populate",
+  ActivityTime:"Activity Time",
+  ColumnName:"Column Name",
+  OldValue:"Old Value",
+  NewValue:"NewValue",
+  ColorandSi:"Red Color Indicates the Deactivated SI & Double Click to View SI Details",
+  EnterCommisionType:"Enter Commision Type",
+  EnterCreditBranchCode:"Enter Credit Branch Code",
+  EnterCreditAccountType:"Enter Credit Account Type",
+  EnterCreditAccountNo:"Enter Credit Account No.",
+  StartDateisrequired:"Start Date is required",
+  CompareDate:"Start Date Should be greater or equal to Current Date",
+  EnterExecuteOnDay:"Enter Execute On Day",
+  EexecuteValidation:"Please enter execute day between 1 to 28",
+  ExecuteOnDayisRequired:"Execute On Day is Required",
+  EnterFrequncyType:"Enter Frequncy Type",
+  FrequncyTypeisRequired:"Frequncy Type is Required",
+  EnterFrequncyValue:"Enter Frequncy Value",
+  FrequencyValueisRequired:"Frequency Value is Required",
+  EnterDebitBranchCode:"Enter Debit Branch Code",
+  EnterDebitAccountType:"Enter Debit Account Type",
+  EnterDebitAccountNo:"Enter Debit Account No.",
+  SIAmountisRequired:"SI Amount is Required",
+  ValidUptoDateisrequired:"Valid Upto Date is required",
+  StartDateValidDateCompare:"Valid upto Date should be greater than Start Date",
+  DebitAccountHolderName:"Debit Account Holder Name",
+  EnterRemark:"Enter Remark",
+  WRONGENTRYFROMSTANDING:"WRONG ENTRY FROM STANDING INSTRUCTION ENTRY (TRN/394)",
+  AllSIasExecuted:"All SI as Executed",
+  ConsiderSIasExecuted:"Consider SI as Executed",
+  SearchSI:"SearchSI",
+  SIasExecuted:"SI as Executed",
+CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
+DataNotFound:"Data Not Found",
+TotalNoofActiveSI:"Total No. of Active SI",
+EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+
+ //standing instruction Confirmation
+SInotConfirmByYou:"You can not confirm SI entered by you.",
+confirmSI:"Are you sure to confirm SI?",
+
+//Recurring Interest Calculator
+Categoryisrequired:"Category is required",
+IntType:"InterestType",
+InstallmentType:"Installment Type",
+InstallmentTypeisrequired:"Installment Type is required",
+InstAmount:"Installment Amount",
+RunningIntAmt:"Running Int. Amt."
+
   //fd interest calculator
   normalPremature: "Normal/Premature",
   asonDate: "As on Date",
@@ -1704,4 +1780,5 @@ export const en_language_data = {
     "Amount*: In case of cash Credit/Debit, Difference amount will be posted in type level PL.",
   AccountCloseConfNote:
     "If Payslip/NEFT is generated then need to confirm manually.",
+  maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date"
 };

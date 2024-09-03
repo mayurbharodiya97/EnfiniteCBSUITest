@@ -12,6 +12,7 @@ import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 
 const actions: ActionTypes[] = [
@@ -79,7 +80,7 @@ const LienMasterGrid = () => {
   );
   const deleteMutation = useMutation(API.deleteLienMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -89,7 +90,7 @@ const LienMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
@@ -119,7 +120,7 @@ const LienMasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />

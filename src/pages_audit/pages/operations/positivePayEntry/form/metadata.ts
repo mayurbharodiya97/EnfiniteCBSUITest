@@ -40,7 +40,7 @@ export const PositivePayEntryFormMetadata = {
     {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
-        // name: "BRANCH_CD",
+        name: "BRANCH_CD",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
         isFieldFocused: true,
@@ -61,13 +61,22 @@ export const PositivePayEntryFormMetadata = {
       },
       accountTypeMetadata: {
         runPostValidationHookAlways: true,
+        dependentFields: ["BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            USER_NAME: authState?.user?.id ?? "",
-            DOC_CD: "MST/968",
-          });
+          if (
+            Boolean(authState?.companyID) &&
+            Boolean(dependentValue?.BRANCH_CD?.value) &&
+            Boolean(authState?.user?.id)
+          ) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
+              USER_NAME: authState?.user?.id ?? "",
+              DOC_CD: "MST/968",
+            });
+          } else {
+            return [];
+          }
         },
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -85,6 +94,7 @@ export const PositivePayEntryFormMetadata = {
             };
           }
         },
+        disableCaching: true,
         GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
       },
       accountCodeMetadata: {
@@ -378,6 +388,7 @@ export const PositivePayEntryFormMetadata = {
       placeholder: "EnterPayeeName",
       type: "text",
       autoComplete: "off",
+      maxLength: 200,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
@@ -390,6 +401,7 @@ export const PositivePayEntryFormMetadata = {
       preventSpecialCharInput: true,
       type: "text",
       autoComplete: "off",
+      maxLength: 200,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
@@ -609,6 +621,7 @@ export const ResponseParameterFormMetaData = {
     {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
+        name: "BRANCH_CD",
         dependentFields: ["FLAG"],
         shouldExclude(fieldData, dependentFields, formState) {
           if (dependentFields["FLAG"]?.value === "A") {
@@ -634,7 +647,7 @@ export const ResponseParameterFormMetaData = {
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
       },
       accountTypeMetadata: {
-        dependentFields: ["FLAG"],
+        dependentFields: ["FLAG", "BRANCH_CD"],
         shouldExclude(fieldData, dependentFields, formState) {
           if (dependentFields["FLAG"]?.value === "A") {
             return false;
@@ -643,15 +656,24 @@ export const ResponseParameterFormMetaData = {
           }
         },
         options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            USER_NAME: authState?.user?.id ?? "",
-            DOC_CD: "MST/968",
-          });
+          if (
+            Boolean(authState?.companyID) &&
+            Boolean(dependentValue?.BRANCH_CD?.value) &&
+            Boolean(authState?.user?.id)
+          ) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
+              USER_NAME: authState?.user?.id ?? "",
+              DOC_CD: "MST/968",
+            });
+          } else {
+            return [];
+          }
         },
+        disableCaching: true,
         _optionsKey: "get_Account_Type",
-        runPostValidationHookAlways: false,
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -675,6 +697,7 @@ export const ResponseParameterFormMetaData = {
             return true;
           }
         },
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,

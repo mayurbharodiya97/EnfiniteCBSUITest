@@ -3,7 +3,7 @@ import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
-import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
+import { geaterThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
