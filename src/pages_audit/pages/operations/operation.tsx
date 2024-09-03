@@ -57,7 +57,8 @@ const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
 const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
 const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
-
+const GstOutwardEntryGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardGrid"));
+const GstOutwardEntryConfirmationGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardEntryConfirmation/gstOutwardEntryConfirmationGrid"));
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
@@ -217,5 +218,7 @@ export const OperationsMenu = () => (
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="gst-outward-entry/*" element={<GstOutwardEntryGrid screenFlag="gstEntry"/>} />
+    <Route path="gst-outward-confirmation/*" element={<GstOutwardEntryConfirmationGrid screenFlag="gstEntryConfirmation"/>} />
   </Routes>
 );
