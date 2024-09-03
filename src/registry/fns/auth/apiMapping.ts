@@ -2442,6 +2442,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityBankProcessingServiceAPI/EXECUTECHECKSUM",
     packageName: "",
   },
+  VALIDATECARDSTATUS: {
+    url: "/commonMasterServiceAPI/VALIDATECARDSTATUS",
+    packageName: "",
+  },
   GETFDOPERATION: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDOPERATION",
     packageName: "",

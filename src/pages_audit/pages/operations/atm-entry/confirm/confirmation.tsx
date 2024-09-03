@@ -14,12 +14,11 @@ import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSi
 import { CardPrinting } from "../cardPrinting";
 import { ClearCacheProvider } from "cache";
 import * as API from "../api";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 
 const ConfirmationCustom = () => {
   const [isData, setIsData] = useState<any>({
-    cardData: {},
     gridData: [],
     isOpenCard: false,
     uniqueNo: 0,
@@ -31,31 +30,27 @@ const ConfirmationCustom = () => {
   const { authState } = useContext(AuthContext);
   const [rowsData, setRowsData] = useState<any>();
 
-  console.log("<<<location", rowsData, rowsData?.[currentIndex]?.data?.TRAN_CD);
-
-  const { isError, error, isFetching, isLoading, isSuccess, refetch } =
-    useQuery<any, any>(
-      ["getNotificationData"],
-      () =>
-        API.getATMcardDetails({
-          A_COMP_CD: authState?.companyID,
-          A_BRANCH_CD: authState?.user?.branchCode,
-          A_TRAN_CD: rowsData?.[currentIndex]?.data?.TRAN_CD,
-        }),
-      {
-        enabled: !!rowsData?.[currentIndex]?.data?.TRAN_CD,
-        onSuccess(data) {
-          setIsData((old) => ({
-            ...old,
-            gridData: data,
-            uniqueNo: Date.now(),
-          }));
-        },
-      }
-    );
+  const cardDetails: any = useMutation(
+    "getATMcardDetails",
+    () =>
+      API.getATMcardDetails({
+        A_COMP_CD: authState?.companyID,
+        A_BRANCH_CD: authState?.user?.branchCode,
+        A_TRAN_CD: rowsData?.[currentIndex]?.data?.TRAN_CD,
+      }),
+    {
+      onSuccess: (data) => {
+        setIsData((old) => ({
+          ...old,
+          gridData: data,
+          uniqueNo: Date.now(),
+        }));
+      },
+      onError: (error: any) => {},
+    }
+  );
 
   const changeIndex = (direction) => {
-    refetch();
     setCurrentIndex((prevIndex) => {
       if (direction === "next") {
         return prevIndex === rowsData.length - 1 ? 0 : prevIndex + 1;
@@ -89,10 +84,7 @@ const ConfirmationCustom = () => {
 
   useEffect(() => {
     if (rowsData?.length) {
-      setIsData((old) => ({
-        ...old,
-        cardData: rowsData?.[currentIndex]?.data,
-      }));
+      cardDetails.mutate();
     }
   }, [rowsData, currentIndex]);
 
@@ -117,9 +109,9 @@ const ConfirmationCustom = () => {
           DETAILS_DATA: isData?.gridData,
         }}
         displayMode={"view"}
-        isLoading={isLoading || isFetching}
-        isError={isError}
-        errorObj={error}
+        isLoading={cardDetails?.isLoading || cardDetails?.isFetching}
+        // isError={isError}
+        // errorObj={error}
         onSubmitData={onSubmitHandler}
         onFormButtonClickHandel={() => {
           if (!isData?.isOpenCard) {
@@ -137,26 +129,35 @@ const ConfirmationCustom = () => {
         {({ isSubmitting, handleSubmit }) => {
           return (
             <>
-              <Button color="primary">{t("Confirm")}</Button>
-              <Button color="primary">{t("Reject")}</Button>
-              <Button
-                onClick={() => filterData({ flag: "all" })}
-                color="primary"
-              >
-                {t("View All")}
-              </Button>
-              <Button
-                onClick={() => filterData({ flag: "refresh" })}
-                color="primary"
-              >
-                {t("Refresh")}
-              </Button>
+              {rowsData?.length && (
+                <>
+                  <Button color="primary">{t("Confirm")}</Button>
+                  <Button color="primary">{t("Reject")}</Button>
+                  <Button
+                    onClick={() => navigate("joint-details")}
+                    color={"primary"}
+                  >
+                    {t("JointDetails")}
+                  </Button>
+                  <Button
+                    onClick={() => navigate("photo-sign")}
+                    color="primary"
+                  >
+                    {t("PhotoSign")}
+                  </Button>
+                  <Button color={"primary"}>View Changes</Button>
+                </>
+              )}
 
               {rowsData?.length > 1 && (
                 <>
                   <Button
                     startIcon={<ArrowBackIosNewIcon />}
-                    disabled={1 === currentIndex + 1 || isLoading || isFetching}
+                    disabled={
+                      1 === currentIndex + 1 ||
+                      cardDetails?.isLoading ||
+                      cardDetails?.isFetching
+                    }
                     onClick={() => changeIndex("previous")}
                     color={"primary"}
                   >
@@ -166,27 +167,29 @@ const ConfirmationCustom = () => {
                     endIcon={<ArrowForwardIosIcon />}
                     disabled={
                       currentIndex + 1 === rowsData?.length ||
-                      isLoading ||
-                      isFetching
+                      cardDetails?.isLoading ||
+                      cardDetails?.isFetching
                     }
                     onClick={() => changeIndex("next")}
                     color={"primary"}
                   >
                     {t("Next")}
                   </Button>
+                  <Button
+                    onClick={() => filterData({ flag: "all" })}
+                    color="primary"
+                  >
+                    {t("View All")}
+                  </Button>
+                  <Button
+                    onClick={() => filterData({ flag: "refresh" })}
+                    color="primary"
+                  >
+                    {t("Refresh")}
+                  </Button>
                 </>
               )}
 
-              <Button
-                onClick={() => navigate("joint-details")}
-                color={"primary"}
-              >
-                {t("JointDetails")}
-              </Button>
-              <Button onClick={() => navigate("photo-sign")} color="primary">
-                {t("PhotoSign")}
-              </Button>
-              <Button color={"primary"}>View Changes</Button>
               <Button
                 onClick={() => navigate("retrieve-form")}
                 color={"primary"}
@@ -199,7 +202,10 @@ const ConfirmationCustom = () => {
       </MasterDetailsForm>
 
       {isData?.isOpenCard && (
-        <CardPrinting cardData={isData.cardData} setIsData={setIsData} />
+        <CardPrinting
+          cardData={rowsData?.[currentIndex]?.data}
+          setIsData={setIsData}
+        />
       )}
       <Routes>
         <Route
