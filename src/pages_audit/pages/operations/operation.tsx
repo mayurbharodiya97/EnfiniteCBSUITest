@@ -3,9 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
-import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
+// import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
+import { FDContextWrapper } from "./fix-deposit/context/fdContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -17,7 +18,8 @@ const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
-const FixDepositForm = lazy(() => import("./fixDeposit"));
+// const FixDepositForm = lazy(() => import("./fixDeposit"));
+const FDDetailGrid = lazy(() => import("./fix-deposit"));
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -174,18 +176,25 @@ export const OperationsMenu = () => (
       path="rtgs-ho-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="HO" />}
     />
-    <Route
-      path="insurance-entry/*"
-      element={<InsuranceEntryForm  />}
-    />
-    <Route
+    <Route path="insurance-entry/*" element={<InsuranceEntryForm />} />
+    {/* <Route
       path="fix-deposit/*"
       element={
         <FixDepositProvider>
           <FixDepositForm />
         </FixDepositProvider>
       }
+    /> */}
+
+    <Route
+      path="fix-deposit/*"
+      element={
+        <FDContextWrapper>
+          <FDDetailGrid />
+        </FDContextWrapper>
+      }
     />
+
     <Route
       path="form-15g-h-entry/*"
       element={<Form15GHEntryGrid screenFlag="E" />}
