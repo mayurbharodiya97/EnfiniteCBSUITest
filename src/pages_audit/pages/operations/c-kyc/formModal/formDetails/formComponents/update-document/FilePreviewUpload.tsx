@@ -11,7 +11,7 @@ import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { Fragment, useCallback, useEffect, useState } from "react";
 
-const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow }) => {
+const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow, preventModify }) => {
   const [files, setFiles] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
@@ -21,11 +21,13 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
   };
   useEffect(() => {
     if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
-      if(detailsDataRef.NEW_FLAG === "N") {
+      if(detailsDataRef.NEW_FLAG === "N" && !Boolean(preventModify)) {
         setAllowUpdate(true)
       }
     } else {
-      setAllowUpdate(true)
+      if(!Boolean(preventModify)) {
+        setAllowUpdate(true)
+      }
     }
   }, [])
   const validateFilesAndAddToListCB = useCallback(

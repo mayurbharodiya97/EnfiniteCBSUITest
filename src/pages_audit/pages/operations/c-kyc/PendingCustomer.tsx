@@ -14,6 +14,7 @@ import FormModal from "./formModal/formModal";
 import { format } from "date-fns";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 import { queryClient } from "cache";
+import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
 const PendingCustomer = () => {
   const { authState } = useContext(AuthContext);
@@ -42,7 +43,8 @@ const PendingCustomer = () => {
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      REQ_FLAG: "A",
+      // REQ_FLAG: "A",
+      REQ_FLAG: "P", //for checking only 
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"
     })
@@ -171,6 +173,18 @@ const PendingCustomer = () => {
                 navigate(".");
               }}
               viewMode={formMode ?? "edit"}
+            />
+          }
+        />
+
+        <Route
+          path="document/*"
+          element={
+            <UpdateDocument
+              open={true}
+              onClose={() => navigate(".")}
+              viewMode={formMode ?? "view"}
+              from={"ckyc-pending"}
             />
           }
         />
