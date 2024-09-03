@@ -1,16 +1,15 @@
 import { usePopupContext } from "components/custom/popupContext";
 import React, { useContext, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { getLimitFDdetail } from "../api";
 import { ActionTypes } from "components/dataTable";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { AppBar, Dialog, LinearProgress } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { fdDetailGridData } from "./fdDetailsGridMetaData";
-import { useTranslation } from "react-i18next";
 
 export const FdDetails = ({ navigate, myMasterRef }) => {
   const fdAction: ActionTypes[] = [
@@ -23,12 +22,12 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
     },
   ];
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [openDialog, setOpenDialg] = useState<boolean>(false);
-  const { t } = useTranslation();
 
   const fdDetail: any = useMutation("getLimitFDdetail", getLimitFDdetail, {
     onSuccess: (data) => {
+      CloseMessageBox();
       if (data?.[0]?.MESSAGE) {
         navigate(".");
         MessageBox({
@@ -47,6 +46,7 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
         messageTitle: "confirmation",
         message: `Press 'Yes' then - to view Lien FD(s) against this A/c.,\nPress 'No' then to view all the FD(s) of  this Customer.`,
         buttonNames: ["Yes", "No", "Cancel"],
+        loadingBtnName: ["Yes", "No"],
       });
       if (buttonName === "Yes" || buttonName === "No") {
         myMasterRef?.current?.getFieldData().then((res) => {
@@ -62,6 +62,8 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
             });
           }
         });
+
+        // CloseMessageBox();
       } else {
         navigate(".");
       }

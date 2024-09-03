@@ -1,7 +1,7 @@
 export const metaData = {
   form: {
-    name: "Line Master Config",
-    label: "Line Master",
+    name: "Lien Master",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -54,7 +54,7 @@ export const metaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["code is Required"] }],
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       __EDIT__: { isReadOnly: true },
@@ -62,7 +62,7 @@ export const metaData = {
     {
       render: { componentType: "select" },
       name: "PARENT_TYPE",
-      placeholder: "select parent type",
+      placeholder: "ParentType",
       label: "ParentType",
       options: [
         { label: "NORMAL ", value: "00  " },
@@ -83,12 +83,7 @@ export const metaData = {
       autoComplete: "on",
       isFieldFocused: false,
       __EDIT__: { isReadOnly: true },
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Please Select Parent Type"] },
-        ],
-      },
+  
     },
     {
       render: {
@@ -103,16 +98,11 @@ export const metaData = {
       txtTransform: "uppercase",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is Required"] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        // Duplication validation
-
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();

@@ -2,7 +2,7 @@ import { AppBar, Dialog, Grid, IconButton } from "@mui/material";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation } from "react-query";
@@ -16,7 +16,7 @@ import { CreateDetailsRequestData } from "components/utils";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { enqueueSnackbar } from "notistack";
 
-const UpdateDocument = ({ open, onClose, viewMode }) => {
+const UpdateDocument = ({ open, onClose, viewMode, from }) => {
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
   const myGridRef = useRef<any>(null);
@@ -24,6 +24,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
   const currRowRef = useRef<any>(false);
   const { handleFormModalClosectx } = useContext(CkycContext);
   const [girdData, setGridData] = useState<any>([]);
+  const [confirmAction, setConfirmAction] = useState<any>("");
   const { authState } = useContext(AuthContext);
   const { state } = useLocation();
   const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
@@ -105,13 +106,77 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
     },
   ];
 
+
+
+  const action2 = useMemo(() => {
+    let actionArray = [
+      {
+        actionName: "edit-details",
+        actionLabel: "View Details",
+        multiple: false,
+        rowDoubleClick: true,
+      },
+      {
+        actionName: "add",
+        actionLabel: "Add",
+        multiple: undefined,
+        rowDoubleClick: false,
+        alwaysAvailable: true,
+      },
+      {
+        actionName: "close",
+        actionLabel: "Close",
+        multiple: undefined,
+        rowDoubleClick: false,
+        alwaysAvailable: true,
+      },
+    ];
+
+    if(Boolean(from && from === "ckyc-confirm")) {
+      actionArray = [
+        {
+          actionName: "edit-details",
+          actionLabel: "View Details",
+          multiple: false,
+          rowDoubleClick: true,
+        },
+        {
+          actionName: "confirm",
+          actionLabel: "Confirm",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "reject",
+          actionLabel: "Reject",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "close",
+          actionLabel: "Close",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        }
+      ];
+    }
+    return actionArray;
+  }, [viewMode])
+
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "close") {
         handleFormModalClosectx();
         onClose();
-      }
-      else {
+      } else if(data.name === "confirm") {
+        setConfirmAction("confirm")
+      } else if(data.name === "reject") {
+        setConfirmAction("reject")
+      } else {
+        setConfirmAction("")
         // console.log("qwefhweufhiuwheiufhwef", data?.rows)
         navigate(data?.name, {
           state: { ...state, rows: data?.rows, 
@@ -189,13 +254,13 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
           data={girdData ?? []}
           setData={setGridData}
           loading={custDTLMutation.isLoading || custDTLMutation.isFetching || mutation.isLoading}
-          actions={actions}
+          actions={action2}
           setAction={setCurrentAction}
           // refetchData={() => refetch()}
           ref={myGridRef}
           onClickActionEvent={(index, id, currentData) => {
             // console.log(">>doc onClickActionEvent", index, id, currentData);
-            if (id === "_hidden") {
+            if (id === "_hidden" && !Boolean(from && from === "ckyc-confirm")) {
               setIsDelConfirm(true);
               currRowRef.current = currentData;
               // let newData: any[] = [];
@@ -241,6 +306,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
                 ClosedEventCall={handleDialogClose}
                 defaultmode={"view"}
                 girdData={girdData}
+                preventModify={Boolean(from && from === "ckyc-confirm") ?? true}
               />
             }
           />

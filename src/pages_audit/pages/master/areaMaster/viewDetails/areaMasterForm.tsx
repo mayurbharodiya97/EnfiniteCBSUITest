@@ -11,13 +11,15 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const AreaMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
@@ -28,7 +30,7 @@ const AreaMasterForm = ({
   const mutation = useMutation(API.updateAreaMasterData,
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -38,7 +40,7 @@ const AreaMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("Records successfully Saved", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -56,83 +58,81 @@ const AreaMasterForm = ({
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 
 
-    const onSubmitHandler: SubmitFnType = async (
-      data: any,
-      displayData: any,
-      endSubmit,
-      setFieldError
-    ) => {
-      endSubmit(true);
-    
-      let newData = {
-        ...data,
-      };
-    
-      let oldData = {
-        ...rows?.[0]?.data,
-      };
-    
-      let upd = utilFunction.transformDetailsData(newData, oldData);
-      const currentRowId = rows?.[0]?.data?.AREA_CD; 
-      const duplicateItem = gridData.find((item: any) => {
-        if (item.AREA_CD === currentRowId) {
-          return false;
-        }
-        return (
-          item.AREA_NM === newData.AREA_NM &&
-          item.PIN_CODE === newData.PIN_CODE
-        );
-      });
-    
-      if (upd._UPDATEDCOLUMNS.length > 0) {
-        if (duplicateItem) {
-          const duplicateIndex = gridData.indexOf(duplicateItem);
-          //@ts-ignore
-          const errorMessage = `Area & Pin Code already entered at Sr No - ${duplicateIndex + 1} - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
-          await MessageBox({
-            message: errorMessage,
-            messageTitle: "Alert",
-            buttonNames: ["Ok"],
-          });
-          return;
-        }
-      }
-    
-      isErrorFuncRef.current = {
-        data: {
-          ...newData,
-          ...upd,
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          _isNewRow: defaultView === "add" ? true : false,
-        },
-        displayData,
-        endSubmit,
-        setFieldError,
-      };
-    
-      if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
-        setFormMode("view");
-      } else {
-        const btnName = await MessageBox({
-          message: "Do you want to save this Request?",
-          messageTitle: "Confirmation",
-          buttonNames: ["Yes", "No"],
-          loadingBtnName: ["Yes"],
-        });
-        if (btnName === "Yes") {
-          mutation.mutate({
-            data: { ...isErrorFuncRef.current?.data },
-          });
-        }
-      }
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData: any,
+    endSubmit,
+    setFieldError
+  ) => {
+    endSubmit(true);
+
+    let newData = {
+      ...data,
     };
-    
-    
-    
+
+    let oldData = {
+      ...rows?.[0]?.data,
+    };
+
+    let upd = utilFunction.transformDetailsData(newData, oldData);
+    const currentRowId = rows?.[0]?.data?.AREA_CD;
+    const duplicateItem = gridData.find((item: any) => {
+      if (item.AREA_CD === currentRowId) {
+        return false;
+      }
+      return (
+        item.AREA_NM === newData.AREA_NM &&
+        item.PIN_CODE === newData.PIN_CODE
+      );
+    });
+
+    if (upd._UPDATEDCOLUMNS.length > 0) {
+      if (duplicateItem) {
+        const duplicateIndex = gridData.indexOf(duplicateItem);
+        //@ts-ignore
+        const errorMessage = `Area & Pin Code already entered at Sr No - ${duplicateIndex + 1} - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
+        await MessageBox({
+          message: errorMessage,
+          messageTitle: "Alert",
+          buttonNames: ["Ok"],
+        });
+        return;
+      }
+    }
+
+    isErrorFuncRef.current = {
+      data: {
+        ...newData,
+        ...upd,
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        _isNewRow: defaultView === "add" ? true : false,
+      },
+      displayData,
+      endSubmit,
+      setFieldError,
+    };
+
+    if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
+      setFormMode("view");
+    } else {
+      const btnName = await MessageBox({
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
+      });
+      if (btnName === "Yes") {
+        mutation.mutate({
+          data: { ...isErrorFuncRef.current?.data },
+        });
+      }
+    }
+  };
 
   return (
     <>
+    {gridData ? (
       <FormWrapper
         key={"areaMasterForm" + formMode}
         metaData={
@@ -162,7 +162,7 @@ const AreaMasterForm = ({
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
-                  }} 
+                  }}
                   disabled={isSubmitting}
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
@@ -211,7 +211,11 @@ const AreaMasterForm = ({
             )}
           </>
         )}
+        
       </FormWrapper>
+       ) : (
+        <LoaderPaperComponent />
+       )}
     </>
   );
 };
@@ -220,7 +224,7 @@ export const AreaMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog

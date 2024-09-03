@@ -5,6 +5,7 @@ import {
   useCallback,
   useState,
   useContext,
+  useMemo,
 } from "react";
 import {
   useField,
@@ -56,6 +57,11 @@ interface MyGridExtendedProps {
   };
   enableShortcut?: string[];
   ignoreInSubmit?: boolean;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
+  label?: string;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -89,6 +95,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   setColor,
   showMaxLength = true,
   label,
+  setFieldLabel,
   startsIcon,
   endsIcon,
   iconStyle,
@@ -163,10 +170,14 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   const customHandleChange = useCallback(
     (e) => {
-      if(Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
-        let newValue:string = e.target.value;
-        const characters: string | null = localStorage.getItem("specialChar") ?? "";
-        if(newValue.split("")?.filter((char) => characters?.includes(char))?.length>0) {
+      if (Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
+        let newValue: string = e.target.value;
+        const characters: string | null =
+          localStorage.getItem("specialChar") ?? "";
+        if (
+          newValue.split("")?.filter((char) => characters?.includes(char))
+            ?.length > 0
+        ) {
           return;
         }
       }
@@ -254,6 +265,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
     whenToRunValidation,
     setErrorAsCB,
   ]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
 
   if (excluded) {
     return null;
@@ -385,7 +403,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
+        label={updatedLabel ?? label}
         value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={
@@ -414,6 +432,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
           ...textFieldStyle,
         }}
         FormHelperTextProps={{
@@ -423,11 +446,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: textFieldStyle
-              ? ""
-              : Boolean(readOnly)
-              ? "var(--theme-color7)"
-              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,
@@ -472,7 +490,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           ...inputProps,
         }}
         onBlur={handleBlur}
-        disabled={isSubmitting}
+        disabled={isSubmitting || readOnly}
         variant={"standard"}
         color="secondary"
         ref={inputfocusRef}

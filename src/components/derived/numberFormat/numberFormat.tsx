@@ -62,7 +62,6 @@ const MyNumberFormat: React.FC<AllNumberFormatProps> = ({
   return (
     <TextField
       {...others}
-      className={textInputFromRight ? "textInputFromRight" : ""}
       InputProps={{
         inputComponent: NumberFormatCustom,
         inputProps: {

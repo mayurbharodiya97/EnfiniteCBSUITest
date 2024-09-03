@@ -29,7 +29,7 @@ const OrnamentTypeMasterForm = ({
 
   const mutation = useMutation(API.ornamentTypeMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -61,9 +61,9 @@ const OrnamentTypeMasterForm = ({
     };
     let oldData = {
       ...rows?.[0]?.data,
+      ORN_MARGIN: Number(rows?.[0]?.data?.ORN_MARGIN ?? 0).toFixed(2),
     };
     let upd = utilFunction.transformDetailsData(newData, oldData);
-
     isErrorFuncRef.current = {
       data: {
         ...newData,
@@ -81,7 +81,7 @@ const OrnamentTypeMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],

@@ -2,7 +2,6 @@ import {
   AppBar,
   Box,
   Button,
-  CircularProgress,
   Container,
   Grid,
   LinearProgress,
@@ -37,7 +36,6 @@ import { FdDetails } from "./fdDetail/fdDetails";
 import { NscDetails } from "./nscDetail/nscDetails";
 import { useTranslation } from "react-i18next";
 import { SecurityDetailForm } from "./securityDetail/securityDetail";
-import { use } from "i18next";
 
 const LimitEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -64,7 +62,6 @@ const LimitEntryCustom = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const reqDataRef = useRef<any>({});
-  const { deleteReq, acctValidData } = reqDataRef.current;
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -104,38 +101,55 @@ const LimitEntryCustom = () => {
             ...variables,
             _isNewRow: true,
           };
-          if (data?.[0]?.O_STATUS === "0") {
-            let res = await MessageBox({
-              messageTitle: "ValidationSuccessfull",
-              message: "DoYouWantToSaveThisData",
-              buttonNames: ["No", "Yes"],
-              defFocusBtnName: "Yes",
-              loadingBtnName: ["Yes"],
+          if (Array.isArray(data) && data?.length > 0) {
+            const btnName = async (buttonNames, msg, msgTitle) => {
+              return await MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+            };
+
+            let messages = { "999": [], "99": [], "9": [], "0": [] };
+            let status = { "999": false, "99": false, "9": false, "0": false };
+
+            data.forEach((item) => {
+              if (messages[item.O_STATUS] !== undefined) {
+                messages[item.O_STATUS].push(`⁕ ${item?.O_MESSAGE}`);
+                status[item.O_STATUS] = true;
+              }
             });
-            if (res === "Yes") {
-              crudLimitData.mutate(apiReq);
+
+            let concatenatedMessages = {};
+            for (let key in messages) {
+              concatenatedMessages[key] = messages[key].join("\n");
             }
-          } else if (data?.[0]?.O_STATUS === "9") {
-            MessageBox({
-              messageTitle: "ValidationAlert",
-              message: data?.[0]?.O_MESSAGE,
-            });
-          } else if (data?.[0]?.O_STATUS === "99") {
-            let res = await MessageBox({
-              messageTitle: "DoYouContinueWithRecord",
-              message: data?.[0]?.O_MESSAGE,
-              buttonNames: ["No", "Yes"],
-              defFocusBtnName: "Yes",
-              loadingBtnName: ["Yes"],
-            });
-            if (res === "Yes") {
-              crudLimitData.mutate(apiReq);
+
+            if (status["999"]) {
+              btnName(["Ok"], concatenatedMessages["999"], "ValidationFailed");
+            } else if (status["99"]) {
+              let buttonName = await btnName(
+                ["Yes", "No"],
+                concatenatedMessages["99"],
+                "DoYouContinueWithRecord"
+              );
+              if (buttonName === "Yes" && status["9"]) {
+                btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert");
+              } else if (buttonName === "Yes") {
+                crudLimitData.mutate(apiReq);
+              }
+            } else if (status["9"]) {
+              btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert");
+            } else if (status["0"]) {
+              let buttonName = await btnName(
+                ["Yes", "No"],
+                "AreYouSureToProceed",
+                "ValidationSuccessfull"
+              );
+              if (buttonName === "Yes") {
+                crudLimitData.mutate(apiReq);
+              }
             }
-          } else if (data?.[0]?.O_STATUS === "999") {
-            MessageBox({
-              messageTitle: "ValidationFailed",
-              message: data?.[0]?.O_MESSAGE,
-            });
           }
         }
         validData();
@@ -156,10 +170,7 @@ const LimitEntryCustom = () => {
             messageTitle: "InvalidDeleteOperation",
             message: data?.[0]?.O_RESTRICT,
           });
-        } else if (
-          data?.[0]?.O_STATUS === "0" &&
-          data?.[0]?.O_RESTRICT === "SUCCESS"
-        ) {
+        } else if (data?.[0]?.O_STATUS === "0") {
           reqDataRef.current.deleteReq = variables;
           setIsData((old) => {
             return { ...old, isDelete: true };
@@ -245,6 +256,23 @@ const LimitEntryCustom = () => {
     },
     [navigate]
   );
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "s" && event.ctrlKey) {
+        event.preventDefault();
+        myMasterRef?.current?.handleSubmit(
+          { preventDefault: () => {} },
+          "Save"
+        );
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -303,6 +331,7 @@ const LimitEntryCustom = () => {
         >
           {securityLimitData.isLoading ||
           validateInsertData?.isLoading ||
+          crudLimitData?.isLoading ||
           validateDeleteData.isLoading ? (
             <LinearProgress color="secondary" />
           ) : (securityLimitData?.isError && isData.closeAlert) ||
@@ -346,13 +375,13 @@ const LimitEntryCustom = () => {
               metaData={isData.newFormMTdata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
+                //@ts-ignore
+                endSubmit(true);
                 let apiReq = {
                   ...data,
                   ...reqDataRef.current.securityDetails,
                 };
                 validateInsertData.mutate(apiReq);
-                //@ts-ignore
-                endSubmit(true);
               }}
               hideHeader={false}
               ref={myMasterRef}
@@ -369,7 +398,7 @@ const LimitEntryCustom = () => {
                   }));
                   securityLimitData.mutate({
                     ...payload,
-                    ...acctValidData,
+                    ...reqDataRef.current.acctValidData,
                     COMP_CD: authState?.companyID,
                     BRANCH_CD: authState?.user?.branchCode,
                     WORKING_DATE: authState?.workingDate,
@@ -410,9 +439,9 @@ const LimitEntryCustom = () => {
                         handleSubmit(event, "Save");
                       }}
                       // disabled={isSubmitting}
-                      endIcon={
-                        isSubmitting ? <CircularProgress size={20} /> : null
-                      }
+                      // endIcon={
+                      //   isSubmitting ? <CircularProgress size={20} /> : null
+                      // }
                       color={"primary"}
                     >
                       {t("Save")}
@@ -485,7 +514,7 @@ const LimitEntryCustom = () => {
 
       {isData.isDelete && (
         <RemarksAPIWrapper
-          TitleText={"deleteTitle"}
+          TitleText={"LimitDeleteTitle"}
           onActionNo={() =>
             setIsData((old) => ({
               ...old,
@@ -517,7 +546,7 @@ const LimitEntryCustom = () => {
           AcceptbuttonLabelText="Ok"
           CanceltbuttonLabelText="Cancel"
           open={isData?.isDelete}
-          rows={deleteReq}
+          rows={reqDataRef.current.deleteReq}
           defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
         />
       )}
@@ -530,20 +559,5 @@ export const LimitEntry = () => {
     <ClearCacheProvider>
       <LimitEntryCustom />
     </ClearCacheProvider>
-  );
-};
-
-export const PinkColor: any = () => {
-  return (
-    <>
-      <div
-        style={{
-          background: "red",
-          borderRadius: "50%",
-          height: "15px",
-          width: "15px",
-        }}
-      ></div>
-    </>
   );
 };

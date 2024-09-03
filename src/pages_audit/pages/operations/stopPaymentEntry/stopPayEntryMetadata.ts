@@ -76,6 +76,13 @@ export const StopPayEntryMetadata = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -103,8 +110,25 @@ export const StopPayEntryMetadata = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -129,53 +153,54 @@ export const StopPayEntryMetadata = {
             let postData = await GeneralAPI.getAccNoValidation(
               otherAPIRequestPara
             );
+            let apiRespMSGdata = postData?.MSG;
+            let isReturn;
+            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+              return { buttonName, status };
+            };
+            if (apiRespMSGdata?.length) {
+              for (let i = 0; i < apiRespMSGdata?.length; i++) {
+                if (apiRespMSGdata[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    apiRespMSGdata[i]?.O_MESSAGE,
+                    apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? ["Yes", "No"]
+                      : ["Ok"],
+                    apiRespMSGdata[i]?.O_STATUS
+                  );
 
-            if (postData?.RESTRICTION) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.RESTRICTION,
-                defFocusBtnName: "Ok",
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                };
+                  if (btnName.buttonName === "No" || btnName.status === "999") {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: false,
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                    };
+                  } else {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: true,
+                    });
+                    isReturn = true;
+                  }
+                } else {
+                  formState.setDataOnFieldChange("IS_VISIBLE", {
+                    IS_VISIBLE: true,
+                  });
+                  isReturn = true;
+                }
               }
-            } else if (postData?.MESSAGE1) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.MESSAGE1,
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                  TRAN_BAL: {
-                    value: postData?.WIDTH_BAL ?? "",
-                  },
-                };
-              }
-            } else {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
+            }
+            if (Boolean(isReturn)) {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -209,6 +234,13 @@ export const StopPayEntryMetadata = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -222,10 +254,10 @@ export const StopPayEntryMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
 
@@ -236,13 +268,12 @@ export const StopPayEntryMetadata = {
       name: "TRAN_BAL",
       label: "Balance",
       isReadOnly: true,
-      type: "text",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -276,10 +307,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -300,10 +331,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -323,10 +354,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -402,7 +433,7 @@ export const StopPayEntryMetadata = {
         }
         return {};
       },
-      // runPostValidationHookAlways: true,
+      runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -410,10 +441,10 @@ export const StopPayEntryMetadata = {
       required: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -432,12 +463,8 @@ export const StopPayEntryMetadata = {
         "TYPE_CD",
       ],
       validate: (field, dependentFields) => {
-        console.log("<<<", field);
-        if (
-          Number(field?.value) &&
-          dependentFields?.CHEQUE_FROM?.value < Number(field?.value)
-        ) {
-          return "";
+        if (!field?.value) {
+          return "ThisFieldisrequired";
         } else if (
           Number(dependentFields?.CHEQUE_FROM?.value) > Number(field?.value)
         ) {
@@ -493,6 +520,8 @@ export const StopPayEntryMetadata = {
                 CHEQUE_TO: { value: "", isFieldFocused: true },
                 SERVICE_TAX: { value: "" },
                 AMOUNT: { value: "" },
+                SERVICE_C_FLAG: { value: "" },
+                GST: { value: "" },
               };
             }
           } else {
@@ -522,18 +551,13 @@ export const StopPayEntryMetadata = {
         return {};
       },
       // runPostValidationHookAlways: true,
-
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
       required: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -542,7 +566,6 @@ export const StopPayEntryMetadata = {
       },
       name: "REASON_CD",
       label: "Reason",
-
       placeholder: "SelectReason",
       disableCaching: true,
       dependentFields: ["FLAG", "BRANCH_CD"],
@@ -566,10 +589,10 @@ export const StopPayEntryMetadata = {
       _optionsKey: "reasonDropdown",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 5,
+        sm: 5,
+        lg: 5,
+        xl: 5,
       },
     },
     {
@@ -577,7 +600,9 @@ export const StopPayEntryMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-
+      FormatProps: {
+        allowNegative: false,
+      },
       label: "ChargeAmount",
       dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -632,10 +657,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -645,6 +670,10 @@ export const StopPayEntryMetadata = {
       name: "SERVICE_TAX",
       label: "GSTAmount",
       isReadOnly: true,
+
+      FormatProps: {
+        allowNegative: false,
+      },
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {
@@ -655,10 +684,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -669,10 +698,10 @@ export const StopPayEntryMetadata = {
       label: "ChequeDate",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -683,6 +712,9 @@ export const StopPayEntryMetadata = {
       name: "CHEQUE_AMOUNT",
       label: "ChequeAmount",
       placeholder: "Cheque Amount",
+      FormatProps: {
+        allowNegative: false,
+      },
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -693,10 +725,10 @@ export const StopPayEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -708,12 +740,19 @@ export const StopPayEntryMetadata = {
       label: "Infavour",
       type: "text",
       placeholder: "Infavour",
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return t("SpecialCharactersNotAllowedRemarks");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -723,12 +762,19 @@ export const StopPayEntryMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "Enter Remarks",
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return t("SpecialCharactersNotAllowedRemarks");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 

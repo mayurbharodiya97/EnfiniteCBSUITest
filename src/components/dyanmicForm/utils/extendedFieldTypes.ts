@@ -167,7 +167,14 @@ export const extendFieldTypes = (
       field["placeholder"] = lanTranslate(field["placeholder"]);
       if (key === "branchCode") {
         // Set the default value for branchCode
-        field["defaultValue"] = authState?.user?.branchCode;
+        if (
+          field?.defaultValue?.trim() === "" ||
+          Boolean(field?.defaultValue?.trim())
+        ) {
+          field["defaultValue"] = field?.defaultValue;
+        } else {
+          field["defaultValue"] = authState?.user?.branchCode;
+        }
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
         // field["autoFocus"] = true;
@@ -236,15 +243,21 @@ export const extendFieldTypes = (
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
-    if (item.render.componentType === "datePicker") {
+    if (item.render.componentType === "datePicker" && authState?.workingDate) {
       if (Boolean(item?.isWorkingDate)) {
         item["defaultValue"] = new Date(authState?.workingDate);
       }
-      if (Boolean(item?.isMaxWorkingDate)) {
-        item["maxDate"] = new Date(authState?.workingDate);
+    }
+    if (
+      item.render.componentType === "datetimePicker" ||
+      item.render.componentType === "datePicker"
+    ) {
+      const now = new Date();
+      if (item?.disablePast) {
+        item["minDate"] = now;
       }
-      if (Boolean(item?.isMinWorkingDate)) {
-        item["minDate"] = new Date(authState?.workingDate);
+      if (item?.disableFuture) {
+        item["maxDate"] = now;
       }
     }
   });

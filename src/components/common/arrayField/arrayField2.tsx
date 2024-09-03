@@ -66,7 +66,8 @@ export interface ArrayField2Props {
   runExternalFunction?: Boolean;
   isRemoveButton?: Boolean;
   onFormDataChange?: any;
-  changeRowOrder?: Boolean;
+  changeRowOrder?: boolean;
+  isDivider?: boolean;
 }
 
 const metaDataTransform = (
@@ -112,6 +113,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   isScreenStyle,
   isRemoveButton,
   changeRowOrder,
+  isDivider
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -176,7 +178,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       }
       if (typeof result === "object") {
         allow = result?.allow ?? false;
-        reason = result?.reason ?? "Cannot add a new Row";
+        reason =
+          result?.reason ?? "Required value missing ,Please enter a value";
       }
       if (allow) {
         Boolean(changeRowOrder) ? push() : unshift();
@@ -253,6 +256,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         getAllRowsValues={getAllRowsValues}
         selectedRowIndex={selectedRowIndex}
         setSelectedRowIndex={setSelectedRowIndex}
+        isDivider={isDivider}
       />
     );
   });
@@ -372,6 +376,7 @@ export const ArrayFieldRow = ({
   getAllRowsValues,
   selectedRowIndex,
   setSelectedRowIndex,
+  isDivider = true
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -481,6 +486,9 @@ export const ArrayFieldRow = ({
     if (typeof formState?.onArrayFieldRowClickHandle === "function") {
       formState?.onArrayFieldRowClickHandle(wrapperData);
     }
+    if (typeof formState?.onArrayFieldRowDoubleClickHandle === "function") {
+      formState?.onArrayFieldRowDoubleClickHandle(wrapperData);
+    }
   };
   return (
     <Fragment key={row.fieldIndexKey}>
@@ -517,6 +525,9 @@ export const ArrayFieldRow = ({
       ) : null}
       <div
         onClick={formState?.onArrayFieldRowClickHandle && handleWrapperClick}
+        onDoubleClick={
+          formState?.onArrayFieldRowDoubleClickHandle && handleWrapperClick
+        }
         className={
           selectedRowIndex === rowIndex
             ? classes?.arrayFieldSelected
@@ -545,7 +556,7 @@ export const ArrayFieldRow = ({
           ) : null}
         </Grid>
       </div>
-      {fixedRows && rowIndex + 1 < totalRows ? (
+      {fixedRows && isDivider && rowIndex + 1 < totalRows ? (
         <Divider
           sx={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%" }}
         />

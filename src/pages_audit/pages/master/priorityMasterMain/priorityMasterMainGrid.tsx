@@ -18,19 +18,19 @@ import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
-    actionLabel: t("Add"),
+    actionLabel: "Add",
     multiple: undefined,
     alwaysAvailable: true,
   },
   {
     actionName: "view-details",
-    actionLabel: t("ViewDetail"),
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
   {
     actionName: "Delete",
-    actionLabel: t("Delete"),
+    actionLabel: "Delete",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -49,8 +49,8 @@ const PriorityMasterMainGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle:t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -81,7 +81,7 @@ const PriorityMasterMainGrid = () => {
   );
   const deleteMutation = useMutation(API.deletePriorityMasterMainData, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -91,7 +91,7 @@ const PriorityMasterMainGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -120,7 +120,7 @@ const PriorityMasterMainGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
           errorDetail={error?.error_detail}
           color="error"
         />

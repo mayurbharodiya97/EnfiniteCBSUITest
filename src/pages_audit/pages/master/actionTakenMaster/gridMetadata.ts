@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ActionTakenMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
-    gridLabel: "ActionTakenMaster",
+    gridLabel: "",
     rowIdColumn: "ACTION_TAKEN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -21,6 +21,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [
@@ -65,7 +66,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DATA_DISP",
-      columnName: "A4 Suit File Status Code",
+      columnName: "A4SuitFileStatusCode",
       sequence: 5,
       alignment: "left",
       componentType: "default",

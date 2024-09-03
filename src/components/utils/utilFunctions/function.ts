@@ -127,9 +127,10 @@ export const getCurrentDateinLong = () => {
 export const ValidatePassword = (pwd) => {
   if (!Boolean(pwd)) {
     return "Password is Required";
-  } else if (pwd.length < 8 || pwd.length > 16) {
-    return "Password must be between 8 and 16 characters long.";
-  }
+  } 
+  // else if (pwd.length < 8 || pwd.length > 16) {
+  //   return "Password must be between 8 and 16 characters long.";
+  // }
   return "";
 };
 
@@ -417,4 +418,29 @@ export const getDependetFieldDataArrayField = (inputData) => {
     }
   }
   return transformedData;
+};
+
+export const getDynamicLabel = (
+  path: string,
+  data: any,
+  setScreenCode: boolean
+) => {
+  const relativePath = path.replace("/cbsenfinity/", "");
+  let cleanedPath;
+
+  if (relativePath.includes("/")) {
+    cleanedPath = relativePath.split("/").slice(0, 2).join("/");
+  } else {
+    cleanedPath = relativePath;
+  }
+  let screenList = GetAllChieldMenuData(data, true);
+  const matchingPath = screenList.find((item) => item.href === cleanedPath);
+
+  if (matchingPath) {
+    return setScreenCode
+      ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
+      : `${matchingPath.label}`;
+  }
+
+  return "";
 };

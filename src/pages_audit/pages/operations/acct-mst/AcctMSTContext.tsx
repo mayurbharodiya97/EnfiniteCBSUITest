@@ -62,6 +62,135 @@ const initialState: any = {
   updateFormDatactx: {},
   isFinalUpdatectx: false,
 
+
+  mainIntialVals: {
+    UDYAM_REG_NO: "",
+    ANNUAL_TURNOVER_SR_CD: "",
+    BUSINESS_CD: "",
+    PRODUCTION_YES_NO: "",
+    DATE_OF_COMMENCEMENT: "",
+    ACTION_TAKEN_CD: "",
+    SANCTIONED_BY: "",
+    RATE_WEF: "",
+    NO_OF_LEAVES: "",
+    CHEQUE_NO: "",
+    REF_ACCT_CD: "",
+    REF_ACCT_TYPE: "",
+    REF_COMP_CD: "",
+    REF_BRANCH_CD: "",
+    LOCKER_KEY_NO: "",
+    INT_SKIP_REASON_TRAN_CD: "",
+    UDYAM_REG_DT: "",
+    INVEST_IN_PLANT: "",
+    NPA_REASON: "",
+    INT_SKIP_FLAG: "",
+    INSURANCE_EXPIRY_PENAL_RT: "",
+    STOCK_EXPIRY_PENAL_RT: "",
+    PACKET_NO: "",
+    AGAINST_CLEARING: "",
+    OD_APPLICABLE: "",
+    RESOLUTION_NO: "",
+    DOCKET_NO: "",
+    FILE_NO: "",
+    DATE_OF_DEATH: "",
+    HANDICAP_DESCIRPTION: "",
+    HANDICAP_FLAG: "",
+    PASSPORT_NO: "",
+    DAY_BOOK_REVRS_GRP_CD: "",
+    MONTHLY_HOUSEHOLD_INCOME: "",
+    EDUCATION_QUALIFICATION: "",
+    MARITAL_STATUS: "",
+    DATE_OF_RETIREMENT: "",
+    DESIGNATION_CD: "",
+    FIRM_NM: "",
+    SALARIED: "",
+    MOTHER_MAIDEN_NM: "",
+    PREFIX_CD: "",
+    LST_STATEMENT_DT: "",
+    CLOSE_REASON_CD: "",
+    DISBURSEMENT_DT: "",
+    PTS: "",
+    DUE_AMT: "",
+    DRAWING_POWER: "",
+    NPA_CD: "",
+    NPA_DT: "",
+    TYPE_CD: "",
+    LIMIT_AMOUNT: "",
+    PATH_SIGN: "",
+    DAY_BOOK_GRP_CD: "",
+    INSTALLMENT_TYPE: "",
+    LAST_INST_DT: "",
+    INST_DUE_DT: "",
+    INST_NO: "",
+    INST_RS: "",
+    SANCTIONED_AMT: "",
+    APPLIED_AMT: "",
+    INS_START_DT: "",
+    SANCTION_DT: "",
+    APPLY_DT: "",
+    RECOMMENDED_DESG: "",
+    RECOMMENED_NM: "",
+    ENTERED_DATE: "",
+    INT_TYPE: "",
+    SECURITY_CD: "",
+    PRIORITY_CD: "",
+    PURPOSE_CD: "",
+    CR_INT: "",
+    PENAL_RATE: "",
+    AG_CLR_RATE: "",
+    INT_RATE: "",
+    CATEG_CD: "",
+    CLASS_CD: "",
+    AGENT_CD: "",
+    LEAN_AMT: "",
+    LEAN_TYPE: "",
+    SHARE_ACCT_CD: "",
+    SHARE_ACCT_TYPE: "",
+    MEM_ACCT_CD: "",
+    MEM_ACCT_TYPE: "",
+    E_MAIL_ID: "",
+    REMARKS: "",
+    TRADE_INFO: "",
+    COMMU_CD: "",
+    ACCT_MODE: "",
+    GROUP_CD: "",
+    TRADE_CD: "",
+    FORM_60: "",
+    PAN_NO: "",
+    MOBILE_REG: "",
+    CONTACT3: "",
+    CONTACT2: "",
+    CONTACT1: "",
+    CONTACT4: "",
+    CONFIRMED: "",
+    GSTIN: "",
+    UNIQUE_ID: "",
+    CITY_CD: "",
+    AREA_CD: "",
+    ADD1: "",
+    ADD2: "",
+    STATUS: "",
+    ADD3: "",
+    FIRST_NM: "",
+    CLOSE_DT: "",
+    OP_DATE: "",
+    CUSTOMER_ID: "",
+    ACCT_CD: "",
+    ACCT_TYPE: "",
+    TIN: "",
+    LF_NO: "",
+    BIRTH_DT: "",
+    GENDER: "",
+    LAST_NM: "",
+    SURNAME: "",
+    INDUSTRY_CODE: "",
+    RENRE_CD: "",
+    THROUGH_CHANNEL: "",
+    REQUEST_CD: "",
+    ACCT_NM: ""
+  }
+
+
   // steps: {
   //     error: [],
   //     completed: [],
@@ -227,8 +356,8 @@ export const AcctMSTContext = React.createContext<any>({
     apiRes.forEach((element:any) => {
       steps.push({tabName: element?.TAB_DISPL_NAME, icon: element?.ICON, isVisible: element?.isVisible ?? true})
     })
-    const PARAM320 = apiRes?.[0]?.PARA_320;
-    const GPARAM155 = apiRes?.[0]?.GPARA_155;
+    const PARAM320 = apiRes?.[0]?.PARA_320; // enable/disable fields in main tab
+    const GPARAM155 = apiRes?.[0]?.GPARA_155; // hide/display fields
 
     dispatch({
         type: "update_ApiResctx",
@@ -260,12 +389,12 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormModalOpenOnEditctx = (recordData:any[]) => {
     if(
       Array.isArray(recordData) && 
-      recordData?.[0]?.data && 
-      Boolean(recordData?.[0]?.data?.REQUEST_ID)
+      recordData?.[0]?.data 
+      // && Boolean(recordData?.[0]?.data?.REQUEST_ID)
     ) {
       let payload = {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
-        acctNumberctx: recordData[0].data?.ACCOUNT_NUMBER ?? "",
+        acctNumberctx: recordData[0].data?.ACCT_CD ?? "",
         accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
         isFormModalOpenctx: true, isFreshEntryctx: false
       };
@@ -339,6 +468,65 @@ export const AcctMSTContext = React.createContext<any>({
   const handleFormDataonRetrievectx = (data) => {
     let retrieveApiRes = data
     let payload = {};
+    if(Array.isArray(data?.JOINT_ACCOUNT_DTL) && data?.JOINT_ACCOUNT_DTL?.length>0) {
+      data?.JOINT_ACCOUNT_DTL.forEach(jointRow => {
+        if(jointRow?.J_TYPE) {
+          // J, I, N, G, M, U, S
+          if(jointRow?.J_TYPE === "J   ") {
+            // Joint Holder
+            if(retrieveApiRes["JOINT_HOLDER_DTL"]) {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [...retrieveApiRes["JOINT_HOLDER_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HOLDER_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "I   ") {
+            // Introductor
+            if(retrieveApiRes["JOINT_INTRODUCTOR_DTL"]) {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [...retrieveApiRes["JOINT_INTRODUCTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_INTRODUCTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "N   ") {
+            // Nominee
+            if(retrieveApiRes["JOINT_NOMINEE_DTL"]) {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [...retrieveApiRes["JOINT_NOMINEE_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_NOMINEE_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "G   ") {
+            // Guarantor
+            if(retrieveApiRes["JOINT_GUARANTOR_DTL"]) {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [...retrieveApiRes["JOINT_GUARANTOR_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARANTOR_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "M   ") {
+            // Hypothication
+            if(retrieveApiRes["JOINT_HYPOTHICATION_DTL"]) {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [...retrieveApiRes["JOINT_HYPOTHICATION_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_HYPOTHICATION_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "U   ") {
+            // Guardian
+            if(retrieveApiRes["JOINT_GUARDIAN_DTL"]) {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [...retrieveApiRes["JOINT_GUARDIAN_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_GUARDIAN_DTL"] = [jointRow]
+            }
+          } else if(jointRow?.J_TYPE === "S   ") {
+            // Signatory
+            if(retrieveApiRes["JOINT_SIGNATORY_DTL"]) {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [...retrieveApiRes["JOINT_SIGNATORY_DTL"], jointRow];
+            } else {
+              retrieveApiRes["JOINT_SIGNATORY_DTL"] = [jointRow]
+            }
+          }
+        } else {
+          console.log("joint type not found")
+        }
+      });
+    }
     payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
     dispatch({
         type: "update_retrieveFormData",
@@ -390,7 +578,7 @@ export const AcctMSTContext = React.createContext<any>({
 
             let upd;
 
-            if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+            if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
                 let oldRow:any[] = []
                 let newRow:any[] = []
                 // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {

@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const AdvocateMstFormMetaData = {
   form: {
     name: "advocateMaster",
-    label: "AdvocateMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -41,6 +43,7 @@ export const AdvocateMstFormMetaData = {
       required: true,
       maxLength: 4,
       autoComplete: "off",
+      isFieldFocused: true,
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
@@ -64,7 +67,10 @@ export const AdvocateMstFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -103,7 +109,10 @@ export const AdvocateMstFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }

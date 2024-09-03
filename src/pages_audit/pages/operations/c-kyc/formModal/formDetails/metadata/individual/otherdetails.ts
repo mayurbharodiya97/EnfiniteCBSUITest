@@ -44,11 +44,11 @@ export const other_details_meta_data = {
     fields: [
       {
           render: {
-              componentType: "Divider",
+              componentType: "divider",
           },
-          dividerText: "AnnualIncome",
           name: "AnnualIncomeDivider_ignoreField",
-          label: "AnnualIncomeDivider",
+          label: "AnnualIncome",
+          GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
       },
       {
           render: {
@@ -140,11 +140,11 @@ export const other_details_meta_data = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "ExposureInfo",
             name: "ExposureInfoDivider_ignoreField",
-            label: "ExposureInfoDivider",
+            label: "ExposureInfo",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -187,11 +187,11 @@ export const other_details_meta_data = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "PersonalInfo",
             name: "PersonalInfoDivider_ignoreField",
-            label: "PersonalInfoDivider",
+            label: "PersonalInfo",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -318,11 +318,11 @@ export const other_details_meta_data = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "VehicleInfo",
             name: "VehicleInfoDivider_ignoreField",
-            label: "VehicleInfoDivider",
+            label: "VehicleInfo",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -411,11 +411,11 @@ export const other_details_meta_data = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Employment Info.",
             name: "EmpInfoDivider_ignoreField",
-            label: "EmpInfoDivider",
+            label: "Employment Info.",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {

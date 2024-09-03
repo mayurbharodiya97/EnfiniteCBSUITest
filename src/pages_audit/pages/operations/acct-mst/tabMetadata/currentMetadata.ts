@@ -49,11 +49,11 @@ export const current_tab_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "A/c Belongs to Director",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "A/c Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -62,10 +62,17 @@ export const current_tab_metadata = {
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
             placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmCurrentOp",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -94,12 +101,19 @@ export const current_tab_metadata = {
             },
             name: "INST_NO",
             label: "Chq. Sign Autho",
+            options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "chqSignAuthoCurrentOp",
             placeholder: "",
             // defaultValue: "N",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
-            _optionsKey: "chqSignAuthoCurrentOp",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
 
         {
@@ -137,11 +151,11 @@ export const current_tab_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Rates",
             name: "recommendbydivider_ignoreField",
-            label: ""
+            label: "Rates",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -150,6 +164,13 @@ export const current_tab_metadata = {
             name: "INT_RATE",
             label: "Interest",
             placeholder: "",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
@@ -248,6 +269,13 @@ export const current_tab_metadata = {
                 {label: "NO", value: "N"}
             ], //api 
             // _optionsKey: "npaReasonTermLoanOp",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -287,6 +315,13 @@ export const current_tab_metadata = {
             _optionsKey: "ptsCurrentOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -362,6 +397,13 @@ export const current_tab_metadata = {
             name: "PRIORITY_CD",
             label: "",
             isReadOnly: true,
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -396,6 +438,13 @@ export const current_tab_metadata = {
             _optionsKey: "RECRECurrentOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -408,6 +457,13 @@ export const current_tab_metadata = {
             _optionsKey: "businessCurrentOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {

@@ -144,3 +144,92 @@ export const chequeBookCfm = async (apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const validateInsert = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATESAVECHQDATA", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const issuedChequeBkDTL = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHEQUEBOOKISSUED", {
+      ...apireq,
+    });
+  if (status === "0") {
+    // return data;
+    return data.map((item) => {
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED_DISPLAY = "Confirm";
+      } else {
+        item.CONFIRMED_DISPLAY = "Pending";
+      }
+      return item;
+    });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateCheqbkCfm = async (apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECHQBKCONFRIMATIONDATA", {
+      ...apireq,
+    });
+  if (status === "0") {
+    return data;
+    // return [
+    //   {
+    //     MSG: [
+    //       {
+    //         O_MESSAGE: "message - 9 ",
+    //         O_STATUS: "9",
+    //       },
+    //       {
+    //         O_MESSAGE: "message - 99",
+    //         O_STATUS: "99",
+    //       },
+    //       {
+    //         O_MESSAGE: "message - 9 ",
+    //         O_STATUS: "9",
+    //       },
+    //       {
+    //         O_MESSAGE: "message -999",
+    //         O_STATUS: "999",
+    //       },
+    //       {
+    //         O_MESSAGE: "msg - 999",
+    //         O_STATUS: "999",
+    //       },
+    //       {
+    //         O_MESSAGE: "SUCCESS",
+    //         O_STATUS: "0",
+    //       },
+    //     ],
+    //     CATEG_CD: "01  ",
+    //     LIMIT_AMT: "83200",
+    //     NPA_CD: "01B ",
+    //     SANCTION_AMT: "180000",
+    //     MOBILE_REG: "Y",
+    //     OP_DATE: "2022-08-18 00:00:00.0",
+    //     CUSTOMER_ID: "212923",
+    //     ACCT_NM: "SHOEB M RAFIQ SHAIKH",
+    //     WIDTH_BAL: "290005",
+    //     CHEQUE_NO: "",
+    //     STATUS: "O",
+    //     TYPE_CD: "1",
+    //     TRAN_BAL: "290005",
+    //     CLOSE_DT: "",
+    //   },
+    // ];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

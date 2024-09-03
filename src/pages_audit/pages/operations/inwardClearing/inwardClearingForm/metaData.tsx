@@ -10,7 +10,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const chequeReturnPostFormMetaData = {
   form: {
     name: "InwardClearingChequeDetail",
-    label: "Inward Clearing Cheque Detail",
+    label: "InwardClearingChequeDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -96,13 +96,11 @@ export const chequeReturnPostFormMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_NO",
-      label: "Cheque No.",
-      placeholder: "Cheque No.",
+      label: "ChequeNo",
+      placeholder: "ChequeNo",
       type: "text",
       required: true,
       autoComplete: "off",
-      isFieldFocused: true,
-      defaultfocus: true,
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
@@ -152,11 +150,13 @@ export const chequeReturnPostFormMetaData = {
         componentType: "datePicker",
       },
       name: "CHEQUE_DT",
-      label: "Cheque Date",
+      label: "ChequeDate",
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      isFieldFocused: true,
+      defaultfocus: true,
       // dependentFields: ["TRAN_DATE", "RANGE_DATE"],
       // validate: (currentField, dependentField) => {
       //   const currentDate = new Date(currentField?.value);
@@ -180,15 +180,13 @@ export const chequeReturnPostFormMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "Cheque Amount",
+      label: "ChequeAmount",
       placeholder: "",
-      isFieldFocused: true,
       required: true,
       type: "text",
       FormatProps: {
         allowNegative: false,
       },
-
       GridProps: { xs: 6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
     {
@@ -207,6 +205,11 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
+        // validate: (currentField, value) => {
+        //   if (currentField?.value) {
+        //     return;
+        //   }
+        // },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("ACCT_CD_BLANK");
@@ -222,9 +225,20 @@ export const chequeReturnPostFormMetaData = {
       accountTypeMetadata: {
         name: "ACCT_TYPE",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-        isFieldFocused: true,
-        defaultfocus: true,
-        // required: true,
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "TRN/650",
+          });
+        },
+        _optionsKey: "get_Account_Type",
         dependentFields: ["DISABLE_MAIN_AC", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -250,7 +264,7 @@ export const chequeReturnPostFormMetaData = {
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
-        label: "A/C Number",
+        label: "ACNumber",
         placeholder: "",
         fullWidth: true,
         // required: true,
@@ -266,6 +280,11 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -274,7 +293,6 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -299,38 +317,69 @@ export const chequeReturnPostFormMetaData = {
             };
 
             let postData = await getInwardAccountDetail(Apireq);
-            if (postData?.[0]?.MESSAGE1) {
-              formState?.MessageBox({
-                messageTitle: "Information",
-                message: postData?.[0]?.MESSAGE1,
-              });
-            } else if (postData?.[0]?.RESTRICTION) {
-              formState?.MessageBox({
-                messageTitle: "Account Validation Failed",
-                message: postData?.[0]?.RESTRICTION,
-              });
-              formState.setDataOnFieldChange("ACCT_CD_VALID", []);
-              return {
-                ACCT_CD: { value: "", isFieldFocused: true },
-                ACCT_NM: { value: "" },
-                WIDTH_BAL: { value: "" },
-              };
+            let btn99, returnVal
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.O_STATUS === "999") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Validation Failed",
+                  message: postData[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "9") {
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "99") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Confirmation",
+                  message: postData[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData[i];
+                } else {
+                  returnVal = "";
+                }
+              }
+              formState.setDataOnFieldChange("ACCT_CD_VALID", postData[i]);
             }
-            formState.setDataOnFieldChange("ACCT_CD_VALID", postData);
+            btn99 = 0;
             return {
               // ACCT_CD: {
               //   value: postData?.[0]?.ACCT_NUMBER ?? "",
               //   ignoreUpdate: true,
               // },
-              ACCT_CD: {
-                value: field.value.padStart(6, "0")?.padEnd(20, " "),
-                ignoreUpdate: true,
-              },
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  }
+                  : {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               ACCT_NM: {
-                value: postData?.[0]?.ACCT_NM ?? "",
+                value: returnVal?.ACCT_NM ?? "",
               },
-              WIDTH_BAL: { value: postData?.[0]?.WIDTH_BAL ?? "" },
-              OTHER_REMARKS: { value: postData?.[0]?.OTHER_REMARKS ?? "" },
+              WIDTH_BAL: { value: returnVal?.WIDTH_BAL ?? "" },
+              OTHER_REMARKS: { value: returnVal?.OTHER_REMARKS ?? "" },
             };
           } else if (!field?.value) {
             formState.setDataOnFieldChange("ACCT_CD_BLANK");
@@ -341,6 +390,72 @@ export const chequeReturnPostFormMetaData = {
             };
           }
         },
+        // postValidationSetCrossFieldValues: async (
+        //   field,
+        //   formState,
+        //   auth,
+        //   dependentFieldsValues
+        // ) => {
+        //   if (formState?.isSubmitting) return {};
+        //   if (
+        //     field.value &&
+        //     dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
+        //     dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
+        //   ) {
+        //     let Apireq = {
+        //       COMP_CD: auth?.companyID,
+        //       ACCT_CD: utilFunction.getPadAccountNumber(
+        //         field?.value,
+        //         dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+        //       ),
+        //       ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+        //       BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+        //       SCREEN_REF: "ETRN/650",
+        //     };
+
+        //     let postData = await getInwardAccountDetail(Apireq);
+        //     if (postData?.[0]?.MESSAGE1) {
+        //       formState?.MessageBox({
+        //         messageTitle: "Information",
+        //         message: postData?.[0]?.MESSAGE1,
+        //       });
+        //     } else if (postData?.[0]?.RESTRICTION) {
+        //       formState?.MessageBox({
+        //         messageTitle: "Account Validation Failed",
+        //         message: postData?.[0]?.RESTRICTION,
+        //       });
+        //       formState.setDataOnFieldChange("ACCT_CD_VALID", []);
+        //       return {
+        //         ACCT_CD: { value: "", isFieldFocused: true },
+        //         ACCT_NM: { value: "" },
+        //         WIDTH_BAL: { value: "" },
+        //       };
+        //     }
+        //     formState.setDataOnFieldChange("ACCT_CD_VALID", postData);
+        //     return {
+        //       // ACCT_CD: {
+        //       //   value: postData?.[0]?.ACCT_NUMBER ?? "",
+        //       //   ignoreUpdate: true,
+        //       // },
+        //       ACCT_CD: {
+        //         value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+        //         ignoreUpdate: true,
+        //       },
+        //       ACCT_NM: {
+        //         value: postData?.[0]?.ACCT_NM ?? "",
+        //       },
+        //       WIDTH_BAL: { value: postData?.[0]?.WIDTH_BAL ?? "" },
+        //       OTHER_REMARKS: { value: postData?.[0]?.OTHER_REMARKS ?? "" },
+        //     };
+        //   } else if (!field?.value) {
+        //     formState.setDataOnFieldChange("ACCT_CD_BLANK");
+        //     return {
+        //       ACCT_NM: { value: "" },
+        //       WIDTH_BAL: { value: "" },
+        //       OTHER_REMARKS: { value: "" },
+        //     };
+        //   }
+        // },
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
       },
@@ -350,7 +465,7 @@ export const chequeReturnPostFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "A/C Name",
+      label: "Account_Name",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
@@ -394,7 +509,7 @@ export const chequeReturnPostFormMetaData = {
         componentType: "textField",
       },
       name: "OTHER_REMARKS",
-      label: "Mode Of Operation",
+      label: "ModeOfOperation",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
@@ -405,7 +520,7 @@ export const chequeReturnPostFormMetaData = {
         componentType: "amountField",
       },
       name: "WIDTH_BAL",
-      label: "Withdraw.Balance",
+      label: "WithdrawBalance",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
@@ -540,8 +655,8 @@ export const chequeReturnPostFormMetaData = {
         componentType: "autocomplete",
       },
       name: "RET_BRANCH_CD",
-      label: "Return Branch",
-      placeholder: "Branch",
+      label: "ReturnBranch",
+      placeholder: "ReturnBranch",
       type: "text",
       required: true,
       options: GeneralAPI.getBranchCodeList,
@@ -561,7 +676,7 @@ export const chequeReturnPostFormMetaData = {
         componentType: "autocomplete",
       },
       name: "RET_ACCT_TYPE",
-      label: "Return Account Type",
+      label: "ReturnAccountType",
       type: "text",
       required: true,
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
@@ -573,7 +688,14 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      options: GeneralAPI.get_Account_Type,
+      options: (dependentValue, formState, _, authState) => {
+        return GeneralAPI.get_Account_Type({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          USER_NAME: authState?.user?.id,
+          DOC_CD: "TRN/650",
+        });
+      },
       _optionsKey: "get_Account_Type",
     },
     {
@@ -581,7 +703,7 @@ export const chequeReturnPostFormMetaData = {
         componentType: "textField",
       },
       name: "RET_ACCT_CD",
-      label: "Return A/C Number",
+      label: "ReturnACNumber",
       type: "text",
       required: true,
       dependentFields: ["DISABLE_RET_AC"],
@@ -626,13 +748,12 @@ export const chequeReturnPostFormMetaData = {
         componentType: "textField",
       },
       name: "REASON",
-      label: "Other Reason",
+      label: "OtherReason",
       type: "text",
       fullWidth: true,
       validate: (currentField, value) => {
-        console.log("currentField", currentField?.value);
         if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(currentField?.value)) {
-          return "Special characters are not allowed.";
+          return "SpecialCharacterIsNotAllowed";
         }
         return "";
       },
@@ -654,7 +775,7 @@ export const chequeReturnPostFormMetaData = {
 export const chequesignFormMetaData = {
   form: {
     name: "InwardClearingchequeSign",
-    label: "Inward Clearing Cheque Detail",
+    label: "InwardClearingChequeDetail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -701,8 +822,8 @@ export const chequesignFormMetaData = {
         componentType: "numberFormat",
       },
       name: "CHEQUE_NO",
-      label: "Cheque No.",
-      placeholder: "Cheque No.",
+      label: "ChequeNo",
+      placeholder: "ChequeNo",
       type: "text",
       required: true,
       autoComplete: "off",
@@ -726,7 +847,7 @@ export const chequesignFormMetaData = {
         componentType: "datePicker",
       },
       name: "CHEQUE_DT",
-      label: "Cheque Date",
+      label: "ChequeDate",
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
@@ -734,7 +855,7 @@ export const chequesignFormMetaData = {
 
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Cheque Date is required."] }],
+        rules: [{ name: "required", params: ["ChequeDateRequired."] }],
       },
       GridProps: { xs: 12, sm: 2, md: 1.7, lg: 1.7, xl: 1.5 },
     },
@@ -743,7 +864,7 @@ export const chequesignFormMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "Cheque Amount",
+      label: "ChequeAmount",
       placeholder: "",
       isFieldFocused: true,
       required: true,
@@ -760,7 +881,7 @@ export const chequesignFormMetaData = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      label: "Branch Code",
+      label: "BranchCode",
       type: "text",
       fullWidth: true,
       required: true,
@@ -772,7 +893,7 @@ export const chequesignFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       type: "text",
       fullWidth: true,
       required: true,
@@ -784,7 +905,7 @@ export const chequesignFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account Number",
+      label: "AccountNo",
       type: "text",
       fullWidth: true,
       required: true,
@@ -904,7 +1025,7 @@ export const positivePayFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       type: "text",
       fullWidth: true,
       required: true,
@@ -916,7 +1037,7 @@ export const positivePayFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account Number",
+      label: "AccountNo",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1216,14 +1337,14 @@ export const shareDividendMetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Account Validation Failed",
+                  messageTitle: "Validation Failed",
                   message: postData[i]?.O_MESSAGE,
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 formState.setDataOnFieldChange("TAB_CHANGED");
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Risk Category Alert",
+                  messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                 });
@@ -1235,7 +1356,7 @@ export const shareDividendMetaData = {
                 formState.setDataOnFieldChange("TAB_CHANGED");
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNI Alert",
+                    messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
                   });
                 }
@@ -1273,15 +1394,15 @@ export const shareDividendMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
+                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  }
                   : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               WARRANT_NO: {
                 value: returnVal?.WARRANT_NO ?? "",
               },
@@ -1387,7 +1508,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Account Number",
+      columnName: "AccountNo",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1407,7 +1528,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WARRANT_NO",
-      columnName: "Warrant Number",
+      columnName: "WarrantNumber",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1429,7 +1550,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
       accessor: "DIVIDEND_AMOUNT",
       columnName: "Dividend Amount",
       sequence: 5,
-      alignment: "center",
+      alignment: "right",
       componentType: "currency",
       width: 170,
       minWidth: 100,
@@ -1447,7 +1568,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SHARE_AMOUNT",
-      columnName: "Shares Amount",
+      columnName: "SharesAmount",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1459,7 +1580,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
       accessor: "AMOUNT",
       columnName: "Amount",
       sequence: 5,
-      alignment: "center",
+      alignment: "right",
       componentType: "currency",
       width: 170,
       minWidth: 100,
@@ -1487,7 +1608,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAID_DATE",
-      columnName: "Paid Date",
+      columnName: "PaidDate",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1497,7 +1618,7 @@ export const ViewDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT_ACCOUNT",
-      columnName: "Credit Account",
+      columnName: "CreditAccount",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1545,7 +1666,7 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Account Number",
+      columnName: "AccountNo",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1565,7 +1686,7 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WARRANT_NO",
-      columnName: "Warrant Number",
+      columnName: "WarrantNumber",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1585,9 +1706,9 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DIVIDEND_AMOUNT",
-      columnName: "Dividend Amount",
+      columnName: "DividendAmount",
       sequence: 5,
-      alignment: "center",
+      alignment: "right",
       componentType: "currency",
       width: 170,
       minWidth: 100,
@@ -1605,9 +1726,9 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SHARE_AMOUNT",
-      columnName: "Shares Amount",
+      columnName: "SharesAmount",
       sequence: 5,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
       width: 170,
       minWidth: 100,
@@ -1617,7 +1738,7 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
       accessor: "AMOUNT",
       columnName: "Amount",
       sequence: 5,
-      alignment: "center",
+      alignment: "right",
       componentType: "currency",
       width: 170,
       minWidth: 100,
@@ -1645,7 +1766,7 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAID_DATE",
-      columnName: "Paid Date",
+      columnName: "PaidDate",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1655,7 +1776,7 @@ export const PaidWarrantGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT_ACCOUNT",
-      columnName: "Credit Account",
+      columnName: "CreditAccount",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -1717,7 +1838,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      label: "Branch Code",
+      label: "BranchCode",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1729,7 +1850,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      label: "Account Type",
+      label: "AccountType",
       type: "text",
 
       GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
@@ -1739,7 +1860,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      label: "Account Number",
+      label: "AccountNo",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1751,7 +1872,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1775,14 +1896,14 @@ export const ViewMasterMetaData = {
         componentType: "datePicker",
       },
       name: "OP_DATE",
-      label: "Opening Date",
+      label: "OpeningDate",
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Cheque Date is required."] }],
+        rules: [{ name: "required", params: ["OpeningDateRequired"] }],
       },
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
@@ -1792,7 +1913,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "JOINT1",
-      label: "Joint Name",
+      label: "JointName",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1805,7 +1926,7 @@ export const ViewMasterMetaData = {
         componentType: "amountField",
       },
       name: "UNCL_BAL",
-      label: "Opening Balance",
+      label: "OpeningBalance",
       placeholder: "",
       isFieldFocused: true,
       required: true,
@@ -1821,7 +1942,7 @@ export const ViewMasterMetaData = {
         componentType: "amountField",
       },
       name: "CONF_BAL",
-      label: "Closing Balance",
+      label: "ClosingBalance",
       placeholder: "",
       isFieldFocused: true,
       required: true,
@@ -1837,7 +1958,7 @@ export const ViewMasterMetaData = {
         componentType: "amountField",
       },
       name: "TRAN_BAL",
-      label: "Shadow Balance",
+      label: "ShadowBalance",
       placeholder: "",
       isFieldFocused: true,
       required: true,
@@ -1853,7 +1974,7 @@ export const ViewMasterMetaData = {
         componentType: "amountField",
       },
       name: "INST_RS",
-      label: "No.of Shares",
+      label: "NoOfShares",
       placeholder: "",
       isFieldFocused: true,
       required: true,
@@ -1903,11 +2024,12 @@ export const ViewMasterMetaData = {
 
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
       dividerText: "Address",
       name: "Address",
       label: "Address",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -1950,7 +2072,7 @@ export const ViewMasterMetaData = {
         componentType: "numberFormat",
       },
       name: "PIN_CODE",
-      label: "Pin Code",
+      label: "PinCode",
       type: "text",
       fullWidth: true,
       required: true,
@@ -2006,21 +2128,21 @@ export const ViewMasterMetaData = {
 
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
-
     {
       render: {
-        componentType: "Divider",
+        componentType: "divider",
       },
       dividerText: "Contacts",
       name: "Contacts",
-      label: "Contacts",
+      label: "Contact",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "CONTACT1",
-      label: "Phone(O)",
+      label: "PhoneO",
       placeholder: "",
       type: "text",
       GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
@@ -2030,7 +2152,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "CONTACT4",
-      label: "Phone(R)",
+      label: "PhoneR",
       placeholder: "",
       type: "text",
       GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
@@ -2040,7 +2162,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "CONTACT2",
-      label: "Mobile No.",
+      label: "MobileNo",
       placeholder: "",
       type: "text",
       GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
@@ -2050,7 +2172,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "CONTACT3",
-      label: "Alternate Phone",
+      label: "AlternatePhone",
       placeholder: "",
       type: "text",
       GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
@@ -2060,7 +2182,7 @@ export const ViewMasterMetaData = {
         componentType: "textField",
       },
       name: "ISSUED_BRANCH",
-      label: "Issued Branch",
+      label: "IssuedBranch",
       type: "text",
       fullWidth: true,
       required: true,

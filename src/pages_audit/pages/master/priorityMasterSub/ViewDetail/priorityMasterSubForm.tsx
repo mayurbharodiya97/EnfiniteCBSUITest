@@ -12,6 +12,8 @@ import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoadingTextAnimation } from "components/common/loader";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 export const Proritysubform = ({
   isDataChangedRef,
@@ -23,13 +25,12 @@ export const Proritysubform = ({
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(defaultView);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const {state : rows} = useLocation()
-  const [isLoading, setIsLoading] = useState(true);
+  const { state: rows } = useLocation()
 
   const mutation = useMutation((API.updatePriorityMasterSubData),
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -39,7 +40,7 @@ export const Proritysubform = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("Records successfully Saved", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -54,7 +55,7 @@ export const Proritysubform = ({
     endSubmit,
     setFieldError,
   ) => {
-    
+
     endSubmit(true);
 
     let oldData = {
@@ -66,8 +67,8 @@ export const Proritysubform = ({
     let updatedValue: any = utilFunction.transformDetailsData(
       newData,
       oldData ?? {}
-    ); 
-    
+    );
+
     isErrorFuncRef.current = {
       data: {
         ...newData,
@@ -84,8 +85,8 @@ export const Proritysubform = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Do you want to save this Request?",
-        messageTitle: "Confirmation",
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
@@ -96,91 +97,87 @@ export const Proritysubform = ({
       }
     }
   };
-  useEffect(() => {
-    if (gridData.length > 0) {
-      setIsLoading(false);
-    }
-  }, [gridData]);
   return (
     <>
-    {isLoading ? ( <LoadingTextAnimation/>
-      ) : (
-      <FormWrapper
-        key={"prioritymastersubformmetadata" + formMode}
-        metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as MetaDataType
-        displayMode={formMode}
-        onSubmitHandler={onSubmitHandler}
-        initialValues={{...rows?.[0]?.data}}
-        formStyle={{
-          background: "white",
-        }}
-        formState={{
-          gridData: gridData,
-          rows: rows?.[0]?.data,
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            {formMode === "edit" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={closeDialog}
-                  color={"primary"}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            ) : formMode === "add" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
+      {gridData ? (
+        <FormWrapper
+          key={"prioritymastersubformmetadata" + formMode}
+          metaData={extractMetaData(prioritymastersubformmetadata, formMode)} as MetaDataType
+          displayMode={formMode}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={{ ...rows?.[0]?.data }}
+          formStyle={{
+            background: "white",
+          }}
+          formState={{
+            gridData: gridData,
+            rows: rows?.[0]?.data,
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={closeDialog}
+                    color={"primary"}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              ) : formMode === "add" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
 
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            ) : (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("edit");
-                  }}
-                  color={"primary"}
-                >
-                  Edit
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            )}
-          </>
-        )}
-      </FormWrapper>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    Edit
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
+        </FormWrapper>
+      ) : (
+        <LoaderPaperComponent />
       )}
     </>
-      
+
   );
 };
 
-export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView, gridData = []}) => {
+export const ProritymastersubformWrapper = ({ isDataChangedRef, closeDialog, defaultView, gridData = [] }) => {
   return (
     <Dialog
       open={true}

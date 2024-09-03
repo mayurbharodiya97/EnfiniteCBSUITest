@@ -3,6 +3,7 @@ import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { geaterThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -46,6 +47,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
@@ -86,6 +88,7 @@ export const ChequeBookEntryMetaData = {
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -118,6 +121,17 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        render: {
+          componentType: "textField",
+        },
+
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -160,6 +174,7 @@ export const ChequeBookEntryMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
@@ -167,6 +182,7 @@ export const ChequeBookEntryMetaData = {
                   messageTitle: "RiskCategoryAlert",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "INFO",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -177,6 +193,7 @@ export const ChequeBookEntryMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "HNIAlert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "INFO",
                   });
                 }
                 returnVal = "";
@@ -206,6 +223,10 @@ export const ChequeBookEntryMetaData = {
                       ignoreUpdate: true,
                     },
 
+              CHEQUE_TOTAL: {
+                value: "",
+                isFieldFocused: returnVal !== "",
+              },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -214,6 +235,7 @@ export const ChequeBookEntryMetaData = {
               },
               CHEQUE_FROM: {
                 value: returnVal?.CHEQUE_FROM ?? "",
+                isFieldFocused: returnVal.PER_CHQ_ALLOW === "N",
               },
               NEW_LEAF_ARR: {
                 value: returnVal?.LEAF_ARR ?? "",
@@ -230,6 +252,13 @@ export const ChequeBookEntryMetaData = {
               SR_CD: {
                 value: returnVal?.SR_CD ?? "",
               },
+              PER_CHQ_ALLOW: {
+                value: returnVal?.PER_CHQ_ALLOW ?? "",
+              },
+              TRAN_DT: {
+                value: authState?.workingDate ?? "",
+              },
+
               TOOLBAR_DTL: {
                 value:
                   returnVal !== ""
@@ -300,12 +329,12 @@ export const ChequeBookEntryMetaData = {
         allowNegative: true,
       },
       isReadOnly: true,
-      dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["AMOUNT", "NO_OF_CHQBK"],
       runValidationOnDependentFieldsChange: true,
       validate: (currentField, dependentFields, formState) => {
         if (
           Number(dependentFields.AMOUNT.value) *
-            Number(dependentFields.CHEQUE_BK_TOTAL.value) >
+            Number(dependentFields.NO_OF_CHQBK.value) >
           Number(currentField.value)
         ) {
           return t("BalanceIsLesThanServicecharge");
@@ -327,14 +356,19 @@ export const ChequeBookEntryMetaData = {
       name: "CHEQUE_FROM",
       label: "FromChequeNo",
       required: true,
-      type: "text",
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
-          background: "var(--theme-color7)",
         },
       },
-      isReadOnly: true,
+      dependentFields: ["PER_CHQ_ALLOW"],
+
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return false;
+        }
+        return true;
+      },
       GridProps: {
         xs: 12,
         md: 2,
@@ -373,6 +407,7 @@ export const ChequeBookEntryMetaData = {
         "ACCT_TYPE",
         "ACCT_CD",
         "NEW_LEAF_ARR",
+        "PER_CHQ_ALLOW",
       ],
       disableCaching: true,
       options: async (dependentValue, formState, _, authState) => {
@@ -430,6 +465,95 @@ export const ChequeBookEntryMetaData = {
         }
         return {};
       },
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CHEQUE_TOTALS",
+      label: "NoOfCheques",
+      placeholder: "SelectNoOfChequeBook",
+      required: true,
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          textAlign: "right",
+        },
+      },
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      dependentFields: [
+        "CHEQUE_FROM",
+        "BRANCH_CD",
+        "ACCT_TYPE",
+        "ACCT_CD",
+        "PER_CHQ_ALLOW",
+      ],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFieldsValues
+      ) => {
+        if (field.value && dependentFieldsValues.ACCT_CD.value) {
+          let Apireq = {
+            BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
+            ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,
+            ACCT_CD: dependentFieldsValues.ACCT_CD.value,
+            NO_OF_LEAVES: field.value,
+          };
+          let postdata = await API.chequebookCharge(Apireq);
+
+          return {
+            SERVICE_C_FLAG: {
+              value: postdata?.[0]?.FLAG_ENABLE_DISABLE ?? "",
+            },
+            ROUND_OFF_FLAG: {
+              value: postdata?.[0]?.GST_ROUND ?? "",
+            },
+            GST: {
+              value: postdata?.[0]?.TAX_RATE ?? "",
+            },
+            AMOUNT: {
+              value: postdata?.[0]?.SERVICE_CHRG ?? "",
+            },
+
+            SERVICE_TAX: {
+              value: postdata?.[0]?.GST_AMT,
+            },
+            CHEQUE_TO: {
+              value:
+                parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
+                  parseInt(field?.value) -
+                  1 ?? "",
+            },
+          };
+        }
+        return {};
+      },
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
 
     {
@@ -444,6 +568,10 @@ export const ChequeBookEntryMetaData = {
           textAlign: "right",
           background: "var(--theme-color7)",
         },
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       isReadOnly: true,
       GridProps: {
@@ -486,7 +614,6 @@ export const ChequeBookEntryMetaData = {
         auth,
         dependentFields
       ) => {
-        console.log("<<<posyva", field, dependentFields);
         if (field.value) {
           return {
             SERVICE_TAX: {
@@ -514,6 +641,10 @@ export const ChequeBookEntryMetaData = {
                       100 ?? "",
             },
           };
+        } else if (!field.value) {
+          return {
+            SERVICE_TAX: { value: "" },
+          };
         }
       },
     },
@@ -523,6 +654,9 @@ export const ChequeBookEntryMetaData = {
       },
       name: "SERVICE_TAX",
       label: "GSTAmount",
+      FormatProps: {
+        allowNegative: false,
+      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -537,18 +671,18 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "numberFormat",
       },
-      name: "CHEQUE_BK_TOTAL",
+      name: "NO_OF_CHQBK",
       label: "NoOfChequeBooks",
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
         },
       },
-      type: "text",
       defaultValue: "1",
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values) => {
-          if (values?.value?.length > 2) {
+          if (values?.value?.length > 2 || values?.value === "-") {
             return false;
           }
           return true;
@@ -560,6 +694,14 @@ export const ChequeBookEntryMetaData = {
         sm: 2,
         lg: 2,
         xl: 2,
+      },
+      dependentFields: ["PER_CHQ_ALLOW"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return true;
+        } else {
+          return false;
+        }
       },
     },
 
@@ -586,6 +728,14 @@ export const ChequeBookEntryMetaData = {
         lg: 2,
         xl: 2,
       },
+      dependentFields: ["PER_CHQ_ALLOW"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return true;
+        } else {
+          return false;
+        }
+      },
     },
 
     {
@@ -611,6 +761,15 @@ export const ChequeBookEntryMetaData = {
         lg: 2,
         xl: 2,
       },
+
+      dependentFields: ["PER_CHQ_ALLOW"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.PER_CHQ_ALLOW?.value === "N") {
+          return true;
+        } else {
+          return false;
+        }
+      },
     },
     {
       render: {
@@ -628,6 +787,12 @@ export const ChequeBookEntryMetaData = {
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
+        } else if (
+          geaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("RequistionDtShouldBeLessThanOrEqualWorkingDt");
         }
         return "";
       },
@@ -662,16 +827,16 @@ export const ChequeBookEntryMetaData = {
       name: "TOTAL_AMOUNT",
       label: "TotalServiceCharge",
       isReadOnly: true,
-      dependentFields: ["AMOUNT", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["AMOUNT", "NO_OF_CHQBK"],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
           Number(dependentFields?.AMOUNT?.value) *
-          Number(dependentFields?.CHEQUE_BK_TOTAL?.value);
+          Number(dependentFields?.NO_OF_CHQBK?.value);
 
         return value ?? "--";
       },
       shouldExclude(fieldData, dependentFields) {
-        if (Number(dependentFields?.CHEQUE_BK_TOTAL?.value) > 1) {
+        if (Number(dependentFields?.NO_OF_CHQBK?.value) > 1) {
           return false;
         } else {
           return true;
@@ -692,16 +857,16 @@ export const ChequeBookEntryMetaData = {
       name: "TOTAL_SEVICE_TAX",
       label: "TotalGSTAmount",
       isReadOnly: true,
-      dependentFields: ["SERVICE_TAX", "CHEQUE_BK_TOTAL"],
+      dependentFields: ["SERVICE_TAX", "NO_OF_CHQBK"],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let value =
           Number(dependentFields?.SERVICE_TAX?.value) *
-          Number(dependentFields?.CHEQUE_BK_TOTAL?.value);
+          Number(dependentFields?.NO_OF_CHQBK?.value);
 
         return value ?? "--";
       },
       shouldExclude(fieldData, dependentFields) {
-        if (Number(dependentFields?.CHEQUE_BK_TOTAL?.value) > 1) {
+        if (Number(dependentFields?.NO_OF_CHQBK?.value) > 1) {
           return false;
         } else {
           return true;
@@ -773,17 +938,18 @@ export const ChequeBookEntryMetaData = {
         "& .MuiInputBase-input": {
           background: "var(--theme-color5)",
           minHeight: "35px !important",
-          fontSize: "17px",
-          color: "white",
+          fontSize: "15px",
           textAlign: "center",
-          boxShadow:
-            "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
-          paddingY: "0px !important",
-          animation: "5s anim-popoutin ease ",
+          py: "0px !important",
+          "&.Mui-disabled": {
+            WebkitTextFillColor: "#fff",
+          },
         },
         "& .MuiInputBase-root": {
-          marginTop: " 0px !important",
+          mt: "0px !important",
           overflow: "hidden",
+          boxShadow:
+            "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
         },
       },
       shouldExclude(fieldData) {
@@ -824,19 +990,31 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "AUTO_CHQBK_FLAG",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
       name: "SR_CD",
     },
     {
       render: {
         componentType: "hidden",
       },
+      name: "AUTO_CHQBK_FLAG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
       name: "NEW_LEAF_ARR",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PER_CHQ_ALLOW",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "STATUS",
     },
   ],
 };

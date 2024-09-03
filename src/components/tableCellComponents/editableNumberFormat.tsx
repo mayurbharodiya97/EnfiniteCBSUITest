@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { CellWrapper } from "./cellWrapper";
 import { numWords } from "components/common/utils";
@@ -39,6 +39,8 @@ export const EditableNumberFormat = (props) => {
       placeholder = "",
       enableNumWords,
       className,
+      isReadOnly,
+      __EDIT__,
       isDisabledOnBlurEvent,
     },
     updateGridData,
@@ -59,6 +61,22 @@ export const EditableNumberFormat = (props) => {
   const externalError = original?._error?.[id] ?? "";
   const [loadingcoll, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
+  const isReadOnlyLocal = useMemo(() => {
+    if (original?._isReadOnly === true) {
+      return true;
+    }
+    if (original?._isNewRow === true) {
+      return false;
+    }
+    if (isReadOnly) {
+      return true;
+    }
+    if (original?._isNewRow === false && __EDIT__?.isReadOnly === true) {
+      return true;
+    }
+    return false;
+  }, [isReadOnly, original, __EDIT__]);
+
   const onFocus = (e) => {
     e.target.select();
   };
@@ -120,7 +138,7 @@ export const EditableNumberFormat = (props) => {
         }}
         disabled={loadingcoll}
         className={className}
-        readOnly={loading}
+        readOnly={loading || isReadOnlyLocal}
       />
       {Boolean(externalTouched) && Boolean(externalError) ? (
         <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>

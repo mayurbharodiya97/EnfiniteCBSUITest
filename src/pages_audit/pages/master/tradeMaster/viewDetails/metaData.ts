@@ -2,7 +2,7 @@ import * as API from '../api';
 export const TradeMasterMetaData = {
   form: {
     name: "Trade Master",
-    label: "Trade Master",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -47,9 +47,10 @@ export const TradeMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["code is Required"] }],
+        rules: [{ name: "required", params: ["codeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl:12  },
       __EDIT__:{isReadOnly:true}
@@ -64,17 +65,13 @@ export const TradeMasterMetaData = {
       maxLength:100,
       multiline:true,
       isFieldFocused: true,
+      txtTransform: "uppercase",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Description is Required"] }],
+        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        // Duplication validation
-
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -102,15 +99,17 @@ export const TradeMasterMetaData = {
       render: { componentType: "autocomplete" },
       name: "CKYC_OCCUPATION",
       label: "CKYCGroup", 
+      placeholder:"CKYCGroup",
       options:()=> API.getPMISCData("CKYC_OCCUPATION"),
       _optionsKey: "getDataForCkycGroup",
       __VIEW__: { isReadOnly: true },
       GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6},
     },
     {
-      render: { componentType: "select" },
+      render: { componentType: "autocomplete" },
       name: "CONSTITUTION_TYPE",
       label: "Constitution",
+      placeholder:"Constitution",
       options: () => API.getPMISCData("BANK_CONS_TYPE"),
       _optionsKey: "getDataForConstitution",
       defaultValue: "B",

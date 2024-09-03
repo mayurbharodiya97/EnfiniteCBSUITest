@@ -43,6 +43,7 @@ interface MyCheckboxExtendedProps {
   GridProps?: GridProps;
   enableGrid: boolean;
   CircularProgressProps?: CircularProgressProps;
+  textFieldStyle?: any;
 }
 
 export type MyRadioAllProps = Merge<MyRadioMixedProps, MyCheckboxExtendedProps>;
@@ -95,6 +96,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
   CircularProgressProps,
   _optionsKey,
   disableCaching,
+  textFieldStyle,
   ...others
 }) => {
   const {
@@ -169,6 +171,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       control={
         <Radio
           {...others}
+          disabled={readOnly}
           readOnly={readOnly}
           tabIndex={readOnly ? -1 : undefined}
           color={"secondary"}
@@ -219,7 +222,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
 
   if (Boolean(enableGrid)) {
     return (
-      <Grid {...GridProps} key={fieldKey}>
+      <Grid sx={{ ...textFieldStyle }} {...GridProps} key={fieldKey}>
         {result}
       </Grid>
     );

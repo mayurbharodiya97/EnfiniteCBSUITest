@@ -49,11 +49,11 @@ export const fixDeposit_tab_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "A/c Belongs to Director",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "A/c Belongs to Director",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -61,11 +61,18 @@ export const fixDeposit_tab_metadata = {
             },
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmFDOp",
+            placeholder: "",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -150,11 +157,11 @@ export const fixDeposit_tab_metadata = {
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "FD Details",
             name: "fddtldivider_ignoreField",
-            label: ""
+            label: "FD Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -191,6 +198,13 @@ export const fixDeposit_tab_metadata = {
             },
             name: "INST_NO",
             label: "Lookupdisplay",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -249,6 +263,13 @@ export const fixDeposit_tab_metadata = {
             },
             name: "INST_RS",
             label: "Month Int.",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -288,6 +309,13 @@ export const fixDeposit_tab_metadata = {
             name: "REF_ACCT_CD",
             label: "",
             placeholder: "A/C No.",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             maxLength: 8,
             GridProps: {xs:12, sm:3, md: 2, lg: 2, xl:1.5}
         },
@@ -311,16 +339,23 @@ export const fixDeposit_tab_metadata = {
             _optionsKey: "agentFDOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Amount",
             name: "amountdivider_ignoreField",
-            label: ""
+            label: "Amount",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -331,6 +366,13 @@ export const fixDeposit_tab_metadata = {
             type: "text",
             FormatProps: {
               allowNegative: true,
+            },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },
@@ -343,6 +385,13 @@ export const fixDeposit_tab_metadata = {
             type: "text",
             FormatProps: {
               allowNegative: true,
+            },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },

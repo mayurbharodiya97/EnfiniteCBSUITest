@@ -13,6 +13,8 @@ import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { format } from "date-fns";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
+import { queryClient } from "cache";
+import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
 const PendingCustomer = () => {
   const { authState } = useContext(AuthContext);
@@ -37,15 +39,22 @@ const PendingCustomer = () => {
     isFetching: isPendingDataFetching,
     refetch: PendingRefetch,
     error: PendingError,
-  } = useQuery<any, any>(["getPendingData", {}], () =>
+  } = useQuery<any, any>(["getPendingData"], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      REQ_FLAG: "A",
+      // REQ_FLAG: "A",
+      REQ_FLAG: "P", //for checking only 
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"
     })
   );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries("getPendingData")
+    }
+  }, [])
 
   const pendingActions: ActionTypes[] = [
     {
@@ -54,14 +63,14 @@ const PendingCustomer = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    {
-      actionName: "view-all",
-      actionLabel: "View All",
-      multiple: false,
-      rowDoubleClick: false,
-      alwaysAvailable: true,
-      isNodataThenShow: true,
-    },
+    // {
+    //   actionName: "view-all",
+    //   actionLabel: "View All",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    //   alwaysAvailable: true,
+    //   isNodataThenShow: true,
+    // },
   ];
 
   const setCurrentAction = useCallback(
@@ -71,6 +80,7 @@ const PendingCustomer = () => {
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
       if(Boolean(confirmed)) {
+        // P=SENT TO CONFIRMATION
         if(confirmed.includes("P")) {
           if(maker === loggedinUser) {
             setFormMode("edit")
@@ -78,16 +88,23 @@ const PendingCustomer = () => {
             setFormMode("view")
           }
         } else if(confirmed.includes("M")) {
+          // M=SENT TO MODIFICATION
           setFormMode("edit")
         } else {
           setFormMode("view")
         }
       }
       // console.log("kwfeiwehifdhweihfwef pending", data, data.rows?.[0]?.data?.UPD_TAB_NAME)
-      if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+      if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P") {
+        // P=EXISTING_PHOTO_MODIFY
         navigate("photo-signature", {
           state: data?.rows,
-        })  
+        })
+      } else if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D") {
+        // D=EXISTING_DOC_MODIFY
+        navigate("document", {
+          state: {CUSTOMER_DATA: data?.rows},
+        })
       } else {
         setRowsData(data?.rows);
         navigate(data?.name, {
@@ -156,6 +173,18 @@ const PendingCustomer = () => {
                 navigate(".");
               }}
               viewMode={formMode ?? "edit"}
+            />
+          }
+        />
+
+        <Route
+          path="document/*"
+          element={
+            <UpdateDocument
+              open={true}
+              onClose={() => navigate(".")}
+              viewMode={formMode ?? "view"}
+              from={"ckyc-pending"}
             />
           }
         />

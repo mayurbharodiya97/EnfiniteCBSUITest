@@ -152,6 +152,7 @@ export const DataGrid = ({
       hiddenFlag,
       loading,
       onButtonActionHandel,
+      autoResetPage: false,
     },
     useGlobalFilter,
     useColumnOrder,
@@ -307,7 +308,7 @@ export const DataGrid = ({
       selectedFlatRows.length > 0 &&
       onlySingleSelectionAllow &&
       JSON.stringify(selectedFlatRows[0]?.original) !==
-        JSON.stringify(preDataRef.current)
+      JSON.stringify(preDataRef.current)
     ) {
       preDataRef.current = selectedFlatRows[0]?.original;
       setGridAction({
@@ -319,7 +320,7 @@ export const DataGrid = ({
 
   const RenderFooter = ({ footerGroup }) =>
     Array.isArray(footerGroup?.headers) &&
-    footerGroup.headers.some((item) => item.isDisplayTotal) ? (
+      footerGroup.headers.some((item) => item.isDisplayTotal || item.isSelectedTotal) ? (
       <TableFooter
         component="div"
         style={{
@@ -343,8 +344,8 @@ export const DataGrid = ({
                   padding: "0px 10px",
                   lineHeight: "22px",
                   fontWeight: 700,
-                  fontSize: "smaller",
-                  color: "black",
+                  fontSize: "small",
+                  color: "var(--theme-color3)",
                 },
               })}
               component="div"
@@ -467,8 +468,6 @@ export const DataGrid = ({
                           column={column}
                           key={column.getHeaderProps().key}
                           SelectAllColumn={column.SelectAllColumn}
-                          rows={rowsToDisplay}
-                          updateGridData = {updateGridData}
                         >
                           {column.render("Header")}
                         </HeaderCellWrapper>
@@ -497,8 +496,8 @@ export const DataGrid = ({
               }}
             >
               {rowsToDisplay.length <= 0 &&
-              //loading === false &&
-              hideNoDataFound === false ? (
+                //loading === false &&
+                hideNoDataFound === false ? (
                 <Grid container justifyContent="center">
                   <div
                     style={{
@@ -556,8 +555,8 @@ export const DataGrid = ({
                       row.isSelected
                         ? true
                         : contextMenuSelectedRowId === row.id
-                        ? row.toggleRowSelected(true)
-                        : false
+                          ? row.toggleRowSelected(true)
+                          : false
                     }
                     onClick={() => {
                       if (Boolean(onlySingleSelectionAllow)) {

@@ -53,19 +53,19 @@ export const main_tab_metadata = {
             },
             name: "CUSTOMER_ID",
             label: "Customer ID",
-            isReadOnly: (fieldValue, dependentFields, formState) => {
-                const PARAM320 = formState?.PARAM320;
-                if(Boolean(PARAM320 && PARAM320 === "Y")) {
-                    return false
-                } else return true;
-            },
+            // isReadOnly: (fieldValue, dependentFields, formState) => {
+            //     const PARAM320 = formState?.PARAM320;
+            //     if(Boolean(PARAM320 && PARAM320 === "Y")) {
+            //         return false
+            //     } else return true;
+            // },
             validate: (columnValue, allField, flag) => {
-                const PARAM320 = flag?.PARAM320;
-                if(Boolean(PARAM320 && PARAM320 === "Y")) {
+                // const PARAM320 = flag?.PARAM320;
+                // if(Boolean(PARAM320 && PARAM320 === "Y")) {
                     if(!Boolean(columnValue?.value)) {
                         return "this field is required"
                     } else return "";
-                } else return "";
+                // } else return "";
             },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
             postValidationSetCrossFieldValues: async (
@@ -80,32 +80,81 @@ export const main_tab_metadata = {
                     COMP_CD: authState?.companyID ?? "",
                     SCREEN_REF: "MST/002"
                 });
-                if(data && Array.isArray(data)) {
-                    if (Array.isArray(data) && data?.length > 0) {
-                        for (let i = 0; i < data.length; i++) {
-                            if (data[i]?.O_STATUS === "9") {
-                                const buttonName = await formState?.MessageBox({
-                                messageTitle: "Alert",
-                                message: data[i]?.O_MESSAGE,
-                                buttonNames: ["Ok"],
-                                });
-                            } else if (data[i]?.O_STATUS === "99") {
-                                const buttonName = await formState?.MessageBox({
-                                    messageTitle: "CONFIRM",
-                                    message: data[i]?.O_MESSAGE,
-                                    buttonNames: ["No", "Yes"],
-                                    //   loadingBtnName: ["Yes"],
-                                });
-                                if (buttonName === "No") {
-                                    formState?.handlecustomerIDctx("");
-                                    return {
-                                        CUSTOMER_ID: {value: "", ignoreUpdate: true}
-                                    }
-                                }
+                let response_messages:any[] = [];
+                if(data && data?.[0]?.MSG && Array.isArray(data?.[0]?.MSG)) {
+                    response_messages = data?.[0]?.MSG;
+                }
+                if(Array.isArray(response_messages) && response_messages?.length>0) {
+                    const messagebox = async (msgTitle, msg, buttonNames, status) => {
+                        let buttonName = await formState.MessageBox({
+                          messageTitle: msgTitle,
+                          message: msg,
+                          buttonNames: buttonNames,
+                        });
+                        return { buttonName, status };
+                    };
+
+                    for (let i = 0; i < response_messages?.length; i++) {
+                        if (response_messages[i]?.O_STATUS !== "0") {
+                          let btnName = await messagebox(
+                            response_messages[i]?.O_STATUS === "999"
+                              ? "validation fail"
+                              : "ALert",
+                            response_messages[i]?.O_MESSAGE,
+                            response_messages[i]?.O_STATUS === "99"
+                              ? ["Yes", "No"]
+                              : ["Ok"],
+                              response_messages[i]?.O_STATUS
+                          );
+                          if(btnName?.status === "999" || btnName?.buttonName === "No") {
+                            return {
+                              ACCT_CD: {value: ""},
+                              CUSTOMER_ID: {value: ""},
+                              CONTACT2: {value: ""},
+                              PAN_NO: {value: ""},
                             }
+                          }
+                        } else {
+                            if(data?.[0]?.ACCOUNT_DTL) {}
+                        //   formState.setDataOnFieldChange("BUTTON_CLICK_ACCTCD", {
+                        //     ACCT_TYPE: ACCT_TYPE,
+                        //     BRANCH_CD: BRANCH_CD,
+                        //     ACCT_CD: field?.value
+                        //   });
+                        //   return {
+                        //     CUSTOMER_ID: {value: ""},
+                        //     CONTACT2: {value: ""},
+                        //     PAN_NO: {value: ""},
+                        //   }
                         }
                     }
                 }
+                // if(data && Array.isArray(data)) {
+                //     if (Array.isArray(data) && data?.length > 0) {
+                //         for (let i = 0; i < data.length; i++) {
+                //             if (data[i]?.O_STATUS === "9") {
+                //                 const buttonName = await formState?.MessageBox({
+                //                 messageTitle: "Alert",
+                //                 message: data[i]?.O_MESSAGE,
+                //                 buttonNames: ["Ok"],
+                //                 });
+                //             } else if (data[i]?.O_STATUS === "99") {
+                //                 const buttonName = await formState?.MessageBox({
+                //                     messageTitle: "CONFIRM",
+                //                     message: data[i]?.O_MESSAGE,
+                //                     buttonNames: ["No", "Yes"],
+                //                     //   loadingBtnName: ["Yes"],
+                //                 });
+                //                 if (buttonName === "No") {
+                //                     formState?.handlecustomerIDctx("");
+                //                     return {
+                //                         CUSTOMER_ID: {value: "", ignoreUpdate: true}
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
             },
         },
         {
@@ -274,11 +323,11 @@ export const main_tab_metadata = {
         },
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Personal Details",
             name: "persondtldivider_ignoreField",
-            label: ""
+            label: "Personal Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -328,7 +377,6 @@ export const main_tab_metadata = {
         {
             render: {
                 componentType: "autocomplete",
-                sequence: 7,
             },
             name: "MARITAL_STATUS",
             label: "MaritalStatus",
@@ -350,11 +398,11 @@ export const main_tab_metadata = {
         },
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Professional Details",
             name: "professionaldtldivider_ignoreField",
-            label: ""
+            label: "Professional Details",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -414,16 +462,23 @@ export const main_tab_metadata = {
             name: "DATE_OF_DEATH",
             label: "Date of Death",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            shouldExclude(fieldData, dependentFieldsValues, formState) {
+              return true;
+            },
+            __VIEW__: {
+              shouldExclude(fieldData, dependentFieldsValues, formState) {
+                return true;
+              },
+            },
         },
-        
 
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Address",
             name: "addressdivider_ignoreField",
-            label: "addDivider"
+            label: "Address",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -517,7 +572,7 @@ export const main_tab_metadata = {
           label: "SubArea",
           dependentFields: ["PIN_CODE"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+          options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["PIN_CODE"]?.value, formState, _, authState),
           _optionsKey: "indSubareaMainOp",
         isReadOnly: (fieldValue, dependentFields, formState) => {
             const PARAM320 = formState?.PARAM320;
@@ -781,11 +836,11 @@ export const main_tab_metadata = {
     // },
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {
@@ -824,6 +879,13 @@ export const main_tab_metadata = {
               return true;
             },
         },
+        required: true,
+        schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -831,6 +893,7 @@ export const main_tab_metadata = {
         render: {
             componentType: "spacer"
         },
+        name: "SPACER1",
         GridProps: {
             xs: 0.2
         }
@@ -879,6 +942,7 @@ export const main_tab_metadata = {
         render: {
             componentType: "spacer"
         },
+        name: "SPACER2",
         GridProps: {
             xs: 0.2
         }
@@ -943,6 +1007,7 @@ export const main_tab_metadata = {
         render: {
             componentType: "spacer"
         },
+        name: "SPACER3",
         GridProps: {
             xs: 0.2
         }
@@ -1185,11 +1250,11 @@ export const main_tab_metadata = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
         },
-        dividerText: "Nominal/Share Member",
         name: "nominalShareDivider_ignoreField",
-        label: "contactDivider"
+        label: "Nominal/Share Member",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     // {
     //     render: {
@@ -1254,6 +1319,7 @@ export const main_tab_metadata = {
         },
         name: "REMARKS",
         label: "Remarks",
+        isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
         maxLength: 300,
         GridProps: {xs:12, sm:6, md: 6, lg: 4.7, xl:4}
     },

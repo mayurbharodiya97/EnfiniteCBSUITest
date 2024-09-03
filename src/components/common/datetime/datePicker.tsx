@@ -1,5 +1,5 @@
 import { FC, useRef, useEffect, useContext } from "react";
-import { useField, UseFieldHookProps } from "packages/form";
+import { useField, UseFieldHookProps ,transformDependentFieldsState } from "packages/form";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
 import { Omit, Merge } from "../types";
 import { theme2 } from "app/audit/theme";
@@ -13,6 +13,7 @@ import { utilFunction } from "components/utils";
 import { TextField } from "components/styledComponent";
 import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
+import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -45,6 +46,12 @@ interface MyGridExtendedProps {
   GridProps?: GridProps;
   disableTimestamp?: boolean;
   enableGrid: boolean;
+  disablePast?: boolean;
+  disableFuture?: boolean;
+  isWorkingDate?: boolean;
+  isMaxWorkingDate?: boolean;
+  isMinWorkingDate?: boolean;
+  ignoreInSubmit?: Function | boolean;
 }
 
 export type MyDataPickerAllProps = Merge<
@@ -73,6 +80,9 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
   isWorkingDate = false,
+  setValueOnDependentFieldsChange,
+  format,
+  ignoreInSubmit = false,
   //disableTimestamp,
   ...others
 }) => {
@@ -92,6 +102,8 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     incomingMessage,
     whenToRunValidation,
     runValidation,
+    dependentValues,
+    setIgnoreInSubmit
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -109,6 +121,36 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     //@ts-ignore
   });
 
+
+  useEffect(() => {
+    if (typeof setValueOnDependentFieldsChange === "function") {
+      let result = setValueOnDependentFieldsChange(
+        transformDependentFieldsState(dependentValues)
+      );
+      if (result !== undefined && result !== null) {
+        handleChange(result);
+      }
+    }
+  }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
+  // below code added for run validation if max or min date specified in metadata
+  useEffect(() => {
+    if (geaterThanDate(value, others?.maxDate)) {
+      runValidation({ value, _maxDt: others?.maxDate });
+    }
+    if (lessThanDate(value, others?.minDate)) {
+      runValidation({ value, _minDt: others?.minDate });
+    }
+  }, [value]);
+  useEffect(() => {
+    if(typeof ignoreInSubmit === "function") {
+      let result = ignoreInSubmit(transformDependentFieldsState(dependentValues), { isSubmitting, value })
+      setIgnoreInSubmit(result);
+    }
+    else {
+      setIgnoreInSubmit(ignoreInSubmit)
+    }
+  }, [ignoreInSubmit, dependentValues]);
+
   useEffect(() => {
     if (typeof value === "string") {
       let result = new Date(value);
@@ -117,29 +159,18 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
-    // chnages for min-max date is not edit
-    if (value) {
-      const selectedDate = new Date(value).toLocaleDateString();
-      const maxDate = new Date(others.maxDate).toLocaleDateString();
-      const minDate = new Date(others.minDate).toLocaleDateString();
-
-      if (
-        new Date(selectedDate) > new Date(maxDate) &&
-        Boolean(others.maxDate)
-      ) {
-        handleChange(new Date(maxDate));
-        return;
-      }
-
-      if (
-        new Date(selectedDate) < new Date(minDate) &&
-        Boolean(others.minDate)
-      ) {
-        handleChange(new Date(minDate));
-        return;
-      }
-    }
   }, [value, handleChange]);
+
+  // chnages for min-max date with Altaf
+  useEffect(() => {
+    if (geaterThanDate(value, others?.maxDate)) {
+      runValidation({ value, _maxDt: others?.maxDate }, true);
+    }
+    if (lessThanDate(value, others?.minDate)) {
+      runValidation({ value, _minDt: others?.minDate }, true);
+    }
+  }, [value]);
+
   const focusRef = useRef<any>();
   const getFocus = () => {
     setTimeout(() => {
@@ -156,13 +187,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   }, [isFieldFocused]);
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { isFieldFocused, value } = incomingMessage;
+      const { isFieldFocused, value, ignoreUpdate } = incomingMessage;
       if (isFieldFocused) {
         getFocus();
       }
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if (whenToRunValidation === "onBlur") {
+        if (!ignoreUpdate && whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
@@ -183,17 +214,19 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       <KeyboardDatePicker
         {...others}
         key={fieldKey}
+        format={format || "dd/MM/yyyy"}
         // className={classes.root}
         id={fieldKey}
         label={label}
         name={name}
-        value={
-          value === ""
-            ? null
-            : utilFunction.isValidDate(value)
-            ? new Date(value)
-            : null
-        } //make sure to pass null when input is empty string
+        value={value === "" || value === null ? null : new Date(value)}
+        // value={
+        //   value === ""
+        //     ? null
+        //     : utilFunction.isValidDate(value)
+        //     ? new Date(value)
+        //     : null
+        // } //make sure to pass null when input is empty string
         error={!isSubmitting && isError}
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
@@ -220,6 +253,8 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
                 : null,
             onBlur: handleBlur,
             InputLabelProps: { shrink: true },
+            // add by parag for if you use datepicker component and pass required props, the star will appear at the end (label end)
+            required: others.required,
           },
           actionBar: {
             actions: ["today", "accept", "cancel"],

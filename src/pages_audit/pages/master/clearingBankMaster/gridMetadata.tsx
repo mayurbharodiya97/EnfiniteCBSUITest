@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ClearingBankMstGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Clearing Bank Master (EMST/091)",
+    gridLabel: "",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 350,
@@ -21,46 +21,13 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "RBI_CD",
-      columnName: "RBI Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "BANK_CD",
-      columnName: "Code",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-    {
-      accessor: "BANK_NM",
-      columnName: "Bank Name",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -71,7 +38,7 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RBI_CD",
-      columnName: "RBI Code",
+      columnName: "RBICode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -91,7 +58,7 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BANK_NM",
-      columnName: "Bank Name",
+      columnName: "BankName",
       sequence: 4,
       alignment: "left",
       componentType: "default",

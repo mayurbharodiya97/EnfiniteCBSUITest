@@ -1,5 +1,5 @@
 import { Checkbox, TableCell } from "@mui/material";
-export const HeaderCellWrapper = ({ column, children,SelectAllColumn = false,rows=[],updateGridData=(rowIndex: number, id: any, isChecked: any, p0: boolean, p1: string)=>{}}) => {
+export const HeaderCellWrapper = ({ column,children,SelectAllColumn = false}) => {
   const stickyHeaderCell =
     column.sticky === true
       ? {
@@ -10,12 +10,7 @@ export const HeaderCellWrapper = ({ column, children,SelectAllColumn = false,row
         }
       : {};
       const handleSelectAll = (e) => {
-        const isChecked = e.target.checked;
-        if (column?.Cell?.name === "EditableCheckbox") {
-          rows.forEach((row:any,rowIndex) => {
-            updateGridData(rowIndex,column?.id,isChecked,true,"");
-          });
-        }
+        children?.props?.updateGridData(0, children?.props?.column?.id, e.target.checked, true, "", "A");
       };
   return (
     <TableCell

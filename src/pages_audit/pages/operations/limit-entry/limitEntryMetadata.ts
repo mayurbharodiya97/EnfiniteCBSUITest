@@ -80,6 +80,13 @@ export const limitEntryMetaData = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -97,14 +104,31 @@ export const limitEntryMetaData = {
           return {
             PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
             ACCT_CD: { value: "" },
-            SECURITY_CD: { value: "" },
+            SECURITY_CD: { value: "", isFieldFocused: false },
             ACCT_NM: { value: "" },
             ACCT_BAL: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -128,63 +152,53 @@ export const limitEntryMetaData = {
               SCREEN_REF: "EMST/046",
             };
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
-
+            let responseData: any = [];
+            const messagebox = async (msgTitle, msg, buttonNames) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+              return buttonName;
+            };
             if (postData?.length) {
-              formState.setDataOnFieldChange("NSC_FD_BTN", {
-                NSC_FD_BTN: postData?.[0]?.RESTRICTION ? false : true,
-                HDN_CHARGE_AMT: postData?.[0]?.CHARGE_AMT,
-                HDN_GST_AMT: postData?.[0]?.GST_AMT,
-                HDN_GST_ROUND: postData?.[0]?.GST_ROUND,
-                HDN_TAX_RATE: postData?.[0]?.TAX_RATE,
-              });
+              for (let i = 0; i < postData?.length; i++) {
+                if (postData[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    postData[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    postData[i]?.O_MESSAGE,
+                    postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
+                  );
+                  if (btnName === "No" || postData[i]?.O_STATUS === "999") {
+                    formState.setDataOnFieldChange("NSC_FD_BTN", {
+                      NSC_FD_BTN: false,
+                      HDN_CHARGE_AMT: "",
+                      HDN_GST_AMT: "",
+                      HDN_GST_ROUND: "",
+                      HDN_TAX_RATE: "",
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                      SANCTIONED_AMT: { value: "" },
+                    };
+                  }
+                } else {
+                  responseData.push(postData[i]);
+                }
+              }
             }
-
-            if (postData?.[0]?.RESTRICTION) {
-              let res = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.[0]?.RESTRICTION,
-                buttonNames: ["Ok"],
-                defFocusBtnName: "Ok",
+            if (responseData?.length) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: true,
+                HDN_CHARGE_AMT: responseData?.[0]?.CHARGE_AMT || 0,
+                HDN_GST_AMT: responseData?.[0]?.GST_AMT || 0,
+                HDN_GST_ROUND: responseData?.[0]?.GST_ROUND || "",
+                HDN_TAX_RATE: responseData?.[0]?.TAX_RATE || 0,
               });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                  SANCTIONED_AMT: { value: "" },
-                };
-              }
-            } else if (postData?.[0]?.MESSAGE1) {
-              let res = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.[0]?.MESSAGE1,
-                buttonNames: ["Ok"],
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  ACCT_NM: {
-                    value: postData?.[0]?.ACCT_NM,
-                  },
-                  TRAN_BAL: {
-                    value: postData?.[0]?.TRAN_BAL,
-                  },
-                  SANCTIONED_AMT: {
-                    value: postData?.[0]?.SANCTIONED_AMT,
-                  },
-                  BRANCH_CD: {
-                    value: postData?.[0]?.BRANCH_CD,
-                  },
-                };
-              }
-            } else {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -194,15 +208,11 @@ export const limitEntryMetaData = {
                   ignoreUpdate: true,
                   isFieldFocused: false,
                 },
-                ACCT_NM: {
-                  value: postData?.[0]?.ACCT_NM,
-                },
-                TRAN_BAL: {
-                  value: postData?.[0]?.TRAN_BAL,
-                },
-                SANCTIONED_AMT: {
-                  value: postData?.[0]?.SANCTIONED_AMT,
-                },
+                ACCT_NM: { value: responseData?.[0]?.ACCT_NM },
+                TRAN_BAL: { value: responseData?.[0]?.TRAN_BAL },
+                SANCTIONED_AMT: { value: responseData?.[0]?.SANCTIONED_AMT },
+                BRANCH_CD: { value: responseData?.[0]?.BRANCH_CD },
+                SECURITY_CD: { value: "", isFieldFocused: true },
               };
             }
           } else if (!field?.value) {
@@ -216,6 +226,13 @@ export const limitEntryMetaData = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
     {
@@ -225,14 +242,12 @@ export const limitEntryMetaData = {
       name: "ACCT_NM",
       label: "AccountName",
       isReadOnly: true,
-      placeholder: "Account Name",
-      type: "text",
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
     {
@@ -245,10 +260,10 @@ export const limitEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -260,29 +275,6 @@ export const limitEntryMetaData = {
       placeholder: "SanctionedLimit",
       isReadOnly: true,
       sequence: 0,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "LIMIT_TYPE",
-      label: "LimitType",
-      placeholder: "LimitType",
-      defaultValue: "Normal",
-      options: () => {
-        return [
-          { value: "Normal", label: "Normal Limit" },
-          { value: "Hoc", label: "Ad-hoc Limit" },
-        ];
-      },
-      _optionsKey: "limitTypeList",
       GridProps: {
         xs: 12,
         md: 2,
@@ -335,10 +327,46 @@ export const limitEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2.9,
+        sm: 2.9,
+        lg: 2.9,
+        xl: 2.9,
+      },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "LIMIT_TYPE",
+      label: "LimitType",
+      placeholder: "LimitType",
+      defaultValue: "Normal",
+      options: () => {
+        return [
+          { value: "Normal", label: "Normal Limit" },
+          { value: "Hoc", label: "Ad-hoc Limit" },
+        ];
+      },
+      _optionsKey: "limitTypeList",
+      GridProps: {
+        xs: 12,
+        md: 1.6,
+        sm: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER",
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -359,10 +387,10 @@ export const limitEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        sm: 3,
-        md: 1,
-        lg: 1,
-        xl: 1,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -382,6 +410,19 @@ export const limitEntryMetaData = {
         componentType: "hidden",
       },
       name: "GET_LIMIT_RATE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PENAL_INT_RATE",
+      dependentFields: ["FD_ACCT_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        if (dependentFields?.FD_ACCT_CD?.value === "") {
+          return "N";
+        }
+        return "Y";
+      },
     },
   ],
 };

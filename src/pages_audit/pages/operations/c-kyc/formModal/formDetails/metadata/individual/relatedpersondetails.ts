@@ -272,12 +272,12 @@ export const related_person_detail_data = {
         
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                         sequence: 20,
                     },
-                    dividerText: "PoIOfRelatedPerson",
                     name: "PoIOfRelatedPersonDivider_ignoreField",
-                    label: "PoIOfRelatedPersonDivider"
+                    label: "PoIOfRelatedPerson",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -401,12 +401,12 @@ export const related_person_detail_data = {
         
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                         sequence: 20,
                     },
-                    dividerText: "AttesDetailsIPVBy",
                     name: "AttesDetailsIPVByDivider_ignoreField",
-                    label: "AttesDetailsIPVByDivider"
+                    label: "AttesDetailsIPVBy",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {

@@ -1,6 +1,9 @@
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { isValid } from "date-fns";
+import { lessThanDate } from "registry/rulesEngine";
+import { t } from "i18next";
 
 export const LienEntryMetadata = {
   form: {
@@ -75,6 +78,13 @@ export const LienEntryMetadata = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -103,8 +113,28 @@ export const LienEntryMetadata = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
+        FormatProps: {
+          allowNegative: false,
+          allowLeadingZeros: true,
+          isAllowed: (values) => {
+            if (values?.value?.length > 20) {
+              return false;
+            }
+            if (values?.value.includes(".")) {
+              return false;
+            }
+            return true;
+          },
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -130,53 +160,54 @@ export const LienEntryMetadata = {
               otherAPIRequestPara
             );
 
-            if (postData?.RESTRICTION) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
+            let apiRespMSGdata = postData?.MSG;
+            let isReturn;
+            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
               });
-              let res = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.RESTRICTION,
-                defFocusBtnName: "Ok",
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: { value: "", isFieldFocused: true },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                };
+              return { buttonName, status };
+            };
+            if (apiRespMSGdata?.length) {
+              for (let i = 0; i < apiRespMSGdata?.length; i++) {
+                if (apiRespMSGdata[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    apiRespMSGdata[i]?.O_MESSAGE,
+                    apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? ["Yes", "No"]
+                      : ["Ok"],
+                    apiRespMSGdata[i]?.O_STATUS
+                  );
+
+                  if (btnName.buttonName === "No" || btnName.status === "999") {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: false,
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                    };
+                  } else {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: true,
+                    });
+                    isReturn = true;
+                  }
+                } else {
+                  formState.setDataOnFieldChange("IS_VISIBLE", {
+                    IS_VISIBLE: true,
+                  });
+                  isReturn = true;
+                }
               }
-            } else if (postData?.MESSAGE1) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: "RiskCategoryAlert",
-                message: postData?.MESSAGE1,
-                defFocusBtnName: "Ok",
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                  TRAN_BAL: {
-                    value: postData?.WIDTH_BAL ?? "",
-                  },
-                };
-              }
-            } else {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
+            }
+            if (Boolean(isReturn)) {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -192,6 +223,9 @@ export const LienEntryMetadata = {
                 TRAN_BAL: {
                   value: postData?.WIDTH_BAL ?? "",
                 },
+                LIEN_CD: {
+                  isFieldFocused: true,
+                },
               };
             }
           } else if (!field?.value) {
@@ -204,6 +238,13 @@ export const LienEntryMetadata = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -216,13 +257,36 @@ export const LienEntryMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.6,
+        sm: 3.6,
+        lg: 3.6,
+        xl: 3.6,
       },
     },
-
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "LIEN_STATUS",
+      label: "LienStatus",
+      isReadOnly: true,
+      required: true,
+      defaultValue: "A",
+      options: () => {
+        return [
+          { value: "A", label: "Active" },
+          { value: "E", label: "Expired" },
+        ];
+      },
+      _optionsKey: "LIEN_STATUS",
+      GridProps: {
+        xs: 12,
+        md: 1.9,
+        sm: 1.9,
+        lg: 1.9,
+        xl: 1.9,
+      },
+    },
     {
       render: {
         componentType: "autocomplete",
@@ -246,7 +310,11 @@ export const LienEntryMetadata = {
       postValidationSetCrossFieldValues: async (field) => {
         if (field?.value) {
           return {
-            PARENT_CD: { value: field?.optionData?.[0]?.PARENT_NM },
+            PARENT_CD: {
+              value:
+                field?.optionData?.[0]?.PARENT_TYPE +
+                field?.optionData?.[0]?.PARENT_NM,
+            },
           };
         }
         return {};
@@ -257,51 +325,13 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
     },
 
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "LIEN_AMOUNT",
-      label: "LienAmount",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "LIEN_STATUS",
-      label: "LienStatus",
-      isReadOnly: true,
-      required: true,
-      defaultValue: "A",
-      options: () => {
-        return [
-          { value: "A", label: "Active" },
-          { value: "E", label: "Expired" },
-        ];
-      },
-      _optionsKey: "LIEN_STATUS",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
     {
       render: {
         componentType: "textField",
@@ -311,10 +341,27 @@ export const LienEntryMetadata = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "LIEN_AMOUNT",
+      label: "LienAmount",
+      FormatProps: {
+        allowNegative: false,
+      },
+      GridProps: {
+        xs: 12,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
       },
     },
     {
@@ -328,10 +375,10 @@ export const LienEntryMetadata = {
       label: "EffectiveDate",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
       },
     },
     {
@@ -340,13 +387,31 @@ export const LienEntryMetadata = {
       },
       name: "REMOVAL_DT",
       label: "RemovalDate",
-      isMinWorkingDate: true,
+      // isMinWorkingDate: true,
+      dependentFields: ["EFECTIVE_DT"],
+      validate: (currentField, dependentField) => {
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return t("Mustbeavaliddate");
+        }
+        if (
+          lessThanDate(
+            currentField?.value,
+            dependentField?.EFECTIVE_DT?.value,
+            {
+              ignoreTime: true,
+            }
+          )
+        ) {
+          return t("RemovalDtShouldBeGreterThanEqualToEffDT");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 1.9,
+        sm: 1.9,
+        lg: 1.9,
+        xl: 1.9,
       },
     },
     {
@@ -370,10 +435,10 @@ export const LienEntryMetadata = {
       _optionsKey: "LIEN_REASON_CD",
       GridProps: {
         xs: 12,
-        md: 3.6,
-        sm: 3.6,
-        lg: 3.6,
-        xl: 3.6,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 
@@ -389,12 +454,19 @@ export const LienEntryMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
+      validate: (columnValue) => {
+        let regex = /^[^!&]*$/;
+        if (!regex.test(columnValue.value)) {
+          return "Special Characters not Allowed in Remarks";
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
-        md: 3.6,
-        sm: 3.6,
-        lg: 3.6,
-        xl: 3.6,
+        md: 4.3,
+        sm: 4.3,
+        lg: 4.3,
+        xl: 4.3,
       },
     },
   ],

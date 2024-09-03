@@ -2,8 +2,8 @@ import { textTransform } from "@mui/system";
 
 export const metaData = {
   form: {
-    name: "Bank Ifsc Code Master(MST/142)",
-    label: "Bank Ifsc Code Master(MST/142)",
+    name: "",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -50,26 +50,24 @@ export const metaData = {
       },
       name: "IFSC_CODE",
       label: "IFSCCode",
-      placeholder: "IFSC Code",
+      placeholder: "IFSCCode",
 
       txtTransform: "uppercase",
       type: "text",
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["IFSC Code is Required"] }],
+        rules: [{ name: "required", params: ["IFSCCodeisRequired"] }],
       },
+      maxLength: 11,
+      preventSpecialCharInput: true,
+      // validationRun: "all",
       validate: (columnValue, ...rest) => {
-        const IFSC = columnValue.value;
-        console.log(IFSC);
-        if (IFSC.length < 11 || IFSC.length > 11) {
-          return "IFSC code should be of eleven digits"
+        console.log(columnValue.value.length);
+
+        if (columnValue.value.length < 11 || columnValue.value.length > 11) {
+          return "IfscValidate"
         }
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-        return "";
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     },
@@ -80,19 +78,20 @@ export const metaData = {
       name: "BANK_NM",
       label: "BankName",
       txtTransform: "uppercase",
-      placeholder: "Bank Name",
+      placeholder: "BankName",
       type: "text",
       required: true,
+      maxLength: 250,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Bank Name is Required"] }],
+        rules: [{ name: "required", params: ["BankNameisRequired"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     },
     {
       render: { componentType: "select" },
       name: "FACILITY",
-      placeholder: "select parent type",
+      placeholder: "Facility",
       label: "Facility",
       options: [
         { label: "Both ", value: "Y" },
@@ -111,7 +110,7 @@ export const metaData = {
       },
       name: "MICR_CODE",
       label: "MICRCode",
-      placeholder: "MICR Code",
+      placeholder: "MICRCode",
       maxLength: 16,
       type: "text",
       txtTransform: "uppercase",
@@ -123,7 +122,8 @@ export const metaData = {
       name: "BRANCH_NM",
       label: "BranchName",
       txtTransform: "uppercase",
-      placeholder: "Branch Name",
+      placeholder: "BranchName",
+      maxLength: 110,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
     }, {
@@ -133,17 +133,18 @@ export const metaData = {
       name: "ADD1",
       label: "Add1",
       txtTransform: "uppercase",
-      placeholder: "Adddress 1",
+      placeholder: "Add1",
+      maxLength: 500,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
       render: {
-        componentType: "textField",
+        componentType: "phoneNumber",
       },
       name: "CONTACT_DTL",
       label: "ContactDetail",
       txtTransform: "uppercase",
-      placeholder: "Contact Detail",
+      placeholder: "ContactDetail",
       maxLength: 10,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
@@ -153,8 +154,9 @@ export const metaData = {
       },
       name: "CENTRE_NM",
       label: "CentreName",
-      placeholder: "Centre Name",
+      placeholder: "CentreName",
       txtTransform: "uppercase",
+      maxLength: 115,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
@@ -163,8 +165,9 @@ export const metaData = {
       },
       name: "DISTRICT_NM",
       label: "DistrictName",
-      placeholder: "District Name",
+      placeholder: "DistrictName",
       txtTransform: "uppercase",
+      maxLength: 50,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     }, {
@@ -174,7 +177,8 @@ export const metaData = {
       name: "STATE_NM",
       label: "StateName",
       txtTransform: "uppercase",
-      placeholder: "State Name",
+      placeholder: "StateName",
+      maxLength: 50,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
     },

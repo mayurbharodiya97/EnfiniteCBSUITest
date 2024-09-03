@@ -69,6 +69,13 @@ export const StockEntryMetaData = {
           }
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         isFieldFocused: true,
@@ -94,8 +101,25 @@ export const StockEntryMetaData = {
           };
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -121,61 +145,58 @@ export const StockEntryMetaData = {
               otherAPIRequestPara
             );
 
-            if (postData?.RESTRICTION) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
+            let apiRespMSGdata = postData?.MSG;
+            let isReturn;
+            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
               });
-              let res = await formState.MessageBox({
-                messageTitle: t("ValidationFailed"),
-                message: postData?.RESTRICTION,
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: "",
-                    isFieldFocused: true,
-                  },
-                  ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
-                  TRAN_DT: { value: "" },
-                };
+              return { buttonName, status };
+            };
+            if (apiRespMSGdata?.length) {
+              for (let i = 0; i < apiRespMSGdata?.length; i++) {
+                if (apiRespMSGdata[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    apiRespMSGdata[i]?.O_MESSAGE,
+                    apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? ["Yes", "No"]
+                      : ["Ok"],
+                    apiRespMSGdata[i]?.O_STATUS
+                  );
+
+                  if (btnName.buttonName === "No" || btnName.status === "999") {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: false,
+                    });
+                    return {
+                      ACCT_CD: {
+                        value: "",
+                        isFieldFocused: true,
+                      },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                      TRAN_DT: { value: "" },
+                    };
+                  } else {
+                    formState.setDataOnFieldChange("IS_VISIBLE", {
+                      IS_VISIBLE: true,
+                    });
+                    isReturn = true;
+                  }
+                } else {
+                  formState.setDataOnFieldChange("IS_VISIBLE", {
+                    IS_VISIBLE: true,
+                  });
+                  isReturn = true;
+                }
               }
-            } else if (postData?.MESSAGE1) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
-              let res = await formState.MessageBox({
-                messageTitle: t("RiskCategoryAlert"),
-                message: postData?.MESSAGE1,
-              });
-              if (res === "Ok") {
-                return {
-                  ACCT_CD: {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentValue?.ACCT_TYPE?.optionData
-                    ),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  },
-                  TRAN_DT: {
-                    value: authState?.workingDate ?? "",
-                  },
-                  ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
-                  },
-                  TRAN_BAL: {
-                    value: postData?.WIDTH_BAL ?? "",
-                  },
-                  ACCT_MST_LIMIT: {
-                    value: postData?.LIMIT_AMT ?? "",
-                  },
-                };
-              }
-            } else {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: true,
-              });
+            }
+            if (Boolean(isReturn)) {
               return {
                 ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
@@ -197,6 +218,9 @@ export const StockEntryMetaData = {
                 ACCT_MST_LIMIT: {
                   value: postData?.LIMIT_AMT ?? "",
                 },
+                SECURITY_CD: {
+                  isFieldFocused: true,
+                },
               };
             }
           } else if (!field?.value) {
@@ -211,6 +235,13 @@ export const StockEntryMetaData = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
     },
 
@@ -223,10 +254,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
 
@@ -239,10 +270,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -254,10 +285,10 @@ export const StockEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {

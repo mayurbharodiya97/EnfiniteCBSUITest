@@ -1,17 +1,18 @@
-import { AppBar, Button, Dialog } from "@mui/material";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
+import React, { useContext, useEffect, useRef } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { confirmFormMetaData } from "./confirmationFormMetadata";
 import { useMutation } from "react-query";
-import { chequeBookCfm } from "../api";
+import { chequeBookCfm, validateCheqbkCfm } from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -20,6 +21,13 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { t } = useTranslation();
   const buttonRef: any = useRef<any>(null);
 
+  // API calling function for validate data before confirm or reject
+  const chequeBkValidateCfm: any = useMutation(
+    "validateCheqbkCfm",
+    validateCheqbkCfm
+  );
+
+  // API calling function for data confirm od reject
   const chequeBkCfm: any = useMutation("chequeBookCfm", chequeBookCfm, {
     onError: () => {
       CloseMessageBox();
@@ -41,7 +49,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
         MessageBox({
           messageTitle: "InvalidConfirmation",
           message: data?.message || data?.[0]?.MESSAGE,
-          icon: "WARNING",
+          icon: "ERROR",
         });
       } else {
         result.mutate(resultData);
@@ -60,11 +68,6 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       queryClient.removeQueries(["chequeBookCfm"]);
     };
   }, []);
-  // useEffect(() => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.focus();
-  //   }
-  // }, [buttonRef]);
 
   useEffect(() => {
     if (rows?.[0]?.data) {
@@ -79,27 +82,71 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   }, [rows?.[0]?.data]);
 
   const handelChange = async (isConfirm) => {
-    let apiReq = {
-      IS_CONFIMED: isConfirm === "C" ? true : false,
-      FLAG: rows?.[0]?.data?.REQ_FLAG,
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-      AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
-      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
-    };
-    let res = await MessageBox({
-      messageTitle: t("confirmation"),
-      message:
-        isConfirm === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
-      buttonNames: ["No", "Yes"],
-      defFocusBtnName: "Yes",
-      loadingBtnName: ["Yes"],
-    });
+    chequeBkValidateCfm.mutate(
+      {
+        AUTO_CHQBK_FLAG: rows?.[0]?.data?.AUTO_CHQBK_FLAG,
+        AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
+        FLAG: rows?.[0]?.data?.REQ_FLAG,
+        SCREEN_REF: "TRN/371",
+      },
+      {
+        onSuccess: async (data) => {
+          console.log("<<<dara", data);
+          const messagebox = async (msgTitle, msg, buttonNames) => {
+            let buttonName = await MessageBox({
+              messageTitle: msgTitle,
+              message: msg,
+              buttonNames: buttonNames,
+            });
+            return buttonName;
+          };
 
-    if (res === "Yes") {
-      chequeBkCfm.mutate(apiReq);
-    }
+          if (data?.length) {
+            for (let i = 0; i < data?.length; i++) {
+              let btnName = await messagebox(
+                data[i]?.O_STATUS === "999"
+                  ? "validation fail"
+                  : data[i]?.O_STATUS === "0"
+                  ? "confirmation"
+                  : "ALert message",
+                data[i]?.O_STATUS === "0"
+                  ? "Are you sure to proceed"
+                  : data[i]?.O_MESSAGE,
+                data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
+                  ? ["Yes", "No"]
+                  : ["Ok"]
+              );
+              if (btnName === "No") {
+                break;
+              } else if (btnName === "Ok" && data[i]?.O_STATUS === "0") {
+                let apiReq = {
+                  IS_CONFIMED: isConfirm === "C" ? true : false,
+                  FLAG: rows?.[0]?.data?.REQ_FLAG,
+                  COMP_CD: authState?.companyID,
+                  BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                  TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+                  AUTO_CHQBK_PRINT_FLAG: rows?.[0]?.data?.AUTO_CHQBK_PRINT_FLAG,
+                  LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
+                };
+                let res = await MessageBox({
+                  messageTitle: t("confirmation"),
+                  message:
+                    isConfirm === "C"
+                      ? t("AreYouSureToConfirm")
+                      : t("AreYouSureToReject"),
+                  buttonNames: ["No", "Yes"],
+                  defFocusBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
+                });
+                if (res === "Yes") {
+                  chequeBkCfm.mutate(apiReq);
+                }
+              }
+            }
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -108,20 +155,32 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "1035px",
+          maxWidth: "950px",
         },
       }}
     >
       <>
-        {chequeBkCfm.isError && (
+        {chequeBkValidateCfm.isLoading ? (
+          <LinearProgress color="inherit" />
+        ) : chequeBkCfm.isError || chequeBkValidateCfm.isError ? (
           <AppBar position="relative" color="primary">
             <Alert
               severity="error"
-              errorMsg={chequeBkCfm?.error?.error_msg ?? "Unknow Error"}
-              errorDetail={chequeBkCfm?.error?.error_detail ?? ""}
+              errorMsg={
+                chequeBkCfm?.error?.error_msg ??
+                chequeBkValidateCfm?.error?.error_msg ??
+                "Unknow Error"
+              }
+              errorDetail={
+                chequeBkCfm?.error?.error_detail ??
+                chequeBkValidateCfm?.error?.error_detail ??
+                ""
+              }
               color="error"
             />
           </AppBar>
+        ) : (
+          <LinearProgressBarSpacer />
         )}
 
         <FormWrapper

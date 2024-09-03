@@ -1,6 +1,6 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import React, { useContext } from "react";
-import { AppBar, Button, Dialog } from "@mui/material";
+import React, { useContext, useEffect, useRef } from "react";
+import { AppBar, Dialog } from "@mui/material";
 import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
@@ -10,11 +10,11 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
 import { chequeBKRetrievalMetadata } from "./retrieveMetadata";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 const RetrieveDataCustom = ({ closeDialog, result }) => {
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+  const formRef = useRef<any>(null);
   const {
     data: chequeBookFlag,
     isError,
@@ -23,7 +23,7 @@ const RetrieveDataCustom = ({ closeDialog, result }) => {
   } = useQuery<any, any, any>(["GETRETRIVECHQBKFLAG"], () =>
     API.getChequeBookFlag()
   );
-
+  // API calling for Retrieve Data
   const onSubmitHandler = (data, displayData, endSubmit) => {
     result.mutate({
       screenFlag: "chequebookCFM",
@@ -37,7 +37,19 @@ const RetrieveDataCustom = ({ closeDialog, result }) => {
     //@ts-ignore
     endSubmit(true);
   };
-
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        closeDialog();
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       {isLoading ? (
@@ -65,6 +77,7 @@ const RetrieveDataCustom = ({ closeDialog, result }) => {
             formStyle={{
               background: "white",
             }}
+            ref={formRef}
             controlsAtBottom={true}
             containerstyle={{ padding: "10px" }}
           >

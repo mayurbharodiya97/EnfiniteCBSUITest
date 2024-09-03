@@ -29,6 +29,8 @@ const Prioritymastersub = lazy(
 const TradeMaster = lazy(() => import("./tradeMaster/tradeMasterGrid"));
 const AreaMaster = lazy(() => import("./areaMaster/areaMasterGrid"));
 const AuditorMstGrid = lazy(() => import("./auditorMaster"));
+const UserSecurityWrapper = lazy(()=> import ("./usersecurity/securityUser"))
+const SecurityConfirm = lazy (()=> import ("./userSecurityConfirmation/UserSecurityConfirmationGrid"))
 
 const Master = () => {
   return (
@@ -48,7 +50,7 @@ const Master = () => {
           element={<ActionTakenMasterGrid />}
         />
         <Route path="lien-master/*" element={<LienMasterGrid />} />
-        <Route path="a/c-period-master/*" element={<AcPeriodMasterGrid />} />
+        <Route path="account-period-master/*" element={<AcPeriodMasterGrid />} />
         <Route path="mode-master/*" element={<ModeMasterGrid />} />
         <Route
           path="bank-Ifsc-Code-Master/*"
@@ -66,6 +68,8 @@ const Master = () => {
         <Route path="trade-master/*" element={<TradeMaster />} />
         <Route path="area-master/*" element={<AreaMaster />} />
         <Route path="auditor-master/*" element={<AuditorMstGrid />} />
+        <Route path="security-user/*" element={<UserSecurityWrapper />} />
+        <Route path="security-user-confirmation/*" element={<SecurityConfirm />} />
       </Routes>
     </>
   );

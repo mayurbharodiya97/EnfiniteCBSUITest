@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const LienReasonMstFormMetaData = {
   form: {
     name: "lienReasonMaster",
-    label: "LienReasonMaster",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -37,6 +39,7 @@ export const LienReasonMstFormMetaData = {
       maxLength: 4,
       required: true,
       type: "text",
+      isFieldFocused: true,
       autoComplete: "off",
       preventSpecialCharInput: true,
       schemaValidation: {
@@ -57,7 +60,10 @@ export const LienReasonMstFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -84,7 +90,6 @@ export const LienReasonMstFormMetaData = {
       },
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
-
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
         const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
@@ -97,10 +102,10 @@ export const LienReasonMstFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              const fieldValUppCase = fieldValue.toUpperCase();
-              return `${fieldValUppCase} is already entered at Sr. No: ${
-                i + 1
-              }`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }

@@ -16,26 +16,14 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
     pageSizes: [15, 25, 35],
     defaultPageSize: 15,
     containerHeight: {
-      min: "68vh",
-      max: "68vh",
+      min: "40vh",
+      max: "40vh",
     },
-    allowFilter: true,
+    allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
-  filters: [
-    {
-      accessor: "CARD_BIN",
-      columnName: "Card Bin",
-      filterComponentType: "valueFilter",
-      gridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
-  ],
   columns: [
     {
       accessor: "SR_NO",

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
 import { InitialValuesType, SubmitFnType } from "packages/form";
@@ -11,7 +11,8 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
-import { LoadingTextAnimation } from "components/common/loader";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const LienMasterForm = ({
@@ -25,18 +26,12 @@ const LienMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (gridData.length > 0) {
-      setIsLoading(false);
-    }
-  }, [gridData]);
   const mutation = useMutation(API.updateLienData,
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -46,7 +41,7 @@ const LienMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -96,7 +91,7 @@ const LienMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Are you sure to Save the record?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -111,7 +106,7 @@ const LienMasterForm = ({
 
   return (
     <>
-      {isLoading ? (<LoadingTextAnimation />
+      {!gridData ? (<LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"LienMasterForm" + formMode}

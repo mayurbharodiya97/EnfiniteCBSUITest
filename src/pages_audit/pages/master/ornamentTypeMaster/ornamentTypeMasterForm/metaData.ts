@@ -1,7 +1,9 @@
+import { t } from "i18next";
+
 export const OrnamentTypeMasterFormMetaData = {
   form: {
     name: "ornamentTypeMaster",
-    label: "OrnamentTypeMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -41,18 +43,13 @@ export const OrnamentTypeMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3 },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -66,7 +63,10 @@ export const OrnamentTypeMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -85,18 +85,13 @@ export const OrnamentTypeMasterFormMetaData = {
       type: "text",
       autoComplete: "off",
       required: true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 6 },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -110,7 +105,10 @@ export const OrnamentTypeMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -139,9 +137,13 @@ export const OrnamentTypeMasterFormMetaData = {
         xl: 3,
       },
       FormatProps: {
+        allowLeadingZeros: false,
         isAllowed: (values) => {
           //@ts-ignore
           if (parseFloat(values?.value) >= 100.01) {
+            return false;
+          }
+          if (values?.value?.length > 6) {
             return false;
           }
           return true;

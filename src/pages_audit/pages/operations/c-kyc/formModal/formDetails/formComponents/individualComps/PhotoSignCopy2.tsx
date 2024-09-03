@@ -20,6 +20,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
+import { GeneralAPI } from "registry/fns/functions";
 
 
 interface PhotoSignProps {
@@ -111,7 +112,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                 COMP_CD: authState?.companyID ?? "",
                 CUSTOMER_ID: location?.state?.[0]?.id
             }
-            mutation.mutate(data)
+            // mutation.mutate(data)
         }
     }, [location])
 

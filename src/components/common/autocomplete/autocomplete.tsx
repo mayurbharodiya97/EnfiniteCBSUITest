@@ -9,11 +9,16 @@ import {
   lazy,
   Suspense,
   useCallback,
+  useMemo,
 } from "react";
 
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
-import { useField, UseFieldHookProps } from "packages/form";
+import {
+  transformDependentFieldsState,
+  useField,
+  UseFieldHookProps,
+} from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 
 import match from "autosuggest-highlight/match";
@@ -63,7 +68,6 @@ interface AutoCompleteExtendedProps {
   ChipProps?: ChipProps;
   CreateFilterOptionsConfig?: CreateFilterOptionsConfig<OptionsProps>;
   options?: OptionsProps[] | dependentOptionsFn;
-  label?: string;
   placeholder?: string;
   required?: boolean;
   enableVirtualized?: boolean;
@@ -72,6 +76,11 @@ interface AutoCompleteExtendedProps {
   requestProps?: any;
   disableAdornment?: boolean;
   textFieldStyle?: any;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
+  label?: string;
 }
 
 type MyAutocompleteProps = Merge<
@@ -124,6 +133,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   requestProps,
   disableAdornment,
   textFieldStyle,
+  setFieldLabel,
   ...others
 }) => {
   const {
@@ -319,6 +329,13 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
       }
     }
   }, [incomingMessage, setErrorAsCB]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -427,10 +444,36 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         // disabled={isSubmitting}
         disabled={isSubmitting || readOnly}
         filterOptions={
+          // chanage by by parag to filter data (to display the input value first)
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
             ? createFilterOptions(CreateFilterOptionsConfig)
-            : undefined
+            : (options, state) => {
+                const inputValue = state.inputValue.toLowerCase();
+                const filtered = options.filter((option) =>
+                  option.label.toLowerCase().includes(inputValue)
+                );
+                return filtered.sort((a, b) => {
+                  const aStartsWith = a.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+                  const bStartsWith = b.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+
+                  if (aStartsWith && !bStartsWith) {
+                    return -1;
+                  }
+                  if (!aStartsWith && bStartsWith) {
+                    return 1;
+                  }
+                  return 0;
+                });
+              }
+          // Boolean(CreateFilterOptionsConfig) &&
+          // typeof CreateFilterOptionsConfig === "object"
+          //   ? createFilterOptions(CreateFilterOptionsConfig)
+          //   : undefined
         }
         renderTags={(value, getTagProps) => {
           return value.map((option, index) => {
@@ -465,7 +508,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                 {...TextFieldProps}
                 {...params}
                 name={name}
-                label={label}
+                label={updatedLabel ?? label}
                 placeholder={placeholder}
                 autoComplete="disabled"
                 type="text"
@@ -473,18 +516,14 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                 required={required}
                 helperText={!isSubmitting && isError ? error : null}
                 sx={{
+                  "& .MuiInputBase-root": {
+                    background: Boolean(readOnly)
+                      ? "var(--theme-color7) !important"
+                      : "",
+                  },
                   ...textFieldStyle,
                 }}
                 InputProps={{
-                  style: {
-                    background: textFieldStyle
-                      ? ""
-                      : Boolean(readOnly)
-                      ? "var(--theme-color7)"
-                      : "",
-                    // background: Boolean(readOnly) ? "var(--theme-color7)" : "",
-                  },
-
                   ...params.InputProps,
                   endAdornment: (
                     <Fragment>

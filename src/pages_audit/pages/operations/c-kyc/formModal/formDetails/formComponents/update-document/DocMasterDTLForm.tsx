@@ -35,6 +35,7 @@ export const DocMasterDTLForm = ({
   isDataChangedRef,
   defaultmode = "view",
   girdData,
+  preventModify=false,
 }) => {
   const navigate = useNavigate();
   // const ClosedEventCall = () => {
@@ -68,6 +69,11 @@ export const DocMasterDTLForm = ({
       ? `Document -  ${rows?.[0]?.data?.TEMPLATE_CD}`
       : null
   } `;
+  useEffect(() => {
+    if(Boolean(preventModify)) {
+      setFormMode("edit")
+    }
+  },[])
   // get sub grid data
   const mutationRet: any = useMutation(
     updateExtDocumentDetailsDataWrapperFn(API.getDocumentImagesList)
@@ -136,7 +142,9 @@ export const DocMasterDTLForm = ({
   // }, [mutationRet.isLoading, mutationRet.data])
 
   const AddNewRow = async () => {
-    myRef.current?.addNewRow(true);
+    if(!Boolean(preventModify)) {
+      myRef.current?.addNewRow(true);
+    }
   };
   const onPopupYesAccept = (rows) => {
     // console.log("rowvalll", rows)
@@ -159,126 +167,129 @@ export const DocMasterDTLForm = ({
     setFieldError,
   }) => {
     endSubmit(true);
-    // console.log(data, formMode, "wefqwdqwdqwdqwdq onsubkmkimtttt"
-    // ,data?.DETAILS_DATA, mysubdtlRef.current
-    // );
-    if (
-      formMode !== "new" &&
-      data?._UPDATEDCOLUMNS?.length === 0 &&
-      data?.DETAILS_DATA?.isDeleteRow?.length === 0 &&
-      data?.DETAILS_DATA?.isNewRow?.length === 0 &&
-      data?.DETAILS_DATA?.isUpdatedRow?.length === 0
-    ) {
-      setFormMode("view");
+    if(Boolean(preventModify)) {
     } else {
-      let newData:any = data;
-      if(Boolean(newData._isNewRow)) {
-        newData = _.omit(newData, ["SR_CD", "TRAN_CD"])
-      }
-      // newData["_isNewRow"] = data._isNewRow;
-      // newData["_UPDATEDCOLUMNS"] = data._UPDATEDCOLUMNS;
-      // newData["_OLDROWVALUE"] = data._OLDROWVALUE;
-      // newData["TRAN_CD"] = data.TRAN_CD;
-      // newData["SR_CD"] = data.SR_CD;
-      // if(Array.isArray(data?._UPDATEDCOLUMNS) && data?._UPDATEDCOLUMNS?.length>0) {
-      //   data?._UPDATEDCOLUMNS.forEach(fieldName => {
-      //     if(fieldName === "SUBMIT") {
-      //       if(typeof data.SUBMIT === "boolean") {
-      //         if(Boolean(data.SUBMIT)) {
-      //           newData["SUBMIT"] = "Y";
-      //         } else {
-      //           newData["SUBMIT"] = "N";
-      //         }
-      //       } else {
-      //         newData["SUBMIT"] = data.SUBMIT;
-      //       }
-      //     } else if(fieldName === "VALID_UPTO") {
-      //       newData["VALID_UPTO"] = format(
-      //         new Date(data.VALID_UPTO),
-      //         "dd-MM-yyyy"
-      //       );
-      //     } else {
-      //       newData[fieldName] = data[fieldName]
-      //     }
-      //   });
-      // }
-      // newData["DETAILS_DATA"] = data?.DETAILS_DATA;
-      if(typeof data.SUBMIT === "boolean") {
-        if(Boolean(data.SUBMIT)) {
-          newData["SUBMIT"] = "Y";
-        } else {
-          newData["SUBMIT"] = "N";
-        }
+      // console.log(data, formMode, "wefqwdqwdqwdqwdq onsubkmkimtttt"
+      // ,data?.DETAILS_DATA, mysubdtlRef.current
+      // );
+      if (
+        formMode !== "new" &&
+        data?._UPDATEDCOLUMNS?.length === 0 &&
+        data?.DETAILS_DATA?.isDeleteRow?.length === 0 &&
+        data?.DETAILS_DATA?.isNewRow?.length === 0 &&
+        data?.DETAILS_DATA?.isUpdatedRow?.length === 0
+      ) {
+        setFormMode("view");
       } else {
-        newData["SUBMIT"] = data.SUBMIT;
+        let newData:any = data;
+        if(Boolean(newData._isNewRow)) {
+          newData = _.omit(newData, ["SR_CD", "TRAN_CD"])
+        }
+        // newData["_isNewRow"] = data._isNewRow;
+        // newData["_UPDATEDCOLUMNS"] = data._UPDATEDCOLUMNS;
+        // newData["_OLDROWVALUE"] = data._OLDROWVALUE;
+        // newData["TRAN_CD"] = data.TRAN_CD;
+        // newData["SR_CD"] = data.SR_CD;
+        // if(Array.isArray(data?._UPDATEDCOLUMNS) && data?._UPDATEDCOLUMNS?.length>0) {
+        //   data?._UPDATEDCOLUMNS.forEach(fieldName => {
+        //     if(fieldName === "SUBMIT") {
+        //       if(typeof data.SUBMIT === "boolean") {
+        //         if(Boolean(data.SUBMIT)) {
+        //           newData["SUBMIT"] = "Y";
+        //         } else {
+        //           newData["SUBMIT"] = "N";
+        //         }
+        //       } else {
+        //         newData["SUBMIT"] = data.SUBMIT;
+        //       }
+        //     } else if(fieldName === "VALID_UPTO") {
+        //       newData["VALID_UPTO"] = format(
+        //         new Date(data.VALID_UPTO),
+        //         "dd-MM-yyyy"
+        //       );
+        //     } else {
+        //       newData[fieldName] = data[fieldName]
+        //     }
+        //   });
+        // }
+        // newData["DETAILS_DATA"] = data?.DETAILS_DATA;
+        if(typeof data.SUBMIT === "boolean") {
+          if(Boolean(data.SUBMIT)) {
+            newData["SUBMIT"] = "Y";
+          } else {
+            newData["SUBMIT"] = "N";
+          }
+        } else {
+          newData["SUBMIT"] = data.SUBMIT;
+        }
+        if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
+          newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
+        }
+        newData["REQ_CD"] = reqCD ?? "";
+        // if (Boolean(data._isNewRow)) {
+        //   newData["IS_MAIN_DATA_ADD"] = true;
+        // }
+        // if (data.SUBMIT === "Y") {
+        //   newData["SUBMIT"] = true;
+        // } else {
+        //   newData["SUBMIT"] = false;
+        // }
+        
+        // if (Boolean(newData["VALID_UPTO"])) {
+        //   newData["VALID_UPTO"] = format(
+        //     new Date(newData["VALID_UPTO"]),
+        //     "dd-MM-yyyy"
+        //   );
+        // }
+        // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
+        //   newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
+        //     (row) => {
+        //       // VALID_UPTO
+        //       if (Boolean(row.VALID_UPTO)) {
+        //         return {
+        //           ...row,
+        //           VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
+        //         };
+        //       } else return { ...row };
+        //     }
+        //   );
+        // }
+        // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
+        // }
+        // console.log(data, "dtaa on sibmitg", newData)
+  
+        const payload = {
+          DOC_MST: [{
+             ...newData,
+             NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
+             IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,   
+            //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",   
+          }],
+          REQ_CD: reqCD,
+          CUSTOMER_ID: custID,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          // IS_FROM_MAIN:
+          //   custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
+          REQ_FLAG: "E",
+          IsNewRow: Boolean(reqCD) ? false : true,
+        };
+        reqPayloadRef.current = payload;
+        // console.log("weiuifhoiuewhf", newData, girdData)
+  
+        isErrorFuncRef.current = {
+          data: payload,
+          endSubmit,
+          setFieldError,
+          displayData,
+        };
+        setopenAccept(true);
       }
-      if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
-        newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
-      }
-      newData["REQ_CD"] = reqCD ?? "";
-      // if (Boolean(data._isNewRow)) {
-      //   newData["IS_MAIN_DATA_ADD"] = true;
-      // }
-      // if (data.SUBMIT === "Y") {
-      //   newData["SUBMIT"] = true;
-      // } else {
-      //   newData["SUBMIT"] = false;
-      // }
-      
-      // if (Boolean(newData["VALID_UPTO"])) {
-      //   newData["VALID_UPTO"] = format(
-      //     new Date(newData["VALID_UPTO"]),
-      //     "dd-MM-yyyy"
-      //   );
-      // }
-      // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
-      //   newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
-      //     (row) => {
-      //       // VALID_UPTO
-      //       if (Boolean(row.VALID_UPTO)) {
-      //         return {
-      //           ...row,
-      //           VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
-      //         };
-      //       } else return { ...row };
-      //     }
-      //   );
-      // }
-      // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
-      // }
-      // console.log(data, "dtaa on sibmitg", newData)
-
-      const payload = {
-        DOC_MST: [{
-           ...newData,
-           NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
-           IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,   
-          //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",   
-        }],
-        REQ_CD: reqCD,
-        CUSTOMER_ID: custID,
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        // IS_FROM_MAIN:
-        //   custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
-        REQ_FLAG: "E",
-        IsNewRow: Boolean(reqCD) ? false : true,
-      };
-      reqPayloadRef.current = payload;
-      // console.log("weiuifhoiuewhf", newData, girdData)
-
-      isErrorFuncRef.current = {
-        data: payload,
-        endSubmit,
-        setFieldError,
-        displayData,
-      };
-      setopenAccept(true);
+  
+      // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
+      // setopenAccept(true);
+      // mutation.mutate({ data, endSubmit, setLoading });
     }
-
-    // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
-    // setopenAccept(true);
-    // mutation.mutate({ data, endSubmit, setLoading });
   };
 
   useEffect(() => {
@@ -396,13 +407,23 @@ export const DocMasterDTLForm = ({
             }}
             formName={"fromSourceDetail"}
             formNameMaster={"fromSourceMaster"}
+            onClickActionEvent={(index, id, data) => {
+              if(Boolean(preventModify)) {
+                fileRowRef.current = {
+                  ...data,
+                };
+                setIsFileViewOpen(true);
+              }
+            }}
           >
             {({ isSubmitting, handleSubmit }) => {
               return (
                 <>
                   <Button
                     onClick={() => {
-                      setFormMode("edit");
+                      // if(!Boolean(preventModify)) {
+                        setFormMode("edit");
+                      // }
                     }}
                     // disabled={isSubmitting}
                     // endIcon={
@@ -434,7 +455,8 @@ export const DocMasterDTLForm = ({
                 ...(rows?.[0]?.data ?? {}),
                 DETAILS_DATA: mutationRet.data || [],
               }}
-              displayMode={formMode}
+              displayMode={Boolean(preventModify) ? "view" : formMode}
+              // displayMode={Boolean(preventModify) ? "view" : formMode}
               isLoading={isLoading}
               onSubmitData={onSubmitHandler}
               isNewRow={false}
@@ -467,15 +489,15 @@ export const DocMasterDTLForm = ({
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    <Button
+                    {!Boolean(preventModify) && <Button
                       onClick={AddNewRow}
                       // disabled={isSubmitting}
                       //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                       color={"primary"}
                     >
                       Add Row
-                    </Button>
-                    <Button
+                    </Button>}
+                    {!Boolean(preventModify) && <Button
                       onClick={handleSubmit}
                       // disabled={isSubmitting}
                       // endIcon={
@@ -484,10 +506,14 @@ export const DocMasterDTLForm = ({
                       color={"primary"}
                     >
                       Save
-                    </Button>
+                    </Button>}
                     <Button
                       onClick={() => {
-                        setFormMode("view");
+                        if(Boolean(preventModify)) {
+                          ClosedEventCall();
+                        } else {
+                          setFormMode("view");
+                        }
                       }}
                       // disabled={isSubmitting}
                       color={"primary"}
@@ -610,6 +636,7 @@ export const DocMasterDTLForm = ({
             detailsDataRef={fileRowRef.current}
             filesGridData={mutationRet.data || []}
             mainDocRow={mysubdtlRef.current}
+            preventModify={preventModify}
           />
         ) : null}
       </Dialog>

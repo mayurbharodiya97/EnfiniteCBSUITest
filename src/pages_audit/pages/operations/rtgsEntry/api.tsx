@@ -75,7 +75,7 @@ export const getRtgsTransactionTypeList = async (ApiReq) => {
       responseData = responseData.map(({ DESCRIPTION, MSG_TYPE, ...other }) => {
         return {
           value: MSG_TYPE,
-          label: DESCRIPTION,
+          label: MSG_TYPE + "-" + DESCRIPTION,
           ...other,
         };
       });
@@ -138,9 +138,10 @@ export const getRtgsBenfDtlList = async (ApiReq) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, ...other }) => {
+      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, AC_UQ_ID, ...other }, i) => {
         return {
           value: TO_ACCT_NO,
+          // value: TO_ACCT_NO,
           label: DISP_VAL,
           ...other,
         };
@@ -290,6 +291,25 @@ export const getRtgsBenDetailData = async (ApiReq) => {
     });
   if (status === "0") {
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getAcctTypeData = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+        return {
+          value: DATA_VALUE,
+          label: DISPLAY_VALUE,
+        };
+      });
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

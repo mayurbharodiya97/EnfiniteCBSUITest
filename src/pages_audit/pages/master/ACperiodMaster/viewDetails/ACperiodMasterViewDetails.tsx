@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
@@ -11,7 +11,8 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
-import { LoadingTextAnimation } from "components/common/loader";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const AcPeriodMasterForm = ({
@@ -24,13 +25,12 @@ const AcPeriodMasterForm = ({
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.updateInstallmentPeriodData,
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -40,7 +40,7 @@ const AcPeriodMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -49,11 +49,7 @@ const AcPeriodMasterForm = ({
       },
     }
   );
-  useEffect(() => {
-    if (gridData.length > 0) {
-      setIsLoading(false);
-    }
-  }, [gridData]);
+
 
 
   const onSubmitHandler: SubmitFnType = async (
@@ -89,7 +85,7 @@ const AcPeriodMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Are you sure to Save the record?",
+        message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
@@ -104,7 +100,7 @@ const AcPeriodMasterForm = ({
 
   return (
     <>
-      {isLoading ? (<LoadingTextAnimation />
+      {!gridData ? (<LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"acperiodMasterForm" + formMode}

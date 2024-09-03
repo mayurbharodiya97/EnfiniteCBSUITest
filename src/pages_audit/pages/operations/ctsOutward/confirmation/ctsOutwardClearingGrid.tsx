@@ -9,7 +9,7 @@ import {
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { CtsOutwardClearingConfirmForm } from "./CtsOutwardClearingForm";
@@ -24,10 +24,16 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import { t } from "i18next";
+import { utilFunction } from "components/utils";
+
+
+
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -41,10 +47,34 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const isDataChangedRef = useRef(false);
   const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
+  let currentPath = useLocation().pathname;
 
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
-    () => API.getBussinessDate()
+    () => API.getBussinessDate(),
+    {
+      onSuccess: (data) => {
+        mutation.mutate({
+          FROM_TRAN_DT: zoneTranType === "S" ? (format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")) : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+          TO_TRAN_DT: zoneTranType === "S" ? format(
+            new Date(data?.[0]?.TRAN_DATE),
+            "dd/MMM/yyyy"
+          ) : format(
+            new Date(authState?.workingDate),
+            "dd/MMM/yyyy"
+          ),
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState.user.branchCode,
+          TRAN_TYPE: zoneTranType,
+          CONFIRMED: "0",
+          BANK_CD: "",
+          ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+          SLIP_CD: "",
+          CHEQUE_NO: "",
+          CHEQUE_AMOUNT: ""
+        })
+      },
+    }
   );
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -69,7 +99,6 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      // console.log("data", data);
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -275,6 +304,13 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
+              formLabel={
+                utilFunction.getDynamicLabel(
+                  currentPath,
+                  authState?.menulistdata,
+                  true
+                )
+              }
             />
           }
         />

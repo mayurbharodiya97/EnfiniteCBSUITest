@@ -1,9 +1,10 @@
+import { t } from "i18next";
 import * as API from "../api";
 
 export const ActionTakenMasterFormMetaData = {
   form: {
     name: "actionTakenMaster",
-    label: "ActionTakenMasterForm",
+    label: "",
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -45,13 +46,13 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 4,
       autoComplete: "off",
       isFieldFocused: true,
+      preventSpecialCharInput: true,
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["CodeisRequired"] }],
+      },
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -65,7 +66,10 @@ export const ActionTakenMasterFormMetaData = {
             const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
             if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+              return `${t(`DuplicateValidation`, {
+                fieldValue: fieldValue,
+                rowNumber: i + 1,
+              })}`;
             }
           }
         }
@@ -84,27 +88,28 @@ export const ActionTakenMasterFormMetaData = {
       maxLength: 50,
       type: "text",
       autoComplete: "off",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
-        let specialChar = /^[^!&]*$/;
-        if (columnValue?.value && !specialChar.test(columnValue.value)) {
-          return "'!' and '&' not allowed";
-        }
-
-        // Duplication validation
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
         const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
-        if (fieldValue === rowColumnValue) {
-          return "";
-        }
-        if (gridData) {
-          for (let i = 0; i < gridData.length; i++) {
-            const ele = gridData[i];
-            const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
 
-            if (trimmedColumnValue === fieldValue) {
-              return `${fieldValue} is already entered at Sr. No: ${i + 1}`;
+        if (Boolean(columnValue?.value?.trim())) {
+          if (fieldValue === rowColumnValue) {
+            return "";
+          }
+          if (gridData) {
+            for (let i = 0; i < gridData.length; i++) {
+              const ele = gridData[i];
+              const trimmedColumnValue = ele?.[accessor]?.trim().toLowerCase();
+
+              if (trimmedColumnValue === fieldValue) {
+                return `${t(`DuplicateValidation`, {
+                  fieldValue: fieldValue,
+                  rowNumber: i + 1,
+                })}`;
+              }
             }
           }
         }
@@ -116,11 +121,10 @@ export const ActionTakenMasterFormMetaData = {
     {
       render: { componentType: "autocomplete" },
       name: "SUIT_FILED_STATUS_CD",
-      label: "A4 Suit File Status Code",
-      placeholder: "Select A4 Suit File Status Code",
+      label: "A4SuitFileStatusCode",
+      placeholder: "SelectA4SuitFileStatusCode",
       options: API.getSuitFldStdMstData,
       _optionsKey: "getSuitFldStdMstData",
-      __VIEW__: { isReadOnly: true },
       __NEW__: { defaultValue: "A " },
       GridProps: { xs: 12, sm: 6, md: 4, lg: 4.5, xl: 4.5 },
     },

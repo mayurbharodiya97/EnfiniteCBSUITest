@@ -51,17 +51,17 @@ export const signatoryjoint_tab_metadata = {
             render: {
                 componentType: "arrayField",
             },
-            name: "SIGNATORY_DTL",
+            name: "JOINT_SIGNATORY_DTL",
             // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Reference",
                     name: "referenceDivider_ignoreField",
-                    label: "referenceDivider"
+                    label: "Reference",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -131,11 +131,11 @@ export const signatoryjoint_tab_metadata = {
 
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    dividerText: "Membership",
                     name: "MembershipDivider_ignoreField",
-                    label: "membershipDivider"
+                    label: "Membership",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -198,11 +198,11 @@ export const signatoryjoint_tab_metadata = {
 
                 {
                     render:  {
-                        componentType: "Divider",
+                        componentType: "divider",
                     },
-                    // dividerText: "",
                     name: "PersonaldtlDivider_ignoreField",
-                    label: "personaldtlDivider"
+                    label: "",
+                    GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
                 },
                 {
                     render: {
@@ -226,9 +226,10 @@ export const signatoryjoint_tab_metadata = {
                     render: {
                         componentType: "dob"
                     },
-                    name: "BIIRTH_DATE",
+                    name: "BIRTH_DATE",
                     label: "Birth Date",
                     maxDate: new Date(), 
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
                 },
                 {
@@ -243,6 +244,7 @@ export const signatoryjoint_tab_metadata = {
                         {label: "OTHER", value: "O"},
                         {label: "TRANSGENDER", value: "T"},
                     ],
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // required: true,
                     // schemaValidation: {
                     //     type: "string",
@@ -320,6 +322,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "PIN_CODE",
                     label: "PIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     schemaValidation: {
                         type: "string",
@@ -345,7 +348,7 @@ export const signatoryjoint_tab_metadata = {
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },  
+                },
                 {
                     render: {
                         componentType: "select",
@@ -355,49 +358,37 @@ export const signatoryjoint_tab_metadata = {
                     label: "SubArea",
                     dependentFields: ["PIN_CODE"],
                     disableCaching: true,
-                    options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(dependentValue, formState, _, authState),
-                    _optionsKey: "indSubareaSignatoryOp",
-                    isReadOnly: (fieldValue, dependentFields, formState) => {
-                    const pin_code = dependentFields?.PIN_CODE?.value;
-                    if(!Boolean(pin_code)) {
-                        return true;
-                    } else if(Boolean(pin_code) && pin_code.length<6) {
-                        return true;
-                    }
-                    return false;
-                },
-                setValueOnDependentFieldsChange: (dependentFields) => {
-                    const pincode = dependentFields?.PIN_CODE?.value
-                    // console.log("siudbcsiudbcisbdc setvalue", pincode)
-                    if(Boolean(pincode)) {
-                        if(pincode.length<6) {
-                            return "";
-                        }
-                    } else return null;
-                },  
+                    options: (dependentValue, formState, _, authState) => getOptionsOnPinParentArea(_?.["JOINT_SIGNATORY_DTL.PIN_CODE"]?.value, formState, _, authState),
+                    _optionsKey: "indSubareaMaiwejfjwefnOpjoint",
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                        const pincode = dependentFields["JOINT_SIGNATORY_DTL.PIN_CODE"]
+                        if(Boolean(pincode)) {
+                            if(pincode.length<6) {
+                                return "";
+                            }
+                        } else return null;
+                    },  
                     postValidationSetCrossFieldValues: (
-                    field,
-                    __,
-                    ___,
-                    dependentFieldsValues
+                      field,
+                      __,
+                      ___,
+                      dependentFieldsValues
                     ) => {
-                    // console.log("siudbcsiudbcisbdc postValidationSetCrossFieldValues called", field.value)
-                    // console.log("sdhaiuwqidquwdqwe", dependentFieldsValues)
-                    if(field.value) {
-                        let values = {
-                            CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                            CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : ""},
-                            // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                            DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                            DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                            STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                            COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                            STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                            COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
-                        }
-                        return values;
-                    }
-                    return {}
+                      if(field.value) {
+                          let values = {
+                              CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                              CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : ""},
+                              // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                              DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                              DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                              STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                              COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                              STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                              COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                          }
+                          return values;
+                      }
+                      return {}
                     },
                     placeholder: "",
                     type: "text",
@@ -410,37 +401,35 @@ export const signatoryjoint_tab_metadata = {
                     name: "CITY_ignoreField",
                     label: "City",
                     schemaValidation: {
-                    type: "string",
-                    rules: [
+                      type: "string",
+                      rules: [
                         { name: "required", params: ["ThisFieldisrequired"] },
-                    ],
+                      ],
                     },
                     isReadOnly: true,
                     placeholder: "",
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].CITY_NM;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].CITY_NM;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
-                    render: {
-                        componentType: "hidden",        
-                    },
-                    name: "CITY_CD",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
-                        // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                        if(optionData && optionData.length>0) {
-                            return optionData[0].CITY_CD;
-                        } else return "";
-                    },
+                  render: {
+                      componentType: "hidden",        
+                  },
+                  name: "CITY_CD",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].CITY_CD;
+                      } else return "";
+                  },
                 },
                 {
                     render: {
@@ -453,28 +442,26 @@ export const signatoryjoint_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].DISTRICT_NM;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].DISTRICT_NM;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
-                    render: {
-                        componentType: "hidden",
-                    },
-                    name: "DISTRICT_CD",
-                    label: "hidden district",
-                    dependentFields: ["AREA_CD"],
-                    setValueOnDependentFieldsChange: (dependentFields) => {
-                        const optionData = dependentFields?.AREA_CD?.optionData
-                        // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                        if(optionData && optionData.length>0) {
-                            return optionData[0].DISTRICT_CD;
-                        } else return "";
-                    },
+                  render: {
+                      componentType: "hidden",
+                  },
+                  name: "DISTRICT_CD",
+                  label: "hidden district",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].DISTRICT_CD;
+                      } else return "";
+                  },
                 },
                 {
                     render: {
@@ -487,11 +474,10 @@ export const signatoryjoint_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].STATE_NM;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].STATE_NM;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -506,11 +492,10 @@ export const signatoryjoint_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].COUNTRY_NM;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].COUNTRY_NM;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -525,11 +510,10 @@ export const signatoryjoint_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].STATE_CD;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].STATE_CD;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -544,11 +528,10 @@ export const signatoryjoint_tab_metadata = {
                     type: "text",
                     dependentFields: ["AREA_CD"],
                     setValueOnDependentFieldsChange: (dependentFields) => {
-                    const optionData = dependentFields?.AREA_CD?.optionData
-                    // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
-                    if(optionData && optionData.length>0) {
-                        return optionData[0].COUNTRY_CD;
-                    } else return "";
+                      const optionData = dependentFields?.["JOINT_SIGNATORY_DTL.AREA_CD"].optionData;
+                      if(optionData && optionData.length>0) {
+                          return optionData[0].COUNTRY_CD;
+                      } else return "";
                     },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -567,6 +550,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "MOBILE_NO",
                     label: "Mobile No.",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // maxLength: 20,
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -576,6 +560,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "PHONE",
                     label: "Phone",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // maxLength: 20,
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -586,6 +571,7 @@ export const signatoryjoint_tab_metadata = {
                     name: "UNIQUE_ID",
                     label: "UIDAadhaar",
                     placeholder: "1111 1111 1111",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     type: "text",
                     maxLength: 12,
@@ -605,6 +591,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "FORM_60",
                     label: "Form6061",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     placeholder: "",
                     defaultValue: "N",
                     type: "text",
@@ -623,6 +610,7 @@ export const signatoryjoint_tab_metadata = {
                     placeholder: "AAAAA1111A",
                     type: "text",
                     txtTransform: "uppercase",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                     schemaValidation: {
@@ -644,6 +632,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "DIN_NO",
                     label: "DIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     maxLength: 8,
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                 },
@@ -653,6 +642,7 @@ export const signatoryjoint_tab_metadata = {
                     },
                     name: "REMARKS",
                     label: "Remarks",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     maxLength: 300,
                     GridProps: {xs:12, sm:6, md: 6, lg: 4.7, xl:4}
                 },

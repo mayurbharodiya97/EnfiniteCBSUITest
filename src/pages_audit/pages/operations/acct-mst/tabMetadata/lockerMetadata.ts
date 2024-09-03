@@ -48,11 +48,11 @@ export const locker_tab_metadata = {
     fields: [
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Locker Detail",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "Locker Detail",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -60,11 +60,18 @@ export const locker_tab_metadata = {
             },
             name: "DAY_BOOK_GRP_CD",
             label: "Locker Type",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmLockerOp",
+            placeholder: "",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -74,6 +81,13 @@ export const locker_tab_metadata = {
             label: "Category",
             options: (dependentValue, formState, _, authState) => API.getCategoryTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
             _optionsKey: "categLockerOp",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -130,6 +144,13 @@ export const locker_tab_metadata = {
             options: [], 
             _optionsKey: "keyEmbossLockerOp",
             placeholder: "",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
@@ -145,6 +166,13 @@ export const locker_tab_metadata = {
             ],
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -163,6 +191,13 @@ export const locker_tab_metadata = {
             label: "Interest Rate",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
@@ -179,11 +214,11 @@ export const locker_tab_metadata = {
         },
         {
             render: {
-                componentType: "Divider",
+                componentType: "divider",
             },
-            dividerText: "Locker Detail",
             name: "savingsdivider_ignoreField",
-            label: ""
+            label: "Locker Detail",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -222,6 +257,13 @@ export const locker_tab_metadata = {
             name: "REF_ACCT_CD",
             label: "",
             placeholder: "A/C No.",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             maxLength: 8,
             GridProps: {xs:12, sm:3, md: 2, lg: 2, xl:1.5}
         },
@@ -234,6 +276,13 @@ export const locker_tab_metadata = {
             type: "text",
             FormatProps: {
               allowNegative: true,
+            },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },

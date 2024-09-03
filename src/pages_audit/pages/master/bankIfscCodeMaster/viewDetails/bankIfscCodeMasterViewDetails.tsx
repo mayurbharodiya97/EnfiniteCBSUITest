@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
@@ -11,6 +11,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 
 const BankIfscCdMasterForm = ({
@@ -28,7 +29,7 @@ const BankIfscCdMasterForm = ({
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -38,7 +39,7 @@ const BankIfscCdMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -83,7 +84,7 @@ const BankIfscCdMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "Are you sure to Save the record?",
+        message: t("SaveData"),
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],

@@ -187,6 +187,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 6) {
           return false;
@@ -523,7 +524,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "BRANCH_CD",
     label: "BranchCode",
     placeholder: "BranchCodePlaceHolder",
-    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
@@ -554,7 +554,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
         USER_NAME: authState?.user?.id ?? "",
-        DOC_CD: formState?.docCd ?? "",
+        DOC_CD: formState?.docCD ?? "",
       });
     },
     _optionsKey: "get_Account_Type",

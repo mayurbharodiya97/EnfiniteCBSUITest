@@ -844,12 +844,26 @@ export const getPendingData = async (reqObj:{COMP_CD: string, BRANCH_CD: string,
     throw DefaultErrorObject(message, messageDetails);
   }
 }
-// for getting pending entries, in grid
+
 export const ConfirmPendingCustomers = async ({REQUEST_CD, REMARKS, CONFIRMED}) => {
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("CONFIRMCUSTOMERDATA", {
     REQUEST_CD: REQUEST_CD,
     REMARKS: REMARKS,
+    CONFIRMED: CONFIRMED,
+  });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const ConfirmCustPhoto = async ({REQUEST_CD, COMP_CD, CONFIRMED}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CONFIRMCUSTPHOTODATA", {
+    REQUEST_CD: REQUEST_CD,
+    COMP_CD: COMP_CD,
     CONFIRMED: CONFIRMED,
   });
   if (status === "0") {
@@ -1018,7 +1032,8 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
     await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUSTOMER_TYPE: CUST_TYPE, 
+      CUSTOMER_TYPE: CUST_TYPE ?? null, 
+      ACCT_TYPE: null,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
     });
@@ -1111,13 +1126,10 @@ export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
     }
   }
 }
-
-export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
+export const updatePhotoSignData = async (reqData) => {
+  // console.log(":wedwd", reqData)
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID,
-    });
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
   if (status === "0") {
     return data
   } else {
@@ -1125,10 +1137,27 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
-export const updatePhotoSignData = async (reqData) => {
-  // console.log(":wedwd", reqData)
+export const getCustLatestDtl = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
+    await AuthSDK.internalFetcher("GETCUSTLATESTPHOTODTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID, 
+      REQ_CD: REQ_CD
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD
+    });
   if (status === "0") {
     return data
   } else {
@@ -1536,20 +1565,13 @@ export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}
     }
 } 
 
-export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
-  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE)
-  let PIN_CODE = "", PARENT_AREA = ""
-  if(Boolean(dependentValue?.PIN_CODE) && dependentValue?.PIN_CODE?.value?.length>5) {
-    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value)
-    PIN_CODE = dependentValue?.PIN_CODE?.value
-  }
-  if(PIN_CODE) {
-    // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
+export const getOptionsOnPinParentArea = async (pinCode, formState, _, authState) => {
+  if(Boolean(pinCode) && pinCode?.length>5) {
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAREALIST", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      PIN_CODE: PIN_CODE,
+      PIN_CODE: pinCode,
       // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
       // PARENT_AREA: PARENT_AREA,
       FLAG: "P",
@@ -1557,7 +1579,6 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
     });
 
     if(status == 0) {
-      // console.log("getOptionsOnPinParentArea data", data)
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
@@ -1573,7 +1594,7 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
-  }
+  } else return [];
 }
 
 export const getOptionsOnPinParentAreaOtherAdd = async (dependentValue, formState, _, authState) => {

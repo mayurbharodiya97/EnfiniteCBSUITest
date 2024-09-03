@@ -11,6 +11,7 @@ import { ClearCacheContext, queryClient } from "cache";
 import { enqueueSnackbar } from "notistack";
 import { CategoryMasterFormWrapper } from "./categoryMasterForm";
 import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -22,7 +23,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -41,10 +42,11 @@ export const CategoryMasterGrid = () => {
   const isDeleteDataRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.categoryMasterDML, {
     onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -54,7 +56,7 @@ export const CategoryMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar("Record successfully deleted", {
+      enqueueSnackbar(t("RecordsDeletedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -67,7 +69,7 @@ export const CategoryMasterGrid = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "Are you sure to delete selected row?",
+          message: "DeleteData",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -129,7 +131,7 @@ export const CategoryMasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />
@@ -143,6 +145,7 @@ export const CategoryMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        ReportExportButton={true}
       />
       <Routes>
         <Route
