@@ -51,6 +51,7 @@ interface MyGridExtendedProps {
   isWorkingDate?: boolean;
   isMaxWorkingDate?: boolean;
   isMinWorkingDate?: boolean;
+  ignoreInSubmit?: Function | boolean;
 }
 
 export type MyDataPickerAllProps = Merge<
@@ -81,6 +82,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   isWorkingDate = false,
   setValueOnDependentFieldsChange,
   format,
+  ignoreInSubmit = false,
   //disableTimestamp,
   ...others
 }) => {
@@ -101,6 +103,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     whenToRunValidation,
     runValidation,
     dependentValues,
+    setIgnoreInSubmit
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -138,6 +141,15 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       runValidation({ value, _minDt: others?.minDate });
     }
   }, [value]);
+  useEffect(() => {
+    if(typeof ignoreInSubmit === "function") {
+      let result = ignoreInSubmit(transformDependentFieldsState(dependentValues), { isSubmitting, value })
+      setIgnoreInSubmit(result);
+    }
+    else {
+      setIgnoreInSubmit(ignoreInSubmit)
+    }
+  }, [ignoreInSubmit, dependentValues]);
 
   useEffect(() => {
     if (typeof value === "string") {
