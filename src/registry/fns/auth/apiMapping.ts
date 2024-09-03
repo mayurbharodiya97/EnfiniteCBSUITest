@@ -1917,6 +1917,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOTEMPODCONFIRMATION",
     packageName: "",
   },
+  GETDLYTRNPARAMF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNPARAMF1",
+    packageName: "",
+  },
+  DODUALCONFIRMATION: {
+    url: "/enfinityCommonServiceAPI/DODUALCONFIRMATION",
+    packageName: "",
+  },
   DODUALCONFIRMATION: {
     url: "enfinityCommonServiceAPI/DODUALCONFIRMATION ",
     packageName: "",

@@ -600,7 +600,7 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox, setCardDetails }}
+        formState={{ MessageBox: MessageBox, setCardDetails, docCd: "TRN/039" }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
             let event: any = { preventDefault: () => {} };

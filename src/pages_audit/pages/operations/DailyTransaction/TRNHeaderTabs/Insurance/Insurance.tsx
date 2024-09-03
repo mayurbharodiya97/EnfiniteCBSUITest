@@ -20,7 +20,6 @@ export const Insurance = ({ reqData }) => {
   // // api define
   // const getInsuranceList = useMutation(API.getInsuranceList, {
   //   onSuccess: (data) => {
-  //     console.log(data, " insurance detailssss");
   //     setRows(data);
   //   },
   //   onError: (error) => {},
@@ -33,7 +32,13 @@ export const Insurance = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getInsuranceList", { reqData }], () => API.getInsuranceList(reqData));
+  >(["getInsuranceList", { reqData }], () =>
+    API.getInsuranceList({
+      ...reqData,
+      A_GD_DATE: authState?.workingDate,
+      USER_LEVEL: authState?.role,
+    })
+  );
 
   return (
     <>

@@ -260,7 +260,7 @@ export const TellerScreenMetadata: any = {
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
                     const { btnNm, msgObj } = await getBtnName({
-                      messageTitle: "RiskCategoryAlert",
+                      messageTitle: "confirmation",
                       message: postData?.MSG[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
@@ -276,7 +276,7 @@ export const TellerScreenMetadata: any = {
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "9") {
                     const { btnNm, msgObj } = await getBtnName({
-                      messageTitle: "HNIAlert",
+                      messageTitle: "Alert",
                       message: postData?.MSG[i]?.O_MESSAGE,
                     });
                   }
@@ -604,7 +604,7 @@ export const TellerScreenMetadata: any = {
               }
             } else if (apiResponse[i]?.ERR_CODE === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "confirmation",
                 message: apiResponse[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
               });
@@ -647,7 +647,7 @@ export const TellerScreenMetadata: any = {
               }
             } else if (apiResponse[i]?.ERR_CODE === "9") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "HNIAlert",
+                messageTitle: "Alert",
                 message: apiResponse[i]?.ERR_MSG,
               });
               return {
@@ -1872,7 +1872,7 @@ export const denoTableMetadataTotal: any = {
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "99") {
                         const { btnNm, msgObj } = await getBtnName({
-                          messageTitle: "RiskCategoryAlert",
+                          messageTitle: "confirmation",
                           message: apiResponse?.MSG[i]?.O_MESSAGE,
                           buttonNames: ["Yes", "No"],
                         });
@@ -1889,7 +1889,7 @@ export const denoTableMetadataTotal: any = {
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "9") {
                         const { btnNm, msgObj } = await getBtnName({
-                          messageTitle: "HNIAlert",
+                          messageTitle: "Alert",
                           message: apiResponse?.MSG[i]?.O_MESSAGE,
                         });
                       }
@@ -2214,7 +2214,7 @@ export const denoTableMetadataTotal: any = {
                   }
                 } else if (apiResponse[i]?.ERR_CODE === "99") {
                   const { btnNm, msgObj } = await getBtnName({
-                    messageTitle: "RiskCategoryAlert",
+                    messageTitle: "confirmation",
                     message: apiResponse[i]?.ERR_MSG,
                     buttonNames: ["Yes", "No"],
                   });
@@ -2253,7 +2253,7 @@ export const denoTableMetadataTotal: any = {
                   }
                 } else if (apiResponse[i]?.ERR_CODE === "9") {
                   const { btnNm, msgObj } = await getBtnName({
-                    messageTitle: "HNIAlert",
+                    messageTitle: "Alert",
                     message: apiResponse[i]?.ERR_MSG,
                   });
                   return {

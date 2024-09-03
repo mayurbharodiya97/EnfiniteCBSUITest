@@ -218,6 +218,7 @@ export const SingleDeno = () => {
           MessageBox: MessageBox,
           onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
           setCardDetails,
+          docCD: "TRN/042",
         }}
         onFormButtonClickHandel={() => {
           let event: any = { preventDefault: () => {} };
