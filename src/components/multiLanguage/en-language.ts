@@ -1716,7 +1716,7 @@ IntType:"InterestType",
 InstallmentType:"Installment Type",
 InstallmentTypeisrequired:"Installment Type is required",
 InstAmount:"Installment Amount",
-RunningIntAmt:"Running Int. Amt."
+RunningIntAmt:"Running Int. Amt.",
 
   //fd interest calculator
   normalPremature: "Normal/Premature",
