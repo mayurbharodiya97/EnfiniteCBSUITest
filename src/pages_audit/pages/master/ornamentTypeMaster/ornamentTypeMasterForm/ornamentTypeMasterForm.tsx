@@ -61,9 +61,9 @@ const OrnamentTypeMasterForm = ({
     };
     let oldData = {
       ...rows?.[0]?.data,
+      ORN_MARGIN: Number(rows?.[0]?.data?.ORN_MARGIN ?? 0).toFixed(2),
     };
     let upd = utilFunction.transformDetailsData(newData, oldData);
-
     isErrorFuncRef.current = {
       data: {
         ...newData,

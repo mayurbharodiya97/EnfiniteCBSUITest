@@ -2003,62 +2003,51 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOSIEXECUTIONDETAILVIEW",
     packageName: "",
   },
-  GETPAYSLIPCNFRETRIVEGRID:
-  {
+  GETPAYSLIPCNFRETRIVEGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCNFRETRIVEGRID",
     packageName: "",
   },
-  GETEODHANDOVER:
-  {
+  GETEODHANDOVER: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEODHANDOVER",
     packageName: "",
   },
-  GETTBGDOCURL:
-  {
+  GETTBGDOCURL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGDOCURL",
     packageName: "",
   },
-  GETDAYENDPENDINGTRNERRLOG:
-  {
+  GETDAYENDPENDINGTRNERRLOG: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDPENDINGTRNERRLOG",
     packageName: "",
   },
-  GETDAYENDVERIFYBTN:
-  {
+  GETDAYENDVERIFYBTN: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDVERIFYBTN",
     packageName: "",
   },
-  GETDAYENDERRLOG:
-  {
+  GETDAYENDERRLOG: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAYENDERRLOG",
     packageName: "",
   },
-  GETHOLDTRNCONFGRID:
-  {
+  GETHOLDTRNCONFGRID: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETHOLDTRNCONFGRID",
     packageName: "",
   },
-  DAILYHOLDTRANSACTIONCONFIRMATION:
-  {
+  DAILYHOLDTRANSACTIONCONFIRMATION: {
     url: "transactionServiceAPI/DAILYHOLDTRANSACTIONCONFIRMATION",
     packageName: "",
   },
-  GETCHQSEARCHTRANTYP:
-  {
+  GETCHQSEARCHTRANTYP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHTRANTYP",
     packageName: "",
   },
-  GETCHQSEARCHDATA:
-  {
+  GETCHQSEARCHDATA: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQSEARCHDATA",
     packageName: "",
   },
-  GETDUPLICATECLGENTRY:
-  {
+  GETDUPLICATECLGENTRY: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDUPLICATECLGENTRY",
     packageName: "",
   },
-  
+
   GETNEWSECUSERBRANCHACCESS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
     packageName: "",
@@ -2329,6 +2318,50 @@ export const ActionWiseAPIConfiguration = {
   },
   EXECUTECHECKSUM: {
     url: "/enfinityBankProcessingServiceAPI/EXECUTECHECKSUM",
+    packageName: "",
+  },
+  GETFDOPERATION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDOPERATION",
+    packageName: "",
+  },
+  GETFDOPERMODE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDOPERMODE",
+    packageName: "",
+  },
+  GETFDVIEWDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDVIEWDTL",
+    packageName: "",
+  },
+  GETPAIDFDVIEWDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAIDFDVIEWDTL",
+    packageName: "",
+  },
+  DOVALIDATEACCOUNT: {
+    url: "/enfinityFDServiceAPI/DOVALIDATEACCOUNT",
+    packageName: "",
+  },
+  GETFDVIEWMASTER: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDVIEWMASTER",
+    packageName: "",
+  },
+  GETFDINTTERM: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDINTTERM",
+    packageName: "",
+  },
+  GETPERIODLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPERIODLIST",
+    packageName: "",
+  },
+  GETFDPARADETAIL: {
+    url: "/enfinityFDServiceAPI/GETFDPARADETAIL",
+    packageName: "",
+  },
+  CHECKALLOWMODIFYFD: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWMODIFYFD",
+    packageName: "",
+  },
+  GETFDINTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDINTDTL",
     packageName: "",
   },
 };
