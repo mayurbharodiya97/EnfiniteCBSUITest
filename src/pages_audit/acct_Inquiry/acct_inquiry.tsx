@@ -366,8 +366,9 @@ export const Accountinquiry = ({ open, onClose }) => {
           <ViewStatement
             rowsData={rowsData}
             open={acctOpen}
-            onClose={onClose}
+            onClose={() => setAcctOpen(false)}
             screenFlag={"ACCT_INQ"}
+            close={onClose}
           />
         ) : //   componentToShow === "ViewInterest" ? (
         // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />

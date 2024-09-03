@@ -46,13 +46,11 @@ export const EntryDescMasterGrid = () => {
   const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.updateEntryDescMasterData, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+    onError: async (error: any) => {
+      const btnName = await MessageBox({
+        messageTitle: "ValidationFailed",
+        message: error?.error_msg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -137,7 +135,7 @@ export const EntryDescMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        ReportExportButton={true}
+        ReportExportButton={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

@@ -30,13 +30,11 @@ export const NpaCategoryMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.updateNpaCategoryMasterData, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+    onError: async (error: any) => {
+      const btnName = await MessageBox({
+        messageTitle: "ValidationFailed",
+        message: error?.error_msg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },

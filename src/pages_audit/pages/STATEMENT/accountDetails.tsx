@@ -265,6 +265,7 @@ const AccountDetails = () => {
                     onClose={() => setOpenViewStatement(false)}
                     rowsData={null}
                     screenFlag={"STATEMENT"}
+                    close={() => {}}
                   />
                 )}
                 <Tooltip title="Download">

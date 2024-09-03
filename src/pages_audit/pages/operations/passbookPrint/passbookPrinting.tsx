@@ -78,13 +78,11 @@ export const PassbookPrint = () => {
     API.passbookPrintingCompleted,
     {
       onSuccess: (data) => {},
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -303,6 +301,7 @@ export const PassbookPrint = () => {
           onClose={() => setFindAccount(false)}
           rowsData={null}
           screenFlag={"ACCT_PASSBOOK"}
+          close={() => {}}
         />
       )}
 
