@@ -771,6 +771,12 @@ export const useField = ({
   //handleBlur will set touch property in field state to true for every field touched by user
   //It will run validation if validationRun == 'onBlur'
   const handleBlur = useCallback(async () => {
+    const res =
+      typeof AlwaysRunPostValidationSetCrossFieldValues === "function"
+        ? AlwaysRunPostValidationSetCrossFieldValues(
+            dependentFieldsStateRef.current
+          )
+        : AlwaysRunPostValidationSetCrossFieldValues;
     if (fieldDataRef.current !== null) {
       setTouched();
       if (
@@ -778,11 +784,7 @@ export const useField = ({
         (whenToRunValidation.current === "onBlur" ||
           whenToRunValidation.current === "all")
       ) {
-        runValidation(
-          { touched: true },
-          AlwaysRunPostValidationSetCrossFieldValues?.alwaysRun,
-          AlwaysRunPostValidationSetCrossFieldValues?.touchAndValidate
-        );
+        runValidation({ touched: true }, res?.alwaysRun, res?.touchAndValidate);
       }
     }
   }, [setTouched, runValidation, formContext.validationRun]);

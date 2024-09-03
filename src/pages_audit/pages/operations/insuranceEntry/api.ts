@@ -110,3 +110,53 @@ export const validateInsuranceEntryData = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const doInsuranceDml = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOINSURANCEDML", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getInsuranceEntryDetail = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINSUENTRYDTL", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    const detailData = await getInsuranceEntryDetailData({
+      BRANCH_CD: data?.[0]?.BRANCH_CD,
+      COMP_CD: data?.[0]?.COMP_CD,
+      TRAN_CD: data?.[0]?.TRAN_CD,
+    })
+    return {
+      ...data.map((item) => {
+        return { ...item, RENEWED_FLAG: item.RENEWED_FLAG === "Y" ? true : false }
+      }), detailData
+    };
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+const getInsuranceEntryDetailData = async (
+  { TRAN_CD, BRANCH_CD, COMP_CD, }
+) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(
+      "GETINSUENTRYSECDTL",
+      {
+        TRAN_CD: TRAN_CD,
+        BRANCH_CD: BRANCH_CD,
+        COMP_CD: COMP_CD,
+      }
+    );
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

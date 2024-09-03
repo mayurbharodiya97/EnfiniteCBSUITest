@@ -20,33 +20,33 @@ import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
     {
         actionName: "all",
-        actionLabel: "All",
+        actionLabel: t("All"),
         multiple: undefined,
         alwaysAvailable: true,
     },
     {
         actionName: "extraction",
-        actionLabel: "As per Extraction",
+        actionLabel: t("AsperExtraction"),
         multiple: undefined,
         alwaysAvailable: true,
     },
     {
         actionName: "suspicious",
-        actionLabel: "Suspicious",
+        actionLabel: t("Suspicious"),
         multiple: undefined,
         alwaysAvailable: true,
 
     },
     {
         actionName: "white-listed",
-        actionLabel: "White Listed",
+        actionLabel: t("WhiteListed"),
         multiple: undefined,
         alwaysAvailable: true,
 
     },
     {
         actionName: "close",
-        actionLabel: "Close",
+        actionLabel: t("Close"),
         multiple: false,
         alwaysAvailable: true,
     },
@@ -99,7 +99,7 @@ const StrBranchLevelHistoryGrid = ({ onClose }) => {
     }, []);
 
     if (strBranchLevelHistoryGridMetaData) {
-        strBranchLevelHistoryGridMetaData.gridConfig.gridLabel = "STR History" + "for A/c" + "-" + rows?.[0]?.data?.ACCT_CD_NEW + " " + rows?.[0]?.data?.ACCT_NM
+        strBranchLevelHistoryGridMetaData.gridConfig.gridLabel = t("STRHistory") +" "+ "for A/c" + "-" + rows?.[0]?.data?.ACCT_CD_NEW + " " + rows?.[0]?.data?.ACCT_NM
     }
     return (
         <>
