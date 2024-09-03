@@ -2239,6 +2239,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityBankProcessingServiceAPI/EXECUTECHECKSUM",
     packageName: "",
   },
+  GETDDPRINTDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTDATA",
+    packageName: "",
+  },
+  GETFDPRINTDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPRINTDATA",
+    packageName: "",
+  },
+  GETDDPRINTPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTPARA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
