@@ -67,6 +67,7 @@ export const retrieveFormMetaData = {
       name: "CUSTOMER_ID",
       label: "CustomerId",
       placeholder: "Enter Customer Id",
+      isFieldFocused: true,
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 12) {

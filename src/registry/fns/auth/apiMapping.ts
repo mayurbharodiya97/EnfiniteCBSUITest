@@ -2058,7 +2058,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDUPLICATECLGENTRY",
     packageName: "",
   },
-  
+
   GETNEWSECUSERBRANCHACCESS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETNEWSECUSERBRANCHACCESS",
     packageName: "",
@@ -2319,6 +2319,38 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  GETSIHDRCNF    : {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDRCNF",
+    packageName: "",
+  }, 
+  DOSICONFIRMATION: {
+    url: "/transactionServiceAPI/DOSICONFIRMATION",
+    packageName: "",
+  },
+  GETRECCALCINTTYPEDDW:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTTYPEDDW",
+    packageName: "",
+  },
+  GETRECCALCINTRATE:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTRATE",
+    packageName: "",
+  },
+  GETRECCALCDUEDATE:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCDUEDATE",
+    packageName: "",
+  },
+  GETRECURRINGCALCULATEDAMOUNT:{
+    url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
+    packageName: "",
+  },
+  VALIDATECHQBKCONFRIMATIONDATA: {
+    url: "/chequeServiceAPI/VALIDATECHQBKCONFRIMATIONDATA",
+    packageName: "",
+  },
+  GETATMREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGCONFGRID",
+    packageName: "",
+  },
   PENDINGTRANSACTION: {
     url: "/enfinityBankProcessingServiceAPI/PENDINGTRANSACTION",
     packageName: "",
@@ -2347,6 +2379,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRTOTYPEDDW",
     packageName: "",
   },
+  GETFDINTRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDINTRATE",
+    packageName: "",
+  },
+  GETFDMATURITYAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDMATURITYAMT",
+    packageName: "",
+  },
+  GETFDRATEDEFINITION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -2362,17 +2406,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

@@ -1,4 +1,4 @@
-import { Placeholder } from 'reactstrap';
+
 import * as API from '../api'
 export const Viewformmetadata = {
   form: {
@@ -92,6 +92,7 @@ export const Viewformmetadata = {
       preventSpecialCharInput: true,
       maxLength: 50,
       multiline: true,
+      txtTransform: "uppercase",
       isFieldFocused: false,
       schemaValidation: {
         type: "string",

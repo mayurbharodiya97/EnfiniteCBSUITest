@@ -160,7 +160,7 @@ export const StockGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "DOC_FLAG",
       sequence: 10,
-      width: 125,
+      width: 120,
       maxWidth: 150,
       minWidth: 90,
       isColumnName: (initialValue) => {
