@@ -43,7 +43,7 @@ const BranchAccessRights = forwardRef<any, any>(
       error: newerror,
       refetch: newRefetch,
     }: any = useQuery<any, any>(
-      ["getNewUserBranchAccess", userState?.formData?.USER_NAME],
+      ["getNewUserBranchAccess", Username],
       () => {
         if (defaultView === "new") {
           return API.getNewUserBranchAccess({
