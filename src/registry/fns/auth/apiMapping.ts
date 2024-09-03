@@ -2287,6 +2287,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/DOFDINTERESTPAYMENTINSTRUCTIONMASTERDML",
     packageName: "",
   },
+  GETFDPAYMENTINSTRDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRDTLCNF",
+    packageName: "",
+  },
   RETRIVEATMREGISTRATIONDATA: {
     url: "/commonMasterServiceAPI/RETRIVEATMREGISTRATIONDATA",
     packageName: "",

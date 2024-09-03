@@ -59,6 +59,8 @@ const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
 const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
 const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
+const FdInterestPaymentGrid = lazy(() => import("./FDInterestPayment"));
+const FDInterestPaymentConfm = lazy(() => import("./FDInterestPaymentConf"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -223,6 +225,11 @@ export const OperationsMenu = () => (
     <Route
       path="account-close-confirmation/*"
       element={<AccountCloseConfirm />}
+    />
+       <Route path="fdpayint-master-entry/*" element={<FdInterestPaymentGrid />} />
+    <Route
+      path="fdpayint-master-confirmation/*"
+      element={<FDInterestPaymentConfm />}
     />
   
   </Routes>
