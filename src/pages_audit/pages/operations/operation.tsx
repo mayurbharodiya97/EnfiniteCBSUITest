@@ -198,8 +198,7 @@ export const OperationsMenu = () => (
       path="daily-transaction-import/*"
       element={<DailyTransactionImportForm />}
     />
-    <Route
-    <Route path="insurance-entry/*" element={<InsuranceEntryForm />} />
+    
     {/* <Route
       path="fix-deposit/*"
       element={
