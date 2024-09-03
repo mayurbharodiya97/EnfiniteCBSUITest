@@ -181,6 +181,12 @@ export default function TabStepper() {
   }
   const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
 
+  const onStepClickHandle = (tabIndex) => {
+    // if(!AcctMSTState?.isFreshEntryctx) {
+      handleColTabChangectx(tabIndex)
+    // }
+  }
+
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper alternativeLabel activeStep={AcctMSTState?.colTabValuectx} connector={<QontoConnector />}>
@@ -190,7 +196,7 @@ export default function TabStepper() {
             return <Step sx={{}} key={tabEl.tabName} 
             completed={AcctMSTState?.steps?.[i]?.status == "completed"}
             >
-              <StepLabel error={AcctMSTState?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
+              <StepLabel error={AcctMSTState?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {onStepClickHandle(i)}}>{tabEl.tabName}</StepLabel>
             </Step>
           // }
         })}
