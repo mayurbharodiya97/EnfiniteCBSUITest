@@ -1652,8 +1652,6 @@ export const en_language_data = {
   from: "From",
   GenerateOutwardReturnEntry: "Are You Sure to Generate Outward Return Entry ?",
   enteredBranch: "Entered Branch",
-  Success: "Success",
-  DataUpdatedSuccessfully: "Data Updated Successfully",
 
   // str ac level branch entry
 
@@ -1706,7 +1704,6 @@ export const en_language_data = {
   LedgerNo: "Ledger No.",
   CurrentBalance: "Current Balance",
   InactiveDate: "Inactive Date",
-  Mode: "Mode",
   TypeOfSec: "Type Of Security",
   Confirmerd: "Confirmerd",
   ConfirmerdStatus: "Confirmerd Status",
@@ -1793,22 +1790,6 @@ InstallmentTypeisrequired:"Installment Type is required",
 InstAmount:"Installment Amount",
 RunningIntAmt:"Running Int. Amt.",
 
-  CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
-  DataNotFound:"Data Not Found",
-  TotalNoofActiveSI:"Total No. of Active SI",
-  EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
-
-  //standing instruction Confirmation
-  SInotConfirmByYou:"You can not confirm SI entered by you.",
-  confirmSI:"Are you sure to confirm SI?",
-
-  //Recurring Interest Calculator
-  Categoryisrequired:"Category is required",
-  IntType:"InterestType",
-  InstallmentType:"Installment Type",
-  InstallmentTypeisrequired:"Installment Type is required",
-  InstAmount:"Installment Amount",
-  RunningIntAmt:"Running Int. Amt.",
   //EMI Calculator
   InterestFunded:"Interest Funded",
   LoanAmount:"Loan Amount",
