@@ -174,6 +174,13 @@ export const guarantorjoint_tab_metadata = {
                     name: "REF_ACCT_CD",
                     label: "",
                     placeholder: "A/C No.",
+                    required: true,
+                    schemaValidation: {
+                        type: "string",
+                        rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                        ],
+                    },
                     maxLength: 8,
                     GridProps: {xs:12, sm:3, md: 2, lg: 2, xl:1.5}
                 },

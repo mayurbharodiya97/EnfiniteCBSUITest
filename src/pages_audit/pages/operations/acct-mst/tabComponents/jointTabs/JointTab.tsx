@@ -78,7 +78,7 @@ const JointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields)
-          return {...formData, j_type: "J"};
+          return {...formData, J_TYPE: "J", CUSTOMER_ID: AcctMSTState?.customerIDctx};
         })
         newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)

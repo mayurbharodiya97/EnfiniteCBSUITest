@@ -84,7 +84,7 @@ const GuardianJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_GUARDIAN_DTL[i], formFields)
-          return {...formData, j_type: "U"};
+          return {...formData, J_TYPE: "U", CUSTOMER_ID: AcctMSTState?.customerIDctx};
         })
         newData["JOINT_GUARDIAN_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
