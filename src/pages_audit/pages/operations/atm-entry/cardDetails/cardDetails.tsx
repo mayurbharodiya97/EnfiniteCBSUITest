@@ -9,7 +9,8 @@ import { usePopupContext } from "components/custom/popupContext";
 export const CardDetails = ({ navigate, setIsData, parameter }) => {
   const { state: rows }: any = useLocation();
   const [idNumber, setIdNumber] = useState(1);
-  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { MessageBox } = usePopupContext();
+
   return (
     <Dialog
       open={true}
@@ -31,7 +32,7 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
             PARA_200: parameter?.PARA_200,
           }
         }
-        formState={{ MessageBox: MessageBox }}
+        formState={{ MessageBox: MessageBox, setIsData: setIsData }}
         onSubmitHandler={(data: any, displayData, endSubmit) => {
           // @ts-ignore
           endSubmit(true);
@@ -39,14 +40,13 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
           setIsData((old) => {
             const updatedGridData =
               rows?.[0]?.data?.TRAN_CD || rows?.[0]?.data?.ID_NO
-                ? old.gridData.map((item) =>
+                ? old?.gridData.map((item) =>
                     item.TRAN_CD === rows?.[0]?.data?.TRAN_CD ||
                     item.ID_NO === rows?.[0]?.data?.ID_NO
                       ? { ...item, ...data }
                       : item
                   )
                 : [...old.gridData, { ...data, ID_NO: idNumber }];
-
             return {
               ...old,
               gridData: updatedGridData,

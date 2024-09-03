@@ -12,6 +12,7 @@ import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const ModeMasterForm = ({
@@ -30,7 +31,7 @@ const ModeMasterForm = ({
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -40,7 +41,7 @@ const ModeMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;

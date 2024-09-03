@@ -14,7 +14,6 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
 
   const mutation = useMutation(API.getRetrievalDateWise, {
     onSuccess: (data) => {
-      console.log(data);
       onUpload(data);
       closeDialog();
     },

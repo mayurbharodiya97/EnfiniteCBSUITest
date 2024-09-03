@@ -35,6 +35,7 @@ export const chequeBKRetrievalMetadata = {
       placeholder: "",
       // defaultValue: new Date(),
       isWorkingDate: true,
+      isFieldFocused: true,
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: {

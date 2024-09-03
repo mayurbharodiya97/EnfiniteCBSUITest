@@ -27,7 +27,8 @@ import GridWrapper, { ActionTypes, GridMetaDataType } from 'components/dataTable
 import JointDetails from './JointDetails';
 import { format } from 'date-fns';
 import { ImageViewer } from 'components/fileUpload/preView';
-import { DeleteDialog } from './deleteDialog';
+import {t} from "i18next";
+import { RemarksAPIWrapper } from 'components/custom/Remarks';
 
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({
@@ -59,6 +60,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   const isErrorFuncRef = useRef<any>(null);
   const formDataRef = useRef<any>(null);
   const billType = useRef<any>(null);
+  const dummyCheckData = useRef<any>(null);
   const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
   const [formMode, setFormMode] = useState(defaultView);
@@ -67,6 +69,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   const [OpenSignature, setOpenSignature] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
   const [openForm, setopenForm] = useState(true);
+  const [accNumber, setAccNumber] = useState({});
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [mstState, setMstState] = useState<any>({
     PAYSLIP_MST_DTL: [{ CHEQUE_DATE: authState?.workingDate ?? "", PENDING_FLAG: "Y" }],
@@ -114,7 +117,27 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
     enabled: formMode == "add",
   });
 
-
+  const deleteMutation = useMutation(savePayslipEntry, {
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+      closeDialog();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar("deleteSuccessfully", {
+        variant: "success",
+      });
+      slipdataRefetch();
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
   const jointDetailMutation = useMutation(getJointDetailsList,
     {
       onError: async (error: any) => {
@@ -207,6 +230,23 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         isErrorFuncRef.current?.endSubmit(false);
       },
       onSuccess: async (data) => {
+         if(data)
+         {
+          if (formDataRef.current) {
+            formDataRef.current.data = {
+              ...formDataRef.current.data,
+              DRAFT_MST_DATA:[
+                {
+                  COMP_CD: data[0]?.COMP_CD,
+                  BRANCH_CD: data[0]?.BRANCH_CD,
+                  ACCT_CD: data[0]?.ACCT_CD,
+                  ACCT_TYPE: data[0]?.ACCT_TYPE,
+                    }
+              ]
+            };  
+        } 
+         }
+    
         let btn99, returnVal;
         const getButtonName = async (obj) => {
           let btnName = await MessageBox(obj);
@@ -312,17 +352,21 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
     endSubmit,
     setFieldError,
     action
-  ) => {
-    //@ts-ignore
+) => {
     endSubmit(true);
+    if (!formDataRef.current) {
+      formDataRef.current = { data: {} };
+  }
+
 
     const filteredDraftData: any[] = [];
     const filteredAcctData: any[] = [];
 
+    // Process draft data
     for (let i = 0; i < data?.PAYSLIP_DRAFT_DTL.length; i++) {
-      const draft = data?.PAYSLIP_DRAFT_DTL[i];
-      if (draft && typeof draft === 'object') {
-
+        const draft = data?.PAYSLIP_DRAFT_DTL[i];
+        if (draft && typeof draft === 'object') {
+           
         if ('REGIONBTN' in draft) {
           delete draft.REGIONBTN;
         }
@@ -353,10 +397,14 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         if ('AMOUNT' in draft) {
           draft.AMOUNT = parseFloat(draft.AMOUNT).toFixed(2)
         }
-        filteredDraftData.push(draft);
-      }
-    };
+          
+       
+          filteredDraftData.push(draft);
+         
+        }
+    }
 
+    // Process account data
     for (let i = 0; i < data?.PAYSLIP_MST_DTL.length; i++) {
       const acctdata = data?.PAYSLIP_MST_DTL[i];
       if (acctdata && typeof acctdata === 'object') {
@@ -382,85 +430,75 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         filteredAcctData.push(acctdata);
       }
     };
-
-
-    let validatePayslipReq = {
-      ISSUE_DT: authState?.workingDate,
-      PENDING_FLAG: data?.PENDING_FLAG === "Confirmed" ? "Y" : "N",
-      SLIP_CD: data?.SLIP_CD,
-      PAYSLIP_MST_DTL: filteredDraftData,
-      PAYSLIP_DRAFT_DTL: filteredAcctData,
-      SCREEN_REF: "RPT/14",
+    const validatePayslipReq = {
+        ISSUE_DT: authState?.workingDate,
+        PENDING_FLAG: data?.PENDING_FLAG === "Confirmed" ? "Y" : "N",
+        SLIP_CD: data?.SLIP_CD,
+        PAYSLIP_MST_DTL: filteredDraftData,
+        PAYSLIP_DRAFT_DTL: filteredAcctData,
+        SCREEN_REF: "RPT/14",
+        ENTRY_TYPE: formMode === "add" ? "N" : "M"
     };
-    isErrorFuncRef.current = {
-      validatePayslipReq,
-      displayData,
-      endSubmit,
-      setFieldError,
 
+    isErrorFuncRef.current = {
+        validatePayslipReq,
+        displayData,
+        endSubmit,
+        setFieldError,
     };
 
     endSubmit(true);
-    let updPara1 = utilFunction.transformDetailDataForDML(
-      oldaccttData ?? [],
-      filteredAcctData ?? [],
-      ["SR_CD"]
+    const updPara1 = utilFunction.transformDetailDataForDML(
+        oldaccttData ?? [],
+        filteredAcctData ?? [],
+        ["SR_CD"]
     );
 
-    let updPara2 = utilFunction.transformDetailDataForDML(
-      olddraftData ?? [],
-      filteredDraftData ?? [],
-      ["SR_CD"]
+    const updPara2 = utilFunction.transformDetailDataForDML(
+        olddraftData ?? [],
+        filteredDraftData ?? [],
+        ["SR_CD"]
     );
-
-
 
     if (updPara2.isNewRow) {
-      updPara2.isNewRow.forEach((item) => {
-        delete item.SR_CD;
-        delete item.ENTERED_BRANCH_CD;
-        delete item.ENTERED_COMP_CD;
-        item.BRANCH_CD = authState.user.branchCode;
-      });
-
+        updPara2.isNewRow.forEach((item) => {
+            delete item.SR_CD;
+            delete item.ENTERED_BRANCH_CD;
+            delete item.ENTERED_COMP_CD;
+          
+        });
     }
-    // @ts-ignore
-    if (formMode === "edit") {
-      if (updPara2.isUpdatedRow.length === 0) {
+
+    if (formMode === "edit" && updPara2.isUpdatedRow.length === 0) {
         setFormMode("view");
-      }
     }
 
     if (data.MST_TOTAL !== data.FINAL_DRAFT_TOTAL) {
-      const btn2 = await MessageBox({
-        messageTitle: "Validation Failed...!",
-        message: "Please Check Amount.",
-        buttonNames: ["Ok"],
-      });
+        const btn2 = await MessageBox({
+            messageTitle: "Validation Failed...!",
+            message: "Please Check Amount.",
+            buttonNames: ["Ok"],
+        });
+    } else {
+        validDataNutation.mutate({
+            ...isErrorFuncRef.current?.validatePayslipReq
+        });
     }
-    else {
-      validDataNutation.mutate({
-        ...isErrorFuncRef.current?.validatePayslipReq
-      });
-    }
 
+    if (formDataRef.current) {
+      formDataRef.current.data = {
+          ISSUE_DT: format(new Date(data.TRAN_DT), "dd/MMM/yyyy"),
+          SLIP_CD: data?.SLIP_CD,
+          REQ_FLAG: "D",
+          _isNewRow: formMode === "add",
+          PAYSLIP_DRAFT_DTL: updPara2,
+          PAYSLIP_MST_DTL: updPara1,
+          ADD_DRAFT_DATA: formMode === "add" ? "Y" : "N"
+      };
+  }
+  
+};
 
-
-    formDataRef.current = {
-      data: {
-        ISSUE_DT: format(new Date(data.TRAN_DT), "dd/MMM/yyyy"),
-        SLIP_CD: data?.SLIP_CD,
-        REQ_FLAG: "D",
-        _isNewRow: formMode == "add" ? true : false,
-        PAYSLIP_DRAFT_DTL: updPara2,
-        PAYSLIP_MST_DTL: updPara1,
-      },
-      endSubmit
-    };
-
-
-
-  };
   const handleClick = (e) => {
     myChequeFormRef.current.handleSubmit(e)
   }
@@ -470,7 +508,6 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
   const updatedDraftDtlData = draftDtlData ? draftDtlData.map(item => ({
     ...item,
     HIDDEN_PAYSLIPNO: item.PAYSLIP_NO,
-    REGION_CD: item.REGION
   })) : [];
 
   useEffect(() => {
@@ -551,13 +588,16 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
                   !isdraftDtlLoading && !isAcctDtlLoading ?
                     <GradientButton
                       onClick={() => {
-                        if ((rows)?.[0]?.data.CONFIRMED !== "Y") {
+                       if(rows)
+                       {
+                        if (rows[0]?.data?.CONFIRMED!=="Y") {
                           setFormMode("edit");
                         } else {
                           enqueueSnackbar("Cannot make changes in confirmed entry", {
                             variant: "error",
                           });
                         }
+                       }
                       }}
                       color={"primary"}
                     >
@@ -677,6 +717,7 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
                 PAYSLIP_DRAFT_DTL: formMode === "add"
                   ? draftState?.PAYSLIP_DRAFT_DTL ?? []
                   : updatedDraftDtlData ?? [],
+                  FORM_MODE:formMode,
               }}
 
 
@@ -791,18 +832,61 @@ const PayslipIsuueEntryform = ({ defaultView, closeDialog, slipdataRefetch }) =>
         </Dialog>
 
       </Dialog>
+{openDltDialogue ? (<>
+    <RemarksAPIWrapper
+    TitleText={
+    "Enter Removal Remarks For PAYSLP ISSUE ENTRY RPT/14"
+    }
+    onActionNo={() =>{setopenDltDialogue(false) }}
+    onActionYes={async (val, rows) => {
+    const buttonName = await MessageBox({
+    messageTitle: t("Confirmation"),
+    message: t("DoYouWantDeleteRow"),
+    buttonNames: ["Yes", "No"],
+    defFocusBtnName: "Yes",
+    loadingBtnName: ["Yes"],
+    });
+    if (buttonName === "Yes") {
+    let deleteReqPara = {
+    REQ_FLAG: "A",
+    TRAN_TYPE: "Delete",
+    COMP_CD: acctDtlData[0].ENTERED_COMP_CD,
+    BRANCH_CD: acctDtlData[0].ENTERED_BRANCH_CD,
+    ACCT_CD: rows[0]?.data?.ACCT_CD,
+    ACCT_TYPE: rows[0]?.data?.ACCT_TYPE,
+    AMOUNT:`${rows[0].data?.TOTAL_AMT}`,
+    REMARKS: acctDtlData[0].REMARKS,
+    SCREEN_REF: "RPT/14",
+    CONFIRMED: rows[0]?.data?.CONFIRMED,
+    USER_DEF_REMARKS: val,
+    TRAN_CD: rows[0]?.data?.TRAN_CD,
+    ENTERED_BY: draftDtlData[0].ENTERED_BY,
+    PAYSLIP_NO: rows[0]?.data?.PAYSLIP_NO,
+    DRAFT_MST_DATA:[{
+    COMP_CD: "",
+    BRANCH_CD:"",
+    ACCT_CD: "",
+    ACCT_TYPE: "",
+    }],
+    ADD_DRAFT_DATA: "N",
+    _isNewRow: false,                        
 
+    };
+    deleteMutation.mutate(deleteReqPara);
+    }
+    }}
+    isEntertoSubmit={true}
+    AcceptbuttonLabelText="Ok"
+    CanceltbuttonLabelText="Cancel"
+    open={openDltDialogue}
+    defaultValue={"WRONG ENTRY FROM PAYSLIP ISSUE ENTRY (RPT/14) "
+    }
+    rows={rows}
+    />
 
-      <DeleteDialog
-        closeDialog={closeDialog}
-        open={openDltDialogue}
-        rowData={{
-          ...(rows?.[0]?.data || {}),
-          draftDtlData: draftDtlData,
-          acctDtlData: acctDtlData
-        }}
-        slipdataRefetch={slipdataRefetch}
-      />
+    </>):""}
+
+     
     </>
   );
 };
