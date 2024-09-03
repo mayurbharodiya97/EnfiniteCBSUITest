@@ -77,12 +77,12 @@ export const FDDetailGrid = () => {
             multiple: undefined,
             alwaysAvailable: true,
           },
-          {
-            actionName: "docs",
-            actionLabel: "Docs",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
+          // {
+          //   actionName: "docs",
+          //   actionLabel: "Docs",
+          //   multiple: undefined,
+          //   alwaysAvailable: true,
+          // },
           {
             actionName: "add",
             actionLabel: "New FD",
