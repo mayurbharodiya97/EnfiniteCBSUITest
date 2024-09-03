@@ -23,7 +23,7 @@ let actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -47,8 +47,8 @@ const AreaMaster = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -105,7 +105,7 @@ const AreaMaster = () => {
 
   const deleteMutation = useMutation(API.deleteAreaMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -115,7 +115,7 @@ const AreaMaster = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
@@ -137,7 +137,7 @@ const AreaMaster = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />

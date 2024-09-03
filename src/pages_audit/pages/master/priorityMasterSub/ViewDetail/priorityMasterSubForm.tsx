@@ -13,6 +13,7 @@ import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoadingTextAnimation } from "components/common/loader";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 export const Proritysubform = ({
   isDataChangedRef,
@@ -29,7 +30,7 @@ export const Proritysubform = ({
   const mutation = useMutation((API.updatePriorityMasterSubData),
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -39,7 +40,7 @@ export const Proritysubform = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -84,8 +85,8 @@ export const Proritysubform = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "SaveData",
-        messageTitle: "Confirmation",
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });

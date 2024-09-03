@@ -12,6 +12,7 @@ import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const AreaMasterForm = ({
@@ -29,7 +30,7 @@ const AreaMasterForm = ({
   const mutation = useMutation(API.updateAreaMasterData,
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -39,7 +40,7 @@ const AreaMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -116,8 +117,8 @@ const AreaMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "SaveData",
-        messageTitle: "Confirmation",
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });

@@ -237,7 +237,7 @@ export const RecurringCalculatotMetaData = {
         runValidationOnDependentFieldsChange: false,
         dependentFields: ["INST_NO","DATA_VAL","INSTALLMENT_TYPE","INST_AMT","INT_RATE","START_DT","ENT_COMP_CD","ENT_BRANCH_CD"],
         setValueOnDependentFieldsChange: async (dependentFields) => {
-          const reqParameters = {
+          const values = {
             ENT_COMP_CD: dependentFields?.ENT_COMP_CD.value,
             ENT_BRANCH_CD: dependentFields?.ENT_BRANCH_CD.value,
             INT_TYPE: dependentFields?.DATA_VAL.value,
@@ -248,7 +248,13 @@ export const RecurringCalculatotMetaData = {
             START_DT: format(new Date(dependentFields?.START_DT.value), "dd/MMM/yyyy"),
             SCREEN_REF: "TRN/502"
           };
-         
+          const shouldCallApi = Object.values(values).every(value => value !== "");
+          const reqParameters = {
+            ...values, 
+        };
+        if (!shouldCallApi) {
+          return null;
+      }
             const postData = await API.getRecurringCalculateData(reqParameters);
             return  postData[0]?.DUE_AMT
            

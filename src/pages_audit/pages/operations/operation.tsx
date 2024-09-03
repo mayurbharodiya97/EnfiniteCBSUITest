@@ -61,6 +61,7 @@ const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 const StandingInstructionGridWrapper = lazy(()=> import ("./standingInstruction"))
 const StandingInstructionConfirmationGridWrapper = lazy(()=> import ("./standingInstruction/confirmation/"))
 const RecurringCalculatorFormWrapper = lazy(()=> import ("./recurringCalculator"))
+const EMICalculatorFormWrapper = lazy(()=> import ("./emiCalculator"))
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
@@ -265,6 +266,10 @@ export const OperationsMenu = () => (
     <Route
       path="recint-calculator/*"
       element={<RecurringCalculatorFormWrapper />}
+    />
+    <Route
+      path="emi-calculator/*"
+      element={<EMICalculatorFormWrapper />}
     />
   </Routes>
 );

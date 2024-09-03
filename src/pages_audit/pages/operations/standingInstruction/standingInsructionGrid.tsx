@@ -58,6 +58,8 @@ const StandingInstructionGrid = () => {
   // const [isViewDetailOpen, setIsViewDetailOpen] = useState(false);
   const { state: rows } = useLocation();
   const tranCd = rows?.[0]?.data?.TRAN_CD;
+  const initialRender = useRef(true);
+  const location = useLocation();
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
     async (data) => {
@@ -86,9 +88,13 @@ const StandingInstructionGrid = () => {
     })
   );
   useEffect(() => {
-    navigate("add");
-  }, []);
-
+    if (initialRender.current) {
+      initialRender.current = false;
+      if (location.pathname === "/cbsenfinity/operation/standing-instruction-entry") {
+        navigate("add");
+      }
+    }
+  }, [location.pathname, navigate]);
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
