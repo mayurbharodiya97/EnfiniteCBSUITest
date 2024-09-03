@@ -41,7 +41,6 @@ function JointDetails({ data, onClose, loading }) {
           actions={actions}
         />) : <LoaderPaperComponent />
       }
-      +
     </div>
   )
 }

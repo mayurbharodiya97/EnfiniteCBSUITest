@@ -87,7 +87,7 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "1150px",
+          maxWidth: "1250px",
           padding: "5px",
         },
       }}
@@ -114,9 +114,11 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
           metaData={releaseChequeMetadata}
           initialValues={rows?.[0]?.data ?? []}
           onSubmitHandler={onSubmitHandler}
+          displayMode={rows?.[0]?.data?.ALLOW_RELEASE === "Y" ? "edit" : "view"}
+          hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 377px)",
+            height: "calc(100vh - 463px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}
