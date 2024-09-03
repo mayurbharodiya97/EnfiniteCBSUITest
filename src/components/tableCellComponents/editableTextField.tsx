@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CellWrapper } from "./cellWrapper";
@@ -20,6 +20,8 @@ export const EditableTextField = (props) => {
       isPassword,
       TableCellProps,
       isDisabledOnBlurEvent,
+      isReadOnly,
+      __EDIT__,
     },
     updateGridData,
     hiddenFlag,
@@ -46,6 +48,22 @@ export const EditableTextField = (props) => {
   //console.log(id, isDisabledOnBlurEvent);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
+  const isReadOnlyLocal = useMemo(() => {
+    if (original?._isReadOnly === true) {
+      return true;
+    }
+    if (original?._isNewRow === true) {
+      return false;
+    }
+    if (isReadOnly) {
+      return true;
+    }
+    if (original?._isNewRow === false && __EDIT__?.isReadOnly === true) {
+      return true;
+    }
+    return false;
+  }, [isReadOnly, original?._isNewRow, original?._isReadOnly, __EDIT__]);
+
   const onChange = (e) => {
     setValue(e.target.value);
   };
@@ -111,6 +129,7 @@ export const EditableTextField = (props) => {
         }}
         disableUnderline
         disabled={loading}
+        readOnly={isReadOnlyLocal}
       />
       {Boolean(externalTouched) && Boolean(externalError) ? (
         <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>
