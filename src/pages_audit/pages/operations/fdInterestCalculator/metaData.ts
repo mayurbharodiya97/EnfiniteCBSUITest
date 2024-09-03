@@ -1,4 +1,11 @@
-import { addDays, addMonths, addYears, differenceInDays, format, parse } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  addYears,
+  differenceInDays,
+  format,
+  parse,
+} from "date-fns";
 import * as API from "./api";
 export const metaData = {
   form: {
@@ -118,7 +125,7 @@ export const metaData = {
         return API.gettypeDDWdata({
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
-          USER_NAME: authState?.user?.id
+          USER_NAME: authState?.user?.id,
         });
       },
       fullWidth: true,
@@ -179,7 +186,6 @@ export const metaData = {
         { label: "Day(s)", value: "D" },
         { label: "Month(s)", value: "M" },
         { label: "Year(s)", value: "Y" },
-
       ],
       defaultValue: "D",
       fullWidth: true,
@@ -258,13 +264,19 @@ export const metaData = {
       name: "INT_RATE_D",
       label: "Rate ",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "PERIOD_CD_D", "PERIOD_NO_D", "MATURITY_DT_D", "CATEG_CD_D", "ACCT_TYPE_D", "TRAN_DT_D", "COMP_CD", "BRANCH_CD", "PRE_INT_FLG_D", "PRINCIPAL_AMT_D"],
-      shouldExclude: (val1, dependent) => {
-        if (dependent?.CALCSWITCH?.value === "D") {
-          return false;
-        }
-        return true;
-      },
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_D",
+        "PERIOD_NO_D",
+        "MATURITY_DT_D",
+        "CATEG_CD_D",
+        "ACCT_TYPE_D",
+        "TRAN_DT_D",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_D",
+        "PRINCIPAL_AMT_D",
+      ],
       setValueOnDependentFieldsChange: async (dependentFields) => {
         let duration = dependentFields?.PERIOD_NO_D?.value;
         let period = dependentFields?.PERIOD_CD_D?.value;
@@ -274,8 +286,14 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy");
-        let maturityDate = format(new Date(dependentFields?.MATURITY_DT_D?.value), "dd/MMM/yyyy");
+        let tranDate = format(
+          new Date(dependentFields?.TRAN_DT_D?.value),
+          "dd/MMM/yyyy"
+        );
+        let maturityDate = format(
+          new Date(dependentFields?.MATURITY_DT_D?.value),
+          "dd/MMM/yyyy"
+        );
         let reqData = {
           duration,
           period,
@@ -285,13 +303,14 @@ export const metaData = {
           branchCd,
           companyCd,
           tranDate,
-          catCd
+          catCd,
         };
         const areAllValuesPresent = (values) => {
-          return Object.values(values).every(value => value !== "" && value != null);
+          return Object.values(values).every(
+            (value) => value !== "" && value != null
+          );
         };
         if (areAllValuesPresent(reqData)) {
-
           const postData = await API.getFdinterest({
             COMP_CD: companyCd,
             BRANCH_CD: branchCd,
@@ -305,12 +324,15 @@ export const metaData = {
             PRINCIPAL_AMT: principalAmount,
           });
 
-
-
-          return postData[0]?.INT_RATE
-
+          return postData[0]?.INT_RATE;
         }
-      }
+      },
+      shouldExclude: (val1, dependent) => {
+        if (dependent?.CALCSWITCH?.value === "D") {
+          return false;
+        }
+        return true;
+      },
     },
     // {
     //   render: { componentType: "textField" },
@@ -357,13 +379,18 @@ export const metaData = {
       defaultValue: new Date(),
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "TRAN_DT_D", "PERIOD_CD_D", "PERIOD_NO_D"],
+      dependentFields: [
+        "CALCSWITCH",
+        "TRAN_DT_D",
+        "PERIOD_CD_D",
+        "PERIOD_NO_D",
+      ],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let duration = dependentFields.PERIOD_CD_D?.value;
         let periodNumber = parseInt(dependentFields.PERIOD_NO_D?.value, 10);
         let tranDateValue = dependentFields?.TRAN_DT_D?.value;
 
-        let newDate = '';
+        let newDate = "";
 
         try {
           if (tranDateValue) {
@@ -374,33 +401,41 @@ export const metaData = {
             if (!isNaN(tranDate.getTime())) {
               // Adjust the date based on the duration
               switch (duration) {
-                case 'D':
-                  newDate = format(addDays(tranDate, periodNumber), "dd/MMM/yyyy");
+                case "D":
+                  newDate = format(
+                    addDays(tranDate, periodNumber),
+                    "dd/MMM/yyyy"
+                  );
                   break;
-                case 'M':
-                  newDate = format(addMonths(tranDate, periodNumber), "dd/MMM/yyyy");
+                case "M":
+                  newDate = format(
+                    addMonths(tranDate, periodNumber),
+                    "dd/MMM/yyyy"
+                  );
                   break;
-                case 'Y':
-                  newDate = format(addYears(tranDate, periodNumber), "dd/MMM/yyyy");
+                case "Y":
+                  newDate = format(
+                    addYears(tranDate, periodNumber),
+                    "dd/MMM/yyyy"
+                  );
                   break;
                 default:
-                  console.error('Invalid duration');
+                  console.error("Invalid duration");
                   break;
               }
             } else {
-              console.error('Invalid date value');
+              console.error("Invalid date value");
             }
           } else {
-            console.error('Transaction date value is missing');
+            console.error("Transaction date value is missing");
           }
         } catch (error) {
-          console.error('Error processing date:', error);
+          console.error("Error processing date:", error);
         }
-
-
 
         return newDate;
       },
+
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
@@ -423,7 +458,7 @@ export const metaData = {
         let interestRupees;
         if (principalAmount !== "" && maturityAmount !== "") {
           interestRupees = maturityAmount - principalAmount;
-          return interestRupees
+          return interestRupees;
         }
       },
       shouldExclude: (val1, dependent) => {
@@ -442,7 +477,21 @@ export const metaData = {
       isReadOnly: true,
       label: "MaturityAmount",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "PERIOD_CD_D", "PERIOD_NO_D", "MATURITY_DT_D", "CATEG_CD_D", "ACCT_TYPE_D", "TRAN_DT_D", "COMP_CD", "BRANCH_CD", "PRE_INT_FLG_D", "PRINCIPAL_AMT_D", "INT_RATE_D", "TERM_CD_D"],
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_D",
+        "PERIOD_NO_D",
+        "MATURITY_DT_D",
+        "CATEG_CD_D",
+        "ACCT_TYPE_D",
+        "TRAN_DT_D",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_D",
+        "PRINCIPAL_AMT_D",
+        "INT_RATE_D",
+        "TERM_CD_D",
+      ],
       setValueOnDependentFieldsChange: async (dependentFields) => {
         let duration = dependentFields?.PERIOD_NO_D?.value;
         let termcd = dependentFields?.TERM_CD_D?.value;
@@ -454,8 +503,14 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy");
-        let maturityDate = format(new Date(dependentFields?.MATURITY_DT_D?.value), "dd/MMM/yyyy");
+        let tranDate = format(
+          new Date(dependentFields?.TRAN_DT_D?.value),
+          "dd/MMM/yyyy"
+        );
+        let maturityDate = format(
+          new Date(dependentFields?.MATURITY_DT_D?.value),
+          "dd/MMM/yyyy"
+        );
         let reqData = {
           duration,
           period,
@@ -465,13 +520,16 @@ export const metaData = {
           branchCd,
           companyCd,
           tranDate,
-          catCd, termcd, rate
+          catCd,
+          termcd,
+          rate,
         };
         const areAllValuesPresent = (values) => {
-          return Object.values(values).every(value => value !== "" && value != null);
+          return Object.values(values).every(
+            (value) => value !== "" && value != null
+          );
         };
         if (areAllValuesPresent(reqData)) {
-
           const postData = await API.getFdMaturityAmount({
             COMP_CD: companyCd,
             BRANCH_CD: branchCd,
@@ -484,13 +542,10 @@ export const metaData = {
             PRE_INT_FLAG: fdflag,
             PRINCIPAL_AMT: principalAmount,
             INT_RATE: rate,
-            TERM_CD: termcd
+            TERM_CD: termcd,
           });
 
-
-
-          return postData[0]?.MATURITY_AMT
-
+          return postData[0]?.MATURITY_AMT;
         }
       },
       shouldExclude: (val1, dependent) => {
@@ -515,7 +570,6 @@ export const metaData = {
         }
         return true;
       },
-
     },
     // ------------Period---------------//
     {
@@ -549,7 +603,7 @@ export const metaData = {
         return API.gettypeDDWdata({
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
-          USER_NAME: authState?.user?.id
+          USER_NAME: authState?.user?.id,
         });
       },
       fullWidth: true,
@@ -616,8 +670,9 @@ export const metaData = {
       validate: (currentField, dependentField) => {
         if (
           new Date(currentField?.value) <
-          new Date(dependentField?.TRAN_DT_D?.value) || new Date(currentField?.value) ===
-          new Date(dependentField?.TRAN_DT_D?.value)
+            new Date(dependentField?.TRAN_DT_D?.value) ||
+          new Date(currentField?.value) ===
+            new Date(dependentField?.TRAN_DT_D?.value)
         ) {
           return "maturityDateValidationMsg";
         }
@@ -675,22 +730,25 @@ export const metaData = {
       label: "",
       isReadOnly: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
-      dependentFields: ["CALCSWITCH", "PERIOD_CD_P", "MATURITY_DT_P", "TRAN_DT_P"],
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_P",
+        "MATURITY_DT_P",
+        "TRAN_DT_P",
+      ],
       setValueOnDependentFieldsChange: (dependentFields) => {
         let duration = dependentFields.PERIOD_CD_D?.value;
         let startDate = dependentFields?.TRAN_DT_P?.value;
         let endDate = dependentFields?.MATURITY_DT_P?.value;
-        const formattedInitialDate = format(startDate, 'yyyy-MM-dd'); // Format to YYYY-MM-DD
+        const formattedInitialDate = format(startDate, "yyyy-MM-dd"); // Format to YYYY-MM-DD
 
         if (startDate && endDate) {
           const start = new Date(formattedInitialDate);
           const end = new Date(endDate);
 
-
           const days = differenceInDays(end, start);
           return days;
         }
-
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -721,15 +779,33 @@ export const metaData = {
       name: "INT_RATE_P",
       label: "Rate",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "PERIOD_CD_P", "PERIOD_NO_P", "MATURITY_DT_P", "CATEG_CD_P", "ACCT_TYPE_P", "TRAN_DT_P", "COMP_CD", "BRANCH_CD", "PRE_INT_FLG_P", "PRINCIPAL_AMT_P"],
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_P",
+        "PERIOD_NO_P",
+        "MATURITY_DT_P",
+        "CATEG_CD_P",
+        "ACCT_TYPE_P",
+        "TRAN_DT_P",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_P",
+        "PRINCIPAL_AMT_P",
+      ],
       setValueOnDependentFieldsChange: async (dependentFields) => {
         let period_cd = "D";
         // let period_cd = dependentFields.PERIOD_CD_P?.value;
         let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(new Date(dependentFields?.MATURITY_DT_P?.value), "dd/MMM/yyyy");
+        let maturity_date = format(
+          new Date(dependentFields?.MATURITY_DT_P?.value),
+          "dd/MMM/yyyy"
+        );
         let category_cd = dependentFields?.CATEG_CD_P?.value;
         let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(new Date(dependentFields?.TRAN_DT_P?.value), "dd/MMM/yyyy");
+        let tran_date = format(
+          new Date(dependentFields?.TRAN_DT_P?.value),
+          "dd/MMM/yyyy"
+        );
         let comp_cd = dependentFields?.COMP_CD?.value;
         let branch_cd = dependentFields?.BRANCH_CD?.value;
         let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
@@ -745,14 +821,15 @@ export const metaData = {
           acct_cd,
           tran_date,
           pre_int_flag,
-          principal_amt
+          principal_amt,
         };
 
         const areAllValuesPresent = (values) => {
-          return Object.values(values).every(value => value !== "" && value != null);
+          return Object.values(values).every(
+            (value) => value !== "" && value != null
+          );
         };
         if (areAllValuesPresent(params)) {
-
           const postData = await API.getFdinterest({
             COMP_CD: comp_cd,
             BRANCH_CD: branch_cd,
@@ -767,7 +844,6 @@ export const metaData = {
           });
 
           return postData[0]?.INT_RATE;
-
         }
       },
       shouldExclude: (val1, dependent) => {
@@ -786,7 +862,6 @@ export const metaData = {
         { label: "Quarterly", value: "Q" },
         { label: "Half-Yearly", value: "H" },
         { label: "Yearly", value: "Y" },
-
       ],
       defaultValue: "M",
       fullWidth: true,
@@ -814,7 +889,7 @@ export const metaData = {
         let interestRupees;
         if (principalAmount !== "" && maturityAmount !== "") {
           interestRupees = maturityAmount - principalAmount;
-          return interestRupees
+          return interestRupees;
         }
       },
       shouldExclude: (val1, dependent) => {
@@ -833,7 +908,21 @@ export const metaData = {
       isReadOnly: true,
       label: "MaturityAmount",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "PERIOD_CD_P", "PERIOD_NO_P", "MATURITY_DT_P", "CATEG_CD_P", "ACCT_TYPE_P", "TRAN_DT_P", "COMP_CD", "BRANCH_CD", "PRE_INT_FLG_P", "PRINCIPAL_AMT_P", "INT_RATE_P", "TERM_CD_P"],
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_P",
+        "PERIOD_NO_P",
+        "MATURITY_DT_P",
+        "CATEG_CD_P",
+        "ACCT_TYPE_P",
+        "TRAN_DT_P",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_P",
+        "PRINCIPAL_AMT_P",
+        "INT_RATE_P",
+        "TERM_CD_P",
+      ],
       setValueOnDependentFieldsChange: async (dependentFields) => {
         let duration = "D";
         // let duration = dependentFields?.PERIOD_NO_P?.value;
@@ -846,8 +935,14 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_P?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(new Date(dependentFields?.TRAN_DT_P?.value), "dd/MMM/yyyy");
-        let maturityDate = format(new Date(dependentFields?.MATURITY_DT_P?.value), "dd/MMM/yyyy");
+        let tranDate = format(
+          new Date(dependentFields?.TRAN_DT_P?.value),
+          "dd/MMM/yyyy"
+        );
+        let maturityDate = format(
+          new Date(dependentFields?.MATURITY_DT_P?.value),
+          "dd/MMM/yyyy"
+        );
         let reqData = {
           duration,
           period,
@@ -857,15 +952,17 @@ export const metaData = {
           branchCd,
           companyCd,
           tranDate,
-          catCd, termcd, rate
+          catCd,
+          termcd,
+          rate,
         };
-
 
         const areAllValuesPresent = (values) => {
-          return Object.values(values).every(value => value !== "" && value != null);
+          return Object.values(values).every(
+            (value) => value !== "" && value != null
+          );
         };
         if (areAllValuesPresent(reqData)) {
-
           const postData = await API.getFdMaturityAmount({
             COMP_CD: companyCd,
             BRANCH_CD: branchCd,
@@ -878,13 +975,10 @@ export const metaData = {
             PRE_INT_FLAG: fdflag,
             PRINCIPAL_AMT: principalAmount,
             INT_RATE: rate,
-            TERM_CD: termcd
+            TERM_CD: termcd,
           });
 
-
-
-          return postData[0]?.MATURITY_AMT
-
+          return postData[0]?.MATURITY_AMT;
         }
       },
       shouldExclude: (val1, dependent) => {
@@ -938,11 +1032,10 @@ export const metaData = {
         { label: "Day(s)", value: "D" },
         { label: "Month(s)", value: "M" },
         { label: "Year(s)", value: "Y" },
-
       ],
       defaultValue: "D",
       fullWidth: true,
-      GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
+      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
@@ -1021,56 +1114,63 @@ export const metaData = {
       format: "dd/MM/yyyy",
       isReadOnly: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH", "TRAN_DT_S", "PERIOD_NO_S", "PERIOD_CD_S"],
-      setValueOnDependentFieldsChange: (dependentFields) => {
+      // dependentFields: [
+      //   "CALCSWITCH",
+      //   "TRAN_DT_S",
+      //   "PERIOD_NO_S",
+      //   "PERIOD_CD_S",
+      // ],
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   let duration = dependentFields.PERIOD_CD_S?.value;
+      //   let periodNumber = parseInt(dependentFields.PERIOD_NO_S?.value, 10);
+      //   let tranDateValue = dependentFields?.TRAN_DT_S?.value;
 
+      //   let newDate = "";
 
-        let duration = dependentFields.PERIOD_CD_S?.value;
-        let periodNumber = parseInt(dependentFields.PERIOD_NO_S?.value, 10);
-        let tranDateValue = dependentFields?.TRAN_DT_S?.value;
-        console.log(duration);
-        console.log(periodNumber);
-        console.log(tranDateValue);
+      //   try {
+      //     if (tranDateValue) {
+      //       const tranDate = new Date(tranDateValue);
 
-        let newDate = '';
+      //       // Check if tranDate is a valid date
+      //       if (!isNaN(tranDate.getTime())) {
+      //         // Adjust the date based on the duration
+      //         switch (duration) {
+      //           case "D":
+      //             newDate = format(
+      //               addDays(tranDate, periodNumber),
+      //               "dd/MM/yyyy"
+      //             );
+      //             break;
+      //           case "M":
+      //             newDate = format(
+      //               addMonths(tranDate, periodNumber),
+      //               "dd-MMM-yy"
+      //             );
+      //             break;
+      //           case "Y":
+      //             newDate = format(
+      //               addYears(tranDate, periodNumber),
+      //               "dd-MMM-yy"
+      //             );
+      //             break;
+      //           default:
+      //             console.error("Invalid duration");
+      //             break;
+      //         }
+      //       } else {
+      //         console.error("Invalid date value");
+      //       }
+      //     } else {
+      //       console.error("Transaction date value is missing");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error processing date:", error);
+      //   }
 
-        try {
-          if (tranDateValue) {
+      //   console.log(newDate);
 
-            const tranDate = new Date(tranDateValue);
-
-            // Check if tranDate is a valid date
-            if (!isNaN(tranDate.getTime())) {
-              // Adjust the date based on the duration
-              switch (duration) {
-                case 'D':
-                  newDate = format(addDays(tranDate, periodNumber), "dd/MM/yyyy");
-                  break;
-                case 'M':
-                  newDate = format(addMonths(tranDate, periodNumber), "dd-MMM-yy");
-                  break;
-                case 'Y':
-                  newDate = format(addYears(tranDate, periodNumber), "dd-MMM-yy");
-                  break;
-                default:
-                  console.error('Invalid duration');
-                  break;
-              }
-            } else {
-              console.error('Invalid date value');
-            }
-          } else {
-            console.error('Transaction date value is missing');
-          }
-        } catch (error) {
-          console.error('Error processing date:', error);
-        }
-
-
-        console.log(newDate);
-
-        return newDate;
-      },
+      //   return newDate;
+      // },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
           return false;
@@ -1175,6 +1275,6 @@ export const metaData = {
         }
         return true;
       },
-    }
+    },
   ],
 };
