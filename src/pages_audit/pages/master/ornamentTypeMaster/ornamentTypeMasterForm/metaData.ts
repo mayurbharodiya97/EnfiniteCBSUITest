@@ -137,9 +137,13 @@ export const OrnamentTypeMasterFormMetaData = {
         xl: 3,
       },
       FormatProps: {
+        allowLeadingZeros: false,
         isAllowed: (values) => {
           //@ts-ignore
           if (parseFloat(values?.value) >= 100.01) {
+            return false;
+          }
+          if (values?.value?.length > 6) {
             return false;
           }
           return true;

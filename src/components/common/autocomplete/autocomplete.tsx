@@ -14,7 +14,11 @@ import {
 
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
-import { transformDependentFieldsState, useField, UseFieldHookProps } from "packages/form";
+import {
+  transformDependentFieldsState,
+  useField,
+  UseFieldHookProps,
+} from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 
 import match from "autosuggest-highlight/match";
@@ -72,7 +76,10 @@ interface AutoCompleteExtendedProps {
   requestProps?: any;
   disableAdornment?: boolean;
   textFieldStyle?: any;
-  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
   label?: string;
 }
 
@@ -324,8 +331,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   }, [incomingMessage, setErrorAsCB]);
   const updatedLabel = useMemo(() => {
     if (typeof setFieldLabel === "function")
-      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
-  }, [setFieldLabel, label, dependentValues, value])
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -506,14 +516,14 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                 required={required}
                 helperText={!isSubmitting && isError ? error : null}
                 sx={{
-                  ...textFieldStyle,
-                }}
-                InputProps={{
-                  style: {
+                  "& .MuiInputBase-root": {
                     background: Boolean(readOnly)
                       ? "var(--theme-color7) !important"
                       : "",
                   },
+                  ...textFieldStyle,
+                }}
+                InputProps={{
                   ...params.InputProps,
                   endAdornment: (
                     <Fragment>
