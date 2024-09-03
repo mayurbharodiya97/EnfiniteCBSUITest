@@ -1622,35 +1622,18 @@ export const en_language_data = {
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
-  //Dayend process
-VerifyDayEndChecksums:"Verify DayEnd Checksums",
-PendingTransactions:"Pending Transactions",
-DayEndProcess:"DayEnd Process",
-DayEndHover:"DayEnd Hover",
-VersionNo:"Version No.",
-AcRef:"A/c No. /Ref No.",
-Sequence:"Sequence",
-eodVersion:"EOD Version",
-Mandatory:"Mandatory",
-StartTime:"Start Time",
-endTime:"end Time",
-//cheque search(outward return)
-clearingType:"clearing Type",
-phone:"Phone",
-from:"From",
-GenerateOutwardReturnEntry:"Are You Sure to Generate Outward Return Entry ?",
-enteredBranch:"Entered Branch",
-Success: "Success",
-DataUpdatedSuccessfully: "Data Updated Successfully",
-//fd interest calculator
-normalPremature:"Normal/Premature",
-asonDate:"As on Date",
-maturityDate:"Maturity Date",
-term:"Term",
-interestRs:"Interest Rs.",
-rateDefination:"Rate Defination",
-Customer:"Customer",
-proposedto:"Proposed To"
+  Success: "Success",
+  DataUpdatedSuccessfully: "Data Updated Successfully",
 
+  // GST Outward Entry
+  TranCd: "Tran Cd",
+  taxAmount:"Tax Amount",
+  taxValue: "Taxable Value",
+  Mode:"Mode",
+  Gstin:"GSTIN",
+  ConfirmTransactionRestrictionMessage:"You can not confirm your own transaction.",
+  ConfirmRightsRestrictionMessage:"You have no rights to confirm this transaction.",
+  ConfirmRecord:"Are you sure to confirm this record?",
+  RejectDeleteRecord:"Are you sure to reject/delete this record?",
 };
 
