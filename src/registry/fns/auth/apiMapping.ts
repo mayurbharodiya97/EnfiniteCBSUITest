@@ -2283,6 +2283,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DODAILYTRNIMPORT",
     packageName: "",
   },
+  VALIDATETOSELECTFILE: {
+    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

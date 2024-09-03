@@ -112,7 +112,8 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
         <FormWrapper
           key={"insuranceConfirmForm"}
           metaData={insuranceConfirmFormMetaData as MetaDataType}
-          initialValues={rows?.[0]?.data ?? []}
+          initialValues={rows?.[0]?.data ?? {}}
+          onSubmitHandler={{}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{

@@ -7,9 +7,9 @@ export const getDailyImportConfigData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, TABLE_NM, ...other }) => {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
         return {
-          value: TABLE_NM,
+          value: TRAN_CD,
           label: DESCRIPTION,
           ...other,
         };
@@ -23,6 +23,18 @@ export const getDailyImportConfigData = async (reqData: any) => {
 export const getDailyTransactionImportData = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNIMPORT", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getValidateToSelectFile = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATETOSELECTFILE", {
       ...apiReq,
     });
   if (status === "0") {

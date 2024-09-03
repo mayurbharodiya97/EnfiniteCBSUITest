@@ -184,17 +184,23 @@ export const DailyTransactionImportMetadata = {
                 } else {
                   returnVal = "";
                 }
-                let jointDetail = await getDailyTransactionImportData({
-                  COMP_CD: auth?.companyID,
-                  BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    field?.value,
-                    dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                  ),
-                  ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                  FLAG: "R",
-                });
-                formState.setDataOnFieldChange("JOINT_DETAIL", jointDetail);
+                // let gridDetail = await getDailyTransactionImportData({
+                //   COMP_CD: auth?.companyID,
+                //   BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+                //   ACCT_CD: utilFunction.getPadAccountNumber(
+                //     field?.value,
+                //     dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                //   ),
+                //   ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+                //   FLAG: "R",
+                //   CHEQUE_NO:"",
+                //   OPP_ENT:"",
+                //   REMARKS:"",
+                //   TABLE_NM:"",
+                //   IGNR_INSUF:"",
+                // });
+                // console.log("gridDetail",gridDetail)
+                // formState.setDataOnFieldChange("JOINT_DETAIL", gridDetail);
               }
             }
             btn99 = 0;
@@ -448,7 +454,7 @@ export const DailyTransactionImportMetadata = {
       render: {
         componentType: "checkbox",
       },
-      name: "GENERATE_OPPOSITE_ENTRY",
+      name: "OPP_ENT",
       label: "Generate Opposite Entry",
       defaultValue: true,
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -457,7 +463,7 @@ export const DailyTransactionImportMetadata = {
       render: {
         componentType: "checkbox",
       },
-      name: "IGNORE_INSUFFIENT_BALANCE",
+      name: "IGNR_INSUF",
       label: "Ignore Insufficient Balance",
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
@@ -465,7 +471,7 @@ export const DailyTransactionImportMetadata = {
       render: {
         componentType: "formbutton",
       },
-      name: "POPULATE",
+      name: "SELECT",
       label: "Select File",
       rotateIcon: "scale(1.5)",
       placeholder: "",
