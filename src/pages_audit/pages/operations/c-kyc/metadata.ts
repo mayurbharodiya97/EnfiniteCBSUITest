@@ -160,6 +160,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [
@@ -244,7 +245,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "REQUEST_CD",
+      accessor: "REQUEST_ID",
       columnName: "ReqNo",
       sequence: 5,
       alignment: "left",
@@ -253,6 +254,16 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
+    {
+      accessor: "MAKER",
+      columnName: "Maker",
+      sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    }
     // {
     //   columnName: "Remarks",
     //   componentType: "buttonRowCell",
@@ -285,11 +296,93 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       min: "42vh",
       max: "50vh",
     },
-    allowFilter: false,
+    allowFilter: true,
     allowColumnHiding: false,
-    allowRowSelection: false
+    allowRowSelection: false,
+    isCusrsorFocused: true,
   },
-  // filters: [],
+  filters: [
+    {
+      accessor: "CUSTOMER_ID",
+      columnName: "CustomerId",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "REQUEST_ID",
+      columnName: "Req. ID",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CONFIRMED_FLAG",
+      columnName: "Confirm Flag",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CUSTOMER_NAME",
+      columnName: "Customer Name",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CUSTOMER_TYPE_FLAG",
+      columnName: "Customer Type",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "UPD_TAB_NAME",
+      columnName: "Update Type",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "MAKER",
+      columnName: "Maker",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "CHECKER",
+      columnName: "Checker",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+  ],
   columns: [
     {
       accessor: "REQUEST_ID",

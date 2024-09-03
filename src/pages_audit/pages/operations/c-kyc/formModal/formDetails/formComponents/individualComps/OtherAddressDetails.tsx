@@ -11,7 +11,7 @@ import { utilFunction } from 'components/utils';
 import _ from 'lodash';
 import TabNavigate from '../TabNavigate';
 
-const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const OtherAddressDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
@@ -124,7 +124,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 let filteredCols:any[]=[]
                 filteredCols = Object.keys(data.OTHER_ADDRESS[0])
                 filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
-                if(state?.isFreshEntryctx) {
+                if(state?.isFreshEntryctx || state?.isDraftSavedctx) {
                     filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
                 }
 
@@ -157,7 +157,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     
     
     
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                         ...tabModifiedCols,
@@ -168,7 +168,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
             } else {
                 newData["OTHER_ADDRESS"] = []
                 handleFormDataonSavectx(newData)
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                       ...tabModifiedCols,
@@ -206,13 +206,15 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
-                ? state?.formDatactx["OTHER_ADDRESS"]
-                    ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
+        return (
+            state?.formDatactx["OTHER_ADDRESS"]
+                ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
+                    ? state?.retrieveFormDataApiRes["OTHER_ADDRESS"]
+                        ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
+                        : {}
                     : {OTHER_ADDRESS: [{}]}
-                : state?.retrieveFormDataApiRes
-                    ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
-                    : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
@@ -227,7 +229,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -245,15 +248,17 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                         onSubmitHandler={OtherAddDTLSubmitHandler2}
                         // initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
                         initialValues={initialVal}
-                        displayMode={displayMode}
+                        displayMode={state?.formmodectx}
                         key={"other-address-form-kyc"+initialVal}
                         metaData={other_address_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}
                     />
                 </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

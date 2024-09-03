@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
@@ -7,22 +7,17 @@ import * as API from "../api";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { chequesignFormMetaData } from "./metaData";
 import { format } from "date-fns";
+import { ChequeSignImage } from "./chequeSignImage";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { ChequeSignImage } from "./chequeSignImage";
+import { useTranslation } from "react-i18next";
 
 export const ChequeSignForm: FC<{
   onClose?: any;
   reqDataRef?: any;
 }> = ({ onClose, reqDataRef }) => {
-  const [rotate, setRotate] = useState<number>(0);
 
-  const handleRotateChange = () => {
-    // Calculate the new rotation angle by adding or subtracting 90 degrees
-    const newRotateValue = (rotate + 90) % 360;
-    setRotate(newRotateValue);
-  };
-
+  const { t } = useTranslation();
   const reqData = {
     COMP_CD: reqDataRef.current?.COMP_CD ?? "",
     ENTERED_COMP_CD: reqDataRef.current?.ENTERED_COMP_CD ?? "",
@@ -44,23 +39,6 @@ export const ChequeSignForm: FC<{
     API.getInwardChequeSignFormData(reqData)
   );
 
-  if (chequesignFormMetaData.form.label) {
-    chequesignFormMetaData.form.label =
-      "A/C No:-" +
-      " " +
-      reqDataRef.current?.BRANCH_CD +
-      "-" +
-      reqDataRef.current?.ACCT_TYPE +
-      "-" +
-      reqDataRef.current?.ACCT_CD +
-      "--" +
-      " " +
-      "Press ESC Key to Close" +
-      " - " +
-      "Customer Level Photo/Signature" +
-      " ";
-  }
-
   return (
     <>
       <Dialog
@@ -76,12 +54,27 @@ export const ChequeSignForm: FC<{
         PaperProps={{
           style: {
             width: "100%",
-            // height: "78%",
-            // height: "70%",
           },
         }}
       >
-        {/* {isLoading || isFetching ? (
+        {" "}
+        <FormWrapper
+          key={`chequeSignForm`}
+          metaData={chequesignFormMetaData as unknown as MetaDataType}
+          initialValues={reqDataRef.current}
+          onSubmitHandler={{}}
+          formStyle={{
+            background: "white",
+          }}
+          displayMode={"view"}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton onClick={onClose}>{t("Close")}</GradientButton>
+            </>
+          )}
+        </FormWrapper>
+        {isLoading || isFetching ? (
           <LoaderPaperComponent />
         ) : isError ? (
           <Alert
@@ -89,30 +82,11 @@ export const ChequeSignForm: FC<{
             errorMsg={error?.error_msg ?? "Error"}
             errorDetail={error?.error_detail ?? ""}
           />
-        ) : ( */}
-        <>
-          <FormWrapper
-            key={`chequeSignForm`}
-            metaData={chequesignFormMetaData as unknown as MetaDataType}
-            initialValues={reqDataRef.current}
-            onSubmitHandler={{}}
-            formStyle={{
-              background: "white",
-            }}
-            displayMode={"view"}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton onClick={handleRotateChange}>
-                  {rotate === 0 ? "Rotate" : "Reset"}
-                </GradientButton>
-                <GradientButton onClick={onClose}>Close</GradientButton>
-              </>
-            )}
-          </FormWrapper>
-          <ChequeSignImage imgData={data} rotate={rotate} />
-        </>
-        {/* )} */}
+        ) : (
+          <>
+            <ChequeSignImage imgData={data} />
+          </>
+        )}
       </Dialog>
     </>
   );

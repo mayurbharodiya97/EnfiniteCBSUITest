@@ -27,13 +27,13 @@ const actions = [
     },
 ];
 
-const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const EntityDetails = () => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx, handleApiRes} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -78,6 +78,22 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
           submitted = false;
         } else {
           submitted = true;
+          let newTabs = state?.tabsApiResctx;          
+          if(Array.isArray(newTabs) && newTabs.length>0) {
+            newTabs = newTabs.map(tab => {
+              if(tab.TAB_NAME === "NRI Details") {
+                if(state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "02" ||
+                  state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "03") {
+                    return {...tab, isVisible: false}
+                } else {
+                  return {...tab, isVisible: true}
+                }
+              } else {
+                return tab;
+              }
+            })
+            handleApiRes(newTabs)
+          }
           handleStepStatusctx({
             status: "completed",
             coltabvalue: state?.colTabValuectx,
@@ -176,7 +192,8 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -199,9 +216,17 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                             key={"pd-form-kyc"+ initialVal}
                             metaData={entity_detail_legal_meta_data as MetaDataType}
                             formStyle={{}}
+                            formState={{
+                              TIN_ISSUING_COUNTRY: state?.isFreshEntryctx 
+                              ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "" 
+                              : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "",
+                              TIN: state?.isFreshEntryctx 
+                              ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN ?? "" 
+                              : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN ?? "",            
+                            }}
                             hideHeader={true}
                             // displayMode={"new"}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             controlsAtBottom={false}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
                                 // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
@@ -232,9 +257,11 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                         </FormWrapper>
                     </Grid>                    
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />            
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />            
 
             {dialogOpen && <SearchListdialog 
                 open={dialogOpen} 

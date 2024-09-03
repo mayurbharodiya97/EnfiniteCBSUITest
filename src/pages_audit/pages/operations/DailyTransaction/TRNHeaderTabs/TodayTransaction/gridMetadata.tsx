@@ -31,14 +31,18 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Time",
       accessor: "time",
       sequence: 2,
       componentType: "default",
-      width: 100,
+      width: 80,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Chq No.",
@@ -46,13 +50,16 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 3,
       componentType: "default",
       width: 100,
+      alignment: "right",
     },
     {
       columnName: "Trx",
       accessor: "TYPE_CD",
       sequence: 4,
       componentType: "default",
-      width: 100,
+      width: 70,
+      maxWidth: 100,
+      minWidth: 70,
     },
     {
       columnName: "Remarks",
@@ -68,6 +75,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       color: "green",
+      alignment: "right",
     },
 
     {
@@ -77,6 +85,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       color: "red",
+      alignment: "right",
     },
     {
       columnName: "Voucher No",
@@ -87,17 +96,19 @@ export const TodayTransGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Status",
-      accessor: "Status",
+      accessor: "STATUS",
       sequence: 9,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Br",
-      accessor: "Br",
+      accessor: "ENTERED_BRANCH_CD",
       sequence: 10,
       componentType: "default",
-      width: 100,
+      width: 70,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Scroll",
@@ -105,6 +116,9 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 11,
       componentType: "default",
       width: 100,
+      maxWidth: 100,
+      minWidth: 50,
+      alignment: "right",
     },
     {
       columnName: "SDC",
@@ -112,6 +126,8 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 12,
       componentType: "default",
       width: 100,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Maker",
@@ -136,6 +152,81 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
+    },
+  ],
+};
+
+//////////////////////////////////////////////////////////////////
+
+export const AccountDetailsGridMetadata: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "AccountDetails",
+    rowIdColumn: "SR_NO",
+    defaultColumnConfig: {
+      width: 120,
+      maxWidth: 250,
+      minWidth: 120,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    disableGroupBy: true,
+    enablePagination: false,
+    hideFooter: true,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "25.2vh",
+      max: "25.2vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+  },
+  filters: [],
+  columns: [
+    {
+      columnName: "AcctHolderType",
+      accessor: "ACCT_STATUS",
+      sequence: 1,
+      componentType: "default",
+      width: 120,
+    },
+    {
+      columnName: "AccountNo",
+      accessor: "AC_CD",
+      sequence: 2,
+      componentType: "default",
+      width: 220,
+    },
+    {
+      columnName: "Account_Name",
+      accessor: "ACCT_NM",
+      sequence: 3,
+      componentType: "default",
+      width: 300,
+    },
+    {
+      columnName: "OpeningDate",
+      accessor: "OP_DATE",
+      sequence: 4,
+      componentType: "date",
+      width: 220,
+    },
+    {
+      columnName: "STATUS",
+      accessor: "ORG_STATUS",
+      sequence: 5,
+      componentType: "default",
+      width: 130,
+    },
+    {
+      columnName: "CloseDate",
+      accessor: "CLOSE_DT",
+      sequence: 6,
+      componentType: "date",
+      width: 220,
     },
   ],
 };

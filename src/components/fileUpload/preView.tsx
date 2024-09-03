@@ -7,13 +7,18 @@ import {
 import { Fragment, FC, useEffect, useState } from "react";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import CloseIcon from "@mui/icons-material/Close";
+import { GradientButton } from "components/styledComponent/button";
 import { downloadFile } from "./utils";
 
-export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
-  blob,
-  fileName,
-  onClose,
-}) => {
+export const PDFViewer: FC<{
+  blob: File;
+  fileName: string;
+  onClose?: any;
+  thirdButton?: {
+    callback: () => void;
+    label: string;
+  };
+}> = ({ blob, fileName, onClose, thirdButton }) => {
   const [urlObj, setUrlObj] = useState(
     typeof blob === "object" && Boolean(blob)
       ? URL.createObjectURL(blob as any)
@@ -28,10 +33,12 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
     };
   }, []);
   useEffect(() => {
-    setUrlObj(typeof blob === "object" && Boolean(blob)
-    ? URL.createObjectURL(blob as any)
-    : null)
-  }, [blob])
+    setUrlObj(
+      typeof blob === "object" && Boolean(blob)
+        ? URL.createObjectURL(blob as any)
+        : null
+    );
+  }, [blob]);
   return (
     <Fragment>
       <DialogActions style={{ display: "flex", padding: "8px 24px" }}>
@@ -40,9 +47,22 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
         </Typography>
         <Typography variant="h6">{fileName}</Typography>
         <div style={{ flexGrow: 1 }}></div>
+        {Boolean(thirdButton) ? (
+          <GradientButton
+            color="primary"
+            onClick={() => {
+              if (typeof thirdButton?.callback === "function")
+                thirdButton?.callback();
+            }}
+          >
+            {thirdButton?.label}
+          </GradientButton>
+        ) : null}
         <IconButton
           color="secondary"
-          onClick={() => downloadFile(blob, fileName)}
+          onClick={() => {
+            downloadFile(blob, fileName);
+          }}
         >
           <GetAppIcon />
         </IconButton>
@@ -83,12 +103,13 @@ export const ImageViewer: FC<{
     };
   }, []);
 
-
   useEffect(() => {
-    setUrlObj(typeof blob === "object" && Boolean(blob)
-      ? URL.createObjectURL(blob as any)
-      : "")
-  }, [blob])
+    setUrlObj(
+      typeof blob === "object" && Boolean(blob)
+        ? URL.createObjectURL(blob as any)
+        : ""
+    );
+  }, [blob]);
   return (
     <Fragment>
       <DialogActions style={{ display: "flex", padding: "8px 24px" }}>

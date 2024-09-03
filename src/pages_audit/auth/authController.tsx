@@ -17,6 +17,7 @@ import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { MultiLanguages } from "./multiLanguages";
 import { useTranslation } from "react-i18next";
+import { usePopupContext } from "components/custom/popupContext";
 
 const inititalState = {
   username: "",
@@ -33,14 +34,14 @@ const inititalState = {
   userMessageforusername: "",
   currentFlow: "username",
   transactionID: "",
+  comapanyCD: "",
+  branchCD: "",
+  contactUser: "",
   access_token: "",
   token_type: "",
   otpmodelClose: false,
   authType: "",
   isScanning: false,
-  auth_data: [],
-  company_ID: "",
-  Branch_CD: "",
   auth_type: "O",
   otpValidFor: 60,
 };
@@ -76,6 +77,9 @@ const reducer = (state, action) => {
         userMessageforusername: action?.payload?.errorUsername,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "passwordVerificationFailure":
@@ -90,6 +94,8 @@ const reducer = (state, action) => {
         userMessageforpassword: action?.payload?.errorPassword,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: ""
       };
     case "usernameVerificationFailure": {
       return {
@@ -103,6 +109,9 @@ const reducer = (state, action) => {
         userMessageforusername: action?.payload?.errorUsername,
         username: "",
         transactionID: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "inititatePasswordVerification": {
@@ -119,6 +128,9 @@ const reducer = (state, action) => {
         username: "",
         transactionID: "",
         access_token: "",
+        comapanyCD: "",
+        branchCD: "",
+        contactUser: ""
       };
     }
     case "passwordRotation": {
@@ -143,6 +155,9 @@ const reducer = (state, action) => {
         loading: false,
         otploading: false,
         transactionID: action?.payload?.transactionID,
+        comapanyCD: action?.payload?.comapanyCD,
+        branchCD: action?.payload?.branchCD,
+        contactUser: action?.payload?.contactUser,
         username: action?.payload?.username,
         auth_type: action?.payload?.auth_type,
         OtpuserMessage: "",
@@ -151,9 +166,9 @@ const reducer = (state, action) => {
         otpmodelClose: false,
         currentFlow: "OTP",
         authType: action?.payload?.authType,
+        // authType: "TOTP",
         auth_data: action?.payload?.auth_data,
         otpValidFor: action?.payload?.otpValidFor,
-        company_ID: action?.paylod?.company_ID,
       };
     }
     case "inititatebiometricVerification": {
@@ -230,7 +245,7 @@ export const AuthLoginController = () => {
   const urlObj = useRef<any>(null);
   const { t } = useTranslation();
   const otpResendRef = useRef(1);
-
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -293,20 +308,26 @@ export const AuthLoginController = () => {
         dispath({
           type: "passwordVerificationSuccessful",
           payload: {
+            comapanyCD: data?.BASE_COMP_CD,
+            branchCD: data?.BASE_BRANCH_CD,
+            contactUser: data?.CONTACT2,
             transactionID: data?.REQUEST_CD,
             username: username,
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
             authType: data?.AUTH_TYPE,
-            auth_data: [
-              {
-                company_ID: data?.BASE_COMP_CD ?? "",
-                branch_cd: data?.BASE_BRANCH_CD,
-              },
-            ],
+            auth_data: data?.AUTH_DATA,
             otpValidFor: data?.OTP_VALID,
           },
         });
+        if (data?.STATUS === "0") {
+          for (let i = 0; i < data?.ALERT_MSG_LIST.length; i++) {
+            await MessageBox({
+              messageTitle: "Password Alert",
+              message: data?.ALERT_MSG_LIST[i],
+            });
+          }
+        }
       } else {
         dispath({
           type: "passwordVerificationFailure",
@@ -317,25 +338,25 @@ export const AuthLoginController = () => {
       dispath({
         type: "usernameandpasswordrequired",
         payload: {
-          error: t("UsernamenandPasswordisRequired"),
-          errorUsername: t("UsernameisRequired"),
-          errorPassword: t("PasswordisRequired"),
+          error: "UsernamenandPasswordisRequired",
+          errorUsername: "UsernameisRequired",
+          errorPassword: "PasswordisRequired",
         },
       });
     } else if (!Boolean(username)) {
       dispath({
         type: "usernameVerificationFailure",
         payload: {
-          error: t("UsernameisRequired"),
-          errorUsername: t("UsernameisRequired"),
+          error: "UsernameisRequired",
+          errorUsername: "UsernameisRequired",
         },
       });
     } else {
       dispath({
         type: "passwordVerificationFailure",
         payload: {
-          error: t("PasswordisRequired"),
-          errorPassword: t("PasswordisRequired"),
+          error: "PasswordisRequired",
+          errorPassword: "PasswordisRequired",
         },
       });
     }
@@ -353,7 +374,7 @@ export const AuthLoginController = () => {
         loginState.token_type,
         loginState.authType
       );
-
+      console.log("menuapierror", message);
       if (status === "0") {
         // try {
         //   audio.play();
@@ -538,22 +559,23 @@ export const AuthLoginController = () => {
                     />
                   ) : (
                     <>
-                      {loginState.authType === "OTP" ? (
+                      {loginState.authType === "OTP" ||
+                      loginState.authType === "TOTP" ? (
                         <OTPModel
                           key="otp"
                           classes={classes}
                           loginState={loginState}
                           VerifyOTP={VerifyOTP}
                           previousStep={changeUserName}
-                          OTPError={loginState?.OtpuserMessage ?? ""}
+                          OTPError={t(loginState?.OtpuserMessage ?? "")}
                           setOTPError={(error) => {
                             dispath({
-                              type: "OTPVerificattionFailed",
+                              type: "OTPVerificationFailed",
                               payload: { error: error },
                             });
                           }}
                           open={true}
-                          handleClose={() => {}}
+                          handleClose={changeUserName}
                           resendFlag={"LOGIN"}
                           setNewRequestID={(newRequestID) => {
                             dispath({
@@ -563,36 +585,39 @@ export const AuthLoginController = () => {
                             otpResendRef.current = otpResendRef.current + 1;
                           }}
                           otpresendCount={otpResendRef.current}
+                          marginCondition={"4em"}
                         />
-                      ) : loginState.authType === "TOTP" ? (
-                        <>
-                          {" "}
-                          <OTPModelForm
-                            key={"OTPForm"}
-                            classes={classes}
-                            // handleClose={() => {}}
-                            handleClose={changeUserName}
-                            loginState={loginState}
-                            VerifyOTP={VerifyOTP}
-                            OTPError={loginState?.OtpuserMessage ?? ""}
-                            setOTPError={(error) => {
-                              dispath({
-                                type: "OTPVerificationFailed",
-                                payload: { error: error },
-                              });
-                            }}
-                            resendFlag={"LOGIN"}
-                            setNewRequestID={(newRequestID) => {
-                              dispath({
-                                type: "OTPResendSuccess",
-                                payload: { transactionID: newRequestID },
-                              });
-                              otpResendRef.current = otpResendRef.current + 1;
-                            }}
-                            otpresendCount={otpResendRef.current}
-                          />
-                        </>
                       ) : (
+                        //       : loginState.authType === "TOTP" ? (
+                        // <>
+                        //   {" "}
+                        //   <OTPModelForm
+                        //     key={"OTPForm"}
+                        //     classes={classes}
+                        //     // handleClose={() => {}}
+                        //     handleClose={changeUserName}
+                        //     loginState={loginState}
+                        //     VerifyOTP={VerifyOTP}
+                        //     OTPError={loginState?.OtpuserMessage ?? ""}
+                        //     setOTPError={(error) => {
+                        //       dispath({
+                        //         type: "OTPVerificationFailed",
+                        //         payload: { error: error },
+                        //       });
+                        //     }}
+                        //     resendFlag={"LOGIN"}
+                        //     setNewRequestID={(newRequestID) => {
+                        //       dispath({
+                        //         type: "OTPResendSuccess",
+                        //         payload: { transactionID: newRequestID },
+                        //       });
+                        //       otpResendRef.current = otpResendRef.current + 1;
+                        //     }}
+                        //     otpresendCount={otpResendRef.current}
+                        //   />
+                        // </>
+                        //       )
+
                         <VerifyFinger
                           key="biometric"
                           classes={classes}

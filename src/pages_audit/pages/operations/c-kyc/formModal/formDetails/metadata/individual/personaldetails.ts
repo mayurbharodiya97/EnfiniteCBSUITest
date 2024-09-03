@@ -49,12 +49,12 @@ export const personal_detail_prefix_data = {
     fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "Prefix",
             name: "prefixDivider_ignoreField",
-            label: "prefixDivider"
+            label: "Prefix",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -237,12 +237,12 @@ export const personal_detail_prefix_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 8,
             },
-            dividerText: "MaidenName",
             name: "maidenHeaderdivider_ignoreField",
-            label: "maidenHeaderDivider"
+            label: "MaidenName",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -366,18 +366,18 @@ export const personal_detail_prefix_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 15,
             },
-            dividerText: "FatherName",
             name: "fatherHeaderDivider_ignoreField",
-            label: "fatherHeaderDivider",
+            label: "FatherName",
             dependentFields: ["FATHER_SPOUSE"],
             setValueOnDependentFieldsChange: (dependentFields) => {
                 console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
                 let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
                 return dividerText;
             },
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -459,12 +459,12 @@ export const personal_detail_prefix_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 20,
             },
-            dividerText: "MotherName",
             name: "motherHeaderDivider_ignoreField",
-            label: "motherHeaderDivider"
+            label: "MotherName",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -624,12 +624,13 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "autocomplete",
+                componentType: "select",
             },
             options: [
                 {label: "Minor", value: "M"},
                 {label: "Major", value: "J"}
             ],
+            isReadOnly: true,
             dependentFields: ["BIRTH_DT"],
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {
@@ -841,12 +842,12 @@ export const personal_individual_detail_metadata = {
     fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "Prefix",
             name: "prefixDivider_ignoreField",
-            label: "prefixDivider"
+            label: "Prefix",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -1004,12 +1005,12 @@ export const personal_individual_detail_metadata = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 8,
             },
-            dividerText: "MaidenName",
             name: "maidenHeaderdivider_ignoreField",
-            label: "maidenHeaderDivider"
+            label: "MaidenName",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -1130,18 +1131,18 @@ export const personal_individual_detail_metadata = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 15,
             },
-            dividerText: "FatherName",
             name: "fatherHeaderDivider_ignoreField",
-            label: "fatherHeaderDivider",
+            label: "FatherName",
             // dependentFields: ["FATHER_SPOUSE"],
             // setValueOnDependentFieldsChange: (dependentFields) => {
             //     console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
             //     let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
             //     return dividerText;
             // },
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -1214,12 +1215,12 @@ export const personal_individual_detail_metadata = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 20,
             },
-            dividerText: "MotherName",
             name: "motherHeaderDivider_ignoreField",
-            label: "motherHeaderDivider"
+            label: "MotherName",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {

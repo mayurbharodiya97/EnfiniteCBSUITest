@@ -230,7 +230,7 @@ export const DataGrid = forwardRef<any, any>(
     const handleChangeRowsPerPage = (event) => {
       setPageSize(Number(event.target.value));
     };
-    //console.log("TableHeaderToolbar=>", filterMeta);
+
     return (
       <Paper
         style={{

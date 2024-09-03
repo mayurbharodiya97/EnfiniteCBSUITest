@@ -16,7 +16,8 @@ const StyledTextField = withStyles({
       textTransform: "capitalize",
       fontSize: "1rem",
       whiteSpace: "normal",
-      lineHeight: "0.95",
+      // lineHeight: "0.95",
+      lineHeight: "1.60",
       "@media (max-width: 1200px)": {
         fontSize: "0.75rem",
       },
@@ -83,7 +84,7 @@ const StyledTextField = withStyles({
     "& .MuiInputAdornment-positionStart": {
       //borderRight: "1px solid #BABABA !important",
       borderRight: "2px dashed #BABABA",
-      height: "23px",
+      height: "17px",
       maxHeight: "36px",
       padding: "0 0.6rem 0 0.6rem",
       margin: "6px 0px !important",
@@ -92,7 +93,7 @@ const StyledTextField = withStyles({
     "& .withBorder.MuiInputAdornment-positionEnd": {
       //borderRight: "1px solid #BABABA !important",
       borderLeft: "2px dashed #BABABA",
-      height: "23px",
+      height: "17px",
       maxHeight: "36px",
       padding: "0 0.6rem 0 0.6rem",
       margin: "6px 0px !important",

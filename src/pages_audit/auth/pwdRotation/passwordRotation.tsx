@@ -8,8 +8,9 @@ import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useRef, useState } from "react";
 import { utilFunction } from "components/utils/utilFunctions";
-import { ResetPassword } from "./api";
+import { ResetPassword, validatePasswords } from "./api";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export const PasswordRotation = ({
   classes,
@@ -21,6 +22,7 @@ export const PasswordRotation = ({
 }) => {
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
   const [input, setInput] = useState({
     userName: username,
     oldpassword: "",
@@ -55,11 +57,14 @@ export const PasswordRotation = ({
       isconfirmnewpwdError: false,
       confirmnewpassworderror: "",
     };
+  
+    // Local validation
     if (!Boolean(input.oldpassword)) {
       setPwdData.isoldPwdError = true;
       setPwdData.oldpassworderror = "Current Password is required.";
       isError = true;
     }
+  
     let pwdData = utilFunction.ValidatePassword(input.password);
     if (Boolean(pwdData)) {
       setPwdData.isnewpwdError = true;
@@ -72,8 +77,7 @@ export const PasswordRotation = ({
       input.oldpassword === input.password
     ) {
       setPwdData.isnewpwdError = true;
-      setPwdData.newpassworderror =
-        "The new password cannot be the same as the old password";
+      setPwdData.newpassworderror = "The new password cannot be the same as the old password";
       isError = true;
     }
     if (!Boolean(input.confirmpassword)) {
@@ -85,36 +89,55 @@ export const PasswordRotation = ({
       input.password !== input.confirmpassword
     ) {
       setPwdData.isconfirmnewpwdError = true;
-      setPwdData.confirmnewpassworderror =
-        "New Password and Confirm Password did not matched";
+      setPwdData.confirmnewpassworderror = "New Password and Confirm Password did not match";
       isError = true;
     }
     if (isError) {
       setPasswordReset(setPwdData);
-    } else {
-      setPasswordReset((values) => ({ ...values, isLoading: true }));
-      let response = await ResetPassword(
-        input.userName,
-        input.oldpassword,
-        input.password,
-        accessToken,
-        tokenType
-      );
-      setPasswordReset((values) => ({ ...values, isLoading: false }));
-      if (response.status === "0") {
-        enqueueSnackbar("Password successfully changed.", {
-          variant: "success",
-        });
-        handleClose("0");
-      } else {
-        setPasswordReset((values) => ({
-          ...values,
-          isError: true,
-          errorMessage: response.message,
-        }));
-      }
+      return;
     }
+  
+    // API validation
+    setPasswordReset((values) => ({ ...values, isLoading: true }));
+    const { validateStatus, validateData } = await validatePasswords({
+      USER_ID: input.userName,
+      PASSWORD: input.password,
+      SCREEN_REF: "LOGIN"
+    });
+    setPasswordReset((values) => ({ ...values, isLoading: false }));
+  
+    if (validateStatus === "0") {
+      switch (validateData?.O_STATUS) {
+        case "999":
+          setPwdData.isnewpwdError = true;
+          setPwdData.newpassworderror = validateData?.O_MESSAGE;
+          setPasswordReset(setPwdData);
+          return;
+        case "0":
+          let response = await ResetPassword(
+            input.userName,
+            input.oldpassword,
+            input.password,
+            accessToken,
+            tokenType
+          );
+          if (response.status === "0") {
+            enqueueSnackbar("Password successfully changed.", {
+              variant: "success",
+            });
+            handleClose("0");
+          } else {
+            setPasswordReset((values) => ({
+              ...values,
+              isError: true,
+              errorMessage: response.message,
+            }));
+          }
+          break;
+      }
+    } 
   };
+
   const handleChange = (event) => {
     const name = event.target.name;
     let value = event.target.value;
@@ -185,12 +208,12 @@ export const PasswordRotation = ({
               onChange={handleChange}
               error={pwdReset.isoldPwdError}
               helperText={
-                pwdReset.isoldPwdError ? pwdReset.oldpassworderror : ""
+                pwdReset.isoldPwdError ? t(pwdReset.oldpassworderror) : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -208,12 +231,12 @@ export const PasswordRotation = ({
               onChange={handleChange}
               error={pwdReset.isnewpwdError}
               helperText={
-                pwdReset.isnewpwdError ? pwdReset.newpassworderror : ""
+                pwdReset.isnewpwdError ? t(pwdReset.newpassworderror) : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -232,13 +255,13 @@ export const PasswordRotation = ({
               error={pwdReset.isconfirmnewpwdError}
               helperText={
                 pwdReset.isconfirmnewpwdError
-                  ? pwdReset.confirmnewpassworderror
+                  ? t(pwdReset.confirmnewpassworderror)
                   : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={pwdReset.isLoading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }

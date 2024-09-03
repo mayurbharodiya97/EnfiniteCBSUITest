@@ -26,6 +26,7 @@ export const RemarksAPIWrapper = ({
   isLoading = false,
   open = false,
   rows,
+  label = "Remarks",
   ...other
 }) => {
   //const { state: rows }: any = useLocation();
@@ -54,21 +55,21 @@ export const RemarksAPIWrapper = ({
     <>
       <Dialog fullWidth={true} open={open}>
         <DialogTitle className={classes.dialogTitleClass}>
-          {TitleText}
+          {t(TitleText)}
         </DialogTitle>
         <DialogContent>
           <br />
           <TextField
             autoFocus={true}
-            label={"Remarks"}
-            placeholder="Enter Remarks"
+            label={t(label)}
+            placeholder={t("EnterRemarks")}
             fullWidth
             type={"text"}
             name="remarks"
             variant="standard"
+            color="info"
             margin="dense"
             id="standard-size-normal"
-            color="info"
             value={input || ""}
             onChange={handleChange}
             error={loginState.isError}
@@ -93,7 +94,7 @@ export const RemarksAPIWrapper = ({
                 setLoginState((values) => ({
                   ...values,
                   isError: true,
-                  userMessage: t("Thisisarequiredfield"),
+                  userMessage: t("ThisFieldisrequired"),
                 }));
               } else {
                 onActionYes(input, rows);
@@ -102,7 +103,7 @@ export const RemarksAPIWrapper = ({
             }}
             ref={inputButtonRef}
           >
-            {AcceptbuttonLabelText}
+            {t(AcceptbuttonLabelText)}
           </GradientButton>
           <GradientButton
             disabled={isLoading}
@@ -111,7 +112,7 @@ export const RemarksAPIWrapper = ({
               setInput("");
             }}
           >
-            {CanceltbuttonLabelText}
+            {t(CanceltbuttonLabelText)}
           </GradientButton>
         </DialogActions>
       </Dialog>

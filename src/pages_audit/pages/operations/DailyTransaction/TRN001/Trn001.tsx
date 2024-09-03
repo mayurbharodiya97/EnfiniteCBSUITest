@@ -1,687 +1,755 @@
-//UI
 import { Button, Card } from "@mui/material";
-import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
-//date
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-//Logic
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
-import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
-
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
-import { useMutation } from "react-query";
+import { format, parse } from "date-fns";
+import { useEffect, useState, useContext, useRef } from "react";
+import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
-import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
 import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
+import { usePopupContext } from "components/custom/popupContext";
+import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
+import { queryClient } from "cache";
+import { utilFunction } from "components/utils";
+import { TRN001Context } from "./Trn001Reducer";
+import RowsTable from "./rowsTable";
+import { GradientButton } from "components/styledComponent/button";
+import { Alert } from "components/common/alert";
 
-const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.white,
-    color: "#ea3a1b",
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-  },
-}));
 export const Trn001 = () => {
-  const { t } = useTranslation();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
-  var defBranch = {
-    label: authState?.user?.branchCode + "-" + authState?.user?.branch,
-    value: authState?.user?.branchCode,
-    info: { COMP_CD: authState?.companyID },
-  };
-  var defTableValue = {
-    branch: defBranch,
-    accType: { label: "", value: "", info: "" },
-    accNo: "",
+  const {
+    state,
+    dispatch,
+    handleSetDefaultBranch,
+    handleAccTypeBlurCtx,
+    handleAcctNoBlurCtx,
+    getAcctNoValidationCtx,
+    handleTrxCtx,
+    getChqValidationCtx,
+    handleDebitBlurCtx,
+    handleDebitCtx,
+    handleCreditCtx,
+    handleCreditBlurCtx,
+    getDateValidationCtx,
+    getAmountValidationCtx,
+    checkErrorsFn,
+    deleteRowCtx,
+    commonStateUpdate,
+    handleScrollBlurCtx,
+    getTokenValidation,
+    setFieldsError,
+  } = useContext(TRN001Context);
 
-    trx: { label: "", value: "", code: "" }, //TYPE_CD
-    scroll: "", //token
-    sdc: { label: "", value: "", info: "" },
-    remark: "",
-    cNo: "0",
-    // date: new Date().toISOString()?.substring(0, 10),
-    date: new Date(),
-    debit: "0.00",
-    credit: "0.00",
-    bug: true,
-    bugAccNo: false,
-    bugCNo: false,
-    bugDate: false,
-    bugMsgAccNo: "",
-    bugMsgCNo: "",
-    bugMsgDate: "",
-    isCredit: true,
-    viewOnly: false,
-  };
-
-  let defErrMsg = { cNo: "", accNo: "" };
-  //states define
-  const [rows, setRows] = useState<any>([defTableValue]);
-  const [updatedRows, setUpdatedRows] = useState<any>([]);
   const [trxOptions, setTrxOptions] = useState<any>([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
-  const [sdcOptions, setSdcOptions] = useState<any>([]);
-  const [accTypeOptions, setAccTypeOptions] = useState([]);
-  const [branchOptions, setBranchOptions] = useState([]);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
-  const [isSave, setIsSave] = useState(false);
-  const [diff, setDiff] = useState(0);
-  const [isArray, setIsArray] = useState(false);
-  const [errMsg, setErrMsg] = useState(defErrMsg);
-  const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [resetDialog, setResetDialog] = useState(false);
+  const [loadingStates, setLoadingStates] = useState<any>([]);
   const [viewOnly, setViewOnly] = useState(false);
-  const [saveDialog, setSaveDialog] = useState<boolean>(false);
-  const [tabsData, setTabsData] = useState<any>([]);
-
+  const [cardsData, setCardsData] = useState<any>([]);
+  const [reqData, setReqData] = useState<any>([]);
+  const [status, setStatus] = useState<any>(false);
+  const lastRowUnqID = useRef(null);
+  const isBatchEntry = useRef(false);
+  const acctNoRef = useRef<any>(null);
+  const carousalCrdLastReq = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const {
+    clearCache: clearTabsCache,
+    error: tabsErorr,
+    data: tabsDetails,
+    setData: setTabsDetails,
+    fetchData: fetchTabsData,
+    isError: isTabsError,
+    isLoading: isTabsLoading,
+  } = useCacheWithMutation(
+    "getTabsByParentTypeKeyTrn001",
+    CommonApi.getTabsByParentType
+  );
 
   useEffect(() => {
-    //cleanUp fn
-    return () => {
-      setTempStore({ ...tempStore, accInfo: {} });
-      setCardStore({ ...cardStore, cardsInfo: {} });
-      setTabsData([]);
-    };
-  }, []);
-  useEffect(() => {
-    console.log(index, "index");
-  }, [index]);
-  useEffect(() => {
-    //bug checker on row change
-    console.log(rows, "rows trn1");
-    let i = 0;
-    if (rows.length > 0) {
-      i = rows.length - 1;
-    }
-    rows[i].bug = false;
-    if (
-      !rows[i].trx?.code ||
-      !rows[i].branch ||
-      !rows[i].accType ||
-      !rows[i].accNo
-    ) {
-      rows[i].bug = true;
-    }
-
-    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
-      //credit true
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
-      //debit true
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && rows[i].bugCNo) {
-      rows[i].bug = true;
-    }
-
-    let result = rows && rows.some((a) => a?.bug);
-    setIsSave(!result);
-  }, [rows]);
-
-  useEffect(() => {
-    //getting all options for autocomplete
-    getBranchOptions.mutate(authState);
-    getSdcOptions.mutate(authState);
-    getAccTypeOptions.mutate(authState);
-    getTrxOptions.mutate(authState);
+    setCardsData([]);
+    setTabsDetails([]);
   }, []);
 
-  //api define ============================================================
-  const getBranchOptions = useMutation(API.getBranchList, {
-    onSuccess: (data) => {
-      setBranchOptions(data);
-    },
-    onError: (error: any) => {},
-  });
-  const getAccTypeOptions = useMutation(API.getAccTypeList, {
-    onSuccess: (data) => {
-      setAccTypeOptions(data);
-    },
-    onError: (error: any) => {},
-  });
+  const { id: userId, branchCode } = authState?.user ?? {};
+  const { companyID } = authState ?? {};
 
-  const getSdcOptions = useMutation(API.getSDCList, {
-    onSuccess: (data) => {
-      setSdcOptions(data);
-      const obj = [...rows];
-      setRows(obj);
+  const queriesResult = useQueries([
+    {
+      queryKey: ["getBranchList"],
+      queryFn: () =>
+        API.getBranchList({
+          USER_ID: userId ?? "",
+        }),
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
+    {
+      queryKey: ["getAccTypeList"],
+      queryFn: () =>
+        API.getAccTypeList({
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          USER_NAME: authState?.user?.id ?? "",
+          DOC_CD: "TRN/001",
+        }),
     },
-  });
+    {
+      queryKey: ["getSDCList"],
+      queryFn: () =>
+        API.getSDCList({
+          USER_ID: userId ?? "",
+          BRANCH_CD: branchCode ?? "",
+          COMP_CD: companyID ?? "",
+        }),
+    },
+    {
+      queryKey: ["getTRXList"],
+      queryFn: () =>
+        API.getTRXList({
+          USER_ID: userId ?? "",
+        }),
+    },
+  ]);
 
-  const getTrxOptions = useMutation(API.getTRXList, {
-    onSuccess: (data) => {
-      setTrxOptions2(data);
-      setTrxOptions(data);
-    },
-    onError: (error: any) => {},
-  });
+  useEffect(() => {
+    if (queriesResult?.[0]?.data?.length > 0) {
+      handleSetDefaultBranch(queriesResult?.[0]?.data, authState, 0);
+    }
+  }, [queriesResult?.[0]?.data]);
+
+  useEffect(() => {
+    if (queriesResult?.[3]?.data?.length > 0) {
+      setTrxOptions(queriesResult?.[3]?.data);
+      let result = queriesResult?.[3]?.data?.filter(
+        (options) => options?.code == "3" || options?.code == "6"
+      );
+      setTrxOptions2(result);
+    }
+  }, [queriesResult?.[3]?.data]);
+
+  const { data: parametres } = useQuery<any, any>(
+    [
+      "getParameters",
+      {
+        ENT_BRANCH_CD: authState?.user?.branchCode,
+        ENT_COMP_CD: authState?.companyID,
+      },
+    ],
+    () =>
+      API.getParameters({
+        ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+        ENT_COMP_CD: authState?.companyID ?? "",
+      })
+  );
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
-    onSuccess: (data) => {
-      setLoading(false);
-      setCardStore({ ...cardStore, cardsInfo: data });
+    onSuccess: (data: any, variables: any) => {
+      setCardsData(data);
+      setReqData(variables?.reqData);
+      setTimeout(() => {
+        if (acctNoRef?.current) {
+          acctNoRef?.current?.focusTrxInput();
+        }
+      }, 50);
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setLoading(false);
-      setCardStore({ ...cardStore, cardsInfo: [] });
+    onError: (error: any, variables: any) => {
+      if (
+        error?.error_msg !==
+        "Timeout : Your request has been timed out or has been cancelled by the user."
+      ) {
+        enqueueSnackbar(error?.error_msg, {
+          variant: "error",
+        });
+      }
+      setCardsData([]);
     },
   });
 
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
   const getAccNoValidation = useMutation(GeneralAPI.getAccNoValidation, {
-    onSuccess: (data) => {
-      console.log(data, "dattt");
-      if (data?.RESTRICT_MESSAGE) {
-        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
-          variant: "error",
+    onSuccess: async (data: any, variables: any) => {
+      if (Object?.keys(data)?.length > 0) {
+        const rowUnqID = variables.unqID;
+        setStatus(data?.STATUS);
+        const getBtnName = async (msgObj) => {
+          let btnNm = await MessageBox(msgObj);
+          return { btnNm, msgObj };
+        };
+        const returnValue = await getAcctNoValidationCtx({
+          updUnqId: rowUnqID,
+          data,
+          variables,
+          getBtnName,
+          chequeDate: authState?.workingDate,
+          setLoadingState,
         });
-        const obj = [...rows];
-        obj[index].bug = true;
-        obj[index].bugAccNo = true;
-        obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
-        setRows(obj);
-      } else {
-        const obj = [...rows];
-        obj[index].bug = false;
-        obj[index].bugAccNo = false;
-        obj[index].bugMsgAccNo = "";
-        setRows(obj);
+        if (returnValue) {
+          carousalCrdLastReq.current = variables;
+          getCarousalCards.mutate({ reqData: variables });
+        }
       }
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-  const getChqValidation = useMutation(API.getChqValidation, {
-    onSuccess: (data) => {
-      if (data.ERR_CODE == "-1") {
-        enqueueSnackbar(data?.ERR_MSG, {
-          variant: "error",
-        });
-        const obj = [...rows];
-        obj[index].bug = true;
-        obj[index].bugCNo = true;
-        obj[index].bugMsgCNo = data?.ERR_MSG;
-        setRows(obj);
-      } else {
-        const obj = [...rows];
-        obj[index].bug = false;
-        obj[index].bugCNo = false;
-        obj[index].bugMsgCNo = "";
-        setRows(obj);
-      }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-  const saveScroll = useMutation(API.addDailyTrxScroll, {
-    onSuccess: (data) => {
-      let isSuccess = data.some((a) => a?.TRAN_CD);
-      if (isSuccess) {
-        handleReset();
-        setSaveDialog(false);
-        data.map((a) => {
-          return enqueueSnackbar("Scroll Saved Voucher No." + a?.TRAN_CD, {
-            variant: "success",
-          });
-        });
-      } else {
-        enqueueSnackbar("Some error occured in scroll saving", {
-          variant: "error",
-        });
-      }
-    },
-    onError: (error: any) => {
-      setSaveDialog(false);
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
+    onError: (error: any, variables: any) => {
+      // enqueueSnackbar(error?.error_msg, { variant: "error" });
+      const rowUnqID = variables.unqID;
+      setLoadingState(rowUnqID, "ACCTNO", false);
+      setFieldsError({
+        updUnqId: rowUnqID,
+        payload: { bugMsgAccNo: error?.error_msg },
       });
     },
   });
 
-  useEffect(() => {
-    console.log(errMsg, "errmsg");
-  }, [errMsg]);
+  const getChqValidation = useMutation(GeneralAPI.getChequeNoValidation, {
+    onSuccess: async (data: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      const getBtnName = async (msgObj) => {
+        let btnNm = await MessageBox(msgObj);
+        return { btnNm, msgObj };
+      };
+      const returnValue = await getChqValidationCtx({
+        updUnqId: rowUnqID,
+        data,
+        getBtnName,
+        chequeDate: authState?.workingDate,
+        setLoadingState,
+      });
 
-  //TABLE FNs ===============================================================
-  const handleBranch = (e, value, i) => {
-    const obj = [...rows];
-    obj[i].branch = value;
-    setRows(obj);
-    handleTotal(obj);
-    handleGetAccInfo(i);
-  };
+      if (Boolean(returnValue)) {
+        setTimeout(() => {
+          if (acctNoRef?.current) {
+            acctNoRef?.current?.focusCqDateInput();
+          }
+        }, 50);
+      }
+    },
+    onError: (error: any, variables: any) => {
+      // enqueueSnackbar(error?.error_msg, {
+      //   variant: "error",
+      // });
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "CHQNOVALID", false);
+      setFieldsError({
+        updUnqId: rowUnqID,
+        payload: { bugMsgCNo: error?.error_msg },
+      });
+    },
+  });
 
-  const handleAccType = (e, value, i) => {
-    const obj = [...rows];
-    obj[i].accType = value;
-    setRows(obj);
-    handleGetAccInfo(i);
-    value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
-  };
+  const getAmountValidation = useMutation(API.getAmountValidation, {
+    onSuccess: (data: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      const crDbFlag = variables?.FLAG;
+      const getBtnName = async (msgObj) => {
+        let btnNm = await MessageBox(msgObj);
+        return { btnNm, msgObj };
+      };
+      getAmountValidationCtx({
+        updUnqId: rowUnqID,
+        data,
+        getBtnName,
+        setLoadingState,
+        totalDebit,
+        totalCredit,
+        handleAddRow,
+        crDbFlag,
+      });
+    },
+    onError: (error: any, variables: any) => {
+      // enqueueSnackbar(error?.error_msg, {
+      //   variant: "error",
+      // });
+      const rowUnqID = variables?.unqID;
+      const crDbFlag = variables?.FLAG;
+      setLoadingState(
+        rowUnqID,
+        crDbFlag === "D" ? "AMNTVALIDDR" : "AMNTVALIDCR",
+        false
+      );
+      setFieldsError({
+        updUnqId: rowUnqID,
+        payload: {
+          bugMsgDebit: crDbFlag === "D" ? error?.error_msg : "",
+          bugMsgCredit: crDbFlag === "D" ? "" : error?.error_msg,
+        },
+      });
+    },
+  });
 
-  const handleGetHeaderTabs = (data) => {
-    getTabsByParentType.mutate(data);
-  };
-  const handleAccNo = (e, i) => {
-    setIndex(i);
-    let txt = e.target.value;
-    if (txt.length <= 20) {
-      const obj = [...rows];
-      obj[i].accNo = txt;
-      setRows(obj);
-    }
-  };
+  const getDateValidation = useMutation(API.getChqDateValidation, {
+    onSuccess: async (data: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      const getBtnName = async (msgObj) => {
+        let btnNm = await MessageBox(msgObj);
+        return { btnNm, msgObj };
+      };
+      const returnFlag = await getDateValidationCtx({
+        updUnqId: rowUnqID,
+        data,
+        getBtnName,
+        chequeDate: authState?.workingDate,
+        setLoadingState,
+      });
+      if (Boolean(returnFlag)) {
+        setTimeout(() => {
+          if (acctNoRef?.current) {
+            acctNoRef?.current?.focusDebitInput();
+          }
+        }, 50);
+      }
+    },
+    onError: (error: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "CHQDATE", false);
+      // enqueueSnackbar(error?.error_msg, {
+      //   variant: "error",
+      // });
+      setFieldsError({
+        updUnqId: rowUnqID,
+        payload: { bugMsgDate: error?.error_msg },
+      });
+    },
+  });
 
-  const handleAccNoBlur = (e, i) => {
-    const obj = [...rows];
-    let abc = obj[i]?.accNo?.padStart(6, "0");
-    obj[i].accNo = abc;
-    handleGetAccInfo(i);
-    setRows(obj);
-  };
+  const saveScroll = useMutation(API.saveScroll, {
+    onSuccess: async (res) => {
+      CloseMessageBox();
 
-  const handleTrx = (e, value, i) => {
-    const obj = [...rows];
-    let tr = value?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
+      let finalMessage;
+      if (state?.rows?.length > 1) {
+        const getVNo = res?.data?.map((ele) => ele?.TRAN_CD).join("\n");
+        const scrollNo = res?.data[0]?.SCROLL1 ?? "";
 
-    obj?.length == 1 &&
-      (value?.code == "3" || value?.code == "6") &&
-      handleFilterTrx();
+        finalMessage = `Scroll No. : ${scrollNo}\nVoucher No. :\n${getVNo}`;
+        enqueueSnackbar("Scroll Saved Successfully", {
+          variant: "success",
+        });
+      } else {
+        finalMessage = `Voucher No. ${res?.data[0]?.TRAN_CD ?? ""}`;
+        enqueueSnackbar("Transaction Saved Successfully", {
+          variant: "success",
+        });
+      }
+      const msgBoxRes = await MessageBox({
+        messageTitle:
+          state?.rows?.length > 0 ? "Scroll Alert" : "Transaction Alert",
+        message: finalMessage ?? "",
+        defFocusBtnName: "Ok",
+        icon: "INFO",
+      });
+      if (msgBoxRes === "Ok") {
+        handleReset("RESET");
+      }
+    },
+    onError: (error: any) => {
+      CloseMessageBox();
+    },
+  });
 
-    obj[i].trx = value;
-    obj[i].credit = "0.00";
-    obj[i].debit = "0.00";
-    obj[i].cNo = "0";
-    obj[i].bugCNo = false;
-    obj[i].scroll = "";
-    obj[i].sdc = defSdc;
-    obj[i].remark = defSdc?.label;
-    obj[i].date = new Date();
-
-    if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
-      obj[i].isCredit = true;
-    } else {
-      obj[i].isCredit = false;
-    }
-
-    if (value?.code == "3" || value?.code == "6") {
-      setIsArray(true);
-    } else {
-      setIsArray(false);
-    }
-    setErrMsg({ ...errMsg, cNo: "" });
-    setRows(obj);
-    handleTotal(obj);
-  };
-
-  const handleScroll = (e, i) => {
-    const obj = [...rows];
-    obj[i].scroll = e.target.value;
-    setRows(obj);
-  };
-
-  const handleSdc = (e, value, i) => {
-    const obj = [...rows];
-    obj[i].sdc = value;
-    obj[i].remark = value.label;
-
-    setRows(obj);
-  };
-
-  const handleRemark = (e, i) => {
-    const obj = [...rows];
-    obj[i].remark = e.target.value;
-    setRows(obj);
-  };
-
-  const handleCNo = (e, i) => {
-    setErrMsg({ ...errMsg, cNo: "" });
-    const obj = [...rows];
-    let txt = e.target.value;
-    obj[i].cNo = txt;
-    setIndex(i);
-    setRows(obj);
-  };
-
-  const handleCNoBlur = (e, i) => {
-    const obj = [...rows];
-    if (Number(obj[i].cNo) > 0) {
-      obj[i].cNo &&
-        obj[i].accNo &&
-        obj[i].accType?.value &&
-        obj[i].branch?.value &&
-        getChqValidation.mutate(obj[i]);
-    } else {
-      obj[i].bugCNo = false;
-      obj[i].bugMsgCNo = "";
-    }
-    setRows(obj);
-  };
-
-  const handleDate = (e, i) => {
-    console.log(e, "date e");
-    const obj = [...rows];
-    obj[i].date = e;
-    setRows(obj);
-  };
-
-  const handleDateErr = (e, i) => {
-    console.log(e, "date err");
-    const obj = [...rows];
-    if (e) {
-      obj[i].bugMsgDate = "Invalid Date ";
-      obj[i].bugDate = true;
-    } else {
-      obj[i].bugMsgDate = "";
-      obj[i].bugDate = false;
-    }
-    setRows(obj);
-  };
-
-  const handleDebit = (e, i) => {
-    const obj = [...rows];
-    let txt = e.target.value;
-    if (txt.includes(".")) {
-      let a = txt?.split(".")[0];
-      let b = txt?.split(".")[1];
-      let c = b?.substring(0, 2);
-      obj[i].debit = a + "." + c;
-    } else {
-      obj[i].debit = txt;
-    }
-    setRows(obj);
-    handleTotal(obj);
-  };
-
-  const handleCredit = (e, i) => {
-    const obj = [...rows];
-    let txt = e.target.value;
-    if (txt.includes(".")) {
-      let a = txt?.split(".")[0];
-      let b = txt?.split(".")[1];
-      let c = b?.substring(0, 2);
-      obj[i].credit = a + "." + c;
-    } else {
-      obj[i].credit = txt;
-    }
-
-    setRows(obj);
-    handleTotal(obj);
-  };
-
-  const handleDebitBlur = (e, i) => {
-    const obj = [...rows];
-    obj[i].debit = Number(e.target.value)?.toFixed(2);
-    setRows(obj);
-    totalDebit != totalCredit &&
-      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
-      obj[i].credit != obj[i].debit &&
-      handleAddRow();
-  };
-
-  const handleCreditBlur = (e, i) => {
-    const obj = [...rows];
-    obj[i].credit = Number(e.target.value)?.toFixed(2);
-    setRows(obj);
-    totalDebit != totalCredit &&
-      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
-      obj[i].credit != obj[i].debit &&
-      handleAddRow();
-  };
-
-  //logic fns=====================================================================
-  const handleAddRow = () => {
-    let cred = 0;
-    let deb = 0;
-    let trxx = { label: "1", code: "" };
-    let isCred = true;
-    if (totalDebit > totalCredit) {
-      cred = totalDebit - totalCredit;
-      trxx = trxOptions2[2]; //wrt index
-      isCred = true;
-    } else if (totalDebit < totalCredit) {
-      deb = totalCredit - totalDebit;
-      trxx = trxOptions2[5];
-      isCred = false;
-    }
-    let tr = trxx?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
-
-    let defTableValue2 = {
-      branch: defBranch,
-      accType: { label: "", value: "", info: "" },
-      accNo: "",
-      trx: trxx,
-      scroll: "", //token
-      sdc: defSdc,
-      remark: defSdc?.label,
-      cNo: "0",
-      date: new Date(),
-      debit: deb?.toFixed(2),
-      credit: cred?.toFixed(2),
-      bugAccNo: false,
-      bugCNo: false,
-      bugDate: false,
-      bugMsgAccNo: "",
-      bugMsgCNo: "",
-      bugMsgDate: "",
-
-      isCredit: isCred,
+  const handleAccTypeBlur = (unqID) => {
+    handleAccTypeBlurCtx({
+      updUnqId: unqID,
+      chequeDate: authState?.workingDate,
+    });
+    const row = state?.rows[unqID] ?? {};
+    const reqData = {
+      COMP_CD: row?.branch?.info?.COMP_CD ?? "",
+      ACCT_TYPE: row?.accType?.value ?? "",
+      BRANCH_CD: row?.branch?.value ?? "",
     };
-    if (
-      isSave &&
-      totalDebit != totalCredit &&
-      errMsg?.accNo == "" &&
-      errMsg?.cNo == ""
-    ) {
-      let obj = [...rows, defTableValue2];
 
-      setRows(obj);
-      handleTotal(obj);
+    if (row?.accType?.info?.PARENT_TYPE) {
+      handleGetHeaderTabs(reqData);
     }
   };
 
-  const handleClear = (e, i) => {
-    setIndex(i);
-    let obj = [...rows];
-    if (rows.length > 1) {
-      obj.splice(i, 1);
-      handleTotal(obj);
-      setRows(obj);
+  const handleAccNoBlur = (unqID) => {
+    if (state?.rows?.length > 0) {
+      const newRow = (state?.rows ?? [])
+        ?.map((row) => {
+          if (row?.unqID === unqID) {
+            if (row?.accNo) {
+              const paddedAcctNo = utilFunction?.getPadAccountNumber(
+                row.accNo,
+                row?.accType?.info
+              );
+              return {
+                ...row,
+                accNo: paddedAcctNo?.trim(),
+                bugMsgAccNo: "",
+                bugAccNo: false,
+                acctNoFlag: { [unqID]: false },
+              };
+            } else {
+              return {
+                ...row,
+                bugMsgAccNo: "A/C No. Required",
+                bugAccNo: true,
+                acctNoFlag: { [unqID]: false },
+              };
+            }
+          }
+          return row;
+        })
+        ?.find((row) => row.unqID === unqID); // get the updated row
+
+      handleAcctNoBlurCtx({ updUnqId: unqID, newRow });
+      handleGetAccInfo(newRow, unqID);
     }
-    setErrMsg(defErrMsg);
   };
 
-  const handleTotal = (obj) => {
-    let sumDebit = 0;
-    let sumCredit = 0;
+  const handleTrx = (event, value, unqID) => {
+    let defSdc = (queriesResult?.[2]?.data ?? []).find(
+      (option) => option?.value?.trim() === value?.code?.trim()
+    );
+    if (value?.value === "3" || value?.value === "6") {
+      isBatchEntry.current = true;
+    } else {
+      isBatchEntry.current = false;
+    }
+    const getBtnName = async (msgObj) => {
+      let btnNm = await MessageBox(msgObj);
+      return { btnNm, msgObj };
+    };
+    handleTrxCtx({ updUnqId: unqID, value, defSdc, parametres, getBtnName });
+  };
 
-    obj?.map((a) => {
-      sumDebit += Number(a.debit);
+  const handleDebit = async (event, unqID) => {
+    const { value } = event?.target;
+    if (state?.rows?.length > 0) {
+      const newRows = (state?.rows ?? [])?.map((row) => {
+        if (row?.unqID === unqID) {
+          return { ...row, debit: value };
+        }
+        return row;
+      });
+      const newRow = newRows?.find((row) => row.unqID === unqID);
+      handleDebitCtx({ updUnqId: unqID, newRow });
+      handleTotal(newRows ?? []);
+    }
+  };
+
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardsData?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  const handleDebitBlur = async (event, unqID) => {
+    const cardData: any = await getCardColumnValue();
+    if (Boolean(cardData)) {
+      if (Number(totalDebit) > Number(cardData?.WITHDRAW_BAL ?? "0")) {
+        enqueueSnackbar("Debit more than Withdrawable", {
+          variant: "error",
+        });
+        const newRow = (state?.rows ?? [])
+          ?.map((row) => {
+            if (row?.unqID === unqID) {
+              return { ...row, debit: "" };
+            }
+            return row;
+          })
+          ?.find((row) => row.unqID === unqID);
+        dispatch({
+          type: "UPDATE_ROW_DIRECT",
+          payload: { updUnqId: unqID, newRow },
+        });
+      } else {
+        lastRowUnqID.current = unqID;
+        handleDebitBlurCtx({
+          updUnqId: unqID,
+          value: event?.target?.value,
+          setLoadingState,
+          mutationFn: getAmountValidation,
+          authState,
+          cardData,
+          status,
+        });
+      }
+    }
+  };
+
+  const handleCredit = (event, unqID) => {
+    const { value } = event?.target;
+    if (state?.rows?.length > 0) {
+      const newRows = (state?.rows ?? [])?.map((row) => {
+        if (row?.unqID === unqID) {
+          return { ...row, credit: value };
+        }
+        return row;
+      });
+      const newRow = newRows?.find((row) => row.unqID === unqID);
+      handleCreditCtx({ updUnqId: unqID, newRow });
+      handleTotal(newRows ?? []);
+    }
+  };
+
+  const handleCreditBlur = async (event, unqID) => {
+    lastRowUnqID.current = unqID;
+    const cardData: any = await getCardColumnValue();
+    handleCreditBlurCtx({
+      updUnqId: unqID,
+      value: event?.target?.value,
+      setLoadingState,
+      cardData,
+      authState,
+      mutationFn: getAmountValidation,
+      status,
     });
+  };
 
-    obj?.map((a) => {
-      sumCredit += Number(a.credit);
-    });
+  const handleAddRow = async (unqID) => {
+    const newDataFn = () => {
+      const trx3 = queriesResult?.[3]?.data.find(
+        (option) => option.code == "3"
+      );
+      const trx6 = queriesResult?.[3]?.data.find(
+        (option) => option.code == "6"
+      );
+      const isCredit = totalDebit > totalCredit;
+      const newRowTrx = isCredit ? trx3 : trx6;
+      let defSdc = (queriesResult?.[2]?.data ?? []).find(
+        (option) => option?.value?.trim() === newRowTrx?.code?.trim()
+      );
+      const debitDefer = !isCredit ? totalCredit - totalDebit : 0;
+      const cerditDefer = isCredit ? totalDebit - totalCredit : 0;
 
-    setDiff(sumDebit - sumCredit);
+      const maxUnqID = (state?.rows ?? [])?.reduce(
+        (maxID, row) => Math.max(maxID, row?.unqID),
+        0
+      );
+
+      const defBranch = (queriesResult?.[0]?.data ?? [])?.find(
+        (branch) => branch?.value === authState?.user?.branchCode
+      );
+
+      return {
+        unqID: maxUnqID + 1,
+        branch: defBranch,
+        bugMsgBranchCode: "",
+        accType: { label: "", value: "", info: {} },
+        bugMsgAccType: "",
+        accNo: "",
+        bugAccNo: false,
+        bugMsgAccNo: "",
+        trx: newRowTrx,
+        bugMsgTrx: "",
+        scroll: "", //token
+        bugMsgScroll: "",
+        sdc: defSdc,
+        bugMsgSdc: "",
+        remark: defSdc?.label,
+        bugMsgRemarks: "",
+        cNo: "",
+        bugCNo: false,
+        bugMsgCNo: "",
+        date: parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+        bugDate: false,
+        bugMsgDate: "",
+        debit: debitDefer,
+        bugMsgDebit: "",
+        credit: cerditDefer,
+        bugMsgCredit: "",
+        bug: false,
+        isCredit: isCredit,
+        viewOnly: false,
+      };
+    };
+    const errors = await checkErrorsFn();
+    if (!Boolean(errors)) {
+      if (
+        lastRowUnqID?.current === state?.rows[state?.rows?.length - 1]?.unqID
+      ) {
+        const newData = newDataFn();
+        dispatch({
+          type: "ADD_NEW_ROW",
+          payload: {
+            newData: newData,
+          },
+        });
+      }
+    } else {
+      enqueueSnackbar("A required value is missing", {
+        variant: "error",
+      });
+    }
+  };
+
+  const handleTotal = (rows) => {
+    const calculateSum = (key) =>
+      rows.reduce((acc, row) => acc + Number(row[key]), 0);
+    const sumDebit = calculateSum("debit");
+    const sumCredit = calculateSum("credit");
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
-  const handleReset = () => {
-    let defaultRows = { ...defTableValue };
-    setRows([defaultRows]);
-    setUpdatedRows([]);
-    setTotalCredit(0);
-    setTotalDebit(0);
-    setTrxOptions(trxOptions2);
-    setResetDialog(false);
-    setViewOnly(false);
-    setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: {} });
-    setTabsData([]);
-    setErrMsg(defErrMsg);
-  };
 
-  const handleFilterTrx = () => {
-    //to limit the trxOptions on 3,6
-    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
-    setTrxOptions(result);
-  };
-
-  const handleGetAccInfo = (i) => {
-    let data = {
-      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
-      PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
-      BRANCH_CD: rows[i]?.branch?.value,
-      SCREEN_REF: "ETRN/001",
-      authState: authState,
-    };
-
-    if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
-      setLoading(true);
-      rows[i]?.accNo && getAccNoValidation.mutate(data);
-      rows[i]?.accNo && getCarousalCards.mutate(data);
-      setTempStore({ ...tempStore, accInfo: data });
-    }
-  };
-
-  const handleSaveDialog = () => {
-    console.log(errMsg, "errMsg");
-    console.log(isSave, "isSave");
-    let isErrCNo = rows.some((a) => a.bugCNo);
-    let isErrAccNo = rows.some((a) => a.bugAccNo);
-    let isErrDate = rows.some((a) => a.bugDate);
-
-    if (isArray && diff != 0) {
-      enqueueSnackbar("Cr. Db. Amount not matched", {
-        variant: "error",
+  const handleReset = async (flag) => {
+    if (flag === "OPEN_BOX") {
+      const msgBoxRes = await MessageBox({
+        messageTitle: "confirmation",
+        message: "Are you sure you want to reset the data?",
+        buttonNames: ["Yes", "No"],
+        defFocusBtnName: "Yes",
+        icon: "INFO",
       });
-    }
-    if ((!isArray && diff == 0) || (isArray && rows.length == 1)) {
-      enqueueSnackbar("Amount cant be Zero", {
-        variant: "error",
-      });
-    }
-    if (isErrCNo) {
-      enqueueSnackbar("Please Check Error in ChqNo", {
-        variant: "error",
-      });
-    }
-    if (isErrAccNo) {
-      enqueueSnackbar("Please Check Error in A/C No.", {
-        variant: "error",
-      });
-    }
-    if (isErrDate) {
-      enqueueSnackbar("Please Check Error in Date", {
-        variant: "error",
-      });
-    }
 
-    if (
-      !isSave ||
-      (!isArray && diff == 0) ||
-      (isArray && diff != 0) ||
-      isErrAccNo ||
-      isErrCNo
-    ) {
+      if (msgBoxRes === "Yes") {
+        dispatch({
+          type: "RESET_ROWS",
+          payload: {},
+        });
+        setTotalCredit(0);
+        setTotalDebit(0);
+        setTrxOptions(queriesResult?.[3]?.data);
+        setViewOnly(false);
+        setTabsDetails([]);
+        setReqData({});
+        setCardsData([]);
+        CloseMessageBox();
+      } else if (msgBoxRes === "No") {
+        CloseMessageBox();
+      }
     } else {
-      setSaveDialog(true);
+      dispatch({
+        type: "RESET_ROWS",
+        payload: {},
+      });
+      setTotalCredit(0);
+      setTotalDebit(0);
+      setTrxOptions(queriesResult?.[3]?.data);
+      setViewOnly(false);
+      setTabsDetails([]);
+      setReqData({});
+      setCardsData([]);
     }
   };
 
-  const handleScrollSave = () => {
-    let arr = rows.map((a) => {
+  const handleGetAccInfo = (row, unqID) => {
+    if (
+      Boolean(row?.accNo) &&
+      Boolean(row?.accType?.value) &&
+      Boolean(row?.branch?.value)
+    ) {
+      const data = {
+        COMP_CD: row?.branch?.info?.COMP_CD ?? "",
+        ACCT_TYPE: row?.accType?.value ?? "",
+        ACCT_CD: row?.accNo ?? "",
+        PARENT_TYPE: row?.accType?.info?.PARENT_TYPE ?? "",
+        PARENT_CODE: row?.accType?.info?.PARENT_CODE ?? "",
+        BRANCH_CD: row?.branch?.value ?? "",
+        SCREEN_REF: "ETRN/001",
+        unqID: unqID,
+      };
+
+      setLoadingState(unqID, "ACCTNO", true);
+      getAccNoValidation.mutate(data);
+    }
+  };
+
+  const setLoadingState = (rowIndex, fieldId, isLoading) => {
+    setLoadingStates((prevState) => ({
+      ...prevState,
+      [rowIndex]: {
+        ...(prevState[rowIndex] || {}),
+        [fieldId]: isLoading,
+      },
+    }));
+  };
+
+  const checkLoading = Object.keys(state?.loadingStates).some((key) => {
+    const loadingItems = [
+      "ACCTNO",
+      "AMNTVALIDCR",
+      "AMNTVALIDDR",
+      "CHQDATE",
+      "CHQNOVALID",
+    ];
+    return loadingItems.some((loadingItem) => {
+      return Boolean(state?.loadingStates[key][loadingItem]);
+    });
+  });
+
+  const handleScrollSave1 = async (unqID) => {
+    const errors = await checkErrorsFn();
+
+    if (Boolean(errors)) {
+      enqueueSnackbar("A required value is missing", { variant: "error" });
+      return;
+    }
+    if (Boolean(isBatchEntry?.current) && Boolean(totalDebit !== totalCredit)) {
+      enqueueSnackbar(
+        "For posting, the total debit amount must match the total credit amount.",
+        { variant: "error" }
+      );
+      return;
+    }
+
+    if (cardsData?.length > 0) {
+      const msgBoxRes = await MessageBox({
+        messageTitle: "confirmation",
+        message: "Are you sure you want to save the data?",
+        buttonNames: ["Yes", "No"],
+        defFocusBtnName: "Yes",
+        loadingBtnName: ["Yes"],
+        icon: "INFO",
+      });
+      if (msgBoxRes === "Yes") {
+        handleScrollSave2();
+      } else {
+        CloseMessageBox();
+      }
+    }
+  };
+
+  const handleScrollSave2 = () => {
+    let arr = state?.rows.map((row) => {
       return {
-        BRANCH_CD: authState?.user?.branchCode,
-        COMP_CD: authState?.companyID,
-        ACCT_TYPE: a.accType?.value,
-        ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
-        REMARKS: a.remark,
-        CHEQUE_NO: a.cNo ? a.cNo : "0",
-        TYPE_CD: a.trx.code + "   ",
-        VALUE_DT: format(new Date(), "dd-MMM-yyyy"),
-        ENTERED_BRANCH_CD: a.branch?.value,
-        ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-        SDC: a.sdc.value,
-        AMOUNT: a.isCredit ? a.credit : a.debit,
-        SCROLL1: a.scroll ? a.scroll : "0",
+        ENTERED_BRANCH_CD: row?.branch?.value ?? "",
+        ENTERED_COMP_CD: authState?.companyID ?? "",
+        ACCT_TYPE: row?.accType?.value ?? "",
+        ACCT_CD: row?.accNo?.padStart(6, "0").padEnd(20, " "),
+        TYPE_CD: row?.trx?.code + "   ",
+        SCROLL1: row?.scroll ? row?.scroll : "0",
+        SDC: row?.sdc?.value ?? "",
+        REMARKS: row?.remark ?? "",
+        CHEQUE_NO: row?.cNo ? row?.cNo : "",
+        VALUE_DT: format(row?.date, "dd-MMM-yyyy"),
+        AMOUNT: row?.isCredit ? row?.credit : row?.debit ?? "",
+        BRANCH_CD: row?.branch?.value ?? "",
+        COMP_CD: authState?.companyID ?? "",
         CURRENCY_CD: "00  ",
         CONFIRMED: "0",
       };
@@ -689,407 +757,229 @@ export const Trn001 = () => {
     saveScroll.mutate(arr);
   };
 
-  const handleUpdateRows = (data) => {
-    setViewOnly(true);
-    setUpdatedRows(data);
+  const handleGetHeaderTabs = (data) => {
+    fetchTabsData({
+      cacheId: data,
+      reqData: data,
+    });
   };
 
-  const handleViewAll = () => {
-    setViewOnly(true);
-    setUpdatedRows([]);
+  useEffect(() => {
+    if (Boolean(tabsDetails?.length > 0)) {
+      if (acctNoRef?.current) {
+        acctNoRef?.current?.focusAcctInput();
+      }
+    }
+  }, [tabsDetails]);
+
+  const handleSetCards = (row) => {
+    setCardsData(row);
   };
+  const handleSetAccInfo = (row) => {
+    setReqData(row);
+  };
+
+  useEffect(() => {
+    const queries = [
+      "getSIDetailList",
+      "getLienDetailList",
+      "getOWChqList",
+      "getTempList",
+      "getATMList",
+      "getASBAList",
+      "getACH_IWList",
+      "getACH_OWList",
+      "getInstructionList",
+      "getGroupList",
+      "getAPYList",
+      "getAPBSList",
+      "getPMBYList",
+      "getJointDetailsList",
+      "getTodayTransList",
+      "getCheckDetailsList",
+      "getSnapShotList",
+      "getHoldChargeList",
+      "getDocTemplateList",
+      "getStopPayList",
+      "getInsuranceList",
+      "getDisbursementList",
+      "getSubsidyList",
+      "getSearchList",
+      "getLimitList",
+      "getStockList",
+    ];
+    return () => {
+      clearTabsCache();
+      queries?.forEach((query) => queryClient?.removeQueries(query));
+    };
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (Boolean(isTabsError)) {
+      enqueueSnackbar((tabsErorr as any)?.error_msg, {
+        variant: "error",
+      });
+    }
+  }, [isTabsError]);
+
+  const removeRow = (unqID) => {
+    deleteRowCtx({ updUnqId: unqID, handleTotal });
+  };
+
+  const tokenValidate = useMutation(API.getTokenValidation, {
+    onSuccess: (data: any, variables: any) => {
+      const rowUpdID = variables?.unqID ?? "";
+      const getBtnName = async (msgObj) => {
+        let btnNm = await MessageBox(msgObj);
+        return { btnNm, msgObj };
+      };
+      getTokenValidation({
+        updUnqId: rowUpdID,
+        data,
+        getBtnName,
+        setLoadingState,
+      });
+    },
+    onError: (error: any, variables: any) => {
+      const rowUnqID = variables?.unqID ?? "";
+      setFieldsError({
+        updUnqId: rowUnqID,
+        payload: { bugMsgScroll: error?.error_msg },
+      });
+    },
+  });
+
+  const handleScrollBlur = (event, unqID) => {
+    handleScrollBlurCtx({
+      updUnqId: unqID,
+      value: event?.target?.value ?? "",
+      mutationFn: tokenValidate,
+      authState,
+      setLoadingState,
+    });
+  };
+
+  const maxUnqID = (state?.rows ?? [])?.reduce(
+    (maxID, row) => Math.max(maxID, row?.unqID),
+    0
+  );
+
+  const row = state?.rows[maxUnqID];
 
   return (
     <>
-      <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
-
-      <Card
-        sx={{
-          boxShadow: "0px 1px 4px -1px #999999",
-          borderRadius: "5px",
-          padding: "8px",
-          margin: "4px",
-          marginBottom: "10px",
-        }}
-      >
-        {loading && <LinearProgress color="secondary" />}
-        {viewOnly && (
-          <TRN001_Table
-            updatedRows={updatedRows}
-            handleGetHeaderTabs={handleGetHeaderTabs}
-          />
-        )}
-
-        {!viewOnly && (
-          <TableContainer>
-            <Table aria-label="simple table" padding={"none"}>
-              <>
-                <caption>
-                  <h3>
-                    Total ( Debit:{totalDebit} | Credit:{totalCredit} )
-                  </h3>
-                </caption>
-                {errMsg?.cNo ? (
-                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-                    {errMsg?.cNo}
-                  </caption>
-                ) : (
-                  <></>
-                )}
-
-                {errMsg?.accNo ? (
-                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-                    {errMsg?.accNo}
-                  </caption>
-                ) : (
-                  <></>
-                )}
-              </>
-
-              <TableHead>
-                <TableRow id="topHead">
-                  <TableCell id="head">{t("Branch")}</TableCell>
-                  <TableCell id="head">{t("AcctType")}</TableCell>
-                  <TableCell id="head">{t("ACNo")}</TableCell>
-                  <TableCell id="head">{t("Trx")}</TableCell>
-                  <TableCell id="head">
-                    {rows[0]?.trx?.code == "4" ? "Token" : t("Scroll")}
-                  </TableCell>
-                  <TableCell id="head">{t("SDC")}</TableCell>
-                  <TableCell id="head">{t("Remarks")}</TableCell>
-                  <TableCell id="head">{t("Chequeno")} </TableCell>
-                  <TableCell id="head">Cheque Date</TableCell>
-                  <TableCell id="head">{t("DebitAmount")}</TableCell>
-                  <TableCell id="head">{t("CreditAmount")}</TableCell>{" "}
-                </TableRow>
-              </TableHead>
-
-              {rows &&
-                rows?.map((a, i) => {
-                  return (
-                    <TableBody>
-                      <TableRow key={i}>
-                        <Tooltip
-                          disableInteractive={true}
-                          title={
-                            a?.branch?.label && <h3>{a?.branch?.label}</h3>
-                          }
-                        >
-                          <TableCell sx={{ minWidth: 120 }}>
-                            <Autocomplete
-                              value={a.branch}
-                              autoHighlight
-                              size="small"
-                              options={branchOptions}
-                              onChange={(e, value) => handleBranch(e, value, i)}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  error={a.branch?.value ? false : true}
-                                />
-                              )}
-                            />
-                          </TableCell>
-                        </Tooltip>
-                        <Tooltip
-                          disableInteractive={true}
-                          title={
-                            a?.accType?.label && <h3>{a?.accType?.label}</h3>
-                          }
-                        >
-                          <TableCell sx={{ minWidth: 130 }}>
-                            <Autocomplete
-                              value={a.accType}
-                              autoHighlight
-                              size="small"
-                              options={accTypeOptions}
-                              onChange={(e, value) =>
-                                handleAccType(e, value, i)
-                              }
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  error={a.accType?.value ? false : true}
-                                />
-                              )}
-                            />
-                          </TableCell>
-                        </Tooltip>
-                        <ErrTooltip
-                          disableInteractive={true}
-                          title={a?.bugMsgAccNo && <h3>{a?.bugMsgAccNo}</h3>}
-                        >
-                          <TableCell sx={{ minWidth: 120 }}>
-                            <TextField
-                              id="txtRight"
-                              value={a.accNo}
-                              error={!a.accNo || a.bugAccNo ? true : false}
-                              size="small"
-                              type="number"
-                              onChange={(e) => handleAccNo(e, i)}
-                              onBlur={(e) => handleAccNoBlur(e, i)}
-                            />
-                          </TableCell>
-                        </ErrTooltip>
-                        <Tooltip
-                          disableInteractive={true}
-                          title={a?.trx?.label && <h3>{a?.trx?.label}</h3>}
-                        >
-                          <TableCell sx={{ minWidth: 70 }}>
-                            <Autocomplete
-                              value={a.trx}
-                              autoHighlight
-                              size="small"
-                              options={trxOptions}
-                              onChange={(e, value) => handleTrx(e, value, i)}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  error={a.trx?.value ? false : true}
-                                />
-                              )}
-                            />{" "}
-                          </TableCell>
-                        </Tooltip>
-                        <TableCell sx={{ minWidth: 60 }}>
-                          <TextField
-                            value={a.scroll}
-                            type="number"
-                            disabled={
-                              a.trx?.code == "3" ||
-                              a.trx?.code == "6" ||
-                              !a.trx?.code
-                                ? true
-                                : false
-                            }
-                            size="small"
-                            onChange={(e) => handleScroll(e, i)}
-                          />
-                        </TableCell>
-                        <Tooltip
-                          disableInteractive={true}
-                          title={a?.sdc?.label && <h3>{a?.sdc?.label}</h3>}
-                        >
-                          <TableCell sx={{ minWidth: 60 }}>
-                            <Autocomplete
-                              value={a.sdc}
-                              autoHighlight
-                              size="small"
-                              options={sdcOptions}
-                              onChange={(e, value) => handleSdc(e, value, i)}
-                              renderInput={(params) => (
-                                <TextField {...params} label="" />
-                              )}
-                            />
-                          </TableCell>
-                        </Tooltip>
-                        <TableCell sx={{ minWidth: 130 }}>
-                          <TextField
-                            value={a.remark}
-                            size="small"
-                            onChange={(e) => handleRemark(e, i)}
-                          />
-                        </TableCell>
-                        <ErrTooltip
-                          disableInteractive={true}
-                          title={a?.bugMsgCNo && <h3>{a?.bugMsgCNo}</h3>}
-                        >
-                          <TableCell
-                            sx={{
-                              minWidth: 50,
-                            }}
-                          >
-                            <TextField
-                              value={a.cNo}
-                              error={!a.cNo || a?.bugCNo ? true : false}
-                              id="txtRight"
-                              disabled={
-                                a.isCredit ||
-                                !a.branch ||
-                                !a?.accType?.value ||
-                                !a.accNo
-                                  ? true
-                                  : false
-                              }
-                              size="small"
-                              type="number"
-                              onChange={(e) => handleCNo(e, i)}
-                              onBlur={(e) => handleCNoBlur(e, i)}
-                              // helperText={a?.bugMsgCNo ? a?.bugMsgCNo : ""}
-                            />
-                          </TableCell>
-                        </ErrTooltip>
-                        <ErrTooltip
-                          disableInteractive={true}
-                          title={a?.bugMsgDate && <h3>{a?.bugMsgDate}</h3>}
-                        >
-                          <TableCell sx={{ minWidth: 140 }}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <DatePicker
-                                format="dd/MM/yyyy"
-                                disabled={
-                                  a.trx?.code == "4" || a.trx?.code == "6"
-                                    ? false
-                                    : true
-                                }
-                                value={a.date}
-                                onChange={(e) => handleDate(e, i)}
-                                onError={(e) => handleDateErr(e, i)}
-                              />
-                            </LocalizationProvider>
-                          </TableCell>
-                        </ErrTooltip>
-                        <ErrTooltip
-                          disableInteractive={true}
-                          title={
-                            Number(a.debit) <= 0 &&
-                            !a?.isCredit &&
-                            a.branch &&
-                            a.trx?.code && <h3>Amount can't be zero</h3>
-                          }
-                        >
-                          <TableCell sx={{ minWidth: 100 }}>
-                            <TextField
-                              value={a.debit}
-                              error={Number(a.debit) > 0 ? false : true}
-                              id="txtRight"
-                              size="small"
-                              disabled={
-                                a?.isCredit ||
-                                !a.branch ||
-                                !a.trx?.code ||
-                                viewOnly
-                                  ? true
-                                  : false
-                              }
-                              type="number"
-                              onChange={(e) => handleDebit(e, i)}
-                              onBlur={(e) => handleDebitBlur(e, i)}
-                            />
-                          </TableCell>
-                        </ErrTooltip>
-                        <ErrTooltip
-                          disableInteractive={true}
-                          title={
-                            Number(a.credit) <= 0 &&
-                            a?.isCredit &&
-                            a.branch &&
-                            a.trx?.code && <h3>Amount can't be zero</h3>
-                          }
-                        >
-                          <TableCell sx={{ minWidth: 100 }}>
-                            <TextField
-                              value={a.credit}
-                              error={Number(a.credit) > 0 ? false : true}
-                              id="txtRight"
-                              size="small"
-                              disabled={
-                                !a?.isCredit ||
-                                !a.branch ||
-                                !a.trx?.code ||
-                                viewOnly
-                                  ? true
-                                  : false
-                              }
-                              type="number"
-                              onChange={(e) => handleCredit(e, i)}
-                              onBlur={(e) => handleCreditBlur(e, i)}
-                            />
-                          </TableCell>
-                        </ErrTooltip>
-
-                        <TableCell
-                          style={{ border: "0px" }}
-                          // width: "10px"
-                          sx={{ minWidth: 20 }}
-                        >
-                          {(rows[i].trx?.code == "3" ||
-                            rows[i].trx?.code == "6") && (
-                            <Button
-                              color="secondary"
-                              onClick={(e) => handleClear(e, i)}
-                              size="small"
-                            >
-                              <CancelIcon />
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  );
-                })}
-            </Table>
-          </TableContainer>
-        )}
-      </Card>
-      {!viewOnly && (
-        <div>
-          {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{ margin: "8px" }}
-              onClick={() => handleAddRow()}
-            >
-              <AddIcon /> new row
-            </Button>
-          )}
-
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => setResetDialog(true)}
-          >
-            <RestartAltIcon /> reset
-          </Button>
-
-          {!loading && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ margin: "8px" }}
-              onClick={() => handleSaveDialog()}
-            >
-              Post
-              {/* {t("Save")} */}
-            </Button>
-          )}
-        </div>
-      )}
-
-      <br />
-      <CommonFooter
-        viewOnly={viewOnly}
-        handleUpdateRows={handleUpdateRows}
-        handleViewAll={handleViewAll}
-        handleRefresh={handleReset}
+      <DailyTransTabs
+        heading="Daily Transaction (Maker) (TRN/001)"
+        tabsData={tabsDetails}
+        cardsData={cardsData}
+        reqData={reqData}
       />
 
-      <>
-        {Boolean(resetDialog) ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Reset Table"
-            Message="Do you wish to reset ?"
-            onActionYes={() => handleReset()}
-            onActionNo={() => setResetDialog(false)}
-            rows={[]}
-            open={resetDialog}
-            // loading={getData.isLoading}
-          />
-        ) : null}
+      {!Boolean(viewOnly) && (
+        <>
+          {saveScroll.isError ? (
+            <Alert
+              severity={saveScroll.error?.severity ?? "error"}
+              errorMsg={
+                saveScroll.error?.error_msg ?? "Something went to wrong.."
+              }
+              errorDetail={saveScroll.error?.error_detail}
+              color="error"
+            />
+          ) : null}
+          <Card
+            sx={{
+              boxShadow: "0px 1px 4px -1px #999999",
+              borderRadius: "5px",
+              padding: "8px",
+              margin: "4px",
+              marginBottom: "10px",
+            }}
+          >
+            {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
+              <LinearProgress color="secondary" />
+            ) : null}
 
-        {Boolean(saveDialog) ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Scroll Save"
-            Message="Do you wish to save this scroll?"
-            onActionYes={() => handleScrollSave()}
-            onActionNo={() => setSaveDialog(false)}
-            rows={[]}
-            open={saveDialog}
-            loading={saveScroll.isLoading}
-          />
-        ) : null}
-      </>
+            <RowsTable
+              rows={state?.rows ?? []}
+              queriesResult={queriesResult}
+              handleAccTypeBlur={handleAccTypeBlur}
+              handleAccNoBlur={handleAccNoBlur}
+              loadingStates={loadingStates}
+              trxOptions2={trxOptions2}
+              trxOptions={trxOptions}
+              handleTrx={handleTrx}
+              setLoadingState={setLoadingState}
+              getChqValidation={getChqValidation}
+              getDateValidation={getDateValidation}
+              viewOnly={viewOnly}
+              handleDebit={handleDebit}
+              handleDebitBlur={handleDebitBlur}
+              handleCredit={handleCredit}
+              handleCreditBlur={handleCreditBlur}
+              totalDebit={totalDebit}
+              totalCredit={totalCredit}
+              cardsData={cardsData}
+              tabsDetails={tabsDetails}
+              parametres={parametres}
+              handleGetHeaderTabs={handleGetHeaderTabs}
+              getCarousalCards={getCarousalCards}
+              carousalCrdLastReq={carousalCrdLastReq}
+              setReqData={setReqData}
+              isTabsLoading={isTabsLoading}
+              checkLoading={checkLoading}
+              isCardsLoading={getCarousalCards?.isLoading}
+              ref={acctNoRef}
+              removeRow={removeRow}
+              handleScrollBlur={handleScrollBlur}
+            />
+          </Card>
+        </>
+      )}
+      {!viewOnly &&
+        !Boolean(isTabsLoading) &&
+        !Boolean(checkLoading) &&
+        Boolean(getAmountValidation?.isSuccess) &&
+        Boolean(row?.branch?.value) &&
+        Boolean(row?.accType?.value) &&
+        Boolean(row?.accNo) &&
+        Boolean(row?.trx?.code) &&
+        Boolean(row?.sdc?.value) &&
+        Boolean(row?.remark) &&
+        (Boolean(row?.debit) || Boolean(row?.credit)) && (
+          <div>
+            <GradientButton
+              sx={{ margin: "8px" }}
+              onClick={() => handleScrollSave1(row?.unqID)}
+            >
+              Post
+            </GradientButton>
+
+            <GradientButton onClick={() => handleReset("OPEN_BOX")}>
+              <RestartAltIcon /> Reset
+            </GradientButton>
+          </div>
+        )}
+
+      {!Boolean(viewOnly) && (
+        <>
+          <GradientButton onClick={() => window.open("Calculator:///")}>
+            Calculator
+          </GradientButton>
+          <GradientButton onClick={() => setViewOnly(true)}>
+            View All
+          </GradientButton>
+        </>
+      )}
+
+      {viewOnly && (
+        <TRN001_Table
+          handleGetHeaderTabs={handleGetHeaderTabs}
+          handleSetCards={handleSetCards}
+          handleSetAccInfo={handleSetAccInfo}
+          setViewOnly={setViewOnly}
+        />
+      )}
     </>
   );
 };

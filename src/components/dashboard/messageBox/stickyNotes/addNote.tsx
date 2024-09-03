@@ -1,17 +1,21 @@
-import { CircularProgress, Dialog, Grid, Paper, Tooltip } from "@mui/material";
-import { useState, useRef, useEffect, useContext } from "react";
-import logo from "assets/images/easy_bankcore_Logo.png";
-import { GradientButton } from "components/styledComponent/button";
-import Draggable from "react-draggable";
 import CloseIcon from "@mui/icons-material/Close";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
-import { useMutation, useQuery } from "react-query";
-import * as API from "../../api";
-import { useSnackbar } from "notistack";
-import { AuthContext } from "pages_audit/auth";
+import SaveIcon from "@mui/icons-material/Save";
+import { CircularProgress, Dialog, Grid, Paper, Tooltip } from "@mui/material";
+import { GridDeleteForeverIcon } from "@mui/x-data-grid";
+import logo from "assets/images/easy_bankcore_Logo.png";
+import { usePopupContext } from "components/custom/popupContext";
+import { GradientButton } from "components/styledComponent/button";
 import { utilFunction } from "components/utils";
 import { format } from "date-fns";
+import { useSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
+import { useContext, useRef, useState } from "react";
+import Draggable from "react-draggable";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import * as API from "../../api";
 function PaperComponent(props) {
   return (
     <Draggable
@@ -35,7 +39,8 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const isErrorFuncRef = useRef<any>(null);
-
+  const { t } = useTranslation();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.updateNoteDetailsData, {
     onError: (error) => {
       let errorMsg = "Unknown Error occured";
@@ -63,6 +68,26 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
       closeDialog();
     },
   });
+  const deleteMutation = useMutation(API.updateNoteDetailsData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar("Records successfully deleted", {
+        variant: "success",
+      });
+      CloseMessageBox();
+      refetch();
+      closeDialog();
+    },
+  });
 
   const handleChange = (event) => {
     if (characterLimit - event.target.value.length >= 0) {
@@ -70,7 +95,7 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
     }
   };
   const handleChangeTitle = (event) => {
-    if (characterLimit - event.target.value.length >= 0) {
+    if (30 - event.target.value.length >= 0) {
       setNoteTitle(event.target.value);
     }
   };
@@ -108,6 +133,29 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
           USER_NAME: authState?.user?.id ?? "",
           TRAN_CD: data?.TRAN_CD ?? "",
           _isNewRow: defualtView === "add" ? true : false,
+        },
+      });
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    let reqData = { FLAG: "D" };
+    let oldData = { FLAG: data?.FLAG ?? "" };
+    let upd = utilFunction.transformDetailsData(reqData, oldData);
+
+    const btnName = await MessageBox({
+      message: "Are you sure you want to delete this Note?",
+      messageTitle: "Confirmation",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+    });
+    if (btnName === "Yes") {
+      deleteMutation.mutate({
+        data: {
+          ...reqData,
+          ...upd,
+          USER_NAME: authState?.user?.id ?? "",
+          TRAN_CD: data?.TRAN_CD ?? "",
         },
       });
     }
@@ -158,9 +206,9 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
                 }}
               >
                 {maxWidth === "xs" ? (
-                  <CloseFullscreenIcon style={{ fontSize: "2em" }} />
-                ) : (
                   <OpenInFullIcon style={{ fontSize: "2em" }} />
+                ) : (
+                  <CloseFullscreenIcon style={{ fontSize: "2em" }} />
                 )}
               </GradientButton>
               <Tooltip title="Close Note">
@@ -179,7 +227,7 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
               </Tooltip>
             </div>
           </Grid>
-          <textarea
+          {/* <textarea
             placeholder="Title"
             value={noteTitle}
             onChange={handleChangeTitle}
@@ -193,6 +241,26 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
               height: "15%",
             }}
           ></textarea>
+          <small>{30 - noteTitle.length} Remaining</small> */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <textarea
+              placeholder="Title"
+              value={noteTitle}
+              onChange={handleChangeTitle}
+              style={{
+                marginTop: "20px",
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "100%", // Adjust width to leave space for the small element
+                // width: "calc(100% - 60px)", // Adjust width to leave space for the small element
+                backgroundColor: data?.colors,
+                height: "35%",
+              }}
+            ></textarea>
+            <small style={{ width: "23%", marginTop: "20px" }}>
+              {30 - noteTitle.length} Remaining
+            </small>
+          </div>
 
           <textarea
             // rows="8"
@@ -210,27 +278,85 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
           ></textarea>
           <div className="note-footer">
             <small>{characterLimit - noteText.length} Remaining</small>
-            <GradientButton
-              className="save"
-              onClick={handleSaveClick}
-              style={{
-                // color: data?.colors || "black",
-                color: "black",
-                // backgroundColor: "var(--theme-color2)",
-              }}
-              disabled={mutation.isLoading}
-            >
-              {mutation.isLoading ? (
-                <CircularProgress
-                  size={22}
-                  style={{ color: "black" }}
-                  thickness={4.6}
-                />
-              ) : (
-                "Save"
-                // t("Save")
-              )}
-            </GradientButton>
+            {defualtView === "edit" ? (
+              <>
+                <Tooltip title="Delete Note">
+                  <GradientButton
+                    style={{
+                      marginLeft: "180px",
+                      minWidth: "0px",
+                      borderRadius: "10px",
+                      background: "none",
+                    }}
+                    onClick={() => handleDeleteClick()}
+                  >
+                    <GridDeleteForeverIcon
+                      style={{
+                        fontSize: "3.0em",
+                        color: "var(--theme-color2)",
+                      }}
+                    />
+                  </GradientButton>
+                </Tooltip>
+                <Tooltip title="Save Note">
+                  <GradientButton
+                    className="save"
+                    onClick={handleSaveClick}
+                    style={{
+                      minWidth: "0px",
+                      borderRadius: "10px",
+                      background: "none",
+                    }}
+                    disabled={mutation.isLoading}
+                  >
+                    {mutation.isLoading ? (
+                      <CircularProgress
+                        size={25}
+                        style={{ color: "black" }}
+                        thickness={4.6}
+                      />
+                    ) : (
+                      <SaveIcon
+                        style={{
+                          fontSize: "3.2em",
+                          color: "var(--theme-color2)",
+                        }}
+                      />
+                    )}
+                  </GradientButton>
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Tooltip title="Save Note">
+                  <GradientButton
+                    className="save"
+                    onClick={handleSaveClick}
+                    style={{
+                      minWidth: "0px",
+                      borderRadius: "10px",
+                      background: "none",
+                    }}
+                    disabled={mutation.isLoading}
+                  >
+                    {mutation.isLoading ? (
+                      <CircularProgress
+                        size={25}
+                        style={{ color: "black" }}
+                        thickness={4.6}
+                      />
+                    ) : (
+                      <SaveIcon
+                        style={{
+                          fontSize: "3.2em",
+                          color: "var(--theme-color2)",
+                        }}
+                      />
+                    )}
+                  </GradientButton>
+                </Tooltip>
+              </>
+            )}
           </div>
         </div>
       </Dialog>

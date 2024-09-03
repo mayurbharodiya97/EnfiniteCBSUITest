@@ -23,8 +23,6 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextField } from "components/styledComponent";
-import { SubmitFnType } from "packages/form";
-import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
@@ -37,8 +35,11 @@ import { ChequeSignForm } from "./inwardClearingForm/chequeSignForm";
 import { format } from "date-fns";
 import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPostForm";
 import { usePopupContext } from "components/custom/popupContext";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
+import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -55,47 +56,83 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 const actions: ActionTypes[] = [
   {
     actionName: "retrieve",
-    actionLabel: "Retrieve",
+    actionLabel: t("Retrieve"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
   {
-    actionName: "view-details",
-    actionLabel: "Edit Detail",
+    actionName: "view-detail",
+    actionLabel: t("ViewDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
 ];
 export const InwardClearing = () => {
-  const [isOpenRetrieve, setIsOpenRetrieve] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const headerClasses = useTypeStyles();
   const actionClasses = useStyles();
   const { authState } = useContext(AuthContext);
-  const [selectedRows, setSelectedRows] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
-  const [selectedRowsData, setSelectedRowsData] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const selectedRowsRef = useRef<any>(null);
   const myRef = useRef<any>();
   const inputButtonRef = useRef<any>(null);
-  const [selectAll, setSelectAll] = useState<any>(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<any>([]);
-  const [isChequeSign, setIsChequeSign] = useState<any>(false);
-  const [formData, setFormData] = useState<any>();
-  const [isChequeReturnPost, setIsChequeReturnPost] = useState<any>(false);
+  const isDataChangedRef = useRef(false);
   const mysubdtlRef = useRef<any>({});
-  const { MessageBox } = usePopupContext();
+  const indexRef = useRef(0);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const [state, setState] = useState<any>({
+    selectedRows: authState?.user?.branchCode ?? [],
+    selectedRowsData: authState?.user?.branchCode ?? [],
+    isOpenRetrieve: true,
+    selectAll: false,
+    searchQuery: "",
+    filteredData: [],
+    isChequeSign: false,
+    formData: {},
+    isOpenDividend: false,
+  });
+  const {
+    selectedRows,
+    selectedRowsData,
+    isOpenRetrieve,
+    selectAll,
+    searchQuery,
+    filteredData,
+    isChequeSign,
+    formData,
+    isOpenDividend,
+  } = state;
+
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "retrieve") {
+      setState((prevState) => ({
+        ...prevState,
+        isOpenRetrieve: true,
+      }));
+    } else if (data?.name === "view-detail") {
+      indexRef.current = Number(data?.rows?.[0].id);
+      navigate("view-detail", {
+        state: {
+          gridData: data?.rows?.[0]?.data,
+          index: indexRef.current,
+        },
+      });
+    }
+  }, []);
   const { data, isLoading, isFetching, refetch, error, isError, status } =
-    useQuery<any, any>(["BranchSelectionGridData"], () =>
+    useQuery<any, any>(["BranchSelectionGridData", isOpenRetrieve], () =>
       API.BranchSelectionGridData()
     );
 
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["BranchSelectionGridData", isOpenRetrieve]);
+    };
+  }, []);
   const getInwardClearingData: any = useMutation(API.getInwardClearingData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -107,127 +144,311 @@ export const InwardClearing = () => {
       });
     },
 
-    onSuccess: (data) => {},
+    onSuccess: (data) => { },
   });
-
-  const validatePostData: any = useMutation(API.validatePost, {
+  const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
-      let apiReq = {
-        ...variables,
-        _isNewRow: true,
-      };
-      if (data?.[0]?.O_STATUS === "0") {
-        // setMessageData({
-        //   messageTitle: "Validation Successfull..",
-        //   message: "Do you Want to save this data",
-        //   apiReq: apiReq,
-        // });
-        // setIsOpenSave(true);
-      } else if (data?.[0]?.O_STATUS === "9") {
-        MessageBox({
-          messageTitle: "Validation Alert..",
-          message: data?.[0]?.O_MESSAGE,
-        });
-      } else if (data?.[0]?.O_STATUS === "99") {
-        // setMessageData({
-        //   messageTitle: "Are you sure do you want to continue?",
-        //   message: data?.[0]?.O_MESSAGE,
-        //   apiReq: apiReq,
-        // });
-        // setIsOpenSave(true);
-      } else if (data?.[0]?.O_STATUS === "999") {
-        MessageBox({
-          messageTitle: "Validation Failed...!",
-          message: data?.[0]?.O_MESSAGE,
-        });
+      // enqueueSnackbar(data, { variant: "success" });
+      MessageBox({
+        messageTitle: "Success",
+        message: data,
+      });
+      isDataChangedRef.current = true;
+      handleDialogClose();
+      CloseMessageBox();
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+  });
+  const confirmPostedConfigDML: any = useMutation(API.confirmPostedConfigDML, {
+    onSuccess: (data, variables) => {
+      enqueueSnackbar(data, { variant: "success" });
+      isDataChangedRef.current = true;
+      handleDialogClose();
+      CloseMessageBox();
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+  });
+  const commonReqData = {
+    COMP_CD: mysubdtlRef.current?.COMP_CD,
+    BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
+    TRAN_CD: mysubdtlRef.current?.TRAN_CD,
+    ACCT_TYPE: mysubdtlRef.current?.ACCT_TYPE,
+    ACCT_CD: mysubdtlRef.current?.ACCT_CD,
+    CHEQUE_NO: mysubdtlRef.current?.CHEQUE_NO,
+    MICR_TRAN_CD: mysubdtlRef.current?.MICR_TRAN_CD,
+  };
+  const validatePostData: any = useMutation(API.validatePost, {
+    onSuccess: async (data, variables) => {
+      for (let i = 0; i < data?.length; i++) {
+        if (data[i]?.O_STATUS === "0") {
+          const buttonName = await MessageBox({
+            messageTitle: t("ValidationSuccessful"),
+            message: t("AreYouSurePostThisCheque"),
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            postConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+              _UPDATEDCOLUMNS: [],
+              _OLDROWVALUE: {},
+              _isNewRow: true,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: t("Alert"),
+            message: data[i]?.O_MESSAGE,
+          });
+        } else if (data[i]?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: t("Confirmation"),
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            postConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
+              _UPDATEDCOLUMNS: [],
+              _OLDROWVALUE: {},
+              _isNewRow: true,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: data[i]?.O_MESSAGE,
+          });
+        }
       }
     },
-    // onSuccess: async (data, variables) => {
-    //   console.log("data!!", data, variables);
-    //   if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
-    //     MessageBox({
-    //       messageTitle: "Validation Failed",
-    //       message: data?.[0]?.O_MESSAGE,
-    //     });
-    //   } else if (
-    //     data?.[0]?.O_STATUS === "99" ||
-    //     "9" ||
-    //     ("0" && data?.[0]?.O_MESSAGE)
-    //   ) {
-    //     // setDeletePopup(true);
-    //   }
-    // },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
   });
-  const setCurrentAction = useCallback((data) => {
-    if (data?.name === "retrieve") {
-      setIsOpenRetrieve(true);
-    } else if (data?.name === "view-details") {
-      mysubdtlRef.current = data?.rows?.[0]?.data;
-      setIsChequeReturnPost(true);
+  const validateConfirmData: any = useMutation(API.validateConfirm, {
+    onSuccess: async (data, variables) => {
+      for (let i = 0; i < data?.length; i++) {
+        if (data[i]?.O_STATUS === "0") {
+          const buttonName = await MessageBox({
+            messageTitle: t("ValidationSuccessful"),
+            message:
+              t("DoYouWantAllowTransactionVoucherNo") +
+              variables?.DAILY_TRN_CD +
+              "?",
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            confirmPostedConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              SCREEN_REF: "TRN/650",
+              AMOUNT: mysubdtlRef.current?.AMOUNT,
+              ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+            });
+          }
+        } else if (data[i]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: t("Alert"),
+            message: data[i]?.O_MESSAGE,
+          });
+        } else if (data[i]?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: t("Confirmation"),
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["No", "Yes"],
+            loadingBtnName: ["Yes"],
+          });
+          if (buttonName === "Yes") {
+            confirmPostedConfigDML.mutate({
+              ...commonReqData,
+              CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
+                ? format(
+                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                  "dd/MMM/yyyy"
+                )
+                : "",
+              ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
+              SCREEN_REF: "TRN/650",
+            });
+          }
+        } else if (data[i]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: data[i]?.O_MESSAGE,
+          });
+        }
+      }
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+  });
+  const handlePrev = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = (indexRef.current -= 1);
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index],
+            id: String(index - 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleNext = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = indexRef.current++;
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index + 1],
+            id: String(index + 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleDialogClose = () => {
+    if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
+      getInwardClearingData.mutate({
+        data: {
+          ...formData,
+          BRANCH_CD: selectedRowsRef?.current?.toString(),
+          COMP_CD: authState?.companyID ?? "",
+        },
+      });
+      isDataChangedRef.current = false;
     }
-  }, []);
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+
+    CloseMessageBox();
+    setState((prevState) => ({
+      ...prevState,
+      isOpenDividend: false,
+    }));
+  };
+
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      setFilteredData(data);
+      setState((prevState) => ({
+        ...prevState,
+        filteredData: data,
+      }));
     }
   }, [isLoading, isFetching]);
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["BranchSelectionGridData"]);
-    };
-  }, []);
+
 
   const handleRowClick = (event: any, name: string, label: string) => {
-    setSelectAll(false);
-    if (event.ctrlKey) {
-      if (selectedRows.includes(name) || selectedRowsData.includes(label)) {
-        setSelectedRows((prev) => prev?.filter((row) => row !== name));
-        setSelectedRowsData((prev) => prev?.filter((row) => row !== label));
-      } else {
-        setSelectedRows([...selectedRows, name]);
-        setSelectedRowsData([...selectedRowsData, label]);
-      }
-    } else {
-      setSelectedRows([name]);
-      setSelectedRowsData([label]);
-    }
+    setState((prevState) => ({
+      ...prevState,
+      selectAll: false,
+      selectedRows: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRows?.filter((row) => row !== name)
+          : [...prevState.selectedRows, name]
+        : [name],
+      selectedRowsData: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRowsData?.filter((row) => row !== label)
+          : [...prevState.selectedRowsData, label]
+        : [label],
+    }));
   };
+
   const handleSearchInputChange = (event) => {
     const value = event.target.value;
-    setSearchQuery(value);
-    const filtered = data?.filter((item) =>
-      item.label.toLowerCase().includes(value?.toLowerCase())
-    );
-    setFilteredData(filtered);
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: value,
+      filteredData: data?.filter((item) =>
+        item.label.toLowerCase().includes(value?.toLowerCase())
+      ),
+    }));
   };
-  const onSubmitHandler: SubmitFnType = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    // @ts-ignore
-    endSubmit(true);
-    getInwardClearingData.mutate({
-      data: {
-        ...data,
-        BRANCH_CD: selectedRowsRef?.current.toString(),
-        COMP_CD: authState?.companyID ?? "",
-      },
-      endSubmit,
-    });
-    setFormData(data);
-    setIsOpenRetrieve(false);
-  };
+
   return (
     <>
       <div
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             inputButtonRef?.current?.click?.();
-            setIsOpenRetrieve(false);
+            setState((prevState) => ({
+              ...prevState,
+              isOpenRetrieve: false,
+            }));
           }
         }}
       >
@@ -244,7 +465,7 @@ export const InwardClearing = () => {
         >
           <>
             {" "}
-            <AppBar position="relative" color="secondary" style={{}}>
+            <AppBar position="relative" color="secondary">
               <Toolbar className={headerClasses.root} variant={"dense"}>
                 <Typography
                   className={headerClasses.title}
@@ -260,7 +481,28 @@ export const InwardClearing = () => {
               key={"inwardClearingRetrieval"}
               metaData={InwardClearingRetrievalMetadata as MetaDataType}
               initialValues={{}}
-              onSubmitHandler={onSubmitHandler}
+              onSubmitHandler={async (
+                data: any,
+                displayData,
+                endSubmit,
+                setFieldError,
+                actionFlag
+              ) => {
+                endSubmit(true);
+                getInwardClearingData.mutate({
+                  data: {
+                    ...data,
+                    BRANCH_CD: selectedRowsRef?.current?.toString(),
+                    COMP_CD: authState?.companyID ?? "",
+                  },
+                  endSubmit,
+                });
+                setState((prevState) => ({
+                  ...prevState,
+                  formData: data, // Update formData in the state
+                  isOpenRetrieve: false, // Close the retrieve dialog
+                }));
+              }}
               //@ts-ignore
               formStyle={{
                 background: "white",
@@ -271,9 +513,9 @@ export const InwardClearing = () => {
               hideHeader={true}
             />
             <TextField
-              placeholder="Search"
+              placeholder={t("Search")}
               id=""
-              name={"Search"}
+              name={t("Search")}
               size="small"
               value={searchQuery}
               onChange={handleSearchInputChange}
@@ -286,10 +528,10 @@ export const InwardClearing = () => {
                   </InputAdornment>
                 ),
               }}
-              //@ts-ignore
+            //@ts-ignore
             />
             <>
-              {isLoading || isFetching ? (
+              {/* {isLoading || isFetching ? (
                 <LoaderPaperComponent />
               ) : isError ? (
                 <>
@@ -301,6 +543,9 @@ export const InwardClearing = () => {
                     />
                   </div>
                 </>
+              ) : ( */}
+              {isLoading || isFetching ? (
+                <LoaderPaperComponent />
               ) : (
                 <Grid
                   item
@@ -342,45 +587,67 @@ export const InwardClearing = () => {
                         }}
                       >
                         <>
-                          <div>Bank</div>
-                          <div>Branch</div>
-                          <div>Branch Name</div>
-                          <div style={{ marginLeft: "24px" }}>Status</div>
+                          <div>{t("Bank")}</div>
+                          <div>{t("Branch")}</div>
+                          <div>{t("BranchName")}</div>
+                          <div style={{ marginLeft: "24px" }}>{t("status")}</div>
                         </>
                       </Box>
                       <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-                        {filteredData?.map((item) => (
-                          <ListItemData
-                            key={item?.value}
-                            name={item?.label}
-                            disabled={false}
-                            selected={
-                              selectAll ||
-                              selectedRows.includes(item?.value) ||
-                              selectedRowsData.includes(item.label)
+                        {[...filteredData]
+                          .sort((a, b) => {
+                            // If 'a' is selected and 'b' is not, move 'a' up
+                            if (
+                              selectedRows.includes(a?.value) &&
+                              !selectedRows.includes(b?.value)
+                            ) {
+                              return -1;
                             }
-                            onClick={(event) =>
-                              handleRowClick(event, item?.value, item?.label)
+                            // If 'b' is selected and 'a' is not, move 'b' up
+                            if (
+                              selectedRows.includes(b?.value) &&
+                              !selectedRows.includes(a?.value)
+                            ) {
+                              return 1;
                             }
-                            onDoubleClick={(event) => {
-                              if (
-                                selectedRows?.length === 0 ||
-                                selectedRowsData?.length === 0
-                              ) {
-                                enqueueSnackbar(
-                                  "Please select at least one row.",
-                                  {
-                                    variant: "error",
-                                  }
-                                );
-                              } else {
-                                setIsOpenRetrieve(false);
-                                myRef?.current?.handleSubmit(event, "save");
-                                selectedRowsRef.current = selectedRows;
+                            // Otherwise, maintain the current order
+                            return 0;
+                          })
+                          ?.map((item) => (
+                            <ListItemData
+                              key={item?.value}
+                              name={item?.label}
+                              disabled={false}
+                              selected={
+                                selectAll ||
+                                selectedRows.includes(item?.value) ||
+                                selectedRowsData.includes(item.label)
                               }
-                            }}
-                          />
-                        ))}
+                              onClick={(event) =>
+                                handleRowClick(event, item?.value, item?.label)
+                              }
+                              onDoubleClick={(event) => {
+                                if (
+                                  selectedRows?.length === 0 ||
+                                  selectedRowsData?.length === 0
+                                ) {
+                                  enqueueSnackbar(
+                                    t("PleaseSelectAtLeastOneRow"),
+                                    {
+                                      variant: "error",
+                                    }
+                                  );
+                                } else {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    isOpenRetrieve: false,
+                                  }));
+                                  myRef?.current?.handleSubmit(event, "save");
+                                  selectedRowsRef.current = selectedRows;
+                                }
+                              }}
+                            />
+                          ))}
                       </List>
                     </nav>
                   </Box>
@@ -394,22 +661,21 @@ export const InwardClearing = () => {
               <>
                 <GradientButton
                   onClick={() => {
-                    if (!selectAll) {
-                      setSelectedRows(filteredData?.map((item) => item?.value));
-                      setSelectedRowsData(
-                        filteredData?.map((item) => item?.label)
-                      );
-                      setSelectAll(true);
-                    } else {
-                      setSelectedRows([]);
-                      setSelectedRowsData([]);
-                      setSelectAll(false);
-                    }
+                    setState((prevState) => ({
+                      ...prevState,
+                      selectAll: !prevState.selectAll,
+                      selectedRows: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.value)
+                        : [],
+                      selectedRowsData: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.label)
+                        : [],
+                    }));
                   }}
                 >
                   {getInwardClearingData?.status === "success" && selectAll
-                    ? "Deselect All"
-                    : "Select All"}
+                    ? t("DeselectAll")
+                    : t("SelectAll")}
                 </GradientButton>
                 <GradientButton
                   endIcon={
@@ -422,26 +688,33 @@ export const InwardClearing = () => {
                       selectedRows?.length === 0 ||
                       selectedRowsData?.length === 0
                     ) {
-                      enqueueSnackbar("Please select at least one row.", {
+                      enqueueSnackbar( t("PleaseSelectAtLeastOneRow"), {
                         variant: "error",
                       });
                     } else {
-                      setIsOpenRetrieve(false);
+                      setState((prevState) => ({
+                        ...prevState,
+                        isOpenRetrieve: false,
+                      }));
                       myRef?.current?.handleSubmit(event, "save");
                       selectedRowsRef.current = selectedRows;
                     }
                   }}
                   ref={inputButtonRef}
                 >
-                  Ok
+                  {t("Ok")}
+
                 </GradientButton>
 
                 <GradientButton
                   onClick={() => {
-                    setIsOpenRetrieve(false);
+                    setState((prevState) => ({
+                      ...prevState,
+                      isOpenRetrieve: false,
+                    }));
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             </DialogActions>
@@ -450,6 +723,8 @@ export const InwardClearing = () => {
       </div>
 
       <>
+        {/* {getInwardClearingData?.data &&
+        getInwardClearingData?.data?.length > 0 ? ( */}
         <GridWrapper
           key={"inwardCleringGrid"}
           finalMetaData={InwardCleaingGridMetaData as GridMetaDataType}
@@ -463,62 +738,165 @@ export const InwardClearing = () => {
             getInwardClearingData.mutate({
               data: {
                 ...formData,
-                BRANCH_CD: selectedRowsRef?.current.toString(),
+                BRANCH_CD: selectedRowsRef?.current?.toString() ?? "",
                 COMP_CD: authState?.companyID ?? "",
               },
             })
           }
-          onlySingleSelectionAllow={true}
-          onClickActionEvent={(index, id, data) => {
+          // onlySingleSelectionAllow={true}
+          // doubleClickAction={(index, id, data): any => {
+          //   console.log("index, id, data", index, id, data)
+          // }}
+          onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
               mysubdtlRef.current = data;
-              setIsChequeSign(true);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: true,
+              }));
             } else if (id === "POST_CONF") {
-              const postData = {
-                COMP_CD: data?.COMP_CD ?? "",
-                BRANCH_CD: data?.BRANCH_CD ?? "",
-                ACCT_TYPE: data?.ACCT_TYPE ?? "",
-                ACCT_CD: data?.ACCT_CD ?? "",
-                ERROR_STATUS: data?.ERR_STATUS ?? "",
-                SCREEN_REF: "TRN/650",
-                ENTERED_BY: data?.ENTERED_BY ?? "",
-                ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD ?? "",
-                REMARKS: data?.REMARKS ?? "",
-                CHEQUE_DATE: data?.CHEQUE_DT ?? "",
-                CHEQUE_NO: data?.CHEQUE_NO ?? "",
-                AMOUNT: data?.AMOUNT ?? "",
-                TRAN_CD: data?.TRAN_CD ?? "",
-                MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
-              };
-              validatePostData.mutate(postData);
-            } else if (id === "RETURN") {
               mysubdtlRef.current = data;
-              setIsChequeReturnPost(true);
+
+              if (data && data?.POST_CONF === "C") {
+                validateConfirmData.mutate({
+                  COMP_CD: data?.COMP_CD ?? "",
+                  BRANCH_CD: data?.BRANCH_CD ?? "",
+                  ACCT_TYPE: data?.ACCT_TYPE ?? "",
+                  ACCT_CD: data?.ACCT_CD ?? "",
+                  DAILY_TRN_CD: data?.DAILY_TRN_CD ?? "",
+                  ZONE_CD: data?.ZONE_CD ?? "",
+                  ENTERED_COMP_CD: data?.ENTERED_COMP_CD ?? "",
+                  ENTERED_BY: data?.ENTERED_BY ?? "",
+                  LAST_ENTERED_BY: data?.LAST_ENTERED_BY ?? "",
+                  LAST_MACHINE_NM: data?.LAST_MACHINE_NM ?? "",
+                  REMARKS: data?.REMARKS ?? "",
+                  CHEQUE_DT: data?.CHEQUE_DT ?? "",
+                  CHEQUE_NO: data?.CHEQUE_NO ?? "",
+                  AMOUNT: data?.AMOUNT ?? "",
+                  TRAN_CD: data?.TRAN_CD ?? "",
+                  MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
+                });
+              } else {
+                if (data && data?.DRAFT_DIV === "DRAFT") {
+                  const buttonName = await MessageBox({
+                    messageTitle: t("Confirmation"),
+                    message:
+                      authState?.role < "2"
+                        ? t("DoYouWantRealizeDraft")
+                        : t("DoWantRealizeDraftOrDirectPostInGL"),
+                    buttonNames:
+                      authState?.role < "2"
+                        ? ["Yes", "No"]
+                        : ["Yes", "No", "Cancel"],
+                    loadingBtnName: ["Yes" || "No"],
+                  });
+                  const postData = {
+                    COMP_CD: data?.COMP_CD,
+                    BRANCH_CD: data?.BRANCH_CD,
+                    ACCT_TYPE: data?.ACCT_TYPE,
+                    ACCT_CD: data?.ACCT_CD,
+                    TRAN_CD: data?.TRAN_CD,
+                    CHEQUE_NO: data?.CHEQUE_NO,
+                    DRAFT_DIV: data?.DRAFT_DIV,
+                    _UPDATEDCOLUMNS: [],
+                    _OLDROWVALUE: {},
+                    _isNewRow: false,
+                    _isUpdateRow: true,
+                  };
+                  if (authState?.role < "2" && buttonName === "Yes") {
+                    postConfigDML.mutate(postData);
+                  } else if (buttonName === "Yes") {
+                    postConfigDML.mutate(postData);
+                  } else if (buttonName === "No") {
+                    validatePostData.mutate({
+                      COMP_CD: data?.COMP_CD,
+                      BRANCH_CD: data?.BRANCH_CD,
+                      TRAN_CD: data?.TRAN_CD,
+                      ACCT_TYPE: data?.ACCT_TYPE,
+                      ACCT_CD: data?.ACCT_CD,
+                      CHEQUE_NO: data?.CHEQUE_NO,
+                      MICR_TRAN_CD: data?.MICR_TRAN_CD,
+                      ERROR_STATUS: data?.ERR_STATUS ?? "",
+                      SCREEN_REF: "TRN/650",
+                      ENTERED_BY: data?.ENTERED_BY ?? "",
+                      ENTERED_BRANCH_CD:
+                        data?.ENTERED_BRANCH_CD ?? "",
+                      REMARKS: data?.REMARKS ?? "",
+                      CHEQUE_DT: data?.CHEQUE_DT ?? "",
+                      AMOUNT: data?.AMOUNT ?? "",
+                    });
+                  }
+                } else if (data && data?.DRAFT_DIV === "DIVIDEND") {
+                  setState((prevState) => ({
+                    ...prevState,
+                    isOpenDividend: true,
+                  }));
+                } else {
+                  validatePostData.mutate({
+                    COMP_CD: data?.COMP_CD ?? "",
+                    BRANCH_CD: data?.BRANCH_CD ?? "",
+                    ACCT_TYPE: data?.ACCT_TYPE ?? "",
+                    ACCT_CD: data?.ACCT_CD ?? "",
+                    ERROR_STATUS: data?.ERR_STATUS ?? "",
+                    SCREEN_REF: "TRN/650",
+                    ENTERED_BY: data?.ENTERED_BY ?? "",
+                    ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD ?? "",
+                    REMARKS: data?.REMARKS ?? "",
+                    CHEQUE_DT: data?.CHEQUE_DT ?? "",
+                    CHEQUE_NO: data?.CHEQUE_NO ?? "",
+                    AMOUNT: data?.AMOUNT ?? "",
+                    TRAN_CD: data?.TRAN_CD ?? "",
+                    MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
+                  });
+                }
+              }
+            } else if (id === "VIEW_DETAIL") {
+              indexRef.current = Number(index);
+              navigate("view-detail", {
+                state: { gridData: data, index: indexRef.current },
+              });
             }
           }}
         />
+        {/* ) : null} */}
       </>
       <>
         {isChequeSign ? (
           <ChequeSignForm
             onClose={() => {
-              setIsChequeSign(false);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: false,
+              }));
             }}
             reqDataRef={mysubdtlRef}
           />
         ) : null}
       </>
-
       <>
-        {isChequeReturnPost ? (
-          <ChequeReturnPostFormWrapper
-            onClose={() => {
-              setIsChequeReturnPost(false);
-            }}
-            inwardData={mysubdtlRef}
+        {isOpenDividend ? (
+          <ShareDividendFormWrapper
+            onClose={handleDialogClose}
+            dividendData={mysubdtlRef.current}
           />
         ) : null}
       </>
+      <Routes>
+        <Route
+          path="view-detail/*"
+          element={
+            <ChequeReturnPostFormWrapper
+              isDataChangedRef={isDataChangedRef}
+              onClose={handleDialogClose}
+              // inwardData={data?.length ?? 0}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              currentIndexRef={indexRef}
+              totalData={getInwardClearingData?.data?.length ?? 0}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

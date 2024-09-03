@@ -18,6 +18,8 @@ type TMessage = {
   icon: TIcon;
   buttonNames: TButtonName[];
   callBack?: Function;
+  defFocusBtnName?: string;
+  loadingBtnName?: string[];
 };
 
 type TMessageBoxParams = {
@@ -25,6 +27,8 @@ type TMessageBoxParams = {
   message: string;
   icon?: TIcon;
   buttonNames?: TButtonName[];
+  defFocusBtnName?: string;
+  loadingBtnName?: string[];
 };
 
 type TPopupContextType = {
@@ -39,6 +43,8 @@ const initialMessage: TMessage = {
   message: "",
   icon: "INFO",
   buttonNames: ["Ok"],
+  defFocusBtnName: "",
+  loadingBtnName: [""],
 };
 
 const initialContext: TPopupContextType = {
@@ -53,14 +59,17 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [message, setMessage] = useState<TMessage>(initialMessage);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState<any>();
   const MessageBox = ({
     messageTitle,
     message,
     icon = "INFO",
     buttonNames = ["Ok"],
+    defFocusBtnName = "",
+    loadingBtnName = [""],
   }: TMessageBoxParams) => {
-    console.log("in popup");
+    setIsLoading(false);
     return new Promise((resolve) => {
       setMessage({
         isOpen: true,
@@ -70,13 +79,25 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
         buttonNames,
         callBack: (buttonName: TButtonName) => {
           resolve(buttonName);
-          CloseMessageBox();
+          const finalLoading = loadingBtnName?.find(
+            (btnNm) => btnNm === buttonName
+          );
+
+          if (finalLoading) {
+            setIsLoading(true);
+            setLoadingBtn(finalLoading);
+          } else {
+            CloseMessageBox();
+          }
         },
+        defFocusBtnName,
+        loadingBtnName,
       });
     });
   };
 
   const CloseMessageBox = () => {
+    setIsLoading(false);
     setMessage(initialMessage);
   };
 
@@ -93,6 +114,9 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
             onClickButton={message.callBack}
             buttonNames={message.buttonNames}
             icon={message.icon}
+            defFocusBtnName={message.defFocusBtnName}
+            loading={isLoading}
+            loadingBtnName={loadingBtn}
           />
         ) : null}
       </>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef, useCallback } from "react";
+import { FC, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   useField,
   UseFieldHookProps,
@@ -44,10 +44,12 @@ interface MySelectExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   GridProps?: GridProps;
   enableGrid: boolean;
-  AlwaysRunPostValidationSetCrossFieldVAlwaysRunPostValidationSetCrossFieldValues?: {
+  AlwaysRunPostValidationSetCrossFieldValues?: {
     alwaysRun?: any;
     touchAndValidate?: any;
   };
+  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  label?: string;
 }
 
 export type MySelectAllProps = Merge<MySelectProps, MySelectExtendedProps>;
@@ -84,6 +86,8 @@ const MySelect: FC<MySelectAllProps> = ({
   enableDefaultOption,
   requestProps,
   AlwaysRunPostValidationSetCrossFieldValues,
+  label,
+  setFieldLabel,
   ...others
 }) => {
   const {
@@ -256,6 +260,12 @@ const MySelect: FC<MySelectAllProps> = ({
     handleOptionValueExtraData(extraOptionData);
   }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //console.log(_options);
+
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
+  }, [setFieldLabel, label, dependentValues, value])
+
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -305,6 +315,7 @@ const MySelect: FC<MySelectAllProps> = ({
   const result = (
     <TextField
       {...others}
+      label={updatedLabel ?? label}
       select={true}
       key={fieldKey}
       id={fieldKey}

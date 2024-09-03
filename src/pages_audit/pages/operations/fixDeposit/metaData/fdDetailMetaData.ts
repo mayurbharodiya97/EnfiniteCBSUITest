@@ -3,7 +3,20 @@ import { AuthSDK } from "registry/fns/auth";
 import { GeneralAPI } from "registry/fns/functions";
 import { validateAccountAndGetDetail } from "../api";
 import { utilFunction } from "components/utils";
+import {
+  greaterThanInclusiveDate,
+  lessThanInclusiveDate,
+} from "registry/rulesEngine";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
+const getReadOnlyValue = (dependentField, fieldName) => {
+  const newDependentField =
+    utilFunction.getDependetFieldDataArrayField(dependentField);
+  if (newDependentField?.[fieldName]?.value === "Y") {
+    return true;
+  }
+  return false;
+};
 export const FixDepositDetailFormMetadata = {
   form: {
     name: "fixDepositDetail",
@@ -48,6 +61,56 @@ export const FixDepositDetailFormMetadata = {
     },
   },
   fields: [
+    {
+      render: {
+        componentType: "spacer",
+      },
+      GridProps: { xs: 0, md: 10, sm: 10, lg: 10, xl: 10 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_FD_AMOUNT",
+      label: "Total FD Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
+      dependentFields: ["FDDTL"],
+      postValidationSetCrossFieldValues: async (
+        currentFieldState,
+        formState,
+        auth,
+        dependentFieldState
+      ) => {
+        let accumulatedTakeoverLoanAmount = (
+          Array.isArray(dependentFieldState?.["FDDTL"])
+            ? dependentFieldState?.["FDDTL"]
+            : []
+        ).reduce((accum, obj) => accum + Number(obj.FD_AMOUNT?.value), 0);
+
+        if (
+          Number(currentFieldState.value) ===
+          Number(accumulatedTakeoverLoanAmount)
+        ) {
+          return {};
+        }
+        if (accumulatedTakeoverLoanAmount) {
+          return {
+            TOTAL_FD_AMOUNT: {
+              value: accumulatedTakeoverLoanAmount ?? 0,
+            },
+          };
+        } else {
+          return {
+            TOTAL_FD_AMOUNT: {
+              value: "",
+            },
+          };
+        }
+      },
+    },
     {
       render: {
         componentType: "arrayField",
@@ -124,6 +187,10 @@ export const FixDepositDetailFormMetadata = {
           className: "textInputFromRight",
           placeholder: "",
           maxLength: 10,
+          dependentFields: ["FD_NO_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "FD_NO_DISABLED");
+          },
           FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 10) {
@@ -160,13 +227,28 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           isFieldFocused: true,
           required: true,
+          FormatProps: {
+            allowNegative: false,
+          },
+          validationRun: "all",
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Transfer Amount is Required.";
-            } else if (columnValue.value.length <= 0) {
+            } else if (columnValue.value <= 0) {
               return "Transfer Amount must be greater than zero.";
             }
             return "";
+          },
+          postValidationSetCrossFieldValues: async (...arr) => {
+            if (arr[0].value) {
+              return {
+                TOTAL_FD_AMOUNT: { value: arr[0].value ?? "0" },
+              };
+            } else {
+              return {
+                TOTAL_FD_AMOUNT: { value: "" },
+              };
+            }
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
@@ -194,7 +276,13 @@ export const FixDepositDetailFormMetadata = {
             "PERIOD_NO",
             "PERIOD_CD",
             "FD_AMOUNT",
+            "TRAN_DT_DISABLED",
+            "FROM_TRAN_DT",
+            "TO_TRAN_DT",
           ],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "TRAN_DT_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (
             currField,
             formState,
@@ -213,6 +301,43 @@ export const FixDepositDetailFormMetadata = {
               { name: "required", params: ["AsOn Date is required."] },
               { name: "TRAN_DT", params: ["AsOn Date is required."] },
             ],
+          },
+          validate: (currField, dependentFields) => {
+            const newDependentField: any =
+              utilFunction.getDependetFieldDataArrayField(dependentFields);
+            let tranDate: any = format(currField?.value, "yyyy/MM/dd");
+            let fromTranDate = newDependentField?.FROM_TRAN_DT?.value;
+            let toTranDate = newDependentField?.TO_TRAN_DT?.value;
+
+            if (isValidDate(fromTranDate)) {
+              fromTranDate = format(new Date(fromTranDate), "yyyy/MM/dd");
+              if (
+                !greaterThanInclusiveDate(
+                  new Date(tranDate),
+                  new Date(fromTranDate)
+                )
+              ) {
+                // Calculate the difference in milliseconds
+                var diffms =
+                  new Date(toTranDate).getTime() -
+                  new Date(fromTranDate).getTime();
+                // Convert milliseconds to days
+                var diffDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
+                return (
+                  "AsOn Date should not be less than " + diffDays + " days."
+                );
+              }
+            }
+            if (isValidDate(toTranDate)) {
+              toTranDate = format(new Date(toTranDate), "yyyy/MM/dd");
+              if (
+                toTranDate &&
+                !lessThanInclusiveDate(new Date(tranDate), new Date(toTranDate))
+              ) {
+                return "AsOn Date should be less Than or equal to working Date.";
+              }
+            }
+            return "";
           },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
@@ -319,6 +444,10 @@ export const FixDepositDetailFormMetadata = {
           placeholder: "",
           required: true,
           type: "text",
+          dependentFields: ["INT_RATE_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "INT_RATE_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (currField) => {
             if (Boolean(currField?.value) && currField?.value > 0) {
               return {
@@ -350,6 +479,10 @@ export const FixDepositDetailFormMetadata = {
           ],
           defaultValue: "D",
           required: true,
+          dependentFields: ["TERM_CD_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "TERM_CD_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (currField) => {
             if (Boolean(currField?.value)) {
               return {
@@ -404,21 +537,24 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Branch",
             required: false,
             dependentFields: ["MATURE_INST"],
-            validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
-              console.log(
-                ">>matureInst",
-                matureInst,
-                "dfsdfSD=>>>",
-                dependentFields
-              );
+            schemaValidation: {},
+            validate: (currField, dependentFields) => {
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit A/c Branch Can't be blank.";
                 }
               }
               return "";
+            },
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_TYPE: { value: "" },
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
             },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
@@ -427,9 +563,11 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Type",
             required: false,
             dependentFields: ["MATURE_INST"],
+            schemaValidation: {},
             validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit A/c Type Can't be blank.";
@@ -437,12 +575,19 @@ export const FixDepositDetailFormMetadata = {
               }
               return "";
             },
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
           accountCodeMetadata: {
             name: "CR_ACCT_CD",
             label: "Credit A/c No.",
             required: false,
+            schemaValidation: {},
             dependentFields: [
               "COMP_CD",
               "CR_BRANCH_CD",
@@ -453,10 +598,7 @@ export const FixDepositDetailFormMetadata = {
               const companyCode = arg?.[3]?.["FDDTL.COMP_CD"]?.value ?? "";
               const branchCode = arg?.[3]?.["FDDTL.CR_BRANCH_CD"]?.value ?? "";
               const accountType = arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.value ?? "";
-              const accountCode = utilFunction.getPadAccountNumber(
-                arg?.[0]?.value,
-                arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.optionData
-              );
+              let accountCode = arg?.[0]?.value;
 
               if (
                 Boolean(companyCode) &&
@@ -464,6 +606,10 @@ export const FixDepositDetailFormMetadata = {
                 Boolean(accountType) &&
                 accountCode
               ) {
+                accountCode = utilFunction.getPadAccountNumber(
+                  accountCode,
+                  arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.optionData
+                );
                 const apiResponse = await validateAccountAndGetDetail(
                   companyCode,
                   branchCode,
@@ -473,16 +619,17 @@ export const FixDepositDetailFormMetadata = {
                 );
                 if (apiResponse?.status === "0") {
                   if (Boolean(apiResponse?.message)) {
-                    arg?.[1]?.MessageBox(
-                      "Information",
-                      apiResponse?.message.startsWith("\n")
+                    arg?.[1]?.MessageBox({
+                      messageTitle: "Information",
+                      message: apiResponse?.message.startsWith("\n")
                         ? apiResponse?.message?.slice(1)
-                        : apiResponse?.message
-                    );
+                        : apiResponse?.message,
+                    });
                   }
                   return {
                     CR_ACCT_CD: {
                       value: accountCode,
+                      isErrorBlank: true,
                       ignoreUpdate: true,
                     },
                     CR_ACCT_NM: {
@@ -495,15 +642,17 @@ export const FixDepositDetailFormMetadata = {
                       value: "",
                       error: apiResponse?.message ?? "",
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                     CR_ACCT_NM: { value: "" },
                   };
                 }
               }
             },
-            validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+            validate: (currField, dependentFields) => {
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit Account Can't be blank.";
@@ -533,10 +682,17 @@ export const FixDepositDetailFormMetadata = {
           label: "Maturity Amount",
           type: "text",
           required: true,
+          FormatProps: {
+            allowNegative: false,
+          },
+          dependentFields: ["MATURITY_AMT_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "MATURITY_AMT_DISABLED");
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Maturity Amount is Required.";
-            } else if (columnValue.value.length <= 0) {
+            } else if (columnValue.value <= 0) {
               return "Maturity Amount must be greater than zero.";
             }
             return "";
@@ -699,6 +855,48 @@ export const FixDepositDetailFormMetadata = {
               };
             }
           },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "INT_RATE_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "MATURITY_AMT_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FD_NO_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TRAN_DT_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TERM_CD_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_TRAN_DT",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TO_TRAN_DT",
         },
       ],
     },

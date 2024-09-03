@@ -41,10 +41,13 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
+import { useTranslation } from "react-i18next";
 let data2: any[] = [];
 
 export const DataGrid = ({
@@ -94,7 +97,11 @@ export const DataGrid = ({
   defaultSelectedRowId,
   searchPlaceholder,
   paginationText,
-  ReportExportButton
+  ReportExportButton,
+  footerNote,
+  finalMetaData,
+  subGridLabel,
+  hideActionBar,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -104,6 +111,7 @@ export const DataGrid = ({
   const {
     getTableProps,
     getTableBodyProps,
+    footerGroups,
     headerGroups,
     prepareRow,
     selectedFlatRows,
@@ -133,6 +141,7 @@ export const DataGrid = ({
       getRowId,
       allowColumnReordering: allowColumnReordering,
       autoResetSortBy: false,
+      autoResetGlobalFilter: false,
       disableSortBy: Boolean(disableSorting),
       disableGlobalFilter: Boolean(disableGlobalFilter),
       disableGroupBy: Boolean(disableGroupBy),
@@ -143,6 +152,7 @@ export const DataGrid = ({
       hiddenFlag,
       loading,
       onButtonActionHandel,
+      autoResetPage: false,
     },
     useGlobalFilter,
     useColumnOrder,
@@ -158,8 +168,9 @@ export const DataGrid = ({
   );
 
   const { authState } = useContext(AuthContext);
-
+  const { t } = useTranslation();
   const tbodyRef = useRef(null);
+  const preDataRef = useRef(null);
   const submitButtonRef = useRef<any>(null);
   const [isOpenExport, setOpenExport] = useState(false);
   const tableRowRef = useRef<any>(null);
@@ -291,6 +302,61 @@ export const DataGrid = ({
       }
     };
   }, [loading]);
+
+  useEffect(() => {
+    if (
+      selectedFlatRows.length > 0 &&
+      onlySingleSelectionAllow &&
+      JSON.stringify(selectedFlatRows[0]?.original) !==
+      JSON.stringify(preDataRef.current)
+    ) {
+      preDataRef.current = selectedFlatRows[0]?.original;
+      setGridAction({
+        name: "_rowChanged",
+        rows: [{ data: selectedFlatRows[0]?.original }],
+      });
+    }
+  }, [selectedFlatRows[0]?.original]);
+
+  const RenderFooter = ({ footerGroup }) =>
+    Array.isArray(footerGroup?.headers) &&
+      footerGroup.headers.some((item) => item.isDisplayTotal || item.isSelectedTotal) ? (
+      <TableFooter
+        component="div"
+        style={{
+          color: "var(--theme-color2)",
+          background: "var(--theme-color4)",
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
+        <TableRow {...footerGroup.getFooterGroupProps()} component="div">
+          {footerGroup.headers.map((column) => (
+            <TableCell
+              key={column.id}
+              {...column.getFooterProps({
+                style: {
+                  textAlign: column?.TableCellProps?.align || "unset",
+                  display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  padding: "0px 10px",
+                  lineHeight: "22px",
+                  fontWeight: 700,
+                  fontSize: "small",
+                  color: "var(--theme-color3)",
+                },
+              })}
+              component="div"
+            >
+              {column.render("Footer")}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableFooter>
+    ) : null;
+
   return (
     <>
       <Paper
@@ -301,7 +367,7 @@ export const DataGrid = ({
       >
         {Boolean(hideHeader) ? null : (
           <TableHeaderToolbar
-            label={label}
+            label={t(label)}
             dense={dense}
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={state.globalFilter}
@@ -325,6 +391,7 @@ export const DataGrid = ({
             searchPlaceholder={searchPlaceholder}
             ReportExportButton={ReportExportButton}
             setOpenExport={setOpenExport}
+            subGridLabel={subGridLabel}
           />
         )}
         {Boolean(controlsAtBottom) ? null : (
@@ -335,6 +402,7 @@ export const DataGrid = ({
             singleActions={singleActions}
             setGridAction={setGridAction} //for single/multiple actions
             submitButtonRef={submitButtonRef}
+            hideActionBar={hideActionBar}
           />
         )}
         <ActionContextMenu
@@ -357,7 +425,14 @@ export const DataGrid = ({
         />
         {!disableLoader ? (
           loading ? (
-            <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}} />
+            <LinearProgress
+              sx={{
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
           ) : (
             <LinearProgressBarSpacer />
           )
@@ -392,6 +467,7 @@ export const DataGrid = ({
                         <HeaderCellWrapper
                           column={column}
                           key={column.getHeaderProps().key}
+                          SelectAllColumn={column.SelectAllColumn}
                         >
                           {column.render("Header")}
                         </HeaderCellWrapper>
@@ -412,10 +488,16 @@ export const DataGrid = ({
                 },
               ])}
               onContextMenu={handleContextMenuOpenforAdd}
+              // set container height after add  RenderFooter row----
+              style={{
+                height: Boolean(containerHeight?.min)
+                  ? "calc(" + containerHeight?.min + " - 58px)"
+                  : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
+              }}
             >
               {rowsToDisplay.length <= 0 &&
-              //loading === false &&
-              hideNoDataFound === false ? (
+                //loading === false &&
+                hideNoDataFound === false ? (
                 <Grid container justifyContent="center">
                   <div
                     style={{
@@ -429,7 +511,7 @@ export const DataGrid = ({
                       color: "rgba(133, 130, 130, 0.8)",
                     }}
                   >
-                    No data found..!
+                    {t("NoDataFound")}
                   </div>
                 </Grid>
               ) : null}
@@ -459,9 +541,7 @@ export const DataGrid = ({
                   if (rowColorStyle.length > 0) {
                     rowColorStyle[0].style["cursor"] = "pointer";
                   } else {
-                    rowColorStyle = [
-                      { style: { cursor: "pointer", width: "100%" } },
-                    ];
+                    rowColorStyle = [{ style: { cursor: "pointer" } }];
                   }
                 }
                 return (
@@ -475,8 +555,8 @@ export const DataGrid = ({
                       row.isSelected
                         ? true
                         : contextMenuSelectedRowId === row.id
-                        ? row.toggleRowSelected(true)
-                        : false
+                          ? row.toggleRowSelected(true)
+                          : false
                     }
                     onClick={() => {
                       if (Boolean(onlySingleSelectionAllow)) {
@@ -509,10 +589,21 @@ export const DataGrid = ({
                 );
               })}
             </TableBody>
+            <RenderFooter footerGroup={footerGroups[0]} />
           </Table>
           <CustomBackdrop open={Boolean(loading)} />
         </TableContainer>
 
+        {footerNote && (
+          <Typography
+            component="div"
+            fontWeight={500}
+            display={"flex"}
+            pl={"24px"}
+          >
+            {typeof footerNote === "string" ? t(footerNote) : footerNote}
+          </Typography>
+        )}
         {hideFooter ? null : enablePagination ? (
           <TablePagination
             style={{ display: "flex" }}
@@ -526,10 +617,11 @@ export const DataGrid = ({
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
             ActionsComponent={TablePaginationActions}
+            labelRowsPerPage={t("Rowsperpage")}
           />
         ) : (
           <TableCell style={{ display: "flex" }}>
-            Total No. of {paginationText}: {rowCount}
+            {t("TotalNoOf")} {t(paginationText)}: {rowCount}
           </TableCell>
         )}
 
@@ -566,17 +658,17 @@ export const DataGrid = ({
       </Paper>
       {isOpenExport && (
         <Dialog open={isOpenExport}>
-         <ReportExportScreen
-          // globalFilter={""}
-          filters={filters}
-          // queryFilters={queryFilters}
-          title={label}
-          rows={rows}
-          columns={columns}
-          onClose={() => {
-            setOpenExport(false);
-          }}
-        />
+          <ReportExportScreen
+            // globalFilter={""}
+            filters={filters}
+            // queryFilters={queryFilters}
+            title={label}
+            rows={rows}
+            columns={finalMetaData}
+            onClose={() => {
+              setOpenExport(false);
+            }}
+          />
         </Dialog>
       )}
     </>

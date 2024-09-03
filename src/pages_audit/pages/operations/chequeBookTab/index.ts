@@ -1,1 +1,1 @@
-export { ChequebookTab as default } from "./chequebookTab";
+export { ChequebookTab as default } from "./chequebook";

@@ -71,21 +71,37 @@ export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, 
     }
   };
 
+export const getDocDetails = async ({REQ_CD, CUSTOMER_ID }) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTMSTDOCDTL", {
+        REQ_CD: REQ_CD, 
+        CUSTOMER_ID: CUSTOMER_ID
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry, CONFIRMFLAG }) => {
   if(!CATEGORY_CD || !CONS_TYPE) {
     return []
   }
+  const entry_mode = isFreshEntry 
+                      ? "NEW" 
+                      : Boolean(CONFIRMFLAG)
+                        ? CONFIRMFLAG === "Y" 
+                          ? "EDIT"
+                          : "NEW"
+                        : "EDIT"
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCIFTABDTL", {
       COMP_CD: COMP_CD,
       ENTITY_TYPE: ENTITY_TYPE,
       CATEGORY_CD: CATEGORY_CD,
       CONS_TYPE: CONS_TYPE,
-      ENTRY_MODE: isFreshEntry 
-                  ? "NEW"
-                  : (CONFIRMFLAG && !CONFIRMFLAG.includes("Y"))
-                    ? "NEW"
-                    : "EDIT"
+      ENTRY_MODE: entry_mode,
     });
   if (status === "0") {
     return data;
@@ -133,6 +149,43 @@ export const getCustomerDetailsonEdit = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getDocumentImagesList = async ({TRAN_CD, SR_CD, REQ_CD}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", {
+    TRAN_CD : TRAN_CD,
+    SR_CD : SR_CD,
+    REQ_CD : REQ_CD
+  });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ LINE_CD, ...other }) => {
+          return {
+            ...other,
+            LINE_CD: LINE_CD,
+            LINE_ID: LINE_CD
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const updateExtDocument = async (payload) => {
+  // console.log("updateExtDocument payload", payload)
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CUSTDOCUMENTDATADML", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
 
 
 export const getCIFCategories = async ({ COMP_CD, BRANCH_CD, ENTITY_TYPE }) => {
@@ -192,6 +245,33 @@ export const getOccupationDTL = async (COMP_CD, BRANCH_CD) => {
 };
 
 export const getRatingOpDTL = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTRATELIST", {
+      COMP_CD: COMP_CD ?? "",
+      BRANCH_CD: BRANCH_CD ?? "",
+    });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ RATE_CD, RATE_NM, ...other }) => {
+            return {
+              ...other,
+              RATE_CD: RATE_CD, 
+              RATE_NM: RATE_NM,
+              value: RATE_CD,
+              label: RATE_NM,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
+export const getLegalCompanyTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTRATELIST", {
       COMP_CD: COMP_CD ?? "",
@@ -580,10 +660,29 @@ export const validatePAN = async (columnValue, allField?, formState?) => {
 }
 
 export const DuplicationValidate = async (columnValue, allField, formState, fieldValue?) => {
+  // console.log("ewoiejfowieijfowiejfwoiejf", columnValue, allField, formState, fieldValue)
   const {COMP_CD, CUSTOMER_ID, REQ_FLAG} = formState
-  // console.log("waefdwdqwedqwd ..")
 // export const DuplicationValidate = async (field, formState, authState, dependentFieldsValues, fieldObj) => {
-  if(fieldValue) {
+  if(
+    !Boolean(columnValue.value) &&
+    (typeof fieldValue === "object" && Object.keys(fieldValue).includes("PASSPORT_NO"))
+  ) {
+      if(
+        formState.RESIDENCE_STATUS &&
+        (formState.RESIDENCE_STATUS === "02" ||
+        formState.RESIDENCE_STATUS === "03")
+      ) {
+        return "This field is required"
+      } else {
+        return "";
+      }
+  }
+  if(fieldValue && typeof fieldValue === "object") {
+    if(Object.keys(fieldValue).includes("ELECTION_CARD_NO")) {
+      if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+        return "Special characters are not allowed.";
+      }
+    }
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
       const { data, status, message, messageDetails } =
@@ -745,12 +844,26 @@ export const getPendingData = async (reqObj:{COMP_CD: string, BRANCH_CD: string,
     throw DefaultErrorObject(message, messageDetails);
   }
 }
-// for getting pending entries, in grid
+
 export const ConfirmPendingCustomers = async ({REQUEST_CD, REMARKS, CONFIRMED}) => {
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("CONFIRMCUSTOMERDATA", {
     REQUEST_CD: REQUEST_CD,
     REMARKS: REMARKS,
+    CONFIRMED: CONFIRMED,
+  });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const ConfirmCustPhoto = async ({REQUEST_CD, COMP_CD, CONFIRMED}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CONFIRMCUSTPHOTODATA", {
+    REQUEST_CD: REQUEST_CD,
+    COMP_CD: COMP_CD,
     CONFIRMED: CONFIRMED,
   });
   if (status === "0") {
@@ -913,14 +1026,15 @@ export const getDocumentTypes = async ({TRAN_CD, SR_CD, DOC_TYPE}) => {
   }
 }
 
-// retrieving document medatory docs in grid
+// retrieving document medatory docs in grid for new entry
 export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CONSTITUTION_TYPE}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
+    await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUST_TYPE: CUST_TYPE, 
-      CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      CUSTOMER_TYPE: CUST_TYPE ?? null, 
+      ACCT_TYPE: null,
+      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
     });
   if (status === "0") {
@@ -1012,13 +1126,10 @@ export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
     }
   }
 }
-
-export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
+export const updatePhotoSignData = async (reqData) => {
+  // console.log(":wedwd", reqData)
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID,
-    });
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
   if (status === "0") {
     return data
   } else {
@@ -1026,10 +1137,27 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
-export const updatePhotoSignData = async (reqData) => {
-  // console.log(":wedwd", reqData)
+export const getCustLatestDtl = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
+    await AuthSDK.internalFetcher("GETCUSTLATESTPHOTODTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID, 
+      REQ_CD: REQ_CD
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD
+    });
   if (status === "0") {
     return data
   } else {
@@ -1076,7 +1204,7 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
 
 export const TrimSpaceValidation = (columnValue, allField, flag) => {
   if(columnValue.value) {
-      let regex = /^[a-zA-Z]+$/;
+      let regex = /^[a-zA-Z ]+$/;
       if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
           return "Space before name is not allowed.";  
       } else if(columnValue.value !== columnValue.value.trimStart()) {
@@ -1084,8 +1212,8 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value without Space.";
-      }                    
+          return "Please Enter Character Value.";
+      }
   }
   return "";
 }
@@ -1098,7 +1226,8 @@ export const SaveAsDraft = async ({
   CONSTITUTION_TYPE,
   IsNewRow,
   PERSONAL_DETAIL,
-  COMP_CD
+  COMP_CD,
+  BRANCH_CD
 }) => {
   // console.log("reqdataa..",
   //   // `
@@ -1126,8 +1255,8 @@ export const SaveAsDraft = async ({
       // CATEGORY_CD: CATEGORY_CD,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-      COMP_CD: "132 ",
-      BRANCH_CD: "099 ",
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
       ACCT_TYPE: ACCT_TYPE,
       REQ_FLAG: "F",
       CATEG_CD: CATEGORY_CD,
@@ -1178,357 +1307,32 @@ export const SaveAsDraft = async ({
     await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
       ...remainingData,
       PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData},
-
-    //   PERSONAL_DETAIL: {
-    //     IsNewRow: true,
-    //     FIRST_NM: "apurva",
-    //     ACCT_NM :"vijay",
-    //     SURNAME: "tetu",
-    //     CUSTOMER_TYPE: "I",
-    //     CONSTITUTION_TYPE: "01",
-    //     COMP_CD: "132 ",
-    //     BRANCH_CD: "099 ",
-    //     GENDER :"F",
-    //     KYC_NUMBER: "123456",
-    //     COMMU_CD: "01",
-    //     REQ_FLAG: "F",
-    //     FATHER_SPOUSE: "01",
-    //     CASTE_CD: "OBC",
-    //     TRADE_CD: "243 ",
-    //     SUB_CUST_TYPE: "",
-    //     RATE_CD: "",
-    //     GROUP_CD: "",
-    //     KYC_REVIEW_DT: "",
-    //     EXPLICIT_TDS: "N",
-    //     BIRTH_DT: "08-11-2000",
-    //     NATIONALITY: "",
-    //     RESIDENCE_STATUS: "01",
-    //     CATEG_CD: "09",
-    //     GSTIN: "08ABKFM4841Q1Z1",
-    //     FORM_60: "Y",
-    //     PAN_NO: "ABKFM4841Q",
-    //     UDYAM_REG_NO: "38494404",
-    //     OTHER_DOC: "",
-    //     PROOF_OF_ADD: "01",
-    //     OTHER_DOC_NO: "",
-    //     REFERENCE_TYPE: "",
-    //     REFERENCE_RELATION: "",
-    //     PASSPORT_NO: "924746587",
-    //     PASSPORT_ISSUE_DT: "03-09-2018",
-	 	// PASSPORT_EXPIRY_DT: "03-09-2023",
-	 	// PASSPORT_AUTHORITY_CD: "01",
-	 	// DRIVING_LICENSE_NO: "58324892",
-	 	// DRIVING_LICENSE_ISSUE_DT: "03-09-2018",
-	 	// DRIVING_LICENSE_EXPIRY_DT: "03-12-2027",
-	 	// DRIVING_LICENSE_AUTHORITY_CD: "01",
-    //     OTHER_REFERENCE: "",
-    //     MEM_ACCT_TYPE: "",
-    //     UNIQUE_ID: "673598516700",
-    //     MEM_ACCT_CD: "",
-    //     MEM_COMP_CD: "",
-    //     MEM_BRANCH_CD: "",
-    //     FATCA_DEC_RECVD: "N",
-    //     FATCA_DT: "",
-    //     TIN_ISSUING_COUNTRY: "01",
-    //     COUNTRY_OF_INCORPORATION: "",
-    //     PLACE_OF_INCORPORATION: "",
-    //     DATE_OF_COMMENCEMENT: "",
-    //     US_GIIN: "",
-    //     TIN: "12",
-    //     CCIL_ID: "",
-    //     LEI_NO: "",
-    //     LEI_EXPIRY_DATE: "",
-    //     ADDRESS_TYPE: "02",
-    //     AREA_CD: "001",
-    //     PIN_CODE: "385659",
-    //     CITY_CD: "",
-    //     STATE_CD: "",
-    //     DISTRICT_CD: "",
-    //     COUNTRY_CD: "01",
-    //     ADD1: "Acute Informatics",
-    //     ADD2: "Pune",
-    //     ADD3: " ",
-    //     OTHER_POA: "",
-    //     LOC_ADD_TYPE: "",
-    //     SAME_AS_PER: "Y",
-    //     LOC_ADD1: "",
-    //     LOC_ADD2: "",
-    //     LOC_ADD3: "",
-    //     LOC_AREA_CD: "",
-    //     LOC_CITY_CD: "",
-    //     LOC_DISTRICT_CD: "",
-    //     LOC_STATE_CD: "",
-    //     LOC_COUNTRY_CD: "",
-    //     LOC_PIN_CODE: "",
-    //     LOC_PROOF_OF_ADD: "",
-    //     STD_1: "",
-    //     STD_4: "54890",
-    //     STD_2: "",
-    //     STD_3: "",
-    //     CONTACT1: "",
-    //     CONTACT4: "",
-    //     CONTACT2: "7858089344",
-    //     CONTACT3: "",
-    //     E_MAIL_ID: "apurvapatil@gmail.com",
-    //     ENTRY_TYPE: "1",
-    //     APPLICATION_TYPE: "Y",
-    //     E_MAIL_ID2: "",
-    //     ENTERED_BY: "hff",
-    //     ENTERED_DATE: "20-06-2023",
-    //     ENT_BRANCH_CD: "099 ",
-    //     ENT_COMP_CD: "132 "
-    // },
-
-
-
-
-      // PERSONAL_DETAIL: {
-      //     prefixDivider: "",
-      //     PREFIX_CD: "",
-      //     FIRST_NM: "",
-      //     LAST_NM: "",
-      //     SURNAME: "",
-      //     ACCT_NM: "",
-      //     maidenHeaderdivider: "",
-      //     MAIDEN_PREFIX_CD: "Mrs",
-      //     MAIDEN_FIRST_NM: "",
-      //     MAIDEN_MIDDLE_NM: "",
-      //     MAIDEN_LAST_NM: "",
-      //     FATHER_SPOUSE: "01",
-      //     fatherHeaderDivider: "",
-      //     FATHER_PREFIX_CD: "Mr",
-      //     FATHER_FIRST_NM: "",
-      //     FATHER_MIDDLE_NM: "",
-      //     FATHER_LAST_NM: "",
-      //     motherHeaderDivider: "",
-      //     MOTHER_PREFIX_CD: "Mrs",
-      //     MOTHER_FIRST_NM: "",
-      //     MOTHER_MIDDLE_NM: "",
-      //     MOTHER_LAST_NM: "",
-      //     BIRTH_DT: "01-Aug-2023",
-      //     LF_NO: "minor",
-      //     GENDER: "",
-      //     BLOOD_GRP_CD: "",
-      //     MARITAL_STATUS: "",
-      //     NATIONALITY: "",
-      //     RESIDENCE_STATUS: "01",
-      //     TRADE_CD: "",
-      //     GROUP_CD: "",
-      //     COMMU_CD: "",
-      //     CASTE_CD: "",
-      //     KYC_REVIEW_DT: "",
-      //     FORM_60: "N",
-      //     PAN_NO: "DWIPP9643D",
-      //     UNIQUE_ID: "673598516700",
-      //     ELECTION_CARD_NO: "",
-      //     EXPLICIT_TDS: "N",
-      //     NREGA_JOB_CARD: "",
-      //     OTHER_DOC: "",
-      //     OTHER_DOC_NO: "",
-      //     GSTIN: "",
-      //     passportDivider: "",
-      //     PASSPORT_NO: "924746587",
-      //     PASSPORT_AUTHORITY_CD: "Delhi",
-      //     PASSPORT_ISSUE_DT: "03-Sep-2023",
-      //     PASSPORT_EXPIRY_DT: "03-Sep-2023",
-      //     drivingLicenseDivider: "",
-      //     DRIVING_LICENSE_NO: "58324892",
-      //     DRIVING_LICENSE_AUTHORITY_CD: "Delhi",
-      //     DRIVING_LICENSE_ISSUE_DT: "03-Sep-2023",
-      //     DRIVING_LICENSE_EXPIRY_DT: "03-Sep-2023",
-      //     currentAddDivider: "",
-      //     ADDRESS_TYPE: "",
-      //     ADD1: "",
-      //     ADD2: "",
-      //     ADD3: "",
-      //     PAR_AREA_CD: "",
-      //     AREA_CD: "",
-      //     PIN_CODE: "",
-      //     CITY_CD: "",
-      //     DISTRICT: "",
-      //     STATE: "",
-      //     COUNTRY: "",
-      //     STATE_CD: "",
-      //     COUNTRY_CD: "",
-      //     PROOF_OF_ADD: "",
-      //     OTHER_POA: "",
-      //     localAddDivider: "",
-      //     SAME_AS_PER: "",
-      //     LOC_ADD_TYPE: "",
-      //     LOC_ADD1: "",
-      //     LOC_ADD2: "",
-      //     LOC_ADD3: "",
-      //     LOC_AREA_CD: "",
-      //     LOC_AREA_CD2: "",
-      //     LOC_PIN_CODE: "",
-      //     LOC_CITY_CD: "",
-      //     LOC_DISTRICT_CD: "",
-      //     LOC_STATE_CD: "",
-      //     LOC_COUNTRY: "",
-      //     STATE_UT_CODE: "",
-      //     LOC_COUNTRY_CD: "",
-      //     LOC_PROOF_OF_ADD: "",
-      //     contactDivider: "",
-      //     // PHONE_o: "",
-      //     // PHONE_R: "",
-      //     MOBILE_NO: "",
-      //     FAX: "",
-      //     E_MAIL_ID: "",
-      //     FATCA_DEC_RECVD: "N",
-      //     FATCA_DT: "03-Sep-2023",
-      //     US_GIIN: "",
-      //     DATE_OF_COMMENCEMENT: "03-Sep-2023",
-      //     PLACE_OF_INCORPORATION: "",
-      //     TIN: "12",
-      //     COUNTRY_OF_INCORPORATION: "",
-      //     TIN_ISSUING_COUNTRY: "18  ",
-      //     IsNewRow: true,
-      //     CUSTOMER_TYPE: "I",
-      //     CATEGORY_CD: "03  ",
-      //     CONSTITUTION_TYPE: "01",
-      //     COMP_CD: "132 ",
-      //     BRANCH_CD: "099 ",
-      //     ACCT_TYPE: "01",
-      //     REQ_FLAG: "F",
-      //     CATEG_CD: "01",
-      //     entityType: "I",
-      //     GST_NO: "",
-      //     APPLICATION_TYPE: "Y",
-      //     ENTERED_DATE: "20-July-2023",
-      //     STD_1: "",
-      //     STD_4: "54890",
-      //     STD_2: "",
-      //     STD_3: "",
-      //     CONTACT1: "",
-      //     CONTACT4: "",
-      //     CONTACT2: "7858089344",
-      //     CONTACT3: "",
-      // }
-
-  //     IsNewRow: true,
-	// REQ_CD:"",
-	// REQ_FLAG:"F",
-  //   SAVE_FLAG:"D",
-  //   ENTRY_TYPE :"1",
-  //   CUSTOMER_ID:"",
-	// PERSONAL_DETAIL: {
-  //       IsNewRow: true,
-	// 	CUSTOMER_TYPE: "I",
-  //       CONSTITUTION_TYPE:"I",
-	// 	COMP_CD: "132 ",
-	// 	BRANCH_CD: "099 ",
-	// 	ACCT_TYPE: "01",
-	// 	REQ_FLAG: "F",
-	// 	PREFIX_CD: "MISS",
-	// 	FIRST_NM: "rupa",
-	// 	LAST_NM: "ajay",
-	// 	SURNAME: "patil",
-	// 	ACCT_NM: "rupa ajay patil",
-	// 	MAIDEN_PREFIX_CD: "Miss",
-	// 	MAIDEN_FIRST_NM: " ",
-	// 	MAIDEN_MIDDLE_NM: " ",
-	// 	MAIDEN_LAST_NM: " ",
-	// 	FATHER_SPOUSE: "01",
-	// 	FATHER_PREFIX_CD: "Mr",
-	// 	FATHER_FIRST_NM: "Vijay",
-	// 	FATHER_MIDDLE_NM: "SANJAY",
-	// 	FATHER_LAST_NM: "patil",
-	// 	MOTHER_PREFIX_CD: "Mrs.",
-	// 	MOTHER_FIRST_NM: "jaya",
-	// 	MOTHER_MIDDLE_NM: "Vijay",
-	// 	MOTHER_LAST_NM: "patil",
-	// 	FORM_60: "Y",
-	// 	PAN_NO: "DWIPP9643D",
-	// 	UNIQUE_ID: "673598516700",
-	// 	ELECTION_CARD_NO: "38494404",
-	// 	EXPLICIT_TDS: "N",
-	// 	NREGA_JOB_CARD: "",
-	// 	OTHER_DOC: "",
-	// 	PROOF_OF_ADD: "01",
-	// 	OTHER_DOC_NO: "02",
-	// 	PASSPORT_NO: "924746587",
-	// 	PASSPORT_ISSUE_DT: "03-SEP-2018",
-	// 	PASSPORT_EXPIRY_DT: "03-SEP-2023",
-	// 	PASSPORT_AUTHORITY_CD: "01",
-	// 	DRIVING_LICENSE_NO: "58324892",
-	// 	DRIVING_LICENSE_ISSUE_DT: "03-SEP-2018",
-	// 	DRIVING_LICENSE_EXPIRY_DT: "03-SEP-2024",
-	// 	DRIVING_LICENSE_AUTHORITY_CD: "01",
-	// 	FATCA_DEC_RECVD: "N",
-	// 	FATCA_DT: "",
-	// 	US_GIIN: "",
-	// 	TIN: "12",
-	// 	TIN_ISSUING_COUNTRY: "01",
-	// 	COUNTRY_OF_INCORPORATION: "",
-	// 	PLACE_OF_INCORPORATION: "",
-	// 	DATE_OF_COMMENCEMENT: "",
-	// 	BIRTH_DT: "08-NOV-2023",
-	// 	GENDER: "F",
-	// 	BLOOD_GRP_CD: "B+",
-	// 	MARITAL_STATUS: "02",
-	// 	NATIONALITY: "",
-	// 	TRADE_CD: "S-02",
-	// 	GROUP_CD: "9",
-	// 	CASTE_CD: "",
-	// 	COMMU_CD: "01",
-	// 	LF_NO: "J",
-	// 	KYC_REVIEW_DT: "",
-	// 	ADDRESS_TYPE: "02",
-	// 	ADD1: "Acute Informatics",
-	// 	ADD2: "Pune",
-	// 	ADD3: " ",
-	// 	STATE_CD: "",
-	// 	OTHER_POA: "",
-	// 	LOC_ADD_TYPE: "",
-	// 	LOC_ADD1: "",
-	// 	LOC_ADD2: "",
-	// 	LOC_ADD3: "",
-	// 	LOC_AREA_CD: "",
-	// 	LOC_CITY_CD: "",
-	// 	LOC_DISTRICT_CD: "",
-	// 	LOC_STATE_CD: "",
-	// 	LOC_COUNTRY_CD: "",
-	// 	LOC_PIN_CODE: "",
-	// 	AREA_CD: "001",
-	// 	PIN_CODE: "385659",
-	// 	SAME_AS_PER: "Y",
-	// 	CONTACT: "N",
-	// 	LOC_PROOF_OF_ADD: "",
-	// 	STD_1: "",
-	// 	STD_4: "54890",
-	// 	STD_2: "",
-	// 	STD_3: "",
-	// 	CONTACT1: "",
-	// 	CONTACT4: "",
-	// 	CONTACT2: "9727999751",
-	// 	CONTACT3: "",
-	// 	E_MAIL_ID: "rupapatil@gmail.com",
-	// 	ENTRY_TYPE: "",
-	// 	APPLICATION_TYPE: "Y",
-	// 	SUB_CUST_TYPE: "",
-	// 	RATE_CD: "",
-	// 	GSTIN: "",
-	// 	UDYAM_REG_NO: "",
-	// 	REFERENCE_TYPE: "",
-	// 	REFERENCE_RELATION: "",
-	// 	OTHER_REFERENCE: "",
-	// 	CCIL_ID: "",
-	// 	LEI_NO: "",
-	// 	LEI_EXPIRY_DATE: "",
-	// 	E_MAIL_ID2: "",
-	// 	MEM_ACCT_TYPE: "",
-	// 	MEM_ACCT_CD: "",
-	// 	MEM_COMP_CD: "",
-	// 	MEM_BRANCH_CD: "",
-  //       RESIDENCE_STATUS:"01",
-  //       CATEG_CD:"09",
-  //       COUNTRY_CD:"45  "  
-  //   }
     });
   if (status === "0") {
     // let responseData = data;
     // console.log("asdwqe responseData", responseData)
     return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+interface ValidateDocType {
+  PAN_NO: string,
+  UNIQUE_ID: string,
+  ELECTION_CARD_NO: string,
+  NREGA_JOB_CARD: string,
+  PASSPORT_NO: string,
+  DRIVING_LICENSE_NO: string,
+  TEMPLATE_CD: string,
+  CUST_TYP: string,
+}
+export const validateDocData = async (reqObj:ValidateDocType) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("VALIDATEDOCDATA", reqObj);
+  if(status === "0") {
+    let responseData = data;
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -1546,54 +1350,12 @@ export const SaveEntry = async (reqdata) => {
     REQ_CD,
     formData,
     COMP_CD,
+    BRANCH_CD,
+    isDraftSaved,
+    updated_tab_format
   } = reqdata
 
-  // console.log("aaaaaaaaa", formData)
-  const PHOTO_MST = {
-    IsNewRow: true,
-    COMP_CD:"132 ",
-    ENTERED_BRANCH_CD:"099",
-    REQ_CD: " ",
-    SR_CD:"3",
-    SIGN_GROUP:"2",
-    FROM_LIMIT:"2",
-    TO_LIMIT:"2",
-    REQ_FLAG:"F",
-    CUST_PHOTO: "BASE64",
-    CUST_SIGN: "BASE64",
-    ACT_FLAG: "F"
-  }
-
-  const DOC_MST = {
-    IsNewRow: true,
-    REQ_CD: " ",
-    REQ_FLAG: "F",
-    COMP_CD:"132",
-    BRANCH_CD: "099 ",
-    SR_CD:"3",
-    ACCT_TYPE:"abcd",
-    ACCT_CD:"12",
-    TRAN_CD:"123",
-    ENT_COMP_CD:"132 ",
-    ENT_BRANCH_CD:"099 "
-  }
-
-  const remainingData = { 
-    // IsNewRow: IsNewRow,
-    // REQ_CD:"",
-    // REQ_FLAG:"F",
-    // SAVE_FLAG:"D",
-    // ENTRY_TYPE :"F",
-    // CUSTOMER_ID:"",
-
-    IsNewRow: true,
-    // REQ_CD: "681",  // for-testing
-    REQ_CD: REQ_CD,
-    REQ_FLAG: "F",
-    SAVE_FLAG: "F",
-    ENTRY_TYPE: "1",
-    CUSTOMER_ID: CUSTOMER_ID,
-  }
+  // console.log("save entry aaaaaaaaa", formData, updated_tab_format)
 
   const remainingPD = {
     IsNewRow: IsNewRow,
@@ -1601,8 +1363,8 @@ export const SaveEntry = async (reqdata) => {
     // CATEGORY_CD: CATEGORY_CD,
     // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
     CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-    COMP_CD: "132 ",
-    BRANCH_CD: "099 ",
+    COMP_CD: COMP_CD,
+    BRANCH_CD: BRANCH_CD,
     ACCT_TYPE: ACCT_TYPE,
     REQ_FLAG: "F",
     CATEG_CD: CATEGORY_CD,
@@ -1613,25 +1375,13 @@ export const SaveEntry = async (reqdata) => {
   }
 
   const ExtraData = {
-    APPLICATION_TYPE: "Y",
-    // ENTERED_DATE: format(new Date(), "dd-MMM-yyyy"),
-    ENTERED_DATE: "20-July-2023",
-    // STD_1: "",
-    // STD_4: "54890",
-    // STD_2: "",
-    // STD_3: "",
-    // CONTACT1: "",
-    // CONTACT4: "",
-    // CONTACT2: "7858089344",
-    // CONTACT3: "",
-    // ENT_BRANCH_CD :"099 ", //need-in-legal
-    // ENT_COMP_CD: "132 ", //need-in-legal
-    // SCREEN: "",
-    // ISD_CD:"456783",
-    // ENTERED_BY:"hff",
-    // PAN_NO: "DWIPP9643D",
-    // UNIQUE_ID: "673598516700",
+    APPLICATION_TYPE: "01",
   }
+// const ExtraData = {
+//   SAME_AS_PER: PERSONAL_DETAIL.SAME_AS_PER ? "Y" : "N",
+//   ENT_BRANCH_CD :"099 ", //need-in-legal
+//   ENT_COMP_CD: "132 ", //need-in-legal
+// }
 
   formData["PERSONAL_DETAIL"] = {
     ...formData["PERSONAL_DETAIL"],
@@ -1640,501 +1390,113 @@ export const SaveEntry = async (reqdata) => {
   // SAME_AS_PER
   // formData["PERSONAL_DETAIL"].SAME_AS_PER = formData["PERSONAL_DETAIL"].SAME_AS_PER ? "Y" : "N";
 
-
-  let otherDTL = formData["OTHER_DTL"]
-  if(Boolean(otherDTL["POLITICALLY_CONNECTED"])) {
-      otherDTL["POLITICALLY_CONNECTED"] = "Y"
-  } else {
-      otherDTL["POLITICALLY_CONNECTED"] = "N"
-  }
-
-  if(Boolean(otherDTL["BLINDNESS"])) {
-      otherDTL["BLINDNESS"] = "Y"
-  } else {
-      otherDTL["BLINDNESS"] = "N"
-  }
-
-  if(Boolean(otherDTL["REFERRED_BY_STAFF"])) {
-      otherDTL["REFERRED_BY_STAFF"] = "Y"
-  } else {
-      otherDTL["REFERRED_BY_STAFF"] = "N"
-  }
-
-
-  const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
-    // ...remainingData,
-    // // PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData}
-    // // ...formData,
-    // // PERSONAL_DETAIL: formData["PERSONAL_DETAIL"], 
-    // OTHER_ADDRESS: formData["OTHER_ADDRESS"],
-    // // OTHER_ADDRESS: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: " ",
-    // //   REQ_FLAG: "F",
-    // //   COMP_CD:"132",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   ENTERED_BY:"ajayj",
-    // //   ENTERED_DATE:"10",
-    // //   LAST_ENTERED_BY:"12-NOV-2022",
-    // //   LAST_MODIFIED_DATE:"08-NOV-2023",
-    // //   MACHINE_NM:"Acute",
-    // //   LAST_MACHINE_NM:"Acute",
-    // //   CONFIRMED:"N"
-    // // },
-    // // RELATED_PERSON_DTL: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: " ",
-    // //   COMP_CD:"132",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   REQ_FLAG:"F",
-    // //   ENTERED_BY:"",
-    // //   ENTERED_DATE:"ajayj",
-    // //   MACHINE_NM:"Acute",
-    // //   LAST_ENTERED_BY:"15-NOV-2022",
-    // //   LAST_MODIFIED_DATE:"12-NOV-2023",
-    // //   LAST_MACHINE_NM:"Acute",
-    // //   CONFIRMED:"N",
-    // //   ENT_COMP_CD:"132",
-    // //   ENT_BRANCH_CD:"099",
-    // //   ACTIVE:"Y"
-    // // },
-    // RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"],
-    // // ATTESTATION_DTL: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: " ",
-    // //   REQ_FLAG:"F",
-    // //   COMP_CD:"132",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   ENTERED_BY:"ajayj",
-    // //   ENTERED_DATE:"10",
-    // //   LAST_ENTERED_BY:"12-NOV-2022",
-    // //   LAST_MODIFIED_DATE:"08-NOV-2023",
-    // //   MACHINE_NM:"Acute",
-    // //   LAST_MACHINE_NM:"Acute",
-    // //   CONFIRMED:"N",
-    // //   ENT_COMP_CD:"132",
-    // //   ENT_BRANCH_CD:"099"
-    // // },
-    // ATTESTATION_DTL: formData["ATTESTATION_DTL"],
-    // // OTHER_DTL: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: " ",
-    // //   COMP_CD:"132",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   REQ_FLAG:"F",
-    // //   NO_OF_CHILDREN: "3",
-    // //   NO_OF_ADULTS: "2",
-    // //   POLITICALLY_CONNECTED: "Y",
-    // //   EARNING_MEMEBER:"1",
-    // //   BLINDNESS:"N",
-    // //   ID_MARK: "d ",
-    // //   EMPLOYMENT_STATUS: "Y",
-    // //   REFERRED_BY_STAFF: "Y",
-    // //   EDUCATION_CD: " 01",
-    // //   EMP_COMPANY_TYPE: "01 ",
-    // //   COMPANY_NM: " Acute",
-    // //   JOINING_DT: "20-July-2023",
-    // //   RETIREMENT_DT: "20-July-2026",
-    // //   WORK_EXP: "5 ",
-    // //   SPECIALIZATION_REMARKS: "r ",
-    // //   FUNDED_AMT: "20000",
-    // //   NON_FUNDED_AMT: "2000",
-    // //   THRESHOLD_AMT: " 10000",
-    // //   NO_OF_2_WHEELERS: "2 ",
-    // //   NO_OF_4_WHEELERS: "2 ",
-    // //   CIBIL_SCORE: "6 "
-    // // },
-    // OTHER_DTL: formData["OTHER_DTL"],
-    // // NRI_DTL: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: " ",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   REQ_FLAG:"F",
-    // //   COMP_CD:"132 ",
-    // //   VISA_DETAIL: "49026446 ",
-    // //   VISA_ISSUE_DT: "20-June-2020 ",
-    // //   VISA_ISSUE_BY: "20-July-2021 ",
-    // //   VISA_EXPIRY_DT: "20-July-2023",
-    // //   DOMESTIC_RISK: "A",
-    // //   COUNTRY_OF_RISK: " ",
-    // //   CROSS_BORDER_RISK: " ",
-    // //   VISUALLY_IMPAIRED: "N",
-    // //   CUSTOMER_EVALUATION_FLAG: " ",
-    // //   relationshIP_manager: " a",
-    // //   ENT_COMP_CD:"132 ",
-    // //   ENT_BRANCH_CD:"099 "
-    // // },
-    // NRI_DTL: formData["NRI_DTL"],
-    // PHOTO_MST: formData["PHOTO_MST"],
-    // DOC_MST: {
-    //   IsNewRow: true,
-    //   MASTER_DATA: [
-    //     {
-    //       ACCT_TYPE: "0",
-    //       ACCT_CD: "0",
-    //       SR_CD: "1",
-    //       TEMPLATE_CD: "4",
-    //       SUBMIT: "N",
-    //       VALID_UPTO: " ",
-    //       DOC_AMOUNT: "",
-    //       DOC_NO: "12345",
-    //       DOC_TYPE: "KYC",
-    //       DOC_WEIGHTAGE: "",
-    //       ACTIVE: "Y",
-    //       DETAILS_DATA: {
-    //         isNewRow: [
-    //           {
-    //             SR_CD: "1",
-    //             ACCT_TYPE: "0",
-    //             ACCT_CD: "0",
-    //             TEMPLATE_CD: "4",
-    //             SUBMIT: "N",
-    //             VALID_UPTO: " ",
-    //             DOC_AMOUNT: "",
-    //             DOC_NO: "12345",
-    //             DOC_TYPE: "KYC",
-    //             DOC_WEIGHTAGE: "",
-    //             ACTIVE: "Y",
-    //             DOC_IMAGE: "BASE64"
-    //           }
-    //         ]
-    //       }
-    //     },
-    //     {
-    //       ACCT_TYPE: "0",
-    //       ACCT_CD: "0",
-    //       SR_CD: "2",
-    //       TEMPLATE_CD: "12",
-    //       SUBMIT: "N",
-    //       VALID_UPTO: "05-10-2023",
-    //       DOC_AMOUNT: "",
-    //       DOC_NO: "22222",
-    //       DOC_TYPE: "KYC",
-    //       DOC_WEIGHTAGE: "",
-    //       ACTIVE: "Y",
-    //       DETAILS_DATA: {
-    //         isNewRow: [
-    //           {
-    //             SR_CD: "2",
-    //             ACCT_TYPE: "0",
-    //             ACCT_CD: "0",
-    //             TEMPLATE_CD: "12",
-    //             SUBMIT: "N",
-    //             VALID_UPTO: "05-10-2023",
-    //             DOC_AMOUNT: "",
-    //             DOC_NO: "22222",
-    //             DOC_TYPE: "KYC",
-    //             DOC_WEIGHTAGE: "",
-    //             ACTIVE: "Y",
-    //             DOC_IMAGE: "BASE64"
-    //           }
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // },
-    // // DOC_MST: {
-    // //   IsNewRow: true,
-    // //   REQ_CD: "",
-    // //   REQ_FLAG: "F",
-    // //   COMP_CD:"132",
-    // //   BRANCH_CD: "099 ",
-    // //   SR_CD:"3",
-    // //   ACCT_TYPE:"abcd",
-    // //   ACCT_CD:"12",
-    // //   TRAN_CD:"123",
-    // //   ENT_COMP_CD:"132 ",
-    // //   ENT_BRANCH_CD:"099 "
-    // //  },
-
-    // // FORM_DTL: {
-    // //   IsNewRow: true,
-    // //   COMP_CD: "132 ",
-    // //   ENTERED_COMP_CD: "132 ",
-    // //   ENTERED_BRANCH_CD: "099",
-    // //   TRAN_CD: "1319",
-    // //   ENTERED_FROM: "P",
-    // //   FORM_TYPE: "CASH_TDS_EXEMPT",
-    // //   FORM_NM: "RETURN_FILED",
-    // //   FORM_EXPIRY_DATE: "10-OCT-2023",
-    // //   ENTERED_BY: "vsys",
-    // //   TDS_RATE: "50",
-    // //   TDS_CERTI_DETAILS: "test",
-    // //   TDS_LIMIT: "50000",
-    // //   ACT_FLAG: "F"
-    // // },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // {
-      // "DISPLAY_LANGUAGE": "en",
-      // "LOGINUSERDETAILS": {
-      //     "USERNAME": "adi",
-      //     "USERROLE": "4",
-      //     "BROWSER_FINGERPRINT": "",
-      //     "MACHINE_NAME": "Auto",
-      //     "BRANCH_CD": "099 "
-      // },
-      IsNewRow: true,
-      // REQ_CD:"734",
-      REQ_CD:REQ_CD,
-      REQ_FLAG:"F",
-      SAVE_FLAG:"F",
-      ENTRY_TYPE :"1",
-      CUSTOMER_ID:"",
-      COMP_CD: COMP_CD,
-    //  OTHER_ADDRESS: [
-    //    {
-    //         IsNewRow:true,
-    //        SR_CD:"1",
-    //   COMP_CD:"132 ",
-    //   BRANCH_CD:"099",
-    //       ADDRESS_TYPE:"02",
-    //   ENT_COMP_CD:"132 ",
-    //       ENT_BRANCH_CD:"099 " },
-    //   {
-    //        IsNewRow:true,
-    //        SR_CD:"3",
-    //   COMP_CD:"132 ",
-    //   BRANCH_CD:"099 ",
-    //       ADDRESS_TYPE:"02",
-    //   ENT_COMP_CD:"132 ",
-    //       ENT_BRANCH_CD:"099 "}
-    //   ],
-          OTHER_ADDRESS: formData["OTHER_ADDRESS"], //test-done
-  
-  //         RELATED_PERSON_DTL: {
-  //          IsNewRow: true,
-  //         COMP_CD:"132 ",
-  //         BRANCH_CD: "099 ",
-  //         SR_CD:"3",
-  //         REQ_FLAG:"F",
-  //         CONFIRMED:"N",
-  //         ENT_COMP_CD:"132 ",
-  //         ENT_BRANCH_CD:"099 ",
-  //         ACTIVE:"Y"
-  // },
-  RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"], // test-done
-  // ATTESTATION_DTL: {
-  //          IsNewRow: true,
-  //         REQ_FLAG:"F",
-  //         COMP_CD:"132",
-  //         BRANCH_CD: "099 ",
-  //         SR_CD:"3",
-  //         CONFIRMED:"N",
-  //          ENT_COMP_CD:"132",
-  //         ENT_BRANCH_CD:"099"
-  // },
-  ATTESTATION_DTL: formData["ATTESTATION_DTL"], //test-done
-  // OTHER_DTL:{
-  
-  //          IsNewRow: true,
-  //         COMP_CD:"132",
-  //          BRANCH_CD: "099 ",
-  //           SR_CD:"3",
-  //         REQ_FLAG:"F",
-  //         NO_OF_CHILDREN: "3",
-  //         NO_OF_ADULTS: "2",
-  //         POLITICALLY_CONNECTED: "Y",
-  //         EARNING_MEMEBER:"1",
-  //         BLINDNESS:"N",
-  //         ID_MARK: "d",
-  //         EMPLOYMENT_STATUS: "Salaried",
-  //         REFERRED_BY_STAFF: "Y",
-  //     EDUCATION_CD: " 01",
-  //     EMP_COMPANY_TYPE: "01 ",
-  //     COMPANY_NM: " Acute",
-  //     JOINING_DT: "20-July-2023",
-  //     RETIREMENT_DT: "20-July-2026",
-  //     WORK_EXP: "5 ",
-  //     SPECIALIZATION_REMARKS: "r ",
-  //     FUNDED_AMT: "20000",
-  //     NON_FUNDED_AMT: "2000",
-  //     THRESHOLD_AMT: " 10000",
-  //     NO_OF_2_WHEELERS: "2 ",
-  //     NO_OF_4_WHEELERS: "2 ",
-  //     CIBIL_SCORE: "6 ",
-  //      ENT_COMP_CD:"132 ",
-  //     ENT_BRANCH_CD:"099 "
-  // },
-  // OTHER_DTL: formData["OTHER_DTL"], //test-done
-  OTHER_DTL: otherDTL, //test-done
-  // PHOTO_MST:{
-  
-  //      IsNewRow: true,
-  //     COMP_CD:"132 ",
-  //     ENTERED_BRANCH_CD:"099",
-  //     SR_CD:"3",
-  //     SIGN_GROUP:"2",
-  //     FROM_LIMIT:"2",
-  //     TO_LIMIT:"2",
-  //     REQ_FLAG:"F",
-  //     CUST_PHOTO:"BASE64",
-  //     CUST_SIGN:"BASE64",
-  //     ACT_FLAG:"F",
-  //      ENT_COMP_CD:"132 ",
-  //     ENT_BRANCH_CD:"099 "
-  // },
-  PHOTO_MST: formData["PHOTO_MST"], //test-done
-  //  DOC_MST:{
-  
-  //         IsNewRow: true,
-  //         MASTER_DATA: [
-  //             {
-  //                 ACCT_TYPE: "0",
-  //                 ACCT_CD: "0",
-  //                 SR_CD: "1",
-  //                 TEMPLATE_CD: "4",
-  //                 SUBMIT: "N",
-  //                 VALID_UPTO: " ",
-  //                 DOC_AMOUNT: "",
-  //                 DOC_NO: "12345",
-  //                 DOC_TYPE: "KYC",
-  //                 DOC_WEIGHTAGE: "",
-  //                 ACTIVE: "Y",
-  //                 DETAILS_DATA: {
-  //                     isNewRow: [
-  //                         {
-  //                             SR_CD: "1",
-  //                             ACCT_TYPE: "0",
-  //                             ACCT_CD: "0",
-  //                             TEMPLATE_CD: "4",
-  //                             SUBMIT: "N",
-  //                             VALID_UPTO: " ",
-  //                             DOC_AMOUNT: "",
-  //                             DOC_NO: "12345",
-  //                             DOC_TYPE: "KYC",
-  //                             DOC_WEIGHTAGE: "",
-  //                             ACTIVE: "Y",
-  //                             DOC_IMAGE:"BASE64"
-  //                         }
-  //                     ]
-  //                 }
-  //             },
-  //             {
-  //                 ACCT_TYPE: "0",
-  //                 ACCT_CD: "0",
-  //                 SR_CD: "2",
-  //                 TEMPLATE_CD: "12",
-  //                 SUBMIT: "N",
-  //                 VALID_UPTO: "05-OCT-2023",
-  //                 DOC_AMOUNT: "",
-  //                 DOC_NO: "22222",
-  //                 DOC_TYPE: "KYC",
-  //                 DOC_WEIGHTAGE: "",
-  //                 ACTIVE: "Y",
-  //                 DETAILS_DATA: {
-  //                     isNewRow: [
-  //                         {
-  //                             SR_CD: "2",
-  //                             ACCT_TYPE: "0",
-  //                             ACCT_CD: "0",
-  //                             TEMPLATE_CD: "12",
-  //                             SUBMIT: "N",
-  //                             VALID_UPTO: "05-OCT-2023",
-  //                             DOC_AMOUNT: "",
-  //                             DOC_NO: "22222",
-  //                             DOC_TYPE: "KYC",
-  //                             DOC_WEIGHTAGE: "",
-  //                             ACTIVE: "Y",
-  //                             DOC_IMAGE: "BASE64"
-  //                         }
-  //                     ]
-  //                 }
-  //             }
-  //         ]
-  //     },
-  // DOC_MST: [
-  //   {
-  //     IsNewRow: true,
-  //     COMP_CD: "132 ",
-  //     BRANCH_CD:"099 ",
-  //     ENT_COMP_CD:"132 ",
-  //     ENT_BRANCH_CD:"099 ",
-  //     ACCT_TYPE: "1",
-  //     ACCT_CD: "2",
-  //     TEMPLATE_CD: "4",
-  //     SUBMIT: "N",
-  //     VALID_UPTO: "05-OCT-23",
-  //     DOC_AMOUNT: "1234",
-  //     DOC_NO: "123456",
-  //     DOC_TYPE: "KYC",
-  //     DOC_WEIGHTAGE: "1 ",
-  //     ACTIVE: "Y",
-  //   }
-  // ],
-  // DOC_MST: [
-  //   {
-  //     TEMPLATE_CD: "4",
-  //     SUBMIT: "N",
-  //     VALID_UPTO: "05-OCT-23",
-  //     DOC_NO: "123456",
-  //     DOC_TYPE: "KYC",
-  //     DOC_IMAGE: "",
-  //     DOC_AMOUNT: "",
-  //     DOC_WEIGHTAGE: "",
-  //     ACTIVE: "Y",
-  //     IsNewRow: true
-  //   }
-  // ],
-  DOC_MST: formData["DOC_MST"],
-  
-  
-  // NRI_DTL: {
-  // IsNewRow: true,
-  // BRANCH_CD: "099 ",
-  // SR_CD:"3",
-  // REQ_FLAG:"F",
-  // COMP_CD:"132 ",
-  //     VISA_DETAIL: "49026446 ",
-  //     VISA_ISSUE_DT: "20-Jun-2020 ",
-  //     VISA_ISSUE_BY: "20-Jul-2021 ",
-  //     VISA_EXPIRY_DT: "20-Jul-2023",
-  //     DOMESTIC_RISK: "A",
-  //     COUNTRY_OF_RISK: " ",
-  //     CROSS_BORDER_RISK: " ",
-  //     VISUALLY_IMPAIRED: "N",
-  //     CUSTOMER_EVALUATION_FLAG: " ",
-  //     RELATIONSHIP_MANAGER:"12",
-  //     ENT_COMP_CD:"132 ",
-  //     ENT_BRANCH_CD:"099 "
-  // // }
-  
-  // },
-  NRI_DTL: formData["NRI_DTL"], //test-done
-  
+  let payload:any = {}
+  Object.keys(formData).forEach(tabdata => {
+    if(tabdata === "PERSONAL_DETAIL") {
+      if(isDraftSaved) {
+        if(updated_tab_format && updated_tab_format["PERSONAL_DETAIL"]) {
+          // console.log("awndiuwhieuhdiweuhdw", updated_tab_format)
+          payload[tabdata] = updated_tab_format["PERSONAL_DETAIL"]
+        }
+      } else {
+        payload[tabdata] = formData["PERSONAL_DETAIL"] = {
+          ...formData["PERSONAL_DETAIL"],
+          ...remainingPD, ...ExtraData
+        }
+      }
+    } else if(tabdata === "DOC_MST") {
+      let doc_mst = formData["DOC_MST"]?.["doc_mst_payload"];
+      payload[tabdata] = [...doc_mst];
+    } else if(tabdata === "OTHER_DTL") {
+      let otherDTL = formData[tabdata]
+      if(Boolean(otherDTL["POLITICALLY_CONNECTED"])) {
+        otherDTL["POLITICALLY_CONNECTED"] = "Y"
+      } else {
+          otherDTL["POLITICALLY_CONNECTED"] = "N"
+      }
+      if(Boolean(otherDTL["BLINDNESS"])) {
+          otherDTL["BLINDNESS"] = "Y"
+      } else {
+          otherDTL["BLINDNESS"] = "N"
+      }      
+      if(Boolean(otherDTL["REFERRED_BY_STAFF"])) {
+          otherDTL["REFERRED_BY_STAFF"] = "Y"
+      } else {
+          otherDTL["REFERRED_BY_STAFF"] = "N"
+      }
+      
+      payload[tabdata] = {...otherDTL}
+    } else {
+      payload[tabdata] = formData[tabdata]
+    }
   });
+  payload = {...payload,
+    IsNewRow: true,
+    // REQ_CD:"734",
+    REQ_CD:REQ_CD,
+    REQ_FLAG:"F",
+    SAVE_FLAG:"F",
+    ENTRY_TYPE :"1",
+    CUSTOMER_ID:"",
+    COMP_CD: COMP_CD,
+  }
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", payload)
   if(status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const updateCustomer = async ({
+  COMP_CD,
+  updated_tab_format,
+  update_type,
+  CUSTOMER_ID,
+  REQ_CD,
+  REQ_FLAG,
+  SAVE_FLAG,
+  IsNewRow,
+}) => {
+  let new_updated_tab_format = {...updated_tab_format};
+  if(new_updated_tab_format["PERSONAL_DETAIL"]) {
+    new_updated_tab_format["PERSONAL_DETAIL"] = {
+      ...new_updated_tab_format["PERSONAL_DETAIL"],
+      APPLICATION_TYPE: "01"
+    }
+  }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+      // IsNewRow: true,
+      // // REQ_CD:"734",
+      // REQ_CD:REQ_CD,
+      // REQ_FLAG:"F",
+      // SAVE_FLAG:"F",
+      // ENTRY_TYPE :"1",
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD,
+      REQ_FLAG: REQ_FLAG,
+      SAVE_FLAG: SAVE_FLAG,
+      // SAVE_FLAG: "",
+      ENTRY_TYPE: "",
+      // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+      IsNewRow: IsNewRow,
+      COMP_CD: COMP_CD,
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done,
+      // DOC_MST: [],
+      // ...updated_tab_format,
+      ...new_updated_tab_format
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const AlphaNumericValidate = (columnValue) => {
   let regex = /^[a-zA-Z0-9 ]*$/;
@@ -2150,7 +1512,8 @@ export const AlphaNumericValidate = (columnValue) => {
 // to show total_acct number, in deactivate customer
 export const DeactivateCustomer = async ({CUSTOMER_ID, COMP_CD}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
+    await AuthSDK.internalFetcher("VALIDATETOINACTIVE", {
+      // VALIDATETOINACTIVE, old - CUSTOMERDEPENDENCYCOUNT
       COMP_CD: COMP_CD, 
       CUSTOMER_ID: CUSTOMER_ID,
     });
@@ -2202,20 +1565,13 @@ export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}
     }
 } 
 
-export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
-  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE)
-  let PIN_CODE = "", PARENT_AREA = ""
-  if(Boolean(dependentValue?.PIN_CODE) && dependentValue?.PIN_CODE?.value?.length>5) {
-    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value)
-    PIN_CODE = dependentValue?.PIN_CODE?.value
-  }
-  if(PIN_CODE) {
-    // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
+export const getOptionsOnPinParentArea = async (pinCode, formState, _, authState) => {
+  if(Boolean(pinCode) && pinCode?.length>5) {
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAREALIST", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      PIN_CODE: PIN_CODE,
+      PIN_CODE: pinCode,
       // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
       // PARENT_AREA: PARENT_AREA,
       FLAG: "P",
@@ -2223,7 +1579,6 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
     });
 
     if(status == 0) {
-      // console.log("getOptionsOnPinParentArea data", data)
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
@@ -2239,7 +1594,46 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
+  } else return [];
+}
+
+export const getOptionsOnPinParentAreaOtherAdd = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value)
+  let PIN_CODE = "", PARENT_AREA = "";
+  if(Boolean(dependentValue["OTHER_ADDRESS[0].PIN_CODE"]) && dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value?.length>5) {
+    PIN_CODE = dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value
+  }
+  if(PIN_CODE) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      // PARENT_AREA: PARENT_AREA,
+      FLAG: "P",
+      PARENT_AREA: "",
+    });
+
+    if(status == 0) {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
     }
+  } else {
+    return [];
+  }
 }
 
 
@@ -2437,6 +1831,49 @@ export const getFinancialDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
     CUSTOMER_ID: CUSTOMER_ID,
     COMP_CD: COMP_CD,
   })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCategoryDTL = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("GETCATEGORYDTL", {
+    COMP_CD: COMP_CD,
+    BRANCH_CD: BRANCH_CD,
+    CUSTOMER_ID: CUSTOMER_ID,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCalculatedRate = async (reqObj) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("CALCULATEINTRATE", reqObj)
+  if(status == 0) {
+    const {NEW_PENAL_RATE, NEW_AGCLR_RATE, NEW_DUE_AMT, NEW_INT_RATE, NEW_INSU_PENAL_RATE, NEW_INST_RS} = data;
+    return {
+      NEW_AG_CL_RATE: {value: "50" ?? ""},
+      NEW_INST_RS: {value: "10"},
+      NEW_INS_EXPIRY_PENAL_RATE: {value: "20" ?? ""},
+      NEW_INT_RATE: {value: "30" ?? ""},
+      NEW_PENAL_RATE: {value: "60" ?? ""},
+      NEW_DUE_AMT: {value: "40" ?? ""},
+    }
+    return {...data, NEW_PENAL_RATE: {value: "10"}};
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const saveCategUpdate = async (reqObj) => {  
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("SAVECATEGORYDTL", reqObj)
   if(status == 0) {
     return data;
   } else {

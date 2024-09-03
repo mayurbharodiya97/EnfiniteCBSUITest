@@ -6,11 +6,15 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
+import { GradientButton } from "components/styledComponent/button";
+import CategoryUpdate from "./CategoryUpdate";
+import { queryClient } from "cache";
 
-const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:any) {
+const HeaderForm = () => {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
     const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
     const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
+    const [changeCategDialog, setChangeCategDialog] = useState<boolean>(false)
     const {authState} = useContext(AuthContext);
     const location: any = useLocation();
     // state?.currentFormctx.isLoading && <LinearProgress color="secondary" />
@@ -40,63 +44,12 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
     );
 
     const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-        ["getPMISCData", {}],
+        ["getPMISCData"],
         () => API.getPMISCData("CKYC_ACCT_TYPE")
     );
 
-    //   // get customer form details  
-    // const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
-    //     onSuccess: (data) => {
-    //     // // console.log("on successssss", data, location)
-    //     // handleFormDataonRetrievectx(data[0])
-    //     // let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-    //     // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-    //     // setAcctTypeState(acctType[0])
-    //     // // handleColTabChangectx(0)
-    //     // // handleFormModalOpenOnEditctx(location?.state)
-    //     handleFormDataonRetrievectx(data[0])
-    //     // onClosePreventUpdateDialog()
-    //     },
-    //     onError: (error: any) => {},
-    // });
-    // useEffect(() => {
-    //     console.log(formmode,"asddsaasddsa", location?.state)
-    //     // setDisplayMode(formmode)
-    //     if(Boolean(location.state)) {
-    //       if(formmode == "new") {
-    //         handleFormModalOpenctx(location?.state?.entityType)
-    //         console.log("statess new", location.state)
-    //       } else {
-    //         handleColTabChangectx(0)
-    //         handleFormModalOpenOnEditctx(location?.state)
-      
-    //         let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-    //           COMP_CD: authState?.companyID ?? "",
-    //         }
-    //         if(Array.isArray(location.state) && location.state.length>0) {
-    //           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-    //           const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-    //           if(Boolean(reqCD)) {
-    //             payload["REQUEST_CD"] = reqCD;
-    //           }
-    //           if(Boolean(custID)) {
-    //             payload["CUSTOMER_ID"] = custID;
-    //           }
-    //         }
-    //         if(Object.keys(payload)?.length > 1) {
-    //           mutation.mutate(payload)
-    //         }
-    //       } 
-    //     } else {
-    //       handleFormModalClosectx()
-    //       onClose()
-    //     }
-        
-    // }, [])
-
-
       // get tabs data
-    const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+    const {data:TabsData, isSuccess, isLoading, isFetching, error, refetch} = useQuery(
         ["getTabsDetail", {
         ENTITY_TYPE: state?.entityTypectx, 
         CATEGORY_CD: state?.categoryValuectx, 
@@ -135,7 +88,7 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
                 subtitles.push(subtitleinfo)
                 } else {
                 // new tab element
-                newData.push({...element, subtitles: [subtitleinfo]})
+                newData.push({...element, subtitles: [subtitleinfo], isVisible: true})
                 }
             // console.log("filled newdata -aft", element.TAB_NAME , newData)
             });
@@ -144,20 +97,44 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
         }
         }
     }, [TabsData, isLoading])
+    
+    useEffect(() => {
+      if((isLoading || isFetching) && state?.categoryValuectx && state?.constitutionValuectx) {
+        handleCurrFormctx({
+          isLoading: true,
+        })
+      }
+    }, [isLoading, isFetching, state?.entityTypectx,
+      state?.categoryValuectx,
+      state?.constitutionValuectx])
 
     
 
     useEffect(() => {
-        if(!mutation.isLoading && mutation.data) {
+        if(state?.accTypeValuectx) {
           if(AccTypeOptions && !isAccTypeLoading) {
-            let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+            let acctTypevalue = state?.accTypeValuectx
             let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
             setAcctTypeState(acctType[0])
           }
         }
-    }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])    
+    }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
+
+    useEffect(() => {
+      return () => {
+        queryClient.removeQueries(["getCIFCategories",state.entityTypectx])
+        queryClient.removeQueries("getPMISCData")
+        queryClient.removeQueries(["getTabsDetail", {
+          ENTITY_TYPE: state?.entityTypectx, 
+          CATEGORY_CD: state?.categoryValuectx, 
+          CONS_TYPE: state?.constitutionValuectx,
+          CONFIRMFLAG: state?.confirmFlagctx,
+          }])
+      }
+    }, [])
 
     return (
+      <>
         <AppBar
         position="sticky"
         // color=""
@@ -255,6 +232,15 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
               size="small"
             />} */}
 
+            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx && state?.customerIDctx) &&
+            <Grid sx={{alignSelf: "flex-end"}}>
+              <GradientButton
+                onClick={() => setChangeCategDialog(true)}
+                disabled={false}
+                style={{width: "auto", maxWidth: "20px"}}
+              >...</GradientButton>
+            </Grid>}
+
             <Grid item xs={12} sm={6} md>
               <Autocomplete sx={{width: "100%"}}
                 // disablePortal
@@ -325,7 +311,14 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
                 color="secondary"
               />
             </Grid>
-            {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
+            {!state?.isFreshEntryctx && (
+              <FormControlLabel 
+              control={
+                <Checkbox 
+                  checked={Boolean(state?.isCustActivectx && state?.isCustActivectx === "Y") ? true : false} 
+                  disabled color="secondary" />
+              } label="Active" />
+            )}            
             {/* <ButtonGroup size="small" variant="outlined" color="secondary">
               <Button color="secondary" onClick={() => {
                   setIsCustomerData(false)
@@ -347,7 +340,14 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
         {loader}
         {/* {state?.currentFormctx.isLoading && <LinearProgress color="secondary" />} */}
   </AppBar>
-    )
-})
+        {changeCategDialog && 
+          <CategoryUpdate 
+            open={changeCategDialog} 
+            setChangeCategDialog={setChangeCategDialog} 
+          />
+        }
+    </>
+  )
+}
 
 export default HeaderForm;

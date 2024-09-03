@@ -12,25 +12,27 @@ import {
   ListItemButton,
   Popover,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { queryClient } from "cache";
+import { Alert } from "components/common/alert";
 
 export const Quick_View = () => {
   const authController = useContext(AuthContext);
-  const classes = useStyles();
   const navigate = useNavigate();
-  const { data, isLoading, isFetching, isError, refetch } = useQuery<any, any>(
-    ["GETQUICKACCESSVIEW"],
-    () =>
-      API.getQuickView({
-        userID: authController?.authState?.user?.id,
-        branchCode: authController?.authState?.user?.branchCode,
-        companyID: authController?.authState?.companyID,
-      })
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["GETQUICKACCESSVIEW"], () =>
+    API.getQuickView({
+      userID: authController?.authState?.user?.id,
+      branchCode: authController?.authState?.user?.branchCode,
+      companyID: authController?.authState?.companyID,
+    })
   );
   useEffect(() => {
     return () => {
@@ -39,8 +41,8 @@ export const Quick_View = () => {
   }, []);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
-    setAnchorEl(event.currentTarget);
     refetch();
+    setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -96,78 +98,85 @@ export const Quick_View = () => {
         }}
         PaperProps={{
           style: {
-            maxWidth: "580px",
-            width: "580px",
+            maxWidth: "495px",
+            width: "495px",
           },
         }}
+
         // classes={{ paper: classes.popover }}
       >
         <Box m={2}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
+          <Grid container>
             <Grid item xs={5}>
-              <Button sx={{ p: 0 }}>
-                <img
-                  src={quickview}
-                  style={{
-                    background: "#ECEFF9",
-                    borderRadius: "12.7947px",
-                  }}
-                  alt=""
-                />
-              </Button>
-            </Grid>
-            <Grid item xs={7}>
-              <Grid
-                container
-                sx={{
-                  display: "flex",
-                  flexFlow: "column wrap",
-                  gap: "0 30px",
-                  height: 190, // set the height limit to your liking
-                  overflow: "auto",
-                  paddingLeft: "20px ",
+              <img
+                onClick={() => refetch()}
+                src={quickview}
+                style={{
+                  background: "#ECEFF9",
+                  borderRadius: "12.7947px",
+                  height: "200px",
+                  cursor: "pointer",
                 }}
-              >
-                <ListItem disablePadding>
-                  <ListItemButton
-                    sx={{ pt: 1, display: "list-item" }}
-                    onClick={() => {
-                      navigate("/cbsenfinity/change-branch");
-                    }}
-                  >
-                    Switch Branch
-                  </ListItemButton>
-                </ListItem>
-                {isLoading || isError ? (
-                  <></>
-                ) : (
-                  <>
-                    {data?.map((item) => (
-                      <ListItem
-                        key={item}
-                        disablePadding
-                        sx={{ width: "auto" }}
+                alt=""
+              />
+            </Grid>
+            <Grid
+              item
+              xs={7}
+              sx={{
+                pl: "25px",
+                height: "200px",
+                "& .MuiListItemButton-root": {
+                  pl: "0px",
+                },
+              }}
+            >
+              <ListItem disablePadding>
+                <ListItemButton
+                  sx={{ py: 1, display: "list-item" }}
+                  onClick={() => {
+                    navigate("/cbsenfinity/change-branch");
+                  }}
+                >
+                  Switch Branch
+                </ListItemButton>
+              </ListItem>
+              {isError ? (
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={error?.severity ?? "error"}
+                    errorMsg={error?.error_msg ?? "Error"}
+                    errorDetail={error?.error_detail ?? ""}
+                  />
+                </div>
+              ) : isLoading || isFetching ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CircularProgress color="secondary" size={15} />
+                </div>
+              ) : (
+                <>
+                  {data?.map((item) => (
+                    <ListItem key={item} disablePadding sx={{ width: "auto" }}>
+                      <ListItemButton
+                        sx={{ display: "list-item" }}
+                        onClick={(e) => {
+                          if (Boolean(item.DOCUMENT_URL)) {
+                            navigate(item.DOCUMENT_URL);
+                            handleClose();
+                          }
+                        }}
                       >
-                        <ListItemButton
-                          sx={{ display: "list-item" }}
-                          onClick={(e) => {
-                            if (Boolean(item.DOCUMENT_URL)) {
-                              navigate(item.DOCUMENT_URL);
-                              handleClose();
-                            }
-                          }}
-                        >
-                          {item?.DOC_NM}
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </>
-                )}
-              </Grid>
+                        {item?.DOC_NM}
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </>
+              )}
             </Grid>
           </Grid>
         </Box>

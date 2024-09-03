@@ -5,10 +5,12 @@ import * as API from "./api";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ParametersGridMetaData } from "./gridMetadata";
 import { useNavigate } from "react-router-dom";
-import { EditDetail } from "./editDetail";
+import  EditDetail  from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { Dialog, Typography } from "@mui/material";
+import AuditDetail from "./AuditDetail";
 
 const actions: ActionTypes[] = [
   {
@@ -31,28 +33,29 @@ const actions: ActionTypes[] = [
 
 const Parameters = () => {
   const navigate = useNavigate();
-  const authState = useContext(AuthContext);
+  const { getEntries } = useContext(ClearCacheContext);
+  const {authState} = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
-  const myGridRef = useRef<any>(null);
   const [acctOpen, setAcctOpen] = useState(false);
   const [paraType, setParaType] = useState("H");
-  const { getEntries } = useContext(ClearCacheContext);
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
+  const [openDilogue,setOpenDilogue] = useState(false);
+  const [auditData,setAuditData] = useState([]);
   const setCurrentAction = useCallback(async (data) => {
     if (data.name === "global") {
       setActionMenu((values) =>
         values.map((item) =>
           item.actionName === "global"
-            ? { ...item, actionName: "hopara", actionLabel: "HO Level" }
+            ? { ...item, actionName: "ho", actionLabel: "HO Level" }
             : item
         )
       );
       setParaType("G");
-    } else if (data.name === "hopara") {
+    } else if (data.name === "ho") {
       setActionMenu((values) =>
         values.map((item) =>
-          item.actionName === "hopara"
+          item.actionName === "ho"
             ? { ...item, actionName: "global", actionLabel: "Global Level" }
             : item
         )
@@ -69,20 +72,32 @@ const Parameters = () => {
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
     ["getParametersGridData", paraType],
-    () => API.getParametersGridData(paraType)
+    () => API.getParametersGridData({
+        para_type: paraType, 
+        comp_cd: authState?.companyID, 
+        branch_cd: authState.user.branchCode,
+        conf_type: "A",
+      })
   );
-
-  useEffect(() => {
-    return () => {
-      let entries = getEntries() as any[];
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach((one) => {
-          queryClient.removeQueries(one);
-        });
+  const validation = ()=>{
+    if( authState.user.branchCode===authState.user.baseBranchCode){
+      return actionMenu
+      } else {
+        return actionMenu.filter(action => action.actionName === "edit-detail");
       }
-      queryClient.removeQueries(["getParametersGridData", paraType]);
     };
-  }, [getEntries, paraType]);
+    ParametersGridMetaData.gridConfig.gridLabel = paraType === "H" ? "Parameter Master [HO Level]" : "Parameter Master [Global Level]";
+    useEffect(() => {
+      return () => {
+        let entries = getEntries() as any[];
+        if (Array.isArray(entries) && entries.length > 0) {
+          entries.forEach((one) => {
+            queryClient.removeQueries(one);
+          });
+        }
+        queryClient.removeQueries(["getParametersGridData"]);
+      };
+    }, [getEntries]);
 
   return (
     <Fragment>
@@ -98,30 +113,42 @@ const Parameters = () => {
         key={"parametersGrid" + paraType}
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
-        actions={authState.authState.user.branchCode!==authState.authState.user.baseBranchCode?[]:actionMenu}
+        ReportExportButton={true}
+        actions={validation()}
         setAction={setCurrentAction}
         setData={() => null}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
-        ref={myGridRef}
+        onClickActionEvent={(index, id, data) => {
+          setOpenDilogue(true)
+          setAuditData(data)
+        }}
       />
+    {openDilogue ? (
+      <AuditDetail
+      rowsData={auditData}
+      open={openDilogue}
+      onClose={() => setOpenDilogue(false)}/>
+    ) : null}
+       <Typography sx={{ fontWeight: "bold",color:"rgb(152 59 70 / 61%)" , marginLeft:"460px",marginTop:"-36.2px"}} variant="subtitle1">Parameters In Red Colour Indicates Pending For Confirmation</Typography>
       {componentToShow === "editDetail" ? (
         <EditDetail
           rowsData={rowsData}
           open={acctOpen}
           onClose={() => setAcctOpen(false)}
+          formView={"view"}
+          refetch={refetch}
         />
       ) : null}
     </Fragment>
   );
 };
 
-const ParametersGridWrapper = () => {
+export const ParametersGridWrapper = () => {
   return (
     <ClearCacheProvider>
       <Parameters />
     </ClearCacheProvider>
   );
 };
-
-export default ParametersGridWrapper;
+export default Parameters;

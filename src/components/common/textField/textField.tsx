@@ -1,4 +1,12 @@
-import { FC, useEffect, useRef, useCallback, useState } from "react";
+import {
+  FC,
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+} from "react";
 import {
   useField,
   UseFieldHookProps,
@@ -12,6 +20,7 @@ import { numWords } from "components/common/utils";
 import {
   CircularProgress,
   CircularProgressProps,
+  Dialog,
   FormHelperText,
   Grid,
   GridProps,
@@ -20,6 +29,12 @@ import {
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import * as Icons from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { DailyTransTabsWithDialog } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
+import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
+import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
+// import { DailyTransTabsWithDialog } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
   maxLength?: number;
@@ -40,6 +55,13 @@ interface MyGridExtendedProps {
     alwaysRun?: any;
     touchAndValidate?: any;
   };
+  enableShortcut?: string[];
+  ignoreInSubmit?: boolean;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
+  label?: string;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -73,12 +95,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
   setColor,
   showMaxLength = true,
   label,
+  setFieldLabel,
   startsIcon,
   endsIcon,
   iconStyle,
   textFieldStyle,
   txtTransform,
   AlwaysRunPostValidationSetCrossFieldValues,
+  preventSpecialCharInput,
+  enableShortcut = [],
+  ignoreInSubmit = false,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -102,6 +128,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
     validationAPIResult,
     dependentValues,
     setErrorAsCB,
+    fieldDataOnBlr,
+    setIgnoreInSubmit,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -121,6 +149,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
+  const [open360, setOpen360] = useState(false);
+  const [req360, setReq360] = useState({});
+  const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   useEffect(() => {
     if (typeof setColor === "function") {
       let result = setColor(value);
@@ -132,15 +164,30 @@ const MyTextField: FC<MyTextFieldProps> = ({
     }
   }, [value, setColor]);
 
+  useEffect(() => {
+    setIgnoreInSubmit(ignoreInSubmit);
+  }, [ignoreInSubmit]);
+
   const customHandleChange = useCallback(
     (e) => {
+      if (Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
+        let newValue: string = e.target.value;
+        const characters: string | null =
+          localStorage.getItem("specialChar") ?? "";
+        if (
+          newValue.split("")?.filter((char) => characters?.includes(char))
+            ?.length > 0
+        ) {
+          return;
+        }
+      }
       handleChange(e, e.target?.formattedValue ?? undefined);
     },
     [handleChange]
   );
 
   const focusRef = useRef();
-  // const inputfocusRef: any = useRef();
+  const inputfocusRef: any = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
@@ -153,9 +200,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
       focusRef?.current?.focus?.();
       ////////////Below solution is temporary for set focus in numberFormat Component.
       ////////////Need to find proper solution. If you found proper solution contact Me😎🤷‍♂️.
-      // if (!Boolean(focusRef?.current)) {
-      //   inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
-      // }
+      if (!Boolean(focusRef?.current)) {
+        inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
+      }
     }, 50);
   };
 
@@ -175,7 +222,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         try {
           let result = await setValueOnDependentFieldsChange(
             transformDependentFieldsState(dependentValues),
-            { isSubmitting }
+            { isSubmitting, value }
           );
 
           if (result !== undefined && result !== null) {
@@ -218,6 +265,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
     whenToRunValidation,
     setErrorAsCB,
   ]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
 
   if (excluded) {
     return null;
@@ -251,7 +305,81 @@ const MyTextField: FC<MyTextFieldProps> = ({
       tabIndex: readOnly ? -1 : undefined,
     };
   }
+
+  const splitBySlash = (fieldData) => {
+    return fieldData?.fieldKey?.split("/").pop()?.split(".").pop() ?? null;
+  };
+  const splitBySlash2 = (fieldData) => {
+    return fieldData?.fieldKey?.split("/").pop() ?? null;
+  };
+
+  const checkValuesNotEmpty = (keysToCheck) => {
+    const fieldsWithValue = keysToCheck.reduce((acc, key) => {
+      // Check if the key exists in either dependentValues or fieldDataOnBlr
+      const dependentKeys = Object.keys(dependentValues);
+      const mainFieldKey = splitBySlash2(fieldDataOnBlr);
+      const allKeys = [mainFieldKey, ...dependentKeys];
+      const matchingKey: any = allKeys.find((depKey) => {
+        if (typeof depKey === "string") {
+          const keyMatch = depKey === key || depKey.endsWith(`.${key}`);
+          return keyMatch;
+        }
+        return false;
+      });
+
+      if (matchingKey) {
+        const splitedFieldDataOnBlr = splitBySlash2(fieldDataOnBlr);
+
+        const fieldData =
+          matchingKey === splitedFieldDataOnBlr
+            ? fieldDataOnBlr
+            : dependentValues[matchingKey];
+        if (fieldData?.value) acc[key] = fieldData.value;
+      }
+
+      return acc;
+    }, {});
+
+    return {
+      allFieldsNotEmpty:
+        Object.keys(fieldsWithValue).length === keysToCheck.length,
+      fieldsWithValue,
+    };
+  };
+
+  const keysToCheck =
+    enableShortcut?.length > 0
+      ? enableShortcut
+      : splitBySlash(fieldDataOnBlr) === "ACCT_CD"
+      ? ["ACCT_CD", "BRANCH_CD", "ACCT_TYPE"]
+      : [];
+  const { allFieldsNotEmpty, fieldsWithValue } =
+    keysToCheck?.length > 0
+      ? checkValuesNotEmpty(keysToCheck)
+      : { allFieldsNotEmpty: false, fieldsWithValue: {} };
+
+  const handleKeyDown = (event) => {
+    if (
+      event.ctrlKey &&
+      event.altKey &&
+      allFieldsNotEmpty &&
+      event.key === "5" &&
+      !validationRunning
+    ) {
+      setReq360([
+        { data: { ...fieldsWithValue, COMP_CD: authState?.companyID } },
+      ]);
+      setOpen360(true);
+      event.preventDefault();
+    } else if (!event.ctrlKey && event.key === "F5") {
+      event.preventDefault();
+    }
+  };
+
   const isError = myTouch && Boolean(myError);
+  const handleClose = () => {
+    setOpen360(false);
+  };
   const result = (
     <>
       {/* Changes for bhavyata textfield label */}
@@ -275,14 +403,14 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
-        value={value}
+        label={updatedLabel ?? label}
+        value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>
             <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
-                ? myError
+                ? t(myError)
                 : Boolean(validationAPIResult)
                 ? validationAPIResult
                 : numWordsVar}
@@ -304,6 +432,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
           ...textFieldStyle,
         }}
         FormHelperTextProps={{
@@ -313,11 +446,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: textFieldStyle
-              ? ""
-              : Boolean(readOnly)
-              ? "var(--theme-color7)"
-              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,
@@ -362,17 +490,48 @@ const MyTextField: FC<MyTextFieldProps> = ({
           ...inputProps,
         }}
         onBlur={handleBlur}
-        disabled={isSubmitting}
+        disabled={isSubmitting || readOnly}
         variant={"standard"}
         color="secondary"
-        // ref={inputfocusRef}
+        ref={inputfocusRef}
+        onKeyDown={(event) => {
+          handleKeyDown(event);
+        }}
       />
     </>
   );
+  // if (Boolean(enableGrid)) {
+  //   return <Grid {...GridProps}>{result}</Grid>;
+  // } else {
+  //   return result;
+  // }
+  const renderDailyTransTabsWithDialog = () => {
+    if (open360) {
+      return (
+        <DailyTransTabsWithDialog
+          handleClose={handleClose}
+          rowsData={req360}
+          setRowsData={setReq360}
+        />
+      );
+    }
+    return null;
+  };
+
   if (Boolean(enableGrid)) {
-    return <Grid {...GridProps}>{result}</Grid>;
+    return (
+      <Grid {...GridProps}>
+        {result}
+        {renderDailyTransTabsWithDialog()}
+      </Grid>
+    );
   } else {
-    return result;
+    return (
+      <>
+        {result}
+        {renderDailyTransTabsWithDialog()}
+      </>
+    );
   }
 };
 

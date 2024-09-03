@@ -1,10 +1,15 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
+import { GeneralAPI } from "registry/fns/functions";
+import { utilFunction } from "components/utils";
+import * as API from "./api";
+import { format } from "date-fns";
+import { t } from "i18next";
 
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
-    label: "Account Inquiry",
+    label: "AccountInquiry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -48,11 +53,11 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "numberFormat",
+        componentType: "textField",
       },
       name: "ACCOUNT",
-      label: "Account No.",
-      placeholder: "Account Number",
+      label: "AccountNo",
+      placeholder: "AccountNo",
       defaultValue: "",
       type: "text",
       maxLength: 20,
@@ -90,12 +95,12 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "CUSTOMER",
-      label: "Customer Id",
+      label: "CustomerId",
       maxLength: 12,
       schemaValidation: {
         type: "string",
       },
-      placeholder: "Customer Id",
+      placeholder: "CustomerId",
       type: "text",
       startsIcon: "PortraitSharp",
       iconStyle: {
@@ -127,9 +132,9 @@ export const AccountInquiryMetadata = {
         componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
-      label: "Mobile No.",
+      label: "MobileNo",
       maxLength: 10,
-      placeholder: "Mobile Number",
+      placeholder: "MobileNo",
       type: "string",
       // startsIcon: Mobile_Number_Svg,
       startsIcon: "PhoneAndroidSharp",
@@ -161,8 +166,8 @@ export const AccountInquiryMetadata = {
         componentType: "panCardOptional",
       },
       name: "PAN",
-      label: "Pan No.",
-      placeholder: "PanCard Number",
+      label: "PAN_NO",
+      placeholder: "PAN_NO",
       maxLength: 10,
       type: "text",
       schemaValidation: {
@@ -199,8 +204,8 @@ export const AccountInquiryMetadata = {
         componentType: "textField",
       },
       name: "NAME",
-      label: "Account Name",
-      placeholder: "Enter Name",
+      label: "Account_Name",
+      placeholder: "Account_Name",
       type: "text",
       GridProps: {
         xs: 12,
@@ -272,8 +277,8 @@ export const AccountInquiryMetadata = {
 export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Search Criteria Data",
-    rowIdColumn: "ACCT_CD",
+    gridLabel: "SearchCriteriaData",
+    rowIdColumn: "ACCT_NO",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
@@ -293,13 +298,24 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [
     {
+      columnName: "AcctHolderType",
+      accessor: "ACCT_STATUS",
+      sequence: 1,
+      componentType: "default",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 160,
+      alignment: "left",
+    },
+    {
       accessor: "ACCT_NO",
-      columnName: "Account No.",
-      sequence: 3,
+      columnName: "AccountNo",
+      sequence: 2,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -308,8 +324,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account/Person Name",
-      sequence: 4,
+      columnName: "Account_Name",
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 280,
@@ -319,8 +335,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "Customer Id",
-      sequence: 5,
+      columnName: "CustomerId",
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 100,
@@ -329,8 +345,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONTACT2",
-      columnName: "Mobile No.",
-      sequence: 6,
+      columnName: "MobileNo",
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -339,8 +355,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "Pan No.",
-      sequence: 7,
+      columnName: "PAN_NO",
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -349,7 +365,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WITHDRAW_BAL",
-      columnName: "Withdraw Balance",
+      columnName: "WithdrawBalance",
       sequence: 7,
       color: "red",
       alignment: "left",
@@ -360,8 +376,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "E_MAIL_ID",
-      columnName: "Email Id",
-      sequence: 7,
+      columnName: "EmailID",
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -371,9 +387,9 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "OP_DATE",
-      columnName: "Opening Date",
-      sequence: 8,
-      alignment: "center",
+      columnName: "OpeningDate",
+      sequence: 9,
+      alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
       isReadOnly: true,
@@ -383,8 +399,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISPLAY_STATUS",
-      columnName: "Status",
-      sequence: 9,
+      columnName: "STATUS",
+      sequence: 10,
       alignment: "left",
       componentType: "default",
       isReadOnly: true,
@@ -394,8 +410,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CLOSE_DT",
-      columnName: "Close Date",
-      sequence: 10,
+      columnName: "CloseDate",
+      sequence: 11,
       alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
@@ -436,32 +452,32 @@ export const DependenciesData = {
   // ],
   columns: [
     {
-      columnName: "Assets & Liabilities",
+      columnName: "Assets_Liabilities",
       accessor: "ASS_LIB",
       width: 170,
     },
     {
-      columnName: " Account Status",
+      columnName: "Account_Status",
       accessor: "ACCT_STATUS",
       width: 150,
     },
     {
-      columnName: "Customer Id",
+      columnName: "CustomerID",
       accessor: "CUSTOMER_ID",
       width: 130,
     },
     {
-      columnName: "Account Number",
+      columnName: "AccountNo",
       accessor: "AC_CD",
       width: 170,
     },
     {
-      columnName: "Account Name",
+      columnName: "Account_Name",
       accessor: "ACCT_NM",
       width: 380,
     },
     {
-      columnName: "Opening Date",
+      columnName: "OpeningDate",
       accessor: "OP_DATE",
       width: 180,
     },
@@ -537,8 +553,8 @@ export const PassbookStatement: any = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account/Person Name",
-      placeholder: "Account/Person Name",
+      label: "AccountHolder",
+      placeholder: "AccountHolder",
       type: "text",
       isReadOnly: true,
       fullWidth: true,
@@ -585,7 +601,7 @@ export const PassbookStatement: any = {
         componentType: "datePicker",
       },
       name: "WK_STMT_TO_DATE",
-      label: "To Date :-",
+      label: "ToDate",
       placeholder: "",
       // format: "dd/MM/yyyy",
       schemaValidation: {
@@ -659,9 +675,9 @@ export const PassbookStatement: any = {
     // },
   ],
 };
-export const PassbookStatementInq = {
+export const AccountInquiry = {
   form: {
-    name: "passbookstatement",
+    name: "AccountInquiry",
     label: "Passbook/Statement Print Option",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -708,8 +724,8 @@ export const PassbookStatementInq = {
         componentType: "numberFormat",
       },
       name: "ACCT_NO",
-      label: "Account No.",
-      placeholder: "Account Number",
+      label: "AccountNo",
+      placeholder: "AccountNo",
       defaultValue: "",
       type: "text",
       isReadOnly: true,
@@ -720,38 +736,28 @@ export const PassbookStatementInq = {
       },
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
     },
-    // {
-    //   render: {
-    //     componentType: "currencyWithoutWords",
-    //   },
-    //   label: "Amount",
-    //   placeholder: "Enter Minimum Amount",
-    //   required: true,
-    //   GridProps: { xs: 12, sm: 6, md: 6 },
-    //   // FormatProps: {
-    //   //   // prefix: "₹",
-    //   //   // thousandsGroupStyle: "thousand",
-    //   //   // decimalScale: 3,
-    //   // },
-    // },
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account/Person Name",
-      placeholder: "Account/Person Name",
+      label: "AccountHolder",
+      placeholder: "AccountHolder",
       type: "text",
       isReadOnly: true,
       fullWidth: true,
       GridProps: {
         xs: 12,
-        md: 8,
-        sm: 8,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
     },
 
@@ -762,26 +768,15 @@ export const PassbookStatementInq = {
       name: "PD_DESTION",
       label: "",
       RadioGroupProps: { row: true },
-      defaultValue: "P",
+      defaultValue: "S",
       options: [
+        { label: "Statement ", value: "S" },
         {
           label: "Passbook",
           value: "P",
         },
-        { label: "Statement", value: "S" },
       ],
-      postValidationSetCrossFieldValues: (
-        field,
-        __,
-        ___,
-        dependentFieldsValues
-      ) => {
-        if (field?.value === "S") {
-          return { ACTAA_NO: { value: "0" } };
-        }
-        return {};
-      },
-      runPostValidationHookAlways: true,
+
       GridProps: {
         xs: 12,
         md: 11,
@@ -800,10 +795,10 @@ export const PassbookStatementInq = {
       defaultValue: "D",
       options: [
         {
-          label: "Front Page",
+          label: "FrontPage",
           value: "F",
         },
-        { label: "First Page", value: "R" },
+        { label: "FirstPage", value: "A" },
         { label: "Detail", value: "D" },
       ],
       dependentFields: ["PD_DESTION"],
@@ -830,16 +825,44 @@ export const PassbookStatementInq = {
       name: "TRAN_CD",
       label: "Template",
       defaultValue: "1",
-      options: getPassBookTemplate,
+      dependentFields: ["PD_DESTION", "PID_DESCRIPION"],
+      fullWidth: true,
+      disableCaching: true,
+      options: async (dependentValue, formState, _, authState) => {
+        if (
+          dependentValue?.PID_DESCRIPION?.value &&
+          dependentValue?.PD_DESTION?.value === "P"
+        ) {
+          // handleButonDisable use for disable "Ok" button while getPassBookTemplate api call
+          formState.handleButonDisable(true);
+          try {
+            const data = await getPassBookTemplate({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: authState?.user?.branchCode,
+              ACCT_TYPE: formState?.rowsData?.ACCT_TYPE,
+              FLAG: "PAS" + dependentValue?.PID_DESCRIPION?.value,
+            });
+            return data;
+          } catch (err) {
+            console.log("err", err);
+            return [];
+          } finally {
+            formState.handleButonDisable(false);
+          }
+        } else {
+          return [];
+        }
+      },
       _optionsKey: "getTemplateList",
       placeholder: "",
       type: "text",
       GridProps: {
         xs: 12,
-        md: 6,
         sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
-      dependentFields: ["PD_DESTION"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PD_DESTION?.value === "P") {
           return false;
@@ -848,31 +871,133 @@ export const PassbookStatementInq = {
         }
       },
     },
+
     {
       render: {
         componentType: "numberFormat",
       },
       name: "PASS_BOOK_LINE",
-      label: "Line No.",
-      defaultValue: "",
+      label: "LineNo",
       type: "text",
-      isReadOnly: false,
       fullWidth: true,
       autoComplete: false,
-      schemaValidation: {
-        type: "string",
-      },
       GridProps: {
-        xs: 12,
-        md: 2.5,
-        sm: 2.5,
+        xs: 6,
+        sm: 3,
+        md: 3,
+        lg: 3,
+        xl: 3,
       },
-      dependentFields: ["PD_DESTION"],
+      dependentFields: ["PD_DESTION", "PID_DESCRIPION", "TRAN_CD", "REPRINT"],
+      runValidationOnDependentFieldsChange: true,
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.PD_DESTION?.value === "P" &&
+          (!Boolean(dependentFieldsValues?.REPRINT?.value) ||
+            dependentFieldsValues?.REPRINT?.value === "")
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (formState?.isSubmitting) return {};
+
+        if (field?.value === "0" || field?.value === "") {
+          return {
+            PASS_BOOK_LINE: {
+              value: dependentValue?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE
+                ? Number(dependentValue?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE)
+                : "",
+
+              ignoreUpdate: true,
+            },
+          };
+        }
+      },
+
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+        if (
+          dependentFieldsValues?.PD_DESTION?.value === "P" &&
+          dependentFieldsValues?.PID_DESCRIPION?.value === "D"
+        ) {
           return false;
         } else {
           return true;
+        }
+      },
+      validate: (columnValue, dependentFields) => {
+        if (
+          dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE &&
+          Boolean(columnValue?.value)
+        ) {
+          if (
+            Number(columnValue?.value) >=
+              Number(dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE) &&
+            Number(columnValue?.value) <=
+              Number(dependentFields?.TRAN_CD?.optionData?.[0]?.LINE_PER_PAGE)
+          ) {
+            return "";
+          } else {
+            return `${t(`LineNoValidation`, {
+              from: dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE,
+              to: dependentFields?.TRAN_CD?.optionData?.[0]?.LINE_PER_PAGE,
+            })}`;
+          }
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "REPRINT_VALUE",
+      dependentFields: ["REPRINT"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value = Number(dependentFieldsValues?.REPRINT?.value);
+        return value === 1 ? "Y" : "N";
+
+      },
+    },
+
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "REPRINT",
+      label: "Reprint",
+      endsIcon: "Print",
+      rotateIcon: "scale(1.4)",
+      type: "text",
+      // isReadOnly: true,
+      fullWidth: true,
+      autoComplete: false,
+      dependentFields: ["PD_DESTION", "PID_DESCRIPION"],
+      GridProps: {
+        xs: 6,
+        sm: 3,
+        md: 3,
+        lg: 3,
+        xl: 3,
+      },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.PID_DESCRIPION?.value !== "D" ||
+          (dependentFieldsValues?.PD_DESTION?.value === "P" &&
+            fieldData?.value !== "")
+        ) {
+          return true;
+        } else if (dependentFieldsValues?.PD_DESTION?.value === "S") {
+          return true;
+        } else {
+          return false;
         }
       },
     },
@@ -880,67 +1005,63 @@ export const PassbookStatementInq = {
       render: {
         componentType: "spacer",
       },
+      name: "LINE_NO_SPACER",
       GridProps: {
         xs: 12,
-        md: 0.5,
-        sm: 0.5,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
-      dependentFields: ["PD_DESTION"],
+      dependentFields: ["PD_DESTION", "PID_DESCRIPION"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+        if (
+          dependentFieldsValues?.PD_DESTION?.value === "P" &&
+          dependentFieldsValues?.PID_DESCRIPION?.value !== "D"
+        ) {
           return false;
         } else {
           return true;
         }
       },
     },
+
     {
       render: {
-        componentType: "formbutton",
+        componentType: "hidden",
       },
-      name: "ACTAA_NO",
-      label: "Reprint",
-      endsIcon: "Print",
-      rotateIcon: "scale(1.4)",
-      type: "text",
-      isReadOnly: true,
-      fullWidth: true,
-      autoComplete: false,
-      GridProps: {
-        xs: 12,
-        md: 1.3,
-        sm: 1.3,
-      },
-      dependentFields: ["PD_DESTION"],
-      shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      name: "OP_DATE",
+      format: "dd/MM/yyyy",
     },
+
     {
       render: {
         componentType: "datePicker",
       },
       name: "PASS_BOOK_DT",
-      label: "From Date :-",
-      // format: "dd/MM/yyyy",
+      label: "FromDate",
+      format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
-      dependentFields: ["PD_DESTION", "ACTAA_NO"],
+      maxDate: new Date(),
+      dependentFields: ["PD_DESTION", "REPRINT", "PID_DESCRIPION", "OP_DATE"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (
           dependentFieldsValues?.PD_DESTION?.value === "P" &&
-          (!Boolean(dependentFieldsValues?.ACTAA_NO?.value) ||
-            dependentFieldsValues?.ACTAA_NO?.value === "0")
+          (!Boolean(dependentFieldsValues?.REPRINT?.value) ||
+            dependentFieldsValues?.REPRINT?.value === "")
+        ) {
+          return true;
+        } else if (
+          dependentFieldsValues?.PD_DESTION?.value === "P" &&
+          dependentFieldsValues?.PID_DESCRIPION?.value !== "D"
         ) {
           return true;
         } else {
           return false;
         }
       },
+
       onFocus: (date) => {
         date.target.select();
       },
@@ -951,10 +1072,29 @@ export const PassbookStatementInq = {
           return true;
         }
       },
+
+      validate: (columnValue, dependentFields) => {
+        if (
+          new Date(columnValue?.value) <
+          new Date(dependentFields?.OP_DATE?.value)
+        ) {
+          return `${t(`DateValidation`, {
+            date: format(
+              new Date(dependentFields?.OP_DATE?.value),
+              "dd/MM/yyyy"
+            ),
+          })}`;
+        } else {
+          return "";
+        }
+      },
+
       GridProps: {
         xs: 12,
-        md: 6,
         sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
     },
     {
@@ -962,7 +1102,7 @@ export const PassbookStatementInq = {
         componentType: "datePicker",
       },
       name: "PASS_BOOK_TO_DT",
-      label: "To Date:-",
+      label: "ToDate",
       placeholder: "",
       // format: "dd/MM/yyyy",
       dependentFields: ["PD_DESTION"],
@@ -980,8 +1120,10 @@ export const PassbookStatementInq = {
 
       GridProps: {
         xs: 12,
-        md: 6,
         sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
     },
     {
@@ -989,7 +1131,7 @@ export const PassbookStatementInq = {
         componentType: "datePicker",
       },
       name: "STMT_FROM_DATE",
-      label: "From Date :-",
+      label: "FromDate",
       // format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
@@ -1003,8 +1145,10 @@ export const PassbookStatementInq = {
       },
       GridProps: {
         xs: 12,
-        md: 6,
         sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
       defaultValue: new Date(),
       // onFocus: (date) => {
@@ -1020,7 +1164,7 @@ export const PassbookStatementInq = {
         componentType: "datePicker",
       },
       name: "WK_STMT_TO_DATE",
-      label: "To Date :-",
+      label: "ToDate",
       placeholder: "",
       // format: "dd/MM/yyyy",
       onFocus: (date) => {
@@ -1036,8 +1180,10 @@ export const PassbookStatementInq = {
       },
       GridProps: {
         xs: 12,
-        md: 6,
         sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
       defaultValue: new Date(),
       schemaValidation: {
@@ -1064,7 +1210,7 @@ export const PassbookStatementInq = {
 };
 export const ViewDetailMetadata = {
   form: {
-    name: "passbookstatement",
+    name: "ViewDetailMetadata",
     label: "Account Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -1111,8 +1257,8 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NO",
-      label: "Account No.",
-      placeholder: "Account Number",
+      label: "AccountNo",
+      placeholder: "AccountNo",
       defaultValue: "",
       type: "text",
       isReadOnly: true,
@@ -1133,8 +1279,8 @@ export const ViewDetailMetadata = {
       },
       isReadOnly: true,
       name: "ACCT_NM",
-      label: "Account/Person Name",
-      placeholder: "Account/Person Name",
+      label: "AccountHolder",
+      placeholder: "AccountHolder",
       type: "text",
       GridProps: {
         xs: 12,
@@ -1231,6 +1377,567 @@ export const ViewDetailMetadata = {
         xs: 12,
         md: 4,
         sm: 4,
+      },
+    },
+  ],
+};
+export const PassbookPrintingInq = {
+  form: {
+    name: "PassbookStatementInq",
+    label: "Passbook Printing Parameters",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "BRANCH_CD",
+      label: "BranchCode",
+      defaultValue: "099 ",
+      placeholder: "BranchCodePlaceHolder",
+      options: "getBranchCodeList",
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["BranchCodeReqired"] }],
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "ACCT_TYPE",
+      label: "AccountType",
+      placeholder: "AccountTypePlaceHolder",
+      dependentFields: ["BRANCH_CD"],
+      disableCaching: true,
+      options: (dependentValue, formState, _, authState) => {
+        return GeneralAPI.get_Account_Type({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          USER_NAME: authState?.user?.id,
+          DOC_CD: "RPT/430",
+        });
+      },
+      _optionsKey: "get_Account_Type",
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["AccountTypeReqired"] }],
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+    },
+
+    {
+      render: {
+        componentType: "select",
+      },
+      name: "TRAN_CD",
+      label: "Template",
+      defaultValue: "1",
+      dependentFields: ["PID_DESCRIPION", "ACCT_TYPE", "BRANCH_CD"],
+      fullWidth: true,
+      disableCaching: true,
+      options: async (dependentValue, formState, _, authState) => {
+        if (dependentValue?.ACCT_TYPE?.value !== "") {
+          // handleButonDisable use for disable "Ok" button while getPassBookTemplate api call
+          formState.handleButonDisable(true);
+          try {
+            const data = await getPassBookTemplate({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              FLAG: "PAS" + dependentValue?.PID_DESCRIPION?.value,
+            });
+
+            return data;
+          } catch (err) {
+            console.log("err", err);
+            return [];
+          } finally {
+            formState.handleButonDisable(false);
+          }
+        } else {
+          return [];
+        }
+      },
+      _optionsKey: "getPassBookTemplate",
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["TemplateReqired"] }],
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "AccountNumber",
+      placeholder: "AccountNumberPlaceHolder",
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD", "TRAN_CD"],
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["AccountNumberReqired"] }],
+      },
+
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        if (formState?.isSubmitting) return {};
+
+        if (
+          currentField?.value &&
+          dependentFieldsValues?.BRANCH_CD?.value &&
+          dependentFieldsValues?.ACCT_TYPE?.value
+        ) {
+          const reqParameters = {
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
+            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
+            ACCT_CD: utilFunction.getPadAccountNumber(
+              currentField?.value,
+              dependentFieldsValues?.ACCT_TYPE?.optionData
+            ),
+            TRAN_CD: dependentFieldsValues?.TRAN_CD?.optionData?.[0]?.value,
+            DEFAULT_LINE:
+              dependentFieldsValues?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE,
+            SKIP_LINE:
+              dependentFieldsValues?.TRAN_CD?.optionData?.[0]?.SKIP_LINE,
+            SCREEN_REF: "RPT/430",
+          };
+          formState.handleButonDisable(true);
+
+          const postData = await API.passbookAccountDetails(reqParameters);
+
+          formState.handleButonDisable(false);
+
+          let btn99, returnVal;
+
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          console.log(postData);
+
+          for (let i = 0; i < postData.length; i++) {
+            if (postData[i]?.O_STATUS === "999") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Validation Failed",
+                message: postData[i]?.O_MESSAGE,
+              });
+              returnVal = "";
+            } else if (postData[i]?.O_STATUS === "99") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Confirmation",
+                message: postData[i]?.O_MESSAGE,
+                buttonNames: ["Yes", "No"],
+              });
+              btn99 = btnName;
+              if (btnName === "No") {
+                returnVal = "";
+              }
+            } else if (postData[i]?.O_STATUS === "9") {
+              if (btn99 !== "No") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "Alert",
+                  message: postData[i]?.O_MESSAGE,
+                });
+              }
+            } else if (postData[i]?.O_STATUS === "0") {
+              if (btn99 !== "No") {
+                returnVal = postData[i];
+              } else {
+                returnVal = "";
+              }
+            }
+          }
+          btn99 = 0;
+          formState.setDataOnFieldChange("accountDetails", {
+            PASS_BOOK_DT: returnVal?.FROM_DT ?? "",
+          });
+          return {
+            ACCT_CD: {
+              value:
+                returnVal !== ""
+                  ? utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldsValues?.ACCT_TYPE?.optionData
+                    )
+                  : "",
+              isFieldFocused: false,
+              ignoreUpdate: true,
+            },
+            ACCT_NM: {
+              value: returnVal?.ACCT_NM ?? "",
+              ignoreUpdate: true,
+            },
+            PASS_BOOK_LINE: {
+              value: returnVal?.LINE_ID ?? "",
+              ignoreUpdate: true,
+            },
+            PASS_BOOK_DT: {
+              value: returnVal?.FROM_DT ?? "",
+              ignoreUpdate: true,
+            },
+
+            OP_DATEEEE: {
+              value: returnVal?.OP_DATE ?? "",
+              ignoreUpdate: true,
+            },
+          };
+        } else if (!currentField?.value) {
+          return {
+            ACCT_NM: {
+              value: "",
+            },
+            PASS_BOOK_LINE: {
+              value: "",
+            },
+            PASS_BOOK_DT: {
+              value: "",
+            },
+            PASS_BOOK_TO_DT: {
+              value: "",
+            },
+          };
+        }
+        return {};
+      },
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
+      },
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENT_BRANCH_CD",
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "AccountHolder",
+      placeholder: "AccountHolder",
+      type: "text",
+      isReadOnly: true,
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
+      },
+    },
+
+    {
+      render: {
+        componentType: "radio",
+      },
+      name: "PID_DESCRIPION",
+      label: "",
+      RadioGroupProps: { row: true },
+      defaultValue: "D",
+      options: [
+        {
+          label: "FrontPage",
+          value: "F",
+        },
+        { label: "FirstPage", value: "A" },
+        { label: "Detail", value: "D" },
+      ],
+
+      GridProps: {
+        xs: 12,
+        md: 7,
+        sm: 7,
+        lg: 7,
+        xl: 7,
+      },
+    },
+
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "PASS_BOOK_LINE",
+      label: "LineNo",
+      type: "text",
+      fullWidth: true,
+      disableCaching: true,
+      GridProps: {
+        xs: 6,
+        sm: 2.5,
+        md: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+      dependentFields: ["PID_DESCRIPION", "TRAN_CD", "REPRINT"],
+      runValidationOnDependentFieldsChange: true,
+      runPostValidationHookAlways: true,
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (
+          !Boolean(dependentFieldsValues?.REPRINT?.value) ||
+          dependentFieldsValues?.REPRINT?.value === ""
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PID_DESCRIPION?.value !== "D") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      validate: (columnValue, dependentFields) => {
+        if (
+          dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE &&
+          Boolean(columnValue?.value)
+        ) {
+          if (
+            Number(columnValue?.value) >=
+              Number(dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE) &&
+            Number(columnValue?.value) <=
+              Number(dependentFields?.TRAN_CD?.optionData?.[0]?.LINE_PER_PAGE)
+          ) {
+            return "";
+          } else {
+            return `${t(`LineNoValidation`, {
+              from: dependentFields?.TRAN_CD?.optionData?.[0]?.DEFAULT_LINE,
+              to: dependentFields?.TRAN_CD?.optionData?.[0]?.LINE_PER_PAGE,
+            })}`;
+          }
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "LINE_NO_SPACER",
+      GridProps: {
+        xs: 6,
+        sm: 2.5,
+        md: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+      dependentFields: ["PID_DESCRIPION"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PID_DESCRIPION?.value !== "D") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "REPRINT_VALUE",
+      dependentFields: ["REPRINT"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value = Number(dependentFieldsValues?.REPRINT?.value);
+        return value === 1 ? "Y" : "N";
+      },
+    },
+
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "REPRINT",
+      label: "Reprint",
+      endsIcon: "Print",
+      rotateIcon: "scale(1.4)",
+      type: "text",
+      // isReadOnly: true,
+      fullWidth: true,
+      autoComplete: false,
+      GridProps: {
+        xs: 6,
+        sm: 2.5,
+        md: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+
+      dependentFields: ["PID_DESCRIPION"],
+      runValidationOnDependentFieldsChange: true,
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (formState?.isSubmitting) return {};
+        if (
+          dependentValue?.PID_DESCRIPION?.value === "D" &&
+          field?.value === "0"
+        ) {
+          return {
+            REPRINT: {
+              value: "",
+            },
+          };
+        }
+      },
+
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.PID_DESCRIPION?.value !== "D" ||
+          fieldData?.value !== ""
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "OP_DATEEEE",
+      // format: "dd/MM/yyyy",
+    },
+
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "PASS_BOOK_DT",
+      label: "FromDate",
+      // format: "dd/MM/yyyy",
+      placeholder: "",
+      type: "text",
+      maxDate: new Date(),
+      dependentFields: ["REPRINT", "PID_DESCRIPION", "OP_DATEEEE"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (
+          !Boolean(dependentFieldsValues?.REPRINT?.value) ||
+          dependentFieldsValues?.REPRINT?.value === ""
+        ) {
+          return true;
+        } else if (dependentFieldsValues?.PID_DESCRIPION?.value !== "D") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      onFocus: (date) => {
+        date.target.select();
+      },
+      // validationRun: "all",
+
+      validate: (columnValue, dependentFields) => {
+        if (
+          new Date(columnValue?.value) <
+          new Date(dependentFields?.OP_DATEEEE?.value)
+        ) {
+          return `${t(`DateValidation`, {
+            date: format(
+              new Date(dependentFields?.OP_DATEEEE?.value),
+              "dd-MM-yyyy"
+            ),
+          })}`;
+        } else {
+          return "";
+        }
+      },
+
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "PASS_BOOK_TO_DT",
+      label: "ToDate",
+      placeholder: "",
+      defaultValue: new Date(),
+      format: "dd/MM/yyyy",
+      isReadOnly: true,
+      onFocus: (date) => {
+        date.target.select();
+      },
+
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 6,
+        xl: 6,
       },
     },
   ],

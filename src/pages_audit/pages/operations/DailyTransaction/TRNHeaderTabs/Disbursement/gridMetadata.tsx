@@ -31,7 +31,9 @@ export const DisbursementGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 120,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Effective Date",
@@ -57,6 +59,7 @@ export const DisbursementGridMetaData: GridMetaDataType = {
       sequence: 4,
       componentType: "currency",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Installment Type",
@@ -78,6 +81,7 @@ export const DisbursementGridMetaData: GridMetaDataType = {
       sequence: 7,
       componentType: "currency",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Remarks",
@@ -101,6 +105,7 @@ export const DisbursementGridMetaData: GridMetaDataType = {
       sequence: 10,
       componentType: "default",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Entered Date",

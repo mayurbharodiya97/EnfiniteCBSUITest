@@ -1,4 +1,4 @@
-import { Dialog, LinearProgress, Paper } from "@mui/material";
+import { Dialog, LinearProgress, Paper, InputAdornment } from "@mui/material";
 import "./stickyNotes.css";
 import Draggable from "react-draggable";
 import { useState, useEffect, useContext, useRef, Fragment } from "react";
@@ -15,14 +15,16 @@ import { queryClient } from "cache";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import AddNote from "./addNote";
 import { Alert } from "components/common/alert";
+import { TextField } from "components/styledComponent";
 
-const StickyNotes = ({ closeDialog, open }) => {
+const StickyNotes = ({ closeDialog, open, isDataChangedRef }) => {
   const { authState } = useContext(AuthContext);
   const [isOpenNote, setIsOpenNote] = useState(false);
   const [isCreateNote, setIsCreateNote] = useState(false);
   const refData = useRef(null);
-  const [filter, setFilter] = useState<any>("");
+  const [filteredData, setFilteredData] = useState<any>([]);
   const [flag, setflag] = useState<any>("P");
+  const [searchQuery, setSearchQuery] = useState("");
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -40,6 +42,22 @@ const StickyNotes = ({ closeDialog, open }) => {
         flag: flag,
       })
   );
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      setFilteredData(data);
+    }
+  }, [isLoading, isFetching]);
+  const handleSearchInputChange = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearchQuery(value);
+
+    const filtered = data?.filter(
+      (item) =>
+        item.TITLE.toLowerCase().includes(value) ||
+        item.NOTES_DETAIL.toLowerCase().includes(value)
+    );
+    setFilteredData(filtered);
+  };
 
   useEffect(() => {
     return () => {
@@ -74,9 +92,6 @@ const StickyNotes = ({ closeDialog, open }) => {
       refData.current = itemWithColor;
       setIsOpenNote(true);
     }
-
-    // refData.current = item;
-    // setIsOpenNote(true);
   };
 
   return (
@@ -119,7 +134,10 @@ const StickyNotes = ({ closeDialog, open }) => {
               </GradientButton>
               <Tooltip title="Close">
                 <GradientButton
-                  onClick={closeDialog}
+                  onClick={() => {
+                    isDataChangedRef.current = true;
+                    closeDialog();
+                  }}
                   style={{
                     // color: "var(--theme-color3)",
                     margin: "5px",
@@ -134,15 +152,24 @@ const StickyNotes = ({ closeDialog, open }) => {
               </Tooltip>
             </div>
           </Grid>
-          <div className="search">
-            <SearchIcon />
-            <input
-              type="text"
-              placeholder="type to search..."
-              onChange={(event) => setFilter(event.target.value)}
-            />
-          </div>
-
+          <TextField
+            placeholder="Search"
+            id=""
+            name={"Search"}
+            size="small"
+            value={searchQuery}
+            onChange={handleSearchInputChange}
+            style={{ width: "100%", margin: "0 auto", marginBottom: "12px" }}
+            InputProps={{
+              style: { margin: "0px" },
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            //@ts-ignore
+          />
           {isLoading || isFetching ? (
             <LoaderPaperComponent />
           ) : isError ? (
@@ -158,15 +185,8 @@ const StickyNotes = ({ closeDialog, open }) => {
           ) : (
             <>
               <div className="notes-list">
-                {data
-                  .filter(
-                    (item) =>
-                      item.TITLE.toLowerCase().includes(filter.toLowerCase()) ||
-                      item.NOTES_DETAIL.toLowerCase().includes(
-                        filter.toLowerCase()
-                      )
-                  )
-                  .sort((a, b) => a.CREATED_DT - b.CREATED_DT)
+                {filteredData
+                  ?.sort((a, b) => a.CREATED_DT - b.CREATED_DT)
                   .map((item, index) => (
                     <div
                       className="note"
@@ -174,22 +194,26 @@ const StickyNotes = ({ closeDialog, open }) => {
                         handleNoteClick(item, colors[index % colors.length]);
                       }}
                       key={index}
-                      style={{ backgroundColor: colors[index % colors.length] }}
+                      style={{
+                        backgroundColor: colors[index % colors.length],
+                      }}
                     >
                       {/* <div>{logo}</div> */}
                       <div
                         style={{
-                          marginBottom: "20px",
+                          marginBottom: "15px",
                           fontSize: "20px",
                           fontWeight: "bold",
                           width: "100%",
-                          // height: "15%",
+                          backgroundColor: colors[index % colors.length],
                           textDecoration:
                             item?.ACTIVE === "N" ? "line-through" : "none",
+                          wordWrap: "break-word", // or whiteSpace: "normal"
                         }}
                       >
-                        {item?.TITLE ?? ""}
+                        {item?.TITLE}
                       </div>
+
                       <div
                         style={{
                           marginBottom: "12px",
@@ -197,11 +221,13 @@ const StickyNotes = ({ closeDialog, open }) => {
                           width: "100%",
                           height: "50%",
                           overflow: "auto",
+                          backgroundColor: colors[index % colors.length],
                           textDecoration:
                             item?.ACTIVE === "N" ? "line-through" : "none",
+                          wordWrap: "break-word",
                         }}
                       >
-                        {item?.NOTES_DETAIL ?? ""}
+                        {item?.NOTES_DETAIL}
                       </div>
                       <div className="note-footer">
                         <small>{item?.CREATED_DT ?? new Date()}</small>

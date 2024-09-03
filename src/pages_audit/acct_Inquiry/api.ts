@@ -10,6 +10,7 @@ export const getAccountInquiry = async (inputdata) => {
       PAN_NO: inputdata?.PAN,
       CUST_ID: inputdata?.CUSTOMER,
       ACCT_NM: inputdata?.NAME,
+      COMP_CD: inputdata?.COMP_CD,
     });
   if (status === "0") {
     const dataStatus = data;
@@ -30,15 +31,10 @@ export const getAccountInquiry = async (inputdata) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getPassBookTemplate = async () => {
+export const getPassBookTemplate = async (reqData: any) => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETPASSBKTEMPL", {
-      COMP_CD: "132 ",
-      BRANCH_CD: "099 ",
-      AS_FLAG: "PASD",
-    });
+    await AuthSDK.internalFetcher("GETPASSBKTEMPL", reqData);
   if (status === "0") {
-    // return data;
     let responseData = data;
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
@@ -115,6 +111,37 @@ export const getDependenciesData = async (_, __, otherAPIRequestPara) => {
     });
     return dataStatus;
     // return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// -----------------------------------------------------------
+
+export const getPassbookStatement = async (reqData: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPASSBKPRINTDATA", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const passbookPrintingValidation = async (reqData: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOPASSBOOKPRINTINGVALIDATION", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const passbookAccountDetails = async (reqData: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPASSBOOKACCOUNTDETAILS", reqData);
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme: any) => ({
         }
       : {
           color: "var(--theme-color2)",
-          backgroundColor: "var(--theme-color3)",
+          background: "var(--theme-color5)",
+          borderTop: "1.5px solid var(--theme-color2)",
         },
   title: {
     flex: "1 1 100%",
@@ -42,6 +43,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   singleActions,
   setGridAction,
   submitButtonRef,
+  hideActionBar,
 }) => {
   const classes = useStyles();
   const selectedCount = selectedFlatRows.length;
@@ -57,7 +59,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   if (typeof setGridAction !== "function") {
     setGridAction = () => {};
   }
-  return (
+  return !hideActionBar ? (
     <Toolbar
       className={clsx(classes.root, classes.highlight)}
       variant={dense ? "dense" : "regular"}
@@ -86,12 +88,12 @@ export const TableActionToolbar: FC<TableActionType> = ({
           actions={multipleActions ?? []}
           setAction={setGridAction}
           selectedRows={selectedRows}
-          buttonTextColor={"var(--theme-color1)"}
+          buttonTextColor={"var(--theme-color2)"}
           submitButtonRef={submitButtonRef}
         />
       ) : null}
     </Toolbar>
-  );
+  ) : null;
 };
 
 //@ts-ignore

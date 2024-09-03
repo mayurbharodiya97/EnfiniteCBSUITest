@@ -4,6 +4,7 @@ import {
   ExtendedFieldMetaDataTypeOptional,
   FieldMetaDataType,
 } from "../types";
+import { cloneDeep } from "lodash";
 
 export const extendFieldTypes = (
   metaData: MetaDataType,
@@ -22,7 +23,21 @@ export const extendFieldTypes = (
     commonTimeFormat,
   } = customParameters;
 
-  const newMetaDataFields = metaData?.fields?.map((one) => {
+  const newMetaDataFields = metaData?.fields?.map((one: any) => {
+    if (one.render.componentType === "arrayField") {
+      let dummyMetaData = cloneDeep({
+        form: metaData.form,
+        fields: one._fields,
+      });
+      let newmetadatArray = extendFieldTypes(
+        dummyMetaData,
+        extendedTypes,
+        lanTranslate,
+        authState,
+        customParameters
+      );
+      one._fields = newmetadatArray.fields;
+    }
     const extendedType = extendedTypes[one.render.componentType];
     if (
       one?.render?.componentType === "datePicker" ||
@@ -72,7 +87,6 @@ export const extendFieldTypes = (
       } = extendedType;
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
-
       result["FormatProps"] = {
         ...FormatProps,
         ...(one?.FormatProps ?? {}),
@@ -153,7 +167,14 @@ export const extendFieldTypes = (
       field["placeholder"] = lanTranslate(field["placeholder"]);
       if (key === "branchCode") {
         // Set the default value for branchCode
-        field["defaultValue"] = authState?.user?.branchCode;
+        if (
+          field?.defaultValue?.trim() === "" ||
+          Boolean(field?.defaultValue?.trim())
+        ) {
+          field["defaultValue"] = field?.defaultValue;
+        } else {
+          field["defaultValue"] = authState?.user?.branchCode;
+        }
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
         // field["autoFocus"] = true;
@@ -222,8 +243,22 @@ export const extendFieldTypes = (
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
-    if (Boolean(item?.isWorkingDate)) {
-      item["defaultValue"] = new Date(authState?.workingDate);
+    if (item.render.componentType === "datePicker" && authState?.workingDate) {
+      if (Boolean(item?.isWorkingDate)) {
+        item["defaultValue"] = new Date(authState?.workingDate);
+      }
+    }
+    if (
+      item.render.componentType === "datetimePicker" ||
+      item.render.componentType === "datePicker"
+    ) {
+      const now = new Date();
+      if (item?.disablePast) {
+        item["minDate"] = now;
+      }
+      if (item?.disableFuture) {
+        item["maxDate"] = now;
+      }
     }
   });
   return {

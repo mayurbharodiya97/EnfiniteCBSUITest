@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ParametersGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Parameter Master",
+    gridLabel: "",
     rowIdColumn: "PARA_CD",
     defaultColumnConfig: {
       width: 400,
@@ -47,7 +47,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
       },
     },
     {
-      accessor: "DIS_DATATYPE_CD",
+      accessor: "DATATYPE_CD",
       columnName: "Datatype",
       filterComponentType: "valueFilter",
       gridProps: {
@@ -69,16 +69,16 @@ export const ParametersGridMetaData: GridMetaDataType = {
   ],
   columns: [
     {
-      accessor: "id",
-      columnName: "Sr. No.",
+      accessor: "SR_NO",
+      columnName: "Sr No",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 70,
-      minWidth: 50,
-      maxWidth: 150,
-      isAutoSequence: true,
-    },
+      isAutoSequence:true,
+      width: 80,
+      minWidth: 60,
+      maxWidth: 120,
+  },
     {
       accessor: "PARA_CD",
       columnName: "Code",
@@ -101,7 +101,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
       maxWidth: 600,
     },
     {
-      accessor: "DIS_DATATYPE_CD",
+      accessor: "DATATYPE_DISP_VALUE",
       columnName: "Datatype",
       sequence: 3,
       alignment: "left",
@@ -121,7 +121,28 @@ export const ParametersGridMetaData: GridMetaDataType = {
       maxWidth: 300,
     },
     {
-      accessor: "CONFIRM_STATUS",
+      columnName: "Change History",
+      componentType: "buttonRowCell",
+      accessor: "SIGN_PATH",
+      sequence: 4,
+      buttonLabel: "...",
+      isVisible: true,
+      width: 120,
+      minWidth: 150,
+      maxWidth: 200,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 200,
+      minWidth: 250,
+      maxWidth: 300,
+    },
+    {
+      accessor: "CONFIRMED_STATUS",
       columnName: "Confirm Status",
       sequence: 7,
       alignment: "left",
@@ -161,159 +182,109 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
   ],
 };
-export const ParaDetailMetadata = {
-  form: {
-    name: "paraDetail",
-    label: "Parameter Master",
-    resetFieldOnUnmount: false,
-    validationRun: "onBlur",
-    submitAction: "home",
-    render: {
-      ordering: "auto",
-      renderType: "simple",
-      gridConfig: {
-        item: {
-          xs: 12,
-          sm: 4,
-          md: 4,
-        },
-        container: {
-          direction: "row",
-          spacing: 1,
-        },
-      },
+export const AuditMetadata: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "",
+    rowIdColumn: "TRAN_CD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
     },
-    componentProps: {
-      textField: {
-        fullWidth: true,
-      },
-      select: {
-        fullWidth: true,
-      },
-      datePicker: {
-        fullWidth: true,
-      },
-      numberFormat: {
-        fullWidth: true,
-      },
-      inputMask: {
-        fullWidth: true,
-      },
-      datetimePicker: {
-        fullWidth: true,
-      },
+    allowColumnReordering: true,
+    hideHeader: false,
+    disableGroupBy: true,
+    containerHeight: {
+      min: "67vh",
+      max: "67vh",
     },
+    allowColumnHiding: false,
+    allowRowSelection:false,
+    isCusrsorFocused: true,
   },
-  fields: [
-    // {
-    //   render: {
-    //     componentType: "typography",
-    //   },
-    //   name: "AUTHVIEW",
-    //   label: "Loan Approval Request Details",
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
+  columns: [
     {
-      render: {
-        componentType: "hidden",
-      },
-      name: "COMP_CD",
+      accessor: "OLD_VALUE",
+      columnName: "Old Value",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 150,
     },
     {
-      render: {
-        componentType: "textField",
-      },
-      name: "PARA_CD",
-      label: "Code",
-      placeholder: "",
-      type: "text",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        xl:6,
-        md: 3,
-        sm: 3,
-      },
+      accessor: "NEW_VALUE",
+      columnName: "New Value",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 150,
     },
     {
-      render: {
-        componentType: "textField",
-      },
-      name: "PARA_NM",
-      label: "Description",
-      placeholder: "",
-      type: "text",
-      required: true,
-      isReadOnly: true,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Description is required."] },
-          { name: "DATATYPE_CD", params: ["Please enter Description."] },
-        ],
-      },
-      GridProps: {
-        xs: 12,
-        xl:6,
-        md: 3,
-        sm: 3,
-      },
+      accessor: "MODIFIED_BY",
+      columnName: "Modified By",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 90,
+      minWidth: 80,
+      maxWidth: 150,
     },
     {
-      render: {
-        componentType: "select",
-      },
-      name: "DATATYPE_CD",
-      label: "Data Type",
-      placeholder: "",
-      options: [
-        { label: "NUM/DECIMAL", value: "N" },
-        { label: "CHARACTER/STRING", value: "C" },
-        { label: "DATE", value: "D" },
-      ],
-      isReadOnly: true,
-      defaultValue: "",
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Data Type is required."] },
-          { name: "DATATYPE_CD", params: ["Please select Data Type."] },
-        ],
-      },
-      GridProps: {
-        xs: 12,
-        xl:6,
-        md: 3,
-        sm: 3,
-      },
+      accessor: "MODIFIED_DATE",
+      columnName: "Modified Date",
+      sequence: 4,
+      alignment: "left",
+      dateFormat:"dd/MM/yyyy hh:mm:ss",
+      componentType: "dateTime",
+      width: 100,
+      minWidth: 80,
+      maxWidth: 150,
     },
     {
-      render: {
-        componentType: "textField",
-      },
-      name: "PARA_VALUE",
-      label: "Value",
-      placeholder: "",
-      type: "text",
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Value is required."] },
-          { name: "PARA_VALUE", params: ["Please enter Value."] },
-        ],
-      },
-      GridProps: {
-        xs: 12,
-        xl:6,
-        md: 3,
-        sm: 3,
-      },
+      accessor: "MACHINE_NM",
+      columnName: "Modified Machine",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 80,
+      maxWidth: 150,
+    },
+    {
+      accessor: "VERIFIED_BY",
+      columnName: "Verified By",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 80,
+      maxWidth: 150,
+    },
+    {
+      accessor: "VERIFIED_DATE",
+      columnName: "Verified Date",
+      sequence: 5,
+      alignment: "left",
+      dateFormat:"dd/MM/yyyy hh:mm:ss",
+      componentType: "default",
+      width: 150,
+      minWidth: 80,
+      maxWidth: 150,
+    },
+    {
+      accessor: "VERIFIED_MACHINE_NM",
+      columnName: "Verified Machine",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 80,
+      maxWidth: 150,
     },
   ],
 };

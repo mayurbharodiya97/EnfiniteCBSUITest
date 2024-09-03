@@ -161,7 +161,7 @@ export const updateDashboxData = async (reqData) => {
 };
 export const updateQuickViewData = async (reqData) => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETQUICKVIEWSCREEN", reqData);
+    await AuthSDK.internalFetcher("DOQUICKVIEWSCREEN", reqData);
   if (status === "0") {
     return data;
   } else {

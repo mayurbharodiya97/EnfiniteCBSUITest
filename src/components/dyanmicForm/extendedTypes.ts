@@ -102,6 +102,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       isNumericString: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 10) {
+          return false;
+        }
+
+        return true;
+      },
     },
     // StartAdornment: "+88",
   },
@@ -180,6 +187,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 6) {
           return false;
@@ -510,13 +518,12 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     schemaValidation: {
       type: "string",
-      rules: [{ name: "required", params: ["Branch Code is required"] }],
+      rules: [{ name: "required", params: ["BranchCodeReqired"] }],
     },
     required: true,
     name: "BRANCH_CD",
-    label: "Branch Code",
-    placeholder: "Select branch code",
-    defaultValue: "",
+    label: "BranchCode",
+    placeholder: "BranchCodePlaceHolder",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
@@ -537,13 +544,20 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     schemaValidation: {
       type: "string",
-      rules: [{ name: "required", params: ["Account Type is required"] }],
+      rules: [{ name: "required", params: ["AccountTypeReqired"] }],
     },
     name: "ACCT_TYPE",
-    label: "Account Type",
-    placeholder: "Select account type",
-    options: GeneralAPI.getAccountTypeList,
-    _optionsKey: "getAccountTypeList",
+    label: "AccountType",
+    placeholder: "AccountTypePlaceHolder",
+    options: (dependentValue, formState, _, authState) => {
+      return GeneralAPI.get_Account_Type({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        USER_NAME: authState?.user?.id ?? "",
+        DOC_CD: formState?.docCD ?? "",
+      });
+    },
+    _optionsKey: "get_Account_Type",
     defaultAcctTypeTrue: true,
     defaultValue: "",
     GridProps: {
@@ -559,9 +573,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "numberFormat",
     },
-    label: "Account Number",
+    label: "AccountNumber",
     name: "ACCT_CD",
-    placeholder: "Enter account number",
+    placeholder: "AccountNumberPlaceHolder",
     required: true,
     // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
@@ -572,10 +586,10 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "required", params: ["Account code is required"] },
+        { name: "required", params: ["AccountNumberReqired"] },
         {
           name: "max",
-          params: [20, "Account code should not exceed 20 digits"],
+          params: [20, "AcctNoValidationMsg"],
         },
       ],
     },

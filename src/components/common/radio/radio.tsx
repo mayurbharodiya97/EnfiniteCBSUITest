@@ -2,6 +2,7 @@ import { FC, useCallback, useState } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps } from "../types";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
+import { t } from "i18next";
 import {
   CircularProgress,
   CircularProgressProps,
@@ -42,6 +43,7 @@ interface MyCheckboxExtendedProps {
   GridProps?: GridProps;
   enableGrid: boolean;
   CircularProgressProps?: CircularProgressProps;
+  textFieldStyle?: any;
 }
 
 export type MyRadioAllProps = Merge<MyRadioMixedProps, MyCheckboxExtendedProps>;
@@ -64,9 +66,9 @@ const StyledRadioField = withStyles({
       //color: "#26A456",
       color: "var(--theme-color1)",
     },
-    "& .css-ih0lv8-MuiButtonBase-root-MuiRadio-root.Mui-checked":{
-      color:"var(--theme-color1)"
-    }
+    "& .css-ih0lv8-MuiButtonBase-root-MuiRadio-root.Mui-checked": {
+      color: "var(--theme-color1)",
+    },
   },
 })(FormControl);
 
@@ -94,6 +96,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
   CircularProgressProps,
   _optionsKey,
   disableCaching,
+  textFieldStyle,
   ...others
 }) => {
   const {
@@ -168,6 +171,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       control={
         <Radio
           {...others}
+          disabled={readOnly}
           readOnly={readOnly}
           tabIndex={readOnly ? -1 : undefined}
           color={"secondary"}
@@ -190,7 +194,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       onBlur={handleBlur}
     >
       <FormLabel {...FormLabelProps} component="label">
-        {label}
+        {t(label)}
       </FormLabel>
       <RadioGroup
         {...RadioGroupProps}
@@ -218,7 +222,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
 
   if (Boolean(enableGrid)) {
     return (
-      <Grid {...GridProps} key={fieldKey}>
+      <Grid sx={{ ...textFieldStyle }} {...GridProps} key={fieldKey}>
         {result}
       </Grid>
     );

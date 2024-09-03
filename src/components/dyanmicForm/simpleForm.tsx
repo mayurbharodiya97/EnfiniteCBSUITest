@@ -9,6 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { t } from "i18next";
 
 export const SimpleForm: FC<FormProps> = ({
   fields,
@@ -151,19 +152,13 @@ export const SimpleFormTitle = ({
             variant="outlined"
             color="primary"
             size="small"
-            label={`${displayMode} mode`}
+            label={`${displayMode} ${t("mode")}`}
           />
         ) : (
           ""
         )}
       </Typography>
-      <Typography
-        component="span"
-        variant="h3"
-        color="primary"
-        sx={{ ...subHeaderLableStyle }}
-        px={2}
-      >
+      <Typography variant="h6" color="primary" sx={{ ...subHeaderLableStyle }}>
         {subHeaderLable}
       </Typography>
       <div className={classes.formControlLabelSpacer} />

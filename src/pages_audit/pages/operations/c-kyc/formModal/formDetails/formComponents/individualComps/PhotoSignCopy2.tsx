@@ -10,7 +10,7 @@ import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { queryClient } from "cache";
-import { useStyles } from "./style";
+import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "components/styledComponent/button";
@@ -20,6 +20,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
+import { GeneralAPI } from "registry/fns/functions";
 
 
 interface PhotoSignProps {
@@ -111,7 +112,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                 COMP_CD: authState?.companyID ?? "",
                 CUSTOMER_ID: location?.state?.[0]?.id
             }
-            mutation.mutate(data)
+            // mutation.mutate(data)
         }
     }, [location])
 

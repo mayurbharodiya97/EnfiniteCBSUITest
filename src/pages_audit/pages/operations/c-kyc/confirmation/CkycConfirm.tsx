@@ -14,6 +14,8 @@ import { t } from "i18next";
 import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
+import { MessageBoxWrapper } from "components/custom/messageBox";
+import UpdateDocument from "../formModal/formDetails/formComponents/update-document/Document";
 
 
 export const CkycConfirm = () => {
@@ -24,8 +26,7 @@ export const CkycConfirm = () => {
   const location: any = useLocation();
 
   // temporary-use-state
-  const [isCustomerData, setIsCustomerData] = useState(true);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
   
 
   const {
@@ -35,7 +36,7 @@ export const CkycConfirm = () => {
       isFetching: isPendingDataFetching,
       refetch: PendingRefetch,
       error: PendingError,
-  } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
+  } = useQuery<any, any>(["getConfirmPendingData"], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -53,45 +54,64 @@ export const CkycConfirm = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    // {
-    //   actionName: "inactive-customer",
-    //   actionLabel: "Inactivate Customer",
-    //   multiple: false,
-    //   rowDoubleClick: false,
-    // },
   ];
   const setCurrentAction = useCallback(
     (data) => {
+      // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
       // console.log("weohhfdwef", data)
       const maker = data.rows?.[0]?.data?.MAKER
       const loggedinUser = authState?.user?.id;
+      // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM, maker, loggedinUser)
       if(maker === loggedinUser) {
-        enqueueSnackbar("You can not confirm your own posted transaction", {
-          variant: "error",
-        })
+        setPreventConfirmDialog(true)
       } else {
-        if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+        // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
+        if(
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P" ||
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM?.includes("P")
+        ) {
+          // P=EXISTING_PHOTO_MODIFY
           navigate("photo-signature", {
             state: data?.rows,
           })
-        } else if(data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
+        } else if(
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D" || 
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM?.includes("D")
+        ) {
+          // D=EXISTING_DOC_MODIFY
+          navigate("document", {
+            state: {CUSTOMER_DATA: data?.rows},
+          })
+        } else if(
+          (
+            data.rows?.[0]?.data?.UPD_TAB_NAME === "A" ||
+            data.rows?.[0]?.data?.UPD_TAB_NAME?.includes("A")
+          ) ||
+          (
+            data.rows?.[0]?.data?.UPD_TAB_NAME === "M" ||
+            data.rows?.[0]?.data?.UPD_TAB_NAME?.includes("M")
+          )
+        ) {
+        // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
+          // A=FRESH_MODIFY, M=EXISTING_MODIFY
           navigate("view-detail", {
             state: data?.rows,
           })
-        } else {
-          setRowsData(data?.rows);
-          navigate(data?.name, {
-            state: data?.rows,
-          });
         }
+        //  else {
+        //   setRowsData(data?.rows);
+        //   navigate(data?.name, {
+        //     state: data?.rows,
+        //   });
+        // }
       }
     },
     [navigate]
   );
 
-  useEffect(() => {
-    PendingRefetch()
-  }, [location])
+  // useEffect(() => {
+  //   PendingRefetch()
+  // }, [location])
 
     ckyc_pending_req_meta_data.gridConfig.gridLabel = "Confirmation Pending Request";
     ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
@@ -119,7 +139,7 @@ export const CkycConfirm = () => {
           {t("Confirmation Pending")}
         </Typography> */}
         <GridWrapper
-          key={`ckycConfirmation`+PendingData}
+          key={`ckycConfirmation`}
           finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
           data={PendingData ?? []}
           setData={() => null}
@@ -130,15 +150,25 @@ export const CkycConfirm = () => {
           // ref={myGridRef}
         />
 
+        <MessageBoxWrapper
+          MessageTitle={"ALERT"}
+          Message={"You can not confirm your own posted transaction"}
+          onClickButton={() => {
+            setPreventConfirmDialog(false)
+            // setConfirmAction(null)
+            // setConfirmMsgDialog(false)
+            // closeForm()
+          }}
+          rows={[]}
+          buttonNames={["OK"]}
+          open={preventConfirmDialog}
+        />
+
         <Routes>
           <Route
             path="view-detail/*"
             element={
               <FormModal
-                isLoadingData={isLoadingData}
-                setIsLoadingData={setIsLoadingData}
-                isCustomerData={isCustomerData}
-                setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
                 formmode={"view"}
                 from={"confirmation-entry"}
@@ -154,6 +184,19 @@ export const CkycConfirm = () => {
                 onClose={() => {
                   navigate(".");
                 }}
+                PendingRefetch={PendingRefetch}
+              />
+            }
+          />
+
+          <Route
+            path="document/*"
+            element={
+              <UpdateDocument
+                open={true}
+                onClose={() => navigate(".")}
+                viewMode={"view"}
+                from={"ckyc-confirm"}
               />
             }
           />

@@ -1,7 +1,7 @@
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -13,8 +13,9 @@ import {
 } from "react";
 import {
   CTSOutwardClearingFormMetaData,
-  ChequeDetailFormMetaData,
+  ctsOutwardChequeDetailFormMetaData,
   SlipJoinDetailGridMetaData,
+  inwardReturnChequeDetailFormMetaData,
 } from "./metaData";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
@@ -28,22 +29,24 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AddNewBankMasterForm } from "./addNewBank";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 import { RetrieveClearingForm } from "./retrieveClearing";
 import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
-
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
-    actionLabel: "Edit Detail",
+    actionLabel: t("ViewDetail"),
     multiple: undefined,
     rowDoubleClick: true,
   },
   {
     actionName: "close",
-    actionLabel: "cancel",
+    actionLabel: t("Close"),
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -53,17 +56,18 @@ const actions: ActionTypes[] = [
 const CtsOutwardClearingForm: FC<{
   zoneTranType: any;
 }> = ({ zoneTranType }) => {
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [formMode, setFormMode] = useState("new");
   const [isJointDtlExpand, setJointDtlExpand] = useState(false);
   const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
-  const [isDelete, SetDelete] = useState(false);
-  const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
-  const [gridData, setGridData] = useState([]);
+  const [gridData, setGridData] = useState<any>([]);
+  const [chequeReqData, setChequeReqData] = useState<any>({});
+  const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
     chequeDetails: [
       { ECS_USER_NO: "", CHEQUE_DATE: authState?.workingDate ?? "" },
@@ -75,6 +79,9 @@ const CtsOutwardClearingForm: FC<{
   const slipFormDataRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
   const retrieveDataRef: any = useRef(null);
+  let currentPath = useLocation().pathname;
+
+
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
       setChequeDetailData((old) => {
@@ -94,19 +101,22 @@ const CtsOutwardClearingForm: FC<{
       // setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
     }
   }, []);
-
-  const { data, isLoading, isError, error } = useQuery<any, any>(
-    ["getBussinessDate"],
-    () => API.getBussinessDate()
-  );
-
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getBussinessDate", formMode, zoneTranType], () => API.getBussinessDate());
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getBussinessDate", formMode]);
+    };
+  }, [formMode]);
   const getOutwardClearingData: any = useMutation(
     API.getOutwardClearingConfigData,
     {
       onSuccess: (data) => {
         // isDataChangedRef.current = true;
       },
-      onError: (error: any) => {},
+      onError: (error: any) => { },
     }
   );
 
@@ -119,22 +129,21 @@ const CtsOutwardClearingForm: FC<{
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
-      setOpenProceedMsg(false);
+      CloseMessageBox();
     },
-
     onSuccess: (data) => {
       enqueueSnackbar(data, {
         variant: "success",
       });
-      setOpenProceedMsg(false);
       setGridData([]);
       setChequeDetailData({
         chequeDetails: [{ ECS_USER_NO: "" }],
         SLIP_AMOUNT: "0",
       });
       setChequeDtlRefresh(0);
-      myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
-      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      myFormRef?.current?.handleFormReset({ preventDefault: () => { } });
+      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => { } });
+      CloseMessageBox();
     },
   });
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
@@ -146,15 +155,17 @@ const CtsOutwardClearingForm: FC<{
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
-      SetDelete(false);
+      CloseMessageBox();
+      SetDeleteRemark(false);
     },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
-      enqueueSnackbar("Records successfully deleted", {
+      enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
         variant: "success",
       });
-      SetDelete(false);
       setFormMode("new");
+      CloseMessageBox();
+      SetDeleteRemark(false);
     },
   });
 
@@ -167,30 +178,37 @@ const CtsOutwardClearingForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
+    let newData = [];
+    if (Boolean(data?.chequeDetails) && Array.isArray(data?.chequeDetails)) {
+      newData = data?.chequeDetails?.map((item) => ({
+        ...item,
+        _isNewRow: formMode === "new" ? true : false,
+        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
+        PROCESSED: "N",
+        REASON: zoneTranType === "S" ? "N" : item?.REASON,
+        CLEARING_STATUS: "C",
+      }));
+    }
 
     if (
       !Boolean(data?.SLIP_AMOUNT) ||
       parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
     ) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Enter Slip Amount",
+        message: t("PleaseEnterSlipAmount"),
+        messageTitle: t("ValidationFailed"),
       });
-    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
-      const newData = data.chequeDetails?.map((item) => ({
-        ...item,
-        _isNewRow: formMode === "new" ? true : false,
-        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
-        PROCESSED: "N",
-        REASON: "N",
-      }));
-
+    } else if (
+      parseFloat(data?.TOTAL_AMOUNT) === 0 &&
+      newData &&
+      newData.length > 0
+    ) {
       finalReqDataRef.current = {
         DAILY_CLEARING: {
           ...slipFormDataRef?.current,
           _isNewRow: true,
           REQUEST_CD: "",
-          TRAN_TYPE: zoneTranType ?? "",
+          TRAN_TYPE: zoneTranType,
         },
         DETAILS_DATA: {
           isNewRow: [...newData],
@@ -203,78 +221,78 @@ const CtsOutwardClearingForm: FC<{
         _isNewRow: true,
         endSubmit,
       };
-      setOpenProceedMsg(true);
+      const buttonName = await MessageBox({
+        messageTitle: t("Confirmation"),
+        message: t("ProceedGen"),
+        buttonNames: ["No", "Yes"],
+        loadingBtnName: ["Yes"],
+      });
+      if (buttonName === "Yes") {
+        mutationOutward.mutate(finalReqDataRef.current);
+      }
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) > 0 &&
       Array.isArray(chequeDetailData?.chequeDetails) &&
       chequeDetailData?.chequeDetails?.length > 0 &&
       data?.chequeDetails?.length > 0
     ) {
-      const lastRow = data?.chequeDetails[data?.chequeDetails?.length - 1];
       setChequeDetailData((old) => ({
         ...old,
         chequeDetails: [
           {
-            ...lastRow,
+            ...data?.chequeDetails[0],
             AMOUNT: "",
             CHEQUE_NO: "",
           },
+
           ...data.chequeDetails,
         ],
       }));
       setChequeDtlRefresh((old) => old + 1);
-    } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
+    } else if (
+      (parseFloat(data?.TOTAL_AMOUNT) > 0 || newData?.length,
+        newData.length === 0)
+    ) {
       setChequeDetailData((old) => ({
-        ...old,
         chequeDetails: [
           {
-            CHEQUE_DATE: "",
-            ECS_USER_NO: "",
-            CHEQUE_NO: "",
+            ECS_USER_NO: gridData?.ACCT_NAME ?? "",
+            CHEQUE_DATE: authState?.workingDate ?? "",
           },
-          ...data.chequeDetails,
         ],
+        // chequeDetails: [
+        //   ...old.chequeDetails.map((item) => {
+        //     console.log("old", old);
+        //     return {
+        //       ...item,
+        //     };
+        //   }),
+        // ],
       }));
       setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox({
-        message: "Validation Failed",
-        messageTitle: "Please Check Amount",
+        message: t("PleaseCheckAmount"),
+        messageTitle: t("ValidationFailed"),
       });
     }
   };
-  const onAcceptDelete = (rows) => {
-    deleteMutation.mutate({
-      DAILY_CLEARING: {
-        TRAN_CD: retrieveDataRef.current?.TRAN_CD,
-      },
-      DETAILS_DATA: {
-        isNewRow: [],
-        isDeleteRow: [
-          {
-            TRAN_CD: retrieveDataRef.current?.TRAN_CD,
-          },
-        ],
-        isUpdatedRow: [],
-      },
-      _isDeleteRow: true,
-    });
-  };
+
   useEffect(() => {
     const handleKeyDown = async (event) => {
-      if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
+      if (event.ctrlKey && (event?.key === "R" || event?.key === "r")) {
         event.preventDefault();
         setIsOpenRetrieve(true);
       } else if (formMode === "view") {
-        if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
+        if (event.ctrlKey && (event?.key === "D" || event?.key === "d")) {
           event.preventDefault();
           if (
             retrieveDataRef.current?.CONFIRMED === "Y" &&
             authState?.role < "2"
           ) {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Confirmed Transaction",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteConfirmedTransaction"),
               buttonNames: ["Ok"],
             });
           } else if (
@@ -286,12 +304,12 @@ const CtsOutwardClearingForm: FC<{
             )
           ) {
             await MessageBox({
-              messageTitle: "Validation Failed..",
-              message: "Cannot Delete Back Dated Entry",
+              messageTitle: t("ValidationFailed"),
+              message: t("CannotDeleteBackDatedEntry"),
               buttonNames: ["Ok"],
             });
           } else {
-            SetDelete(true);
+            SetDeleteRemark(true);
           }
         }
       }
@@ -299,9 +317,25 @@ const CtsOutwardClearingForm: FC<{
     document.addEventListener("keydown", handleKeyDown);
   }, [formMode]);
 
+  if (zoneTranType === "S") {
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    );
+    CTSOutwardClearingFormMetaData.fields[1].defaultValue = "0   ";
+  } else if (zoneTranType === "R") {
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
+      currentPath,
+      authState?.menulistdata,
+      true
+    )
+    CTSOutwardClearingFormMetaData.fields[1].defaultValue = "10  ";
+  }
+
   return (
     <Fragment>
-      {isLoading || getOutwardClearingData.isLoading ? (
+      {isLoading || isFetching || getOutwardClearingData.isLoading ? (
         <div style={{ height: 100, paddingTop: 10 }}>
           <div style={{ padding: 10 }}>
             <LoaderPaperComponent />
@@ -330,22 +364,32 @@ const CtsOutwardClearingForm: FC<{
       ) : (
         <>
           <FormWrapper
-            key={"CTSOutwardForm" + formMode + mutationOutward?.isSuccess}
+            key={
+              "CTSOutwardForm" +
+              formMode +
+              mutationOutward?.isSuccess +
+              zoneTranType
+            }
             metaData={
               extractMetaData(
-                CTSOutwardClearingFormMetaData,
+                zoneTranType === "S"
+                  ? CTSOutwardClearingFormMetaData
+                  : CTSOutwardClearingFormMetaData,
                 formMode
               ) as MetaDataType
             }
             initialValues={
               formMode === "new"
                 ? {
-                    TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                    ZONE_TRAN_TYPE: zoneTranType,
-                  }
+                  TRAN_DT:
+                    zoneTranType === "S"
+                      ? data?.[0]?.TRAN_DATE
+                      : authState?.workingDate ?? "",
+                  ZONE_TRAN_TYPE: zoneTranType,
+                }
                 : {
-                    ...getOutwardClearingData.data?.[0],
-                  }
+                  ...getOutwardClearingData.data?.[0],
+                }
             }
             onSubmitHandler={async (
               data: any,
@@ -358,14 +402,16 @@ const CtsOutwardClearingForm: FC<{
               endSubmit(true);
               slipFormDataRef.current = data;
               if (action === "CHEQUEDTL") {
-                let event: any = { preventDefault: () => {} };
+                let event: any = { preventDefault: () => { } };
                 myChequeFormRef?.current?.handleSubmit(event, "FINAL");
               }
             }}
             setDataOnFieldChange={(action, payload) => {
-              if (action === "ACCT_CD_VALID") {
+              if (action === "API_REQ") {
+                setChequeReqData(payload);
+              } else if (action === "ACCT_CD_VALID") {
                 setJointDtlExpand(true);
-                setGridData(payload?.ACCT_JOIN_DETAILS);
+                setGridData(payload);
                 setChequeDetailData((old) => {
                   return {
                     ...old,
@@ -400,7 +446,7 @@ const CtsOutwardClearingForm: FC<{
                   SLIP_AMOUNT: payload,
                 }));
                 setChequeDtlRefresh((old) => old + 1);
-                let event: any = { preventDefault: () => {} };
+                let event: any = { preventDefault: () => { } };
                 myFormRef?.current?.handleSubmit(event);
               }
             }}
@@ -426,7 +472,7 @@ const CtsOutwardClearingForm: FC<{
                         setIsOpenRetrieve(true);
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
                   </>
                 ) : formMode === "view" ? (
@@ -436,15 +482,25 @@ const CtsOutwardClearingForm: FC<{
                         setIsOpenRetrieve(true);
                       }}
                     >
-                      Retrieve
+                      {t("Retrieve")}
                     </GradientButton>
 
                     <GradientButton
                       onClick={() => {
                         setFormMode("new");
+                        setChequeDetailData(() => ({
+                          chequeDetails: [
+                            {
+                              ECS_USER_NO: "",
+                              CHEQUE_DATE: authState?.workingDate ?? "",
+                            },
+                          ],
+                          SLIP_AMOUNT: "0",
+                        }));
+                        refetch();
                       }}
                     >
-                      New
+                      {t("New")}
                     </GradientButton>
 
                     <GradientButton
@@ -454,8 +510,8 @@ const CtsOutwardClearingForm: FC<{
                           authState?.role < "2"
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Confirmed Transaction",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteConfirmedTransaction"),
                             buttonNames: ["Ok"],
                           });
                         } else if (
@@ -471,16 +527,16 @@ const CtsOutwardClearingForm: FC<{
                           )
                         ) {
                           await MessageBox({
-                            messageTitle: "Validation Failed..",
-                            message: "Cannot Delete Back Dated Entry",
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
                           });
                         } else {
-                          SetDelete(true);
+                          SetDeleteRemark(true);
                         }
                       }}
                     >
-                      Delete
+                      {t("Delete")}
                     </GradientButton>
                   </>
                 ) : null}
@@ -494,7 +550,8 @@ const CtsOutwardClearingForm: FC<{
                 backgroundColor: "var(--theme-color2)",
                 margin: "0px 0px 0px 10px",
                 padding:
-                  gridData && gridData?.length > 0
+                  gridData?.ACCT_JOIN_DETAILS &&
+                    gridData?.ACCT_JOIN_DETAILS?.length > 0
                     ? isJointDtlExpand
                       ? "10px"
                       : "0px"
@@ -521,7 +578,7 @@ const CtsOutwardClearingForm: FC<{
                   gutterBottom={true}
                   variant={"h6"}
                 >
-                  Joint - Details
+                  {t("JointDetails")}
                 </Typography>
                 <IconButton
                   onClick={() => setJointDtlExpand(!isJointDtlExpand)}
@@ -531,13 +588,14 @@ const CtsOutwardClearingForm: FC<{
               </Grid>
               <Collapse in={isJointDtlExpand}>
                 <Grid item>
-                  {gridData && gridData?.length > 0 ? (
+                  {gridData?.ACCT_JOIN_DETAILS &&
+                    gridData?.ACCT_JOIN_DETAILS?.length > 0 ? (
                     <GridWrapper
                       key={
                         "JoinDetailGridMetaData" + mutationOutward?.isSuccess
                       }
                       finalMetaData={SlipJoinDetailGridMetaData}
-                      data={gridData ?? []}
+                      data={gridData?.ACCT_JOIN_DETAILS ?? []}
                       setData={() => null}
                       actions={actions}
                       setAction={setCurrentAction}
@@ -550,29 +608,39 @@ const CtsOutwardClearingForm: FC<{
           <div
             onKeyDown={(e) => {
               let target: any = e?.target;
-              const charAtIndex = target.name.split("").find((char, index) => {
+              const charAtIndex = target.name?.split("").find((char, index) => {
                 return index === 39;
               });
-              if (e.key === "Enter" || e.key === "Tab") {
+              if (e?.key === "Enter" || e?.key === "Tab") {
+                let metaData;
+                if (zoneTranType === "S") {
+                  metaData = ctsOutwardChequeDetailFormMetaData;
+                } else if (zoneTranType === "R") {
+                  metaData = inwardReturnChequeDetailFormMetaData;
+                }
                 if (
                   (target?.name ?? "") ===
-                  ChequeDetailFormMetaData.form.name +
-                    "/" +
-                    ChequeDetailFormMetaData.fields[7].name +
-                    `[${charAtIndex}]` +
-                    ".AMOUNT"
+                  metaData.form.name +
+                  "/" +
+                  metaData.fields[7].name +
+                  `[${charAtIndex}]` +
+                  ".AMOUNT"
                 ) {
-                  let event: any = { preventDefault: () => {} };
+                  let event: any = { preventDefault: () => { } };
                   myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
                 }
               }
             }}
           >
             <FormWrapper
-              key={`ChequeDetails` + chequeDtlRefresh + formMode}
+              key={`ChequeDetails` + chequeDtlRefresh + formMode + zoneTranType}
               metaData={
                 extractMetaData(
-                  ChequeDetailFormMetaData,
+                  zoneTranType === "S"
+                    ? ctsOutwardChequeDetailFormMetaData
+                    : zoneTranType === "R"
+                      ? inwardReturnChequeDetailFormMetaData
+                      : inwardReturnChequeDetailFormMetaData,
                   formMode
                 ) as MetaDataType
               }
@@ -581,14 +649,14 @@ const CtsOutwardClearingForm: FC<{
               initialValues={
                 formMode === "new"
                   ? {
-                      ...chequeDetailData,
-                      TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
-                    }
+                    ...chequeDetailData,
+                    TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
+                    RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
+                  }
                   : {
-                      chequeDetails:
-                        getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL ?? "",
-                    }
+                    chequeDetails:
+                      getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL ?? "",
+                  }
               }
               hideHeader={true}
               containerstyle={{ padding: "0px !important" }}
@@ -596,8 +664,8 @@ const CtsOutwardClearingForm: FC<{
                 if (action === "MESSAGE") {
                   if (paylod?.[0]?.ERROR_MSSAGE) {
                     let res = await MessageBox({
-                      messageTitle: "Confirmation..",
-                      message: "Are You sure To Add Bank?",
+                      messageTitle: t("Confirmation"),
+                      message: t("AreYouSureToAddBank"),
                       buttonNames: ["Yes", "No"],
                     });
                     if (res === "Yes") {
@@ -607,12 +675,17 @@ const CtsOutwardClearingForm: FC<{
                 }
               }}
               onFormButtonClickHandel={() => {
-                let event: any = { preventDefault: () => {} };
-                myChequeFormRef?.current?.handleSubmit(event);
+                let event: any = { preventDefault: () => { } };
+                myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
               }}
               ref={myChequeFormRef}
               formStyle={{
                 height: "65%",
+              }}
+              formState={{
+                REQ_DATA: chequeReqData,
+                ZONE_TRAN_TYPE: zoneTranType,
+                MessageBox: MessageBox,
               }}
             />
           </div>
@@ -633,6 +706,10 @@ const CtsOutwardClearingForm: FC<{
                   retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                   getOutwardClearingData.mutate({
                     TRAN_CD: rowsData?.[0]?.data?.TRAN_CD ?? "",
+                    ENTERED_COMP_CD: rowsData?.[0]?.data?.ENTERED_COMP_CD ?? "",
+                    ENTERED_BRANCH_CD:
+                      rowsData?.[0]?.data?.ENTERED_BRANCH_CD ?? "",
+                    // TRAN_TYPE: zoneTranType,
                   });
                   setFormMode("view");
                 }
@@ -640,28 +717,82 @@ const CtsOutwardClearingForm: FC<{
               tranDate={data?.[0]?.TRAN_DATE ?? ""}
             />
           ) : null}
-          {isOpenProceedMsg ? (
-            <PopupMessageAPIWrapper
-              MessageTitle="Confirmation"
-              Message=" Proceed ?"
-              onActionYes={(rowsVal) => mutationOutward.mutate(rowsVal)}
-              onActionNo={() => setOpenProceedMsg(false)}
-              rows={finalReqDataRef.current}
-              open={isOpenProceedMsg}
-              loading={mutationOutward.isLoading}
+          {isDeleteRemark && (
+            <RemarksAPIWrapper
+              TitleText={
+                zoneTranType === "S"
+                  ? t("EnterRemovalRemarksForCTSOWCLEARING")
+                  : t("EnterRemovalRemarksINWARDRETURNENTRY")
+              }
+              onActionNo={() => SetDeleteRemark(false)}
+              onActionYes={async (val, rows) => {
+                const buttonName = await MessageBox({
+                  messageTitle: t("Confirmation"),
+                  message: t("DoYouWantDeleteRow"),
+                  buttonNames: ["No", "Yes"],
+                  defFocusBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
+                });
+                if (buttonName === "Yes") {
+                  deleteMutation.mutate({
+                    DAILY_CLEARING: {
+                      _isNewRow: false,
+                      _isDeleteRow: true,
+                      _isUpdateRow: false,
+                      ENTERED_COMP_CD: retrieveDataRef.current?.ENTERED_COMP_CD,
+                      ENTERED_BRANCH_CD:
+                        retrieveDataRef.current?.ENTERED_BRANCH_CD,
+                      TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+                      CONFIRMED: retrieveDataRef.current?.CONFIRMED,
+                      ENTERED_BY: retrieveDataRef.current?.ENTERED_BY,
+                    },
+                    BRANCH_CD:
+                      getOutwardClearingData.data?.[0]?.CHEQUE_DETAIL?.[0]
+                        ?.BRANCH_CD,
+                    SR_CD: retrieveDataRef.current?.SR_NO,
+                    ACCT_TYPE: getOutwardClearingData.data?.[0]?.ACCT_TYPE,
+                    ACCT_CD: getOutwardClearingData.data?.[0]?.ACCT_CD,
+                    AMOUNT: getOutwardClearingData.data?.[0]?.AMOUNT,
+                    TRAN_DT: getOutwardClearingData.data?.[0]?.TRAN_DT,
+                    TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+                    USER_DEF_REMARKS: val
+                      ? val
+                      : zoneTranType === "S"
+                        ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
+                        : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)",
+
+                    ACTIVITY_TYPE:
+                      zoneTranType === "S"
+                        ? "CTS OW CLEARING ENTRY SCREEN"
+                        : "INWARD RETURN ENTRY SCREEN",
+                    DETAILS_DATA: {
+                      isNewRow: [],
+                      isDeleteRow: [
+
+                        {
+                          TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+                        },
+                      ],
+                      isUpdatedRow: [],
+                    },
+                    _isDeleteRow: true,
+                  });
+                }
+              }}
+              // isLoading={crudLimitData?.isLoading}
+              isEntertoSubmit={true}
+              AcceptbuttonLabelText="Ok"
+              CanceltbuttonLabelText="Cancel"
+              open={isDeleteRemark}
+              // rows={deleteDataRef.current}
+              defaultValue={
+                zoneTranType === "S"
+                  ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
+                  : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)"
+              }
+              rows={undefined}
             />
-          ) : null}
-          {isDelete ? (
-            <PopupMessageAPIWrapper
-              MessageTitle="Confirmation"
-              Message="Do You Want to delete this row?"
-              onActionYes={(rows) => onAcceptDelete(rows)}
-              onActionNo={() => SetDelete(false)}
-              rows={{}}
-              open={isDelete}
-              loading={deleteMutation.isLoading}
-            />
-          ) : null}
+          )}
         </>
       )}
     </Fragment>
@@ -671,7 +802,10 @@ const CtsOutwardClearingForm: FC<{
 export const CtsOutwardClearingFormWrapper = ({ zoneTranType }) => {
   return (
     <ClearCacheProvider>
-      <CtsOutwardClearingForm zoneTranType={zoneTranType} />
+      <CtsOutwardClearingForm
+        key={zoneTranType + "-CtsOutwardClearingForm"}
+        zoneTranType={zoneTranType}
+      />
     </ClearCacheProvider>
   );
 };

@@ -9,11 +9,16 @@ import {
   lazy,
   Suspense,
   useCallback,
+  useMemo,
 } from "react";
 
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
-import { useField, UseFieldHookProps } from "packages/form";
+import {
+  transformDependentFieldsState,
+  useField,
+  UseFieldHookProps,
+} from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 
 import match from "autosuggest-highlight/match";
@@ -63,7 +68,6 @@ interface AutoCompleteExtendedProps {
   ChipProps?: ChipProps;
   CreateFilterOptionsConfig?: CreateFilterOptionsConfig<OptionsProps>;
   options?: OptionsProps[] | dependentOptionsFn;
-  label?: string;
   placeholder?: string;
   required?: boolean;
   enableVirtualized?: boolean;
@@ -71,6 +75,12 @@ interface AutoCompleteExtendedProps {
   disableCaching?: boolean;
   requestProps?: any;
   disableAdornment?: boolean;
+  textFieldStyle?: any;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
+  label?: string;
 }
 
 type MyAutocompleteProps = Merge<
@@ -84,7 +94,7 @@ export type MyAllAutocompleteProps = Merge<
 >;
 
 const getOptionLabel = (freeSolo: any) => (option: OptionsProps) =>
-  Boolean(freeSolo) ? option : option?.label ?? "";
+  Boolean(freeSolo) ? option : option?.label?.trimStart() ?? "";
 const getOptionValue = (freeSolo: any) => (option: OptionsProps) =>
   Boolean(freeSolo) ? option : option?.value ?? "";
 
@@ -122,6 +132,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   disableCaching,
   requestProps,
   disableAdornment,
+  textFieldStyle,
+  setFieldLabel,
   ...others
 }) => {
   const {
@@ -166,6 +178,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   const myGetOptionValue = useCallback(getOptionValue(freeSolo), []);
 
   const transformValues = useCallback((values, freeSolo) => {
+    values = typeof values === "string" ? values.trimStart() : values;
     if (!Array.isArray(values)) {
       values = [values];
     }
@@ -180,12 +193,16 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     return newValues;
   }, []);
 
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+    }, 50);
+  };
+
   useEffect(() => {
     if (isFieldFocused) {
-      setTimeout(() => {
-        //@ts-ignore
-        focusRef?.current?.focus?.();
-      }, 1);
+      getFocus();
     }
   }, [isFieldFocused]);
 
@@ -246,6 +263,9 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
       //@ts-ignore
       value = value.map((one) => myGetOptionValue(one) ?? "");
     }
+    //inside the postvalidation added option-data in field
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
     if (!Boolean(multiple) && Array.isArray(value)) {
       //@ts-ignore
       handleChange(value[0]);
@@ -256,7 +276,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   const handleKeyDown = useCallback(
     (e: any) => {
-      if (e.key.toLowerCase() === "backspace") indexRef.current = -1;
+      if (
+        e.key.toLowerCase() === "backspace" ||
+        e.key.toLowerCase() === "escape"
+      )
+        indexRef.current = -1;
       if (e.key.toLowerCase() === "tab") {
         if (indexRef.current !== -1 && _options[indexRef.current]) {
           handleChangeCustom(e, _options[indexRef.current]);
@@ -294,7 +318,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { error, isErrorBlank } = incomingMessage;
+      const { error, isErrorBlank, isFieldFocused } = incomingMessage;
+      if (isFieldFocused) {
+        getFocus();
+      }
       if (isErrorBlank) {
         setErrorAsCB("");
       } else if (Boolean(error)) {
@@ -302,11 +329,19 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
       }
     }
   }, [incomingMessage, setErrorAsCB]);
+  const updatedLabel = useMemo(() => {
+    if (typeof setFieldLabel === "function")
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
     return null;
   }
+
   const isError = touched && (error ?? "") !== "";
   const result = (
     <Suspense fallback={"loading..."}>
@@ -366,6 +401,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
                 overflow: "hidden",
                 maxWidth: "300px",
+                minWidth: "max(120px, 100%)",
               }}
             >
               {children}
@@ -374,7 +410,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         }}
         onKeyDown={handleKeyDown}
         onChange={handleChangeCustom}
-        openOnFocus
         onHighlightChange={(e, option: any) => {
           indexRef.current = _options.indexOf(option);
         }}
@@ -401,15 +436,44 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         //   handleOptionValueExtraData(extraOptionData);
         // }}
         // onBlur={handleBlur}
-        onBlur={handleBlurInterceptor}
+        onBlur={() => {
+          indexRef.current = -1;
+          handleBlurInterceptor();
+        }}
         //change by parag  , disabled
         // disabled={isSubmitting}
         disabled={isSubmitting || readOnly}
         filterOptions={
+          // chanage by by parag to filter data (to display the input value first)
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
             ? createFilterOptions(CreateFilterOptionsConfig)
-            : undefined
+            : (options, state) => {
+                const inputValue = state.inputValue.toLowerCase();
+                const filtered = options.filter((option) =>
+                  option.label.toLowerCase().includes(inputValue)
+                );
+                return filtered.sort((a, b) => {
+                  const aStartsWith = a.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+                  const bStartsWith = b.label
+                    .toLowerCase()
+                    .startsWith(inputValue);
+
+                  if (aStartsWith && !bStartsWith) {
+                    return -1;
+                  }
+                  if (!aStartsWith && bStartsWith) {
+                    return 1;
+                  }
+                  return 0;
+                });
+              }
+          // Boolean(CreateFilterOptionsConfig) &&
+          // typeof CreateFilterOptionsConfig === "object"
+          //   ? createFilterOptions(CreateFilterOptionsConfig)
+          //   : undefined
         }
         renderTags={(value, getTagProps) => {
           return value.map((option, index) => {
@@ -436,67 +500,75 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           });
         }}
         renderInput={(params) => {
+          const selectedLabel =
+            _options.find((option) => option.value === value)?.label || "";
           return (
-            <TextField
-              {...TextFieldProps}
-              {...params}
-              name={name}
-              label={label}
-              placeholder={placeholder}
-              autoComplete="disabled"
-              type="text"
-              error={!isSubmitting && isError}
-              required={required}
-              helperText={!isSubmitting && isError ? error : null}
-              InputProps={{
-                style: {
-                  background: Boolean(readOnly) ? "var(--theme-color7)" : "",
-                },
+            <Tooltip title={selectedLabel || ""} placement="top">
+              <TextField
+                {...TextFieldProps}
+                {...params}
+                name={name}
+                label={updatedLabel ?? label}
+                placeholder={placeholder}
+                autoComplete="disabled"
+                type="text"
+                error={!isSubmitting && isError}
+                required={required}
+                helperText={!isSubmitting && isError ? error : null}
+                sx={{
+                  "& .MuiInputBase-root": {
+                    background: Boolean(readOnly)
+                      ? "var(--theme-color7) !important"
+                      : "",
+                  },
+                  ...textFieldStyle,
+                }}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <Fragment>
+                      {validationRunning || loadingOptions ? (
+                        <CircularProgress
+                          sx={{
+                            position: "absolute",
+                            right: disableAdornment ? "0.5rem" : "1.5rem",
+                          }}
+                          size={25}
+                          color="secondary"
+                          variant="indeterminate"
+                          {...CircularProgressProps}
+                        />
+                      ) : (
+                        params.InputProps.endAdornment
+                      )}
+                    </Fragment>
+                  ),
+                }}
+                inputRef={focusRef}
+                // InputProps={{
+                //   ...params.InputProps,
+                //   endAdornment:
+                //     validationRunning || loadingOptions ? (
+                //       <InputAdornment position="end">
+                //         <CircularProgress
+                //           color="secondary"
+                //           variant="indeterminate"
+                //           size={24}
+                //           {...CircularProgressProps}
+                //         />
+                //       </InputAdornment>
+                //     ) : null,
+                // }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
 
-                ...params.InputProps,
-                endAdornment: (
-                  <Fragment>
-                    {validationRunning || loadingOptions ? (
-                      <CircularProgress
-                        sx={{
-                          position: "absolute",
-                          right: disableAdornment ? "0.5rem" : "1.5rem",
-                        }}
-                        size={25}
-                        color="secondary"
-                        variant="indeterminate"
-                        {...CircularProgressProps}
-                      />
-                    ) : (
-                      params.InputProps.endAdornment
-                    )}
-                  </Fragment>
-                ),
-              }}
-              inputRef={focusRef}
-              // InputProps={{
-              //   ...params.InputProps,
-              //   endAdornment:
-              //     validationRunning || loadingOptions ? (
-              //       <InputAdornment position="end">
-              //         <CircularProgress
-              //           color="secondary"
-              //           variant="indeterminate"
-              //           size={24}
-              //           {...CircularProgressProps}
-              //         />
-              //       </InputAdornment>
-              //     ) : null,
-              // }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-
-              // inputProps={{
-              //   ...params.inputProps,
-              //   autoComplete: "new-user-street-address",
-              // }}
-            />
+                // inputProps={{
+                //   ...params.inputProps,
+                //   autoComplete: "new-user-street-address",
+                // }}
+              />
+            </Tooltip>
           );
         }}
         renderOption={(props, option, other) => {

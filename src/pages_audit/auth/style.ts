@@ -141,8 +141,8 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   dialogTitleClass: {
     background: "var(--theme-color5)",
-    padding: "8px 15px !important",
-    margin: "15px",
+    padding: "6px 15px !important",
+    margin: "10px",
     color: "var(--theme-color2)",
     borderRadius: "4px",
     "& h2": {
@@ -161,6 +161,17 @@ export const useStyles = makeStyles((theme: any) => ({
       color: "black",
       marginTop: "8px",
       marginBottom: "6px",
+    },
+  },
+  button: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    margin: "6px",
+    background: "var(--theme-color1)",
+    "&:hover": {
+      background: "var(--theme-color1) !important",
     },
   },
 }));

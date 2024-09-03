@@ -12,6 +12,7 @@ import { WORKER_STATUS } from "@koale/useworker";
 import FormWrapper from "components/dyanmicForm";
 import { exportReportFormMetaData } from "./ExportReportForm/metaData";
 import { useWorkerContext } from "./context/exportWorkerContext";
+import { useTranslation } from "react-i18next";
 
 // classes
 const useStyles = makeStyles((theme: Theme) => ({
@@ -36,14 +37,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ReportExportScreen = ({
-  globalFilter="",
+  globalFilter = "",
   filters,
-  queryFilters=[],
+  queryFilters = [],
   onClose,
   rows,
   columns,
   title,
-}) => {console.log("globalFilter",globalFilter,"queryFilters",queryFilters)
+}) => {
+  console.log("globalFilter", globalFilter, "queryFilters", queryFilters);
   const {
     pdfExporter,
     excelExporter,
@@ -65,6 +67,7 @@ const ReportExportScreen = ({
   const refData = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   //   // filter columns where cell type is button
   columns = useMemo(
     () =>
@@ -90,14 +93,17 @@ const ReportExportScreen = ({
       columns.map((column, index) => {
         return {
           id: index + 1,
-          cname: column.columnName,
+          cname: t(column.columnName),
           [column.accessor]: column.accessor,
           cellType:
-            column?.Cell === components.DateTimeCell
+            column?.Cell === components.DateTimeCell ||
+            column?.componentType === "dateTime"
               ? "DateTimeCell"
-              : column?.Cell === components.DateCell
+              : column?.Cell === components.DateCell ||
+                column?.componentType === "date"
               ? "DateCell"
-              : column?.Cell === components.TimeCell
+              : column?.Cell === components.TimeCell ||
+                column?.componentType === "time"
               ? "TimeCell"
               : "",
           format: column?.format ?? "",
@@ -308,7 +314,7 @@ const ReportExportScreen = ({
         gutterBottom
       >
         {rowData.length === 0
-          ? `No data found to export`
+          ? `${"NoDataFound"}`
           : `${rowData.length} row(s) will be exported.`}
       </Typography>
 
@@ -339,10 +345,10 @@ const ReportExportScreen = ({
             refData.current?.handleSubmit(e);
           }}
         >
-          Export
+          {t("Export")}
         </GradientButton>
 
-        <GradientButton onClick={onClose}>Close</GradientButton>
+        <GradientButton onClick={onClose}>{t("Close")}</GradientButton>
       </DialogActions>
     </Dialog>
   );

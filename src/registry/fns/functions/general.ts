@@ -714,16 +714,97 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, DESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
-              label: ACCT_TYPE + " - " + DESCRIPTION,
+              label: ACCT_TYPE + " - " + other.DESCRIPTION,
+              ...other,
+            };
+          }
+        );
+      }
+      if (responseData && apiReq?.DOC_CD === "DIV") {
+        responseData.sort((a, b) => {
+          return parseInt(b.label) - parseInt(a.label);
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getChequeNoValidation = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getCommTypeList = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DESCRIPTION, TRAN_CD, ...other }) => {
+            return {
+              value: TRAN_CD,
+              label: DESCRIPTION,
               ...other,
             };
           }
         );
       }
       return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getCustAccountLatestDtl = async ({ COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_CD, AMOUNT, SCREEN_REF }) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
+        COMP_CD: COMP_CD,
+        BRANCH_CD: BRANCH_CD,
+        ACCT_TYPE: ACCT_TYPE,
+        ACCT_CD: ACCT_CD,
+        AMOUNT: AMOUNT,
+        SCREEN_REF: SCREEN_REF,
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getPhotoSignHistory = async ({ COMP_CD, CUSTOMER_ID, REQ_CD }) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTSIGNPHOTOHISTORY", {
+        COMP_CD: COMP_CD,
+        CUSTOMER_ID: CUSTOMER_ID,
+        REQ_CD: REQ_CD,
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+  const getCalGstAmountData = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCALCGSTAMT", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      return data;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
@@ -758,6 +839,11 @@ const GeneralAPISDK = () => {
     getFDInterest,
     getAccNoValidation,
     get_Account_Type,
+    getChequeNoValidation,
+    getCommTypeList,
+    getPhotoSignHistory,
+    getCustAccountLatestDtl,
+    getCalGstAmountData
   };
 };
 export const GeneralAPI = GeneralAPISDK();

@@ -12,7 +12,7 @@ import { other_details_legal_meta_data } from '../../metadata/legal/legalotherde
 import TabNavigate from '../TabNavigate';
 
 
-const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const OtherDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
@@ -122,7 +122,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
             }
             newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...resData, ...commonData}
             handleFormDataonSavectx(newData)
-            if(!state?.isFreshEntryctx) {
+            if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                 let tabModifiedCols:any = state?.modifiedFormCols
                 let updatedCols = tabModifiedCols.OTHER_DTL ? _.uniq([...tabModifiedCols.OTHER_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
                 tabModifiedCols = {
@@ -144,13 +144,15 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
+        return (
+            state?.formDatactx["OTHER_DTL"]
                 ? state?.formDatactx["OTHER_DTL"]
-                    ? state?.formDatactx["OTHER_DTL"]
-                    : {}
-                : state?.retrieveFormDataApiRes
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
                     ? state?.retrieveFormDataApiRes["OTHER_DTL"]
+                        ? state?.retrieveFormDataApiRes["OTHER_DTL"]
+                        : {}
                     : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
@@ -164,7 +166,8 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -184,7 +187,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         onSubmitHandler={OtherDTLSubmitHandler}
                         key={"other-details-form-kyc"+initialVal}
                         metaData={otherDtlMetadata as MetaDataType}
-                        displayMode={displayMode}
+                        displayMode={state?.formmodectx}
                         // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         initialValues={initialVal}
                         formStyle={{}}
@@ -192,8 +195,10 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     />
                 </Grid>
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

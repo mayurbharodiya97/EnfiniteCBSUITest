@@ -1,10 +1,37 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { SearchBar } from "components/derived";
 import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "./style";
+import { useTranslation } from "react-i18next";
+
+const getStoredScreens = (defaultData) => {
+  const store = localStorage.getItem("routeHistory");
+  if (store) {
+    const parsedData = JSON.parse(store);
+    const filteredData: any = [];
+    parsedData.forEach(({ system_code, user_code }) => {
+      const foundScreen = defaultData.find(
+        (screen) =>
+          screen.system_code === system_code || screen.user_code === user_code
+      );
+      if (foundScreen) {
+        filteredData.push(foundScreen);
+      }
+    });
+    return filteredData;
+  }
+  return defaultData.slice(0, 5);
+};
+
+const getScreenCode = (data) => {
+  return data.map((path) => ({
+    system_code: path.system_code,
+    user_code: path.user_code,
+  }));
+};
 
 const SearchScreen = () => {
   const [listOpen, setListOpen] = useState<any>(false);
@@ -14,6 +41,7 @@ const SearchScreen = () => {
   const inputRef = useRef<any>(null);
   const navigate = useNavigate();
   const classes = useStyles();
+  const { t } = useTranslation();
   const authController = useContext(AuthContext);
 
   const allScreenData = useMemo(() => {
@@ -21,13 +49,12 @@ const SearchScreen = () => {
       authController?.authState?.menulistdata,
       true
     );
-
     return responseData;
   }, [authController.authState.menulistdata]);
-
   const [screenData, setScreenData] = useState<any>([]);
 
   const handleLinkClick = (data) => {
+    if (!data) return;
     const link = data?.navigationProps
       ? data.href + "?" + new URLSearchParams(data?.navigationProps).toString()
       : data.href;
@@ -35,10 +62,7 @@ const SearchScreen = () => {
     setSearchText("");
     setSelectedItem(0);
     handleStoreRecent(data);
-    setScreenData(
-      JSON.parse(localStorage.getItem("routeHistory") as string) ||
-        allScreenData.slice(0, 5)
-    );
+    setScreenData(getStoredScreens(allScreenData));
     if (inputRef.current) inputRef.current?.handleBlur();
     navigate(link);
   };
@@ -79,29 +103,49 @@ const SearchScreen = () => {
     );
     if (duplicate.length === 0) {
       const updatedPaths = [data, ...storedPaths].slice(0, 5);
-      localStorage.setItem("routeHistory", JSON.stringify(updatedPaths));
+      const toStore = getScreenCode(updatedPaths);
+      localStorage.setItem("routeHistory", JSON.stringify(toStore));
     }
   };
 
   useEffect(() => {
     if (searchText === "") {
-      // setScreenData(allScreenData.slice(0, 5));
-      setScreenData(
-        JSON.parse(localStorage.getItem("routeHistory") as string) ||
-          allScreenData.slice(0, 5)
-      );
+      setScreenData(getStoredScreens(allScreenData));
     } else {
       const filtredValue = allScreenData.filter(({ label, user_code }) => {
         return [label, user_code].some((info) =>
           info.toLowerCase().includes(searchText.toLowerCase())
         );
       });
-
       setScreenData(filtredValue);
     }
   }, [searchText]);
 
   useEffect(() => {
+    const localStorageScreenData = JSON.parse(
+      localStorage.getItem("routeHistory") as string
+    );
+    let filteredData: any = [];
+    if (localStorageScreenData) {
+      filteredData = localStorageScreenData.filter((localData) => {
+        return allScreenData.some((screenData) => {
+          return localData.system_code === screenData.system_code;
+        });
+      });
+    }
+    let finalFilteredData = [...filteredData];
+    for (let i = filteredData.length; i < 5; i++) {
+      if (allScreenData[i]) {
+        finalFilteredData.push(allScreenData[i]);
+      }
+    }
+    const storeFinalData = getScreenCode(finalFilteredData);
+    localStorage.setItem("routeHistory", JSON.stringify(storeFinalData));
+
+    const defaultInit = getStoredScreens(allScreenData);
+    const initData = getScreenCode(defaultInit);
+    localStorage.setItem("routeHistory", JSON.stringify(initData));
+
     const handleClickOutside = (event) => {
       if (listRef.current && !listRef.current.contains(event.target)) {
         setListOpen(false);
@@ -109,18 +153,10 @@ const SearchScreen = () => {
       }
     };
 
-    const handleStorage = (e) => {
-      if (e.key === "routeHistrory") {
-        console.log(e);
-      }
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("storage", handleStorage);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("storage", handleStorage);
     };
   }, []);
 
@@ -130,7 +166,9 @@ const SearchScreen = () => {
       <Box ref={listRef} position="relative">
         <SearchBar
           ref={inputRef}
-          placeholder="Search screen"
+          placeholder={`${t("profile.Searchin")} ${allScreenData.length} ${t(
+            "profile.screens"
+          )}`}
           className={`${classes.searchBar} route-search-bar`}
           onChange={handleChange}
           value={searchText}
@@ -148,7 +186,9 @@ const SearchScreen = () => {
                   }
                   onClick={() => handleLinkClick(data)}
                 >
-                  {`${data.label} - ${data.user_code}`}
+                  <Typography
+                    sx={{ fontSize: ".875rem", fontWeight: 500 }}
+                  >{`${data.label} - ${data.user_code}`}</Typography>
                 </button>
               ))
             ) : (

@@ -4,8 +4,8 @@ import { utilFunction } from "components/utils";
 
 export const limitEntryMetaData = {
   form: {
-    name: "limitEntry",
-    label: "Limit Entry",
+    name: "limit-Entry",
+    label: "LimitEntry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -60,7 +60,7 @@ export const limitEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        postValidationSetCrossFieldValues: async (field) => {
+        postValidationSetCrossFieldValues: async (field, formState) => {
           if (field?.value) {
             return {
               ACCT_TYPE: { value: "" },
@@ -68,43 +68,67 @@ export const limitEntryMetaData = {
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
             };
+          } else if (!field.value) {
+            formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+              SECURITY_CD: { value: "" },
+            };
           }
+        },
+        runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
       accountTypeMetadata: {
-        // disableCaching: true,
-        dependentFields: ["ACCT_TYPE"],
+        isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
-          console.log("<<<<fnef", dependentValue, formState, _, authState);
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
-            DOC_CD: "ETRN/046",
+            DOC_CD: "TRN/046",
           });
         },
         // _optionsKey: "get_Account_Type",
-
-        postValidationSetCrossFieldValues: async (
-          field,
-          formState,
-          authState,
-          dependentValue
-        ) => {
-          if (field?.value) {
-            return {
-              PARENT_TYPE: {
-                value:
-                  dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
-              },
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              ACCT_BAL: { value: "" },
-            };
-          }
+        postValidationSetCrossFieldValues: async (field, formState) => {
+          formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
+          return {
+            PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
+            ACCT_CD: { value: "" },
+            SECURITY_CD: { value: "", isFieldFocused: false },
+            ACCT_NM: { value: "" },
+            ACCT_BAL: { value: "" },
+          };
+        },
+        runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
       },
       accountCodeMetadata: {
+        render: {
+          componentType: "textField",
+        },
+        validate: (columnValue) => {
+          let regex = /^[^!&]*$/;
+          if (!regex.test(columnValue.value)) {
+            return "Special Characters (!, &) not Allowed";
+          }
+          return "";
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -128,81 +152,67 @@ export const limitEntryMetaData = {
               SCREEN_REF: "EMST/046",
             };
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
-
-            if (postData?.[0]?.RESTRICTION) {
-              formState.MessageBox({
-                messageTitle: "Validation Failed...!",
-                message: postData?.[0]?.RESTRICTION,
-                buttonNames: ["Ok"],
+            let responseData: any = [];
+            const messagebox = async (msgTitle, msg, buttonNames) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
               });
-              return {
-                ACCT_CD: { value: "" },
-                ACCT_NM: { value: "" },
-                TRAN_BAL: { value: "" },
-                SANCTIONED_AMT: { value: "" },
-              };
-            } else if (postData?.[0]?.MESSAGE1) {
+              return buttonName;
+            };
+            if (postData?.length) {
+              for (let i = 0; i < postData?.length; i++) {
+                if (postData[i]?.O_STATUS !== "0") {
+                  let btnName = await messagebox(
+                    postData[i]?.O_STATUS === "999"
+                      ? "validation fail"
+                      : "ALert message",
+                    postData[i]?.O_MESSAGE,
+                    postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
+                  );
+                  if (btnName === "No" || postData[i]?.O_STATUS === "999") {
+                    formState.setDataOnFieldChange("NSC_FD_BTN", {
+                      NSC_FD_BTN: false,
+                      HDN_CHARGE_AMT: "",
+                      HDN_GST_AMT: "",
+                      HDN_GST_ROUND: "",
+                      HDN_TAX_RATE: "",
+                    });
+                    return {
+                      ACCT_CD: { value: "", isFieldFocused: true },
+                      ACCT_NM: { value: "" },
+                      TRAN_BAL: { value: "" },
+                      SANCTIONED_AMT: { value: "" },
+                    };
+                  }
+                } else {
+                  responseData.push(postData[i]);
+                }
+              }
+            }
+            if (responseData?.length) {
               formState.setDataOnFieldChange("NSC_FD_BTN", {
                 NSC_FD_BTN: true,
-              });
-
-              formState.MessageBox({
-                messageTitle: "Risk Category Alert",
-                message: postData?.[0]?.MESSAGE1,
-                buttonNames: ["Ok"],
+                HDN_CHARGE_AMT: responseData?.[0]?.CHARGE_AMT || 0,
+                HDN_GST_AMT: responseData?.[0]?.GST_AMT || 0,
+                HDN_GST_ROUND: responseData?.[0]?.GST_ROUND || "",
+                HDN_TAX_RATE: responseData?.[0]?.TAX_RATE || 0,
               });
               return {
-                ACCT_NM: {
-                  value: postData?.[0]?.ACCT_NM,
+                ACCT_CD: {
+                  value: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentValue?.ACCT_TYPE?.optionData
+                  ),
+                  ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
-                TRAN_BAL: {
-                  value: postData?.[0]?.TRAN_BAL,
-                },
-                SANCTIONED_AMT: {
-                  value: postData?.[0]?.SANCTIONED_AMT,
-                },
-                BRANCH_CD: {
-                  value: postData?.[0]?.BRANCH_CD,
-                },
-                HIDDEN_CHARGE_AMT: {
-                  value: postData?.[0]?.CHARGE_AMT,
-                },
-                HIDDEN_GST_AMT: {
-                  value: postData?.[0]?.GST_AMT,
-                },
-                HIDDEN_GST_ROUND: {
-                  value: postData?.[0]?.GST_ROUND,
-                },
-                HIDDEN_TAX_RATE: {
-                  value: postData?.[0]?.TAX_RATE,
-                },
-              };
-            } else {
-              formState.setDataOnFieldChange("NSC_FD_BTN", {
-                NSC_FD_BTN: true,
-              });
-              return {
-                ACCT_NM: {
-                  value: postData?.[0]?.ACCT_NM,
-                },
-                TRAN_BAL: {
-                  value: postData?.[0]?.TRAN_BAL,
-                },
-                SANCTIONED_AMT: {
-                  value: postData?.[0]?.SANCTIONED_AMT,
-                },
-                HIDDEN_CHARGE_AMT: {
-                  value: postData?.[0]?.CHARGE_AMT,
-                },
-                HIDDEN_GST_AMT: {
-                  value: postData?.[0]?.GST_AMT,
-                },
-                HIDDEN_GST_ROUND: {
-                  value: postData?.[0]?.GST_ROUND,
-                },
-                HIDDEN_TAX_RATE: {
-                  value: postData?.[0]?.TAX_RATE,
-                },
+                ACCT_NM: { value: responseData?.[0]?.ACCT_NM },
+                TRAN_BAL: { value: responseData?.[0]?.TRAN_BAL },
+                SANCTIONED_AMT: { value: responseData?.[0]?.SANCTIONED_AMT },
+                BRANCH_CD: { value: responseData?.[0]?.BRANCH_CD },
+                SECURITY_CD: { value: "", isFieldFocused: true },
               };
             }
           } else if (!field?.value) {
@@ -216,81 +226,28 @@ export const limitEntryMetaData = {
           return {};
         },
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
       },
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "PARENT_TYPE",
     },
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "Account Name",
+      label: "AccountName",
       isReadOnly: true,
-      placeholder: "Account Name",
-      type: "text",
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
     {
@@ -298,9 +255,8 @@ export const limitEntryMetaData = {
         componentType: "amountField",
       },
       name: "TRAN_BAL",
-      label: "Tran. Balance",
-      placeholder: "Balance",
-      type: "text",
+      label: "TranBalance",
+      placeholder: "TranBalance",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -315,10 +271,9 @@ export const limitEntryMetaData = {
         componentType: "amountField",
       },
       name: "SANCTIONED_AMT",
-      label: "Sanctioned Limit",
-      placeholder: "San. limit",
+      label: "SanctionedLimit",
+      placeholder: "SanctionedLimit",
       isReadOnly: true,
-      type: "text",
       sequence: 0,
       GridProps: {
         xs: 12,
@@ -332,56 +287,15 @@ export const limitEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "LIMIT_TYPE",
-      label: "Limit Type",
-      placeholder: "Limit Type",
-      type: "text",
-      defaultValue: "Normal",
-      options: () => {
-        return [
-          { value: "Normal", label: "Normal Limit" },
-          { value: "Hoc", label: "Ad-hoc Limit" },
-        ];
-      },
-      _optionsKey: "limitTypeList",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
       name: "SECURITY_CD",
-      label: "Security Code",
-      placeholder: "Security",
-      type: "text",
-      dependentFields: [
-        "ACCT_CD",
-        "BRANCH_CD",
-        "ACCT_TYPE",
-        "SECURITY_CD",
-        "HIDDEN_CHARGE_AMT",
-        "HIDDEN_GST_AMT",
-        "HIDDEN_GST_ROUND",
-        "HIDDEN_TAX_RATE",
-      ],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (
-          !dependentFieldsValues?.ACCT_CD?.value ||
-          dependentFieldsValues?.ACCT_CD?.error
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      },
+      label: "SecurityCode",
+      placeholder: "SecurityCode",
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
-        if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
+        if (
+          dependentValue?.ACCT_TYPE?.optionData.length &&
+          dependentValue?.BRANCH_CD?.value
+        ) {
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -394,34 +308,120 @@ export const limitEntryMetaData = {
       },
       disableCaching: true,
       _optionsKey: "getSecurityListData",
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        if (field?.value) {
+      postValidationSetCrossFieldValues: async (field, formState) => {
+        if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
-            HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
-            HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
-            HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
-            HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
+            SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
           });
+          return {
+            SECURITY_TYPE_DISPLAY: {
+              value: field?.optionData?.[0]?.DISPLAY_NM,
+            },
+          };
         }
-        return {};
       },
-
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Security Type is required."] }],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
-        md: 3.5,
-        sm: 3.5,
-        lg: 3.5,
-        xl: 3.5,
+        md: 2.9,
+        sm: 2.9,
+        lg: 2.9,
+        xl: 2.9,
+      },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "LIMIT_TYPE",
+      label: "LimitType",
+      placeholder: "LimitType",
+      defaultValue: "Normal",
+      options: () => {
+        return [
+          { value: "Normal", label: "Normal Limit" },
+          { value: "Hoc", label: "Ad-hoc Limit" },
+        ];
+      },
+      _optionsKey: "limitTypeList",
+      GridProps: {
+        xs: 12,
+        md: 1.6,
+        sm: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER",
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "SECURITY_DETAIL",
+      label: "SecurityDetail",
+      dependentFields: ["SECURITY_CD"],
+      shouldExclude(fieldData, dependentFields) {
+        let value =
+          dependentFields?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim();
+        if (value === "OTH") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_TYPE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SECURITY_TYPE_DISPLAY",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "GET_LIMIT_RATE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PENAL_INT_RATE",
+      dependentFields: ["FD_ACCT_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        if (dependentFields?.FD_ACCT_CD?.value === "") {
+          return "N";
+        }
+        return "Y";
       },
     },
   ],

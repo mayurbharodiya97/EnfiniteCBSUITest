@@ -15,7 +15,7 @@ import * as API from "./api";
 import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { DeactivateCustomer } from "./DeactivateCustomer";
-import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
+// import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
 import InsuranceComp from "./InsuranceComp";
 import BankDTLComp from "./BankDTLComp";
 import CreditCardDTLComp from "./CreditCardDTLComp";
@@ -27,14 +27,13 @@ import ControllingPersonComp from "./ControllingPersonComp";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 import ExtDocument from "./formModal/formDetails/formComponents/existingCusstDoc/ExtDocument";
 import _ from "lodash";
+import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
 const RetrieveCustomer = () => {
   const navigate = useNavigate();
   const { authState } = useContext(AuthContext);
   const [rowsData, setRowsData] = useState<any[]>([]);
 
-  const [isLoadingData, setIsLoadingData] = useState(false);
-  const [isCustomerData, setIsCustomerData] = useState(true);
   const [formMode, setFormMode] = useState("new");
   const retrievePayloadRef = useRef<any>(null);
 
@@ -54,12 +53,12 @@ const RetrieveCustomer = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    // {
-    //   actionName: "inactive-customer",
-    //   actionLabel: "Inactivate Customer",
-    //   multiple: false,
-    //   rowDoubleClick: false,
-    // },
+    {
+      actionName: "inactive-customer",
+      actionLabel: "Inactivate Customer",
+      multiple: false,
+      rowDoubleClick: false,
+    },
     // {
     //   actionName: "change-category",
     //   actionLabel: "Change Category",
@@ -78,12 +77,12 @@ const RetrieveCustomer = () => {
       multiple: false,
       rowDoubleClick: false,
     },
-    {
-      actionName: "other-address",
-      actionLabel: "Other Address",
-      multiple: false,
-      rowDoubleClick: false,
-    },
+    // {
+    //   actionName: "other-address",
+    //   actionLabel: "Other Address",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
     // {
     //   actionName: "insurance",
     //   actionLabel: "Insurance",
@@ -146,7 +145,9 @@ const RetrieveCustomer = () => {
       const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
+      // console.log("retrievecustomer", confirmed, maker, loggedinUser)
       if(Boolean(confirmed)) {
+        // P=SENT TO CONFIRMATION
         if(confirmed.includes("P")) {
           if(maker === loggedinUser) {
             setFormMode("edit")
@@ -154,8 +155,9 @@ const RetrieveCustomer = () => {
             setFormMode("view")
           }
         } else if(confirmed.includes("M")) {
+          // M=SENT TO MODIFICATION
           setFormMode("edit")
-        } else if(confirmed.includes("Y")) {
+        } else if(confirmed.includes("Y") || confirmed.includes("R")) {
           setFormMode("edit")
         } else {
           setFormMode("view")
@@ -164,9 +166,15 @@ const RetrieveCustomer = () => {
 
 
       setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      if(data?.name === "document") {
+        navigate(data?.name, {
+          state: {CUSTOMER_DATA: data?.rows},
+        })
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );
@@ -273,10 +281,6 @@ const RetrieveCustomer = () => {
           path="view-detail/*"
           element={
             <FormModal
-              isLoadingData={isLoadingData}
-              setIsLoadingData={setIsLoadingData}
-              isCustomerData={isCustomerData}
-              setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
               formmode={formMode ?? "edit"}
               from={"retrieve-entry"}
@@ -312,13 +316,19 @@ const RetrieveCustomer = () => {
         <Route
           path="document/*"
           element={
-            <ExtDocument
+            <UpdateDocument
               open={true}
-              onClose={() => {
-                navigate(".");
-              }}
+              onClose={() => navigate(".")}
               viewMode={formMode ?? "edit"}
+              from={"ckyc-retrieve"}
             />
+            // <ExtDocument
+            //   open={true}
+            //   onClose={() => {
+            //     navigate(".");
+            //   }}
+            //   viewMode={formMode ?? "edit"}
+            // />
           }
         />
 

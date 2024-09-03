@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import _ from "lodash"
 import TabNavigate from "../TabNavigate"
 
-const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const NRIDetails = () => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { t } = useTranslation();
@@ -79,7 +79,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
             let newData = state?.formDatactx
             newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            if(!state?.isFreshEntryctx) {
+            if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                 let tabModifiedCols:any = state?.modifiedFormCols
                 let updatedCols = tabModifiedCols.NRI_DTL ? _.uniq([...tabModifiedCols.NRI_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
                 tabModifiedCols = {
@@ -101,13 +101,15 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
         // setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
+        return (
+            state?.formDatactx["NRI_DTL"]
                 ? state?.formDatactx["NRI_DTL"]
-                    ? state?.formDatactx["NRI_DTL"]
-                    : {}
-                : state?.retrieveFormDataApiRes
+                : (!state?.isFreshEntryctx && !state?.isDraftSavedctx)
                     ? state?.retrieveFormDataApiRes["NRI_DTL"]
+                        ? state?.retrieveFormDataApiRes["NRI_DTL"]
+                        : {}
                     : {}
+        )
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
@@ -123,7 +125,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography> */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -142,14 +145,16 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                             metaData={nri_detail_meta_data as MetaDataType}
                             // initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             formStyle={{}}
                             hideHeader={true}
                         />
                     </Grid>                    
                 </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>
     )
 }

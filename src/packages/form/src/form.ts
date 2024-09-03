@@ -303,9 +303,12 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
     const loadableFieldState = snapshot.getLoadable(formFieldAtom(field));
     if (loadableFieldState.state === "hasValue") {
       const readOnlyFieldState = loadableFieldState.contents;
+      if (readOnlyFieldState.ignoreInSubmit) return null; // to avoid data in form submit handler like typography, divider, etc.
       //dont validate if file is excluded
-      if (readOnlyFieldState.excluded === true) {
-        return null;
+      if (readOnlyFieldState?.excluded === true) {
+        return Boolean(readOnlyFieldState?.error)
+          ? null
+          : { ...readOnlyFieldState }; // show excluded data in form submit handler when no error in field
       }
       const fieldState = { ...readOnlyFieldState };
       let result: any = null;

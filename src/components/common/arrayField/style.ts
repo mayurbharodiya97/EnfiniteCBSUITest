@@ -31,14 +31,14 @@ export const useStyles = makeStyles((theme: any) => ({
   arrayRowContainer: {
     position: "relative",
     boxShadow: theme.shadows[3],
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
     paddingRight: "8px",
   },
   arrayScreenRowContainer: {
     position: "relative",
     boxShadow: theme.shadows[3],
     // marginBottom: "10px",
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
     // marginBottom: theme.spacing(3.5),
   },
 
@@ -98,8 +98,8 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   arrayRowRemoveBtn: {
     position: "absolute",
-    top: -22,
-    right: -22,
+    top: -8,
+    right: -8,
     color: "#f50057",
   },
   arrayRowCard: {
@@ -108,12 +108,12 @@ export const useStyles = makeStyles((theme: any) => ({
     // overflow: "auto",
   },
   arrayRowCardContent: {
-    paddingLeft: "32px",
+    paddingLeft: "25px",
   },
   arrayRowCount: {
     display: "flex",
     width: "100%",
-    margin: "8px 0 16px -8px",
+    margin: "0px 0 6px -8px",
   },
   arrayRowCountCustomStyle: {
     display: "flex",
@@ -136,4 +136,9 @@ export const useStyles = makeStyles((theme: any) => ({
       marginTop: "0px",
     },
   },
+  arrayFieldSelected: {
+    padding: "8px 0px 0px 8px",
+    background: "var(--theme-color4)",
+  },
+  arrayFieldUnselected: { width: "100%" },
 }));

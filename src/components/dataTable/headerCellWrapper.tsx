@@ -1,6 +1,5 @@
-import { TableCell } from "@mui/material";
-
-export const HeaderCellWrapper = ({ column, children }) => {
+import { Checkbox, TableCell } from "@mui/material";
+export const HeaderCellWrapper = ({ column,children,SelectAllColumn = false}) => {
   const stickyHeaderCell =
     column.sticky === true
       ? {
@@ -10,6 +9,9 @@ export const HeaderCellWrapper = ({ column, children }) => {
           zIndex: 12,
         }
       : {};
+      const handleSelectAll = (e) => {
+        children?.props?.updateGridData(0, children?.props?.column?.id, e.target.checked, true, "", "A");
+      };
   return (
     <TableCell
       component="div"
@@ -31,6 +33,12 @@ export const HeaderCellWrapper = ({ column, children }) => {
         },
       ])}
     >
+       {SelectAllColumn ? (
+        <Checkbox
+          style={{ color: "var(--theme-color1)" }}
+          onChange={handleSelectAll}
+        />
+      ) :null}
       {children}
       {/* {console.log(children)} */}
     </TableCell>

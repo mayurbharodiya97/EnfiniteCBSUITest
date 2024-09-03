@@ -30,14 +30,10 @@ import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
+import { MessageBoxWrapper } from "components/custom/messageBox";
+import { usePopupContext } from "components/custom/popupContext";
 
-const KYCDetails = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
-  displayMode,
-}) => {
+const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
@@ -67,6 +63,7 @@ const KYCDetails = ({
   });
   const [openDialog, setOpenDialog] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
+  const { MessageBox } = usePopupContext();
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -160,7 +157,7 @@ const KYCDetails = ({
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // on edit/view
         let tabModifiedCols:any = state?.modifiedFormCols
         let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
@@ -199,8 +196,8 @@ const KYCDetails = ({
       let formFields = Object.keys(data) // array, get all form-fields-name 
       formFields = formFields.filter(field => !(field.includes("_ignoreField") || field.includes("DISTRICT_NM") || field.includes("LOC_DISTRICT_NM"))) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
+      let formData = _.pick(data, formFieldsRef.current)
+      formData.SAME_AS_PER = Boolean(formData.SAME_AS_PER) ? "Y": "N";
 
       // setCurrentTabFormData((formData) => ({
       //   ...formData,
@@ -210,7 +207,7 @@ const KYCDetails = ({
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // on edit/view
         let tabModifiedCols:any = state?.modifiedFormCols
         let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
@@ -241,14 +238,31 @@ const KYCDetails = ({
   };
 
   const initialVal = useMemo(() => {
-    return state?.isFreshEntryctx
-      ? state?.formDatactx["PERSONAL_DETAIL"]
+    return (
+      (state?.isFreshEntryctx && !state?.isDraftSavedctx)
         ? state?.formDatactx["PERSONAL_DETAIL"]
-        : {}
-      : state?.retrieveFormDataApiRes
-      ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
-      : {};
-  }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
+        : state?.formDatactx["PERSONAL_DETAIL"]
+          ? {
+            ...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {},
+              CONTACT1: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT1 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT1 || ""),
+              CONTACT2: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT2 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT2 || ""),
+              CONTACT3: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT3 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT3 || ""),
+              CONTACT4: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT4 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT4 || ""),
+              CONTACT5: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT5 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT5 || ""),
+              PAN_NO: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_PAN_NO ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO || ""),
+            ...state?.formDatactx["PERSONAL_DETAIL"] ?? {}
+          }
+          : {
+            ...state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {},
+              CONTACT1: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT1 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT1 || ""),
+              CONTACT2: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT2 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT2 || ""),
+              CONTACT3: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT3 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT3 || ""),
+              CONTACT4: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT4 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT4 || ""),
+              CONTACT5: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_CONTACT5 ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.CONTACT5 || ""),
+              PAN_NO: state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.MASKED_PAN_NO ?? (state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.PAN_NO || ""),
+            }
+    )
+  }, [state?.isFreshEntryctx, state?.isDraftSavedctx, state?.retrieveFormDataApiRes])
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -271,7 +285,7 @@ const KYCDetails = ({
     >
       {/* <Typography variant={"h6"}>Personal Details</Typography> */}
       {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -306,14 +320,26 @@ const KYCDetails = ({
                 onSubmitHandler={PoISubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 key={"poi-form-kyc" + initialVal}
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                formState={{
+                  COMP_CD: authState?.companyID ?? "", 
+                  CUSTOMER_ID: state?.customerIDctx ?? "", 
+                  REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E",
+                  RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
+                  TIN_ISSUING_COUNTRY: state?.isFreshEntryctx 
+                  ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "" 
+                  : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "",
+                  TIN: state?.isFreshEntryctx 
+                  ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN ?? "" 
+                  : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN ?? "",
+                  MessageBox: MessageBox
+                }}
                 setDataOnFieldChange={(action, payload) => {
-                  // console.log("wekjukfhwiuefadw", action)
+                  // console.log(payload, "wekjukfhwiuefadw", action)
                   // const result = payload;
                   if(Boolean(payload) && (
                     action === "PAN_NO" || 
@@ -330,16 +356,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -371,12 +398,12 @@ const KYCDetails = ({
                 onSubmitHandler={PoASubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 key={"poa-form-kyc" + initialVal}
                 metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E"}}
                 setDataOnFieldChange={(action, payload) => {
                   if(Boolean(payload) && action === "CONTACT2") {
                     // console.log("weiufiwuef", payload)
@@ -388,16 +415,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData && false ? (
+      {false ? (
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -435,17 +463,29 @@ const KYCDetails = ({
             </Grid>
           </Grid>
         </Grid>
-      ) : isLoading ? (
+      ) : null}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="300px"
           width="100%"
         ></Skeleton>
-      ) : null}
-      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+      ) : null} */}
+      <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
-      <Dialog
+      <MessageBoxWrapper
+        MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
+        Message={errMsg ?? "No Message"}
+        onClickButton={() => {
+          setOpenDialog(false)
+          setErrMsg("")
+        }}
+        rows={[]}
+        buttonNames={["OK"]}
+        open={openDialog}
+      />
+      {/* <Dialog
         open={openDialog}
         maxWidth={"sm"}
         PaperProps={{
@@ -484,7 +524,7 @@ const KYCDetails = ({
             CANCEL
           </GradientButton>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Grid>
   );
 };

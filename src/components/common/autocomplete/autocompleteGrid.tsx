@@ -154,9 +154,6 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
 
   // const isError = touched && (error ?? "") !== "";
   const isError = touched && Boolean(error);
-
-  console.log(">>isError", isError);
-  console.log(">>error", error);
   return (
     <Suspense fallback={"loading..."}>
       <Autocomplete
@@ -264,7 +261,9 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
                 <Fragment>
                   {loadingOptions ? (
                     <CircularProgress
-                      color="primary"
+                      size={20}
+                      // color="primary"
+                      sx={{ color: "var(--theme-color3)" }}
                       variant="indeterminate"
                       {...CircularProgressProps}
                     />

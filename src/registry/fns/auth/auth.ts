@@ -83,6 +83,7 @@ const authAPI = () => {
       THROUGH_CHANNEL: "E_CBS",
       WORKING_DATE: workingDate ?? "",
       // WORKING_DT: workingDate ?? "",
+      HO_LOGIN: companyID.trim() === baseCompanyID.trim() && branchCode.trim() === baseBranchCode.trim() ? "Y" : "N"
     };
   };
   const setToken = (argaccessToken) => {
@@ -98,7 +99,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherPreLoginResponse> => {
     if (baseURL === null) {
       return {
@@ -150,6 +152,7 @@ const authAPI = () => {
           ...payload,
         }),
         timeout: timeout,
+        controller: controller,
       });
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -205,7 +208,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherResponse> => {
     if (baseURL === null) {
       return {
@@ -253,28 +257,40 @@ const authAPI = () => {
             ...payload,
           }),
           timeout: timeout,
+          controller: controller,
         }
       );
 
       if (String(response.status) === "200") {
-        let data = await response.json();
-        if (Array.isArray(data)) {
-          data = data[0];
-        }
-        return {
-          status: String(data.STATUS),
-          message: data?.MESSAGE ?? "",
-          data: data?.RESPONSE ?? [],
-          messageDetails: data?.RESPONSEMESSAGE ?? "",
-          isPrimaryKeyError:
-            String(data.STATUS) === "0"
-              ? false
-              : (data?.RESPONSEMESSAGE ?? "").indexOf(
+        if (response.headers.get("Content-Type") === "application/pdf") {
+          let data = await response.blob();
+          return {
+            status: "0",
+            message: "",
+            data: data,
+            messageDetails: "",
+            isPrimaryKeyError: false,
+          };
+        } else {
+          let data = await response.json();
+          if (Array.isArray(data)) {
+            data = data[0];
+          }
+          return {
+            status: String(data.STATUS),
+            message: data?.MESSAGE ?? "",
+            data: data?.RESPONSE ?? [],
+            messageDetails: data?.RESPONSEMESSAGE ?? "",
+            isPrimaryKeyError:
+              String(data.STATUS) === "0"
+                ? false
+                : (data?.RESPONSEMESSAGE ?? "").indexOf(
                   "ORA-00001: unique constraint"
                 ) >= 0
-              ? true
-              : false,
-        };
+                  ? true
+                  : false,
+          };
+        }
       } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {
         //@ts-ignore
         if (typeof window.__logout === "function") {
@@ -313,9 +329,8 @@ const authAPI = () => {
     }
   };
   const fetchWithTimeout = async (resource, options?: any) => {
-    const { timeout = 90000 } = options;
+    const { timeout = 90000, controller = new AbortController() } = options;
 
-    const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     let response;
     await fetch(resource, {

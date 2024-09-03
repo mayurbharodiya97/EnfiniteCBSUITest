@@ -1,3 +1,4 @@
+import { greaterThanInclusiveDate, lessThanDate } from "registry/rulesEngine";
 import * as API from "../../../../api";
 
 export const kyc_proof_of_identity_meta_data = {
@@ -57,6 +58,7 @@ export const kyc_proof_of_identity_meta_data = {
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: [
+                {label: "Form 60", value: "Y"},
                 {label: "Form 61", value: "F"},
                 {label: "No", value: "N"},
             ],
@@ -80,6 +82,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "AAAAA1111A",
             type: "text",
             txtTransform: "uppercase",
+            dependentFields: ["FORM_60"],
             required: true,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
@@ -92,7 +95,13 @@ export const kyc_proof_of_identity_meta_data = {
                   },
                 ],
             },
-            validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
+            shouldExclude:(initialValue,original,prevRows,nextRows)=>{
+                const FORM60 = original?.FORM_60?.value;
+                if(Boolean(FORM60) && (FORM60 === "Y" || FORM60 === "F")) {
+                    return true;
+                }
+                return false;
+            },
             maxLength: 10,
         },
         {
@@ -142,6 +151,38 @@ export const kyc_proof_of_identity_meta_data = {
               {label: "Yes", value: "T"},
               {label: "No", value: "N"},
           ],
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            ___,
+            dependentFieldsValues
+          ) => {
+            if(Boolean(field?.value)) {
+                if(field?.value === "T") {
+                    const buttonName = await formState.MessageBox({
+                        messageTitle: "CONFIRMATION",
+                        message: "System will Deduct TDS from this Customer's Interest even if it is under TDS Limit.\nAre you sure to Continue?",
+                        buttonNames: ["Yes", "No"],
+                    });
+                    if(buttonName === "No") {
+                        return {
+                            EXPLICIT_TDS: {
+                                value: "N",
+                                ignoreUpdate: true,
+                            }
+                        }
+                    }
+                    if(buttonName === "Yes") {
+                        return {
+                            NREGA_JOB_CARD: {
+                                value: "",
+                                isFieldFocused: true
+                            }
+                        }
+                    }
+                }
+            }
+          },
         },
         {
           render: {
@@ -154,6 +195,12 @@ export const kyc_proof_of_identity_meta_data = {
           type: "text",
           txtTransform: "uppercase",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+          validate: (columnValue, allField, flag) => {
+            if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+                return "Special characters are not allowed.";
+            }
+            return "";
+          }
         },
         {
           render: {
@@ -197,7 +244,20 @@ export const kyc_proof_of_identity_meta_data = {
           maxLength: 20,
           type: "text",
           txtTransform: "uppercase",
-          validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
+        //   validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
+          validate: (columnValue, allField, flag) => {
+            const TIN_ISSUING_COUNTRY = flag?.TIN_ISSUING_COUNTRY;
+            const TIN = flag?.TIN;
+            if(!Boolean(columnValue?.value)) {
+              if(Boolean(TIN_ISSUING_COUNTRY) && !Boolean(TIN)) {
+                return "This field is required";
+              } else {
+                return "";
+              }
+            } else {
+              return API.validateGSTIN(columnValue, allField, flag);
+            }
+          },
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -205,12 +265,12 @@ export const kyc_proof_of_identity_meta_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "PassportDetails",
             name: "passportDivider_ignoreField",
-            label: "passportDivider"
+            label: "PassportDetails",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -237,7 +297,7 @@ export const kyc_proof_of_identity_meta_data = {
             _optionsKey: "passportAuthority",
             validate: (columnValue, allField, flag) => {
                 if(!Boolean(columnValue.value)) {
-                    const passport = allField.PASSPORT_NO.value;
+                    const passport = allField?.PASSPORT_NO?.value;
                     if(Boolean(passport)) {
                         return "This field is required"
                     }
@@ -256,10 +316,14 @@ export const kyc_proof_of_identity_meta_data = {
           maxDate: new Date(),
           dependentFields: ['PASSPORT_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.PASSPORT_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.PASSPORT_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(lessThanDate(new Date(), columnValue.value)) {
+                    return `Passport Issue Date can't be greater than today's date.`;
                 }
             }
         },
@@ -278,10 +342,14 @@ export const kyc_proof_of_identity_meta_data = {
           minDate: new Date(),
           dependentFields: ['PASSPORT_NO'],
           validate: (columnValue, allField, flag) => {
-           if(!Boolean(columnValue.value)) {
-                const passport = allField.PASSPORT_NO.value;
+           if(!Boolean(columnValue?.value)) {
+                const passport = allField?.PASSPORT_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(greaterThanInclusiveDate(new Date(), columnValue.value)) {
+                    return `Passport Expiry Date can't be less than or equal to Today's Date.`;
                 }
             }
         },
@@ -296,12 +364,12 @@ export const kyc_proof_of_identity_meta_data = {
 
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "DrivingLicenseDetails",
             name: "drivingLicenseDivider_ignoreField",
-            label: "drivingLicenseDivider"
+            label: "DrivingLicenseDetails",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
         {
             render: {
@@ -326,8 +394,8 @@ export const kyc_proof_of_identity_meta_data = {
             _optionsKey: "drivingLicenseAuthority",
             dependentFields: ['DRIVING_LICENSE_NO'],
             validate: (columnValue, allField, flag) => {
-                if(!Boolean(columnValue.value)) {
-                    const passport = allField.DRIVING_LICENSE_NO.value;
+                if(!Boolean(columnValue?.value)) {
+                    const passport = allField?.DRIVING_LICENSE_NO?.value;
                     if(Boolean(passport)) {
                         return "This field is required"
                     }
@@ -347,10 +415,14 @@ export const kyc_proof_of_identity_meta_data = {
           maxDate: new Date(),
           dependentFields: ['DRIVING_LICENSE_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.DRIVING_LICENSE_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.DRIVING_LICENSE_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(lessThanDate(new Date(), columnValue?.value)) {
+                    return `Driving License Issue Date can't be greater than today's date.`;
                 }
             }
         },
@@ -369,10 +441,14 @@ export const kyc_proof_of_identity_meta_data = {
           minDate: new Date(),
           dependentFields: ['DRIVING_LICENSE_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.DRIVING_LICENSE_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.DRIVING_LICENSE_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(greaterThanInclusiveDate(new Date(), columnValue?.value)) {
+                    return `Driving License Expiry Date can't be less than or equal to Today's Date.`;
                 }
             }
         },
@@ -430,12 +506,12 @@ export const kyc_proof_of_address_meta_data = {
   fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "CurrentAddress",
             name: "currentAddDivider_ignoreField",
-            label: "currentAddDivider"
+            label: "CurrentAddress",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
       {
           render: {
@@ -537,7 +613,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "SubArea",
           dependentFields: ["PIN_CODE"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+          options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue?.PIN_CODE?.value, formState, _, authState),
           _optionsKey: "indSubareaOp",
           isReadOnly: (fieldValue, dependentFields, formState) => {
             const pin_code = dependentFields.PIN_CODE.value;
@@ -771,12 +847,12 @@ export const kyc_proof_of_address_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "CorrespondenceAddress",
         name: "localAddDivider_ignoreField",
-        label: "localAddDivider"
+        label: "CorrespondenceAddress",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: { componentType: "checkbox"},
@@ -1302,12 +1378,12 @@ export const kyc_proof_of_address_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {
@@ -1318,7 +1394,7 @@ export const kyc_proof_of_address_meta_data = {
         placeholder: "",
         type: "text",
         maxLength: 5,
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
         FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 5) {
@@ -1352,7 +1428,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1372,7 +1448,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -1398,7 +1474,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1425,7 +1501,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -1460,7 +1536,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1480,7 +1556,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -1519,7 +1595,7 @@ export const kyc_proof_of_address_meta_data = {
         // validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";
@@ -1620,12 +1696,12 @@ export const kyc_legal_proof_of_add_meta_data = {
   fields: [
         {
             render:  {
-                componentType: "Divider",
+                componentType: "divider",
                 sequence: 1,
             },
-            dividerText: "CurrentAddress",
             name: "currentAddDivider_ignoreField",
-            label: "currentAddDivider"
+            label: "CurrentAddress",
+            GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
         },
       {
           render: {
@@ -1934,12 +2010,12 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "CorrespondenceAddress",
         name: "localAddDivider_ignoreField",
-        label: "localAddDivider"
+        label: "CorrespondenceAddress",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: { componentType: "checkbox"},
@@ -2235,12 +2311,12 @@ export const kyc_legal_proof_of_add_meta_data = {
 
     {
         render:  {
-            componentType: "Divider",
+            componentType: "divider",
             sequence: 1,
         },
-        dividerText: "Contact",
         name: "contactDivider_ignoreField",
-        label: "contactDivider"
+        label: "Contact",
+        GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
     },
     {
         render: {
@@ -2251,7 +2327,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         placeholder: "",
         type: "text",
         maxLength: 5,
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
         FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 5) {
@@ -2285,7 +2361,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2305,7 +2381,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2331,7 +2407,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2352,7 +2428,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2379,7 +2455,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2399,7 +2475,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2437,7 +2513,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         maxLength: 60,
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";
@@ -2462,7 +2538,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         maxLength: 60,
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";

@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback, useContext, Fragment } from "react";
+import { FC, useRef, useCallback, useContext, Fragment, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { ClearCacheProvider } from "cache";
@@ -12,12 +12,13 @@ import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { Alert } from "components/common/alert";
 import { ActionTypes } from "components/dataTable";
-import { useLocation, useNavigate } from "react-router";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
-    actionLabel: "Edit Detail",
+    actionLabel: t("ViewDetails"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -29,6 +30,7 @@ export const RetrieveClearing: FC<{
 }> = ({ onClose, zoneTranType, tranDate }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
+  const { t } = useTranslation();
 
   const setCurrentAction = useCallback((data) => {
     onClose("action", data?.rows);
@@ -38,8 +40,8 @@ export const RetrieveClearing: FC<{
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
     }
   );
 
@@ -76,7 +78,40 @@ export const RetrieveClearing: FC<{
       endSubmit(true);
     }
   };
+  useEffect(() => {
+    mutation.mutate({
+      FROM_TRAN_DT: zoneTranType === "S" ? format(
+        new Date(tranDate),
+        "dd/MMM/yyyy"
+      ) : format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      TO_TRAN_DT: zoneTranType === "S" ? format(
+        new Date(tranDate),
+        "dd/MMM/yyyy"
+      ) : format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      TRAN_TYPE: zoneTranType,
+      CONFIRMED: "0",
+      BANK_CD: "",
+      ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+      SLIP_CD: "",
+      CHEQUE_NO: "",
+      CHEQUE_AMOUNT: ""
 
+    })
+  }, [])
+  if (zoneTranType === "S") {
+    RetrieveFormConfigMetaData.form.label = "Retrieve CTS O/W Clearing Data";
+  } else if (zoneTranType === "R") {
+    RetrieveFormConfigMetaData.form.label = "Retrieve Inward Return Entry Data";
+    RetrieveFormConfigMetaData.fields[2].defaultValue = "10  ";
+  }
   return (
     <>
       <>
@@ -93,8 +128,10 @@ export const RetrieveClearing: FC<{
             key={`retrieveForm`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
             initialValues={{
-              FROM_TRAN_DT: tranDate,
-              TO_TRAN_DT: tranDate,
+              FROM_TRAN_DT:
+                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
+              TO_TRAN_DT:
+                zoneTranType === "S" ? tranDate : authState?.workingDate ?? "",
               ZONE_TRAN_TYPE: zoneTranType,
             }}
             onSubmitHandler={onSubmitHandler}
@@ -102,7 +139,7 @@ export const RetrieveClearing: FC<{
               background: "white",
             }}
             onFormButtonClickHandel={() => {
-              let event: any = { preventDefault: () => {} };
+              let event: any = { preventDefault: () => { } };
               // if (mutation?.isLoading) {
               formRef?.current?.handleSubmit(event, "RETRIEVE");
               // }
@@ -117,7 +154,7 @@ export const RetrieveClearing: FC<{
                     onClose();
                   }}
                 >
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}

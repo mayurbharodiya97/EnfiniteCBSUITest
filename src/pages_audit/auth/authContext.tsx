@@ -30,6 +30,7 @@ const inititalState: AuthStateType = {
   baseCompanyID: "",
   companyName: "",
   workingDate: "",
+  minDate: "",
   groupName: "",
   access: {},
   menulistdata: [],
@@ -43,6 +44,7 @@ const inititalState: AuthStateType = {
     id: "",
     employeeID: "",
   },
+  hoLogin: ""
 };
 
 const authReducer = (
@@ -153,6 +155,7 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
+        hoLogin: payload.branchCode === payload.baseBranchCode && state?.companyID === state?.baseCompanyID ? "Y" : "N",
         user: {
           ...state.user,
           branchCode: payload.branchCode,
@@ -193,6 +196,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authDetails");
     localStorage.removeItem("tokenchecksum");
     localStorage.removeItem("token_status");
+    localStorage.removeItem("charchecksum");
+    localStorage.removeItem("specialChar");
     dispatch({
       type: "logout",
       payload: {},
@@ -223,24 +228,33 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("authDetails", payloadStr);
   };
   window.addEventListener("storage", async () => {
-    let result = localStorage.getItem("authDetails");
-    if (result === null) {
-      //logout();
-    } else {
-      // localStorage.getItem("tokenchecksum");
-      let checksumdata = localStorage.getItem("tokenchecksum");
-      let genChecksum = await GenerateCRC32(
-        localStorage.getItem("authDetails") || ""
-      );
-      if (checksumdata !== genChecksum) {
-        if (Boolean(timeoutLogout)) {
-          clearTimeout(timeoutLogout);
+    let localStorageKeys = ["authDetails", "specialChar"];
+    localStorageKeys.forEach(async (keyNm) => {
+      let result = localStorage.getItem(keyNm);
+      if (result === null) {
+        //logout();
+      } else {
+        let checksumdata: any;
+        if (keyNm === "specialChar") {
+          checksumdata = localStorage.getItem("charchecksum");
+        } else {
+          // localStorage.getItem("tokenchecksum");
+          checksumdata = localStorage.getItem("tokenchecksum");
         }
-        timeoutLogout = setTimeout(() => {
-          logout();
-        }, 500);
+        let genChecksum = await GenerateCRC32(
+          localStorage.getItem(keyNm) || ""
+        );
+        if (checksumdata !== genChecksum) {
+          if (Boolean(timeoutLogout)) {
+            clearTimeout(timeoutLogout);
+          }
+          timeoutLogout = setTimeout(() => {
+            logout();
+          }, 500);
+          return;
+        }
       }
-    }
+    });
   });
 
   useEffect(() => {
