@@ -170,7 +170,8 @@ export const joint_tab_metadata = {
                     },
                     name: "BIRTH_DATE",
                     label: "Birth Date",
-                    maxDate: new Date(), 
+                    maxDate: new Date(),
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
                 },
                 {
@@ -185,6 +186,7 @@ export const joint_tab_metadata = {
                         {label: "OTHER", value: "O"},
                         {label: "TRANSGENDER", value: "T"},
                     ],
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // required: true,
                     // schemaValidation: {
                     //     type: "string",
@@ -262,6 +264,7 @@ export const joint_tab_metadata = {
                     },
                     name: "PIN_CODE",
                     label: "PIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     schemaValidation: {
                         type: "string",
@@ -489,6 +492,7 @@ export const joint_tab_metadata = {
                     },
                     name: "MOBILE_NO",
                     label: "Mobile No.",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // maxLength: 20,
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -498,6 +502,7 @@ export const joint_tab_metadata = {
                     },
                     name: "PHONE",
                     label: "Phone",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     // maxLength: 20,
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
@@ -508,6 +513,7 @@ export const joint_tab_metadata = {
                     name: "UNIQUE_ID",
                     label: "UIDAadhaar",
                     placeholder: "1111 1111 1111",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     type: "text",
                     maxLength: 12,
@@ -527,6 +533,7 @@ export const joint_tab_metadata = {
                     },
                     name: "FORM_60",
                     label: "Form6061",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     placeholder: "",
                     defaultValue: "N",
                     type: "text",
@@ -545,6 +552,7 @@ export const joint_tab_metadata = {
                     placeholder: "AAAAA1111A",
                     type: "text",
                     txtTransform: "uppercase",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                     schemaValidation: {
@@ -566,6 +574,7 @@ export const joint_tab_metadata = {
                     },
                     name: "DIN_NO",
                     label: "DIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     maxLength: 8,
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                 },
@@ -575,6 +584,7 @@ export const joint_tab_metadata = {
                     },
                     name: "REMARKS",
                     label: "Remarks",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     maxLength: 300,
                     GridProps: {xs:12, sm:6, md: 6, lg: 4.7, xl:4}
                 }

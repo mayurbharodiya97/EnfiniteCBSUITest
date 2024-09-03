@@ -363,6 +363,7 @@ export const guarantorjoint_tab_metadata = {
                     },
                     name: "PIN_CODE",
                     label: "PIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     schemaValidation: {
                         type: "string",
@@ -683,8 +684,8 @@ export const guarantorjoint_tab_metadata = {
                     },
                     name: "REMARKS",
                     label: "Remarks",
-                    maxLength: 300,
                     isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
+                    maxLength: 300,
                     GridProps: {xs:12, sm:6, md: 6, lg: 4.7, xl:4}
                 },
                 // {
