@@ -10,7 +10,6 @@ const actions: ActionTypes[] = [
     actionName: "close",
     actionLabel: "Close",
     multiple: undefined,
-    rowDoubleClick: true,
     alwaysAvailable: true,
   },
 ];

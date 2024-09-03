@@ -305,29 +305,35 @@ const RecurringPaymentStepperForm = ({
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                 });
-                if (buttonName === "No") {
+                if (buttonName === "Yes") {
+                  let reqParam = {
+                    COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
+                    ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
+                    ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
+                    INT_RATE: rpState?.recurPmtEntryData?.INT_RATE ?? "",
+                    INT_AMOUNT: rpState?.recurPmtEntryData?.INT_AMOUNT ?? "",
+                    REC_PENALTY_AMT:
+                      rpState?.recurPmtEntryData?.REC_PENALTY_AMT ?? "",
+                    PENAL_RATE: rpState?.recurPmtEntryData?.PENAL_RATE ?? "",
+                    PAYMENT_TYPE:
+                      rpState?.recurPmtEntryData?.PREMATURE_VAL ?? "",
+                    TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+                  };
+                  isDataChangedRef.current = true;
+                  updateDataForJasperParam(reqParam);
+                  setOpenClosingAdvice(true);
+                  closingAdviceDtlMutation.mutate(reqParam);
+                  break;
+                } else {
                   isDataChangedRef.current = true;
                   closeDialog();
                   break;
                 }
               } else if (voucherMsg.O_STATUS === "0") {
-                let reqParam = {
-                  COMP_CD: authState?.companyID ?? "",
-                  BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
-                  ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
-                  ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
-                  INT_RATE: rpState?.recurPmtEntryData?.INT_RATE ?? "",
-                  INT_AMOUNT: rpState?.recurPmtEntryData?.INT_AMOUNT ?? "",
-                  REC_PENALTY_AMT:
-                    rpState?.recurPmtEntryData?.REC_PENALTY_AMT ?? "",
-                  PENAL_RATE: rpState?.recurPmtEntryData?.PENAL_RATE ?? "",
-                  PAYMENT_TYPE: rpState?.recurPmtEntryData?.PREMATURE_VAL ?? "",
-                  TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
-                };
                 isDataChangedRef.current = true;
-                updateDataForJasperParam(reqParam);
-                setOpenClosingAdvice(true);
-                closingAdviceDtlMutation.mutate(reqParam);
+                closeDialog();
+                resetAllData();
               }
             }
           }
@@ -906,6 +912,7 @@ const RecurringPaymentStepperForm = ({
                         onSaveValidationMutation?.isLoading ||
                         rpState?.disableButton
                       }
+                      color={"primary"}
                     >
                       {t("Next")}
                     </GradientButton>
@@ -913,6 +920,7 @@ const RecurringPaymentStepperForm = ({
                     <GradientButton
                       disabled={rpState?.disableButton}
                       onClick={handleComplete}
+                      color={"primary"}
                     >
                       {t("Finish")}
                     </GradientButton>
