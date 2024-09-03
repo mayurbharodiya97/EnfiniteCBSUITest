@@ -2259,6 +2259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGCONFGRID",
     packageName: "",
   },
+  VALIDATECARDSTATUS: {
+    url: "/commonMasterServiceAPI/VALIDATECARDSTATUS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

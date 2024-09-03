@@ -42,7 +42,7 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   const { t } = useTranslation();
   const [retrieve, setRetrieve] = useState<any>();
   const [filterRetData, setFilterRetData] = useState<any>();
-  const [flag, setFlag] = useState<any>("filter");
+  const [flag, setFlag] = useState<any>("");
 
   const setCurrentAction = useCallback((data) => {
     console.log("<<<setcurr", data);

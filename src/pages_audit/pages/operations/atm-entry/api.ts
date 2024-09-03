@@ -168,6 +168,7 @@ export const getCfmRetrieveData = async (apiReqPara) => {
     if (Array.isArray(data) && data?.length > 0) {
       newData = data.map((item) => ({
         ...item,
+        ACCOUNT_NAME: item?.ACCT_NM,
         DISPLAY_STATUS:
           item?.STATUS === "B"
             ? "Block"
@@ -198,6 +199,18 @@ export const getCfmRetrieveData = async (apiReqPara) => {
       }));
     }
     return newData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateCardStatus = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECARDSTATUS", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return { resp: data[0], status: status };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
