@@ -77,9 +77,15 @@ export const PositivePayEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data, variables) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+      if (variables._isDeleteRow === true) {
+        enqueueSnackbar(t("deleteSuccessfully"), {
+          variant: "success",
+        });
+      } else {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+      }
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -138,11 +144,6 @@ export const PositivePayEntry = ({
       data["CHEQUE_AMT"] = data["CHEQUE_AMT"].endsWith(".00")
         ? parseInt(data["CHEQUE_AMT"]).toString()
         : data["CHEQUE_AMT"].toString();
-    }
-    if (Boolean(data["ENTERED_DATE"])) {
-      data["ENTERED_DATE"] = data["ENTERED_DATE"].endsWith(".00")
-        ? parseInt(data["ENTERED_DATE"]).toString()
-        : data["ENTERED_DATE"].toString();
     }
     let newData = {
       ...data,
@@ -233,9 +234,7 @@ export const PositivePayEntry = ({
                   buttonNames: ["Ok"],
                 });
                 if (btnName === "Ok" && formMode !== "view") {
-                  endSubmit(true);
-                  break;
-                }
+                  endSubmit(true);                }
               } else if (data[i]?.O_STATUS === "9") {
                 const btnName = await MessageBox({
                   messageTitle: "Alert",

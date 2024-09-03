@@ -240,10 +240,7 @@ const ChequebookTabCustom = () => {
             messageTitle: "InvalidDeleteOperation",
             message: data?.[0]?.MESSAGE,
           });
-        } else if (
-          data?.[0]?.STATUS === "0" &&
-          data?.[0]?.MESSAGE === "SUCCESS"
-        ) {
+        } else if (data?.[0]?.STATUS === "0") {
           setIsData((old) => ({ ...old, isDelete: true }));
         }
       },

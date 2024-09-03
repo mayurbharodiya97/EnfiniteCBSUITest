@@ -11,13 +11,14 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 
 const AreaMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
@@ -128,11 +129,9 @@ const AreaMasterForm = ({
     }
   };
 
-
-
-
   return (
     <>
+    {gridData ? (
       <FormWrapper
         key={"areaMasterForm" + formMode}
         metaData={
@@ -211,7 +210,11 @@ const AreaMasterForm = ({
             )}
           </>
         )}
+        
       </FormWrapper>
+       ) : (
+        <LoaderPaperComponent />
+       )}
     </>
   );
 };
@@ -220,7 +223,7 @@ export const AreaMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog

@@ -57,7 +57,10 @@ interface MyGridExtendedProps {
   };
   enableShortcut?: string[];
   ignoreInSubmit?: boolean;
-  setFieldLabel?: (dependentFields?: any, value?: any) => string | null | undefined;
+  setFieldLabel?: (
+    dependentFields?: any,
+    value?: any
+  ) => string | null | undefined;
   label?: string;
 }
 
@@ -167,10 +170,14 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   const customHandleChange = useCallback(
     (e) => {
-      if(Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
-        let newValue:string = e.target.value;
-        const characters: string | null = localStorage.getItem("specialChar") ?? "";
-        if(newValue.split("")?.filter((char) => characters?.includes(char))?.length>0) {
+      if (Boolean(preventSpecialCharInput) && Boolean(e.target.value)) {
+        let newValue: string = e.target.value;
+        const characters: string | null =
+          localStorage.getItem("specialChar") ?? "";
+        if (
+          newValue.split("")?.filter((char) => characters?.includes(char))
+            ?.length > 0
+        ) {
           return;
         }
       }
@@ -260,8 +267,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
   ]);
   const updatedLabel = useMemo(() => {
     if (typeof setFieldLabel === "function")
-      return setFieldLabel(transformDependentFieldsState(dependentValues), value)
-  }, [setFieldLabel, label, dependentValues, value])
+      return setFieldLabel(
+        transformDependentFieldsState(dependentValues),
+        value
+      );
+  }, [setFieldLabel, label, dependentValues, value]);
 
   if (excluded) {
     return null;
@@ -422,6 +432,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
           ...textFieldStyle,
         }}
         FormHelperTextProps={{
@@ -431,9 +446,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: Boolean(readOnly)
-              ? "var(--theme-color7) !important"
-              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,

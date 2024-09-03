@@ -11,6 +11,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
+import { t } from "i18next";
 
 
 const BankIfscCdMasterForm = ({
@@ -28,7 +29,7 @@ const BankIfscCdMasterForm = ({
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -38,7 +39,7 @@ const BankIfscCdMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -83,7 +84,7 @@ const BankIfscCdMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "DeleteData",
+        message: t("SaveData"),
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],

@@ -150,7 +150,6 @@ const PayslipissueconfirmationGrid = () => {
     isDataChangedRef.current = false;
   }, [navigate, slipdataRefetch, isDataRetrieved]);
 
-
   return (
     <Fragment>
       {isError && (
