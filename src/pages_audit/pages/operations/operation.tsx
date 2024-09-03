@@ -50,7 +50,7 @@ const PositivePayConfirmationGrid = lazy(
 const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
-// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -205,6 +205,6 @@ export const OperationsMenu = () => (
       }
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
-    {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
   </Routes>
 );

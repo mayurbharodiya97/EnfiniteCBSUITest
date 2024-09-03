@@ -1643,6 +1643,76 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEDTL",
     packageName: "",
   },
+
+
+  GETLOANSCHEDULEACCTDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEACCTDATA",
+    packageName: "",
+  },
+  GETLOANINSTRS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANINSTRS",
+    packageName: "",
+  },
+  GETLOANSCHEDULEDUEDATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEDUEDATE",
+    packageName: "",
+  },
+  GETLOANDISBURSEDTLHIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANDISBURSEDTLHIST",
+    packageName: "",
+  },
+  GETLOANRESCHEDULEWITHDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULEWITHDDW",
+    packageName: "",
+  },
+  GETLOANRESCHEDULEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULEHDR",
+    packageName: "",
+  },
+  GETLOANRESCHEDULEFINALINSTNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULEFINALINSTNO",
+    packageName: "",
+  },
+  GETLOANRESCHEDULEINSTRS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULEINSTRS",
+    packageName: "",
+  },
+  GETLOANRESCHEDULEINSTNOFROMINSTAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULEINSTNOFROMINSTAMT",
+    packageName: "",
+  },
+  GETLOANSCHEDULEHIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEHIST",
+    packageName: "",
+  },
+  DOREGENRATELAONSCHEDULE: {
+    url: "/loanServiceAPI/DOREGENRATELAONSCHEDULE",
+    packageName: "",
+  },
+  DOVALIDATEREGENRATELOAN: {
+    url: "/loanServiceAPI/DOVALIDATEREGENRATELOAN",
+    packageName: "",
+  },
+  DODELETELAONDISBUSREDATA: {
+    url: "/loanServiceAPI/DODELETELAONDISBUSREDATA",
+    packageName: "",
+  },
+  GETLOANSCHEDULEACCOUNTDATA: {
+    url: "/loanServiceAPI/GETLOANSCHEDULEACCOUNTDATA",
+    packageName: "",
+  },
+  DOLOANRESCHEDULE: {
+    url: "/loanServiceAPI/DOLOANRESCHEDULE",
+    packageName: "",
+  },
+  DODELETELOANDISBURSEDATA: {
+    url: "/loanServiceAPI/DODELETELOANDISBURSEDATA",
+    packageName: "",
+  },
+  DOSAVELOANRECHEDULE: {
+    url: "/loanServiceAPI/DOSAVELOANRECHEDULE",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
