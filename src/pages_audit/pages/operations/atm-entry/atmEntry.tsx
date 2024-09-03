@@ -41,7 +41,6 @@ const AtmEntryCustom = ({ parameter }) => {
     cardData: {},
     gridData: [],
     isVisible: false,
-    isOpenPhotoSign: false,
     isOpenCard: false,
   });
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -105,6 +104,22 @@ const AtmEntryCustom = ({ parameter }) => {
     //@ts-ignore
     endSubmit(true);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "s" && event.ctrlKey) {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      } else if (event.key === "r" && event.ctrlKey) {
+        event.preventDefault();
+        navigate("retrieve-form");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <Grid container>
@@ -215,9 +230,7 @@ const AtmEntryCustom = ({ parameter }) => {
                   </Button>
                   <Button
                     color="primary"
-                    onClick={() =>
-                      setIsData((old) => ({ ...old, isOpenPhotoSign: true }))
-                    }
+                    onClick={() => navigate("photo-sign")}
                   >
                     {t("PhotoSign")}
                   </Button>
@@ -272,16 +285,6 @@ const AtmEntryCustom = ({ parameter }) => {
         </Grid>
       </Grid>
 
-      {isData?.isOpenPhotoSign && (
-        <PhotoSignWithHistory
-          data={isData?.cardData ?? {}}
-          onClose={() => {
-            setIsData((old) => ({ ...old, isOpenPhotoSign: false }));
-          }}
-          screenRef={"MST/846"}
-        />
-      )}
-
       {isData?.isOpenCard && (
         <CardPrinting cardData={isData.cardData} setIsData={setIsData} />
       )}
@@ -305,6 +308,16 @@ const AtmEntryCustom = ({ parameter }) => {
               parameter={parameter}
               setFormMode={setFormMode}
               setRetrieveData={setRetrieveData}
+            />
+          }
+        />
+        <Route
+          path="photo-sign/*"
+          element={
+            <PhotoSignWithHistory
+              data={isData?.cardData ?? {}}
+              onClose={() => navigate(".")}
+              screenRef={"MST/846"}
             />
           }
         />

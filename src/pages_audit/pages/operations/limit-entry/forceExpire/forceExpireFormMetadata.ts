@@ -78,10 +78,10 @@ export const forceExpireMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -93,10 +93,10 @@ export const forceExpireMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
 
@@ -109,10 +109,10 @@ export const forceExpireMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
     {
@@ -136,6 +136,21 @@ export const forceExpireMetaData = {
       },
       name: "FD_NO",
       label: "FDNumber",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SECURITY_VALUE",
+      label: "SecurityValue",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -191,22 +206,69 @@ export const forceExpireMetaData = {
         xl: 2,
       },
     },
+
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "MARGIN",
+      label: "Margin%",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "INT_RATE",
+      label: "IntRate",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "PENAL_RATE",
+      label: "PenalRate",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
     {
       render: {
         componentType: "textField",
       },
-      name: "SECURITY_VALUE",
-      label: "SecurityValue",
+      name: "DRAWING_POWER",
+      label: "DrawingPower",
+      defaultValue: "0",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 1.5,
+        sm: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
     },
-
     {
       render: {
         componentType: "textField",
@@ -222,69 +284,6 @@ export const forceExpireMetaData = {
         xl: 4,
       },
     },
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "MARGIN",
-      label: "Margin%",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "INT_RATE",
-      label: "IntRate",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "rateOfInt",
-      },
-      name: "PENAL_RATE",
-      label: "PenalRate",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "DRAWING_POWER",
-      label: "DrawingPower",
-      defaultValue: "0",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
-    },
 
     {
       render: {
@@ -293,14 +292,7 @@ export const forceExpireMetaData = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "EnterRemarks",
-      dependentFields: ["ALLOW_FORCE_EXP"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -338,14 +330,7 @@ export const forceExpireMetaData = {
       isWorkingDate: true,
       label: "ForcedExpiredDate",
       placeholder: "ForcedExpiredDate",
-      dependentFields: ["ALLOW_FORCE_EXP"],
-      isReadOnly(fieldData, dependentFieldsValues) {
-        if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
+
       required: true,
 
       schemaValidation: {
@@ -360,12 +345,7 @@ export const forceExpireMetaData = {
         xl: 2,
       },
     },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "ALLOW_FORCE_EXP",
-    },
+
     {
       render: {
         componentType: "hidden",
