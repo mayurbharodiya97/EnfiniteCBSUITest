@@ -61,6 +61,7 @@ const GstOutwardEntryGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardGrid"
 const GstOutwardEntryConfirmationGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardEntryConfirmation/gstOutwardEntryConfirmationGrid"));
 const PlaySlipDraftPrinting = lazy(()=> import("./payslipDraftPrintingNew/retrieve"));
 const FdPrintDynamicNew = lazy(()=> import("./fdPrintDynamicNew/fdPrintRetrieve/retrieveFdPrint"));
+const CashierEntry = lazy(()=> import("./cashierExchangeEntry/cashierExchangeEntry"));
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
@@ -224,5 +225,6 @@ export const OperationsMenu = () => (
     <Route path="gst-outward-confirmation/*" element={<GstOutwardEntryConfirmationGrid screenFlag="gstEntryConfirmation"/>} />
     <Route path="dd-printing/*" element={<PlaySlipDraftPrinting />} />
     <Route path="fd-printing/*" element={<FdPrintDynamicNew />} />
+    <Route path="cashier-exchange-entry/*" element={<CashierEntry />} />
   </Routes>
 );
