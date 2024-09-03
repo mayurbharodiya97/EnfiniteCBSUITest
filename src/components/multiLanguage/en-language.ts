@@ -51,10 +51,10 @@ export const en_language_data = {
   AssetClassificationCode: "A5 Asset Classification Code",
   CalculatePenalInterestOn: "Calculate Penal Interest On",
   EnterName: "Enter Name",
-  ParentRequired:"Parent is required.",
+  ParentRequired: "Parent is required.",
   Nameisrequired: "Name is required.",
-  EnterSecureRate:"Enter Provision Secure Rate",
-  EnterUnSecureRate:"Enter Provision Un-Secure Rate",
+  EnterSecureRate: "Enter Provision Secure Rate",
+  EnterUnSecureRate: "Enter Provision Un-Secure Rate",
 
   // MST/146
   CourtMaster: "Court Master (MST/146)",
@@ -69,7 +69,7 @@ export const en_language_data = {
   EnterPinCode: "Enter Pin Code",
   EnterAddress: "Enter Address",
   EnterContactNumber: "Enter Contact Number",
-  PincodeRequired:"Pincode required",
+  PincodeRequired: "Pincode required",
 
   // Report
   CreditCount: "Credit Count",
@@ -258,7 +258,7 @@ export const en_language_data = {
   TodaysTransaction: "Today's Transaction",
   SrNo: "Sr.No.",
   BrCode: "Br.Code",
-  AcctType: "Acct Type",
+  AcctType: "A/c Type",
   ACNo: "A/C No.",
   TrnDate: "Trn. Date",
   Chequeno: "Cheque no",

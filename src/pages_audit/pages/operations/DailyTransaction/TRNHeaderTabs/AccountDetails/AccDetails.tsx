@@ -156,66 +156,71 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
                   </div> */}
                   <CardContent>
                     <Grid container spacing={1}>
-                      {filteredCardsInfo.map((b, i2) => (
-                        <Grid
-                          item
-                          xs={6}
-                          key={i2}
-                          sx={{
-                            overflowWrap: "break-word",
-                            borderBottom: "1px solid var(--theme-color4)",
-                            paddingBottom: "4px",
-                          }}
-                        >
-                          <Typography className={classes.cardLabel}>
-                            {b?.COL_LABEL}{" "}
-                          </Typography>
-                          <Typography>
-                            {b?.COMPONENT_TYPE === "amountField" ? (
-                              b?.COL_LABEL === "Withdrawable" ? (
-                                <span
-                                  style={{
-                                    color: "green",
-                                    fontWeight: "bold",
-                                    animation: "blinkingTextGreen 1s infinite",
-                                  }}
-                                >
-                                  {formatCurrency(
-                                    parseFloat(b.COL_VALUE),
-                                    getCurrencySymbol(dynamicAmountSymbol),
-                                    currencyFormat,
-                                    decimalCount
-                                  )}
-                                </span>
-                              ) : (
-                                <span>
-                                  {formatCurrency(
-                                    parseFloat(b.COL_VALUE),
-                                    getCurrencySymbol(dynamicAmountSymbol),
-                                    currencyFormat,
-                                    decimalCount
-                                  )}
-                                </span>
-                              )
-                            ) : (
-                              <span>
-                                {b?.COL_VALUE}{" "}
-                                {!hideCust360Btn &&
-                                  b?.COL_LABEL === "Customer ID" && (
-                                    <GradientButton
-                                      style={{ height: "1.5rem" }}
-                                      onClick={() => {
-                                        setIsOpenCust360(true);
+                      {filteredCardsInfo.map((b, i2) => {
+                        return b?.COMPONENT_TYPE === "hidden" ? null : (
+                          <Grid
+                            item
+                            xs={6}
+                            key={i2}
+                            sx={{
+                              overflowWrap: "break-word",
+                              borderBottom: "1px solid var(--theme-color4)",
+                              paddingBottom: "4px",
+                            }}
+                          >
+                            <>
+                              <Typography className={classes.cardLabel}>
+                                {b?.COL_LABEL}
+                              </Typography>
+                              <Typography>
+                                {b?.COMPONENT_TYPE === "amountField" ? (
+                                  b?.COL_LABEL === "Withdrawable" ? (
+                                    <span
+                                      style={{
+                                        color: "green",
+                                        fontWeight: "bold",
+                                        animation:
+                                          "blinkingTextGreen 1s infinite",
                                       }}
                                     >
-                                      Customer 360
-                                    </GradientButton>
-                                  )}
-                              </span>
-                            )}
-                          </Typography>
-                        </Grid>
-                      ))}
+                                      {formatCurrency(
+                                        parseFloat(b.COL_VALUE),
+                                        getCurrencySymbol(dynamicAmountSymbol),
+                                        currencyFormat,
+                                        decimalCount
+                                      )}
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      {formatCurrency(
+                                        parseFloat(b.COL_VALUE),
+                                        getCurrencySymbol(dynamicAmountSymbol),
+                                        currencyFormat,
+                                        decimalCount
+                                      )}
+                                    </span>
+                                  )
+                                ) : (
+                                  <span>
+                                    {b?.COL_VALUE}{" "}
+                                    {!hideCust360Btn &&
+                                      b?.COL_LABEL === "Customer ID" && (
+                                        <GradientButton
+                                          style={{ height: "1.5rem" }}
+                                          onClick={() => {
+                                            setIsOpenCust360(true);
+                                          }}
+                                        >
+                                          Customer 360
+                                        </GradientButton>
+                                      )}
+                                  </span>
+                                )}
+                              </Typography>
+                            </>
+                          </Grid>
+                        );
+                      })}
                       {isOddTotal && (
                         <Grid
                           item

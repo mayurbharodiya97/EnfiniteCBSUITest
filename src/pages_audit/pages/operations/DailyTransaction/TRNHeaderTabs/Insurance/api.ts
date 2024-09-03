@@ -12,6 +12,8 @@ export const getInsuranceList = async (reqData) => {
       ACCT_TYPE: reqData?.ACCT_TYPE,
       ACCT_CD: reqData?.ACCT_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
+      A_GD_DATE: reqData?.A_GD_DATE,
+      USER_LEVEL: reqData?.USER_LEVEL,
     });
   if (status === "0") {
     let responseData = data;

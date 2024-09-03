@@ -264,30 +264,81 @@ export const getChqValidation = async (reqData) => {
   }
 };
 
-export const justForTestings = async () => {
-  const data = [
-    {
-      A: "A",
-      B: "AA",
-      C: "AAA",
-    },
-    {
-      A: "B",
-      B: "BB",
-      C: "BBB",
-    },
-    {
-      A: "C",
-      B: "CC",
-      C: "CCC",
-    },
-  ];
-
-  let respose: any = data;
-
-  respose = respose?.map(({ A, C, ...other }) => {
-    return { ...other, A: A, C: C, value: A, label: C };
-  });
-
-  return respose;
-};
+// export const saveDenoData = async (reqData) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
+//       SCREEN_REF: reqData?.SCREEN_REF ?? "",
+//       TRANSACTION_DTL: {
+//         isNewRow: [
+//           {
+//             BRANCH_CD: "099 ",
+//             ACCT_TYPE: "0002",
+//             ACCT_CD: "000005              ",
+//             TYPE_CD: "1",
+//             COMP_CD: "132 ",
+//             CHEQUE_NO: "",
+//             SDC: "1",
+//             SCROLL1: "",
+//             CHEQUE_DT: "",
+//             REMARKS: "1 BY CASH -",
+//             AMOUNT: "1000.00",
+//           },
+//         ],
+//         isUpdatedRow: [],
+//         isDeleteRow: [],
+//       },
+//       CASH_DENOMINATION_DTL: {
+//         isNewRow: [
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "1",
+//             DENO_TRAN_CD: "1",
+//             DENO_VAL: "2000",
+//             AMOUNT: "2000",
+//           },
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "-1",
+//             DENO_TRAN_CD: "1",
+//             DENO_VAL: "2000",
+//             AMOUNT: "2000",
+//           },
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "3",
+//             DENO_TRAN_CD: "3",
+//             DENO_VAL: "200",
+//             AMOUNT: "600",
+//           },
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "-2",
+//             DENO_TRAN_CD: "5",
+//             DENO_VAL: "50",
+//             AMOUNT: "100",
+//           },
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "20",
+//             DENO_TRAN_CD: "6",
+//             DENO_VAL: "20",
+//             AMOUNT: "400",
+//           },
+//           {
+//             TYPE_CD: "1",
+//             DENO_QTY: "1",
+//             DENO_TRAN_CD: "4",
+//             DENO_VAL: "100",
+//             AMOUNT: "100",
+//           },
+//         ],
+//         isUpdatedRow: [],
+//         isDeleteRow: [],
+//       },
+//     });
+//   if (status === "0") {
+//     return data;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };

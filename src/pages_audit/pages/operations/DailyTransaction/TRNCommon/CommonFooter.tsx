@@ -90,7 +90,7 @@ const CommonFooter = ({
       setLoading(false);
       setScrollDeleteDialog(false);
       setScrollNo("");
-      handleSetRemarks(); /// /// /// /// ///
+      handleSetRemarks();
       if (data?.messageDetails) {
         enqueueSnackbar(data?.messageDetails, {
           variant: "success",
