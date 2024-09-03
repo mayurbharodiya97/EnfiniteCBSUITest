@@ -385,6 +385,13 @@ export const otherAdd_tab_metadata = {
                           return true;
                         },
                     },
+                    required: true,
+                    schemaValidation: {
+                        type: "string",
+                        rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                        ],
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
@@ -441,6 +448,13 @@ export const otherAdd_tab_metadata = {
                           }
                           return true;
                         },
+                    },
+                    required: true,
+                    schemaValidation: {
+                        type: "string",
+                        rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                        ],
                     },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},

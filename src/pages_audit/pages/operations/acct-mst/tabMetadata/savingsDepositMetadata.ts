@@ -60,12 +60,19 @@ export const savingsDeposit_metadata = {
             },
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
+            options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
+            _optionsKey: "directorNmSavingsOp",
             placeholder: "",
             // defaultValue: "N",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
-            _optionsKey: "directorNmSavingsOp",
         },
         {
             render: {
@@ -93,6 +100,13 @@ export const savingsDeposit_metadata = {
             placeholder: "",
             options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
             _optionsKey: "chqSignAuthoSavingsOp",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // defaultValue: "N",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -119,10 +133,12 @@ export const savingsDeposit_metadata = {
         },
         {
             render: {
-                componentType: "datePicker",
+            componentType: "rateOfInt",
             },
             name: "INT_RATE",
             label: "Interest (%)",
+            placeholder: "",
+            type: "text",
             required: true,
             schemaValidation: {
                 type: "string",
@@ -130,7 +146,19 @@ export const savingsDeposit_metadata = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            FormatProps: {
+                isAllowed: (values) => {
+                  //@ts-ignore
+                  if (values.floatValue > 999.99) {
+                    return false;
+                  }
+                  if (values.floatValue === 0) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
             render: {
@@ -163,7 +191,8 @@ export const savingsDeposit_metadata = {
             name: "TYPE_CD",
             label: "Cheque Book",
             options: [
-                {label: "", value: ""}
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
             ], //api 
             // _optionsKey: "npaReasonTermLoanOp",
             required: true,
@@ -215,6 +244,13 @@ export const savingsDeposit_metadata = {
             },
             name: "INT_SKIP_FLAG",
             label: "Interest Skip",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {

@@ -6,6 +6,8 @@ import { Grid } from "@mui/material";
 import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
+import { extractMetaData } from "components/utils";
 
 const MainTab = () => {
   const { AcctMSTState, handlecustomerIDctx, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
@@ -14,6 +16,7 @@ const MainTab = () => {
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const formRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -75,14 +78,55 @@ const MainTab = () => {
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
-        IsNewRow: true,
-        COMP_CD: "",
+        IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
+        // COMP_CD: "",
+        // ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+        // ACCT_CD: AcctMSTState?.acctNumberctx,
+        // OP_DATE: authState?.workingDate,
+        // CLOSE_DT: "",
+        // STATUS: "",
+        // CUSTOMER_ID: AcctMSTState?.customerIDctx,
+        // CONFIRMED: "",
+        // MOBILE_REG: "Y",
+        // LEAN_TYPE: "0",
+        // LEAN_AMT: "0",
+        // ENTERED_DATE: authState?.workingDate,
+        // RECOMMENDED_DESG: "04",
+        // APPLY_DT: authState?.workingDate,
+        // INS_START_DT: authState?.workingDate,
+        // APPLIED_AMT: "0",
+        // INST_RS: "0",
+        // LAST_INST_DT: authState?.workingDate,
+        // INSTALLMENT_TYPE: "M",
+        // LIMIT_AMOUNT: "0",
+        // DRAWING_POWER: "0",
+        // DUE_AMT: "6",
+        // DISBURSEMENT_DT: "21-02-1995",
+        // CLOSE_REASON_CD: "001 ",
+        // LST_STATEMENT_DT: "21-09-2012",
+        // PREFIX_CD: "1",
+        // HANDICAP_DESCIRPTION: "12345678901",
+        // DOCKET_NO: "0",
+        // INT_SKIP_FLAG: "N",
+        // INT_SKIP_REASON_TRAN_CD: "3",
+        // LOCKER_KEY_NO: "000003",
+        // REF_COMP_CD: "132 ",
+        // REF_BRANCH_CD: "099 ",
+        // REF_ACCT_TYPE: "0030",
+        // REF_ACCT_CD: "000001              ",
+        // CHEQUE_NO: "0",
+        // ACTION_TAKEN_CD: "1",
+        // REQUEST_CD: "",
+        // THROUGH_CHANNEL: "MOBILE",
+        // RENRE_CD: "01  ",
+        // INDUSTRY_CODE: "01  ",
         // BRANCH_CD: "",
         // REQ_FLAG: "",
         // REQ_CD: "",
         // SR_CD: "",
       };
       newData["MAIN_DETAIL"] = {
+        ...AcctMSTState?.mainIntialVals,
         ...newData["MAIN_DETAIL"],
         ...formData,
         ...commonData,
@@ -136,8 +180,9 @@ const MainTab = () => {
         ref={formRef}
         onSubmitHandler={onSubmitPDHandler}
         initialValues={initialVal}
-        key={"acct-mst-main-tab-form" + initialVal}
-        metaData={main_tab_metadata as MetaDataType}
+        key={"acct-mst-main-tab-form" + initialVal + AcctMSTState?.formmodectx}
+        // metaData={main_tab_metadata as MetaDataType}
+        metaData={extractMetaData(main_tab_metadata, AcctMSTState?.formmodectx) as MetaDataType}
         formStyle={{}}
         formState={{
           PARAM320: AcctMSTState?.param320, 

@@ -59,7 +59,7 @@ export const mobileReg_tab_metadata = {
                     },
                     name: "MOBILE_NO",
                     label: "Mobile No.",
-                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
+                    // isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     placeholder: "",
                     maxLength: 20,
                     FormatProps: {

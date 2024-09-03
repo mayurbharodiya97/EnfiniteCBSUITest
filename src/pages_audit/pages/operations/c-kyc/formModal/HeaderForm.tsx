@@ -8,6 +8,7 @@ import * as API from "../api";
 import { useLocation } from "react-router-dom";
 import { GradientButton } from "components/styledComponent/button";
 import CategoryUpdate from "./CategoryUpdate";
+import { queryClient } from "cache";
 
 const HeaderForm = () => {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
@@ -43,7 +44,7 @@ const HeaderForm = () => {
     );
 
     const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-        ["getPMISCData", {}],
+        ["getPMISCData"],
         () => API.getPMISCData("CKYC_ACCT_TYPE")
     );
 
@@ -118,6 +119,19 @@ const HeaderForm = () => {
           }
         }
     }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
+
+    useEffect(() => {
+      return () => {
+        queryClient.removeQueries(["getCIFCategories",state.entityTypectx])
+        queryClient.removeQueries("getPMISCData")
+        queryClient.removeQueries(["getTabsDetail", {
+          ENTITY_TYPE: state?.entityTypectx, 
+          CATEGORY_CD: state?.categoryValuectx, 
+          CONS_TYPE: state?.constitutionValuectx,
+          CONFIRMFLAG: state?.confirmFlagctx,
+          }])
+      }
+    }, [])
 
     return (
       <>
@@ -218,7 +232,7 @@ const HeaderForm = () => {
               size="small"
             />} */}
 
-            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx) &&
+            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx && state?.customerIDctx) &&
             <Grid sx={{alignSelf: "flex-end"}}>
               <GradientButton
                 onClick={() => setChangeCategDialog(true)}

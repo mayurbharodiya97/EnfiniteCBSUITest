@@ -174,6 +174,13 @@ export const guarantorjoint_tab_metadata = {
                     name: "REF_ACCT_CD",
                     label: "",
                     placeholder: "A/C No.",
+                    required: true,
+                    schemaValidation: {
+                        type: "string",
+                        rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                        ],
+                    },
                     maxLength: 8,
                     GridProps: {xs:12, sm:3, md: 2, lg: 2, xl:1.5}
                 },
@@ -274,7 +281,7 @@ export const guarantorjoint_tab_metadata = {
                     render: {
                         componentType: "dob"
                     },
-                    name: "BIIRTH_DATE",
+                    name: "BIRTH_DATE",
                     label: "Birth Date",
                     maxDate: new Date(), 
                     isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
@@ -363,6 +370,7 @@ export const guarantorjoint_tab_metadata = {
                     },
                     name: "PIN_CODE",
                     label: "PIN",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     schemaValidation: {
                         type: "string",
@@ -683,8 +691,8 @@ export const guarantorjoint_tab_metadata = {
                     },
                     name: "REMARKS",
                     label: "Remarks",
-                    maxLength: 300,
                     isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
+                    maxLength: 300,
                     GridProps: {xs:12, sm:6, md: 6, lg: 4.7, xl:4}
                 },
                 // {

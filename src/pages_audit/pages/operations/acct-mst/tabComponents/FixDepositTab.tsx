@@ -73,7 +73,7 @@ const FixDepositTab = () => {
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
-        IsNewRow: true,
+        IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
         COMP_CD: "",
         BRANCH_CD: "",
         REQ_FLAG: "",

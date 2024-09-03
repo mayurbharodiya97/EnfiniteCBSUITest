@@ -103,11 +103,18 @@ export const termLoan_metadata = {
             },
             name: "DAY_BOOK_GRP_CD",
             label: "Name",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
             _optionsKey: "directorNmTermLoanOp",
+            placeholder: "",
+            type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -140,6 +147,13 @@ export const termLoan_metadata = {
             _optionsKey: "ptsTermLoanOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -227,6 +241,13 @@ export const termLoan_metadata = {
             name: "PRIORITY_CD",
             label: "",
             isReadOnly: true,
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -380,6 +401,13 @@ export const termLoan_metadata = {
                 {label: "Yearly", value: "Y"},
                 {label: "On Expiry", value: "E"},
             ],
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -589,6 +617,13 @@ export const termLoan_metadata = {
             label: "Interest",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
@@ -688,11 +723,16 @@ export const termLoan_metadata = {
                     return true;
                 },
             },
+            required: true,
             validate: (columnValue) => {
-                const PIN = columnValue.value
+                const PIN = columnValue.value;
+                if(!Boolean(PIN)) {
+                    return "ThisFieldisrequired";
+                }
                 if(Boolean(PIN) && PIN.length<6) {
                     return "Pin code should be of six digits"
                 }
+                return "";
             },
             placeholder: "",
             type: "text",
@@ -728,6 +768,13 @@ export const termLoan_metadata = {
                 {label: "NO", value: "N"}
             ],
             // _optionsKey: "npaReasonTermLoanOp",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -766,20 +813,20 @@ export const termLoan_metadata = {
             label: "Moratorium Period(In Months)",
             isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
             maxLength: 6,
-            FormatProps: {
-                isAllowed: (values) => {
-                    if (values?.value?.length > 6) {
-                    return false;
-                    }
-                    return true;
-                },
-            },
-            validate: (columnValue) => {
-                const PIN = columnValue.value
-                if(Boolean(PIN) && PIN.length<6) {
-                    return "Pin code should be of six digits"
-                }
-            },
+            // FormatProps: {
+            //     isAllowed: (values) => {
+            //         if (values?.value?.length > 6) {
+            //         return false;
+            //         }
+            //         return true;
+            //     },
+            // },
+            // validate: (columnValue) => {
+            //     const PIN = columnValue.value
+            //     if(Boolean(PIN) && PIN.length<6) {
+            //         return "Pin code should be of six digits"
+            //     }
+            // },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -790,6 +837,13 @@ export const termLoan_metadata = {
             },
             name: "INST_RS",
             label: "Installment Amt.",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             shouldExclude:(initialValue,original,prevRows,nextRows)=>{
                 const GPARAM155 = prevRows?.GPARAM155 
                 if(Boolean(GPARAM155)) {
@@ -851,6 +905,13 @@ export const termLoan_metadata = {
             FormatProps: {
               allowNegative: true,
             },
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs: 12, md: 2, sm: 2, lg: 2, xl: 2},
         },
         {
@@ -897,6 +958,13 @@ export const termLoan_metadata = {
             _optionsKey: "RECRETermLoanOp", 
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -909,6 +977,13 @@ export const termLoan_metadata = {
             _optionsKey: "businessTermLoanOp",
             placeholder: "",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {

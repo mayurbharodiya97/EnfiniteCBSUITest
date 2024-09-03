@@ -77,7 +77,7 @@ const NomineeJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_NOMINEE_DTL[i], formFields)
-          return {...formData, j_type: "N"};
+          return {...formData, J_TYPE: "N", CUSTOMER_ID: AcctMSTState?.customerIDctx};
         })
         newData["JOINT_NOMINEE_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -132,6 +132,7 @@ const NomineeJointTab = () => {
         ref={formRef}
         metaData={nomineejoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
+        formState={{PARAM320: AcctMSTState?.param320}}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         hideHeader={true}

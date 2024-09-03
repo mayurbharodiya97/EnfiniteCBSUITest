@@ -828,16 +828,35 @@ export const accountSave = async (reqData) => {
       }
       if(jointTabs.includes(tab)) {
         joint_account_dtl = [...joint_account_dtl, ...formData[tab]]
-      } else if(tab === "DOC_MST" || tab === "MOBILE_REG_DTL" || tab === "RELATIVE_DTL" || tab === "OTHER_ADDRESS") {
+      } else if(tab === "DOC_MST" || tab === "MOBILE_REG_DTL" || tab === "RELATIVE_DTL" || tab === "OTHER_ADDRESS_DTL") {
         if(tab === "DOC_MST") {
-          payload[tab] = formData[tab]?.DOC_MST;
+          payload[tab] = formData[tab]?.doc_mst_payload;
         } else {
           payload[tab] = formData[tab];
         }
       }
     });
     payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl;
-    const ENTRY_TYPE = 1;
+    payload["PHOTO_DTL"] = [
+      {
+          IsNewRow: true,
+          ACCT_MODE: "1   ",
+          ACCT_PHOTO: "BASE64",
+          ACCT_SIGN: "BASE64",
+          ACCT_TYPE: "001 ",
+          ACCT_CD: "001 ",
+          ACT_FLAG: "Y",
+          FLAG: "C",
+          J_TYPE: "J",
+          FROM_LIMIT: "456",
+          FROM_TABLE: "PHOTO",
+          SIGN_GROUP: "1",
+          TO_LIMIT: "1000000",
+          UPDATE_HISTORY: ""
+      }
+  ];
+    payload["SCREEN_REF"] = "MST/002";
+    const ENTRY_TYPE = "1";
     payload = {
       ...payload,
       IsNewRow,

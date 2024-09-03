@@ -84,7 +84,7 @@ const IntroductorJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_INTRODUCTOR_DTL[i], formFields)
-          return {...formData, j_type: "I"};
+          return {...formData, J_TYPE: "I", CUSTOMER_ID: AcctMSTState?.customerIDctx};
         })
         newData["JOINT_INTRODUCTOR_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -139,6 +139,7 @@ const IntroductorJointTab = () => {
         ref={formRef}
         metaData={introductorjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
+        formState={{PARAM320: AcctMSTState?.param320}}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         hideHeader={true}

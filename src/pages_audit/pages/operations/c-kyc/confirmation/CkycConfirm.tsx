@@ -36,7 +36,7 @@ export const CkycConfirm = () => {
       isFetching: isPendingDataFetching,
       refetch: PendingRefetch,
       error: PendingError,
-  } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
+  } = useQuery<any, any>(["getConfirmPendingData"], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -57,26 +57,42 @@ export const CkycConfirm = () => {
   ];
   const setCurrentAction = useCallback(
     (data) => {
+      // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
       // console.log("weohhfdwef", data)
       const maker = data.rows?.[0]?.data?.MAKER
       const loggedinUser = authState?.user?.id;
+      // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM, maker, loggedinUser)
       if(maker === loggedinUser) {
         setPreventConfirmDialog(true)
       } else {
-        if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P") {
+        // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
+        if(
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P" ||
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM?.includes("P")
+        ) {
           // P=EXISTING_PHOTO_MODIFY
           navigate("photo-signature", {
             state: data?.rows,
           })
-        } else if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D") {
+        } else if(
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D" || 
+          data.rows?.[0]?.data?.UPD_TAB_FLAG_NM?.includes("D")
+        ) {
           // D=EXISTING_DOC_MODIFY
           navigate("document", {
             state: {CUSTOMER_DATA: data?.rows},
           })
         } else if(
-          data.rows?.[0]?.data?.UPD_TAB_NAME === "A" ||
-          data.rows?.[0]?.data?.UPD_TAB_NAME === "M"
+          (
+            data.rows?.[0]?.data?.UPD_TAB_NAME === "A" ||
+            data.rows?.[0]?.data?.UPD_TAB_NAME?.includes("A")
+          ) ||
+          (
+            data.rows?.[0]?.data?.UPD_TAB_NAME === "M" ||
+            data.rows?.[0]?.data?.UPD_TAB_NAME?.includes("M")
+          )
         ) {
+        // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
           // A=FRESH_MODIFY, M=EXISTING_MODIFY
           navigate("view-detail", {
             state: data?.rows,
@@ -93,9 +109,9 @@ export const CkycConfirm = () => {
     [navigate]
   );
 
-  useEffect(() => {
-    PendingRefetch()
-  }, [location])
+  // useEffect(() => {
+  //   PendingRefetch()
+  // }, [location])
 
     ckyc_pending_req_meta_data.gridConfig.gridLabel = "Confirmation Pending Request";
     ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
@@ -123,7 +139,7 @@ export const CkycConfirm = () => {
           {t("Confirmation Pending")}
         </Typography> */}
         <GridWrapper
-          key={`ckycConfirmation`+PendingData}
+          key={`ckycConfirmation`}
           finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
           data={PendingData ?? []}
           setData={() => null}
@@ -169,6 +185,18 @@ export const CkycConfirm = () => {
                   navigate(".");
                 }}
                 PendingRefetch={PendingRefetch}
+              />
+            }
+          />
+
+          <Route
+            path="document/*"
+            element={
+              <UpdateDocument
+                open={true}
+                onClose={() => navigate(".")}
+                viewMode={"view"}
+                from={"ckyc-confirm"}
               />
             }
           />

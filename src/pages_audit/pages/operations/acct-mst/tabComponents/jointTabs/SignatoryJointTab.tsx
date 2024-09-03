@@ -84,7 +84,7 @@ const SignatoryJointTab = () => {
           let formFields = Object.keys(formRow)
           formFields = formFields.filter(field => !field.includes("_ignoreField"))
           const formData = _.pick(data?.JOINT_SIGNATORY_DTL[i], formFields)
-          return {...formData, j_type: "S"};
+          return {...formData, J_TYPE: "S", CUSTOMER_ID: AcctMSTState?.customerIDctx};
         })
         newData["JOINT_SIGNATORY_DTL"] = [...newFormatOtherAdd]
         handleFormDataonSavectx(newData)
@@ -139,6 +139,7 @@ const SignatoryJointTab = () => {
         ref={formRef}
         metaData={signatoryjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
+        formState={{PARAM320: AcctMSTState?.param320}}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         hideHeader={true}
