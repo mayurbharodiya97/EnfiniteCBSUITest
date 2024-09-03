@@ -53,6 +53,7 @@ const PositivePayConfirmationGrid = lazy(
 );
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
+const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 // const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 const StandingInstructionGridWrapper = lazy(()=> import ("./standingInstruction"))
 const StandingInstructionConfirmationGridWrapper = lazy(()=> import ("./standingInstruction/confirmation/"))
@@ -221,6 +222,7 @@ export const OperationsMenu = () => (
       }
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
+    <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
     <Route path="account-close-process/*" element={<AccountCloseProcess />} />    
     <Route
