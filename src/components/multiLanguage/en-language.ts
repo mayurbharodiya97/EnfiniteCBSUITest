@@ -1686,21 +1686,36 @@ export const en_language_data = {
   ConsiderSIasExecuted:"Consider SI as Executed",
   SearchSI:"SearchSI",
   SIasExecuted:"SI as Executed",
-CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
-DataNotFound:"Data Not Found",
-TotalNoofActiveSI:"Total No. of Active SI",
-EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
+  DataNotFound:"Data Not Found",
+  TotalNoofActiveSI:"Total No. of Active SI",
+  EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
 
- //standing instruction Confirmation
-SInotConfirmByYou:"You can not confirm SI entered by you.",
-confirmSI:"Are you sure to confirm SI?",
+  //standing instruction Confirmation
+  SInotConfirmByYou:"You can not confirm SI entered by you.",
+  confirmSI:"Are you sure to confirm SI?",
 
-//Recurring Interest Calculator
-Categoryisrequired:"Category is required",
-IntType:"InterestType",
-InstallmentType:"Installment Type",
-InstallmentTypeisrequired:"Installment Type is required",
-InstAmount:"Installment Amount",
-RunningIntAmt:"Running Int. Amt."
+  //Recurring Interest Calculator
+  Categoryisrequired:"Category is required",
+  IntType:"InterestType",
+  InstallmentType:"Installment Type",
+  InstallmentTypeisrequired:"Installment Type is required",
+  InstAmount:"Installment Amount",
+  RunningIntAmt:"Running Int. Amt.",
+  //EMI Calculator
+  InterestFunded:"Interest Funded",
+  LoanAmount:"Loan Amount",
+  Calculate:"Calculate",
+  DisburseDate:"Disburse Date",
+  InstStartDate:"Inst. Start Date",
+  FromInst:"From Inst.",
+  ToInst:"To Inst.",
+  NoofInstallment:"No.of Installment",
+  InstallmentDetails:"Installment Details",
+  InterestRateisrequired:"Interest Rate is Required",
+  LoanAmountisrequired:"Loan Amount is required",
+  NoofInstallmentisrequired:"No. of Installment is required",
+  InstallmentPeriodisrequired:"Installment Period is required",
+  DisburseAmountisrequired:"Disburse Amount is required",
 
 };

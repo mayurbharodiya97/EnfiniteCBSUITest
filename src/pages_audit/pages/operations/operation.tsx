@@ -54,6 +54,7 @@ const PassbookPrint = lazy(() => import("./passbookPrint"));
 const StandingInstructionGridWrapper = lazy(()=> import ("./standingInstruction"))
 const StandingInstructionConfirmationGridWrapper = lazy(()=> import ("./standingInstruction/confirmation/"))
 const RecurringCalculatorFormWrapper = lazy(()=> import ("./recurringCalculator"))
+const EMICalculatorFormWrapper = lazy(()=> import ("./emiCalculator"))
 
 export const OperationsMenu = () => (
   <Routes>
@@ -220,6 +221,10 @@ export const OperationsMenu = () => (
     <Route
       path="recint-calculator/*"
       element={<RecurringCalculatorFormWrapper />}
+    />
+    <Route
+      path="emi-calculator/*"
+      element={<EMICalculatorFormWrapper />}
     />
   </Routes>
 );

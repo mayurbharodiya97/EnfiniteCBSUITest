@@ -2274,6 +2274,26 @@ export const ActionWiseAPIConfiguration = {
   GETRECURRINGCALCULATEDAMOUNT:{
     url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
     packageName: "",
+  },
+  GETEMICALCINSTTYPEDDW:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINSTTYPEDDW",
+    packageName: "",
+  },
+  GETEMICALCPERIODDDW:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCPERIODDDW",
+    packageName: "",
+  },
+  GETEMICALCINTFUNDEDDDW:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINTFUNDEDDDW",
+    packageName: "",
+  },
+  CHECKEMISCHEDULEDTL:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMISCHEDULEDTL",
+    packageName: "",
+  },
+  CHECKEMIDISBURSDTL:{
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMIDISBURSDTL",
+    packageName: "",
   }
 };
 
