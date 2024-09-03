@@ -2358,6 +2358,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI/VALIDATECHQBKCONFRIMATIONDATA",
     packageName: "",
   },
+  GETFDPAYMENTINSTRDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRDTLCNF",
+    packageName: "",
+  },
+  RETRIVEATMREGISTRATIONDATA: {
+    url: "/commonMasterServiceAPI/RETRIVEATMREGISTRATIONDATA",
+    packageName: "",
+  },
   GETATMREGCONFGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGCONFGRID",
     packageName: "",

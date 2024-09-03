@@ -10,6 +10,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       minWidth: 300,
     },
     allowColumnReordering: true,
+    allowRowSelection: false,
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,

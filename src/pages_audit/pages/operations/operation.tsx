@@ -74,6 +74,8 @@ const FdPrintDynamicNew = lazy(()=> import("./fdPrintDynamicNew/fdPrintRetrieve/
 const CashierEntry = lazy(()=> import("./cashierExchangeEntry/cashierExchangeEntry"));
 const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
+const FdInterestPaymentGrid = lazy(() => import("./FDInterestPayment"));
+const FDInterestPaymentConfm = lazy(() => import("./FDInterestPaymentConf"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -265,6 +267,12 @@ export const OperationsMenu = () => (
       path="account-close-confirmation/*"
       element={<AccountCloseConfirm />}
     />
+       <Route path="fdpayint-master-entry/*" element={<FdInterestPaymentGrid />} />
+    <Route
+      path="fdpayint-master-confirmation/*"
+      element={<FDInterestPaymentConfm />}
+    />
+  
       <Route
       path="standing-instruction-entry/*"
       element={<StandingInstructionGridWrapper />}

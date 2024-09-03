@@ -20,7 +20,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 
-export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
+export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => {
   const [disableButton, setDisableButton] = useState(false);
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -55,15 +55,13 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
             acctInqDataRef: acctInqData?.data?.[0],
           },
         });
-        handleClose();
+        close();
       },
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -97,13 +95,11 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
           });
         }
       },
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },

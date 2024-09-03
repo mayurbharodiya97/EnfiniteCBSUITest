@@ -1024,7 +1024,7 @@ export const en_language_data = {
   Rate: "Rate%",
   MaturityAmount: "Maturity Amount",
   MaturityDate: "Maturity Date",
-  DepositeDate: "Deposite Date",
+  DepositDate: "Deposit Date",
   CertificateNumber: "Cetificate No.",
   CollateralName: "Collateral Name",
   EnterCollateralName: "Enter Collateral Name",
@@ -1776,6 +1776,23 @@ export const en_language_data = {
   ConsiderSIasExecuted:"Consider SI as Executed",
   SearchSI:"SearchSI",
   SIasExecuted:"SI as Executed",
+CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
+DataNotFound:"Data Not Found",
+TotalNoofActiveSI:"Total No. of Active SI",
+EnterRemovalRemarksForSI:"Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+
+ //standing instruction Confirmation
+SInotConfirmByYou:"You can not confirm SI entered by you.",
+confirmSI:"Are you sure to confirm SI?",
+
+//Recurring Interest Calculator
+Categoryisrequired:"Category is required",
+IntType:"InterestType",
+InstallmentType:"Installment Type",
+InstallmentTypeisrequired:"Installment Type is required",
+InstAmount:"Installment Amount",
+RunningIntAmt:"Running Int. Amt.",
+
   CannotRevertBack:"This Can't be Revert back! Do you want to Consider it as executed?",
   DataNotFound:"Data Not Found",
   TotalNoofActiveSI:"Total No. of Active SI",
@@ -1844,7 +1861,7 @@ export const en_language_data = {
   ReOpenConf: "Re-Open Confirmation",
   ReOpenConfMsg: "Are you sure to Re-Open the Account?",
   FDNum: "FD Number",
-  DepositeAmount: "Deposite Amount",
+  DepositAmount: "Deposit Amount",
   MatureInstruction: "Mature Instruction",
   CreditDetails: "Credit Details",
   PaidFDDetails: "Paid FD Details",
@@ -1870,5 +1887,31 @@ export const en_language_data = {
     "Amount*: In case of cash Credit/Debit, Difference amount will be posted in type level PL.",
   AccountCloseConfNote:
     "If Payslip/NEFT is generated then need to confirm manually.",
+  NounPaidFDmsg: "No unpaid FD/RD(s) found for the entered account number.",
+  RecordSave: "Record has been saved successfully.",
+  NotFound: "Not Found.",
+  RecordNotFound: "Record not found.",
+  RetrieveConfirmation:
+    "You will loose all the information retrieved/generated in details. \nAre you sure to continue ?",
+  SelectPaymentMode: "Please Select Payment mode for FD number {{FD_NO}}",
+  PaidFD: "Paid-FD",
+  PaymentModeChangeConf:
+    "You will loose all the entered data on changing the payment mode. \n Are youe sure to continue?",
+  CarryForwardmsg:
+    "It will replace all the stored information of next FD (FD No.:{{CARRYFORWARD_FD_NO}}) with the information filled in FD No. {{CURRENT_FD_NO}}. \nAre you sure to proceed?",
+  RecordReject: "Record has been rejected/deleted.",
+  ConfirmMsg:"Are you sure to confirm this record?",
+  ConfirmReject:"Are you sure to reject/delete this record?",
+  CompanyID:"Company ID",
+  CreditBankAccount:"Credit Bank A/c Details",
+  NEFTDetails:"NEFT Details",
+  OrderingAcName:"Ordering A/c Name",
+  OrderingAcAddress:"Ordering A/c Address",
+  OrderingAcContact:"Ordering A/c Contact",
+  BeneficiaryAccountType:"Beneficiary Account Type",
+  BeneficiaryContact:"Beneficiary Contact",
+  BeneficiaryAccountNumber:"Beneficiary Account Number",
+  BeneficiaryAccountName:"Beneficiary Account Name",
+  BeneficiaryAddress:"Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
 };
