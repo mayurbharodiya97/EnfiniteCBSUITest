@@ -52,13 +52,13 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "Edit-Detail",
+    actionLabel: t("EditDetail"),
     multiple: false,
     rowDoubleClick: true,
   },
   {
     actionName: "str-history",
-    actionLabel: "STR-History",
+    actionLabel: t("STRHistory"),
     multiple: false,
     rowDoubleClick: true,
   },
@@ -84,7 +84,7 @@ const StrBranchLevelEntryGrid = () => {
       setActionMenu(prevActions => {
         const newAction = {
           actionName: "suspicious",
-          actionLabel: "Suspicious Status",
+          actionLabel: t("SuspiciousStatus"),
           multiple: undefined,
           rowDoubleClick: false,
           alwaysAvailable: true,
@@ -122,7 +122,7 @@ const StrBranchLevelEntryGrid = () => {
       setActionMenu((values: any) => {
         return values.map((item) => {
           if (item.actionName === "suspicious") {
-            return { ...item, actionName: "extraction", actionLabel: "As per Extraction" };
+            return { ...item, actionName: "extraction", actionLabel: t("AsperExtraction") };
           } else {
             return item;
           }
@@ -136,7 +136,7 @@ const StrBranchLevelEntryGrid = () => {
             return {
               ...item,
               actionName: "suspicious",
-              actionLabel: "Suspicious Status",
+              actionLabel: t("SuspiciousStatus"),
             };
           } else {
             return item;
@@ -304,7 +304,7 @@ const StrBranchLevelEntryGrid = () => {
                       <GradientButton className={headerClasses.printHidden}
                         onClick={() => {
                           setIsPrint(false)
-                        }}>Close</GradientButton>
+                        }}>{t("Close")}</GradientButton>
                     </Toolbar>
                   </AppBar>
                   <DialogContent dividers>

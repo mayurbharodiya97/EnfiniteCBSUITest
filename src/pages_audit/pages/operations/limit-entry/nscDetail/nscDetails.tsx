@@ -29,25 +29,40 @@ export const NscDetails = ({ navigate, myMasterRef }) => {
   ];
   const { authState } = useContext(AuthContext);
   const navigateForm = useNavigate();
-  const nscDetail: any = useMutation("getLimitNSCdetail", getLimitNSCdetail);
+  const [isApiCall, setIsApiCall] = useState<any>({
+    apiReq: {},
+    isCall: false,
+  });
+
+  const { data, isError, error, isLoading, isFetching } = useQuery<any, any>(
+    ["getNotificatioata"],
+    () => getLimitNSCdetail({ ...isApiCall?.apiReq }),
+    {
+      enabled: isApiCall?.isCall,
+      onSuccess() {
+        isApiCall.isCall = false;
+      },
+    }
+  );
 
   useEffect(() => {
     myMasterRef?.current?.getFieldData().then((res) => {
       if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-        const NSC_DTLRequestPara = {
-          COMP_CD: authState?.companyID,
-          ACCT_CD: res?.ACCT_CD,
-          ACCT_TYPE: res?.ACCT_TYPE,
-          BRANCH_CD: res?.BRANCH_CD,
-        };
-        nscDetail.mutate(NSC_DTLRequestPara);
+        setIsApiCall({
+          apiReq: {
+            COMP_CD: authState?.companyID,
+            ACCT_CD: res?.ACCT_CD,
+            ACCT_TYPE: res?.ACCT_TYPE,
+            BRANCH_CD: res?.BRANCH_CD,
+          },
+          isCall: true,
+        });
       }
     });
   }, []);
 
   const setCurrentAction = useCallback(
     (data) => {
-      console.log("<<<data", data);
       if (data?.name === "nscFormDetail") {
         navigateForm(data?.name, {
           state: data?.rows,
@@ -75,12 +90,12 @@ export const NscDetails = ({ navigate, myMasterRef }) => {
         }}
       >
         <>
-          {nscDetail.isError && (
+          {isError && (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={nscDetail?.error?.error_msg ?? "Unknow Error"}
-                errorDetail={nscDetail?.error?.error_detail ?? ""}
+                errorMsg={error?.error_msg ?? "Unknow Error"}
+                errorDetail={error?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
@@ -88,9 +103,9 @@ export const NscDetails = ({ navigate, myMasterRef }) => {
           <GridWrapper
             key={`nsc-Details-GridData`}
             finalMetaData={nscDetailGridData as GridMetaDataType}
-            data={nscDetail.data ?? []}
+            data={data ?? []}
             setData={() => {}}
-            loading={nscDetail.isLoading}
+            loading={isLoading || isFetching}
             actions={nscAction}
             setAction={setCurrentAction}
           />

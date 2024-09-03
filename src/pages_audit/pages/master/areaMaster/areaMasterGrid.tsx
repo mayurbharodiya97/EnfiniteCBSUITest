@@ -23,7 +23,7 @@ let actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -36,7 +36,8 @@ let actions: ActionTypes[] = [
 
 
 const AreaMaster = () => {
-  const authController = useContext(AuthContext);
+  const {authState} = useContext(AuthContext);
+  const [label,setLabel] = useState("Area Master (MST/046)")
   const isDataChangedRef = useRef(false);
   const isDeleteDataRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -46,8 +47,8 @@ const AreaMaster = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -69,8 +70,8 @@ const AreaMaster = () => {
     any
   >(["getAreaMasterData"], () =>
     API.getAreaMasterData({
-      companyID: authController?.authState?.companyID,
-      branchCode: authController?.authState?.user?.branchCode,
+      companyID: authState?.companyID,
+      branchCode: authState?.user?.branchCode,
     })
   );
   const { data: miscdata } = useQuery<
@@ -84,20 +85,27 @@ const AreaMaster = () => {
     miscdata.forEach((item) => {
       userLevel = item.USER_LEVEL;
     });
+    
   }
 
-  const LoginuserLevel = authController?.authState?.role;
-  if (LoginuserLevel >= userLevel) {
-    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (MST/046)" + "(View-Only)";
-    actions = [];
-  }
-  else {
-    AreaMasterGridMetaData.gridConfig.gridLabel = "Area Master (MST/046)";
-  }
+  // const LoginuserLevel = authController?.;
+  const LoginuserLevel = authState?.role;
+  useEffect(()=>{
+
+    if (userLevel?.length > 0){
+      if (LoginuserLevel < userLevel) {
+        setLabel("Area Master (MST/046) (View-Only)")
+        actions = [];
+      }else {
+        setLabel("Area Master (MST/046)")
+      }
+    }
+  },[userLevel,label])
+    AreaMasterGridMetaData.gridConfig.gridLabel =label;
 
   const deleteMutation = useMutation(API.deleteAreaMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -107,7 +115,7 @@ const AreaMaster = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
@@ -129,13 +137,13 @@ const AreaMaster = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />
       )}
       <GridWrapper
-        key={"areaMaster"}
+        key={"areaMaster" + label}
         finalMetaData={AreaMasterGridMetaData as GridMetaDataType}
         loading={isLoading || isFetching}
         data={data ?? []}

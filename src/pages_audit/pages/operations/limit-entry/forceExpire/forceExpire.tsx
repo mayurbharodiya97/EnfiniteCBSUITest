@@ -108,9 +108,13 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
           loading={forceExpire.isLoading}
+          displayMode={
+            rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" ? "edit" : "view"
+          }
+          hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 398px)",
+            height: "calc(100vh - 472px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

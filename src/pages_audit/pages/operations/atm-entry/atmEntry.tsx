@@ -41,7 +41,6 @@ const AtmEntryCustom = ({ parameter }) => {
     cardData: {},
     gridData: [],
     isVisible: false,
-    isOpenPhotoSign: false,
     isOpenCard: false,
   });
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,8 +58,8 @@ const AtmEntryCustom = ({ parameter }) => {
       ? atmentrymetadata
       : {};
 
-  const { isError, error, isFetching, isLoading, refetch } = useQuery<any, any>(
-    ["getNotificationData"],
+  const cardDetails: any = useMutation(
+    "getATMcardDetails",
     () =>
       API.getATMcardDetails({
         A_COMP_CD: authState?.companyID,
@@ -68,7 +67,6 @@ const AtmEntryCustom = ({ parameter }) => {
         A_TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
       }),
     {
-      enabled: !!retrieveData?.[currentIndex]?.TRAN_CD,
       onSuccess(data) {
         let newData;
         if (Array.isArray(data) && data?.length > 0) {
@@ -85,7 +83,6 @@ const AtmEntryCustom = ({ parameter }) => {
   );
 
   const changeIndex = (direction) => {
-    refetch();
     setCurrentIndex((prevIndex) => {
       if (direction === "next") {
         return prevIndex === retrieveData.length - 1 ? 0 : prevIndex + 1;
@@ -98,6 +95,7 @@ const AtmEntryCustom = ({ parameter }) => {
   useEffect(() => {
     if (retrieveData?.length) {
       setIsData((old) => ({ ...old, cardData: retrieveData?.[currentIndex] }));
+      cardDetails.mutate();
     }
   }, [retrieveData, currentIndex]);
 
@@ -105,6 +103,22 @@ const AtmEntryCustom = ({ parameter }) => {
     //@ts-ignore
     endSubmit(true);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "s" && event.ctrlKey) {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      } else if (event.key === "r" && event.ctrlKey) {
+        event.preventDefault();
+        navigate("retrieve-form");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <Grid container>
@@ -215,9 +229,7 @@ const AtmEntryCustom = ({ parameter }) => {
                   </Button>
                   <Button
                     color="primary"
-                    onClick={() =>
-                      setIsData((old) => ({ ...old, isOpenPhotoSign: true }))
-                    }
+                    onClick={() => navigate("photo-sign")}
                   >
                     {t("PhotoSign")}
                   </Button>
@@ -238,12 +250,14 @@ const AtmEntryCustom = ({ parameter }) => {
           )}
         </FormWrapper>
         <Grid px={"10px"} container>
-          {isError && (
+          {cardDetails?.isError && (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={error?.error_msg ?? t("UnknownErrorOccured")}
-                errorDetail={error?.error_detail ?? ""}
+                errorMsg={
+                  cardDetails?.error?.error_msg ?? t("UnknownErrorOccured")
+                }
+                errorDetail={cardDetails?.error?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
@@ -252,13 +266,16 @@ const AtmEntryCustom = ({ parameter }) => {
             key={`atmGridData` + isData?.gridData}
             finalMetaData={atmGridMetaData as GridMetaDataType}
             data={isData?.gridData ?? []}
-            loading={isLoading || isFetching}
+            loading={cardDetails?.isLoading || cardDetails?.isFetching}
             setData={() => null}
             actions={actions}
             setAction={(data) => {
               if (data?.name === "card-details") {
                 navigate(data?.name, {
-                  state: data?.rows,
+                  state: {
+                    rows: data?.rows,
+                    retrieveData: retrieveData?.[currentIndex],
+                  },
                 });
               }
             }}
@@ -271,16 +288,6 @@ const AtmEntryCustom = ({ parameter }) => {
           />
         </Grid>
       </Grid>
-
-      {isData?.isOpenPhotoSign && (
-        <PhotoSignWithHistory
-          data={isData?.cardData ?? {}}
-          onClose={() => {
-            setIsData((old) => ({ ...old, isOpenPhotoSign: false }));
-          }}
-          screenRef={"MST/846"}
-        />
-      )}
 
       {isData?.isOpenCard && (
         <CardPrinting cardData={isData.cardData} setIsData={setIsData} />
@@ -305,6 +312,16 @@ const AtmEntryCustom = ({ parameter }) => {
               parameter={parameter}
               setFormMode={setFormMode}
               setRetrieveData={setRetrieveData}
+            />
+          }
+        />
+        <Route
+          path="photo-sign/*"
+          element={
+            <PhotoSignWithHistory
+              data={isData?.cardData ?? {}}
+              onClose={() => navigate(".")}
+              screenRef={"MST/846"}
             />
           }
         />

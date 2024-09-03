@@ -4,6 +4,7 @@ import {
   getIfscBankDetail,
   getIfscBenDetail,
   getJointDetailsList,
+  getAcctTypeData
 } from "./api";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
@@ -1654,7 +1655,7 @@ export const rtgsAccountDetailFormMetaData: any = {
                   : "",
               ACCT_CD:
                 formState?.rtgsAcData?.PARA_BNFCRY === "Y"
-                  ? formState?.rtgsAcData?.ACCT_CD ?? ""
+                  ? formState?.rtgsAcData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? ""
                   : "",
               // FLAG: "N",
               FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
@@ -1731,10 +1732,6 @@ export const rtgsAccountDetailFormMetaData: any = {
                   },
                   TO_EMAIL_ID: { value: field.optionData[0].TO_EMAIL_ID ?? "" },
                   TO_ADD1: { value: field.optionData[0].TO_ADD1 ?? "" },
-                  REMARKS: {
-                    value: field.optionData[0].REMARKS ?? "",
-                    isFieldFocused: true,
-                  },
                   TO_IFSCCODE: { value: postData?.[0].IFSC_CODE ?? "" },
                   BANK_NM: { value: postData?.[0].BANK_NM ?? "" },
                   BRANCH_NM: { value: postData?.[0].BRANCH_NM ?? "" },
@@ -1752,7 +1749,6 @@ export const rtgsAccountDetailFormMetaData: any = {
                 CONTACT_NO: { value: "" },
                 TO_EMAIL_ID: { value: "" },
                 TO_ADD1: { value: "" },
-                REMARKS: { value: "" },
                 TO_IFSCCODE: { value: "" },
                 BANK_NM: { value: "" },
                 BRANCH_NM: { value: "" },
@@ -2284,6 +2280,7 @@ export const AuditBenfiDetailFormMetadata = {
             { name: "required", params: ["PleaseEnterTheBeneficiaryIFSCCode"] },
           ],
         },
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -2388,11 +2385,10 @@ export const AuditBenfiDetailFormMetadata = {
       label: "AcctType",
       placeholder: "",
       type: "text",
-      options: [
-        { label: "SAVING", value: "SB" },
-        { label: "CURRENT", value: "CA" },
-        { label: "CC", value: "CC" },
-      ],
+      options: () => {
+        return API.getAcctTypeData();
+      },
+      _optionsKey: "getAcctTypeData",
       __EDIT__: {
         isReadOnly: true,
       },

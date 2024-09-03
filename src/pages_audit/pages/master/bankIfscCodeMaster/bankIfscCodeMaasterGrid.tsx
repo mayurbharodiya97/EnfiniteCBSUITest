@@ -12,7 +12,7 @@ import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
-
+import {t} from "i18next";
 import ImportData from "./fileupload/importData";
 
 
@@ -25,7 +25,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -55,7 +55,7 @@ const BankIfscCodeMaasterGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
+          message: t("DeleteData"),
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -85,7 +85,7 @@ const BankIfscCodeMaasterGrid = () => {
   );
   const deleteMutation = useMutation(API.deleteupdateBankIfscCodeData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -95,7 +95,7 @@ const BankIfscCodeMaasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();

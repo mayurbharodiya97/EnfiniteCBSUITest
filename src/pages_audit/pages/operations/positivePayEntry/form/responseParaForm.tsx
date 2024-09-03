@@ -94,7 +94,7 @@ export const ResponseParametersForm = ({
             </GradientButton>
             <GradientButton
               onClick={closeDialog}
-              disabled={isSubmitting || disableButton}
+              disabled={isSubmitting}
               color={"primary"}
             >
               {t("Close")}

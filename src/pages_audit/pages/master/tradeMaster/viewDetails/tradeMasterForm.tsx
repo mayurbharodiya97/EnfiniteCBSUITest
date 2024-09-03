@@ -13,13 +13,14 @@ import { enqueueSnackbar } from "notistack";
 import { usePopupContext } from "components/custom/popupContext";
 import { LoadingTextAnimation } from "components/common/loader";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { t } from "i18next";
 
 
 const TradeMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
@@ -30,7 +31,7 @@ const TradeMasterForm = ({
   const mutation = useMutation(API.updateTradeMasterData,
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -40,7 +41,7 @@ const TradeMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -89,8 +90,8 @@ const TradeMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "SaveData",
-        messageTitle: "Confirmation",
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
@@ -137,7 +138,7 @@ const TradeMasterForm = ({
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
-                    }} da
+                    }} 
                     disabled={isSubmitting}
                     endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                     color={"primary"}
