@@ -117,14 +117,30 @@ export const TemporaryOD = () => {
   const setCurrentAction = useCallback(
     async (data) => {
       if (data.name === "add") {
-        myRef.current?.addNewRow(true, { VALID_UPTO: authState?.workingDate });
+        let gridData = await myRef?.current?.GetGirdData?.();
+        const hasDuplicateTemplateCd = (data) => {
+          const templateCdSet = new Set();
+          for (const item of data) {
+            if (templateCdSet.has(item.TEMPLATE_CD)) {
+              return true;
+            }
+            templateCdSet.add(item.TEMPLATE_CD);
+          }
+          return false;
+        };
+        const duplicateExists = hasDuplicateTemplateCd(gridData);
+        if (!Boolean(duplicateExists)) {
+          myRef.current?.addNewRow(true, {
+            VALID_UPTO: authState?.workingDate,
+          });
+        }
       }
     },
     [navigate]
   );
 
-  let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
-  metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
+  // let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
+  let metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
 
   return (
     <>
@@ -239,7 +255,7 @@ export const TemporaryOD = () => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "27vh",
+                height: "23vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}

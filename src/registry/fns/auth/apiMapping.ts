@@ -2315,6 +2315,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  VALIDATECHQBKCONFRIMATIONDATA: {
+    url: "/chequeServiceAPI/VALIDATECHQBKCONFRIMATIONDATA",
+    packageName: "",
+  },
+  GETATMREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMREGCONFGRID",
+    packageName: "",
+  },
   PENDINGTRANSACTION: {
     url: "/enfinityBankProcessingServiceAPI/PENDINGTRANSACTION",
     packageName: "",

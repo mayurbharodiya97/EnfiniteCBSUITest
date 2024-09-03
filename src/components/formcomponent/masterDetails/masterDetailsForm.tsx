@@ -41,6 +41,7 @@ export interface MasterDetailsArgumentType {
   formState?: any;
   setDataOnFieldChange?: any;
   isDetailRowRequire?: boolean;
+  subHeaderLable?: any;
 }
 export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
   (
@@ -71,6 +72,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       formState,
       setDataOnFieldChange,
       isDetailRowRequire = true,
+      subHeaderLable,
     },
     ref
   ) => {
@@ -295,6 +297,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
             ref={myMasterRef}
             formState={formState}
             setDataOnFieldChange={setDataOnFieldChange}
+            subHeaderLable={subHeaderLable}
           >
             {children}
           </FormWrapper>
