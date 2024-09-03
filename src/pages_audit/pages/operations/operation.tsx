@@ -40,6 +40,9 @@ const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
+const Payslipissueconfirmation = lazy(
+  () => import("./payslipissueconfirmation/index")
+)
 const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
 const Form15GHConfirmationGrid = lazy(
   () => import("./form15G-HEntry/confirmation")
@@ -48,14 +51,19 @@ const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
 const PositivePayConfirmationGrid = lazy(
   () => import("./positivePayEntry/confirmation")
 );
-const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
-// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
+const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
+const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
+const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
 
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
+    <Route path="holdtrn-confirmation/*" element={<HoldTrnsConfirmationMain />} />
+    <Route path="owreturn-chqsearch/*" element={<OutwardChequeSearch />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
@@ -64,6 +72,7 @@ export const OperationsMenu = () => (
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
     <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
+    <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route
       path="chequebook-confirmation/*"
@@ -157,6 +166,8 @@ export const OperationsMenu = () => (
 
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route path="payslip-issue-entry/*" element={<PayslipIsuueEntry />} />
+    <Route path="payslip-issue-confirmation/*" element={<Payslipissueconfirmation />} />
+    <Route path="fdint-calculator/*" element={<FdInterestCalculator />} />
     <Route
       path="rtgs-branch-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="BO" />}

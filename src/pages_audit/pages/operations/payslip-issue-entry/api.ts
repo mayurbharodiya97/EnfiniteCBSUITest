@@ -16,23 +16,25 @@ export const getRetrievalPaySlipEntryData = async ({ companyID, branchCode, FROM
 
     });
 
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ ...items }) => {
-          return {
-            ...items,
-
-          PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending"
-
-          };
-
-        }
-      );
-    }
-    return responseData;
-  } else {
+    if (status === "0") {
+      let responseData = data;
+  
+      if (Array.isArray(responseData)) {
+        const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
+          const amount = parseFloat(obj.AMOUNT || "0");
+          acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
+          return acc;
+        }, {} as Record<string, number>);
+  
+        responseData = responseData.map((items) => ({
+          ...items,
+          PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+          TOTAL_AMT: `${totals[items.TRAN_CD]}`
+        }));
+      }
+  
+      return responseData;
+    } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 
@@ -73,40 +75,52 @@ export const getRetrievalDateWise = async ({
   TRAN_CD,
   GD_DATE,
   USER_LEVEL
+}: {
+  COMP_CD: string;
+  BRANCH_CD: string;
+  FROM_DT: string;
+  TO_DT: string;
+  TRAN_CD: string;
+  GD_DATE: string;
+  USER_LEVEL: string;
 }) => {
-
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETPAYSLIPRETRIVEGRID", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-      FROM_DT: FROM_DT,
-      TO_DT: TO_DT,
+  // Fetch data from the API
+  const { data, status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "GETPAYSLIPRETRIVEGRID",
+    {
+      COMP_CD,
+      BRANCH_CD,
+      FROM_DT,
+      TO_DT,
       DEF_TRAN_CD: TRAN_CD,
-      GD_DATE:GD_DATE,
-      USER_LEVEL:USER_LEVEL
-
-    });
+      GD_DATE,
+      USER_LEVEL
+    }
+  );
 
   if (status === "0") {
     let responseData = data;
+
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ ...items }) => {
-          return {
-            ...items,
+      const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
+        const amount = parseFloat(obj.AMOUNT || "0");
+        acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
+        return acc;
+      }, {} as Record<string, number>);
 
-            PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending"
-          };
-
-        }
-      );
+      responseData = responseData.map((items) => ({
+        ...items,
+        PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+        TOTAL_AMT: `${totals[items.TRAN_CD]}`
+      }));
     }
+
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
+
 export const headerDataRetrive = async ({
   COMP_CD,
   BRANCH_CD,
