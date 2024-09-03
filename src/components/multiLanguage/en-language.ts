@@ -1564,7 +1564,7 @@ export const en_language_data = {
   infavourofrequired: "InFavourof is Required",
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
-
+  entryType:"Entry Type",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",
@@ -1620,6 +1620,35 @@ export const en_language_data = {
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
-  Success: "Success",
-  DataUpdatedSuccessfully: "Data Updated Successfully",
+  //Dayend process
+VerifyDayEndChecksums:"Verify DayEnd Checksums",
+PendingTransactions:"Pending Transactions",
+DayEndProcess:"DayEnd Process",
+DayEndHover:"DayEnd Hover",
+VersionNo:"Version No.",
+AcRef:"A/c No. /Ref No.",
+Sequence:"Sequence",
+eodVersion:"EOD Version",
+Mandatory:"Mandatory",
+StartTime:"Start Time",
+endTime:"end Time",
+//cheque search(outward return)
+clearingType:"clearing Type",
+phone:"Phone",
+from:"From",
+GenerateOutwardReturnEntry:"Are You Sure to Generate Outward Return Entry ?",
+enteredBranch:"Entered Branch",
+Success: "Success",
+DataUpdatedSuccessfully: "Data Updated Successfully",
+//fd interest calculator
+normalPremature:"Normal/Premature",
+asonDate:"As on Date",
+maturityDate:"Maturity Date",
+term:"Term",
+interestRs:"Interest Rs.",
+rateDefination:"Rate Defination",
+Customer:"Customer",
+proposedto:"Proposed To"
+
 };
+
