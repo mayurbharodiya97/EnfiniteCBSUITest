@@ -209,6 +209,7 @@ export const relativeDtl_tab_metadata = {
                     placeholder: "AAAAA1111A",
                     type: "text",
                     txtTransform: "uppercase",
+                    isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
                     required: true,
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                     schemaValidation: {
