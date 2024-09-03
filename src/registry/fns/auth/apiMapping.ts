@@ -2374,6 +2374,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
+  GETINSURANCECNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSURANCECNFDATADISP",
+    packageName: "",
+  },
+  GETINSUENTRYDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUENTRYDTL",
+    packageName: "",
+  },
+  GETINSUENTRYSECDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINSUENTRYSECDTL",
+    packageName: "",
+  },
+  DOINSURANCEDML: {
+    url: "/loanServiceAPI/DOINSURANCEDML",
+    packageName: "",
+  },
+  DOINSURANCEENTCONFIRMATION: {
+    url: "/loanServiceAPI/DOINSURANCEENTCONFIRMATION",
+    packageName: "",
+  },
   GETSIHDRCNF    : {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDRCNF",
     packageName: "",
@@ -2476,6 +2496,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETFDPAYMENTINSTRTOTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTINSTRTOTYPEDDW",
+    packageName: "",
+  },
+  GETDAILYIMPDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYIMPDDDW",
+    packageName: "",
+  },
+  DODAILYTRNIMPORT: {
+    url: "/transactionServiceAPI/DODAILYTRNIMPORT",
+    packageName: "",
+  },
+  VALIDATETOSELECTFILE: {
+    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
