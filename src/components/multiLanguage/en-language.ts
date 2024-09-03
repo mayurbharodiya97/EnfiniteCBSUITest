@@ -1621,6 +1621,19 @@ export const en_language_data = {
   DeleteWarning: "Delete Warning",
   CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
   PrintFormConfirmation: "Do you want to print form?",
+  Success: "Success",
+  DataUpdatedSuccessfully: "Data Updated Successfully",
+
+  // GST Outward Entry
+  TranCd: "Tran Cd",
+  taxAmount:"Tax Amount",
+  taxValue: "Taxable Value",
+  Mode:"Mode",
+  Gstin:"GSTIN",
+  ConfirmTransactionRestrictionMessage:"You can not confirm your own transaction.",
+  ConfirmRightsRestrictionMessage:"You have no rights to confirm this transaction.",
+  ConfirmRecord:"Are you sure to confirm this record?",
+  RejectDeleteRecord:"Are you sure to reject/delete this record?",
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",

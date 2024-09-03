@@ -152,6 +152,7 @@ export const DataGrid = ({
       hiddenFlag,
       loading,
       onButtonActionHandel,
+      autoResetPage: false,
     },
     useGlobalFilter,
     useColumnOrder,
@@ -467,8 +468,6 @@ export const DataGrid = ({
                           column={column}
                           key={column.getHeaderProps().key}
                           SelectAllColumn={column.SelectAllColumn}
-                          rows={rowsToDisplay}
-                          updateGridData = {updateGridData}
                         >
                           {column.render("Header")}
                         </HeaderCellWrapper>

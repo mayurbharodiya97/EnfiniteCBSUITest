@@ -48,7 +48,7 @@ export const ProductAccess = forwardRef<any, any>(
       error: newerror,
       refetch: newRefetch,
     }: any = useQuery<any, any>(
-      ["getNewUserProductAccess", userState?.formData?.USER_NAME],
+      ["getNewUserProductAccess", Username],
       () =>
         API.getNewUserProductAccess({
           base_branch_cd: authState?.user?.baseBranchCode,

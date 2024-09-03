@@ -67,6 +67,11 @@ const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
 const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
 const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
 const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
+const GstOutwardEntryGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardGrid"));
+const GstOutwardEntryConfirmationGrid = lazy(()=> import ("./gstOutwardEntry/gstOutwardEntryConfirmation/gstOutwardEntryConfirmationGrid"));
+const PlaySlipDraftPrinting = lazy(()=> import("./payslipDraftPrintingNew/retrieve"));
+const FdPrintDynamicNew = lazy(()=> import("./fdPrintDynamicNew/fdPrintRetrieve/retrieveFdPrint"));
+const CashierEntry = lazy(()=> import("./cashierExchangeEntry/cashierExchangeEntry"));
 const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
 
@@ -250,6 +255,11 @@ export const OperationsMenu = () => (
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="gst-outward-entry/*" element={<GstOutwardEntryGrid screenFlag="gstEntry"/>} />
+    <Route path="gst-outward-confirmation/*" element={<GstOutwardEntryConfirmationGrid screenFlag="gstEntryConfirmation"/>} />
+    <Route path="dd-printing/*" element={<PlaySlipDraftPrinting />} />
+    <Route path="fd-printing/*" element={<FdPrintDynamicNew />} />
+    <Route path="cashier-exchange-entry/*" element={<CashierEntry />} />
     <Route path="account-close-process/*" element={<AccountCloseProcess />} />    
     <Route
       path="account-close-confirmation/*"
