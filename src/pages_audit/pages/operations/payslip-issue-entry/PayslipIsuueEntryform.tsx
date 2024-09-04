@@ -2,9 +2,6 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { AppBar, Chip, CircularProgress, Dialog, Paper, Toolbar, Typography } from '@mui/material';
 import { Theme } from '@mui/system';
 import { makeStyles } from "@mui/styles";
-import { GradientButton } from 'components/styledComponent/button';
-import { extractMetaData, utilFunction } from 'components/utils';
-import FormWrapper, { MetaDataType } from 'components/dyanmicForm';
 import {
   AccdetailsFormMetaData,
   DraftdetailsFormMetaData,
@@ -13,22 +10,30 @@ import {
   regionMasterMetaData,
 } from './paySlipMetadata';
 import { AuthContext } from 'pages_audit/auth';
-import { usePopupContext } from 'components/custom/popupContext';
 import { useMutation, useQuery } from 'react-query';
 import { commonDataRetrive, headerDataRetrive, getRegionDDData2, getSlipTransCd, getSlipNo, validatePayslipData, addRegionData, savePayslipEntry, getJointDetailsList, getVoucherList } from './api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingTextAnimation } from 'components/common/loader';
-import { ClearCacheProvider, queryClient } from 'cache';
-import { SubmitFnType } from 'packages/form';
 import { API } from 'pages_audit/common';
-import { MasterDetailsForm } from 'components/formcomponent';
 import { enqueueSnackbar } from 'notistack';
-import GridWrapper, { ActionTypes, GridMetaDataType } from 'components/dataTable';
 import JointDetails from './JointDetails';
 import { format } from 'date-fns';
-import { ImageViewer } from 'components/fileUpload/preView';
 import {t} from "i18next";
 import { RemarksAPIWrapper } from 'components/custom/Remarks';
+import {
+  ImageViewer,
+  MasterDetailsForm,
+  SubmitFnType,
+  ClearCacheProvider,
+  queryClient,
+  usePopupContext,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+  extractMetaData,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({

@@ -1,5 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import {differenceInYears} from "date-fns";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+import { differenceInYears } from "date-fns";
 import * as API from "../../../../api";
 export const personal_detail_prefix_data = {
     form: {

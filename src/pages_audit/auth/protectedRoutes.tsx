@@ -1,10 +1,9 @@
+import { MessageBoxWrapper, utilFunction } from "@acuteinfo/common-base";
 import { Fragment, cloneElement, useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "./authContext";
 import { useIdleTimer } from "react-idle-timer";
 import { useSnackbar } from "notistack";
-import { utilFunction } from "components/utils";
-import { MessageBoxWrapper } from "components/custom/messageBox";
 export const ProtectedRoutes = ({ children }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -115,14 +114,15 @@ export const ProtectedRoutes = ({ children }) => {
         {newChildren}
         {message?.isOpen ? (
           <MessageBoxWrapper
-            MessageTitle={message?.messageTitle ?? "Information"}
-            Message={message?.message ?? "No Message"}
-            onClickButton={() => {
+            validMessage={message?.messageTitle ?? "Information"}
+            //  Message={message?.message ?? "No Message"}
+            onActionYes={() => {
               closeMessageBox();
             }}
+            onActionNo={() => {}}
             rows={[]}
-            buttonNames={message?.buttonNames ?? ["OK"]}
-            open={true}
+            //buttonNames={message?.buttonNames ?? ["OK"]}
+            isOpen={true}
           />
         ) : null}
       </Fragment>

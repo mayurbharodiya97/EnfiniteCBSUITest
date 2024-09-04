@@ -1,4 +1,4 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -7,7 +7,14 @@ import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 
 const TermLoanTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handleCurrFormctx,
+    handleSavectx,
+    handleStepStatusctx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+  } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -93,14 +100,14 @@ const TermLoanTab = () => {
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -109,7 +116,7 @@ const TermLoanTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
@@ -138,12 +145,16 @@ const TermLoanTab = () => {
         key={"acct-tab-term-loan-form" + initialVal}
         metaData={termLoan_metadata as MetaDataType}
         formStyle={{}}
-        formState={{GPARAM155: AcctMSTState?.gparam155 }}
+        formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

@@ -1,19 +1,22 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getRetrievalPaySlipEntryData = async ({ companyID, branchCode, FROM_DT, TO_DT,GD_DATE:GD_DATE,
-  USER_LEVEL:USER_LEVEL
+export const getRetrievalPaySlipEntryData = async ({
+  companyID,
+  branchCode,
+  FROM_DT,
+  TO_DT,
+  GD_DATE: GD_DATE,
+  USER_LEVEL: USER_LEVEL,
 }) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPTODAYGRID", {
       COMP_CD: companyID,
       BRANCH_CD: branchCode,
       FROM_DT: FROM_DT,
       TO_DT: TO_DT,
-      GD_DATE:GD_DATE,
-      USER_LEVEL:USER_LEVEL
-
+      GD_DATE: GD_DATE,
+      USER_LEVEL: USER_LEVEL,
     });
 
     if (status === "0") {
@@ -37,35 +40,29 @@ export const getRetrievalPaySlipEntryData = async ({ companyID, branchCode, FROM
     } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getRetrievalType = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
       ...reqData[0],
-      CODE: "DD"
+      CODE: "DD",
     });
 
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ DESCRIPTION, TRAN_CD, ...items }) => {
-          return {
-            ...items,
-            value: TRAN_CD,
-            label: DESCRIPTION,
-          };
-
-        }
-      );
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...items }) => {
+        return {
+          ...items,
+          value: TRAN_CD,
+          label: DESCRIPTION,
+        };
+      });
     }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getRetrievalDateWise = async ({
   COMP_CD,
@@ -131,40 +128,30 @@ export const headerDataRetrive = async ({
     await AuthSDK.internalFetcher("GETPAYSLIPACCTDTLDISP", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
-      TRAN_CD: TRAN_CD
+      TRAN_CD: TRAN_CD,
     });
 
   if (status === "0") {
-
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
-export const commonDataRetrive = async ({
-  COMP_CD,
-  BRANCH_CD,
-  TRAN_CD
-}) => {
-
+export const commonDataRetrive = async ({ COMP_CD, BRANCH_CD, TRAN_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPDDDATADISP", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
-      TRAN_CD: TRAN_CD
+      TRAN_CD: TRAN_CD,
     });
 
   if (status === "0") {
-
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getInfavourOfData = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPINFAVOURDDW", {
       COMP_CD: reqData?.[3]?.companyID,
@@ -174,25 +161,20 @@ export const getInfavourOfData = async (...reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ INFAVOUR_OF, MST_DESC, ...items }) => {
-          return {
-            ...items,
-            value: INFAVOUR_OF,
-            label: INFAVOUR_OF,
-          };
-
-        }
-      );
+      responseData = responseData.map(({ INFAVOUR_OF, MST_DESC, ...items }) => {
+        return {
+          ...items,
+          value: INFAVOUR_OF,
+          label: INFAVOUR_OF,
+        };
+      });
     }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getRegionDDData = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPREGIONDDW", {
       ...reqData[0],
@@ -201,47 +183,34 @@ export const getRegionDDData = async (...reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ REGION_CD, REGION_NM, ...items }) => {
-          return {
-            ...items,
-            value: REGION_CD,
-            label: REGION_NM,
-          };
-
-        }
-      );
+      responseData = responseData.map(({ REGION_CD, REGION_NM, ...items }) => {
+        return {
+          ...items,
+          value: REGION_CD,
+          label: REGION_NM,
+        };
+      });
     }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
-export const getSlipNo = async ({
-  ENT_COMP_CD,
-  ENT_BRANCH_CD,
-  TRAN_DT
-}) => {
-
+export const getSlipNo = async ({ ENT_COMP_CD, ENT_BRANCH_CD, TRAN_DT }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPNOHDR", {
       ENT_COMP_CD: ENT_COMP_CD,
       ENT_BRANCH_CD: ENT_BRANCH_CD,
-      TRAN_DT: TRAN_DT
+      TRAN_DT: TRAN_DT,
     });
 
   if (status === "0") {
-
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getCalculateGstComm = async (reqParams) => {
-
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCALCULATEGSTCOMM", {
       COMP_CD: reqParams.COMP_CD,
@@ -251,22 +220,18 @@ export const getCalculateGstComm = async (reqParams) => {
       AMOUNT: reqParams.AMOUNT,
       DEF_TRAN_CD: reqParams.DEF_TRAN_CD,
       SCREEN_REF: "RPT/14",
-      TYPE_CD: reqParams.TYPE_CD
+      TYPE_CD: reqParams.TYPE_CD,
     });
 
   if (status === "0") {
-
     let responseData = data;
-
 
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getCustDocData = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
       COMP_CD: reqData?.[3]?.companyID,
@@ -276,25 +241,20 @@ export const getCustDocData = async (...reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ DESCRIPTION, SR_CD, ...items }) => {
-          return {
-            ...items,
-            value: SR_CD,
-            label: DESCRIPTION,
-          };
-
-        }
-      );
+      responseData = responseData.map(({ DESCRIPTION, SR_CD, ...items }) => {
+        return {
+          ...items,
+          value: SR_CD,
+          label: DESCRIPTION,
+        };
+      });
     }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getBankCodeData = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPBANKCODEDDW", {
       COMP_CD: reqData?.[3]?.companyID,
@@ -311,7 +271,6 @@ export const getBankCodeData = async (...reqData) => {
             value: COL_BANK_CD,
             label: COL_BANK_CODE,
           };
-
         }
       );
     }
@@ -319,15 +278,17 @@ export const getBankCodeData = async (...reqData) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
-export const getSignatureDdnData = async ({COMM_TYPE_CD,COMP_CD,BRANCH_CD}) => {
-
+export const getSignatureDdnData = async ({
+  COMM_TYPE_CD,
+  COMP_CD,
+  BRANCH_CD,
+}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPSIGNATUREDDW", {
       COMP_CD: COMP_CD,
-      BRANCH_CD:BRANCH_CD,
-      COMM_TYPE_CD:COMM_TYPE_CD
+      BRANCH_CD: BRANCH_CD,
+      COMM_TYPE_CD: COMM_TYPE_CD,
     });
 
   if (status === "0") {
@@ -340,7 +301,6 @@ export const getSignatureDdnData = async ({COMM_TYPE_CD,COMP_CD,BRANCH_CD}) => {
             value: SIGNATURE_CD,
             label: DISLAY_SIGNATURE,
           };
-
         }
       );
     }
@@ -348,16 +308,14 @@ export const getSignatureDdnData = async ({COMM_TYPE_CD,COMP_CD,BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getRegionDDData2 = async (requestData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPREGIONDDW", {
       COMP_CD: requestData?.COMP_CD,
       BRANCH_CD: requestData?.BRANCH_CD,
-       COMM_TYPE_CD: "",
-      FLAG: ""
+      COMM_TYPE_CD: "",
+      FLAG: "",
     });
 
   if (status === "0") {
@@ -367,10 +325,8 @@ export const getRegionDDData2 = async (requestData) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const addRegionData = async (reqdata) => {
-
   const { status, message } = await AuthSDK.internalFetcher(
     "DOSAVEREGIONMST",
     reqdata
@@ -381,11 +337,7 @@ export const addRegionData = async (reqdata) => {
     throw DefaultErrorObject(message);
   }
 };
-export const getSlipTransCd = async ({
-  ENT_COMP_CD,
-  ENT_BRANCH_CD,
-}) => {
-
+export const getSlipTransCd = async ({ ENT_COMP_CD, ENT_BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPTRANCD", {
       ENT_COMP_CD: ENT_COMP_CD,
@@ -393,15 +345,12 @@ export const getSlipTransCd = async ({
     });
 
   if (status === "0") {
-
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const validatePayslipData = async (reqdata) => {
-
   const { data, status, message } = await AuthSDK.internalFetcher(
     "VALIDATEPAYSLIPISSUEENTRY",
     reqdata
@@ -413,7 +362,6 @@ export const validatePayslipData = async (reqdata) => {
   }
 };
 export const getregioncommtype = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCOMMTYPEMSTDDDW", {
       ...reqData[0],
@@ -422,25 +370,20 @@ export const getregioncommtype = async (...reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ DISCRIPTION, TYPE_CD, ...items }) => {
-          return {
-            ...items,
-            value: TYPE_CD,
-            label: DISCRIPTION,
-          };
-
-        }
-      );
+      responseData = responseData.map(({ DISCRIPTION, TYPE_CD, ...items }) => {
+        return {
+          ...items,
+          value: TYPE_CD,
+          label: DISCRIPTION,
+        };
+      });
     }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const validatePayslipNo = async (reqdata) => {
-
   const { data, status, message } = await AuthSDK.internalFetcher(
     "VALIDATEPAYSLIPNO",
     reqdata
@@ -480,7 +423,6 @@ export const getJointDetailsList = async (Apireq?) => {
   }
 };
 export const savePayslipEntry = async (reqdata) => {
-
   const { data, status, message } = await AuthSDK.internalFetcher(
     "SAVEPAYSLIPISSUEENTRYDTL",
     reqdata
@@ -492,7 +434,6 @@ export const savePayslipEntry = async (reqdata) => {
   }
 };
 export const geTrxDdw = async (...reqData) => {
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPTRXDDW", {
       ...reqData[0],
@@ -508,7 +449,6 @@ export const geTrxDdw = async (...reqData) => {
             value: DATA_VALUE,
             label: DISPLAY_VALUE,
           };
-
         }
       );
     }
@@ -516,10 +456,8 @@ export const geTrxDdw = async (...reqData) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 export const getVoucherList = async (reqdata) => {
-
   const { data, status, message } = await AuthSDK.internalFetcher(
     "GETVOUCHERMSG",
     reqdata

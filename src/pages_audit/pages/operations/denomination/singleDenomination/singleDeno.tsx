@@ -1,14 +1,11 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { denoTableMetadataTotal } from "../metadataTeller";
 import { AuthContext } from "pages_audit/auth";
 import DailyTransTabs from "../../DailyTransaction/TRNHeaderTabs";
-import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../../DailyTransaction/TRNHeaderTabs/cacheMutate";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 import { DialogActions, Fab, LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { extractMetaData } from "components/utils";
 import { useMutation } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import DualTableCalc from "../dualTableCalc";
@@ -18,6 +15,14 @@ import { format, parse } from "date-fns";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import {
+  usePopupContext,
+  FormWrapper,
+  MetaDataType,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 export const SingleDeno = () => {
   const myFormRef = useRef<any>(null);
   const prevCardReq = useRef<any>(null);

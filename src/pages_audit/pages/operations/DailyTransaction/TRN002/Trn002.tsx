@@ -31,23 +31,26 @@ import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
 import { TRN002_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
-import { queryClient } from "cache";
 import { GradientButton } from "components/styledComponent/button";
 import { DynFormHelperText, PaperComponent } from "../TRN001/components";
 import { Alert } from "components/common/alert";
 import { TRN001Context } from "../TRN001/Trn001Reducer";
 import { usePopupContext } from "components/custom/popupContext";
+import {
+  queryClient,
+  RemarksAPIWrapper,
+  PopupMessageAPIWrapper,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {

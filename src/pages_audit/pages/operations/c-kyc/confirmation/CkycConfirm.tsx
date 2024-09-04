@@ -1,21 +1,24 @@
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "../api";
 import { format } from "date-fns";
 import { ckyc_pending_req_meta_data } from "../metadata";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import FormModal from "../formModal/formModal";
 import { Grid, Typography } from "@mui/material";
 import { t } from "i18next";
 import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 import { useSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { MessageBoxWrapper } from "components/custom/messageBox";
 import UpdateDocument from "../formModal/formDetails/formComponents/update-document/Document";
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  MessageBoxWrapper,
+} from "@acuteinfo/common-base";
 
 
 export const CkycConfirm = () => {

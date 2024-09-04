@@ -15,7 +15,9 @@ import { ActionTypes } from "components/dataTable";
 import AcctModal from "./AcctModal";
 import { usePopupContext } from "components/custom/popupContext";
 import { utilFunction } from "components/utils";
-
+import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
+import Dependencies from "pages_audit/acct_Inquiry/dependencies";
+import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
 const actions: ActionTypes[] = [
     {
       actionName: "view-detail",

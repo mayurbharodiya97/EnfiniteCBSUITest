@@ -6,19 +6,21 @@ import {
   LinearProgress,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { releaseChequeMetadata } from "./releaseChequeMetadata";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import { crudStopPayment } from "../api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
 import { t } from "i18next";
+import {
+  Alert,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   const { state: rows }: any = useLocation();
@@ -111,7 +113,7 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
         )}
         <FormWrapper
           key={"releaseChequeMetadata"}
-          metaData={releaseChequeMetadata}
+          metaData={releaseChequeMetadata as MetaDataType}
           initialValues={rows?.[0]?.data ?? []}
           onSubmitHandler={onSubmitHandler}
           displayMode={rows?.[0]?.data?.ALLOW_RELEASE === "Y" ? "edit" : "view"}

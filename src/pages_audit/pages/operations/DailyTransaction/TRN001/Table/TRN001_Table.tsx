@@ -1,8 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TRN001_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "../api";
 import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
@@ -23,7 +21,6 @@ import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 import { useLocation } from "react-router-dom";
 import { GradientButton } from "components/styledComponent/button";
@@ -31,6 +28,12 @@ import { DynFormHelperText, PaperComponent } from "../components";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 
+import {
+  RemarksAPIWrapper,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   // {
   //   actionName: "view-detail",

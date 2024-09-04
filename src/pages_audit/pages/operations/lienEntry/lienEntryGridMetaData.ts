@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const LienGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -87,8 +87,8 @@ export const LienGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
-      isDisplayTotal: true,
-      totalDecimalCount: 2,
+      // isDisplayTotal: true,
+      // totalDecimalCount: 2,
       width: 120,
       minWidth: 60,
       maxWidth: 150,

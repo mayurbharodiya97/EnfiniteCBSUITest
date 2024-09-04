@@ -6,18 +6,22 @@ import {
   LinearProgress,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { crudLimitEntryData } from "../api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
-import { utilFunction } from "components/utils";
+import {
+  utilFunction,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
@@ -104,7 +108,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
         )}
         <FormWrapper
           key={"limit-force-exp"}
-          metaData={forceExpireMetaData}
+          metaData={forceExpireMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
           loading={forceExpire.isLoading}
