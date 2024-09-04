@@ -97,10 +97,12 @@ export interface UseFieldHookProps {
   runExternalFunction?: boolean;
   __EDIT__?: any;
   txtTransform?: "uppercase" | "lowercase";
-  AlwaysRunPostValidationSetCrossFieldValues?: {
-    alwaysRun?: any;
-    touchAndValidate?: any;
-  };
+  AlwaysRunPostValidationSetCrossFieldValues?:
+    | {
+        alwaysRun?: any;
+        touchAndValidate?: any;
+      }
+    | Function;
   componentType?: string;
   preventSpecialCharInput?: boolean;
 }

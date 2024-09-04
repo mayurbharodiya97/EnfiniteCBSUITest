@@ -65,6 +65,7 @@ export const TradeMasterMetaData = {
       maxLength:100,
       multiline:true,
       isFieldFocused: true,
+      txtTransform: "uppercase",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],

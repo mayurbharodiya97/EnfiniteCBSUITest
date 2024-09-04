@@ -3,9 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
-import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
+// import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
+import { FDContextWrapper } from "./fix-deposit/context/fdContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -15,9 +16,11 @@ const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
+const ATMconfirmation = lazy(() => import("./atm-entry/confirm/confirmation"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
-const FixDepositForm = lazy(() => import("./fixDeposit"));
+// const FixDepositForm = lazy(() => import("./fixDeposit"));
+const FDDetailGrid = lazy(() => import("./fix-deposit"));
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -40,6 +43,9 @@ const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")
 );
+const Payslipissueconfirmation = lazy(
+  () => import("./payslipissueconfirmation/index")
+)
 const Form15GHEntryGrid = lazy(() => import("./form15G-HEntry"));
 const Form15GHConfirmationGrid = lazy(
   () => import("./form15G-HEntry/confirmation")
@@ -48,14 +54,26 @@ const PositivePayEntryGrid = lazy(() => import("./positivePayEntry"));
 const PositivePayConfirmationGrid = lazy(
   () => import("./positivePayEntry/confirmation")
 );
-const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
+const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
 // const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const StandingInstructionGridWrapper = lazy(()=> import ("./standingInstruction"))
+const StandingInstructionConfirmationGridWrapper = lazy(()=> import ("./standingInstruction/confirmation/"))
+const RecurringCalculatorFormWrapper = lazy(()=> import ("./recurringCalculator"))
+const PayslipIsuueEntry = lazy(() => import("./payslip-issue-entry/index"));
+const OutwardChequeSearch = lazy(() => import("./cheQueSearch/index"));
+const HoldTrnsConfirmationMain = lazy(() => import("./holdTransactionConfirmation/index"));
+const DayEndProcess = lazy(() => import("./dayEndProcess/index"));
+const FdInterestCalculator = lazy(() => import("./fdInterestCalculator/index"));
+const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
+const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
 
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
+    <Route path="holdtrn-confirmation/*" element={<HoldTrnsConfirmationMain />} />
+    <Route path="owreturn-chqsearch/*" element={<OutwardChequeSearch />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
@@ -63,6 +81,8 @@ export const OperationsMenu = () => (
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
+    <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
+    <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route
       path="chequebook-confirmation/*"
@@ -160,6 +180,8 @@ export const OperationsMenu = () => (
 
     <Route path="rtgs-entry/*" element={<RtgsEntryFormWrapper />} />
     <Route path="payslip-issue-entry/*" element={<PayslipIsuueEntry />} />
+    <Route path="payslip-issue-confirmation/*" element={<Payslipissueconfirmation />} />
+    <Route path="fdint-calculator/*" element={<FdInterestCalculator />} />
     <Route
       path="rtgs-branch-confirmation/*"
       element={<RtgsBranchHoConfirmationGrid flag="BO" />}
@@ -177,13 +199,25 @@ export const OperationsMenu = () => (
       element={<DailyTransactionImportForm />}
     />
     <Route
+    <Route path="insurance-entry/*" element={<InsuranceEntryForm />} />
+    {/* <Route
       path="fix-deposit/*"
       element={
         <FixDepositProvider>
           <FixDepositForm />
         </FixDepositProvider>
       }
+    /> */}
+
+    <Route
+      path="fix-deposit/*"
+      element={
+        <FDContextWrapper>
+          <FDDetailGrid />
+        </FDContextWrapper>
+      }
     />
+
     <Route
       path="form-15g-h-entry/*"
       element={<Form15GHEntryGrid screenFlag="E" />}
@@ -214,6 +248,24 @@ export const OperationsMenu = () => (
       }
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
+    <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="account-close-process/*" element={<AccountCloseProcess />} />    
+    <Route
+      path="account-close-confirmation/*"
+      element={<AccountCloseConfirm />}
+    />
+      <Route
+      path="standing-instruction-entry/*"
+      element={<StandingInstructionGridWrapper />}
+    />
+          <Route
+      path="standing-instruction-confirmation/*"
+      element={<StandingInstructionConfirmationGridWrapper />}
+    />
+    <Route
+      path="recint-calculator/*"
+      element={<RecurringCalculatorFormWrapper />}
+    />
   </Routes>
 );

@@ -50,7 +50,7 @@ const Master = () => {
           element={<ActionTakenMasterGrid />}
         />
         <Route path="lien-master/*" element={<LienMasterGrid />} />
-        <Route path="a/c-period-master/*" element={<AcPeriodMasterGrid />} />
+        <Route path="account-period-master/*" element={<AcPeriodMasterGrid />} />
         <Route path="mode-master/*" element={<ModeMasterGrid />} />
         <Route
           path="bank-Ifsc-Code-Master/*"
