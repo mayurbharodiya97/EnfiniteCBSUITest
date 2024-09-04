@@ -113,13 +113,18 @@ export const getVerifyDayEndCheksumsData = async ({
 };
 export const getDayEnderrLog = async ({
   COMP_CD,
-  BASE_BRANCH_CD,
-  ARG,
-  CHKSM_TYPE,
+  BRANCH_CD,
+  TRAN_DT,
+  VERSION,
+  SR_CD
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAYENDERRLOG", {
-      COMP_CD: COMP_CD,
+      COMP_CD:COMP_CD,
+      BRANCH_CD:BRANCH_CD,
+      TRAN_DT:TRAN_DT,
+      VERSION:VERSION,
+      SR_CD:SR_CD
     });
 
   if (status === "0") {
