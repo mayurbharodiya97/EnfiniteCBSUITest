@@ -210,7 +210,7 @@ const AtmEntryCustom = ({ parameter }) => {
     endSubmit(true);
     console.log("<<<onsub", data, apiReq);
   };
-
+  console.log("<<<onsubijhihhfhkfhkdjfklfnlsdn");
   return (
     <>
       {validateInsert?.isLoading ? (
