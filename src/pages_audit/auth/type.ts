@@ -24,6 +24,7 @@ export interface AuthStateType {
     employeeID: any;
   };
   hoLogin: string
+  idealTimer :string
 }
 
 export interface BranchSelectData {
