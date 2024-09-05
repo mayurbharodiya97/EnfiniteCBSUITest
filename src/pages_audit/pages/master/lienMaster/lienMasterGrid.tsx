@@ -20,8 +20,6 @@ import { LienMasterFormWrapper } from "./viewDetails/LineMasterViewDetails";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
 import { queryClient } from "@acuteinfo/common-base";
 

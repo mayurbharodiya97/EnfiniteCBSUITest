@@ -148,7 +148,7 @@ export const CategoryMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
-        ReportExportButton={true}
+        enableExport={true}
       />
       <Routes>
         <Route

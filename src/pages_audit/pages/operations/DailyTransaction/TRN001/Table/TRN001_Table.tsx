@@ -23,16 +23,15 @@ import { useContext } from "react";
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
 
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import { DynFormHelperText, PaperComponent } from "../components";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-
 import {
-  RemarksAPIWrapper,
   GridWrapper,
+  GradientButton,
+  Alert,
   ActionTypes,
+  queryClient,
   GridMetaDataType,
+  RemarksAPIWrapper,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   // {
@@ -331,8 +330,8 @@ export const TRN001_Table = ({
           ref={myGridRef}
           actions={actions}
           setAction={setCurrentAction}
-          onlySingleSelectionAllow={true}
-          isNewRowStyle={true}
+          disableMultipleRowSelect={true}
+          variant={"outlined"}
           defaultSelectedRowId={
             trnGridData?.[0]?.TRAN_CD ? trnGridData?.[0]?.TRAN_CD : ""
           }

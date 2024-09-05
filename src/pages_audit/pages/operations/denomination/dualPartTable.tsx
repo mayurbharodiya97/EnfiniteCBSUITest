@@ -603,7 +603,6 @@ import {
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
 import { boolean } from "yup";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import {
   PopupRequestWrapper,
   formatCurrency,

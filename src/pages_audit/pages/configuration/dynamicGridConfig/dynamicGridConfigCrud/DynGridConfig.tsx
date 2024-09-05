@@ -45,7 +45,7 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color1)",
+    background: "var(--primary-bg)",
   },
   title: {
     flex: "1 1 100%",
@@ -489,11 +489,7 @@ const DynamicGridConfig: FC<{
               //   paddingRight: "10px",
               // }}
             >
-              <AppBar
-                position="relative"
-                color="secondary"
-                style={{ marginBottom: "5px" }}
-              >
+              <AppBar position="relative" sx={{ marginBottom: "5px" }}>
                 <Toolbar className={headerClasses.root} variant={"dense"}>
                   <Typography
                     className={headerClasses.title}

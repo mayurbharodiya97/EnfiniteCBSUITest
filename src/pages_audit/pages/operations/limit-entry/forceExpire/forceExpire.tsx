@@ -111,7 +111,6 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           metaData={forceExpireMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
-          loading={forceExpire.isLoading}
           displayMode={
             rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" ? "edit" : "view"
           }

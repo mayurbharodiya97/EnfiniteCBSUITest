@@ -155,7 +155,7 @@ const Parameters = () => {
         sx={{
           fontWeight: "bold",
           color: "rgb(152 59 70 / 61%)",
-          marginLeft: "460px",
+          marginLeft: "900px",
           marginTop: "-36.2px",
         }}
         variant="subtitle1"

@@ -1,5 +1,17 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { getBankCodeData, getRegionDDData2, getCustDocData, getInfavourOfData, getRegionDDData, getRetrievalType, getSignatureDdnData, getregioncommtype, validatePayslipNo, getCalculateGstComm, geTrxDdw } from "./api";
+import {
+  getBankCodeData,
+  getRegionDDData2,
+  getCustDocData,
+  getInfavourOfData,
+  getRegionDDData,
+  getRetrievalType,
+  getSignatureDdnData,
+  getregioncommtype,
+  validatePayslipNo,
+  getCalculateGstComm,
+  geTrxDdw,
+} from "./api";
 import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
 
 export const RetrieveGridMetaData = {
@@ -461,7 +473,7 @@ export const AccdetailsFormMetaData = {
           branchCodeMetadata: {
             name: "BRANCH_CD",
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            isReadOnly: true,
+            // isReadOnly: true,
           },
           accountTypeMetadata: {
             name: "ACCT_TYPE",
@@ -550,9 +562,10 @@ export const AccdetailsFormMetaData = {
                   ACCT_CD:
                     returnVal !== ""
                       ? {
-                          value: currentField?.value
-                            .padStart(6, "0")
-                            ?.padEnd(20, " "),
+                          value: utilFunction.getPadAccountNumber(
+                            currentField?.value,
+                            dependentFieldValues?.ACCT_TYPE?.optionData
+                          ),
                           ignoreUpdate: true,
                           isFieldFocused: false,
                         }
@@ -562,7 +575,7 @@ export const AccdetailsFormMetaData = {
                           ignoreUpdate: true,
                         },
                   ACCT_NM: {
-                    value: postData?.ACCT_NM ?? "",
+                    value: returnVal?.ACCT_NM ?? "",
                   },
                   TYPE_CD: {
                     value: postData?.TYPE_CD ?? "",
@@ -578,6 +591,7 @@ export const AccdetailsFormMetaData = {
                 };
               }
             },
+
             fullWidth: true,
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
@@ -1096,8 +1110,7 @@ export const DraftdetailsFormMetaData = {
       render: {
         componentType: "hidden",
       },
-      name:"FORM_MODE",
-
+      name: "FORM_MODE",
     },
     {
       render: {
@@ -1297,9 +1310,8 @@ export const DraftdetailsFormMetaData = {
             authState,
             dependentFieldsValues
           ) => {
-            if(currentField?.displayValue==="")
-            {
-                 return{}
+            if (currentField?.displayValue === "") {
+              return {};
             }
             if (currentField.readOnly == false) {
               if (formState?.isSubmitting) return {};
@@ -1867,54 +1879,53 @@ export const DraftdetailsFormMetaData = {
           },
         },
         {
-            render: {
-              componentType: "autocomplete",
-            },
-            name: "SIGNATURE1_CD",
-            label: "signature1",
-            placeholder: "signature1",
-            runValidationOnDependentFieldsChange: true,
-            dependentFields: ["DEF_TRAN_CD","FORM_MODE"],
-            disableCaching: true,
-            options: (...arg) => {
-  
-              if (
-                arg?.[3]?.user?.branchCode &&
-                arg?.[3]?.companyID &&
-                arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
-              ) {
-                return getSignatureDdnData({
-                  BRANCH_CD: arg?.[3]?.user?.branchCode,
-                  COMP_CD: arg?.[3]?.companyID,
-                  COMM_TYPE_CD:
-                    arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
-                });
-              }
-              return [];
-            },
-            required: true,
-            schemaValidation: {
-              type: "string",
-              rules: [{ name: "required", params: ["Signature 1 is required"] }],
-            },
-            _optionsKey: "getPayslipSignatureList1",
-            shouldExclude: (val1, dependentFields) => {
-                
-              if (dependentFields?.FORM_MODE?.value !== "view") {
-                return false;
-              }
-              return true;
-            },
+          render: {
+            componentType: "autocomplete",
+          },
+          name: "SIGNATURE1_CD",
+          label: "signature1",
+          placeholder: "signature1",
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["DEF_TRAN_CD", "FORM_MODE"],
+          disableCaching: true,
+          options: (...arg) => {
+            if (
+              arg?.[3]?.user?.branchCode &&
+              arg?.[3]?.companyID &&
+              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
+                ?.TYPE_CD
+            ) {
+              return getSignatureDdnData({
+                BRANCH_CD: arg?.[3]?.user?.branchCode,
+                COMP_CD: arg?.[3]?.companyID,
+                COMM_TYPE_CD:
+                  arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
+                    ?.TYPE_CD,
+              });
+            }
+            return [];
+          },
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Signature 1 is required"] }],
+          },
+          _optionsKey: "getPayslipSignatureList1",
+          shouldExclude: (val1, dependentFields) => {
+            if (dependentFields?.FORM_MODE?.value !== "view") {
+              return false;
+            }
+            return true;
+          },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
-          {
+        {
           render: {
             componentType: "textField",
           },
-          name:"DISP_SIGN1",
+          name: "DISP_SIGN1",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
-             
             if (dependentFields?.FORM_MODE?.value === "view") {
               return false;
             }
@@ -1950,7 +1961,7 @@ export const DraftdetailsFormMetaData = {
           placeholder: "signature2",
           disableCaching: true,
           runValidationOnDependentFieldsChange: true,
-          dependentFields: ["DEF_TRAN_CD","FORM_MODE"],
+          dependentFields: ["DEF_TRAN_CD", "FORM_MODE"],
           options: (...arg) => {
             if (
               arg?.[3]?.user?.branchCode &&
@@ -1974,10 +1985,9 @@ export const DraftdetailsFormMetaData = {
             rules: [{ name: "required", params: ["Signature 2 is required"] }],
           },
           _optionsKey: "getPayslipSignatureList2",
-        
+
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           shouldExclude: (val1, dependentFields) => {
-                
             if (dependentFields?.FORM_MODE?.value !== "view") {
               return false;
             }
@@ -1988,10 +1998,9 @@ export const DraftdetailsFormMetaData = {
           render: {
             componentType: "textField",
           },
-          name:"DISP_SIGN2",
+          name: "DISP_SIGN2",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
-             
             if (dependentFields?.FORM_MODE?.value === "view") {
               return false;
             }
@@ -2024,7 +2033,7 @@ export const DraftdetailsFormMetaData = {
           placeholder: "region",
           label: "region",
           disableCaching: true,
-          dependentFields: ["DEF_TRAN_CD","FORM_MODE"],
+          dependentFields: ["DEF_TRAN_CD", "FORM_MODE"],
           options: (...arg) => {
             if (
               arg?.[3]?.user?.branchCode &&
@@ -2048,7 +2057,6 @@ export const DraftdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           fullWidth: true,
           shouldExclude: (val1, dependentFields) => {
-                
             if (dependentFields?.FORM_MODE?.value !== "view") {
               return false;
             }
@@ -2059,10 +2067,9 @@ export const DraftdetailsFormMetaData = {
           render: {
             componentType: "textField",
           },
-          name:"DISP_REGION",
+          name: "DISP_REGION",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
-             
             if (dependentFields?.FORM_MODE?.value === "view") {
               return false;
             }

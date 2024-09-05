@@ -55,7 +55,7 @@ import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDial
 import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
 import { useMutation } from "react-query";
 import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
-import { Alert } from "components/common/alert";
+import { Alert } from "@acuteinfo/common-base";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -95,11 +95,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
     onError: (error: any) => {},
   });
 
-  // save new account entry  
+  // save new account entry
   const saveAcctMutation: any = useMutation(API.accountSave, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
-  });  
+  });
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
@@ -118,23 +118,23 @@ const AcctModal = ({ onClose, formmode, from }) => {
           const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
           const acctCD = location.state?.[0]?.data.ACCT_CD ?? "";
           let payload: {
-            COMP_CD?: string, 
-            CUSTOMER_ID?:string,
-            BRANCH_CD: string, 
-            REQUEST_CD:string, 
-            ACCT_TYPE: string, 
-            ACCT_CD: string,
-            SCREEN_REF: string,
+            COMP_CD?: string;
+            CUSTOMER_ID?: string;
+            BRANCH_CD: string;
+            REQUEST_CD: string;
+            ACCT_TYPE: string;
+            ACCT_CD: string;
+            SCREEN_REF: string;
           } = {
             BRANCH_CD: authState?.user?.branchCode ?? "",
-            REQUEST_CD: reqCD,  
-            ACCT_TYPE: acctType,  
+            REQUEST_CD: reqCD,
+            ACCT_TYPE: acctType,
             ACCT_CD: acctCD,
             SCREEN_REF: "MST/002",
             COMP_CD: authState?.companyID ?? "",
-          }
-          if(Object.keys(payload)?.length > 1) {
-            mutation.mutate(payload)
+          };
+          if (Object.keys(payload)?.length > 1) {
+            mutation.mutate(payload);
           }
         }
       }
@@ -211,16 +211,21 @@ const AcctModal = ({ onClose, formmode, from }) => {
   ]);
 
   useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
-      const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
-      const totalTab:any = Array.isArray(steps) && steps.length;
+    if (Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
+      const steps = AcctMSTState?.tabNameList.filter((tab) => tab.isVisible);
+      const totalTab: any = Array.isArray(steps) && steps.length;
       // console.log(AcctMSTState?.currentFormctx, "wkeuhjfiowehfiweuifh", AcctMSTState?.currentFormctx.currentFormSubmitted, "---- ", steps, totalTab)
-      if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+      if (totalTab - 1 > AcctMSTState?.colTabValuectx) {
         handleCurrFormctx({
           colTabValuectx: AcctMSTState?.colTabValuectx + 1,
-        })
-        handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
-      } else if(Boolean(AcctMSTState?.isFreshEntryctx && (totalTab - 1) === AcctMSTState?.colTabValuectx)) {
+        });
+        handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
+      } else if (
+        Boolean(
+          AcctMSTState?.isFreshEntryctx &&
+            totalTab - 1 === AcctMSTState?.colTabValuectx
+        )
+      ) {
         const reqPara = {
           IsNewRow: true,
           REQ_CD: AcctMSTState?.req_cd_ctx,
@@ -231,9 +236,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
           ACCT_CD: AcctMSTState?.acctNumberctx,
           COMP_CD: authState?.companyID ?? "",
           formData: AcctMSTState?.formDatactx,
-        }
+        };
         // console.log("oifjwoiejfowiejf", reqPara)
-        saveAcctMutation.mutate(reqPara)
+        saveAcctMutation.mutate(reqPara);
       }
 
       // if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
@@ -262,9 +267,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
       //     handleCurrFormctx({
       //       colTabValuectx: AcctMSTState?.colTabValuectx + 1,
       //     })
-      //     handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
+      //     handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
       //   }
-      // }      
+      // }
     }
   }, [
     AcctMSTState?.currentFormctx.currentFormSubmitted,
@@ -300,7 +305,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
       case "Other Address":
         return <OtherAddTab />;
       case "Documents":
-        return <Document />
+        return <Document />;
       case "Advance Configuration":
         return <AdvConfigTab />;
       case "Joint Holder":
@@ -338,10 +343,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
               mx: "10px",
               height: "30px",
               minWidth: "30px !important",
-              display:
-                AcctMSTState?.isFreshEntryctx
-                  ? "none"
-                  : "flex",
+              display: AcctMSTState?.isFreshEntryctx ? "none" : "flex",
               alignItems: "center",
               justifyContent: "center",
               borderRadius: "5px",
@@ -411,10 +413,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           item
           xs="auto"
           sx={{
-            display:
-              AcctMSTState?.isFreshEntryctx
-                ? "none"
-                : "flex",
+            display: AcctMSTState?.isFreshEntryctx ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
             position: "sticky",
@@ -486,17 +485,24 @@ const AcctModal = ({ onClose, formmode, from }) => {
           {mutation.isError ? (
             <Alert
               severity={mutation.error?.severity ?? "error"}
-              errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+              errorMsg={
+                mutation.error?.error_msg ?? "Something went to wrong.."
+              }
               errorDetail={mutation.error?.error_detail}
               color="error"
             />
-          ) : saveAcctMutation.isError && (
-            <Alert
-              severity={saveAcctMutation.error?.severity ?? "error"}
-              errorMsg={saveAcctMutation.error?.error_msg ?? "Something went to wrong.."}
-              errorDetail={saveAcctMutation.error?.error_detail}
-              color="error"
-            />
+          ) : (
+            saveAcctMutation.isError && (
+              <Alert
+                severity={saveAcctMutation.error?.severity ?? "error"}
+                errorMsg={
+                  saveAcctMutation.error?.error_msg ??
+                  "Something went to wrong.."
+                }
+                errorDetail={saveAcctMutation.error?.error_detail}
+                color="error"
+              />
+            )
           )}
           {steps &&
             steps.length > 0 &&

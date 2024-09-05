@@ -17,9 +17,9 @@ import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
 import {
+  MasterDetailsMetaData,
   LoaderPaperComponent,
   Alert,
   MasterDetailsForm,
@@ -238,7 +238,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                 ...newInitialData,
                 DETAILS_DATA: viewDocuments?.data,
               }}
-              subHeaderLable={`\u00A0\u00A0 
+              subHeaderLabel={`\u00A0\u00A0 
           ${(
             rows?.[0]?.data?.COMP_CD +
             rows?.[0]?.data?.BRANCH_CD +

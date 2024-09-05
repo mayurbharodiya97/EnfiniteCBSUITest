@@ -13,10 +13,7 @@ import { BankIfscCdMasterFormWrapper } from "./viewDetails/bankIfscCodeMasterVie
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import {t} from "i18next";
+import { t } from "i18next";
 import ImportData from "./fileupload/importData";
 import {
   usePopupContext,

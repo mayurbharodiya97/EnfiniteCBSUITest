@@ -21,61 +21,68 @@ export const saveuserdata = async ({
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "USERACCESSDATADML",
     {
+      IsNewRow: true,
       USER_DTL: onboard,
-      APPLICATION_ACCESS_DTL: applicationdata,
-      BRANCH_TYPE_ACCESS_DTL: branchdata,
-      ACCT_TYPE_ACCESS_DTL: productdata,
+      APPLICATION_ACCESS_DTL: { DETAILS_DATA: applicationdata },
+      BRANCH_TYPE_ACCESS_DTL: { DETAILS_DATA: branchdata },
+      ACCT_TYPE_ACCESS_DTL: { DETAILS_DATA: productdata },
       USER_SHIFT_DTL: loginshiftdata,
-      BIOMETRIC_DATA_DTL: biometricdata,
+      BIOMETRIC_DATA_DTL: { DETAILS_DATA: biometricdata },
     }
-  };
-  export const saveuserdata = async ({ onboard, applicationdata, branchdata, productdata, loginshiftdata ,biometricdata}) => {
-    const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "USERACCESSDATADML",
-      {
-        IsNewRow:true,
-        USER_DTL: onboard,
-        APPLICATION_ACCESS_DTL: {"DETAILS_DATA":applicationdata},
-        BRANCH_TYPE_ACCESS_DTL: {"DETAILS_DATA":branchdata},
-        ACCT_TYPE_ACCESS_DTL: {"DETAILS_DATA":productdata},
-        USER_SHIFT_DTL: loginshiftdata,
-        BIOMETRIC_DATA_DTL: {"DETAILS_DATA":biometricdata},
-      }
-    );
-    if (status === "0") {
-      return message;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-  export const UpdateDMLData = async ({ onboard, applicationdata, branchdata, productdata, loginshiftdata ,biometricdata }) => {
-    const grids = [onboard,applicationdata, branchdata, productdata, loginshiftdata ,biometricdata];
-  const requestData = {
-  };
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const UpdateDMLData = async ({
+  onboard,
+  applicationdata,
+  branchdata,
+  productdata,
+  loginshiftdata,
+  biometricdata,
+}) => {
+  const grids = [
+    onboard,
+    applicationdata,
+    branchdata,
+    productdata,
+    loginshiftdata,
+    biometricdata,
+  ];
+  const requestData = {};
 
   grids.forEach((grid, index) => {
-    const gridKey = ['USER_DTL','APPLICATION_ACCESS_DTL', 'BRANCH_TYPE_ACCESS_DTL', 'ACCT_TYPE_ACCESS_DTL' , 'USER_SHIFT_DTL', 'BIOMETRIC_DATA_DTL'][index];
-    const gridConditions = ['isNewRow', 'isDeleteRow', 'isUpdatedRow', '_UPDATEDCOLUMNS'];
-  
-    if (gridConditions.some(condition => grid?.[condition]?.length > 0)) {
-      if (gridKey === 'USER_DTL') {
+    const gridKey = [
+      "USER_DTL",
+      "APPLICATION_ACCESS_DTL",
+      "BRANCH_TYPE_ACCESS_DTL",
+      "ACCT_TYPE_ACCESS_DTL",
+      "USER_SHIFT_DTL",
+      "BIOMETRIC_DATA_DTL",
+    ][index];
+    const gridConditions = [
+      "isNewRow",
+      "isDeleteRow",
+      "isUpdatedRow",
+      "_UPDATEDCOLUMNS",
+    ];
+
+    if (gridConditions.some((condition) => grid?.[condition]?.length > 0)) {
+      if (gridKey === "USER_DTL") {
         requestData[gridKey] = grid;
       } else {
         requestData[gridKey] = { DETAILS_DATA: grid };
       }
     }
-  });  
-    const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "USERACCESSDATADML",
-     {
-      IsNewRow:false,
-      ...requestData
-     }
-    );
-    if (status === "0") {
-      return message;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
+  });
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "USERACCESSDATADML",
+    {
+      IsNewRow: false,
+      ...requestData,
     }
   );
   if (status === "0") {

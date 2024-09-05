@@ -571,7 +571,7 @@ export const DailyTransTabsWithDialog = ({
       //       finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
       //       data={data ?? []}
       //       setData={() => null}
-      //       ReportExportButton={true}
+      //       enableExport={true}
       //       actions={[]}
       //       setAction={setCurrentAction}
       //       loading={isLoading || isFetching}

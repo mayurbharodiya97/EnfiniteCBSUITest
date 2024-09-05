@@ -6,9 +6,6 @@ import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoadingTextAnimation } from "components/common/loader";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
 
 import {
@@ -35,28 +32,26 @@ const TradeMasterForm = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const mutation = useMutation(API.updateTradeMasterData,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar(t("insertSuccessfully"), {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        CloseMessageBox();
-        closeDialog();
-      },
-    }
-  );
+  const mutation = useMutation(API.updateTradeMasterData, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
   const codeArr = gridData?.map((ele: any) => ele?.TRADE_CD);
   const filterNumbers = codeArr?.filter((ele) => !isNaN(ele));
   const codeIncrement =
@@ -142,7 +137,7 @@ const TradeMasterForm = ({
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
-                    }} 
+                    }}
                     disabled={isSubmitting}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null

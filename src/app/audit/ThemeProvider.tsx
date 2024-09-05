@@ -94,41 +94,23 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color4": "#eceff1",
       "--theme-color5":
         "linear-gradient(71.66deg, #597380 -2.97%, #eceff1 111.3%)",
-      "--theme-color6": "rgba(148, 149, 151, 1)",
       "--primary-bg":
         "linear-gradient(71.66deg, #597380 -2.97%, #eceff1 111.3%)",
+      "--theme-color6": "rgba(148, 149, 151, 1)",
     },
   };
-
-  console.log(getCssVariable("--theme-color1"));
 
   const theme = useMemo(
     () =>
       createTheme({
         palette: {
-          //@ts-ignore
           primary: {
             main: "#fff",
           },
-          //@ts-ignore
           secondary: {
-            // main: "#07288e",
             main: themeColor,
           },
         },
-        // components: {
-        //   MuiTextField: {
-        //     styleOverrides: {
-        //       root: {
-        //         "& .MuiOutlinedInput-root.Mui-focused": {
-        //           "& > fieldset": {
-        //             borderColor: "#07288e",
-        //           },
-        //         },
-        //       },
-        //     },
-        //   },
-        // },
         components: {
           MuiTextField: {
             defaultProps: {

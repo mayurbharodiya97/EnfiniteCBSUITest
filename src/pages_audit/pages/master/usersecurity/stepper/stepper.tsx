@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { Fragment, useContext, useRef } from "react";
 import {
   AppBar,
   Box,
@@ -34,18 +28,18 @@ import BranchAccessRights from "./branchAccess";
 import { ProductAccess } from "./productAccess";
 import LoginShift from "./loginShiftAccess";
 import BiometricLogins from "./bioMetricLogin";
-import { enqueueSnackbar } from "notistack";
-import { LoginShiftConfirmation } from "../../userSecurityConfirmation/loginShift";
-import { BiometricLoginConfirmation } from "../../userSecurityConfirmation/boimetricLogin";
 
 import {
   ColorlibConnector,
-  usePopupContext,
-  GradientButton,
   ColorlibStepIconRoot,
+  GradientButton,
+  usePopupContext,
   utilFunction,
+  GridMetaDataType,
 } from "@acuteinfo/common-base";
-
+import { enqueueSnackbar } from "notistack";
+import { LoginShiftConfirmation } from "../../userSecurityConfirmation/loginShift";
+import { BiometricLoginConfirmation } from "../../userSecurityConfirmation/boimetricLogin";
 const CombinedStepper = ({ defaultView }) => {
   let currentPath = useLocation().pathname;
   const navigate = useNavigate();
@@ -104,6 +98,7 @@ const CombinedStepper = ({ defaultView }) => {
     },
     onSuccess: async (data) => {
       CloseMessageBox();
+      //@ts-ignore
       enqueueSnackbar(data, {
         variant: "success",
       });
@@ -559,8 +554,12 @@ const CombinedStepper = ({ defaultView }) => {
         >
           <Typography component="span" variant="h5" color="primary" px={2}>
             {defaultView === "new"
-              ? getDynamicLabel(currentPath, authState?.menulistdata, true)
-              : `${getDynamicLabel(
+              ? utilFunction.getDynamicLabel(
+                  currentPath,
+                  authState?.menulistdata,
+                  true
+                )
+              : `${utilFunction.getDynamicLabel(
                   currentPath,
                   authState?.menulistdata,
                   true

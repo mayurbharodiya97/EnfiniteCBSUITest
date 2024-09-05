@@ -17,10 +17,7 @@ import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
-
 const ModeMasterForm = ({
   isDataChangedRef,
   closeDialog,

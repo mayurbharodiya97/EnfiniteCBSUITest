@@ -9,21 +9,15 @@ import { RecoilRoot } from "recoil";
 import { QueryClientProvider } from "react-query";
 import "registry/fns/registerFnsCbsEnfinity";
 import IndexPage from "pages_audit";
-import { theme } from "./theme";
 import "./index.css";
-import {
-  ThemeProvider,
-  StyledEngineProvider,
-  unstable_createMuiStrictModeTheme,
-} from "@mui/material/styles";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CustomSnackbarContent } from "components/customNotification/customNotistack";
 import { useTheme } from "./ThemeProvider";
 
-const themeObj = unstable_createMuiStrictModeTheme(theme);
-
 export const App = () => {
   const { themeObj } = useTheme();
+  // console.log("themeObj", themeObj);
   return (
     <RecoilRoot>
       <ThemeProvider theme={themeObj}>

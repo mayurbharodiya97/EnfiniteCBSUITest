@@ -7,14 +7,11 @@ import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCom
 import { DialogActions, Fab, LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { GradientButton } from "components/styledComponent/button";
 import DualTableCalc from "../dualTableCalc";
 import * as API from "../api";
 import TellerDenoTableCalc from "../tellerDenoTableCalc";
 import { format, parse } from "date-fns";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { formatCurrency } from "@acuteinfo/common-base";
 import {
   usePopupContext,
   FormWrapper,
@@ -22,6 +19,9 @@ import {
   GridMetaDataType,
   ActionTypes,
   queryClient,
+  utilFunction,
+  getCurrencySymbol,
+  usePropertiesConfigContext,
 } from "@acuteinfo/common-base";
 export const SingleDeno = () => {
   const myFormRef = useRef<any>(null);
@@ -29,7 +29,7 @@ export const SingleDeno = () => {
   const endSubmitRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const customParameter = usePropertiesConfigContext();
   const [cardDetails, setCardDetails] = useState([]);
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [openDenoTable, setOpenDenoTable] = useState(false);

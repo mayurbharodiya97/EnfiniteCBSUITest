@@ -137,7 +137,7 @@ export const InsuTypeMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        ReportExportButton={data?.length > 0 ? true : false}
+        enableExport={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
