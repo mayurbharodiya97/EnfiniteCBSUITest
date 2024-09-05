@@ -1,19 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog, Paper } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
-import { usePopupContext } from "components/custom/popupContext";
 import { StandingInstructionViewMetaData } from "./metaData/metaData";
-import { extractMetaData, utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { populateGridData } from "./metaData/gridMetaData";
-import Draggable from "react-draggable";
+import {
+  MetaDataType,
+  GridWrapper,
+  GradientButton,
+  FormWrapper,
+  GridMetaDataType,
+  extractMetaData,
+  utilFunction,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { t } from "i18next";
 
-export const StandingInstructionEditData = ({ allData, open, onClose, currentData,siRefetch }) => {
+export const StandingInstructionEditData = ({
+  allData,
+  open,
+  onClose,
+  currentData,
+  siRefetch,
+}) => {
   const [formMode, setFormMode] = useState("edit");
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const formRef = useRef<any>(null);
@@ -26,13 +36,13 @@ export const StandingInstructionEditData = ({ allData, open, onClose, currentDat
 
   useEffect(() => {
     if (allData) {
-      setData(allData)
+      setData(allData);
     }
     const flag = currentData?.data?.SI_EXECUTE_FLG;
-    if (flag === 'C' || flag === 'P' || flag === "Y") {
-      setFormMode('view');
+    if (flag === "C" || flag === "P" || flag === "Y") {
+      setFormMode("view");
     } else {
-      setFormMode('edit');
+      setFormMode("edit");
     }
   }, [currentData?.data?.SI_EXECUTE_FLG, allData]);
 
@@ -58,50 +68,46 @@ export const StandingInstructionEditData = ({ allData, open, onClose, currentDat
     },
   });
 
-
-
   const onPopulateDataClick = async () => {
     const formdata = await formRef?.current?.getFieldData();
     setFormData(formdata);
 
-    const updatedData= data?.map((rowData) => {
+    const updatedData = data?.map((rowData) => {
       const updatedRow = { ...rowData };
 
-      if (formdata.hasOwnProperty('SI_CHARGE')) {
+      if (formdata.hasOwnProperty("SI_CHARGE")) {
         updatedRow.SI_CHARGE = formdata.SI_CHARGE.trim();
       }
-      if (formdata.hasOwnProperty('REMARKS')) {
+      if (formdata.hasOwnProperty("REMARKS")) {
         updatedRow.REMARKS = formdata.REMARKS.trim();
       }
-      if (formdata.hasOwnProperty('SI_AMOUNT')) {
+      if (formdata.hasOwnProperty("SI_AMOUNT")) {
         updatedRow.SI_AMOUNT = formdata.SI_AMOUNT.trim();
       }
-      if (formdata.hasOwnProperty('DR_ACCT_CD')) {
-        updatedRow.DR_ACCT_CD = formdata.DR_ACCT_CD
+      if (formdata.hasOwnProperty("DR_ACCT_CD")) {
+        updatedRow.DR_ACCT_CD = formdata.DR_ACCT_CD;
       }
-      if (formdata.hasOwnProperty('DR_ACCT_TYPE')) {
-        updatedRow.DR_ACCT_TYPE = formdata.DR_ACCT_TYPE
+      if (formdata.hasOwnProperty("DR_ACCT_TYPE")) {
+        updatedRow.DR_ACCT_TYPE = formdata.DR_ACCT_TYPE;
       }
-      if (formdata.hasOwnProperty('BRANCH_CD')) {
-        updatedRow.BRANCH_CD = formdata.BRANCH_CD
+      if (formdata.hasOwnProperty("BRANCH_CD")) {
+        updatedRow.BRANCH_CD = formdata.BRANCH_CD;
       }
       return updatedRow;
     });
     setData(updatedData);
-    setgridData(updatedData)
+    setgridData(updatedData);
     // SetButtonClick("N")
   };
   const saveData = async () => {
     const oldData = allData;
     const newData = gridData;
 
-
     let updPara = utilFunction.transformDetailDataForDML(
       oldData ?? [],
       newData ?? [],
       ["SUB_LINE_ID"]
     );
-
 
     isErrorFuncRef.current = {
       data: {
@@ -110,9 +116,9 @@ export const StandingInstructionEditData = ({ allData, open, onClose, currentDat
           ...updPara,
         },
       },
-    }
+    };
     const btnName = await MessageBox({
-      message:t("SaveData"),
+      message: t("SaveData"),
       messageTitle: t("Confirmation"),
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
@@ -120,14 +126,12 @@ export const StandingInstructionEditData = ({ allData, open, onClose, currentDat
 
     if (btnName === "Yes") {
       mutation.mutate({
-        data: { ...isErrorFuncRef.current?.data }
+        data: { ...isErrorFuncRef.current?.data },
       });
-    }
-    else if((btnName === "No"))
-    {
+    } else if (btnName === "No") {
       setgridData([]);
     }
-  }
+  };
   return (
     <>
       <Dialog
@@ -149,37 +153,48 @@ export const StandingInstructionEditData = ({ allData, open, onClose, currentDat
         maxWidth="lg"
       >
         {/* <div id="draggable-dialog-title"> */}
-          <FormWrapper
-            key={"standingInstructionForm" + formMode}
-            metaData={extractMetaData(
+        <FormWrapper
+          key={"standingInstructionForm" + formMode}
+          metaData={
+            extractMetaData(
               StandingInstructionViewMetaData,
               formMode
-            ) as MetaDataType}
-            displayMode={formMode}
-            initialValues={{
-              ...(currentData?.data ?? {}),
-            }}
-            formState={{ MessageBox: MessageBox,docCd: "TRN/394"}}
-            formStyle={{ background: "white", height: "auto" }}
-            onFormButtonClickHandel={onPopulateDataClick}
-            ref={formRef}
-          >
-          </FormWrapper>
-          {formMode !== "view" &&
+            ) as MetaDataType
+          }
+          displayMode={formMode}
+          initialValues={{
+            ...(currentData?.data ?? {}),
+          }}
+          onSubmitHandler={() => {}}
+          formState={{ MessageBox: MessageBox, docCd: "TRN/394" }}
+          formStyle={{ background: "white", height: "auto" }}
+          onFormButtonClickHandel={onPopulateDataClick}
+          ref={formRef}
+        ></FormWrapper>
+        {formMode !== "view" && (
           <GridWrapper
             key={"standingInsructionViewGridMetaData"}
             finalMetaData={populateGridData as GridMetaDataType}
             data={gridData.length !== 0 ? gridData : data}
             setData={setData}
             ref={gridRef}
-          />}
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "end", margin: "0 20px 10px 0" }}>
-          {formMode !== "view" &&<GradientButton onClick={saveData}>Save & Close</GradientButton>}
-            <GradientButton onClick={onClose} >Close</GradientButton>
-          </div>
+          />
+        )}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "end",
+            margin: "0 20px 10px 0",
+          }}
+        >
+          {formMode !== "view" && (
+            <GradientButton onClick={saveData}>Save & Close</GradientButton>
+          )}
+          <GradientButton onClick={onClose}>Close</GradientButton>
+        </div>
         {/* </div> */}
       </Dialog>
     </>
   );
 };
-

@@ -398,6 +398,8 @@ export const en_language_data = {
   },
   // For Profile
   profile: {
+    Searchin: "Search in",
+    screens: "screens",
     UserProfile: "User Profile",
     EnableTOTPAuth: "Enable T-OTP Auth",
     DisableTOTPAuth: "Disabled T-OTP Auth",
@@ -411,8 +413,6 @@ export const en_language_data = {
     AllowedAccess: "Allowed Access",
     ActivityDetail: "Activity Detail",
     Personalizedashboard: "Personalize dashboard",
-    Searchin: "Search in",
-    screens: "screens",
   },
   // For Profile in User Profile
   UserId: "User Id",
@@ -940,6 +940,60 @@ export const en_language_data = {
   Pincode: "Pincode",
   SpecialCharactersNotAllowedRemarks:
     "Special Characters (! &) not Allowed in Remarks",
+  ShowLess: "Show Less",
+  ShowMore: "Show More",
+  ErrorDetails: "Error Details",
+  NoRecordsFoundclicktheaddbuttontoaddone:
+    "No Records Found, click the add button to add one",
+  Recordsuccessfullydeleted: "Record successfully deleted",
+  Pleasewaitdeletingrecord: "Please wait deleting record",
+  AreyouSureyouwanttodeletethisrecord:
+    "Are you Sure you want to delete this record?",
+  Wouldyouliketodeletetheselectedrecord:
+    "Would you like to delete the selected record?",
+  Print: "Print",
+  SelectAll: "Select All",
+  SelectOption: "Select Option",
+  Nodatafound: "No data found..!",
+  Selected: "Selected",
+  Filter: "Filter",
+  Apply: "Apply",
+  Clear: "Clear",
+  AppliedFilters: "Applied Filters",
+  TotalNoofRecords: "Total No. of Records",
+  RetrievalParameters: "Retrieval Parameters",
+  Searched: "Search",
+  Showexportoptions: "Show export options",
+  RetrieveData: "Retrieve Data",
+  RequiredValueMissingForLoginID: "Required Value Missing For LoginID",
+  rowswillbeexported: "row(s) will be exported.",
+  Nodatafoundtoexport: "No data found to export",
+  ReportExportStatus: "Report Export Status",
+  FileUpload: "File Upload",
+  FailedToAddFollowingFilesForUpload:
+    "Failed To Add Following Files For Upload",
+  FileViewer: "File Viewer",
+  File: "File",
+  DropFileshere: "Drop Files here",
+  DragandDropor: "Drag and Drop or",
+  Browse: "Browse",
+  Atleastonerowmustbeindetail: "Atleast one row must be in detail.",
+  All: "All",
+  Futuredatesarenotallowed: "Future dates are not allowed.",
+  FromDateshouldbelessthanorequaltoToDate:
+    "From Date should be less than or equal to To Date.",
+
+  Whichformatdoyouwanttodownload: "Which format do you want to download?",
+  Excel: "Excel",
+  CSV: "CSV",
+  Nodatafoundtoexports: "No data found to export!",
+  Pleaseselectatleastonecolumn: "Please select atleast one column!",
+  ColumnstoExport: "Columns to Export",
+  AreyousureyouwanttodeletetheselectedRecords:
+    "Are you sure you want to delete the selected Records",
+  AllRecordssuccessfullydeleted: "All Records successfully deleted",
+  Disagree: "Disagree",
+  Agree: "Agree",
 
   // cheque book
 
@@ -1073,7 +1127,6 @@ export const en_language_data = {
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
     "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
-  Print: "Print",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1447,19 +1500,14 @@ export const en_language_data = {
   IFSCCodeisRequired: "IFSC Code is Required",
   IfscValidate: "IFSC code should be of eleven digits",
   BankNameisRequired: "Bank Name is Required",
-
-  // inward clearing
-
   DoYouWantAllowTransactionVoucherNo:
     "Do you want to allow this transaction - Voucher No.",
   PleaseSelectAtLeastOneRow: "Please select at least one row.",
-  SelectAll: "Select All",
   DeselectAll: "Deselect All",
   DoYouWantRealizeDraft: "Do you want to realize Draft?",
   DoWantRealizeDraftOrDirectPostInGL:
     "Do you want to realize Draft? Or Want to direct post in GL?\nPress Yes to Realize Draft\nPress No to Direct Post in GL",
   OnlyError: "Only Error",
-  All: "All",
   ConfirmationPending: "Confirmation Pending",
   DraftBankerCheques: "Draft/Banker Cheques",
   ShareDividendWarrant: "Share Dividend Warrant",
@@ -1612,7 +1660,6 @@ export const en_language_data = {
   PrintForm: "Print Form",
   FDNo: "FD No.",
   FinInterest: "Fin Interest",
-  RetrievalParameters: "Retrieval Parameters",
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",

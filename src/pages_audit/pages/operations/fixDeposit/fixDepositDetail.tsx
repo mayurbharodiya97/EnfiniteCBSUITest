@@ -1,10 +1,13 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
-import { usePopupContext } from "components/custom/popupContext";
-
+import {
+  usePopupContext,
+  MetaDataType,
+  FormWrapper,
+  InitialValuesType,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
 export const FixDepositDetailForm = forwardRef<any, any>(
   ({ doFixDepositMutation }, ref) => {
     const { fdState, updateFDDetailsFormData, setActiveStep } =
