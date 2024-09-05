@@ -1644,7 +1644,6 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
 
-
   GETLOANSCHEDULEACCTDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEACCTDATA",
     packageName: "",
@@ -2434,27 +2433,27 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOINSURANCEENTCONFIRMATION",
     packageName: "",
   },
-  GETSIHDRCNF    : {
+  GETSIHDRCNF: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDRCNF",
     packageName: "",
-  }, 
+  },
   DOSICONFIRMATION: {
     url: "/transactionServiceAPI/DOSICONFIRMATION",
     packageName: "",
   },
-  GETRECCALCINTTYPEDDW:{
+  GETRECCALCINTTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTTYPEDDW",
     packageName: "",
   },
-  GETRECCALCINTRATE:{
+  GETRECCALCINTRATE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTRATE",
     packageName: "",
   },
-  GETRECCALCDUEDATE:{
+  GETRECCALCDUEDATE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCDUEDATE",
     packageName: "",
   },
-  GETRECURRINGCALCULATEDAMOUNT:{
+  GETRECURRINGCALCULATEDAMOUNT: {
     url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
     packageName: "",
   },
@@ -2602,6 +2601,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
     packageName: "",
   },
+  VALIDATEATMREGSAVEDATA: {
+    url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -2617,17 +2620,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-    PackageName +
-    (url.startsWith("./")
-      ? url.substring(1)
-      : url.startsWith("/")
+      PackageName +
+      (url.startsWith("./")
+        ? url.substring(1)
+        : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-      ? url
-      : url.startsWith("/")
-        ? "." + url
-        : "./" + url;
+    ? url
+    : url.startsWith("/")
+    ? "." + url
+    : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

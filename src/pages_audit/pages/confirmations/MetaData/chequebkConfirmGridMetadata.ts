@@ -75,7 +75,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "CHEQUE_SERIES",
+      accessor: "CHEQUE_FROM_TO",
       columnName: "ChequeSeries",
       sequence: 6,
       alignment: "center",

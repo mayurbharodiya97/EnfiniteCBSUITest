@@ -446,5 +446,23 @@ export const AtmEntryMetaData = {
       },
       name: "PARA_311",
     },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SB_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CA_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CC_ACCT_CD",
+    },
   ],
 };
