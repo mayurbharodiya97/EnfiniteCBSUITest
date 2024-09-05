@@ -277,10 +277,14 @@ const TellerDenoTableCalc = ({
     }
   }, [state?.columnTotal?.amount, data, haveerror, formData]);
 
-  // const saveDenominationData = useMutation(API.saveDenoData, {
-  //   onSuccess: async (data: any, variables: any) => {},
-  //   onError: (error: any, variables: any) => {},
-  // });
+  const saveDenominationData = useMutation(API.saveDenoData, {
+    onSuccess: async (data: any, variables: any) => {
+      CloseMessageBox();
+    },
+    onError: (error: any, variables: any) => {
+      CloseMessageBox();
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -295,7 +299,7 @@ const TellerDenoTableCalc = ({
           //@ts-ignore
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
-          // loadingBtnName: ["Yes"],
+          loadingBtnName: ["Yes"],
           icon: "INFO",
         });
         if (res === "Yes") {
@@ -308,17 +312,31 @@ const TellerDenoTableCalc = ({
                 ACCT_CD: item?.ACCT_CD ?? "",
                 TYPE_CD: item?.TRX ?? "",
                 COMP_CD: authState?.companyID ?? "",
-                CHEQUE_NO: "",
-                SDC: "1",
-                SCROLL1: "",
-                CHEQUE_DT: "",
-                REMARKS: "1 BY CASH -",
-                AMOUNT: "1000.00",
+                CHEQUE_NO: item?.CHQNO ?? "",
+                SDC: item?.SDC ?? "",
+                SCROLL1: Boolean(item?.SCROLL)
+                  ? item?.SCROLL
+                  : item?.TOKEN ?? "",
+                CHEQUE_DT: item?.CHQ_DT ?? "",
+                REMARKS: item?.REMARK ?? "",
+                AMOUNT: Boolean(item?.RECEIPT)
+                  ? item?.RECEIPT
+                  : item?.PAYMENT ?? "",
               };
               return parameters;
             }),
+            DENO_DTL: DDT?.map((itemData) => {
+              const data = {
+                TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4" ?? "",
+                DENO_QTY: itemData?.INPUT_VALUE ?? "",
+                DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
+                DENO_VAL: itemData?.DENO_VAL ?? "",
+                AMOUNT: itemData?.MULTIPLIED_VALUE?.toString() ?? "",
+              };
+              return data;
+            }),
           };
-          // saveDenominationData?.mutate({});
+          saveDenominationData?.mutate(reqData);
         } else if (res === "No") {
           CloseMessageBox();
         }

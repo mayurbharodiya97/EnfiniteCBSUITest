@@ -1863,7 +1863,7 @@ export const denoTableMetadataTotal: any = {
                           return {
                             ACCT_CD: { value: "" },
                             FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
+                            // TRX: { value: "1" },
                             CHQNO: { value: "" },
                             CHQ_DT: { value: "" },
                             RECEIPT: { value: "" },
@@ -1880,7 +1880,7 @@ export const denoTableMetadataTotal: any = {
                           return {
                             ACCT_CD: { value: "" },
                             FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
+                            // TRX: { value: "1" },
                             CHQNO: { value: "" },
                             CHQ_DT: { value: "" },
                             RECEIPT: { value: "" },
@@ -1948,17 +1948,15 @@ export const denoTableMetadataTotal: any = {
                   return {
                     ACCT_CD: { value: accountCode ?? "" },
                     FLAG_HIDE: { value: "A" },
-                    TRX: { value: "1" },
+                    // TRX: { value: "1" },
                     CHQNO: {
-                      value: apiResponse?.CHEQUE_NO ?? "",
+                      value: "0",
                       ignoreUpdate: true,
                     },
                     CHQ_DT: { value: "" },
                     RECEIPT: { value: "" },
                     PAYMENT: { value: "" },
                   };
-                  // console.log(apiResponse, "apiResponse9090909");
-                  // console.log(accountCode, "accountCode9090909");
                 }
               }
             },
@@ -2064,7 +2062,59 @@ export const denoTableMetadataTotal: any = {
             lg: 1,
             xl: 1,
           },
-          dependentFields: ["TRX"],
+          dependentFields: ["TRX", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            const branchCode =
+              dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
+            const accountType =
+              dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
+            const acctCode =
+              dependentFieldValues?.["singleDenoRow.ACCT_CD"]?.value ?? "";
+            const reqPara = {
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: branchCode,
+              ACCT_TYPE: accountType,
+              ACCT_CD: acctCode,
+              TOKEN_NO: field?.value ?? "",
+              SCREEN_REF: "TRN/042",
+            };
+            if (
+              Boolean(branchCode) &&
+              Boolean(accountType) &&
+              Boolean(acctCode) &&
+              Boolean(field?.value)
+            ) {
+              const getTokenValidate = await API.getTokenValidation(reqPara);
+
+              const getBtnName = async (msgObj) => {
+                let btnNm = await formState?.MessageBox(msgObj);
+                return { btnNm, msgObj };
+              };
+              for (let i = 0; i < getTokenValidate?.MSG?.length; i++) {
+                if (getTokenValidate?.MSG?.length > 0) {
+                  if (getTokenValidate?.MSG[i]?.O_STATUS === "999") {
+                    const { btnNm, msgObj } = await getBtnName({
+                      messageTitle: "ValidationFailed",
+                      message: getTokenValidate?.MSG[i]?.O_MESSAGE,
+                    });
+                    if (btnNm === "Yes") {
+                      return {
+                        CHQNO: { value: "" },
+                        CHQ_DT: { value: "" },
+                        RECEIPT: { value: "" },
+                        PAYMENT: { value: "" },
+                      };
+                    }
+                  }
+                }
+              }
+            }
+          },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "W") {
               return false;
