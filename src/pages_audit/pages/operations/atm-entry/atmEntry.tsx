@@ -170,7 +170,6 @@ const AtmEntryCustom = ({ parameter }) => {
       }
     });
   };
-  console.log("<<<isDataaa11", isData);
 
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     let result = gridRef?.current?.cleanData?.();
@@ -193,7 +192,7 @@ const AtmEntryCustom = ({ parameter }) => {
           })
         : result;
 
-    console.log("<<<isdata", isData, result, gridDtl);
+    console.log("<<<isdata", isData);
     let apiReq = {
       ...data,
       SMS_ALERT: Boolean(data?.SMS_ALERT) ? "Y" : "N",
