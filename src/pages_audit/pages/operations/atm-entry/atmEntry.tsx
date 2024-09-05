@@ -40,9 +40,8 @@ import {
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { SubmitFnType } from "packages/form";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
