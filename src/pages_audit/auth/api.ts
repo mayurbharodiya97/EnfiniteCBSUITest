@@ -271,8 +271,9 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
+    idealTimer :data?.IDLE_TIMER,
     hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
-    access: {},
+    access: {},  
   };
 };
 

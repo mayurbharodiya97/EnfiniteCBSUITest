@@ -16,10 +16,12 @@ export const ProtectedRoutes = ({ children }) => {
     message,
     closeMessageBox,
   } = useContext(AuthContext);
+  
   const isTimeoutData = useMemo(() => {
     let timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
     if (isNaN(timeout) || timeout <= 0) {
-      timeout = 300000;
+      timeout = Number(authState?.idealTimer);
+      // timeout = 300000;
     } else {
       timeout = timeout * 1000;
     }

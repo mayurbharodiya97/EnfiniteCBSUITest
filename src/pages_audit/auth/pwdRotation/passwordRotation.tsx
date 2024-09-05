@@ -121,11 +121,13 @@ export const PasswordRotation = ({
             accessToken,
             tokenType
           );
+          setPasswordReset((values) => ({ ...values, isLoading: true }));
           if (response.status === "0") {
             enqueueSnackbar("Password successfully changed.", {
               variant: "success",
             });
             handleClose("0");
+            setPasswordReset((values) => ({ ...values, isLoading: false }));
           } else {
             setPasswordReset((values) => ({
               ...values,
