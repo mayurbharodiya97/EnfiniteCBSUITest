@@ -21,6 +21,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [

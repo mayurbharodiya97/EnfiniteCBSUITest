@@ -291,7 +291,7 @@ const RtgsBranchHoConfirmationForm: FC<{
       },
       onSuccess: (data) => {
         // isDataChangedRef.current = true;
-        enqueueSnackbar(typeof (t("RecordSuccessfullyDeleted")), {
+        enqueueSnackbar((t("RecordSuccessfullyDeleted")), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -626,25 +626,23 @@ const RtgsBranchHoConfirmationForm: FC<{
                               message: t("CannotDeleteBackDatedEntry"),
                               buttonNames: ["Ok"],
                             });
-                          } else {
-                            if (flag === "BO") {
-                              SetDeleteRemark(true);
-                            } else {
-                              const buttonName = await MessageBox({
-                                messageTitle: t("Confirmation"),
-                                message: t("DoYouWantToRejectThisTransaction"),
-                                buttonNames: ["No", "Yes"],
-                                defFocusBtnName: "Yes",
-                                loadingBtnName: ["Yes"],
+                          } else if (flag === "BO") {
+                            SetDeleteRemark(true);
+                          } else if (flag === "HO") {
+                            const buttonName = await MessageBox({
+                              messageTitle: t("Confirmation"),
+                              message: t("DoYouWantToRejectThisTransaction"),
+                              buttonNames: ["No", "Yes"],
+                              defFocusBtnName: "Yes",
+                              loadingBtnName: ["Yes"],
+                            });
+                            if (buttonName === "Yes") {
+                              deleteHoMutation.mutate({
+                                _isDeleteRow: true,
+                                ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                                ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                                TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
                               });
-                              if (buttonName === "Yes") {
-                                deleteHoMutation.mutate({
-                                  _isDeleteRow: true,
-                                  ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                                  ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                                  TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                                });
-                              }
                             }
                           }
                         }}
@@ -795,63 +793,6 @@ const RtgsBranchHoConfirmationForm: FC<{
                         height: "65%",
                       }}
                     />
-                    {isDeleteRemark && (
-                      <RemarksAPIWrapper
-                        TitleText={
-                          t("EnterRemovalRemarksForRTGSBRANCHCONFIRMATION")
-                        }
-                        onActionNo={() => SetDeleteRemark(false)}
-                        onActionYes={async (val, rows) => {
-                          const buttonName = await MessageBox({
-                            messageTitle: t("Confirmation"),
-                            message: t("DoYouWantDeleteRow"),
-                            buttonNames: ["No", "Yes"],
-                            defFocusBtnName: "Yes",
-                            loadingBtnName: ["Yes"],
-                          });
-                          if (buttonName === "Yes") {
-                            deleteBrMutation.mutate({
-                              COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
-                              ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                              ENTERED_BRANCH_CD:
-                                result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                              TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                              ENTERED_BY: result[0]?.data?.hdrData?.ENTERED_BY,
-                              BRANCH_CD:
-                                result[0]?.data?.hdrData?.BRANCH_CD,
-                              ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
-                              ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
-                              AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
-                              TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
-                              SLIP_NO: result[0]?.data?.hdrData?.SLIP_NO,
-                              HO_CONFIRMED: result[0]?.data?.hdrData?.HO_CONFIRMED,
-                              BR_CONFIRMED: result[0]?.data?.hdrData?.BR_CONFIRMED,
-                              USER_DEF_REMARKS: val
-                                ? val
-                                : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
-
-                              ACTIVITY_TYPE: "RTGS/NEFT Outward Confirmation",
-                              DETAILS_DATA: {
-                                isNewRow: [],
-                                isDeleteRow: [
-                                  ...result?.[1]?.data
-                                ],
-                                isUpdatedRow: [],
-                              },
-                              _isDeleteRow: true,
-                            });
-                          }
-                        }}
-                        isEntertoSubmit={true}
-                        AcceptbuttonLabelText="Ok"
-                        CanceltbuttonLabelText="Cancel"
-                        open={isDeleteRemark}
-                        defaultValue={"WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)"
-                        }
-                        rows={undefined}
-                      />
-                    )}
-
                     <>
                       {isPhotoSign ? (
                         <>
@@ -988,6 +929,62 @@ const RtgsBranchHoConfirmationForm: FC<{
               </DialogContent>
             </div>
           </Dialog>
+          {isDeleteRemark && (
+            <RemarksAPIWrapper
+              TitleText={
+                t("EnterRemovalRemarksForRTGSBRANCHCONFIRMATION")
+              }
+              onActionNo={() => SetDeleteRemark(false)}
+              onActionYes={async (val, rows) => {
+                const buttonName = await MessageBox({
+                  messageTitle: t("Confirmation"),
+                  message: t("DoYouWantDeleteRow"),
+                  buttonNames: ["No", "Yes"],
+                  defFocusBtnName: "Yes",
+                  loadingBtnName: ["Yes"],
+                });
+                if (buttonName === "Yes") {
+                  deleteBrMutation.mutate({
+                    COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
+                    ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                    ENTERED_BRANCH_CD:
+                      result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                    TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                    ENTERED_BY: result[0]?.data?.hdrData?.ENTERED_BY,
+                    BRANCH_CD:
+                      result[0]?.data?.hdrData?.BRANCH_CD,
+                    ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
+                    ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
+                    AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
+                    TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
+                    SLIP_NO: result[0]?.data?.hdrData?.SLIP_NO,
+                    HO_CONFIRMED: result[0]?.data?.hdrData?.HO_CONFIRMED,
+                    BR_CONFIRMED: result[0]?.data?.hdrData?.BR_CONFIRMED,
+                    USER_DEF_REMARKS: val
+                      ? val
+                      : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
+
+                    ACTIVITY_TYPE: "RTGS/NEFT Outward Confirmation",
+                    DETAILS_DATA: {
+                      isNewRow: [],
+                      isDeleteRow: [
+                        ...result?.[1]?.data
+                      ],
+                      isUpdatedRow: [],
+                    },
+                    _isDeleteRow: true,
+                  });
+                }
+              }}
+              isEntertoSubmit={true}
+              AcceptbuttonLabelText="Ok"
+              CanceltbuttonLabelText="Cancel"
+              open={isDeleteRemark}
+              defaultValue={"WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)"
+              }
+              rows={undefined}
+            />
+          )}
 
         </>
         {/* )} */}

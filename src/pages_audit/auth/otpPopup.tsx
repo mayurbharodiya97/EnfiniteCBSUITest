@@ -131,12 +131,14 @@ export const OTPModel = ({
       </span>
     );
   };
-
+ 
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
+    }else if (Boolean(OTPError)){
+      setOTP("");
     }
-  }, [loginState.otpmodelClose]);
+  }, [loginState.otpmodelClose,OTPError]);
   return (
     <Fragment>
       <Container maxWidth="sm">

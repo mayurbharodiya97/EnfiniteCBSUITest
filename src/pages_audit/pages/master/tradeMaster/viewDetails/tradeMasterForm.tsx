@@ -19,7 +19,7 @@ const TradeMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
@@ -137,7 +137,7 @@ const TradeMasterForm = ({
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
-                    }} da
+                    }} 
                     disabled={isSubmitting}
                     endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                     color={"primary"}

@@ -84,6 +84,7 @@
     "react-scripts": "^5.0.1",
     "react-table": "^7.8.0",
     "react-to-print": "^2.14.11",
+    "react-webcam": "^7.2.0",
     "react-window": "^1.8.8",
     "reactstrap": "^9.1.5",
     "recoil": "^0.7.6",

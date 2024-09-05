@@ -1,4 +1,5 @@
 
+import { textTransform } from '@mui/system';
 import * as API from '../api';
 export const AreaMasterMetaData = {
   form: {
@@ -64,10 +65,11 @@ export const AreaMasterMetaData = {
       required: true, 
       placeholder: "Name",
       maxLength:100,
+      txtTransform: "uppercase",
       preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["DescriptionisRequired"] }],
+        rules: [{ name: "required", params: ["AreaNameisRequired"] }],
       },
       GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6 },
     },
@@ -76,6 +78,17 @@ export const AreaMasterMetaData = {
       name: "PIN_CODE",
       label: "PinCode",
       placeholder: "PinCode",
+      maxLength: 6,
+      FormatProps: {
+        allowNegative: false,
+        decimalScale: 0,
+        isAllowed: (values) => {
+          if (values?.value?.length > 6  ) {
+            return false;
+          }
+          return true;
+        },
+      },
       require:false,
       preventSpecialCharInput: true,
       GridProps: {  xs: 12, sm: 3, md: 3, lg: 3, xl:3 },
