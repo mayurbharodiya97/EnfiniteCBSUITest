@@ -609,15 +609,14 @@ export const InsuranceEntryFormMetaData = {
         },
         _optionsKey: "getSecurityData",
         validation: (value, data, prev) => {
-          // console.log(value,prev,data)
           if (!Boolean(value)) {
             return "PleaseEnterSecurity";
           }
-          if (Array.isArray(prev)) {
+          else if (Array.isArray(prev)) {
             let lb_error = false;
             let ls_msg = "";
             prev.forEach((item, index) => {
-              if (value.trim() === item?.SECURITY_CD) {
+              if (value.trim() === item?.SECURITY_CD.trim()) {
                 lb_error = true;
                 ls_msg =
                   "SecurityAlreadyEnteredLine " + (index + 1);

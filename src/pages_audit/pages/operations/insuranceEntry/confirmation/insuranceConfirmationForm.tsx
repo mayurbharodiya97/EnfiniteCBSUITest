@@ -196,6 +196,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
               deleteInsuranceMutation.mutate({
                 _isNewRow: false,
                 _isDeleteRow: true,
+                _isAllowRenewRow: false,
                 ...rows?.[0]?.data,
                 USER_DEF_REMARKS: val
                   ? val
