@@ -36,15 +36,7 @@ export const getLoanScheduleHeaderData = async ({
       ENT_BRANCH_CD: ENT_BRANCH_CD,
     });
   if (status === "0") {
-    const dataStatus = data;
-    dataStatus.map((item) => {
-      if (item?.ACTIVE.trim() === "I") {
-        item._rowColor = "rgb(164,164,164)";
-      } else if (item?.RESCHEDULED.trim() === "Y") {
-        item._rowColor = "rgb(152,251,152)";
-      }
-    });
-    return dataStatus;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -278,6 +270,8 @@ export const getNoOfInstallment = async ({
     });
   if (status === "0") {
     return data;
+  } else if (status === "999") {
+    return { status: status, message: message };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

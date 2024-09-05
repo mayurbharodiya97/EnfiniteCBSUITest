@@ -22,7 +22,6 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [flag, setFlag] = useState(false);
 
   const {
     data: detailsData,
@@ -221,10 +220,6 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
     });
   };
 
-  const handleInterestAmountFlag = (intAmtFlag) => {
-    setFlag(intAmtFlag);
-  };
-
   const dtlData = detailsData?.[0];
   return (
     <>
@@ -255,9 +250,8 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
             }}
             formState={{
               rows: rows,
-              handleInterestAmountFlag: handleInterestAmountFlag,
               dtlData: dtlData,
-              flag: flag,
+              flag: false,
             }}
           >
             {({ isSubmitting, handleSubmit }) => (

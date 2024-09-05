@@ -293,6 +293,7 @@ export const LoanScheduleGrid = () => {
         loading={loanScheduleHeaderData?.isLoading}
         actions={actions}
         setAction={setCurrentAction}
+        hideActionBar={true}
         onlySingleSelectionAllow={formMode === "edit" ? true : false}
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""

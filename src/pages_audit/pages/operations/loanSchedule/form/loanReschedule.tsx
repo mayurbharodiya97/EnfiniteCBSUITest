@@ -42,12 +42,12 @@ export const LoanRescheduleForm = ({
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [flag, setFlag] = useState(false);
   const [detailsGridData, setDetailsGridData] = useState<any>([]);
   const [gridData, setGridData] = useState<any>([]);
   const [fetchData, setFetchData] = useState<any>(false);
   const gridRef = useRef<any>(null);
   const [shouldFetchDetails, setShouldFetchDetails] = useState(false);
+
   const {
     data: headerData,
     isLoading,
@@ -85,7 +85,6 @@ export const LoanRescheduleForm = ({
     isError: gridIsError,
     error: gridError,
     isFetching: gridIsFetching,
-    data: gridHeaderData,
   } = useQuery<any, any>(
     ["getLoanRescheduleGridData", authState?.user?.branchCode],
     () =>
@@ -386,10 +385,6 @@ export const LoanRescheduleForm = ({
     max: "15vh",
   };
 
-  const handleInterestRateFlag = (intRateFlag) => {
-    setFlag(intRateFlag);
-  };
-
   const handleDeleteData = async () => {
     if (
       Array.isArray(gridData) &&
@@ -482,8 +477,17 @@ export const LoanRescheduleForm = ({
             formState={{
               headerData: headerData,
               MessageBox: MessageBox,
-              handleInterestRateFlag: handleInterestRateFlag,
-              flag: flag,
+              flag: false,
+              disableCheckBox: deleteMutation.isLoading,
+              disableButton:
+                proceedDataMutation.isLoading ||
+                detailsLoading ||
+                gridIsFetching ||
+                detaiIsFetching ||
+                gridlsLoading ||
+                deleteMutation.isLoading ||
+                gridData.length > 0 ||
+                detailsGridData.length > 0,
             }}
             ref={formRef}
             setDataOnFieldChange={(action, payload) => {
@@ -498,12 +502,30 @@ export const LoanRescheduleForm = ({
                   onClick={(event) => {
                     handleSubmit(event, "Save");
                   }}
-                  disabled={isSubmitting}
+                  disabled={
+                    proceedDataMutation.isLoading ||
+                    detailsLoading ||
+                    gridlsLoading ||
+                    deleteMutation.isLoading ||
+                    gridIsFetching ||
+                    detaiIsFetching
+                  }
                   color={"primary"}
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton onClick={handleDeleteData} color={"primary"}>
+                <GradientButton
+                  onClick={handleDeleteData}
+                  color={"primary"}
+                  disabled={
+                    proceedDataMutation.isLoading ||
+                    detailsLoading ||
+                    gridlsLoading ||
+                    deleteMutation.isLoading ||
+                    gridIsFetching ||
+                    detaiIsFetching
+                  }
+                >
                   {t("Cancel")}
                 </GradientButton>
               </>
@@ -518,7 +540,8 @@ export const LoanRescheduleForm = ({
             />
           )}
           <GridWrapper
-            key={`loanRescheduleGridData` + gridData}
+            // key={`loanRescheduleGridData` + gridData}
+            key={`loanRescheduleGridData`}
             finalMetaData={LoanScheduleGridMetaData as GridMetaDataType}
             data={gridData ?? []}
             setData={setGridData}
@@ -533,7 +556,8 @@ export const LoanRescheduleForm = ({
             />
           )}
           <GridWrapper
-            key={`loanRescheduleDetailsData` + detailsGridData}
+            // key={`loanRescheduleDetailsData` + detailsGridData}
+            key={`loanRescheduleDetailsData`}
             finalMetaData={LoanRescheduleGridDetails as GridMetaDataType}
             data={detailsGridData ?? []}
             setData={setDetailsGridData}

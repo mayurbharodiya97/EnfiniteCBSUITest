@@ -54,8 +54,8 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "right",
       componentType: "default",
-      width: 200,
-      minWidth: 170,
+      width: 150,
+      minWidth: 120,
       maxWidth: 250,
       isDisplayTotal: true,
       totalDecimalCount: 2,
@@ -107,9 +107,9 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 250,
-      minWidth: 200,
-      maxWidth: 300,
+      width: 300,
+      minWidth: 220,
+      maxWidth: 500,
     },
     {
       accessor: "SR_CD",
@@ -143,8 +143,8 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
     // pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "44vh",
-      max: "44vh",
+      min: "50vh",
+      max: "50vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
@@ -187,7 +187,7 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "INT_RATE",
-      columnName: "Interest Rate",
+      columnName: "Interest Rate(%)",
       sequence: 4,
       alignment: "right",
       componentType: "editableNumberFormat",
@@ -210,12 +210,12 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
           }
           return true;
         },
-        // allowNegative: false,
-        // allowLeadingZeros: true,
         decimalScale: 2,
+        fixedDecimalScale: true,
       },
       validation: (value, data, prev) => {
-        // console.log("value", value, data, prev);
+        console.log("value", value, data, prev);
+        // data.SR_CD
       },
       schemaValidation: {
         type: "string",
