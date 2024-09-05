@@ -20,6 +20,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const buttonRef: any = useRef<any>(null);
+  console.log("<<<rows", rows);
 
   // API calling function for validate data before confirm or reject
   const chequeBkValidateCfm: any = useMutation(
@@ -68,18 +69,6 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       queryClient.removeQueries(["chequeBookCfm"]);
     };
   }, []);
-
-  useEffect(() => {
-    if (rows?.[0]?.data) {
-      confirmFormMetaData.form.label = `${t("ConfirmationDetail")} \u00A0\u00A0 
-      ${(
-        rows?.[0]?.data?.COMP_CD +
-        rows?.[0]?.data?.BRANCH_CD +
-        rows?.[0]?.data?.ACCT_TYPE +
-        rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")}   \u00A0\u00A0   ${rows?.[0]?.data?.ACCT_NM}   `;
-    }
-  }, [rows?.[0]?.data]);
 
   const handelChange = async (isConfirm) => {
     chequeBkValidateCfm.mutate(
@@ -155,7 +144,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "950px",
+          maxWidth: "1300px",
         },
       }}
     >
@@ -191,7 +180,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 543px)",
+            height: "calc(100vh - 490px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

@@ -43,7 +43,6 @@ export const getConfirmationGridData = async (apiReqPara) => {
         : "0.00";
       item.FULL_ACCT_NO =
         item.BRANCH_CD + " " + item.ACCT_TYPE + " " + item.ACCT_CD;
-      item.CHEQUE_SERIES = item.CHEQUE_FROM + " - " + item.CHEQUE_TO;
 
       //limit
 

@@ -2332,6 +2332,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATECARDSTATUS",
     packageName: "",
   },
+  VALIDATEATMREGSAVEDATA: {
+    url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
