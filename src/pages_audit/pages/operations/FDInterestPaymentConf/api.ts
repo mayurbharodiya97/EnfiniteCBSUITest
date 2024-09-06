@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const fetchFDPaymentConfAcct = async (reqData) => {
@@ -26,9 +26,12 @@ export const getFDPaymentInstruConfAcctDtl = async (reqData) => {
 };
 export const doFDPaymentInstruEntryConfm = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOFDINTERESTPAYMENTINSTRUCTIONMASTERCONFIRMATION", {
-      ...reqData,
-    });
+    await AuthSDK.internalFetcher(
+      "DOFDINTERESTPAYMENTINSTRUCTIONMASTERCONFIRMATION",
+      {
+        ...reqData,
+      }
+    );
   if (status === "0") {
     return data;
   } else {

@@ -1,5 +1,5 @@
 import { FormHelperText } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
 import Visibility from "@mui/icons-material/Visibility";
@@ -22,10 +22,10 @@ export const OTPModel = ({
   OTPError,
   setOTPError,
   previousStep,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
   resendFlag,
-  marginCondition
+  marginCondition,
 }) => {
   const [OTP, setOTP] = useState("");
   const [showPasswordTime, setShowPasswordTime] = useState(0);
@@ -102,7 +102,7 @@ export const OTPModel = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -206,7 +206,7 @@ export const OTPModel = ({
               {t("otp.Hello")}{" "}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
-                loginState.username.slice(1)
+                  loginState.username.slice(1)
                 : null}
               {loginState?.authType === "OTP" && (
                 <ResendOTP
@@ -285,15 +285,15 @@ export const OTPModel = ({
                   previousStep(false, "");
                 }}
                 className={classes.otpButtons}
-                color={"var(--theme-color3) "}
+                textColor={"var(--theme-color3) "}
                 style={{
                   border: "var(--theme-color3)1px solid",
                   minWidth: "50%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
-                  hover: {
-                    background: "var(--theme-color2) !important",
-                  },
+                  // hover: {
+                  //   background: "var(--theme-color2) !important",
+                  // },
                 }}
                 // customstyle = {{color : "var(--theme-color3) !important"}}
                 starticon={"West"}
@@ -313,7 +313,7 @@ export const OTPModel = ({
                 onClick={ClickEventHandler}
                 ref={inputButtonRef}
                 className={classes.otpButtons}
-                endicon={loginState.loading ? null : "TaskAlt"}
+                endicon={loginState.loading ? undefined : "TaskAlt"}
                 rotateIcon="scale(1.4)"
               >
                 {loginState.loading ? (
@@ -338,7 +338,7 @@ export const OTPModelForm = ({
   OTPError,
   setOTPError,
   resendFlag,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
 }) => {
   const [OTP, setOTP] = useState("");
@@ -354,8 +354,6 @@ export const OTPModelForm = ({
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
-
-
 
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
@@ -404,7 +402,7 @@ export const OTPModelForm = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -471,11 +469,11 @@ export const OTPModelForm = ({
             {t("otp.Hello")}{" "}
             {loginState?.username
               ? loginState.username.charAt(0).toUpperCase() +
-              loginState.username.slice(1)
+                loginState.username.slice(1)
               : null}
             {loginState.otploading ||
-              otpresendCount >= 3 ||
-              loginState?.auth_type === "TOTP" ? null : (
+            otpresendCount >= 3 ||
+            loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
                 onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}
@@ -558,7 +556,7 @@ export const OTPModelForm = ({
               onClick={handleCloseEvent}
               className={classes.otpButtons}
               starticon={"West"}
-              color={"var(--theme-color2) !important"}
+              textColor={"var(--theme-color2) !important"}
               rotateIcon="scale(1.4) rotateX(360deg)"
               style={{
                 border: "var(--theme-color3)1px solid",

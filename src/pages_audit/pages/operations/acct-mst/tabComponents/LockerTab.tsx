@@ -1,4 +1,4 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -7,7 +7,14 @@ import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 
 const LockerTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleStepStatusctx, handleSavectx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handleCurrFormctx,
+    handleStepStatusctx,
+    handleSavectx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+  } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -16,44 +23,53 @@ const LockerTab = () => {
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
+    });
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
+    handleSavectx(e, refs);
+  };
 
   useEffect(() => {
-    let refs = [formRef]
+    let refs = [formRef];
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: AcctMSTState?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
-  }, [])
-  
+    });
+  }, []);
+
   useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
+    if (
+      Boolean(
+        AcctMSTState?.currentFormctx.currentFormRefctx &&
+          AcctMSTState?.currentFormctx.currentFormRefctx.length > 0
+      ) &&
+      Boolean(formStatus && formStatus.length > 0)
+    ) {
+      if (
+        AcctMSTState?.currentFormctx.currentFormRefctx.length ===
+        formStatus.length
+      ) {
+        setIsNextLoading(false);
         let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+        submitted = formStatus.filter((form) => !Boolean(form));
+        if (submitted && Array.isArray(submitted) && submitted.length > 0) {
           submitted = false;
         } else {
           submitted = true;
           handleStepStatusctx({
             status: "completed",
             coltabvalue: AcctMSTState?.colTabValuectx,
-          })
+          });
         }
         handleCurrFormctx({
           currentFormSubmitted: submitted,
           isLoading: false,
-        })
-        setFormStatus([])
+        });
+        setFormStatus([]);
       }
     }
-  }, [formStatus])
+  }, [formStatus]);
 
   const onFormSubmitHandler = (
     data: any,
@@ -64,13 +80,12 @@ const LockerTab = () => {
     hasError
   ) => {
     if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
-
+      let formFields = Object.keys(data); // array, get all form-fields-name
+      formFields = formFields.filter(
+        (field) => !field.includes("_ignoreField")
+      ); // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current);
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
@@ -87,20 +102,22 @@ const LockerTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx) {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+      if (!AcctMSTState?.isFreshEntryctx) {
+        let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
+        let updatedCols = tabModifiedCols.MAIN_DETAIL
+          ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current])
+          : _.uniq([...formFieldsRef.current]);
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -109,24 +126,25 @@ const LockerTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
 
   const initialVal = useMemo(() => {
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
-        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
-    )
+    return AcctMSTState?.isFreshEntryctx
+      ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      ? {
+          ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}),
+          ...(AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}),
+        }
+      : { ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}) };
   }, [
-    AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes, 
-    AcctMSTState?.formDatactx["MAIN_DETAIL"]
-  ])
+    AcctMSTState?.isFreshEntryctx,
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["MAIN_DETAIL"],
+  ]);
 
   return (
     <Grid sx={{ mb: 4 }}>
@@ -138,12 +156,16 @@ const LockerTab = () => {
         key={"acct-tab-locker-form" + initialVal}
         metaData={locker_tab_metadata as MetaDataType}
         formStyle={{}}
-        formState={{GPARAM155: AcctMSTState?.gparam155 }}
+        formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

@@ -1,23 +1,39 @@
-import { ClearCacheProvider } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, useContext, useRef, useState } from "react";
 import { RecurringCalculatotMetaData, RecurringGridMetaData } from "./metaData";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import * as API from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { format } from "date-fns";
-import { PrintButton } from "components/common/printButton";
-import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
 import logo from "assets/images/logo.jpg";
-import { Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Toolbar, Tooltip, Typography } from "@mui/material";
-import { useDialogStyles } from "components/detailPopupGridData";
+import {
+  Dialog,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  ClearCacheProvider,
+  GridWrapper,
+  GradientButton,
+  useDialogStyles,
+  PrintButton,
+  MetaDataType,
+  utilFunction,
+  FormWrapper,
+  usePopupContext,
+  extractMetaData,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles(() => ({
   tableCell: {
     overflow: "hidden",
@@ -45,12 +61,11 @@ const useTypeStyles = makeStyles(() => ({
 }));
 
 const RecurringCalculatorForm = () => {
-
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [apiData, setApiData] = useState<any>(null);
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formMode, setFormMode] = useState("add");
   const [intRate, setIntRate] = useState("");
   const printRef = useRef<HTMLDivElement | null>(null);
@@ -60,9 +75,12 @@ const RecurringCalculatorForm = () => {
   let a = 1;
 
   let currentPath = useLocation().pathname;
-  const label = utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true);
+  const label = utilFunction.getDynamicLabel(
+    currentPath,
+    authState?.menulistdata,
+    true
+  );
   RecurringCalculatotMetaData.form.label = label;
-
 
   const showData = async () => {
     const formdata = await formRef?.current?.getFieldData();
@@ -77,15 +95,15 @@ const RecurringCalculatorForm = () => {
         INST_AMT: formdata?.INST_AMT,
         INT_RATE: formdata?.INT_RATE,
         START_DT: format(new Date(formdata?.START_DT), "dd/MMM/yyyy"),
-        SCREEN_REF: "TRN/502"
+        SCREEN_REF: "TRN/502",
       });
     }
-  }
+  };
   const resetData = () => {
-    let event: any = { preventDefault: () => { } };
+    let event: any = { preventDefault: () => {} };
     formRef?.current?.handleFormReset(event, "Reset");
     setApiData(null);
-  }
+  };
 
   const mutation = useMutation(API.getRecurringCalculateData, {
     onError: (error: any) => {
@@ -110,7 +128,7 @@ const RecurringCalculatorForm = () => {
     let totalBalanceAmt = 0;
     let totalMonthlyInt = 0;
 
-    data.forEach(item => {
+    data.forEach((item) => {
       totalInstAmt += parseFloat(item.INST_AMT) || 0;
       totalBalanceAmt += parseFloat(item.BALANCE_AMT) || 0;
       totalMonthlyInt += parseFloat(item.MONTH_INT) || 0;
@@ -123,22 +141,21 @@ const RecurringCalculatorForm = () => {
     };
   };
 
-  const totals = apiData ? calculateTotals(apiData) : {
-    totalInstAmt: 0,
-    totalBalanceAmt: 0,
-    totalMonthlyInt: 0,
-    totalCumulativeInt: 0,
-  };
+  const totals = apiData
+    ? calculateTotals(apiData)
+    : {
+        totalInstAmt: 0,
+        totalBalanceAmt: 0,
+        totalMonthlyInt: 0,
+        totalCumulativeInt: 0,
+      };
 
   return (
     <Fragment>
       <FormWrapper
         key={"RecurringCalculatotMetaData" + formMode}
         metaData={
-          extractMetaData(
-            RecurringCalculatotMetaData,
-            formMode
-          ) as MetaDataType
+          extractMetaData(RecurringCalculatotMetaData, formMode) as MetaDataType
         }
         formStyle={{
           background: "white",
@@ -152,21 +169,19 @@ const RecurringCalculatorForm = () => {
         }}
         formState={{
           MessageBox: MessageBox,
-          docCd: "TRN/502"
+          docCd: "TRN/502",
         }}
         onSubmitHandler={() => showData()}
-      >
-      </FormWrapper>
+      ></FormWrapper>
       <>
         <GradientButton onClick={showData}>Calculate</GradientButton>
         <GradientButton onClick={resetData}>Reset</GradientButton>
         <PrintButton
           content={() => {
-            setOpen(true)
-            setPrintVisible(true)
+            setOpen(true);
+            setPrintVisible(true);
             return printRef.current;
           }}
-
         />
       </>
       <GridWrapper
@@ -174,7 +189,7 @@ const RecurringCalculatorForm = () => {
         finalMetaData={RecurringGridMetaData as GridMetaDataType}
         loading={mutation.isLoading}
         data={apiData ?? []}
-        ReportExportButton={true}
+        enableExport={true}
         setData={setApiData}
       />
       <Dialog
@@ -227,9 +242,11 @@ const RecurringCalculatorForm = () => {
                   justifyContent: "center",
                 }}
               >
-                <div style={{
-                  width: "30%"
-                }}>
+                <div
+                  style={{
+                    width: "30%",
+                  }}
+                >
                   <img
                     src={logo}
                     alt="Logo"
@@ -238,53 +255,134 @@ const RecurringCalculatorForm = () => {
                     style={{ marginRight: "10px" }}
                   />
                 </div>
-                <div style={{
-                  width: "70%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}>
+                <div
+                  style={{
+                    width: "70%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <h3>{authState.companyName}</h3>
-                  <h5>Branch: {`${authState.user.branchCode} - ${authState.user.branch}`}</h5>
+                  <h5>
+                    Branch:{" "}
+                    {`${authState.user.branchCode} - ${authState.user.branch}`}
+                  </h5>
                   <h5>Print Date: {`${authState.workingDate} ${label}`}</h5>
                 </div>
               </div>
-              <b><div style={{ display: "flex", justifyContent: "space-between", marginRight: "20px" }}>No. of Installment: {apiData?.length}<div>Rate Of Interest (%) : {intRate} </div></div></b>
+              <b>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginRight: "20px",
+                  }}
+                >
+                  No. of Installment: {apiData?.length}
+                  <div>Rate Of Interest (%) : {intRate} </div>
+                </div>
+              </b>
             </div>
             <TableContainer component={Paper}>
               <Table>
                 <TableBody component="div">
-                  <TableRow component="div" style={{ borderBottom: '2px dashed #000' }}>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>SR No.</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>Period</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>Installment Amount</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>Balance Amount</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>Interest Amt.</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`} >Running Int. Amt.</TableCell>
+                  <TableRow
+                    component="div"
+                    style={{ borderBottom: "2px dashed #000" }}
+                  >
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      SR No.
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      Period
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      Installment Amount
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      Balance Amount
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      Interest Amt.
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      Running Int. Amt.
+                    </TableCell>
                   </TableRow>
                   {apiData?.map((item, index) => (
                     <TableRow>
-                      <TableCell className={`${bodyClasses.tableCell}`}>{a++}</TableCell>
-                      <TableCell className={`${bodyClasses.tableCell} `}>{format(new Date(item.INST_DT), "dd/MM/yyyy")}</TableCell>
-                      <TableCell className={`${bodyClasses.tableCell} `}> {item.INST_AMT}</TableCell>
-                      <TableCell className={`${bodyClasses.tableCell}`}>{item.BALANCE_AMT}</TableCell>
-                      <TableCell className={`${bodyClasses.tableCell}`}>{item.MONTH_INT}</TableCell>
-                      <TableCell className={`${bodyClasses.tableCell} `}>{item.CUM_INT}</TableCell>
+                      <TableCell className={`${bodyClasses.tableCell}`}>
+                        {a++}
+                      </TableCell>
+                      <TableCell className={`${bodyClasses.tableCell} `}>
+                        {format(new Date(item.INST_DT), "dd/MM/yyyy")}
+                      </TableCell>
+                      <TableCell className={`${bodyClasses.tableCell} `}>
+                        {" "}
+                        {item.INST_AMT}
+                      </TableCell>
+                      <TableCell className={`${bodyClasses.tableCell}`}>
+                        {item.BALANCE_AMT}
+                      </TableCell>
+                      <TableCell className={`${bodyClasses.tableCell}`}>
+                        {item.MONTH_INT}
+                      </TableCell>
+                      <TableCell className={`${bodyClasses.tableCell} `}>
+                        {item.CUM_INT}
+                      </TableCell>
                     </TableRow>
                   ))}
-                  <TableRow component="div" style={{ borderTop: '2px dashed #000' }}>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`} colSpan={2}>Total Amount = </TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>{totals.totalInstAmt.toFixed(2)}</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>{totals.totalBalanceAmt.toFixed(2)}</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}>{totals.totalMonthlyInt.toFixed(2)}</TableCell>
-                    <TableCell className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}></TableCell>
+                  <TableRow
+                    component="div"
+                    style={{ borderTop: "2px dashed #000" }}
+                  >
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                      colSpan={2}
+                    >
+                      Total Amount ={" "}
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      {totals.totalInstAmt.toFixed(2)}
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      {totals.totalBalanceAmt.toFixed(2)}
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    >
+                      {totals.totalMonthlyInt.toFixed(2)}
+                    </TableCell>
+                    <TableCell
+                      className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
+                    ></TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
-          </div>) : ""}
+          </div>
+        ) : (
+          ""
+        )}
       </Dialog>
     </Fragment>
-  )
+  );
 };
 
 export const RecurringCalculatorFormWrapper = () => {

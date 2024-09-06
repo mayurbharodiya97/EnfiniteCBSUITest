@@ -1,5 +1,4 @@
 import { Grid } from "@mui/material";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import React, {
   useCallback,
   useContext,
@@ -7,15 +6,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
 import * as API from "./api";
-import { CreateDetailsRequestData } from "components/utils";
-import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
-import { queryClient } from "cache";
+import {
+  CreateDetailsRequestData,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { PersonlizationQuickGridMetaData } from "./Metadata/personalizeQuick";
 import { PersonlizationDashboardGridData } from "./Metadata/personalizeDashboard";
 export const PersonalizeDash = () => {

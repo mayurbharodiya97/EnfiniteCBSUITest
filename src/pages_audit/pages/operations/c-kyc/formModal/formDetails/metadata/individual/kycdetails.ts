@@ -1,4 +1,4 @@
-import { greaterThanInclusiveDate, lessThanDate } from "registry/rulesEngine";
+import { greaterThanInclusiveDate, lessThanDate } from "@acuteinfo/common-base";
 import * as API from "../../../../api";
 
 export const kyc_proof_of_identity_meta_data = {
