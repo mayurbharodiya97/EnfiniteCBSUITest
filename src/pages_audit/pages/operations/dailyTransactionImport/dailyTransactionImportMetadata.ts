@@ -6,6 +6,7 @@ import * as API from "./api";
 import { addMonths, format, subDays } from "date-fns";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getDailyTransactionImportData } from "./api";
+import { fi } from "date-fns/locale";
 
 
 export const DailyTransactionImportMetadata = {
@@ -69,7 +70,7 @@ export const DailyTransactionImportMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        // name: "FROM_BRANCH",
+        name: "FROM_BRANCH_CD",
         GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
         runPostValidationHookAlways: true,
         render: {
@@ -79,7 +80,7 @@ export const DailyTransactionImportMetadata = {
       },
 
       accountTypeMetadata: {
-        // name: "FROM_TYPE",
+        name: "FROM_ACCT_TYPE",
         GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         isFieldFocused: true,
         defaultfocus: true,
@@ -110,7 +111,7 @@ export const DailyTransactionImportMetadata = {
         },
       },
       accountCodeMetadata: {
-        // name: "FROM_CD",
+        name: "FROM_ACCT_CD",
         fullWidth: true,
         FormatProps: {
           allowNegative: false,
@@ -122,6 +123,7 @@ export const DailyTransactionImportMetadata = {
           },
         },
         disableCaching: false,
+        dependentFields: ["FROM_ACCT_TYPE", "FROM_BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -130,18 +132,18 @@ export const DailyTransactionImportMetadata = {
         ) => {
           if (
             field.value &&
-            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            dependentFieldsValues?.["BRANCH_CD"]?.value
+            dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value &&
+            dependentFieldsValues?.["FROM_BRANCH_CD"]?.value
           ) {
             if (formState?.isSubmitting) return {};
             let Apireq = {
               COMP_CD: auth?.companyID,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 field?.value,
-                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+                dependentFieldsValues?.["FROM_ACCT_TYPE"]?.optionData
               ),
-              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+              ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
+              BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
             };
             console.log("Apireq", Apireq)
@@ -153,6 +155,7 @@ export const DailyTransactionImportMetadata = {
               return { btnName, obj };
             };
             for (let i = 0; i < postData?.MSG?.length; i++) {
+              formState.setDataOnFieldChange("GRID_DETAIL", []);
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
@@ -160,6 +163,7 @@ export const DailyTransactionImportMetadata = {
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
+                formState.setDataOnFieldChange("GRID_DETAIL", []);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
@@ -184,33 +188,33 @@ export const DailyTransactionImportMetadata = {
                 } else {
                   returnVal = "";
                 }
-                // let gridDetail = await getDailyTransactionImportData({
-                //   COMP_CD: auth?.companyID,
-                //   BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                //   ACCT_CD: utilFunction.getPadAccountNumber(
-                //     field?.value,
-                //     dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                //   ),
-                //   ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                //   FLAG: "R",
-                //   CHEQUE_NO:"",
-                //   OPP_ENT:"",
-                //   REMARKS:"",
-                //   TABLE_NM:"",
-                //   IGNR_INSUF:"",
-                // });
-                // console.log("gridDetail",gridDetail)
-                // formState.setDataOnFieldChange("JOINT_DETAIL", gridDetail);
+                let gridDetail = await getDailyTransactionImportData({
+                  COMP_CD: auth?.companyID,
+                  BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
+                  ACCT_CD: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentFieldsValues?.["FROM_ACCT_TYPE"]?.optionData
+                  ),
+                  ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
+                  FLAG: "R",
+                  CHEQUE_NO: "",
+                  OPP_ENT: "",
+                  REMARKS: "",
+                  TABLE_NM: "",
+                  IGNR_INSUF: "",
+                });
+                console.log("gridDetail", gridDetail)
+                formState.setDataOnFieldChange("GRID_DETAIL", gridDetail);
               }
             }
             btn99 = 0;
             return {
-              ACCT_CD:
+              FROM_ACCT_CD:
                 returnVal !== ""
                   ? {
                     value: utilFunction.getPadAccountNumber(
                       field?.value,
-                      dependentFieldsValues?.ACCT_TYPE?.optionData
+                      dependentFieldsValues?.FROM_ACCT_TYPE?.optionData
                     ),
                     isFieldFocused: false,
                     ignoreUpdate: true,
@@ -235,15 +239,16 @@ export const DailyTransactionImportMetadata = {
               },
             };
           } else {
+            formState.setDataOnFieldChange("GRID_DETAIL", []);
             return {
-              ACCT_CD: { value: "" },
+              FROM_ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
 
             };
           }
         },
-        // runPostValidationHookAlways: true,
+        runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
       },
     },
@@ -283,7 +288,6 @@ export const DailyTransactionImportMetadata = {
       name: "DESCRIPTION",
       label: "Configuration",
       fullWidth: true,
-      isFieldFocused: true,
       options: async (dependentValue, formState, _, authState) => {
         return API.getDailyImportConfigData({
           COMP_CD: authState?.companyID,
@@ -291,7 +295,42 @@ export const DailyTransactionImportMetadata = {
         });
       },
       _optionsKey: "getDailyImportConfigData",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentFieldValues
+      ) => {
+        if (field.value) {
+          console.log("field", field)
+          return {
+            TABLE_NM: {
+              value: field?.optionData?.[0]?.TABLE_NM
+            },
+            TRAN_CD: {
+              value: field?.optionData?.[0]?.TRAN_CD
+            }
+          }
+        } else {
+          return {
+            TABLE_NM: { value: "" },
+            TRAN_CD: { value: "" }
+          }
+        }
+      },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TABLE_NM",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
     },
     {
       render: {
@@ -323,7 +362,7 @@ export const DailyTransactionImportMetadata = {
           },
         ],
       },
-      dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD", "TYPE_CD"],
+      dependentFields: ["FROM_ACCT_CD", "FROM_ACCT_TYPE", "FROM_BRANCH_CD", "TYPE_CD"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -332,7 +371,7 @@ export const DailyTransactionImportMetadata = {
       ) => {
         if (
           field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value.length === 0
+          dependentFieldsValues?.["FROM_ACCT_CD"]?.value.length === 0
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Information",
@@ -356,16 +395,16 @@ export const DailyTransactionImportMetadata = {
           }
         } else if (
           field.value &&
-          dependentFieldsValues?.["ACCT_CD"]?.value?.length
+          dependentFieldsValues?.["FROM_ACCT_CD"]?.value?.length
         ) {
           if (formState?.isSubmitting) return {};
           let postData = await GeneralAPI.getChequeNoValidation({
             COMP_CD: auth?.companyID,
-            BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-            ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+            BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
+            ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
             ACCT_CD: utilFunction.getPadAccountNumber(
-              dependentFieldsValues?.["ACCT_CD"]?.value,
-              dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+              dependentFieldsValues?.["FROM_ACCT_CD"]?.value,
+              dependentFieldsValues?.["FROM_ACCT_TYPE"]?.optionData
             ),
             CHEQUE_NO: field.value,
             TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value,
@@ -489,7 +528,7 @@ export const DailyTransactionImportMetadata = {
 export const DailyTransactionImportGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Credit to Account",
+    gridLabel: "Debit From Account",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -527,8 +566,8 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "POLICY_NO",
-      columnName: "Debit From Account",
+      accessor: "CREDIT_AC",
+      columnName: "Credit to Account",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -547,7 +586,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "TYPE",
+      accessor: "TYPE_CD",
       columnName: "Trx.",
       sequence: 4,
       alignment: "center",

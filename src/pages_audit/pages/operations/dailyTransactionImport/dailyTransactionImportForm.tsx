@@ -21,6 +21,7 @@ import { t } from "i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
+import { GradientButton } from "components/styledComponent/button";
 
 const actions: ActionTypes[] = [
   {
@@ -37,6 +38,8 @@ const DailyTransactionImport = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [gridData, setGridData] = useState<any>([])
+  const hasUpdated = useRef(false);
 
   const setCurrentAction = useCallback(
     async (data) => {
@@ -49,8 +52,8 @@ const DailyTransactionImport = () => {
     [navigate]
   );
 
-  const getValidateToSelectFile: any = useMutation(
-    API.getValidateToSelectFile,
+  const getDailyTransactionUploadData: any = useMutation(
+    API.getDailyTransactionImportData,
     {
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
@@ -65,6 +68,55 @@ const DailyTransactionImport = () => {
       },
     }
   );
+  const getValidateToSelectFile: any = useMutation(
+    API.getValidateToSelectFile,
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      },
+      onSuccess: async (data, variables) => {
+        for (let i = 0; i < data?.length; i++) {
+          if (data[i]?.O_STATUS === "0") {
+            const buttonName = await MessageBox({
+              messageTitle: t("ValidationSuccessful"),
+              message: t("AreYouSurePostThisCheque"),
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            // if (buttonName === "Yes") {
+
+            // }
+          } else if (data[i]?.O_STATUS === "9") {
+            MessageBox({
+              messageTitle: t("Alert"),
+              message: data[i]?.O_MESSAGE,
+            });
+          } else if (data[i]?.O_STATUS === "99") {
+            const buttonName = await MessageBox({
+              messageTitle: t("Confirmation"),
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["No", "Yes"],
+              loadingBtnName: ["Yes"],
+            });
+            // if (buttonName === "Yes") {
+
+            // }
+          } else if (data[i]?.O_STATUS === "999") {
+            MessageBox({
+              messageTitle: t("ValidationFailed"),
+              message: data[i]?.O_MESSAGE,
+            });
+          }
+        }
+      },
+    }
+  );
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -72,25 +124,45 @@ const DailyTransactionImport = () => {
     setFieldError,
     actionFlag
   ) => {
-    let newData = data
+    data["OPP_ENT"] = Boolean(data["OPP_ENT"]) ? "Y" : "N";
+    data["IGNR_INSUF"] = Boolean(data["IGNR_INSUF"]) ? "Y" : "N";
     if (actionFlag === "SELECT") {
       getValidateToSelectFile.mutate({
-        A_BRANCH_CD: data?.BRANCH_CD,
-        A_ACCT_TYPE: data?.ACCT_TYPE,
-        A_ACCT_CD: data?.ACCT_CD,
+        A_BRANCH_CD: data?.FROM_BRANCH_CD,
+        A_ACCT_TYPE: data?.FROM_ACCT_TYPE,
+        A_ACCT_CD: data?.FROM_ACCT_CD,
         A_CHEQUE_NO: data?.CHEQUE_NO,
         A_TYPE_CD: data?.TYPE_CD,
-        // A_TRAN_CD :data ?.A_TRAN_CD , 
-        // A_TABLE_NM :data ?.A_TABLE_NM ,
+        A_TRAN_CD: data?.TRAN_CD,
+        A_TABLE_NM: data?.TABLE_NM,
         A_SCREEN_REF: "MST/454",
         A_LOG_COMP: authState?.companyID,
-        A_LOG_BRANCH: authState?.user?.branchCode
-
+        A_LOG_BRANCH: authState?.user?.branchCode,
+        WORKING_DATE: authState.workingDate,
+        USERNAME: authState?.user?.name,
+        USERROLE: authState?.role,
+        ...data
 
       })
+    } else {
+      getDailyTransactionUploadData.mutate({
+        ...data,
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        ACCT_TYPE: data?.FROM_ACCT_TYPE,
+        ACCT_CD: data?.FROM_ACCT_CD,
+        FLAG: "P"
+      })
+
     }
     endSubmit(true);
   };
+
+  if (DailyTransactionImportGridMetaData && gridData.length > 0 && !hasUpdated.current) {
+    DailyTransactionImportGridMetaData.gridConfig.gridLabel =
+      DailyTransactionImportGridMetaData.gridConfig.gridLabel + " " + gridData[0]?.DEBIT_AC;
+    hasUpdated.current = true; // Set flag to true to prevent further updates
+  }
 
   return (
     <>
@@ -110,17 +182,36 @@ const DailyTransactionImport = () => {
         onFormButtonClickHandel={() => {
           let event: any = { preventDefault: () => { } };
           formRef?.current?.handleSubmit(event, "SELECT");
+        }}
+        setDataOnFieldChange={(action, payload) => {
+          if (action === "GRID_DETAIL") {
+            setGridData(payload);
 
+          }
         }}
       >
+        {({ isSubmitting, handleSubmit }) => (
+          <>
+            <GradientButton
+              onClick={(event) => {
+                handleSubmit(event, "Save");
+              }}
+              disabled={isSubmitting}
+              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              color={"primary"}
+            >
+              {t("Upload Data")}
+            </GradientButton>
+          </>
+        )}
       </FormWrapper >
 
       <>
         <GridWrapper
-          key={`DailyTransactionImportGrid`}
+          key={`DailyTransactionImportGrid` + gridData + hasUpdated.current}
           finalMetaData={DailyTransactionImportGridMetaData as GridMetaDataType}
-          data={[]}
-          setData={() => { }}
+          data={gridData ?? []}
+          setData={setGridData}
           // loading={getInsuranceDetailData.isLoading}
           actions={actions}
           setAction={setCurrentAction}

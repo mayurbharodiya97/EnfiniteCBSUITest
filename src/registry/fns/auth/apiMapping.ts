@@ -2281,31 +2281,31 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETPASSBOOKACCOUNTDETAILS",
     packageName: "",
   },
-  GETGSTOUTENTHDRGRID : {
+  GETGSTOUTENTHDRGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTHDRGRID",
     packageName: "",
   },
-  GETGSTOUTENTMODEDDW : {
+  GETGSTOUTENTMODEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTMODEDDW",
     packageName: "",
   },
-  GETGSTTEMPLATEDDW : {
+  GETGSTTEMPLATEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTTEMPLATEDDW",
     packageName: "",
   },
-  GETGSTOUTENTDTLGRID : {
+  GETGSTOUTENTDTLGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTDTLGRID",
     packageName: "",
   },
-  GETGSTOUTWARDACCTDETAILS : {
+  GETGSTOUTWARDACCTDETAILS: {
     url: "/transactionServiceAPI/GETGSTOUTWARDACCTDETAILS",
     packageName: "",
   },
-  DOGSTOUTWARDENTRYDML : {
+  DOGSTOUTWARDENTRYDML: {
     url: "/transactionServiceAPI/DOGSTOUTWARDENTRYDML",
     packageName: "",
   },
-  DOGSTOUTWARDCONFIRMATION : {
+  DOGSTOUTWARDCONFIRMATION: {
     url: "/transactionServiceAPI/DOGSTOUTWARDCONFIRMATION",
     packageName: "",
   },
@@ -2409,7 +2409,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
-  GETGSTOUTVIEWVOUCHER : {
+  GETGSTOUTVIEWVOUCHER: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTVIEWVOUCHER",
     packageName: "",
   },
@@ -2457,23 +2457,23 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
     packageName: "",
   },
-  GETEMICALCINSTTYPEDDW:{
+  GETEMICALCINSTTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINSTTYPEDDW",
     packageName: "",
   },
-  GETEMICALCPERIODDDW:{
+  GETEMICALCPERIODDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCPERIODDDW",
     packageName: "",
   },
-  GETEMICALCINTFUNDEDDDW:{
+  GETEMICALCINTFUNDEDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINTFUNDEDDDW",
     packageName: "",
   },
-  CHECKEMISCHEDULEDTL:{
+  CHECKEMISCHEDULEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMISCHEDULEDTL",
     packageName: "",
   },
-  CHECKEMIDISBURSDTL:{
+  CHECKEMIDISBURSDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMIDISBURSDTL",
     packageName: "",
   },
@@ -2586,7 +2586,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
@@ -2620,17 +2620,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-      PackageName +
-      (url.startsWith("./")
-        ? url.substring(1)
-        : url.startsWith("/")
+    PackageName +
+    (url.startsWith("./")
+      ? url.substring(1)
+      : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-    ? url
-    : url.startsWith("/")
-    ? "." + url
-    : "./" + url;
+      ? url
+      : url.startsWith("/")
+        ? "." + url
+        : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };
