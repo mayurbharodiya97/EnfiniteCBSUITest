@@ -225,7 +225,6 @@ export const RecurringPaymentEntryFormMetaData = {
           name: "ACCT_TYPE",
           validationRun: "onChange",
           dependentFields: ["BRANCH_CD"],
-          disableCaching: true,
           runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             currentField,
