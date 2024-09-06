@@ -18,9 +18,6 @@ export const getTRN002List = async (reqData) => {
     if (Boolean(responseData?.length)) {
       responseData.map((ele, i) => {
         ele.index = i;
-        if (ele?.CONFIRMED === "Y") {
-          ele._rowColor = "rgb(9 132 3 / 51%)";
-        }
       });
     }
     return responseData;

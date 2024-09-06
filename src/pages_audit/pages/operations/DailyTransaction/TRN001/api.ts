@@ -105,15 +105,7 @@ export const getTRN001List = async (reqData) => {
       USER_NAME: reqData?.USER_NAME ?? "",
     });
   if (status === "0") {
-    const responseData = data;
-    if (Boolean(responseData?.length > 0)) {
-      responseData?.map((element) => {
-        if (element?.CONFIRMED === "Y") {
-          element._rowColor = "rgb(9 132 3 / 51%)";
-        }
-      });
-    }
-    return responseData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

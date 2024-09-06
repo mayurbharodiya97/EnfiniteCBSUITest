@@ -161,7 +161,7 @@ export const Trn002 = () => {
     {
       onSuccess: async (data: any, variables: any) => {
         setScrollNo("");
-        setScrollConfDialog(false);
+        CloseMessageBox();
         const getBtnName = async (msgObj) => {
           let btnNm = await MessageBox(msgObj);
           return { btnNm, msgObj };
@@ -195,6 +195,7 @@ export const Trn002 = () => {
       onError: (error: any) => {
         setScrollNo("");
         setConfirmDialog(false);
+        CloseMessageBox();
       },
     }
   );
@@ -431,37 +432,53 @@ export const Trn002 = () => {
   };
 
   const handleConfirmByScroll = async () => {
-    const cardData: any = await getCardColumnValue();
+    setScrollConfDialog(false);
+    const msgBoxRes = await MessageBox({
+      messageTitle: "Alert",
+      message: `Are you sure you want to confirm ${
+        filteredGridDdata?.length ?? ""
+      } records?`,
+      defFocusBtnName: "Yes",
+      icon: "INFO",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+    });
 
-    const validateReq = {
-      BRANCH_CD: filteredGridDdata[0]?.BRANCH_CD ?? "",
-      ACCT_TYPE: filteredGridDdata[0]?.ACCT_TYPE ?? "",
-      ACCT_CD: filteredGridDdata[0]?.ACCT_CD ?? "",
-      TYPE_CD: filteredGridDdata[0]?.TYPE_CD ?? "",
-      TRAN_CD: filteredGridDdata[0]?.TRAN_CD ?? "",
-      CUSTOMER_ID: cardData?.CUSTOMER_ID,
-      AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
-      SHADOW_CL: cardData?.TRAN_BAL,
-      HOLD_BAL: cardData?.HOLD_BAL,
-      LEAN_AMT: cardData?.LIEN_AMT,
-      AGAINST_CLEARING: cardData?.AGAINST_CLEARING,
-      MIN_BALANCE: cardData?.MIN_BALANCE,
-      CONF_BAL: cardData?.CONF_BAL,
-      TRAN_BAL: cardData?.TRAN_BAL,
-      UNCL_BAL: cardData?.UNCL_BAL,
-      LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
-      DRAWING_POWER: cardData?.DRAWING_POWER,
-      OD_APPLICABLE: cardData?.OD_APPLICABLE,
-      AMOUNT: filteredGridDdata[0]?.AMOUNT,
-      OP_DATE: format(new Date(cardData?.OP_DATE), "dd/MMM/yyyy"),
-      ENTERED_COMP_CD: filteredGridDdata[0]?.ENTERED_COMP_CD,
-      ENTERED_BRANCH_CD: filteredGridDdata[0]?.ENTERED_BRANCH_CD,
-      ENTERED_BY: filteredGridDdata[0]?.ENTERED_BY,
-      INST_DUE_DT: cardData?.INST_DUE_DT,
-      STATUS: cardData?.STATUS,
-      FLAG: "SCROLL",
-    };
-    getConfirmDataValidation?.mutate(validateReq);
+    if (msgBoxRes === "Yes") {
+      const cardData: any = await getCardColumnValue();
+
+      const validateReq = {
+        BRANCH_CD: filteredGridDdata[0]?.BRANCH_CD ?? "",
+        ACCT_TYPE: filteredGridDdata[0]?.ACCT_TYPE ?? "",
+        ACCT_CD: filteredGridDdata[0]?.ACCT_CD ?? "",
+        TYPE_CD: filteredGridDdata[0]?.TYPE_CD ?? "",
+        TRAN_CD: filteredGridDdata[0]?.TRAN_CD ?? "",
+        CUSTOMER_ID: cardData?.CUSTOMER_ID,
+        AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
+        SHADOW_CL: cardData?.TRAN_BAL,
+        HOLD_BAL: cardData?.HOLD_BAL,
+        LEAN_AMT: cardData?.LIEN_AMT,
+        AGAINST_CLEARING: cardData?.AGAINST_CLEARING,
+        MIN_BALANCE: cardData?.MIN_BALANCE,
+        CONF_BAL: cardData?.CONF_BAL,
+        TRAN_BAL: cardData?.TRAN_BAL,
+        UNCL_BAL: cardData?.UNCL_BAL,
+        LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
+        DRAWING_POWER: cardData?.DRAWING_POWER,
+        OD_APPLICABLE: cardData?.OD_APPLICABLE,
+        AMOUNT: filteredGridDdata[0]?.AMOUNT,
+        OP_DATE: format(new Date(cardData?.OP_DATE), "dd/MMM/yyyy"),
+        ENTERED_COMP_CD: filteredGridDdata[0]?.ENTERED_COMP_CD,
+        ENTERED_BRANCH_CD: filteredGridDdata[0]?.ENTERED_BRANCH_CD,
+        ENTERED_BY: filteredGridDdata[0]?.ENTERED_BY,
+        INST_DUE_DT: cardData?.INST_DUE_DT,
+        STATUS: cardData?.STATUS,
+        FLAG: "SCROLL",
+      };
+      getConfirmDataValidation?.mutate(validateReq);
+    } else if (msgBoxRes === "No") {
+      CloseMessageBox();
+    }
   };
 
   useEffect(() => {
@@ -522,69 +539,85 @@ export const Trn002 = () => {
           variant: "success",
         });
       }
-      setScrollDelDialog(false);
       setScrollNo("");
       refetch();
+      CloseMessageBox();
     },
     onError: (error: any) => {
-      setScrollDelDialog(false);
       setScrollNo("");
+      CloseMessageBox();
     },
   });
 
-  const handleDeletByScroll = () => {
-    let hasError = false;
+  const handleDeletByScroll = async () => {
+    setScrollDelDialog(false);
+    const msgBoxRes = await MessageBox({
+      messageTitle: "Alert",
+      message: `Are you sure you want to delete ${
+        filteredGridDdata?.length ?? ""
+      } records?`,
+      defFocusBtnName: "Yes",
+      icon: "INFO",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+    });
 
-    if (!Boolean(scrollNo)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        scrollErr: "Scroll Is Required",
-      }));
-      hasError = true;
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        scrollErr: "",
-      }));
-    }
+    if (msgBoxRes === "Yes") {
+      let hasError = false;
 
-    if (Boolean(remarks?.length < 5)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        remarkErr: "Remarks should be greater than 5 characters",
-      }));
-      hasError = true;
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        remarkErr: "",
-      }));
-    }
+      if (!Boolean(scrollNo)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          scrollErr: "Scroll Is Required",
+        }));
+        hasError = true;
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          scrollErr: "",
+        }));
+      }
 
-    if (!Boolean(gridData?.length > 0)) {
-      enqueueSnackbar("No records found", {
-        variant: "error",
-      });
-      hasError = true;
-    }
+      if (Boolean(remarks?.length < 5)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          remarkErr: "Remarks should be greater than 5 characters",
+        }));
+        hasError = true;
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          remarkErr: "",
+        }));
+      }
 
-    if (!hasError) {
-      let reqPara = {
-        COMP_CD: authState.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        SCROLL_NO: filteredGridDdata[0]?.SCROLL1,
-        USER_DEF_REMARKS: remarks,
-        ACCT_TYPE: filteredGridDdata[0]?.ACCT_TYPE,
-        ACCT_CD: filteredGridDdata[0]?.ACCT_CD,
-        TRAN_AMOUNT: filteredGridDdata[0]?.AMOUNT,
-        ENTERED_COMP_CD: filteredGridDdata[0]?.COMP_CD,
-        ENTERED_BRANCH_CD: filteredGridDdata[0]?.BRANCH_CD,
-        ACTIVITY_TYPE: "DAILY TRANSACTION CONFIRMATION",
-        TRAN_DT: filteredGridDdata[0]?.TRAN_DT,
-        CONFIRM_FLAG: filteredGridDdata[0]?.CONFIRMED,
-        CONFIRMED: filteredGridDdata[0]?.CONFIRMED,
-      };
-      deleteByScrollNo?.mutate(reqPara);
+      if (!Boolean(gridData?.length > 0)) {
+        enqueueSnackbar("No records found", {
+          variant: "error",
+        });
+        hasError = true;
+      }
+
+      if (!hasError) {
+        let reqPara = {
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          SCROLL_NO: filteredGridDdata[0]?.SCROLL1,
+          USER_DEF_REMARKS: remarks,
+          ACCT_TYPE: filteredGridDdata[0]?.ACCT_TYPE,
+          ACCT_CD: filteredGridDdata[0]?.ACCT_CD,
+          TRAN_AMOUNT: filteredGridDdata[0]?.AMOUNT,
+          ENTERED_COMP_CD: filteredGridDdata[0]?.COMP_CD,
+          ENTERED_BRANCH_CD: filteredGridDdata[0]?.BRANCH_CD,
+          ACTIVITY_TYPE: "DAILY TRANSACTION CONFIRMATION",
+          TRAN_DT: filteredGridDdata[0]?.TRAN_DT,
+          CONFIRM_FLAG: filteredGridDdata[0]?.CONFIRMED,
+          CONFIRMED: filteredGridDdata[0]?.CONFIRMED,
+        };
+        deleteByScrollNo?.mutate(reqPara);
+      }
+    } else if (msgBoxRes === "No") {
+      CloseMessageBox();
     }
   };
 
@@ -809,12 +842,6 @@ export const Trn002 = () => {
                 Boolean(scrollDelDialog)
                   ? handleDeletByScroll()
                   : handleConfirmByScroll()
-              }
-              endIcon={
-                Boolean(deleteByScrollNo?.isLoading) ||
-                Boolean(getConfirmDataValidation?.isLoading) ? (
-                  <CircularProgress size={22} />
-                ) : null
               }
             >
               {Boolean(scrollDelDialog) ? "Remove" : "Confirm"}
