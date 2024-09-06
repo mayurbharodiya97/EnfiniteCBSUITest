@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 

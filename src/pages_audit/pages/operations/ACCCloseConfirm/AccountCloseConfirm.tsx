@@ -1,13 +1,6 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
@@ -16,8 +9,17 @@ import { useMutation, useQuery } from "react-query";
 import DailyTransTabs from "../DailyTransaction/TRNHeaderTabs";
 import * as API from "./api";
 import { AccountClosedConfirm, ClosedAccountDetailsMetaData } from "./metaData";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
+import {
+  LoaderPaperComponent,
+  GridWrapper,
+  GradientButton,
+  ActionTypes,
+  utilFunction,
+  usePopupContext,
+  Alert,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 const confirmationActions: ActionTypes[] = [
   {

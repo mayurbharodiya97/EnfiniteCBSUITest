@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -33,7 +33,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "rigth",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 100,
@@ -218,15 +218,13 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
   },
-  filters: [
-
-  ],
+  filters: [],
   columns: [
     {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "rigth",
+      alignment: "right",
       componentType: "default",
       width: 60,
       minWidth: 60,
@@ -294,7 +292,5 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 250,
     },
-
-
   ],
 };

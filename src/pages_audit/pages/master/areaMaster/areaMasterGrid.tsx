@@ -1,18 +1,21 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useRef, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { AreaMasterGridMetaData } from "./gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { AreaMasterFormWrapper } from "./viewDetails/areaMasterForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 let actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -34,10 +37,9 @@ let actions: ActionTypes[] = [
   },
 ];
 
-
 const AreaMaster = () => {
-  const {authState} = useContext(AuthContext);
-  const [label,setLabel] = useState("Area Master (MST/046)")
+  const { authState } = useContext(AuthContext);
+  const [label, setLabel] = useState("Area Master (MST/046)");
   const isDataChangedRef = useRef(false);
   const isDeleteDataRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -74,10 +76,7 @@ const AreaMaster = () => {
       branchCode: authState?.user?.branchCode,
     })
   );
-  const { data: miscdata } = useQuery<
-    any,
-    any
-  >(["getMiscTableConfig"], () =>
+  const { data: miscdata } = useQuery<any, any>(["getMiscTableConfig"], () =>
     API.GETMISCTABLECONFIG("AREA_MST")
   );
   let userLevel;
@@ -85,23 +84,21 @@ const AreaMaster = () => {
     miscdata.forEach((item) => {
       userLevel = item.USER_LEVEL;
     });
-    
   }
 
   // const LoginuserLevel = authController?.;
   const LoginuserLevel = authState?.role;
-  useEffect(()=>{
-
-    if (userLevel?.length > 0){
+  useEffect(() => {
+    if (userLevel?.length > 0) {
       if (LoginuserLevel < userLevel) {
-        setLabel("Area Master (MST/046) (View-Only)")
+        setLabel("Area Master (MST/046) (View-Only)");
         actions = [];
-      }else {
-        setLabel("Area Master (MST/046)")
+      } else {
+        setLabel("Area Master (MST/046)");
       }
     }
-  },[userLevel,label])
-    AreaMasterGridMetaData.gridConfig.gridLabel =label;
+  }, [userLevel, label]);
+  AreaMasterGridMetaData.gridConfig.gridLabel = label;
 
   const deleteMutation = useMutation(API.deleteAreaMasterData, {
     onError: (error: any) => {
@@ -176,7 +173,6 @@ const AreaMaster = () => {
           }
         />
       </Routes>
-
     </Fragment>
   );
 };

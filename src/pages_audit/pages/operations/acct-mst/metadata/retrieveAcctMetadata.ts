@@ -1,6 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
+import { utilFunction, GridMetaDataType } from "@acuteinfo/common-base";
 
 export const retrieveAcctFormMetaData = {
   form: {
@@ -60,17 +59,17 @@ export const retrieveAcctFormMetaData = {
             return {
               ACCT_TYPE: { value: "" },
               ACCT_CD: { value: "" },
-              CUSTOMER_ID: {value: ""},
-              CONTACT2: {value: ""},
-              PAN_NO: {value: ""},
+              CUSTOMER_ID: { value: "" },
+              CONTACT2: { value: "" },
+              PAN_NO: { value: "" },
             };
           } else if (!field.value) {
             return {
               ACCT_TYPE: { value: "" },
               ACCT_CD: { value: "" },
-              CUSTOMER_ID: {value: ""},
-              CONTACT2: {value: ""},
-              PAN_NO: {value: ""}
+              CUSTOMER_ID: { value: "" },
+              CONTACT2: { value: "" },
+              PAN_NO: { value: "" },
             };
           }
         },
@@ -99,9 +98,9 @@ export const retrieveAcctFormMetaData = {
         postValidationSetCrossFieldValues: (field, formState) => {
           return {
             ACCT_CD: { value: "" },
-            CUSTOMER_ID: {value: ""},
-            CONTACT2: {value: ""},
-            PAN_NO: {value: ""}
+            CUSTOMER_ID: { value: "" },
+            CONTACT2: { value: "" },
+            PAN_NO: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
@@ -173,30 +172,33 @@ export const retrieveAcctFormMetaData = {
                       : ["Ok"],
                     apiRespMSGdata[i]?.O_STATUS
                   );
-                  if(btnName?.status === "999" || btnName?.buttonName === "No") {
+                  if (
+                    btnName?.status === "999" ||
+                    btnName?.buttonName === "No"
+                  ) {
                     return {
-                      ACCT_CD: {value: ""},
-                      CUSTOMER_ID: {value: ""},
-                      CONTACT2: {value: ""},
-                      PAN_NO: {value: ""},
-                    }
+                      ACCT_CD: { value: "" },
+                      CUSTOMER_ID: { value: "" },
+                      CONTACT2: { value: "" },
+                      PAN_NO: { value: "" },
+                    };
                   }
                 } else {
                   formState.setDataOnFieldChange("BUTTON_CLICK_ACCTCD", {
                     ACCT_TYPE: ACCT_TYPE,
                     BRANCH_CD: BRANCH_CD,
-                    ACCT_CD: field?.value
+                    ACCT_CD: field?.value,
                   });
                   return {
-                    CUSTOMER_ID: {value: ""},
-                    CONTACT2: {value: ""},
-                    PAN_NO: {value: ""},
-                  }
+                    CUSTOMER_ID: { value: "" },
+                    CONTACT2: { value: "" },
+                    PAN_NO: { value: "" },
+                  };
                 }
               }
             }
           }
-          return {}
+          return {};
         },
         runPostValidationHookAlways: true,
       },
@@ -314,8 +316,8 @@ export const retrieveAcctFormMetaData = {
         xl: 1,
       },
     },
-  ]
-}
+  ],
+};
 
 export const retrieveAcctGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -473,60 +475,55 @@ export const retrieveAcctGridMetaData: GridMetaDataType = {
       sequence: 13,
       alignment: "left",
       dateFormat: "dd/MM/yyyy",
-      
+
       width: 140,
       minWidth: 140,
       maxWidth: 180,
     },
 
+    //   {
+    //     accessor: "ENTRY_TYPE",
+    //     columnName: "Req. Type", // value for fresh/existing
+    //     sequence: 8,
+    //     alignment: "left",
+    //     componentType: "default",
+    //     width: 140,
+    //     minWidth: 140,
+    //     maxWidth: 180,
+    //   },
 
+    //   {
+    //     accessor: "CUSTOMER_ID",
+    //     columnName: "CustomerId",
+    //     sequence: 6,
+    //     alignment: "left",
+    //     componentType: "default",
+    //     width: 140,
+    //     minWidth: 140,
+    //     maxWidth: 180,
+    //   },
 
-  //   {
-  //     accessor: "ENTRY_TYPE",
-  //     columnName: "Req. Type", // value for fresh/existing
-  //     sequence: 8,
-  //     alignment: "left",
-  //     componentType: "default",
-  //     width: 140,
-  //     minWidth: 140,
-  //     maxWidth: 180,
-  //   },
-    
-    
-  //   {
-  //     accessor: "CUSTOMER_ID",
-  //     columnName: "CustomerId",
-  //     sequence: 6,
-  //     alignment: "left",
-  //     componentType: "default",
-  //     width: 140,
-  //     minWidth: 140,
-  //     maxWidth: 180,
-  //   },
-    
-  //   {
-  //     accessor: "CUSTOMER_TYPE_FLAG",
-  //     columnName: "CustomerType",
-  //     sequence: 7,
-  //     alignment: "left",
-  //     componentType: "default",
-  //     width: 140,
-  //     minWidth: 140,
-  //     maxWidth: 180,
-  //   },
+    //   {
+    //     accessor: "CUSTOMER_TYPE_FLAG",
+    //     columnName: "CustomerType",
+    //     sequence: 7,
+    //     alignment: "left",
+    //     componentType: "default",
+    //     width: 140,
+    //     minWidth: 140,
+    //     maxWidth: 180,
+    //   },
 
-    
-
-  //   {
-  //     accessor: "CHECKER",
-  //     columnName: "Checker",
-  //     sequence: 11,
-  //     alignment: "center",
-  //     componentType: "default",
-  //     isReadOnly: true,
-  //     width: 140,
-  //     minWidth: 140,
-  //     maxWidth: 140,
-  //   },
+    //   {
+    //     accessor: "CHECKER",
+    //     columnName: "Checker",
+    //     sequence: 11,
+    //     alignment: "center",
+    //     componentType: "default",
+    //     isReadOnly: true,
+    //     width: 140,
+    //     minWidth: 140,
+    //     maxWidth: 140,
+    //   },
   ],
 };

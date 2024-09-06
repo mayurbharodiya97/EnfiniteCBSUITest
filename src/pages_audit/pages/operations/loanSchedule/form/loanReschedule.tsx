@@ -1,13 +1,16 @@
 import { AppBar, Dialog } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { LoanRescheduleFormMetaData } from "./metadata";
 import { useTranslation } from "react-i18next";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType } from "components/dataTable/types";
+import {
+  GridMetaDataType,
+  GradientButton,
+  GridWrapper,
+  SubmitFnType,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 import {
   LoanRescheduleGridDetails,
   LoanScheduleBalanceGridMetadata,
@@ -23,13 +26,15 @@ import {
 } from "../api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  LoaderPaperComponent,
+  queryClient,
+  utilFunction,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 
 export const LoanRescheduleForm = ({
   isDataChangedRef,
