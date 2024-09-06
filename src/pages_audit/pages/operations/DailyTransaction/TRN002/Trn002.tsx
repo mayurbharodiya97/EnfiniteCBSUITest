@@ -752,16 +752,25 @@ export const Trn002 = () => {
         </Grid> */}
       </Paper>
       <Box padding={"8px"}>
-        <GradientButton onClick={() => window.open("Calculator:///")}>
+        <GradientButton
+          onClick={() => window.open("Calculator:///")}
+          sx={{ margin: "5px" }}
+        >
           Calculator
         </GradientButton>
-        <GradientButton onClick={() => handleViewAll()}>
+        <GradientButton onClick={() => handleViewAll()} sx={{ margin: "5px" }}>
           View All
         </GradientButton>
-        <GradientButton onClick={() => setScrollDelDialog(true)}>
+        <GradientButton
+          onClick={() => setScrollDelDialog(true)}
+          sx={{ margin: "5px" }}
+        >
           Scroll Remove
         </GradientButton>
-        <GradientButton onClick={() => setScrollConfDialog(true)}>
+        <GradientButton
+          onClick={() => setScrollConfDialog(true)}
+          sx={{ margin: "5px" }}
+        >
           Scroll Confirm
         </GradientButton>
       </Box>

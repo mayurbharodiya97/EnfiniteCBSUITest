@@ -968,10 +968,16 @@ export const Trn001 = () => {
 
       {!Boolean(viewOnly) && (
         <>
-          <GradientButton onClick={() => window.open("Calculator:///")}>
+          <GradientButton
+            onClick={() => window.open("Calculator:///")}
+            sx={{ margin: "5px" }}
+          >
             Calculator
           </GradientButton>
-          <GradientButton onClick={() => setViewOnly(true)}>
+          <GradientButton
+            onClick={() => setViewOnly(true)}
+            sx={{ margin: "5px" }}
+          >
             View All
           </GradientButton>
         </>

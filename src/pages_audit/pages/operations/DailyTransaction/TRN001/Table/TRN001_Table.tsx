@@ -32,6 +32,7 @@ import {
   queryClient,
   GridMetaDataType,
   RemarksAPIWrapper,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   // {
@@ -238,73 +239,71 @@ export const TRN001_Table = ({
 
   const handleDeletByScroll = async () => {
     setScrollDialog(false);
-    const msgBoxRes = await MessageBox({
-      messageTitle: "Alert",
-      message: `Are you sure you want to delete ${
-        gridData?.length ?? ""
-      } records?`,
-      defFocusBtnName: "Yes",
-      icon: "INFO",
-      buttonNames: ["Yes", "No"],
-      loadingBtnName: ["Yes"],
-    });
-    if (msgBoxRes === "Yes") {
-      let hasError = false;
+    if (gridData?.length > 0) {
+      const msgBoxRes = await MessageBox({
+        messageTitle: "Alert",
+        message: `Are you sure you want to delete ${
+          gridData?.length ?? ""
+        } records?`,
+        defFocusBtnName: "Yes",
+        icon: "INFO",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
+      });
+      if (msgBoxRes === "Yes") {
+        let hasError = false;
 
-      if (!Boolean(scrollNo)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          scrollErr: "Scroll Is Required",
-        }));
-        hasError = true;
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          scrollErr: "",
-        }));
-      }
+        if (!Boolean(scrollNo)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            scrollErr: "Scroll Is Required",
+          }));
+          hasError = true;
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            scrollErr: "",
+          }));
+        }
 
-      if (Boolean(remarks?.length < 5)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          remarkErr: "Remarks should be greater than 5 characters",
-        }));
-        hasError = true;
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          remarkErr: "",
-        }));
+        if (Boolean(remarks?.length < 5)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            remarkErr: "Remarks should be greater than 5 characters",
+          }));
+          hasError = true;
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            remarkErr: "",
+          }));
+        }
+        if (!hasError) {
+          let reqPara = {
+            COMP_CD: authState.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            SCROLL_NO: gridData[0]?.SCROLL1,
+            USER_DEF_REMARKS: remarks,
+            ACCT_TYPE: gridData[0]?.ACCT_TYPE,
+            ACCT_CD: gridData[0]?.ACCT_CD,
+            TRAN_AMOUNT: gridData[0]?.AMOUNT,
+            ENTERED_COMP_CD: gridData[0]?.COMP_CD,
+            ENTERED_BRANCH_CD: gridData[0]?.BRANCH_CD,
+            ACTIVITY_TYPE: "DAILY TRANSACTION",
+            TRAN_DT: gridData[0]?.TRAN_DT,
+            CONFIRM_FLAG: gridData[0]?.CONFIRMED,
+            CONFIRMED: gridData[0]?.CONFIRMED,
+          };
+          deleteByScrollNo?.mutate(reqPara);
+        }
+      } else if (msgBoxRes === "No") {
+        CloseMessageBox();
+        setScrollNo("");
       }
-
-      if (!Boolean(gridData?.length > 0)) {
-        enqueueSnackbar("No records found", {
-          variant: "error",
-        });
-        hasError = true;
-      }
-
-      if (!hasError) {
-        let reqPara = {
-          COMP_CD: authState.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          SCROLL_NO: gridData[0]?.SCROLL1,
-          USER_DEF_REMARKS: remarks,
-          ACCT_TYPE: gridData[0]?.ACCT_TYPE,
-          ACCT_CD: gridData[0]?.ACCT_CD,
-          TRAN_AMOUNT: gridData[0]?.AMOUNT,
-          ENTERED_COMP_CD: gridData[0]?.COMP_CD,
-          ENTERED_BRANCH_CD: gridData[0]?.BRANCH_CD,
-          ACTIVITY_TYPE: "DAILY TRANSACTION",
-          TRAN_DT: gridData[0]?.TRAN_DT,
-          CONFIRM_FLAG: gridData[0]?.CONFIRMED,
-          CONFIRMED: gridData[0]?.CONFIRMED,
-        };
-        deleteByScrollNo?.mutate(reqPara);
-      }
-    } else if (msgBoxRes === "No") {
-      CloseMessageBox();
-      setScrollNo("");
+    } else {
+      enqueueSnackbar("No Records Found", {
+        variant: "error",
+      });
     }
   };
 
@@ -384,13 +383,22 @@ export const TRN001_Table = ({
         </Grid> */}
       </Paper>
       <Box padding={"8px"}>
-        <GradientButton onClick={() => window.open("Calculator:///")}>
+        <GradientButton
+          onClick={() => window.open("Calculator:///")}
+          sx={{ margin: "5px" }}
+        >
           Calculator
         </GradientButton>
-        <GradientButton onClick={() => setViewOnly(false)}>
+        <GradientButton
+          onClick={() => setViewOnly(false)}
+          sx={{ margin: "5px" }}
+        >
           Go Back
         </GradientButton>
-        <GradientButton onClick={() => setScrollDialog(true)}>
+        <GradientButton
+          onClick={() => setScrollDialog(true)}
+          sx={{ margin: "5px" }}
+        >
           Scroll Remove
         </GradientButton>
       </Box>
