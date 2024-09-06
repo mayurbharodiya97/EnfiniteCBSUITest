@@ -62,23 +62,6 @@ export const PositivePayEntryFormMetadata = {
       },
       accountTypeMetadata: {
         runPostValidationHookAlways: true,
-        dependentFields: ["BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          if (
-            Boolean(authState?.companyID) &&
-            Boolean(dependentValue?.BRANCH_CD?.value) &&
-            Boolean(authState?.user?.id)
-          ) {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
-              USER_NAME: authState?.user?.id ?? "",
-              DOC_CD: "MST/968",
-            });
-          } else {
-            return [];
-          }
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -95,7 +78,6 @@ export const PositivePayEntryFormMetadata = {
             };
           }
         },
-        disableCaching: true,
         GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
       },
       accountCodeMetadata: {
@@ -385,7 +367,7 @@ export const PositivePayEntryFormMetadata = {
       },
       name: "PAYEE_NM",
       label: "PayeeName",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       placeholder: "EnterPayeeName",
       type: "text",
       autoComplete: "off",
@@ -399,7 +381,7 @@ export const PositivePayEntryFormMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "EnterRemarks",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       type: "text",
       autoComplete: "off",
       maxLength: 200,
@@ -656,24 +638,6 @@ export const ResponseParameterFormMetaData = {
             return true;
           }
         },
-        options: (dependentValue, formState, _, authState) => {
-          if (
-            Boolean(authState?.companyID) &&
-            Boolean(dependentValue?.BRANCH_CD?.value) &&
-            Boolean(authState?.user?.id)
-          ) {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
-              USER_NAME: authState?.user?.id ?? "",
-              DOC_CD: "MST/968",
-            });
-          } else {
-            return [];
-          }
-        },
-        disableCaching: true,
-        _optionsKey: "get_Account_Type",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,

@@ -323,7 +323,11 @@ export const PositivePayEntry = ({
         formStyle={{
           background: "white",
         }}
-        formState={{ formMode: formMode, MessageBox: MessageBox }}
+        formState={{
+          formMode: formMode,
+          MessageBox: MessageBox,
+          docCD: "MST/968",
+        }}
         onFormButtonClickHandel={async (id) => {
           if (id === "VIEW") {
             setChequeImage();
