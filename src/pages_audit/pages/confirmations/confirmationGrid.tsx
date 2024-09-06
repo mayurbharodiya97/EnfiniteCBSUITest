@@ -7,13 +7,17 @@ import {
   StrictMode,
   useState,
 } from "react";
-import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+  usePopupContext,
+  ClearCacheProvider,
+  ClearCacheContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -115,7 +119,7 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = lienConfirmGridMetaData;
   } else if (screenFlag === "tempOdCFM") {
     gridMetaData = tempODConfirmGridMetaData;
-  }else if (screenFlag=== "insuranceCFM"){
+  } else if (screenFlag === "insuranceCFM") {
     gridMetaData = insuranceEntryConfirmGridMetaData;
   }
 
@@ -187,7 +191,7 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ): (
+              ) : (
                 <></>
               )
             }

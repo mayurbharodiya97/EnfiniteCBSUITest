@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {

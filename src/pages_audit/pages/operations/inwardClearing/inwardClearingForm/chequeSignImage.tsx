@@ -2,10 +2,10 @@ import { FC, useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Grid, Card, CardContent, Dialog, Theme } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import noPhotoAvailble from "../../../../../assets/images/noPhotoAvailble.png";
 import AvatarEditor from "react-avatar-editor";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { makeStyles } from "@mui/styles";
 import { useTranslation } from "react-i18next";
 
@@ -113,8 +113,8 @@ export const ChequeSignImage: FC<{
                 index === 0
                   ? t("FrontGrey")
                   : index === 2
-                    ? t("BackImage")
-                    : t("BlackWhite");
+                  ? t("BackImage")
+                  : t("BlackWhite");
 
               return (
                 <label
@@ -191,7 +191,7 @@ export const ChequeSignImage: FC<{
                         <img
                           src={imageUrl}
                           alt={`image-${index}`}
-                        // style={{ height: "100%", width: "100%" }}
+                          // style={{ height: "100%", width: "100%" }}
                         />
                       </div>
                     </CardContent>
@@ -318,7 +318,6 @@ export const ChequeSignImage: FC<{
               className={classes.printHidden}
             >
               {t("Print")}
-
             </GradientButton>
           </div>
           {rotateImg === 0 ? (

@@ -1,13 +1,16 @@
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import { PaidFDGridMetaData } from "./paidFDGridMetaData";
 import { FDContext } from "./context/fdContext";
-import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import { Dialog, Paper } from "@mui/material";
 import Draggable from "react-draggable";
@@ -99,7 +102,7 @@ export const PaidFDGrid = ({ closeDialog }) => {
           actions={actions}
           loading={isLoading || isFetching}
           setAction={setCurrentAction}
-          ReportExportButton={true}
+          enableExport={true}
         />
       </div>
     </Dialog>

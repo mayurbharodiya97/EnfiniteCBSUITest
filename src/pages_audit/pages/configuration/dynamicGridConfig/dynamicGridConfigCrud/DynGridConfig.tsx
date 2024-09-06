@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import { clone, cloneDeep } from "lodash-es";
 import * as API from "../api";
 import { DynamicGridConfigMetaData } from "./metaData";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { MasterDetailsMetaData } from "@acuteinfo/common-base";
 import {
   FC,
   useCallback,
@@ -23,26 +23,29 @@ import {
   Dialog,
   IconButton,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
-import { MasterDetailsForm } from "components/formcomponent";
-import { Alert } from "components/common/alert";
 import { RetrievalParametersGrid } from "./retrievalParameters";
 import { makeStyles } from "@mui/styles";
-import { queryClient } from "cache";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ActionFormWrapper } from "./actionsform";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
-import { CreateDetailsRequestData, utilFunction } from "components/utils";
 
+import {
+  CreateDetailsRequestData,
+  utilFunction,
+  PopupMessageAPIWrapper,
+  LoaderPaperComponent,
+  queryClient,
+  Alert,
+  MasterDetailsForm,
+  GradientButton,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color1)",
+    background: "var(--primary-bg)",
   },
   title: {
     flex: "1 1 100%",
@@ -486,11 +489,7 @@ const DynamicGridConfig: FC<{
               //   paddingRight: "10px",
               // }}
             >
-              <AppBar
-                position="relative"
-                color="secondary"
-                style={{ marginBottom: "5px" }}
-              >
+              <AppBar position="relative" sx={{ marginBottom: "5px" }}>
                 <Toolbar className={headerClasses.root} variant={"dense"}>
                   <Typography
                     className={headerClasses.title}

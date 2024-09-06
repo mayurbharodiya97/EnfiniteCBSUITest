@@ -1,4 +1,4 @@
-import { components } from "components/report";
+import { components } from "@acuteinfo/common-base";
 export const virtualSubDetailsMetaData = {
   title: "Report Details",
   disableGroupBy: "",

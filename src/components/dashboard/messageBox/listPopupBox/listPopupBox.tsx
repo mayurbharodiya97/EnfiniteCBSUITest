@@ -1,23 +1,26 @@
 import { useRef, useEffect, useContext, useState, useMemo } from "react";
 import { makeStyles, styled } from "@mui/styles";
-import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../../api";
 import { Button, Dialog, Theme } from "@mui/material";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { MessageDescriptionMetadata } from "./metadata";
+
+import { AuthContext } from "pages_audit/auth";
+import { useSnackbar } from "notistack";
 import {
   ImageViewer,
+  utilFunction,
+  FormWrapper,
+  PopupMessageAPIWrapper,
+  queryClient,
+  ClearCacheContext,
+  LoaderPaperComponent,
+  InitialValuesType,
+  SubmitFnType,
   NoPreview,
   PDFViewer,
-} from "components/fileUpload/preView";
-import { utilFunction } from "components/utils";
-import { AuthContext } from "pages_audit/auth";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { useSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-
+  MetaDataType,
+} from "@acuteinfo/common-base";
 export const ListPopupMessageWrapper = ({
   open,
   closeDialog,
@@ -167,7 +170,7 @@ export const ListPopupMessageWrapper = ({
         >
           <FormWrapper
             key={`MessageDescriptionMetadata`}
-            metaData={MessageDescriptionMetadata}
+            metaData={MessageDescriptionMetadata as MetaDataType}
             onSubmitHandler={onSubmitHandler}
             initialValues={mainData?.[0] as InitialValuesType}
             // hideHeader={true}
