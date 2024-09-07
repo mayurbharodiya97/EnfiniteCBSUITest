@@ -1,5 +1,5 @@
-import { utilFunction } from "components/utils";
 import * as API from "../api";
+import { utilFunction } from "@acuteinfo/common-base";
 export const CardDetailsMetaData = {
   form: {
     name: "atm-card-details",
@@ -412,12 +412,14 @@ export const CardDetailsMetaData = {
                 return {
                   CITIZEN_ID: { value: "", isFieldFocused: true },
                   M_CARD_NO: { value: "" },
+                  CARD_NO: { value: "" },
                   CARD_TYPE: { value: "" },
                 };
               }
             } else {
               return {
                 M_CARD_NO: { value: postData?.[0]?.M_CARD_NO },
+                CARD_NO: { value: postData?.[0]?.M_CARD_NO },
                 CARD_TYPE: { value: postData?.[0]?.CARD_TYPE },
               };
             }
@@ -631,6 +633,12 @@ export const CardDetailsMetaData = {
         componentType: "hidden",
       },
       name: "ID_NO",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CARD_NO",
     },
     {
       render: {

@@ -3,11 +3,14 @@ import { Dialog, CircularProgress } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns/esm";
 import { useMutation } from "react-query";
-import { GradientButton } from "components/styledComponent/button";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { RetrievalParameterFormMetaData } from "./RetriveGridMetadata";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
+import {
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 export const DataRetrival = ({ closeDialog, open, onUpload }) => {
   const formRef = useRef(null);
@@ -30,12 +33,7 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
     },
   });
 
-  const onSubmitHandler = (
-    data,
-    displayData,
-    endSubmit,
-    setFieldError
-  ) => {
+  const onSubmitHandler = (data, displayData, endSubmit, setFieldError) => {
     endSubmit(true);
 
     const payload = {
@@ -44,16 +42,14 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
       FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
       TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
       GD_DATE: authState?.workingDate,
-      FLAG: "P",    
-      A_LANG:"en"  
+      FLAG: "P",
+      A_LANG: "en",
     };
-
 
     // mutation.mutate(payload);
     onUpload(payload);
     closeDialog();
   };
- 
 
   return (
     <>
@@ -98,5 +94,3 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
     </>
   );
 };
-
-

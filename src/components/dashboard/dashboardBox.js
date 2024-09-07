@@ -14,7 +14,7 @@ import {
   Tooltip,
   Divider,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import "pages_audit/sideBar/icons";
 import { lazy, useContext, useState } from "react";
 import { useQuery } from "react-query";

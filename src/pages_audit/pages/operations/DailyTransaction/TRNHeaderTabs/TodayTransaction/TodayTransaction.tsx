@@ -2,15 +2,18 @@ import { Fragment, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TodayTransGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { Alert } from "components/common/alert";
 // import { GridMetaDataType } from "components/dataTable/types";
-import { GridMetaDataType } from "components/dataTableStatic/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
+import {
+  ClearCacheProvider,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 const TodayTransaction = ({ reqData }) => {
   const { authState } = useContext(AuthContext);
@@ -57,7 +60,7 @@ const TodayTransaction = ({ reqData }) => {
         setData={() => null}
         refetchData={() => refetch()}
         ref={myGridRef}
-        ReportExportButton={true}
+        enableExport={true}
       />
     </>
   );

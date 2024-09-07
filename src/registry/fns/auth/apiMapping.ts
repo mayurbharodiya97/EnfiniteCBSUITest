@@ -2605,6 +2605,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/SAVERECEIPTPAYMENTDTL",
     packageName: "",
   },
+  VALIDATEATMREGSAVEDATA: {
+    url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

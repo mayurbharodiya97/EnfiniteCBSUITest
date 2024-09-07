@@ -1,19 +1,23 @@
 import React, { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
-
+import {
+  extractMetaData,
+  GradientButton,
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+  LoaderPaperComponent,
+  SubmitFnType,
+  usePopupContext,
+  utilFunction,
+} from "@acuteinfo/common-base";
 
 const LienMasterForm = ({
   isDataChangedRef,
@@ -27,7 +31,8 @@ const LienMasterForm = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const mutation = useMutation(API.updateLienData,
+  const mutation = useMutation(
+    API.updateLienData,
 
     {
       onError: (error: any) => {
@@ -106,24 +111,20 @@ const LienMasterForm = ({
 
   return (
     <>
-      {!gridData ? (<LoaderPaperComponent />
+      {!gridData ? (
+        <LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"LienMasterForm" + formMode}
-          metaData={
-            extractMetaData(
-              metaData,
-              formMode
-            ) as MetaDataType
-          }
+          metaData={extractMetaData(metaData, formMode) as MetaDataType}
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           initialValues={
             formMode === "add"
               ? {
-                ...rows?.[0]?.data,
-                LEAN_CD: codeIncreByOne,
-              }
+                  ...rows?.[0]?.data,
+                  LEAN_CD: codeIncreByOne,
+                }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
           formState={{
@@ -132,7 +133,8 @@ const LienMasterForm = ({
           }}
           formStyle={{
             background: "white",
-          }}>
+          }}
+        >
           {({ isSubmitting, handleSubmit }) => (
             <>
               {formMode === "edit" ? (
@@ -142,7 +144,9 @@ const LienMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -163,7 +167,9 @@ const LienMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -189,9 +195,8 @@ const LienMasterForm = ({
               )}
             </>
           )}
-        </FormWrapper >
+        </FormWrapper>
       )}
-
     </>
   );
 };
@@ -213,7 +218,6 @@ export const LienMasterFormWrapper = ({
       }}
       maxWidth="lg"
     >
-
       <LienMasterForm
         closeDialog={closeDialog}
         defaultView={defaultView}

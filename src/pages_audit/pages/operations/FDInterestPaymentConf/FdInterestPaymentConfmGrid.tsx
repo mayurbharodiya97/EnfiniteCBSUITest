@@ -1,10 +1,4 @@
 import { Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +7,14 @@ import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { FdInterestPaymentConfDetail } from "./FdInterestPaymentconfForm";
 import { FdInterestPaymentConfmMetaData } from "./FdInterestPaymentConfmMetaData";
-
+import {
+  ActionTypes,
+  GridWrapper,
+  Alert,
+  usePopupContext,
+  queryClient,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -109,7 +110,7 @@ export const FDInterestPaymentConfm = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        ReportExportButton={data?.length > 0 ? true : false}
+        enableExport={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

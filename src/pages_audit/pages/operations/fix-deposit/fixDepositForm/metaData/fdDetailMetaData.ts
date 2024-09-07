@@ -2,12 +2,11 @@ import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
-import { utilFunction } from "components/utils";
 import {
-  greaterThanInclusiveDate,
+  greaterThanDate,
+  utilFunction,
   lessThanInclusiveDate,
-} from "registry/rulesEngine";
-import { isValidDate } from "components/utils/utilFunctions/function";
+} from "@acuteinfo/common-base";
 
 export const FixDepositDetailFormMetadata = {
   form: {
@@ -535,13 +534,10 @@ export const FixDepositDetailFormMetadata = {
             let fromTranDate = newDependentField?.FROM_TRAN_DT?.value;
             let toTranDate = newDependentField?.TO_TRAN_DT?.value;
 
-            if (isValidDate(fromTranDate)) {
+            if (utilFunction.isValidDate(fromTranDate)) {
               fromTranDate = format(new Date(fromTranDate), "yyyy/MM/dd");
               if (
-                !greaterThanInclusiveDate(
-                  new Date(tranDate),
-                  new Date(fromTranDate)
-                )
+                !greaterThanDate(new Date(tranDate), new Date(fromTranDate))
               ) {
                 // Calculate the difference in milliseconds
                 var diffms =
@@ -554,7 +550,7 @@ export const FixDepositDetailFormMetadata = {
                 );
               }
             }
-            if (isValidDate(toTranDate)) {
+            if (utilFunction.isValidDate(toTranDate)) {
               toTranDate = format(new Date(toTranDate), "yyyy/MM/dd");
               if (
                 toTranDate &&

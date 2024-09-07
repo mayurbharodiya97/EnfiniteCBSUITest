@@ -1,18 +1,21 @@
 import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
 import React, { useContext, useEffect, useRef } from "react";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { confirmFormMetaData } from "./confirmationFormMetadata";
 import { useMutation } from "react-query";
 import { chequeBookCfm, validateCheqbkCfm } from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import {
+  usePopupContext,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -20,6 +23,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const buttonRef: any = useRef<any>(null);
+  console.log("<<<rows", rows);
 
   // API calling function for validate data before confirm or reject
   const chequeBkValidateCfm: any = useMutation(
@@ -68,18 +72,6 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       queryClient.removeQueries(["chequeBookCfm"]);
     };
   }, []);
-
-  useEffect(() => {
-    if (rows?.[0]?.data) {
-      confirmFormMetaData.form.label = `${t("ConfirmationDetail")} \u00A0\u00A0 
-      ${(
-        rows?.[0]?.data?.COMP_CD +
-        rows?.[0]?.data?.BRANCH_CD +
-        rows?.[0]?.data?.ACCT_TYPE +
-        rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")}   \u00A0\u00A0   ${rows?.[0]?.data?.ACCT_NM}   `;
-    }
-  }, [rows?.[0]?.data]);
 
   const handelChange = async (isConfirm) => {
     chequeBkValidateCfm.mutate(
@@ -155,7 +147,7 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "950px",
+          maxWidth: "1300px",
         },
       }}
     >
@@ -189,9 +181,10 @@ export const ChequebookCfmForm = ({ closeDialog, result }) => {
           initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
+          onSubmitHandler={() => {}}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 543px)",
+            height: "calc(100vh - 490px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

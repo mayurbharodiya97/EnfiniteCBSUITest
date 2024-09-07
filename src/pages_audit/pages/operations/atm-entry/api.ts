@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getParameter = async (apiReqPara) => {
@@ -211,6 +211,18 @@ export const validateCardStatus = async (apiReqPara) => {
     });
   if (status === "0") {
     return { resp: data[0], status: status };
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateInsertData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEATMREGSAVEDATA", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
