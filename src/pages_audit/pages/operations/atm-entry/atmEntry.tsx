@@ -33,7 +33,7 @@ import { t } from "i18next";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { format } from "date-fns";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
