@@ -1,11 +1,9 @@
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic/";
 import { SlipJoinDetailGridMetaData } from "./paySlipMetadata";
 import { useCallback } from "react";
-import {
-  LoaderPaperComponent,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 const actions: ActionTypes[] = [
   {
@@ -15,18 +13,25 @@ const actions: ActionTypes[] = [
     alwaysAvailable: true,
     rowDoubleClick: false,
   },
+
 ];
 
+
 function JointDetails({ data, onClose, loading }) {
-  const setCurrentAction = useCallback(async (data) => {
-    if (data.name === "Close") {
-      onClose(false);
-    }
-  }, []);
+
+  const setCurrentAction = useCallback(
+    async (data) => {
+      if (data.name === "Close") {
+        onClose(false)
+      }
+
+    },
+    []
+  );
   return (
     <div>
-      {!loading ? (
-        <GridWrapper
+      {
+        !loading ? (<GridWrapper
           key={"modeMasterGrid"}
           finalMetaData={SlipJoinDetailGridMetaData as GridMetaDataType}
           data={data ?? []}
@@ -37,7 +42,8 @@ function JointDetails({ data, onClose, loading }) {
         />) : <LoaderPaperComponent />
       }
     </div>
-  );
+  )
 }
 
-export default JointDetails;
+export default JointDetails
+

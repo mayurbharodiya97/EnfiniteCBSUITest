@@ -1,5 +1,5 @@
-import { GridWrapper } from "@acuteinfo/common-base";
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTable/types";
 
 const GridType = ({ data }) => {
   const getMetadata = (reqdata) => {

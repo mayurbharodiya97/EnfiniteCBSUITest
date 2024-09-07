@@ -15,11 +15,17 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
   tempODGridTodayMetaData,
   tempODGridHistoryMetaData,
 } from "./temporaryGridMetaData";
 import { temporaryODentryMetadata } from "./tempODentryMetadata";
+import { usePopupContext } from "components/custom/popupContext";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { MasterDetailsForm } from "components/formcomponent";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
@@ -27,18 +33,9 @@ import { useMutation } from "react-query";
 import { cloneDeep } from "lodash";
 import { format } from "date-fns";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
-
-import {
-  ActionTypes,
-  Alert,
-  MasterDetailsMetaData,
-  usePopupContext,
-  GridMetaDataType,
-  MasterDetailsForm,
-  GridWrapper,
-} from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
   const [isData, setIsData] = useState({

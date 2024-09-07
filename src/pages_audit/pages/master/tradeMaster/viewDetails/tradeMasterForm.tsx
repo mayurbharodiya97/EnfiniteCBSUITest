@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { extractMetaData, utilFunction } from "components/utils";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { TradeMasterMetaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
@@ -11,17 +15,6 @@ import { LoadingTextAnimation } from "components/common/loader";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
 
-import {
-  LoaderPaperComponent,
-  usePopupContext,
-  GradientButton,
-  InitialValuesType,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
 
 const TradeMasterForm = ({
   isDataChangedRef,
@@ -115,16 +108,19 @@ const TradeMasterForm = ({
         <FormWrapper
           key={"TradeMasterForm" + formMode}
           metaData={
-            extractMetaData(TradeMasterMetaData, formMode) as MetaDataType
+            extractMetaData(
+              TradeMasterMetaData,
+              formMode
+            ) as MetaDataType
           }
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           initialValues={
             formMode === "add"
               ? {
-                  ...rows?.[0]?.data,
-                  TRADE_CD: codeIncreByOne,
-                }
+                ...rows?.[0]?.data,
+                TRADE_CD: codeIncreByOne,
+              }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
           formStyle={{
@@ -144,9 +140,7 @@ const TradeMasterForm = ({
                       handleSubmit(event, "Save");
                     }} 
                     disabled={isSubmitting}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
+                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                     color={"primary"}
                   >
                     Save
@@ -167,9 +161,7 @@ const TradeMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
+                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                     color={"primary"}
                   >
                     Save
@@ -199,6 +191,7 @@ const TradeMasterForm = ({
       ) : (
         <LoaderPaperComponent />
       )}
+
     </>
   );
 };
@@ -207,7 +200,7 @@ export const TradeMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData,
+  gridData
 }) => {
   return (
     <Dialog

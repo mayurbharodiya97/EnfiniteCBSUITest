@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "@acuteinfo/common-base";
+} from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -13,8 +13,8 @@ export const getRetrievalClearingData = async (Apireq) => {
     return data.map((item) => {
       return {
         ...item,
-        CHECKED: item?.CHECKED === "Y" ? true : false,
-      };
+        CHECKED: item?.CHECKED === "Y" ? true : false
+      }
     });
   } else {
     throw DefaultErrorObject(message, messageDetails);

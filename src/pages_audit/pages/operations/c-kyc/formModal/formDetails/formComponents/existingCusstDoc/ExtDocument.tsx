@@ -11,9 +11,11 @@ import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation, useQuery } from "react-query";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetadata } from "./documentGridMetadata";
 import { useLocation, useNavigate } from "react-router-dom";
 import ExtDocumentForm from "./ExtDocumentForm";
+import { utilFunction } from "components/utils";
 import {
   Button,
   Dialog,
@@ -23,14 +25,8 @@ import {
   Typography,
 } from "@mui/material";
 import { t } from "i18next";
-import {
-  utilFunction,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { addMonths, format } from "date-fns";
 import _ from "lodash";
 const ExtDocument = ({
   // isCustomerData,
@@ -56,7 +52,7 @@ const ExtDocument = ({
   const [openForm, setOpenForm] = useState(false);
   const [rowsData, setRowsData] = useState([]);
   const [data, setData] = useState<any>([]);
-  const dataRef = useRef<any>([]);
+  const dataRef = useRef<any>([])
   const [formMode, setFormMode] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const isDataChangedRef = useRef(false);
@@ -70,7 +66,7 @@ const ExtDocument = ({
   };
   const location: any = useLocation();
   const myGridRef = useRef<any>(null);
-  let oldGridData: any = [];
+  let oldGridData:any = [];
 
   // useEffect(() => {
   //   console.log('rowsData change', rowsData)
@@ -91,7 +87,7 @@ const ExtDocument = ({
 
   useEffect(() => {
     dataRef.current = data;
-  }, [data]);
+  }, [data])
 
   const mutation: any = useMutation(API.getKYCDocumentGridData, {
     onSuccess: (data) => {
@@ -211,10 +207,10 @@ const ExtDocument = ({
         setFormMode("edit");
         setRowsData(data?.rows);
         setOpenForm(true);
-      } else if (data.name === "update") {
-        onUpdate();
+      } else if (data.name === "update") {      
+        onUpdate()
       } else if (data.name === "close") {
-        handleFormModalClosectx();
+        handleFormModalClosectx()
         onClose();
       }
       // navigate(data?.name, {
@@ -241,47 +237,35 @@ const ExtDocument = ({
   }, []);
 
   const onUpdate = () => {
-    setIsNextLoading(true);
-    const data = dataRef.current;
+    setIsNextLoading(true)
+    const data = dataRef.current
     // console.log("kdawiudiqwdqwd", data)
-    if (data) {
-      let updated_tab_format: any = {};
+    if(data) {
+      let updated_tab_format:any = {};
       let other_data = {
         IsNewRow: !state?.req_cd_ctx ? true : false,
         // REQ_CD: state?.req_cd_ctx ?? "",
         // COMP_CD: COMP_CD ?? "",
-      };
-      let filteredKeys: any[] = [
-        "VALID_UPTO",
-        "DOC_IMAGE",
-        "SUBMIT",
-        "TEMPLATE_CD",
-        "DOC_NO",
-        "DOC_DESCRIPTION",
-        "SR_CD",
-        "TRAN_CD",
-      ];
-      let oldRow: any[] = [];
-      let newRow: any[] = [];
+      }
+      let filteredKeys:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"];
+      let oldRow:any[] = []
+      let newRow:any[] = []
       let upd;
 
       // console.log(oldRow, "sahdoihqaodiqwdq0", newRow, oldGridData)
 
-      oldRow =
-        oldGridData &&
-        oldGridData.length > 0 &&
-        oldGridData.map((formRow, i) => {
-          // console.log("sahdoihqaodiqwdq oldin formRow", formRow)
-          // let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols["DOC_MST"] ?? [])
-          let filteredRow = _.pick(formRow ?? {}, filteredKeys);
-          // console.log("sahdoihqaodiqwdq oldin filteredRow", filteredRow)
-          // if("DOC_MST" == "DOC_MST") {
-          filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N";
-          // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
-          // }
-          // console.log("sahdoihqaodiqwdq oldin filteredRow --after", filteredRow)
-          return filteredRow;
-        });
+      oldRow = (oldGridData && oldGridData.length>0) && oldGridData.map((formRow, i) => {
+        // console.log("sahdoihqaodiqwdq oldin formRow", formRow)
+        // let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols["DOC_MST"] ?? [])
+        let filteredRow = _.pick(formRow ?? {}, filteredKeys)
+        // console.log("sahdoihqaodiqwdq oldin filteredRow", filteredRow)
+        // if("DOC_MST" == "DOC_MST") {
+            filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
+            // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
+        // }
+        // console.log("sahdoihqaodiqwdq oldin filteredRow --after", filteredRow)
+        return filteredRow;
+      })
 
       // console.log(oldRow, "sahdoihqaodiqwdq1", newRow)
 
@@ -289,21 +273,20 @@ const ExtDocument = ({
       //   let filteredRow = _.pick(formRow ?? {}, filteredKeys)
       //   return filteredRow;
       // })
-      newRow =
-        data &&
-        data.length > 0 &&
-        data.map((formRow, i) => {
-          let filteredRow = _.pick(formRow ?? {}, filteredKeys);
-          filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N";
-          return filteredRow;
-        });
+      newRow = (data && data.length>0) && data.map((formRow, i) => {
+        let filteredRow = _.pick(formRow ?? {}, filteredKeys)
+        filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N";
+        return filteredRow;
+      })
       // console.log(oldRow, "sahdoihqaodiqwdq2", newRow)
 
-      upd = utilFunction.transformDetailDataForDML(oldRow ?? [], newRow ?? [], [
-        "SR_CD",
-      ]);
+      upd = utilFunction.transformDetailDataForDML(
+        oldRow ?? [],
+        newRow ?? [],
+        ["SR_CD"]
+      );
       // console.log("sahdoihqaodiqwdq3", upd)
-      // not getting doc_image, doc_description in old data after comparison
+        // not getting doc_image, doc_description in old data after comparison
       // updated_tab_format["DOC_MST"] = [{
       //   ...updated_tab_format.TAB,
       //   ...upd,
@@ -314,43 +297,39 @@ const ExtDocument = ({
     }
 
     // let newData = state?.formDatactx
-  };
+
+  }
 
   const retrieveData: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
-      if (Array.isArray(data) && data.length > 0) {
+      if(Array.isArray(data) && data.length>0) {
         // console.log("wefduhweiufhwef", data);
-        oldGridData = data[0]?.DOC_MST ?? [];
-        handleFormDataonRetrievectx(data[0]);
+        oldGridData = data[0]?.DOC_MST ?? []
+        handleFormDataonRetrievectx(data[0])
       }
     },
     onError: (error: any) => {},
   });
 
   useEffect(() => {
-    let payload: {
-      COMP_CD?: string;
-      BRANCH_CD: string;
-      REQUEST_CD?: string;
-      CUSTOMER_ID?: string;
-    } = {
-      // COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-    };
-    if (Array.isArray(location.state) && location.state.length > 0) {
-      const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-      const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-      if (Boolean(reqCD)) {
-        payload["REQUEST_CD"] = reqCD;
+      let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+        // COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
       }
-      if (Boolean(custID)) {
-        payload["CUSTOMER_ID"] = custID;
+      if(Array.isArray(location.state) && location.state.length>0) {
+        const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+        const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+        if(Boolean(reqCD)) {
+          payload["REQUEST_CD"] = reqCD;
+        }
+        if(Boolean(custID)) {
+          payload["CUSTOMER_ID"] = custID;
+        }
       }
-    }
-    if (Object.keys(payload)?.length > 1) {
-      retrieveData.mutate(payload);
-    }
-  }, []);
+      if(Object.keys(payload)?.length > 1) {
+        retrieveData.mutate(payload)
+      }
+  }, [])
 
   return (
     <Dialog
@@ -365,34 +344,34 @@ const ExtDocument = ({
       }}
     >
       {/* <DialogContent sx={{ px: "0" }}> */}
-      <Grid
-        container
-        // style={{
-        //   position: "absolute",
-        //   paddingRight: !state?.isFreshEntryctx ? "113px" : "12px",
-        // }}
-      >
-        <GridWrapper
-          key={`operatorMasterGrid` + data + setData}
-          finalMetaData={DocumentGridMetadata as GridMetaDataType}
-          data={data ?? []}
-          setData={setData}
-          loading={mutation.isLoading}
-          actions={actions}
-          setAction={setCurrentAction}
-          // refetchData={() => refetch()}
-          ref={myGridRef}
-          onClickActionEvent={(index, id, currentData) => {
-            // console.log(data, "qjwkdjbiqwudqd", index, id, currentData)
-            let newData: any[] = [];
-            newData =
-              data.length > 0 &&
-              data.filter((row) => row.SR_CD !== currentData.SR_CD);
-            setData([...newData]);
-          }}
-        />
+        <Grid
+          container
+          // style={{
+          //   position: "absolute",
+          //   paddingRight: !state?.isFreshEntryctx ? "113px" : "12px",
+          // }}
+        >
+          <GridWrapper
+            key={`operatorMasterGrid` + data + setData}
+            finalMetaData={DocumentGridMetadata as GridMetaDataType}
+            data={data ?? []}
+            setData={setData}
+            loading={mutation.isLoading}
+            actions={actions}
+            setAction={setCurrentAction}
+            // refetchData={() => refetch()}
+            ref={myGridRef}
+            onClickActionEvent={(index, id, currentData) => {
+              // console.log(data, "qjwkdjbiqwudqd", index, id, currentData)
+              let newData: any[] = [];
+              newData =
+                data.length > 0 &&
+                data.filter((row) => row.SR_CD !== currentData.SR_CD);
+              setData([...newData]);
+            }}
+          />
 
-        {/* <Grid container item sx={{ justifyContent: "flex-end" }}>
+          {/* <Grid container item sx={{ justifyContent: "flex-end" }}>
             <Button
               sx={{ mr: 2, mb: 2 }}
               color="secondary"
@@ -408,19 +387,19 @@ const ExtDocument = ({
             {SaveUpdateBTNs}
           </Grid> */}
 
-        {openForm ? (
-          <ExtDocumentForm
-            isDataChangedRef={isDataChangedRef}
-            ClosedEventCall={handleDialogClose}
-            formMode={formMode}
-            afterFormSubmit={afterFormSubmit}
-            open={openForm}
-            onClose={() => setOpenForm(false)}
-            gridData={data}
-            rowsData={rowsData}
-          />
-        ) : null}
-      </Grid>
+          {openForm ? (
+            <ExtDocumentForm
+              isDataChangedRef={isDataChangedRef}
+              ClosedEventCall={handleDialogClose}
+              formMode={formMode}
+              afterFormSubmit={afterFormSubmit}
+              open={openForm}
+              onClose={() => setOpenForm(false)}
+              gridData={data}
+              rowsData={rowsData}
+            />
+          ) : null}
+        </Grid>
       {/* </DialogContent> */}
     </Dialog>
   );

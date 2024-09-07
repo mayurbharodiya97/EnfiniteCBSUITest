@@ -13,6 +13,7 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import {
   Box,
   Button,
@@ -31,23 +32,25 @@ import {
   Typography,
   makeStyles,
 } from "@mui/material";
+import { transformFileObject } from "components/fileUpload/utils";
+import { DefaultErrorObject, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
+import AvatarEditor from "react-avatar-editor";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
+import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
+import { Alert } from "components/common/alert";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { GeneralAPI } from "registry/fns/functions";
-import {
-  PopupRequestWrapper,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  queryClient,
-  transformFileObject,
-  utilFunction,
-} from "@acuteinfo/common-base";
+
 interface PhotoSignProps {
   open: boolean;
   onClose: any;
@@ -85,7 +88,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
   );
 };
 
-export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
+export const PhotoSignCommonComp = ({onClose, viewMode}) => {
   const {
     state,
     handleFormDataonSavectx,
@@ -139,7 +142,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
     }
   }, [location]);
 
-  // to get photo/sign history, on edit
+    // to get photo/sign history, on edit
   const {
     data: PhotoHistoryData,
     isError: isPhotoHistoryError,
@@ -151,7 +154,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
     API.getPhotoSignHistory({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
-      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? "",
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
     })
   );
 
@@ -166,40 +169,43 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
     API.getCustLatestDtl({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
-      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? "",
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
     })
   );
 
   useEffect(() => {
-    if (LatestPhotoSignData && !isLatestDtlLoading) {
+    if(LatestPhotoSignData && !isLatestDtlLoading) {
       let custPhoto = LatestPhotoSignData?.[0]?.CUST_PHOTO;
       let custSign = LatestPhotoSignData?.[0]?.CUST_SIGN;
-      if (custPhoto) {
-        handlePhotoOrSignctx(null, custPhoto, "photo");
+      if(custPhoto) {
+        handlePhotoOrSignctx(null, custPhoto, "photo")
         setPhotoImageURL(custPhoto, "photo");
         photoFilesdata.current = custPhoto;
       }
-      if (custSign) {
-        handlePhotoOrSignctx(null, custSign, "sign");
+      if(custSign) {
+        handlePhotoOrSignctx(null, custSign, "sign")   
         setPhotoImageURL(custSign, "sign");
         signFilesdata.current = custSign;
       }
     }
-  }, [LatestPhotoSignData, isLatestDtlLoading]);
+  }, [LatestPhotoSignData, isLatestDtlLoading])
+
+
+
 
   const updateMutation: any = useMutation(API.updatePhotoSignData, {
     onSuccess: (data, payload) => {
-      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_PHOTO, "photo");
-      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_SIGN, "sign");
+      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_PHOTO, "photo")
+      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_SIGN, "sign")
 
       // photoHistoryRefetch()
       // console.log(payload, "datatdastdastdasd", data);
-      setDialogAction(null);
-      setIsSaveDisabled(true);
-      setFormMode("view");
+      setDialogAction(null)
+      setIsSaveDisabled(true)
+      setFormMode("view")
       enqueueSnackbar("Data Saved Successfully!", {
         variant: "success",
-      });
+      })
       LatestDtlRefetch();
     },
     onError: (error: any) => {
@@ -214,7 +220,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
       CUST_PHOTO: photoFilesdata.current ?? "",
       CUST_SIGN: signFilesdata.current ?? "",
     };
-
+    
     // let oldFormData = {
     //   CUST_PHOTO: activePhotoHist.CUST_PHOTO ?? "",
     //   CUST_SIGN: activePhotoHist.CUST_SIGN ?? "",
@@ -253,8 +259,8 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
         ...upd,
       },
     };
-    if (Boolean(location.state?.[0]?.data.REQUEST_ID)) {
-      const { SR_CD, COMP_CD } = LatestPhotoSignData[0];
+    if(Boolean(location.state?.[0]?.data.REQUEST_ID)) {
+      const {SR_CD, COMP_CD} = LatestPhotoSignData[0];
       data = {
         // ENTRY_TYPE: "1",
         COMP_CD: authState?.companyID ?? "",
@@ -272,7 +278,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
           // ...custData,
           ...upd,
         },
-      };
+      }
     }
     if (upd) {
       updateMutation.mutate(data);
@@ -284,12 +290,12 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
     // Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx)
     await setPhotoImageURL(state?.photoBase64ctx, "photo");
     await setPhotoImageURL(state?.signBase64ctx, "sign");
-    // photoFilesdata.current =
-    // signFilesdata.current =
+    // photoFilesdata.current =  
+    // signFilesdata.current = 
     setDialogOpen(false);
     setDialogAction(null);
     setIsSaveDisabled(true);
-  };
+  }
 
   // useEffect(() => {
   //   console.log("dialogAction, isSaveDisabled, formMode", dialogAction, isSaveDisabled, formMode)
@@ -318,7 +324,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
         signFileURL.current = null;
       }
     }
-  };
+  };  
 
   // custom blob creation from selected file blob
   const customTransformFileObj = (currentObj) => {
@@ -388,14 +394,15 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
         }
       }
     }
-  };
+  };  
+
 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getPhotoSignHistory"]);
       queryClient.removeQueries(["getLatestPhotoSign"]);
-    };
-  }, []);
+    }
+  }, [])
 
   return (
     <>
@@ -433,23 +440,17 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
         </Grid>
         <div style={{ display: "flex", alignItems: "center" }}>
           {!isHistoryGridVisible && (
-            <Button
-              sx={{ textWrap: "nowrap" }}
-              onClick={() => setIsHistoryGridVisible(true)}
-            >
+            <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(true)}>
               View History
             </Button>
           )}
           {isHistoryGridVisible && (
-            <Button
-              sx={{ textWrap: "nowrap" }}
-              onClick={() => setIsHistoryGridVisible(false)}
-            >
+            <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(false)}>
               Close History
             </Button>
           )}
 
-          {formMode === "view" && viewMode === "edit" && (
+          {(formMode === "view" && viewMode === "edit") && (
             <Button onClick={() => setFormMode("edit")}>Edit</Button>
           )}
           {formMode === "edit" && (
@@ -457,7 +458,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
               Save
             </Button>
           )}
-          {/* setDialogOpen(false);
+                                {/* setDialogOpen(false);
                       setDialogAction(null);
                       setIsSaveDisabled(true); */}
 
@@ -466,8 +467,8 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
               onClick={() => {
                 // setFormMode("view");
                 setDialogAction("cancel");
-                if (isSaveDisabled) {
-                  setFormMode("view");
+                if(isSaveDisabled) {
+                  setFormMode("view")
                 } else if (!isSaveDisabled) {
                   setDialogOpen(true);
                 }
@@ -479,9 +480,9 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
           {formMode === "view" && (
             <Button
               onClick={() => {
-                handleFormModalClosectx();
-                handlePhotoOrSignctx(null, null, "photo");
-                handlePhotoOrSignctx(null, null, "sign");
+                handleFormModalClosectx()
+                handlePhotoOrSignctx(null, null, "photo")
+                handlePhotoOrSignctx(null, null, "sign")          
                 setDialogAction(null);
                 onClose();
               }}
@@ -491,44 +492,32 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
           )}
         </div>
       </DialogTitle>
-      <DialogContent sx={{ px: "0" }}>
+      <DialogContent sx={{px: "0"}}>
         <>
-          {updateMutation.isLoading ||
-          isPhotoHistoryLoading ||
-          isLatestDtlLoading ? (
-            <LinearProgress color="secondary" />
-          ) : null}
+          {((updateMutation.isLoading || isPhotoHistoryLoading) || isLatestDtlLoading) ? <LinearProgress color="secondary" /> : null}
           {updateMutation.isError ? (
             <Alert
               severity={updateMutation.error?.severity ?? "error"}
-              errorMsg={
-                updateMutation.error?.error_msg ?? "Something went to wrong.."
-              }
+              errorMsg={updateMutation.error?.error_msg ?? "Something went to wrong.."}
               errorDetail={updateMutation.error?.error_detail}
               color="error"
             />
           ) : isPhotoHistoryError ? (
             <Alert
               severity={photoHistoryError?.severity ?? "error"}
-              errorMsg={
-                photoHistoryError?.error_msg ?? "Something went to wrong.."
-              }
+              errorMsg={photoHistoryError?.error_msg ?? "Something went to wrong.."}
               errorDetail={photoHistoryError?.error_detail}
               color="error"
             />
-          ) : (
-            isLatestDtlError && (
-              <Alert
-                severity={LatestDtlError?.severity ?? "error"}
-                errorMsg={
-                  LatestDtlError?.error_msg ?? "Something went to wrong.."
-                }
-                errorDetail={LatestDtlError?.error_detail}
-                color="error"
-              />
-            )
+          ) : isLatestDtlError && (
+            <Alert
+              severity={LatestDtlError?.severity ?? "error"}
+              errorMsg={LatestDtlError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={LatestDtlError?.error_detail}
+              color="error"
+            />
           )}
-          <Grid container sx={{ px: "1" }}>
+          <Grid container sx={{px:"1"}}>
             {/* photo */}
             <Grid item xs={12} sm={6} md={6} style={{ paddingBottom: "10px" }}>
               <Typography
@@ -785,29 +774,29 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
             >
               {/* {formMode === "edit" || formMode === "add" ? ( //temp */}
               {/* {formMode === "edit" ? ( */}
-              <Grid>
-                <Typography
-                  // className={headerClasses.typography}
-                  color="inherit"
-                  variant={"h6"}
-                  component="div"
-                >
-                  Note:
-                </Typography>
-                <Typography
-                  // className={headerClasses.typography}
-                  color="inherit"
-                  variant={"h6"}
-                  component="div"
-                  style={{ fontSize: "inherit" }}
-                >
-                  <ul style={{ paddingLeft: "15px" }}>
-                    <li>Click on the Image box to upload Image.</li>
-                    <li>Maximum Image Size should be 5 MB.</li>
-                    <li>Image format should be JPEG and PNG.</li>
-                  </ul>
-                </Typography>
-              </Grid>
+                <Grid>
+                  <Typography
+                    // className={headerClasses.typography}
+                    color="inherit"
+                    variant={"h6"}
+                    component="div"
+                  >
+                    Note:
+                  </Typography>
+                  <Typography
+                    // className={headerClasses.typography}
+                    color="inherit"
+                    variant={"h6"}
+                    component="div"
+                    style={{ fontSize: "inherit" }}
+                  >
+                    <ul style={{ paddingLeft: "15px" }}>
+                      <li>Click on the Image box to upload Image.</li>
+                      <li>Maximum Image Size should be 5 MB.</li>
+                      <li>Image format should be JPEG and PNG.</li>
+                    </ul>
+                  </Typography>
+                </Grid>
             </Grid>
 
             {PhotoHistoryData && isHistoryGridVisible && (
@@ -828,25 +817,25 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
                 MessageTitle={"CONFIRM"}
                 Message={"Your changes will be Removed."}
                 onClickButton={(rows, buttonNames, ...others) => {
-                  // console.log(rows, "kjefeiwqf", buttonNames)
-                  if (buttonNames === "Ok") {
-                    onClear();
-                  } else if (buttonNames === "Cancel") {
-                    setDialogOpen(false);
-                    setDialogAction(null);
-                  }
+                    // console.log(rows, "kjefeiwqf", buttonNames)
+                    if(buttonNames === "Ok") {
+                      onClear()
+                    } else if (buttonNames === "Cancel") {
+                      setDialogOpen(false);
+                      setDialogAction(null);
+                    }
                 }}
                 buttonNames={["Ok", "Cancel"]}
                 rows={[]}
-                loading={undefined}
+                loading={{}}
                 open={dialogOpen}
-              />
+            />
             }
           </Grid>
         </>
       </DialogContent>
     </>
-  );
-};
+  )
+}
 
 export default PhotoSignatureCpyDialog;

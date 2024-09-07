@@ -1,3 +1,7 @@
+import { ClearCacheProvider, queryClient } from "cache";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -32,38 +36,30 @@ import {
   Dialog,
   CircularProgress,
 } from "@mui/material";
+import { SubmitFnType } from "packages/form";
+import { ActionTypes } from "components/dataTable";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { useSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import {
+  ColorlibStepIconRoot,
+  ColorlibConnector,
+} from "../../../../components/dyanmicForm/stepperForm/style";
 import { AddNewBeneficiaryDetail } from "./addNewBeneficiaryAcDetail";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import { RetrieveClearingForm } from "./retrieveClearing";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { format } from "date-fns";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
-import {
-  ColorlibStepIconRoot,
-  ColorlibConnector,
-  utilFunction,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
-import { RemarksAPIWrapper } from "@acuteinfo/common-base";
-import { usePopupContext, Alert, GridWrapper } from "@acuteinfo/common-base";
-import {
-  ActionTypes,
-  LoaderPaperComponent,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
-import getDynamicLabel from "components/common/custom/getDynamicLabel";
-
 const actions: ActionTypes[] = [
   {
     actionName: "Close",

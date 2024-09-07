@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -7,14 +7,7 @@ import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 
 const OtherAddTab = () => {
-  const {
-    AcctMSTState,
-    handleCurrFormctx,
-    handleSavectx,
-    handleStepStatusctx,
-    handleFormDataonSavectx,
-    handleModifiedColsctx,
-  } = useContext(AcctMSTContext);
+  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -115,13 +108,13 @@ const OtherAddTab = () => {
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
-    });
-    const refs = [formRef.current.handleSubmit(e, "save", false)];
-    handleSavectx(e, refs);
-  };
+    })
+    const refs = [formRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  }
 
   useEffect(() => {
-    let refs = [formRef];
+    let refs = [formRef]
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: AcctMSTState?.colTabValuectx,
@@ -131,37 +124,28 @@ const OtherAddTab = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      Boolean(
-        AcctMSTState?.currentFormctx.currentFormRefctx &&
-          AcctMSTState?.currentFormctx.currentFormRefctx.length > 0
-      ) &&
-      Boolean(formStatus && formStatus.length > 0)
-    ) {
-      if (
-        AcctMSTState?.currentFormctx.currentFormRefctx.length ===
-        formStatus.length
-      ) {
-        setIsNextLoading(false);
+    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
         let submitted;
-        submitted = formStatus.filter((form) => !Boolean(form));
-        if (submitted && Array.isArray(submitted) && submitted.length > 0) {
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
           submitted = false;
         } else {
           submitted = true;
           handleStepStatusctx({
             status: "completed",
             coltabvalue: AcctMSTState?.colTabValuectx,
-          });
+          })
         }
         handleCurrFormctx({
           currentFormSubmitted: submitted,
           isLoading: false,
-        });
-        setFormStatus([]);
+        })
+        setFormStatus([])
       }
     }
-  }, [formStatus]);
+  }, [formStatus])
 
   return (
     <Grid sx={{ mb: 4 }}>
@@ -173,16 +157,12 @@ const OtherAddTab = () => {
         key={"acct-tab-other-add-form" + initialVal}
         metaData={otherAdd_tab_metadata as MetaDataType}
         formStyle={{}}
-        formState={{ GPARAM155: AcctMSTState?.gparam155 }}
+        formState={{GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate
-        handleSave={handleSave}
-        displayMode={AcctMSTState?.formmodectx ?? "new"}
-        isNextLoading={isNextLoading}
-      />
+      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
     </Grid>
   );
 };

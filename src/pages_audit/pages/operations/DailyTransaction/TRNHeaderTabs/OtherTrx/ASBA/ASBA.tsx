@@ -2,19 +2,15 @@ import { Fragment, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { ASBAGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { Alert } from "components/common/alert";
 // import { GridMetaDataType } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 export const ASBA = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);

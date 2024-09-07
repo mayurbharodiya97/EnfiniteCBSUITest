@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const ParametersGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -74,11 +74,11 @@ export const ParametersGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      isAutoSequence: true,
+      isAutoSequence:true,
       width: 80,
       minWidth: 60,
       maxWidth: 120,
-    },
+  },
     {
       accessor: "PARA_CD",
       columnName: "Code",
@@ -200,7 +200,7 @@ export const AuditMetadata: GridMetaDataType = {
       max: "67vh",
     },
     allowColumnHiding: false,
-    allowRowSelection: false,
+    allowRowSelection:false,
     isCusrsorFocused: true,
   },
   columns: [
@@ -239,7 +239,7 @@ export const AuditMetadata: GridMetaDataType = {
       columnName: "Modified Date",
       sequence: 4,
       alignment: "left",
-      dateFormat: "dd/MM/yyyy hh:mm:ss",
+      dateFormat:"dd/MM/yyyy hh:mm:ss",
       componentType: "dateTime",
       width: 100,
       minWidth: 80,
@@ -270,7 +270,7 @@ export const AuditMetadata: GridMetaDataType = {
       columnName: "Verified Date",
       sequence: 5,
       alignment: "left",
-      dateFormat: "dd/MM/yyyy hh:mm:ss",
+      dateFormat:"dd/MM/yyyy hh:mm:ss",
       componentType: "default",
       width: 150,
       minWidth: 80,

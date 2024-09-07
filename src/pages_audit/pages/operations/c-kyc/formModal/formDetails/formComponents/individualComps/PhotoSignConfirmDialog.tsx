@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useRef, FC } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  FC,
+} from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
@@ -13,22 +19,22 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
+import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import _ from "lodash";
+import { Alert } from "components/common/alert";
 import { ActionDialog } from "../../../dialog/ActionDialog";
+import { usePopupContext } from "components/custom/popupContext";
 import { GeneralAPI } from "registry/fns/functions";
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  utilFunction,
-  transformFileObject,
-} from "@acuteinfo/common-base";
+
 interface PhotoSignProps {
   open: boolean;
   onClose: any;
@@ -42,7 +48,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
     state,
     handlePhotoOrSignctx,
     handleReqCDctx,
-    handleFormModalClosectx,
+    handleFormModalClosectx
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const classes = useStyles();
@@ -62,14 +68,14 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const signFilesdata = useRef<any | null>("");
   const { t } = useTranslation();
   const location: any = useLocation();
-  const formMode = "view";
+  const formMode = "view"
   const [isHistoryGridVisible, setIsHistoryGridVisible] =
     useState<boolean>(true);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
   const [customerData, setCustomerData] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
-  const [actionDialog, setActionDialog] = useState(false);
+  const [actionDialog, setActionDialog] = useState(false)
   const CUST_NM = location.state?.[0]?.data.CUSTOMER_NAME ?? "";
   const CUST_ID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
   const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID ?? "";
@@ -89,7 +95,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
     API.getPhotoSignHistory({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
-      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? "",
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
     })
   );
 
@@ -105,7 +111,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
     API.getCustLatestDtl({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
-      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? "",
+      REQ_CD: location?.state?.[0]?.data.REQUEST_ID ?? ""
     })
   );
 
@@ -113,48 +119,43 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const confirmPhotoMutation: any = useMutation(API.ConfirmCustPhoto, {
     onSuccess: (data, req) => {
       PendingRefetch();
-      CloseMessageBox();
-      enqueueSnackbar(
-        `Request ID ${REQUEST_CD} ${
-          req?.CONFIRMED === "Y" ? "confirmed" : "rejected"
-        } Successfully.`,
-        {
-          variant: "success",
-        }
-      );
-      handleFormModalClosectx();
-      handlePhotoOrSignctx(null, null, "photo");
-      handlePhotoOrSignctx(null, null, "sign");
+      CloseMessageBox()
+      enqueueSnackbar(`Request ID ${REQUEST_CD} ${req?.CONFIRMED === "Y" ? "confirmed" : "rejected"} Successfully.`, { 
+        variant: "success"
+      });
+      handleFormModalClosectx()
+      handlePhotoOrSignctx(null, null, "photo")
+      handlePhotoOrSignctx(null, null, "sign")          
       onClose();
     },
-    onError: (error: any) => {
-      let errorMsg: string = "Unknown Error occured";
+    onError: (error:any) => {
+      let errorMsg:string = "Unknown Error occured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
-      CloseMessageBox();
-    },
+      CloseMessageBox()
+    }
   });
 
   useEffect(() => {
-    if (LatestPhotoSignData && !isLatestDtlLoading) {
+    if(LatestPhotoSignData && !isLatestDtlLoading) {
       let custPhoto = LatestPhotoSignData?.[0]?.CUST_PHOTO;
       let custSign = LatestPhotoSignData?.[0]?.CUST_SIGN;
-      if (custPhoto) {
-        handlePhotoOrSignctx(null, custPhoto, "photo");
+      if(custPhoto) {
+        handlePhotoOrSignctx(null, custPhoto, "photo")
         setPhotoImageURL(custPhoto, "photo");
         photoFilesdata.current = custPhoto;
       }
-      if (custSign) {
-        handlePhotoOrSignctx(null, custSign, "sign");
+      if(custSign) {
+        handlePhotoOrSignctx(null, custSign, "sign")   
         setPhotoImageURL(custSign, "sign");
         signFilesdata.current = custSign;
       }
     }
-  }, [LatestPhotoSignData, isLatestDtlLoading]);
+  }, [LatestPhotoSignData, isLatestDtlLoading])
 
   // useEffect(() => {
   //   console.log("dialogAction, isSaveDisabled, formMode", dialogAction, isSaveDisabled, formMode)
@@ -256,10 +257,10 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   };
 
   const onCloseActionDialog = () => {
-    setActionDialog(false);
-  };
+    setActionDialog(false)
+  }
 
-  const openActionDialog = async (state: string) => {
+  const openActionDialog = async (state:string) => {
     // setActionDialog(true)
     // setConfirmAction(state)
 
@@ -269,31 +270,24 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
     });
-    if (buttonName === "Yes") {
+    if(buttonName === "Yes") {
       confirmPhotoMutation.mutate({
         REQUEST_CD: REQUEST_CD,
-        COMP_CD: authState?.companyID ?? "",
+        COMP_CD: authState?.companyID ?? "", 
         CONFIRMED: state === "confirm" ? "Y" : "N",
-      });
+      })
     }
-  };
+  }
 
   const ActionBTNs = React.useMemo(() => {
-    return (
-      <React.Fragment>
+      return <React.Fragment>
         {!isHistoryGridVisible && (
-          <Button
-            sx={{ textWrap: "nowrap" }}
-            onClick={() => setIsHistoryGridVisible(true)}
-          >
+          <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(true)}>
             View History
           </Button>
         )}
         {isHistoryGridVisible && (
-          <Button
-            sx={{ textWrap: "nowrap" }}
-            onClick={() => setIsHistoryGridVisible(false)}
-          >
+          <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(false)}>
             Close History
           </Button>
         )}
@@ -313,60 +307,59 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         </Button>
         <Button
           onClick={() => {
-            handleFormModalClosectx();
-            handlePhotoOrSignctx(null, null, "photo");
-            handlePhotoOrSignctx(null, null, "sign");
+            handleFormModalClosectx()
+            handlePhotoOrSignctx(null, null, "photo")
+            handlePhotoOrSignctx(null, null, "sign")          
             onClose();
           }}
         >
           Close
         </Button>
       </React.Fragment>
-    );
-  }, [isHistoryGridVisible]);
+  }, [isHistoryGridVisible])
+
+
 
   return (
     <React.Fragment>
-      <Dialog
-        open={open}
-        maxWidth="lg"
-        PaperProps={{
-          style: {
-            minWidth: "70%",
-            width: "80%",
-            // maxWidth: "90%",
-          },
+    <Dialog
+      open={open}
+      maxWidth="lg"
+      PaperProps={{
+        style: {
+          minWidth: "70%",
+          width: "80%",
+          // maxWidth: "90%",
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          background: "var(--theme-color3)",
+          color: "var(--theme-color2)",
+          letterSpacing: "1.3px",
+          // margin: "10px",
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+          fontWeight: "light",
+          borderRadius: "inherit",
+          minWidth: "450px",
+          py: 1,
+          // mx: "auto",
+          display: "flex",
+          // mx: 1,
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
+        id="responsive-dialog-title"
       >
-        <DialogTitle
-          sx={{
-            background: "var(--theme-color3)",
-            color: "var(--theme-color2)",
-            letterSpacing: "1.3px",
-            // margin: "10px",
-            boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-            fontWeight: "light",
-            borderRadius: "inherit",
-            minWidth: "450px",
-            py: 1,
-            // mx: "auto",
-            display: "flex",
-            // mx: 1,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-          id="responsive-dialog-title"
-        >
-          <Grid container>
-            <Typography variant="h6">
-              {`Photo & Signature - ${CUST_NM} ${
-                CUST_ID ? ` [Cust. ID : ${CUST_ID}] ` : null
-              }`}
-            </Typography>
-          </Grid>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {/* {!isHistoryGridVisible && (
+        <Grid container>
+          <Typography variant="h6">
+            {`Photo & Signature - ${CUST_NM} ${CUST_ID ? ` [Cust. ID : ${CUST_ID}] ` : null}`}
+          </Typography>
+        </Grid>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {/* {!isHistoryGridVisible && (
             <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(true)}>
               View History
             </Button>
@@ -376,9 +369,9 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
               Close History
             </Button>
           )} */}
-            {ActionBTNs}
+          {ActionBTNs}
 
-            {/* {formMode === "view" && (
+          {/* {formMode === "view" && (
             <Button
               onClick={() => {
                 handlePhotoOrSignctx(null, null, "photo")
@@ -389,59 +382,44 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
               Close
             </Button>
           )} */}
-          </div>
-        </DialogTitle>
-        <DialogContent sx={{ px: "0" }}>
-          <>
-            {isLatestDtlLoading ? <LinearProgress color="secondary" /> : null}
-            {isLatestDtlError ? (
-              <Alert
-                severity={LatestDtlError?.severity ?? "error"}
-                errorMsg={
-                  LatestDtlError?.error_msg ?? "Something went to wrong.."
-                }
-                errorDetail={LatestDtlError?.error_detail}
-                color="error"
-              />
-            ) : isPhotoHistoryError ? (
-              <Alert
-                severity={photoHistoryError?.severity ?? "error"}
-                errorMsg={
-                  photoHistoryError?.error_msg ?? "Something went to wrong.."
-                }
-                errorDetail={photoHistoryError?.error_detail}
-                color="error"
-              />
-            ) : (
-              confirmPhotoMutation.isError && (
-                <Alert
-                  severity={confirmPhotoMutation.error?.severity ?? "error"}
-                  errorMsg={
-                    confirmPhotoMutation.error?.error_msg ??
-                    "Something went to wrong.."
-                  }
-                  errorDetail={confirmPhotoMutation.error?.error_detail}
-                  color="error"
-                />
-              )
-            )}
-            <Grid container sx={{ px: "1" }}>
-              {/* photo */}
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={6}
-                style={{ paddingBottom: "10px" }}
+        </div>
+      </DialogTitle>
+      <DialogContent sx={{px: "0"}}>
+        <>
+          {isLatestDtlLoading ? <LinearProgress color="secondary" /> : null}
+          {isLatestDtlError ? (
+            <Alert
+              severity={LatestDtlError?.severity ?? "error"}
+              errorMsg={LatestDtlError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={LatestDtlError?.error_detail}
+              color="error"
+            />
+          ) : isPhotoHistoryError ? (
+            <Alert
+              severity={photoHistoryError?.severity ?? "error"}
+              errorMsg={photoHistoryError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={photoHistoryError?.error_detail}
+              color="error"
+            />
+          ) : confirmPhotoMutation.isError && (
+            <Alert
+              severity={confirmPhotoMutation.error?.severity ?? "error"}
+              errorMsg={confirmPhotoMutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={confirmPhotoMutation.error?.error_detail}
+              color="error"
+            />
+          )}
+          <Grid container sx={{px:"1"}}>
+            {/* photo */}
+            <Grid item xs={12} sm={6} md={6} style={{ paddingBottom: "10px" }}>
+              <Typography
+                // className={headerClasses.title}
+                color="inherit"
+                variant={"h6"}
+                component="div"
               >
-                <Typography
-                  // className={headerClasses.title}
-                  color="inherit"
-                  variant={"h6"}
-                  component="div"
-                >
-                  Photo Image
-                </Typography>
+                Photo Image
+              </Typography>
                 <div
                   className={classes.uploadWrapper}
                   style={{
@@ -476,34 +454,28 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
                       }}
                     />
                   </Grid>
-                  <input
-                    name="fileselect"
-                    type="file"
-                    style={{ display: "none" }}
-                    ref={photoUploadControl} // temp
-                    onChange={(event) => handleFileSelect(event, "photo")} //temp
-                    accept="image/*"
-                    onClick={(e) => {}}
-                  />
+                    <input
+                      name="fileselect"
+                      type="file"
+                      style={{ display: "none" }}
+                      ref={photoUploadControl} // temp
+                      onChange={(event) => handleFileSelect(event, "photo")} //temp
+                      accept="image/*"
+                      onClick={(e) => {}}
+                    />
                 </div>
-              </Grid>
+            </Grid>
 
-              {/* signature */}
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={6}
-                style={{ paddingBottom: "10px" }}
+            {/* signature */}
+            <Grid item xs={12} sm={6} md={6} style={{ paddingBottom: "10px" }}>
+              <Typography
+                // className={headerClasses.title}
+                color="inherit"
+                variant={"h6"}
+                component="div"
               >
-                <Typography
-                  // className={headerClasses.title}
-                  color="inherit"
-                  variant={"h6"}
-                  component="div"
-                >
-                  Signature Image
-                </Typography>
+                Signature Image
+              </Typography>
                 <div
                   className={classes.uploadWrapper}
                   style={{
@@ -536,43 +508,44 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
                       }}
                     />
                   </Grid>
-                  <input
-                    name="fileselect"
-                    type="file"
-                    style={{ display: "none" }}
-                    ref={signUploadControl} // temp
-                    onChange={(event) => handleFileSelect(event, "sign")} //temp
-                    accept="image/*"
-                    onClick={(e) => {}}
-                  />
+                    <input
+                      name="fileselect"
+                      type="file"
+                      style={{ display: "none" }}
+                      ref={signUploadControl} // temp
+                      onChange={(event) => handleFileSelect(event, "sign")} //temp
+                      accept="image/*"
+                      onClick={(e) => {}}
+                    />
                 </div>
-              </Grid>
-
-              {isHistoryGridVisible && (
-                <GridWrapper
-                  key={`AssetDTLGrid`}
-                  finalMetaData={PhotoHistoryMetadata as GridMetaDataType}
-                  data={PhotoHistoryData ?? []}
-                  setData={() => null}
-                  loading={isPhotoHistoryLoading || isPhotoHistoryFetching}
-                  // actions={actions}
-                  // setAction={setCurrentAction}
-                  // refetchData={() => assetDTLRefetch()}
-                  // ref={myGridRef}
-                />
-              )}
             </Grid>
-          </>
-        </DialogContent>
-      </Dialog>
 
-      {/* {actionDialog && <ActionDialog 
+            {isHistoryGridVisible && (
+              <GridWrapper
+                key={`AssetDTLGrid`}
+                finalMetaData={PhotoHistoryMetadata as GridMetaDataType}
+                data={PhotoHistoryData ?? []}
+                setData={() => null}
+                loading={isPhotoHistoryLoading || isPhotoHistoryFetching}
+                // actions={actions}
+                // setAction={setCurrentAction}
+                // refetchData={() => assetDTLRefetch()}
+                // ref={myGridRef}
+              />
+            )}
+          </Grid>
+        </>
+      </DialogContent>
+    </Dialog>
+
+    {/* {actionDialog && <ActionDialog 
         open={actionDialog} 
         setOpen={setActionDialog} 
         closeForm = {onClose}
         action= {confirmAction}
         REQUEST_CD={REQUEST_CD}
     />} */}
+
     </React.Fragment>
   );
 };

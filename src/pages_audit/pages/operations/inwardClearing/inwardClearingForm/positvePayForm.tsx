@@ -2,12 +2,12 @@ import { FC } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
+import { GradientButton } from "components/styledComponent/button";
 import * as API from "../api";
-import { positivePayFormMetaData } from "./metaData";
-import { LoaderPaperComponent, GradientButton } from "@acuteinfo/common-base";
-
-import { FormWrapper, Alert, MetaDataType } from "@acuteinfo/common-base";
-
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import {  positivePayFormMetaData } from "./metaData";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 export const PositivePayFormWrapper: FC<{
   onClose?: any;
   positiveData?: any;
@@ -49,9 +49,9 @@ export const PositivePayFormWrapper: FC<{
           <>
             <FormWrapper
               key={`positivePayForm`}
-              metaData={positivePayFormMetaData as MetaDataType}
+              metaData={positivePayFormMetaData as unknown as MetaDataType}
               initialValues={data?.[0]}
-              onSubmitHandler={() => {}}
+              onSubmitHandler={{}}
               formStyle={{
                 background: "white",
               }}

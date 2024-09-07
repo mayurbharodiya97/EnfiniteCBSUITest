@@ -1,8 +1,9 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction, greaterThanDate } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { geaterThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -812,7 +813,7 @@ export const ChequeBookEntryMetaData = {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
         } else if (
-          greaterThanDate(value?.value, value?._maxDt, {
+          geaterThanDate(value?.value, value?._maxDt, {
             ignoreTime: true,
           })
         ) {

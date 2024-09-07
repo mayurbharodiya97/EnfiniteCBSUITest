@@ -7,34 +7,36 @@ import React, {
   useState,
 } from "react";
 import { Button, Dialog } from "@mui/material";
+import { MasterDetailsForm } from "components/formcomponent";
+import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import _, { cloneDeep } from "lodash";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
+import { FormWrapper } from "components/dyanmicForm/formWrapper";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { extractMetaData, utilFunction } from "components/utils";
+import { MetaDataType } from "components/dyanmicForm";
 import { DocumentFormMetadata } from "./documentFormMetadata";
-import { transformFileObject } from "@acuteinfo/common-base";
+import { UploadTarget } from "components/fileUpload/uploadTarget";
+import { FileObjectType } from "components/fileUpload/type";
+import {
+  transformFileObject,
+  validateFilesAndAddToList,
+} from "components/fileUpload/utils";
 import {
   ImageViewer,
-  InitialValuesType,
-  SubmitFnType,
-  utilFunction,
   NoPreview,
-  MetaDataType,
-  FormWrapper,
-  useDialogStyles,
-  extractMetaData,
   PDFViewer,
-  FileObjectType,
-  UploadTarget,
-} from "@acuteinfo/common-base";
+} from "components/fileUpload/preView";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api";
 import { CkycContext } from "../../../../CkycContext";
-
+ 
 const KYCDocumentMasterDetails = ({
   ClosedEventCall,
   isDataChangedRef,
-  formMode,
+  formMode, 
   afterFormSubmit,
   open,
   onClose,
@@ -42,7 +44,7 @@ const KYCDocumentMasterDetails = ({
   allowedExtensions = ["pdf"],
   maxAllowedSize = 1024 * 1024 * 3,
   gridData,
-  rowsData,
+  rowsData
 }) => {
   const classes = useDialogStyles();
   const myImgRef = useRef<any>(null);
@@ -129,6 +131,7 @@ const KYCDocumentMasterDetails = ({
   //   }
   // }, [files]);
 
+
   const AddNewRow = () => {
     myRef.current?.addNewRow(true);
   };
@@ -142,16 +145,7 @@ const KYCDocumentMasterDetails = ({
   ) => {
     if (data) {
       // console.log("wadqwdwq. doc formsubmit", data)
-      let filteredData = _.pick(data, [
-        "DOC_DESCRIPTION",
-        "DOC_IMAGE",
-        "DOC_NO",
-        "SR_CD",
-        "SUBMIT",
-        "TEMPLATE_CD",
-        "TRAN_CD",
-        "VALID_UPTO",
-      ]);
+      let filteredData = _.pick(data, ["DOC_DESCRIPTION", "DOC_IMAGE", "DOC_NO", "SR_CD", "SUBMIT", "TEMPLATE_CD", "TRAN_CD", "VALID_UPTO"])
       // console.log(fileRef.current, "sfhweiufhwieufh", files);
       if (fileRef.current && fileRef.current.length > 0) {
         if (fileRef.current[0].blob) {
@@ -168,7 +162,10 @@ const KYCDocumentMasterDetails = ({
           }
         }
       } else {
-        let newData = { ...filteredData, DOC_IMAGE: "", DOC_OBJ: "" };
+        let newData = {...filteredData,
+          DOC_IMAGE: "",
+          DOC_OBJ: "",
+        }
         afterFormSubmit(newData, formMode);
       }
     }

@@ -1,5 +1,5 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 
 export const getParameterConfirm = async ({ comp_cd, branch_cd }) => {
   const { status, data, message, messageDetails } =
@@ -13,23 +13,15 @@ export const getParameterConfirm = async ({ comp_cd, branch_cd }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const confirmStatus = async ({
-  comp_cd,
-  branch_cd,
-  remarks,
-  para_cd,
-  confirmed,
-}) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "PARAMSTCONFIRM",
-    {
+export const confirmStatus = async ({ comp_cd, branch_cd, remarks, para_cd, confirmed }) => {
+  const { status, message, messageDetails } =
+    await AuthSDK.internalFetcher("PARAMSTCONFIRM", {
       COMP_CD: comp_cd,
       BRANCH_CD: branch_cd,
       REMARKS: remarks,
       PARA_CD: para_cd,
       CONFIRMED: confirmed,
-    }
-  );
+    });
   if (status === "0") {
     return message;
   } else {

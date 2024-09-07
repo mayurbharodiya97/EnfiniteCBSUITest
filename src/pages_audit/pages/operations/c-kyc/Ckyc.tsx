@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Box, Typography, Grid, Tab } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Tab,
+} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { Tabs } from "@acuteinfo/common-base";
+import StyledTabs from "components/styledComponent/tabs/tabs";
 import FormModal from "./formModal/formModal";
 // import {Tabs} from '../../../../components/styledComponent/tabs';
 // import {Tab} from '../../../../components/styledComponent/tab';
@@ -11,10 +16,12 @@ import PersonIcon from "@mui/icons-material/Person"; // individual-person-icon
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "./CkycContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
 import PendingCustomer from "./PendingCustomer";
 import RetrieveCustomer from "./RetrieveCustomer";
-import { GradientButton } from "@acuteinfo/common-base";
-export const CustomTabs: any = styled(Tabs)(({ orientation, theme }) => ({
+import { GradientButton } from "components/styledComponent/button";
+
+export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
   boxShadow: "unset !important",
   background: "unset !important",
@@ -35,14 +42,14 @@ export const CustomTabs: any = styled(Tabs)(({ orientation, theme }) => ({
   "& .MuiButtonBase-root.Mui-selected": {
     color: "var(--theme-color1)",
     "& .toggle_icon_container": {
-      color: "#fff",
-    },
+      color: "#fff"
+    }
   },
   "& .MuiButtonBase-root.MuiTab-root:not(.Mui-selected):hover": {
     color: "var(--theme-color3)",
     "& .toggle_icon_container": {
-      color: "#fff",
-    },
+      color: "#fff"
+    }
   },
   "& .MuiTabs-flexContainerVertical": {
     [theme.breakpoints.up("sm")]: {
@@ -131,6 +138,7 @@ export const CustomTabs: any = styled(Tabs)(({ orientation, theme }) => ({
   },
 }));
 
+
 const StyledHeaderGrid = styled(Grid)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
@@ -184,18 +192,8 @@ export const Ckyc = () => {
   const [tabValue, setTabValue] = React.useState(0);
 
   useEffect(() => {
-    console.log(
-      state?.retrieveFormDataApiRes,
-      "wadqwdwq.",
-      state?.formDatactx,
-      "upd ->",
-      state?.modifiedFormCols
-    );
-  }, [
-    state?.retrieveFormDataApiRes,
-    state?.formDatactx,
-    state?.modifiedFormCols,
-  ]);
+    console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd ->", state?.modifiedFormCols)
+  }, [state?.retrieveFormDataApiRes, state?.formDatactx, state?.modifiedFormCols])
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -258,10 +256,7 @@ export const Ckyc = () => {
                 },
               }}
             >
-              <PersonIcon
-                fontSize="medium"
-                sx={{ color: "var(--theme-color2)" }}
-              />
+              <PersonIcon fontSize="medium" sx={{color:"var(--theme-color2)"}} />
             </GradientButton>
           </Tooltip>
           <Tooltip title={t("LegalCustTooltip")}>
@@ -289,10 +284,7 @@ export const Ckyc = () => {
                 },
               }}
             >
-              <CorporateFareIcon
-                fontSize="medium"
-                sx={{ color: "var(--theme-color2)" }}
-              />
+              <CorporateFareIcon fontSize="medium" sx={{color:"var(--theme-color2)"}} />
             </GradientButton>
           </Tooltip>
         </Grid>

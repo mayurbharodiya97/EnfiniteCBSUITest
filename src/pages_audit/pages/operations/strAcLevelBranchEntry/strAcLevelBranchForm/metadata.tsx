@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "../api";
 
 export const strLevelBranchEditFormMetaData = {

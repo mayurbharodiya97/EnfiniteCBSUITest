@@ -1,6 +1,7 @@
-import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "../auth";
 import { format } from "date-fns";
+import { isValidDate } from "components/utils/utilFunctions/function";
 import { useEffect } from "react";
 
 const GeneralAPISDK = () => {
@@ -202,16 +203,14 @@ const GeneralAPISDK = () => {
             },
             STMT_FROM_DATE: {
               value: format(
-                utilFunction.isValidDate(LST_STATEMENT_DT)
+                isValidDate(LST_STATEMENT_DT)
                   ? originalDate.setDate(originalDate.getDate() + 1)
                   : new Date(),
                 "dd/MMM/yyyy"
               ),
             },
             WK_STMT_TO_DATE: {
-              value: utilFunction.isValidDate(new Date())
-                ? new Date()
-                : new Date(),
+              value: isValidDate(new Date()) ? new Date() : new Date(),
             },
             ACCT_CD: {
               value: data?.[0]?.ACCT_CD,

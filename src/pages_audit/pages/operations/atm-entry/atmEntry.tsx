@@ -7,15 +7,21 @@ import {
   Paper,
 } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
+import { ClearCacheProvider, queryClient } from "cache";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 import { AtmEntryMetaData } from "./metaData/atmEntryMetadata";
-import { useTranslation } from "react-i18next";
-import { AtmEntryMetaData602 } from "./atmEntryMetadata";
 import * as API from "./api";
 import { atmGridMetaData } from "./metaData/atmEntryGridMetadata";
 import { CardDetails } from "./cardDetails/cardDetails";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Draggable from "react-draggable";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
@@ -23,20 +29,6 @@ import { atmentrymetadata } from "./metaData/atmEntryMetadata2";
 import { CardPrinting } from "./cardPrinting";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { t } from "i18next";
-import { gridClasses } from "@mui/system";
-import {
-  LoaderPaperComponent,
-  ClearCacheProvider,
-  RemarksAPIWrapper,
-  FormWrapper,
-  MetaDataType,
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -179,7 +171,7 @@ const AtmEntryCustom = ({ parameter }) => {
   };
   console.log("<<<isDataaa11", isData);
 
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
     let result = gridRef?.current?.cleanData?.();
     let gridDtl =
       result?.length > 0

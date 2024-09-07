@@ -1,4 +1,4 @@
-import * as API from "../api";
+import * as API from '../api';
 export const prioritymastersubformmetadata = {
   form: {
     name: "Priority Master - Sub",
@@ -14,14 +14,14 @@ export const prioritymastersubformmetadata = {
           xs: 12,
           sm: 12,
           md: 12,
-          lg: 12,
-          xl: 12,
+          lg:12,
+          xl:12
         },
         container: {
           direction: "row",
           spacing: 2,
-          width: 200,
-          maxwidth: 500,
+          width:200,
+          maxwidth:500
         },
       },
     },
@@ -43,43 +43,43 @@ export const prioritymastersubformmetadata = {
       label: "Code",
       placeholder: "Code",
       type: "text",
-      maxLength: 4,
+      maxLength:4,
       required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
       },
-      preventSpecialCharInput: true,
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      preventSpecialCharInput:true,
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl:6  },
     },
     {
       render: { componentType: "autocomplete" },
       name: "SUB_PARENT_PRIO",
       label: "ParentWeaker",
-      placeholder: "ParentWeaker",
+      placeholder:"ParentWeaker",
       enableDefaultOption: false,
-      options: () => API.getPMISCData("WEAKER_PARENT"),
+      options:()=> API.getPMISCData("WEAKER_PARENT"),
       _optionsKey: "getPMISCData",
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6},
       __VIEW__: { isReadOnly: true },
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
     },
     {
       render: { componentType: "textField" },
       name: "DESCRIPTION",
       label: "Description",
       type: "text",
-      required: true,
+      required: true, 
       placeholder: "Description",
-      maxLength: 50,
-      multiline: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      maxLength:50,
+      multiline:true,
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-
+      GridProps: {  xs: 12, sm: 12, md: 12, lg: 12, xl:12 },
+      
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -103,5 +103,6 @@ export const prioritymastersubformmetadata = {
         return "";
       },
     },
+    
   ],
 };

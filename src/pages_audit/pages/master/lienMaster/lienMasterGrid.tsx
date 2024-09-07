@@ -1,29 +1,19 @@
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  ActionTypes,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
-import React, {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { gridMetadata } from "./gridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic/";
 import { enqueueSnackbar } from "notistack";
 import { LienMasterFormWrapper } from "./viewDetails/LineMasterViewDetails";
 import { useMutation, useQuery } from "react-query";
-import * as API from "./api";
+import * as API from './api';
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
+import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import { queryClient } from "@acuteinfo/common-base";
+
 
 const actions: ActionTypes[] = [
   {
@@ -46,6 +36,7 @@ const actions: ActionTypes[] = [
 ];
 
 const LienMasterGrid = () => {
+
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const isDeleteDataRef = useRef<any>(null);
@@ -67,11 +58,13 @@ const LienMasterGrid = () => {
             _isDeleteRow: true,
           });
         }
-      } else {
+      }
+      else {
         navigate(data?.name, {
           state: data?.rows,
         });
       }
+
     },
     [navigate]
   );
@@ -104,6 +97,8 @@ const LienMasterGrid = () => {
       CloseMessageBox();
     },
   });
+
+
 
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
@@ -165,8 +160,10 @@ const LienMasterGrid = () => {
           }
         />
       </Routes>
+
     </Fragment>
   );
 };
 
 export default LienMasterGrid;
+

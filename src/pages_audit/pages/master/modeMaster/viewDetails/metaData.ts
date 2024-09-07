@@ -1,3 +1,5 @@
+import { DefaultValue } from "recoil";
+
 export const metaData = {
   form: {
     name: "Mode Master",
@@ -58,8 +60,9 @@ export const metaData = {
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       __EDIT__: { isReadOnly: true },
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
+
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
@@ -98,6 +101,7 @@ export const metaData = {
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
+
     },
     {
       render: {
@@ -146,6 +150,8 @@ export const metaData = {
         },
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
+
     },
+
   ],
 };

@@ -1,8 +1,4 @@
-import {
-  FormWrapper,
-  MetaDataType,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { main_tab_metadata } from "../tabMetadata/mainTabMetadata";
 import { AcctMSTContext } from "../AcctMSTContext";
@@ -14,15 +10,7 @@ import { AuthContext } from "pages_audit/auth";
 import { extractMetaData } from "components/utils";
 
 const MainTab = () => {
-  const {
-    AcctMSTState,
-    handlecustomerIDctx,
-    handleCurrFormctx,
-    handleStepStatusctx,
-    handleFormDataonSavectx,
-    handleModifiedColsctx,
-    handleSavectx,
-  } = useContext(AcctMSTContext);
+  const { AcctMSTState, handlecustomerIDctx, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
   const { MessageBox } = usePopupContext();
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -144,22 +132,20 @@ const MainTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if (!AcctMSTState?.isFreshEntryctx) {
-        let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
-        let updatedCols = tabModifiedCols.MAIN_DETAIL
-          ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current])
-          : _.uniq([...formFieldsRef.current]);
+      if(!AcctMSTState?.isFreshEntryctx) {
+        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+        let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols],
-        };
-        handleModifiedColsctx(tabModifiedCols);
+          MAIN_DETAIL: [...updatedCols]
+        }
+        handleModifiedColsctx(tabModifiedCols)
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus((old) => [...old, true]);
+      setFormStatus(old => [...old, true])
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
+        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -168,7 +154,7 @@ const MainTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus((old) => [...old, false]);
+      setFormStatus(old => [...old, false])
     }
     endSubmit(true);
   };
@@ -199,20 +185,16 @@ const MainTab = () => {
         metaData={extractMetaData(main_tab_metadata, AcctMSTState?.formmodectx) as MetaDataType}
         formStyle={{}}
         formState={{
-          PARAM320: AcctMSTState?.param320,
+          PARAM320: AcctMSTState?.param320, 
           ACCT_TYPE: AcctMSTState?.accTypeValuectx,
           MessageBox: MessageBox,
-          handlecustomerIDctx: handlecustomerIDctx,
+          handlecustomerIDctx: handlecustomerIDctx
         }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate
-        handleSave={handleSave}
-        displayMode={AcctMSTState?.formmodectx ?? "new"}
-        isNextLoading={isNextLoading}
-      />
+      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
     </Grid>
   );
 };

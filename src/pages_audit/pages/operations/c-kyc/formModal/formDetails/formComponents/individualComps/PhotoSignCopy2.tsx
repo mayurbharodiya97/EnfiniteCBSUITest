@@ -1,67 +1,41 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-  useRef,
-  FC,
-  CSSProperties,
-  useMemo,
-  Fragment,
-} from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Slider,
-  Tooltip,
-  Typography,
-  makeStyles,
-} from "@mui/material";
+import React, { useState, useEffect, useCallback, useContext, useRef, FC, CSSProperties, useMemo, Fragment } from "react";
+import { useMutation, useQuery } from "react-query";
+import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Slider, Tooltip, Typography, makeStyles } from "@mui/material";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import AvatarEditor from "react-avatar-editor";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
+import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
 import { GeneralAPI } from "registry/fns/functions";
-import { useMutation, useQuery } from "react-query";
-import * as API from "../../../../api";
-import {
-  GradientButton,
-  utilFunction,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  transformFileObject,
-} from "@acuteinfo/common-base";
+
 
 interface PhotoSignProps {
-  componentIn?: string;
-  formMode?: string;
-  setFormMode?: any;
-  isHistoryGridVisible?: boolean;
-  setIsHistoryGridVisible?: any;
-  isSaveDisabled?: boolean;
-  setIsSaveDisabled?: any;
-  dialogAction?: "close" | "cancel" | "save" | null;
-  setDialogAction?: any;
-  dialogOpen?: boolean;
-  setDialogOpen?: any;
-  displayMode?: string;
+    componentIn?: string;
+    formMode?: string;
+    setFormMode?: any;
+    isHistoryGridVisible?: boolean; 
+    setIsHistoryGridVisible?: any; 
+    isSaveDisabled?: boolean; 
+    setIsSaveDisabled?: any;
+    dialogAction?: "close" | "cancel" | "save" | null;
+    setDialogAction?: any; 
+    dialogOpen?: boolean;
+    setDialogOpen?: any;
+    displayMode?: string;
 }
 
 const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {

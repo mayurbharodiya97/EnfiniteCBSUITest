@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import { utilFunction } from "components/utils";

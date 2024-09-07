@@ -1,19 +1,20 @@
 import { AppBar, Dialog, Grid, IconButton } from "@mui/material";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation } from "react-query";
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { DocMasterDTLForm } from "./DocMasterDTLForm";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { CreateDetailsRequestData } from "components/utils";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { enqueueSnackbar } from "notistack";
-import {
-  PopupMessageAPIWrapper,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 
 const UpdateDocument = ({ open, onClose, viewMode, from }) => {
   const navigate = useNavigate();
@@ -30,8 +31,8 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
   const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
   const payload = {
     REQ_CD: reqCD,
-    CUSTOMER_ID: custID,
-  };
+    CUSTOMER_ID: custID
+  }
 
   // useEffect(() => {
   //   console.log("on state change", state, state?.[0]?.data.REQUEST_ID, state?.[0]?.data.CUSTOMER_ID)
@@ -41,18 +42,14 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
     onSuccess: (data) => {
       // console.log("on successssss.,", data, state);
       if (Array.isArray(data) && data.length > 0) {
-        let newData: any[] = data;
-        newData = newData.map((doc) => {
-          return {
-            ...doc,
-            TRANSR_CD: `${doc.TRAN_CD}${doc.SR_CD}`,
-            SUBMIT: doc.SUBMIT === "Y" ? true : false,
-          };
-        });
-        // console.log("on successssss., wedqw", newData);
-        setGridData([...newData]);
+          let newData: any[] = data;
+          newData = newData.map((doc) => {
+            return { ...doc, TRANSR_CD: `${doc.TRAN_CD}${doc.SR_CD}`, SUBMIT: doc.SUBMIT === "Y" ? true : false };
+          });
+          // console.log("on successssss., wedqw", newData);
+          setGridData([...newData]);
       }
-    },
+    }
   });
 
   // update modification
@@ -81,7 +78,7 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
       custDTLMutation.mutate(payload);
       isDataChangedRef.current = false;
     }
-    navigate(".", { state: { ...state } });
+    navigate(".", {state: {...state}});
     // handleFormModalClosectx();
     // onClose();
   };
@@ -182,10 +179,8 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
         setConfirmAction("")
         // console.log("qwefhweufhiuwheiufhwef", data?.rows)
         navigate(data?.name, {
-          state: {
-            ...state,
-            rows: data?.rows,
-            // REQ_CD: reqCD, CUSTOMER_ID: custID
+          state: { ...state, rows: data?.rows, 
+            // REQ_CD: reqCD, CUSTOMER_ID: custID 
           },
         });
       }
@@ -201,8 +196,9 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
           SR_CD: currRowRef.current?.SR_CD,
           REQ_CD: reqCD,
           _isDeleteRow: true,
-          IS_FROM_MAIN: currRowRef.current?.IS_FROM_MAIN ?? "N",
-          NEW_FLAG: "N",
+          IS_FROM_MAIN:
+          currRowRef.current?.IS_FROM_MAIN ?? "N",
+          NEW_FLAG: "N",  
           DETAILS_DATA: {
             isDeleteRow: [],
             isNewRow: [],
@@ -216,7 +212,7 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       REQ_FLAG: "E",
-      IsNewRow: Boolean(reqCD) ? false : true,
+      IsNewRow: Boolean(reqCD) ? false : true
     };
     mutation.mutate(payload);
     // console.log("qwieuhdiqwhd", currRowRef.current)
@@ -287,19 +283,19 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
             }
           }}
         />
-        <PopupMessageAPIWrapper
-          MessageTitle="CONFIRM"
-          Message="Do you want to delete this Document?"
-          onActionYes={(rowVal) => {
-            onDeleteDocument();
-          }}
-          onActionNo={() => {
-            setIsDelConfirm(false);
-          }}
-          rows={{}}
-          open={isDelConfirm}
-          loading={mutation.isLoading}
-        />
+          <PopupMessageAPIWrapper
+            MessageTitle="CONFIRM"
+            Message="Do you want to delete this Document?"
+            onActionYes={(rowVal) => {
+              onDeleteDocument();
+            }}
+            onActionNo={() => {
+              setIsDelConfirm(false);
+            }}
+            rows={{}}
+            open={isDelConfirm}
+            loading={mutation.isLoading}
+          />
 
         <Routes>
           <Route

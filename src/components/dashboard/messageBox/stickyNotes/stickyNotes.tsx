@@ -4,21 +4,18 @@ import Draggable from "react-draggable";
 import { useState, useEffect, useContext, useRef, Fragment } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Grid, Tooltip } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { nanoid } from "nanoid";
 import { useQuery } from "react-query";
 import * as API from "../../api";
 import { AuthContext } from "pages_audit/auth";
+import { queryClient } from "cache";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import AddNote from "./addNote";
-
-import {
-  TextField,
-  Alert,
-  GradientButton,
-  LoaderPaperComponent,
-  queryClient,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+import { TextField } from "components/styledComponent";
 
 const StickyNotes = ({ closeDialog, open, isDataChangedRef }) => {
   const { authState } = useContext(AuthContext);

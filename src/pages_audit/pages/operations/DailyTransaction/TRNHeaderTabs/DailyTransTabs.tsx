@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import StyledTabs from "components/styledComponent/tabs/tabs";
+import CloseIcon from "@mui/icons-material/Close";
 // import { Button, Tabs } from "@mui/material";
 
 //logic
@@ -56,26 +58,25 @@ import Temp from "./OtherTrx/Temp";
 import LienDetail from "./OtherTrx/Lien_Detail";
 import SIDetail from "./OtherTrx/SI_Detail";
 import { makeStyles } from "@mui/styles";
-import { Tab, Tabs } from "@acuteinfo/common-base";
+import { Tabs } from "components/styledComponent/tabs";
+import { Tab } from "components/styledComponent/tab";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
+import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "../TRNCommon/api";
+import { GradientButton } from "components/styledComponent/button";
 import FormModal from "../../c-kyc/formModal/formModal";
 import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
+import { queryClient } from "cache";
 import { MyAppBar } from "pages_audit/appBar/appBar";
-import {
-  GradientButton,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+import DialogWithAppbar from "components/custom/dialogWithAppbar";
 import { t } from "i18next";
-import DialogWithAppbar from "components/common/dialogWithAppbar";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -463,14 +464,14 @@ export const DailyTransTabsWithDialog = ({
             finalMetaData={updatedMetadata as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
-            enableExport={true}
+            ReportExportButton={true}
             actions={[]}
             setAction={setCurrentAction}
             loading={isLoading || isFetching}
-            disableMultipleRowSelect={true}
-            variant={"standard"}
+            onlySingleSelectionAllow={true}
+            isNewRowStyle={true}
             defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
-            hideFooter={true}
+            hideActionBar={true}
           />
           {/* <Routes>
             <Route

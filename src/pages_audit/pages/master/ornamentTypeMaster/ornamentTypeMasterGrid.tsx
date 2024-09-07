@@ -1,22 +1,18 @@
 import { useRef, useCallback, useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
+import { Alert } from "components/common/alert";
+import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { OrnamentTypeMasterGridMetaData } from "./gridMetadata";
+import { ClearCacheContext, queryClient } from "cache";
 import { OrnamentTypeMasterFormWrapper } from "./ornamentTypeMasterForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-  ClearCacheContext,
-} from "@acuteinfo/common-base";
-import { enqueueSnackbar } from "notistack";
 const actions: ActionTypes[] = [
   {
     actionName: "add",

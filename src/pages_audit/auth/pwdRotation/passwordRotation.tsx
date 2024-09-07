@@ -4,13 +4,11 @@ import {
   FormHelperText,
   Grid,
 } from "@mui/material";
-import {
-  TextField,
-  GradientButton,
-  utilFunction,
-} from "@acuteinfo/common-base";
+import { TextField } from "components/styledComponent/textfield";
+import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useRef, useState } from "react";
-import { ResetPassword, validatePasswords } from "../api";
+import { utilFunction } from "components/utils/utilFunctions";
+import { ResetPassword, validatePasswords } from "./api";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 
@@ -59,14 +57,14 @@ export const PasswordRotation = ({
       isconfirmnewpwdError: false,
       confirmnewpassworderror: "",
     };
-
+  
     // Local validation
     if (!Boolean(input.oldpassword)) {
       setPwdData.isoldPwdError = true;
       setPwdData.oldpassworderror = "Current Password is required.";
       isError = true;
     }
-
+  
     let pwdData = utilFunction.ValidatePassword(input.password);
     if (Boolean(pwdData)) {
       setPwdData.isnewpwdError = true;
@@ -79,8 +77,7 @@ export const PasswordRotation = ({
       input.oldpassword === input.password
     ) {
       setPwdData.isnewpwdError = true;
-      setPwdData.newpassworderror =
-        "The new password cannot be the same as the old password";
+      setPwdData.newpassworderror = "The new password cannot be the same as the old password";
       isError = true;
     }
     if (!Boolean(input.confirmpassword)) {
@@ -92,24 +89,23 @@ export const PasswordRotation = ({
       input.password !== input.confirmpassword
     ) {
       setPwdData.isconfirmnewpwdError = true;
-      setPwdData.confirmnewpassworderror =
-        "New Password and Confirm Password did not match";
+      setPwdData.confirmnewpassworderror = "New Password and Confirm Password did not match";
       isError = true;
     }
     if (isError) {
       setPasswordReset(setPwdData);
       return;
     }
-
+  
     // API validation
     setPasswordReset((values) => ({ ...values, isLoading: true }));
     const { validateStatus, validateData } = await validatePasswords({
       USER_ID: input.userName,
       PASSWORD: input.password,
-      SCREEN_REF: "LOGIN",
+      SCREEN_REF: "LOGIN"
     });
     setPasswordReset((values) => ({ ...values, isLoading: false }));
-
+  
     if (validateStatus === "0") {
       switch (validateData?.O_STATUS) {
         case "999":
@@ -141,7 +137,7 @@ export const PasswordRotation = ({
           }
           break;
       }
-    }
+    } 
   };
 
   const handleChange = (event) => {

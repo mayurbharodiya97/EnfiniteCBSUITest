@@ -1,23 +1,18 @@
 import { Dialog, DialogActions, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Theme } from "@mui/material/styles";
+import { GradientButton } from "components/styledComponent/button";
+import { Transition } from "pages_audit/common";
 import { useContext, useMemo, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
+import { components } from "components/report";
 import { WORKER_STATUS } from "@koale/useworker";
+import FormWrapper from "components/dyanmicForm";
 import { exportReportFormMetaData } from "./ExportReportForm/metaData";
 import { useWorkerContext } from "./context/exportWorkerContext";
 import { useTranslation } from "react-i18next";
-
-import {
-  FormWrapper,
-  GradientButton,
-  components,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
 
 // classes
 const useStyles = makeStyles((theme: Theme) => ({
@@ -175,7 +170,7 @@ const ReportExportScreen = ({
 
     // call export and show custom notification popup
     enqueueSnackbar("Report Export Status", {
-      variant: "exportReportSnackbar",
+      variant: "customSnackbar",
       preventDuplicate: true,
       persist: true,
       anchorOrigin: { horizontal: "right", vertical: "bottom" },

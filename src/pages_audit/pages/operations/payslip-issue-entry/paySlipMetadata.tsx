@@ -1,6 +1,7 @@
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { getBankCodeData, getRegionDDData2, getCustDocData, getInfavourOfData, getRegionDDData, getRetrievalType, getSignatureDdnData, getregioncommtype, validatePayslipNo, getCalculateGstComm, geTrxDdw } from "./api";
-import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 
 export const RetrieveGridMetaData = {
   gridConfig: {
@@ -72,7 +73,10 @@ export const RetrieveGridMetaData = {
       maxWidth: 200,
       color: (val, data) => {
         let PENDING_FLAG = data?.original?.CONFIRMED ?? "";
-        return PENDING_FLAG === "Y" ? "green" : "red";
+        return PENDING_FLAG === "Y"
+          ? "green" : "red"
+
+
       },
     },
     {
@@ -157,6 +161,7 @@ export const RetrievalParameterFormMetaData = {
     },
   },
   fields: [
+
     {
       render: {
         componentType: "datePicker",
@@ -179,6 +184,7 @@ export const RetrievalParameterFormMetaData = {
       fullWidth: true,
       format: "dd/MM/yyyy",
 
+
       dependentFields: ["FROM_DT"],
       validate: (currentField, dependentField) => {
         if (
@@ -199,9 +205,11 @@ export const RetrievalParameterFormMetaData = {
       label: "type",
       _optionsKey: "getRetrievalType",
       options: (dependentValue, formState, _, authState) => {
+
         return getRetrievalType({
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
+
         });
       },
       defaultOptionLabel: "type",
@@ -219,14 +227,19 @@ export const RetrievalParameterFormMetaData = {
       label: "TRAN_CD",
       dependentField: ["DESCRIPTION"],
       setValueOnDependentFieldsChange: (dependentFields) => {
-        let value = dependentFields?.DESCRIPTION?.value;
 
-        return value;
+
+        let value = dependentFields?.DESCRIPTION?.value
+
+
+        return value
       },
+
     },
     {
       render: {
-        componentType: "spacer",
+
+        componentType: "spacer"
       },
       name: "spaceer",
       GridProps: {
@@ -236,12 +249,13 @@ export const RetrievalParameterFormMetaData = {
         lg: 2,
         xl: 3,
       },
+
     },
     {
       render: {
         componentType: "spacer",
+
       },
-      name: "spacer",
       GridProps: {
         xs: 1,
         sm: 1,
@@ -249,6 +263,7 @@ export const RetrievalParameterFormMetaData = {
         lg: 1,
         xl: 1,
       },
+
     },
   ],
 };
@@ -281,7 +296,7 @@ export const PayslipdetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      },
+      }
     },
   },
   fields: [
@@ -311,12 +326,7 @@ export const PayslipdetailsFormMetaData = {
       type: "text",
       isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-      dependentFields: [
-        "PAYSLIP_MST_DTL",
-        "PAYSLIP_DRAFT_DTL",
-        "TRAN_DT",
-        "HIDDENSLIP_CD",
-      ],
+      dependentFields: ["PAYSLIP_MST_DTL", "PAYSLIP_DRAFT_DTL", "TRAN_DT", "HIDDENSLIP_CD"],
       disableCaching: true,
     },
     {
@@ -325,7 +335,7 @@ export const PayslipdetailsFormMetaData = {
       },
       name: "PENDING_FLAG",
       label: "Status",
-      color: "error",
+      color: 'error',
       placeholder: "Mode",
       type: "text",
       isReadOnly: true,
@@ -340,7 +350,6 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer2",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -372,7 +381,7 @@ export const PayslipdetailsFormMetaData = {
         let totalValue = 0;
 
         // Iterate through each row in PAYSLIP_MST_DTL
-        dependentFields.PAYSLIP_MST_DTL.forEach((row) => {
+        dependentFields.PAYSLIP_MST_DTL.forEach(row => {
           const amount = parseFloat(row?.AMOUNT?.value) || 0;
           const commission = parseFloat(row?.COMMISSION?.value) || 0;
           const serviceCharge = parseFloat(row?.SERVICE_CHARGE?.value) || 0;
@@ -388,10 +397,11 @@ export const PayslipdetailsFormMetaData = {
         });
 
         return totalValue;
-      },
+      }
     },
-  ],
-};
+
+  ]
+}
 export const AccdetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -420,7 +430,7 @@ export const AccdetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      },
+      }
     },
   },
   fields: [
@@ -430,9 +440,7 @@ export const AccdetailsFormMetaData = {
       },
       name: "PAYSLIP_MST_DTL",
       addRowFn: (data) => {
-        const dataArray = Array.isArray(data?.PAYSLIP_MST_DTL)
-          ? data?.PAYSLIP_MST_DTL
-          : [];
+        const dataArray = Array.isArray(data?.PAYSLIP_MST_DTL) ? data?.PAYSLIP_MST_DTL : [];
 
         if (dataArray?.length > 0) {
           for (let i = 0; i < dataArray?.length; i++) {
@@ -447,7 +455,8 @@ export const AccdetailsFormMetaData = {
           }
 
           return false;
-        } else return true;
+        }
+        else return true;
       },
       __EDIT__: {
         fixedRows: true,
@@ -483,6 +492,7 @@ export const AccdetailsFormMetaData = {
               authState,
               dependentFieldValues
             ) => {
+
               if (formState?.isSubmitting) return {};
               if (
                 currentField?.value &&
@@ -490,20 +500,16 @@ export const AccdetailsFormMetaData = {
                 dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
               ) {
                 const reqParameters = {
-                  BRANCH_CD:
-                    dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
+                  BRANCH_CD: dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
                   COMP_CD: authState?.companyID,
-                  ACCT_TYPE:
-                    dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
+                  ACCT_TYPE: dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
                   ACCT_CD: utilFunction.getPadAccountNumber(
                     currentField?.value,
                     dependentFieldValues?.ACCT_TYPE?.optionData
                   ),
                   SCREEN_REF: "RPT/14",
                 };
-                let postData = await GeneralAPI.getAccNoValidation(
-                  reqParameters
-                );
+                let postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
                 let btn99, returnVal;
 
@@ -513,6 +519,7 @@ export const AccdetailsFormMetaData = {
                 };
 
                 for (let i = 0; i < postData.MSG.length; i++) {
+
                   if (postData.MSG[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Validation Failed",
@@ -550,17 +557,15 @@ export const AccdetailsFormMetaData = {
                   ACCT_CD:
                     returnVal !== ""
                       ? {
-                          value: currentField?.value
-                            .padStart(6, "0")
-                            ?.padEnd(20, " "),
-                          ignoreUpdate: true,
-                          isFieldFocused: false,
-                        }
+                        value: currentField?.value.padStart(6, "0")?.padEnd(20, " "),
+                        ignoreUpdate: true,
+                        isFieldFocused: false,
+                      }
                       : {
-                          value: "",
-                          isFieldFocused: true,
-                          ignoreUpdate: true,
-                        },
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
                   ACCT_NM: {
                     value: postData?.ACCT_NM ?? "",
                   },
@@ -569,12 +574,13 @@ export const AccdetailsFormMetaData = {
                   },
                   TRAN_BAL: {
                     value: postData?.TRAN_BAL ?? "",
-                  },
+                  }
+
                 };
               } else if (!currentField?.value) {
                 return {
                   ACCT_NM: { value: "" },
-                  TRAN_BAL: { value: "" },
+                  TRAN_BAL: { value: "" }
                 };
               }
             },
@@ -612,10 +618,12 @@ export const AccdetailsFormMetaData = {
                 formState,
                 authState,
                 dependentFieldValues
-              ) => {},
+              ) => {
+
+              },
 
               GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            },
+            }
           },
           __VIEW__: {
             branchCodeMetadata: {
@@ -638,8 +646,9 @@ export const AccdetailsFormMetaData = {
               },
               isReadOnly: true,
               GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            },
-          },
+            }
+          }
+
         },
         {
           render: {
@@ -687,6 +696,7 @@ export const AccdetailsFormMetaData = {
             componentType: "hidden",
           },
           name: "TYPE_CD",
+
         },
         {
           render: {
@@ -694,13 +704,11 @@ export const AccdetailsFormMetaData = {
           },
           name: "REMARKS",
           setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C"
-              ? "Cash"
-              : currVal === "T"
-              ? "Transfer"
-              : currVal === "G"
-              ? "Clearing"
-              : null;
+            return currVal === "C" ? "Cash"
+              : currVal === "T" ? "Transfer"
+                : currVal === "G" ? "Clearing"
+                  : null
+
           },
           label: "narration",
           placeholder: "Mode",
@@ -719,15 +727,11 @@ export const AccdetailsFormMetaData = {
             return geTrxDdw();
           },
           setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C"
-              ? "By Cash"
-              : currVal === "T"
-              ? "By Trf"
-              : currVal === "R"
-              ? "By Cr. Trf"
-              : currVal === "G"
-              ? "By CLG"
-              : null;
+            return currVal === "C" ? "By Cash"
+              : currVal === "T" ? "By Trf"
+                : currVal === "R" ? "By Cr. Trf"
+                  : currVal === "G" ? "By CLG"
+                    : null
           },
           defaultValue: "T",
           __EDIT__: { isReadOnly: true },
@@ -744,7 +748,9 @@ export const AccdetailsFormMetaData = {
             };
 
             formState.setDataOnFieldChange("BY_TRF", payload);
-          },
+
+
+          }
         },
         {
           render: {
@@ -767,13 +773,7 @@ export const AccdetailsFormMetaData = {
             },
           },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
-          dependentFields: [
-            "ACCT_CD",
-            "ACCT_TYPE",
-            "BRANCH_CD",
-            "C_C_T",
-            "TYPE_CD",
-          ],
+          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD", "C_C_T", "TYPE_CD"],
           required: true,
           schemaValidation: {
             type: "string",
@@ -797,8 +797,7 @@ export const AccdetailsFormMetaData = {
           ) => {
             if (
               field.value &&
-              dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value
-                .length === 0
+              dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "Information",
@@ -826,19 +825,15 @@ export const AccdetailsFormMetaData = {
             ) {
               if (formState?.isSubmitting) return {};
               let postData = await GeneralAPI.getChequeNoValidation({
-                BRANCH_CD:
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
-                ACCT_TYPE:
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
+                BRANCH_CD: dependentFieldsValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value,
+                ACCT_TYPE: dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value,
                 ACCT_CD: utilFunction.getPadAccountNumber(
                   dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_CD"]?.value,
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]
-                    ?.optionData
+                  dependentFieldsValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.optionData
                 ),
                 CHEQUE_NO: field.value,
-                TYPE_CD:
-                  dependentFieldsValues?.["PAYSLIP_MST_DTL.TYPE_CD"]?.value,
-                SCREEN_REF: "Rpt/14",
+                TYPE_CD: dependentFieldsValues?.["PAYSLIP_MST_DTL.TYPE_CD"]?.value,
+                SCREEN_REF: "Rpt/14"
               });
               let btn99;
 
@@ -908,14 +903,15 @@ export const AccdetailsFormMetaData = {
             }
           },
           __EDIT__: {
-            isReadOnly: true,
-            required: false,
+            isReadOnly: true, required: false,
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
               authState,
               dependentFieldValues
-            ) => {},
+            ) => {
+
+            },
           },
         },
         {
@@ -954,7 +950,7 @@ export const AccdetailsFormMetaData = {
           FormatProps: {
             allowNegative: false,
           },
-          __EDIT__: { isReadOnly: true, required: false },
+          __EDIT__: { isReadOnly: true, required: false, },
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["amountRequired"] }],
@@ -969,14 +965,14 @@ export const AccdetailsFormMetaData = {
           ) => {
             const payload = {
               AMOUNT: currentField.value,
-              COMMISSION:
-                dependentFieldValues?.["PAYSLIP_MST_DTL.COMMISSION"]?.value,
-              SERVICE_CHARGE:
-                dependentFieldValues?.["PAYSLIP_MST_DTL.SERVICE_CHARGE"]?.value,
+              COMMISSION: dependentFieldValues?.["PAYSLIP_MST_DTL.COMMISSION"]?.value,
+              SERVICE_CHARGE: dependentFieldValues?.["PAYSLIP_MST_DTL.SERVICE_CHARGE"]?.value,
               C_C_T: dependentFieldValues?.["PAYSLIP_MST_DTL.C_C_T"]?.value,
-            };
+            }
             formState.setDataOnFieldChange("MST_TOTAL", payload);
-          },
+
+          }
+
         },
         {
           render: {
@@ -990,6 +986,7 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
+
         },
         {
           render: {
@@ -1003,19 +1000,20 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
+
         },
 
         {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD",
+          name: "SR_CD"
         },
         {
           render: {
             componentType: "hidden",
           },
-          name: "PENDING_FLAG",
+          name: "PENDING_FLAG"
         },
         {
           render: {
@@ -1025,19 +1023,24 @@ export const AccdetailsFormMetaData = {
           defaultValue: true,
           dependentFields: ["PAYSLIP_MST_DTL", "C_C_T"],
           __EDIT__: {
-            isReadOnly: true,
+            isReadOnly: true
           },
           shouldExclude: (val1, dependentFields) => {
+
             if (dependentFields["PAYSLIP_MST_DTL"].length === 1) {
-              return true;
-            } else {
+              return true
+            }
+            else {
               const cctValue = dependentFields["PAYSLIP_MST_DTL.C_C_T"]?.value;
 
               if (cctValue === "R") {
                 return true;
               }
-              return false;
+              return false
             }
+
+
+
           },
           // setValueOnDependentFieldsChange: (dependentFields) => {
 
@@ -1056,10 +1059,13 @@ export const AccdetailsFormMetaData = {
 
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
         },
+
+
       ],
     },
-  ],
-};
+
+  ]
+}
 export const DraftdetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -1088,7 +1094,7 @@ export const DraftdetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      },
+      }
     },
   },
   fields: [
@@ -1107,9 +1113,7 @@ export const DraftdetailsFormMetaData = {
       name: "PAYSLIP_DRAFT_DTL",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       addRowFn: (data) => {
-        const dataArray = Array.isArray(data?.PAYSLIP_DRAFT_DTL)
-          ? data?.PAYSLIP_DRAFT_DTL
-          : [];
+        const dataArray = Array.isArray(data?.PAYSLIP_DRAFT_DTL) ? data?.PAYSLIP_DRAFT_DTL : [];
 
         if (dataArray?.length > 0) {
           for (let i = 0; i < dataArray?.length; i++) {
@@ -1125,7 +1129,8 @@ export const DraftdetailsFormMetaData = {
           }
 
           return false;
-        } else return true;
+        }
+        else return true;
       },
       _fields: [
         {
@@ -1133,12 +1138,14 @@ export const DraftdetailsFormMetaData = {
             componentType: "hidden",
           },
           name: "ENTERED_COMP_CD",
+
         },
         {
           render: {
             componentType: "hidden",
           },
           name: "HIDDEN_PAYSLIPNO",
+
         },
         {
           render: {
@@ -1171,19 +1178,21 @@ export const DraftdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           postValidationSetCrossFieldValues: async (
             currentField,
-            formState
+            formState,
           ) => {
             const payload = {
               BILL_TYPE_CD: currentField.value,
-              TYPE_CD: currentField.optionData[0]?.TYPE_CD,
-            };
+              TYPE_CD: currentField.optionData[0]?.TYPE_CD
+            }
 
             formState.setDataOnFieldChange("DEF_TRAN_CD", payload);
             return {
               AMOUNT: { isFieldFocused: true },
               PAYSLIP_NO: {
-                value: currentField?.optionData?.[0]?.MST_TRAN_CD,
+                value: currentField?.optionData?.[0]
+                  ?.MST_TRAN_CD,
               },
+
             };
           },
           schemaValidation: {
@@ -1214,9 +1223,8 @@ export const DraftdetailsFormMetaData = {
           runValidationOnDependentFieldsChange: true,
           disableCaching: true,
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const value =
-              dependentFields["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"].optionData[0]
-                ?.TYPE_CD;
+
+            const value = dependentFields["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"].optionData[0]?.TYPE_CD;
             return value;
           },
         },
@@ -1247,6 +1255,7 @@ export const DraftdetailsFormMetaData = {
           type: "text",
           txtTransform: "uppercase",
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+
         },
         {
           render: {
@@ -1258,6 +1267,7 @@ export const DraftdetailsFormMetaData = {
           type: "text",
           txtTransform: "uppercase",
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+
         },
 
         {
@@ -1302,14 +1312,15 @@ export const DraftdetailsFormMetaData = {
                  return{}
             }
             if (currentField.readOnly == false) {
+
               if (formState?.isSubmitting) return {};
 
               if (
                 currentField?.value &&
-                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]
-                  ?.optionData?.[0]?.BRANCH_CD &&
-                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]
-                  ?.optionData?.[0]?.TYPE_CD
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData?.[0]
+                  ?.BRANCH_CD &&
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData?.[0]
+                  ?.TYPE_CD
               ) {
                 let reqParameters = {
                   COMM_TYPE:
@@ -1377,19 +1388,23 @@ export const DraftdetailsFormMetaData = {
               }
               return {};
             }
+
           },
           __EDIT__: {
             required: false,
             isReadOnly: (fieldValue, dependentFields, formState) => {
               return checkForUpdate(dependentFields);
             },
+
           },
           __VIEW__: {
             required: false,
             render: {
               componentType: "textField",
             },
-            setValueOnDependentFieldsChange: (dependentFields) => {},
+            setValueOnDependentFieldsChange: (dependentFields) => {
+
+            },
             isReadOnly: (fieldValue, dependentFields, formState) => {
               return checkForUpdate(dependentFields);
             },
@@ -1413,13 +1428,7 @@ export const DraftdetailsFormMetaData = {
             allowNegative: false,
             allowLeadingZeros: true,
           },
-          dependentFields: [
-            "PAYSLIP_MST_DTL",
-            "COMMISSION",
-            "SERVICE_CHARGE",
-            "DEF_TRAN_CD",
-            "PENDING_FLAG",
-          ],
+          dependentFields: ["PAYSLIP_MST_DTL", "COMMISSION", "SERVICE_CHARGE", "DEF_TRAN_CD", "PENDING_FLAG"],
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           runPostValidationHookAlways: true,
 
@@ -1427,6 +1436,7 @@ export const DraftdetailsFormMetaData = {
             isReadOnly: (fieldValue, dependentFields, formState) => {
               return checkForUpdate(dependentFields);
             },
+
           },
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: true,
@@ -1444,26 +1454,25 @@ export const DraftdetailsFormMetaData = {
                 return {};
               }
 
+
               if (!formState || !formState.refID || !formState.refID.current) {
                 return {};
               }
 
+
               const { refID } = formState;
 
-              if (
-                !refID.current.paylod.BILL_TYPE_CD &&
-                !refID.current.paylod.TYPE_CD
-              ) {
+
+              if (!refID.current.paylod.BILL_TYPE_CD && !refID.current.paylod.TYPE_CD) {
                 return {};
               }
+
 
               const reqParams = {
                 COMP_CD: authState?.companyID,
                 BRANCH_CD: authState?.user?.branchCode,
-                ACCT_CD:
-                  dependentFieldsValues?.PAYSLIP_MST_DTL[0]?.ACCT_CD?.value,
-                ACCT_TYPE:
-                  dependentFieldsValues?.PAYSLIP_MST_DTL[0]?.ACCT_TYPE?.value,
+                ACCT_CD: dependentFieldsValues?.PAYSLIP_MST_DTL[0]?.ACCT_CD?.value,
+                ACCT_TYPE: dependentFieldsValues?.PAYSLIP_MST_DTL[0]?.ACCT_TYPE?.value,
                 AMOUNT: currentField?.value,
                 TYPE_CD: refID.current.paylod.TYPE_CD,
                 DEF_TRAN_CD: refID.current.paylod.BILL_TYPE_CD,
@@ -1476,7 +1485,10 @@ export const DraftdetailsFormMetaData = {
                 reqParams.DEF_TRAN_CD !== "" &&
                 reqParams.AMOUNT !== ""
               ) {
+
+
                 const gstApiData = await getCalculateGstComm(reqParams);
+
 
                 return {
                   SERVICE_CHARGE: {
@@ -1489,7 +1501,8 @@ export const DraftdetailsFormMetaData = {
                     isReadOnly: (fieldValue, dependentFields, formState) => {
                       if (gstApiData?.[0]?.FLAG_ENABLE_DISABLE === "Y") {
                         return true;
-                      } else return false;
+                      }
+                      else return false;
                     },
                   },
                   OTHER_COMISSION: {
@@ -1505,7 +1518,9 @@ export const DraftdetailsFormMetaData = {
                     ignoreUpdate: true,
                   },
                 };
+
               } else {
+
                 return {};
               }
             }
@@ -1527,14 +1542,15 @@ export const DraftdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           dependentFields: ["DEF_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const balance =
-              dependentFields?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]
-                ?.optionData?.[0]?.BALANCE;
-            return balance;
+
+            const balance = dependentFields?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData?.[0]?.BALANCE
+            return balance
           },
           __EDIT__: {
             isReadOnly: true,
-          },
+          }
+
+
         },
 
         {
@@ -1579,47 +1595,42 @@ export const DraftdetailsFormMetaData = {
           ) => {
             const payload = {
               COMMISSION: currentField.value,
-            };
+            }
 
             formState.setDataOnFieldChange("DRAFT_COMM", payload);
             if (formState?.isSubmitting) return {};
             if (currentField?.value) {
               let gstValue =
-                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                  ?.value === "3"
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]?.value === "3"
                   ? Math.floor(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "2"
-                  ? Math.ceil(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "1"
-                  ? Math.round(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : (parseInt(currentField?.value) *
+                    (parseInt(currentField?.value) *
                       parseInt(
-                        dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                          ?.value
+                        dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value
                       )) /
+                    100
+                  ) ?? ""
+                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]?.value ===
+                    "2"
+                    ? Math.ceil(
+                      (parseInt(currentField?.value) *
+                        parseInt(
+                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value
+                        )) /
+                      100
+                    ) ?? ""
+                    : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]?.value ===
+                      "1"
+                      ? Math.round(
+                        (parseInt(currentField?.value) *
+                          parseInt(
+                            dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value
+                          )) /
+                        100
+                      ) ?? ""
+                      : (parseInt(currentField?.value) *
+                        parseInt(
+                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value
+                        )) /
                       100 ?? "";
               return {
                 SERVICE_CHARGE: {
@@ -1651,6 +1662,7 @@ export const DraftdetailsFormMetaData = {
               return true;
             },
           },
+
         },
         {
           render: {
@@ -1684,10 +1696,11 @@ export const DraftdetailsFormMetaData = {
           ) => {
             const payload = {
               SERVICE_CHARGE: currentField.value,
-            };
+            }
 
             formState.setDataOnFieldChange("DRAFT_GST", payload);
-          },
+
+          }
         },
         {
           render: {
@@ -1712,7 +1725,9 @@ export const DraftdetailsFormMetaData = {
           dependentFields: ["C_C_T"],
 
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C") {
+            if (
+              dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C"
+            ) {
               return false;
             } else {
               return true;
@@ -1720,9 +1735,12 @@ export const DraftdetailsFormMetaData = {
           },
           setValueOnDependentFieldsChange: (dependentFields) => {
             if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value !== "C") {
-              return "";
-            } else return;
-          },
+              return ""
+            }
+            else return
+
+
+          }
         },
         {
           render: { componentType: "autocomplete" },
@@ -1737,7 +1755,9 @@ export const DraftdetailsFormMetaData = {
           fullWidth: true,
           dependentFields: ["C_C_T"],
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C") {
+            if (
+              dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C"
+            ) {
               return false;
             } else {
               return true;
@@ -1745,9 +1765,12 @@ export const DraftdetailsFormMetaData = {
           },
           setValueOnDependentFieldsChange: (dependentFields) => {
             if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value !== "C") {
-              return "";
-            } else return;
-          },
+              return ""
+            }
+            else return
+
+
+          }
         },
         {
           render: {
@@ -1761,7 +1784,9 @@ export const DraftdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           dependentFields: ["C_C_T"],
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C") {
+            if (
+              dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value === "C"
+            ) {
               return false;
             } else {
               return true;
@@ -1799,9 +1824,8 @@ export const DraftdetailsFormMetaData = {
           dependentFields: ["COL_BANK_CD"],
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const value =
-              dependentFields["PAYSLIP_DRAFT_DTL.COL_BANK_CD"].optionData[0]
-                ?.BANK_NM;
+
+            const value = dependentFields["PAYSLIP_DRAFT_DTL.COL_BANK_CD"].optionData[0]?.BANK_NM;
             return value;
           },
         },
@@ -1816,9 +1840,7 @@ export const DraftdetailsFormMetaData = {
           dependentFields: ["COL_BANK_CD"],
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const value =
-              dependentFields["PAYSLIP_DRAFT_DTL.COL_BANK_CD"].optionData[0]
-                ?.BRANCH_NM;
+            const value = dependentFields["PAYSLIP_DRAFT_DTL.COL_BANK_CD"].optionData[0]?.BRANCH_NM;
             return value;
           },
         },
@@ -1851,20 +1873,18 @@ export const DraftdetailsFormMetaData = {
               return "G";
             } else if (check === "T") {
               return "T";
-            } else return "";
+            }
+            else return ""
           },
           setFieldLabel: (dependenet, currVal) => {
             const cct = dependenet?.PAYSLIP_MST_DTL[0]?.C_C_T?.value;
-            return cct === "C"
-              ? "By Cash"
-              : cct === "T"
-              ? "By Transfer"
-              : cct === "G"
-              ? "By Clearing"
-              : cct === "R"
-              ? "By Transfer"
-              : null;
+            return cct === "C" ? "By Cash"
+              : cct === "T" ? "By Transfer"
+                : cct === "G" ? "By Clearing"
+                  : cct === "R" ? "By Transfer"
+                    : null
           },
+
         },
         {
             render: {
@@ -1932,10 +1952,8 @@ export const DraftdetailsFormMetaData = {
           GridProps: { lg: 1, xl: 1 },
           dependentFields: ["INFAVOUR_OF"],
           shouldExclude: (val1, dependentFields) => {
-            if (
-              dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value ===
-              "Y"
-            ) {
+
+            if (dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value === "Y") {
               return true;
             }
             return false;
@@ -1952,18 +1970,17 @@ export const DraftdetailsFormMetaData = {
           runValidationOnDependentFieldsChange: true,
           dependentFields: ["DEF_TRAN_CD","FORM_MODE"],
           options: (...arg) => {
+
             if (
               arg?.[3]?.user?.branchCode &&
               arg?.[3]?.companyID &&
-              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
-                ?.TYPE_CD
+              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
             ) {
               return getSignatureDdnData({
                 BRANCH_CD: arg?.[3]?.user?.branchCode,
                 COMP_CD: arg?.[3]?.companyID,
                 COMM_TYPE_CD:
-                  arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
-                    ?.TYPE_CD,
+                  arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
               });
             }
             return [];
@@ -2009,10 +2026,8 @@ export const DraftdetailsFormMetaData = {
           GridProps: { lg: 1, xl: 1 },
           dependentFields: ["INFAVOUR_OF"],
           shouldExclude: (val1, dependentFields) => {
-            if (
-              dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value ===
-              "Y"
-            ) {
+
+            if (dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value === "Y") {
               return true;
             }
             return false;
@@ -2029,17 +2044,17 @@ export const DraftdetailsFormMetaData = {
             if (
               arg?.[3]?.user?.branchCode &&
               arg?.[3]?.companyID &&
-              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
-                ?.TYPE_CD
+              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
             ) {
               return getRegionDDData({
                 BRANCH_CD: arg?.[3]?.user?.branchCode,
                 COMP_CD: arg?.[3]?.companyID,
                 COMM_TYPE_CD:
-                  arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
-                    ?.TYPE_CD,
-                FLAG: "R",
+                  arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD,
+                FLAG: "R"
               });
+
+
             }
             return [];
           },
@@ -2080,10 +2095,8 @@ export const DraftdetailsFormMetaData = {
           GridProps: { lg: 1, xl: 1 },
           dependentFields: ["INFAVOUR_OF"],
           shouldExclude: (val1, dependentFields) => {
-            if (
-              dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value ===
-              "Y"
-            ) {
+
+            if (dependentFields?.INFAVOUR_OF?.optionData[0]?.REGION_BTN?.value === "Y") {
               return true;
             }
             return false;
@@ -2093,18 +2106,20 @@ export const DraftdetailsFormMetaData = {
           render: {
             componentType: "hidden",
           },
-          name: "PENDING_FLAG",
+          name: "PENDING_FLAG"
         },
         {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD",
+          name: "SR_CD"
         },
-      ],
+
+      ]
     },
-  ],
-};
+
+  ]
+}
 export const TotaldetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -2133,7 +2148,7 @@ export const TotaldetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      },
+      }
     },
   },
   fields: [
@@ -2175,7 +2190,8 @@ export const TotaldetailsFormMetaData = {
         }
 
         return totalAmount;
-      },
+      }
+
     },
 
     {
@@ -2218,7 +2234,8 @@ export const TotaldetailsFormMetaData = {
         }
 
         return totalAmount;
-      },
+      }
+
     },
     {
       render: {
@@ -2258,11 +2275,13 @@ export const TotaldetailsFormMetaData = {
         }
 
         return totalAmount;
-      },
+      }
+
     },
     {
       render: {
-        componentType: "spacer",
+
+        componentType: "spacer"
       },
       name: "spaceer",
       GridProps: {
@@ -2272,6 +2291,7 @@ export const TotaldetailsFormMetaData = {
         lg: 3,
         xl: 5.5,
       },
+
     },
     {
       render: {
@@ -2298,17 +2318,20 @@ export const TotaldetailsFormMetaData = {
         },
       },
       setValueOnDependentFieldsChange: (dependentFields) => {
-        return (
-          dependentFields?.DRAFT_TOTAL?.value +
-          dependentFields?.TOTAL_GST?.value +
-          dependentFields?.TOTAL_COMM?.value
-        );
+
+
+
+
+        return dependentFields?.DRAFT_TOTAL?.value + dependentFields?.TOTAL_GST?.value + dependentFields?.TOTAL_COMM?.value;
       },
 
       GridProps: { xs: 6, sm: 2, md: 3, lg: 2, xl: 1.5 },
+
+
     },
-  ],
-};
+
+  ]
+}
 export const regionMasterMetaData: MasterDetailsMetaData = {
   masterForm: {
     form: {
@@ -2333,6 +2356,7 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
       },
     },
     fields: [
+
       {
         render: { componentType: "textField" },
         name: "REGION_CD",
@@ -2363,6 +2387,7 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
             }
           });
 
+
           const nextRegionCd = maxRegionCd + 1;
 
           return {
@@ -2371,7 +2396,9 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
               ignoreUpdate: true,
             },
           };
-        },
+        }
+
+
       },
       {
         render: { componentType: "textField" },
@@ -2382,6 +2409,7 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
 
         GridProps: { xs: 4, md: 4, sm: 4, lg: 4, xl: 4 },
         fullWidth: true,
+
       },
       {
         render: { componentType: "select" },
@@ -2391,9 +2419,11 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
 
         _optionsKey: "getregioncommtype",
         options: (dependentValue, formState, _, authState) => {
+
           return getregioncommtype({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
+
           });
         },
         defaultOptionLabel: "Select Commition Period",
@@ -2403,10 +2433,13 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
         isFieldFocused: false,
         dependentFields: ["COMM_TYPE_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-          let value = dependentFields?.COMM_TYPE?.optionData[0]?.TYPE_CD.value;
 
-          return value;
+
+          let value = dependentFields?.COMM_TYPE?.optionData[0]?.TYPE_CD.value
+
+          return value
         },
+
       },
       // {
       //   render: {
@@ -2415,7 +2448,9 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
       //   name: "COMM_TYPE_CD",
       //   label: "TRAN_CD",
 
+
       // },
+
     ],
   },
   detailsGrid: {
@@ -2620,6 +2655,7 @@ export const DeleteDialogMetaData = {
     },
   },
   fields: [
+
     {
       render: {
         componentType: "textField",
@@ -2639,9 +2675,8 @@ export const DeleteDialogMetaData = {
     },
     {
       render: {
-        componentType: "spacer",
+        componentType: "spacer"
       },
-      name: "spacer3",
       GridProps: {
         xs: 5,
         sm: 5,
