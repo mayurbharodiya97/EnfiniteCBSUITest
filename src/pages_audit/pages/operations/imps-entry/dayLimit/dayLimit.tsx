@@ -1,17 +1,15 @@
 import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { dayLimitData } from "../api";
-import {
-  Alert,
-  SubmitFnType,
-  usePopupContext,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+
 export const DayLimit = ({ navigate }) => {
   const { state: rows }: any = useLocation();
   const { MessageBox } = usePopupContext();

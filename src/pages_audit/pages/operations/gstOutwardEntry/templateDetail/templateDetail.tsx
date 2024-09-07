@@ -1,15 +1,13 @@
 import { Button, Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { t } from "i18next";
 import { useRef, useState } from "react";
 // import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { TemplateDetailMetadata } from "./templateMetadata";
 import { useLocation } from "react-router-dom";
-import {
-  SubmitFnType,
-  usePopupContext,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+import { SubmitFnType } from "packages/form";
+import { utilFunction } from "components/utils";
 
 export const TemplateDetail = ({
   getFormData,

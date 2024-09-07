@@ -1,10 +1,12 @@
 import { useContext, useRef } from "react";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import { RemarksAPIWrapper, usePopupContext } from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 export const DeleteDialog = ({
   open,

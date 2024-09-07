@@ -1,0 +1,14 @@
+.MuiPickersDay-current.MuiPickersDay-day {
+  color: var(--theme-color1);
+}
+.MuiPickersDay-daySelected.MuiPickersDay-day {
+  background-color: var(--theme-color1);
+  color: var(--theme-color2);
+}
+.MuiPickersDay-daySelected.MuiPickersDay-day:hover {
+  background-color: var(--theme-color1);
+  color: var(--theme-color2);
+}
+.MuiPickersYear-root.MuiPickersYear-yearSelected {
+  color: var(--theme-color1);
+}

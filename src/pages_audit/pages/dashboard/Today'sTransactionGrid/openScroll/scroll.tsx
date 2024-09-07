@@ -1,6 +1,6 @@
 import { Dialog, Grid, Typography } from "@mui/material";
 import { scrollMetaData } from "./metaData";
-import Report, { ReportGrid } from "@acuteinfo/common-base";
+import Report from "components/report";
 import * as API from "./api";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,18 +31,13 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
   );
 
   return (
-    <Dialog
-      open={open}
-      maxWidth={"xl"}
-      sx={{
-        "& .MuiToolbar-root": { width: "100%" },
-      }}
-    >
-      <ReportGrid
+    <Dialog open={open} maxWidth={"xl"}>
+      <Report
         reportID={"scrollDetail"}
         reportName={"scrollDetail"}
         dataFetcher={API.ScrollDetailData}
         metaData={updatedMetaData}
+        disableFilters
         maxHeight={window.innerHeight - 250}
         title={updatedMetaData?.title}
         options={{

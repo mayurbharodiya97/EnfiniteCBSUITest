@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../api";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 
 export const FixDepositParaFormMetadata = {
   form: {

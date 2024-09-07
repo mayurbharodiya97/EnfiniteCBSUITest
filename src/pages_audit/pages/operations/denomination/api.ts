@@ -1,4 +1,5 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
+import { AddIDinResponseData, utilFunction } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const CashReceiptEntrysData2 = async ({ a, b }) => {

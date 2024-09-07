@@ -6,6 +6,9 @@ import {
   useState,
   useEffect,
 } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
@@ -15,23 +18,14 @@ import {
   RetrieveFormConfigMetaData,
 } from "./ConfirmationMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
+import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { t } from "i18next";
-import {
-  utilFunction,
-  ClearCacheContext,
-  ClearCacheProvider,
-  queryClient,
-  LoaderPaperComponent,
-  MetaDataType,
-  FormWrapper,
-  SubmitFnType,
-  ActionTypes,
-  Alert,
-  GridWrapper,
-} from "@acuteinfo/common-base";
-import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { utilFunction } from "components/utils";
 
 const actions: ActionTypes[] = [
   {
@@ -312,7 +306,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
-              formLabel={getDynamicLabel(
+              formLabel={utilFunction.getDynamicLabel(
                 currentPath,
                 authState?.menulistdata,
                 true

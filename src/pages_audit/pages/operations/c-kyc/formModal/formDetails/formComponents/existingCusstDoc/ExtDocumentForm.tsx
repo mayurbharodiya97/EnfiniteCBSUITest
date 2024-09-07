@@ -7,27 +7,27 @@ import React, {
   useState,
 } from "react";
 import { Button, Dialog } from "@mui/material";
+import { MasterDetailsForm } from "components/formcomponent";
+import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import _, { cloneDeep } from "lodash";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
+import { FormWrapper } from "components/dyanmicForm/formWrapper";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { extractMetaData, utilFunction } from "components/utils";
+import { MetaDataType } from "components/dyanmicForm";
 import { ExtDocumentFormMetadata } from "./extDocumentFormMetadata";
-import {
-  FileObjectType,
-  UploadTarget,
-  MetaDataType,
-  FormWrapper,
-  extractMetaData,
-  utilFunction,
-  InitialValuesType,
-  SubmitFnType,
-  useDialogStyles,
-} from "@acuteinfo/common-base";
+import { UploadTarget } from "components/fileUpload/uploadTarget";
+import { FileObjectType } from "components/fileUpload/type";
 import {
   transformFileObject,
   validateFilesAndAddToList,
-} from "@acuteinfo/common-base";
-
-import { ImageViewer, NoPreview, PDFViewer } from "@acuteinfo/common-base";
+} from "components/fileUpload/utils";
+import {
+  ImageViewer,
+  NoPreview,
+  PDFViewer,
+} from "components/fileUpload/preView";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api";

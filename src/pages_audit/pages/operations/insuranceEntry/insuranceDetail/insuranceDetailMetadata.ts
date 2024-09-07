@@ -1,7 +1,11 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { utilFunction } from "components/utils";
+import { render } from "react-dom";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "../api";
 import { addMonths, format, subDays } from "date-fns";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { capitalize } from "lodash";
 
 export const InsuranceDetailFormMetaData = {
   masterForm: {

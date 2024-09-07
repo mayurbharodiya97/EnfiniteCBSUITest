@@ -8,8 +8,11 @@ import {
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { standingInsructionViewGridMetaData } from "./metaData/gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
+import { usePopupContext } from "components/custom/popupContext";
+import { GradientButton } from "components/styledComponent/button";
 import {
   CircularProgress,
   Dialog,
@@ -18,26 +21,20 @@ import {
   Typography,
 } from "@mui/material";
 import { AddSubDataMetaData, EditSubDataMetaData } from "./metaData/metaData";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useMutation, useQuery } from "react-query";
 import SiExecuteDetailView from "./siExecuteDetailView";
+import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { DeleteDialog } from "./deleteDialog";
+import { queryClient } from "cache";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import { extractMetaData, utilFunction } from "components/utils";
+import { ActionTypes } from "components/dataTable";
 import Draggable from "react-draggable";
 import { t } from "i18next";
-import {
-  ActionTypes,
-  GridWrapper,
-  GradientButton,
-  extractMetaData,
-  FormWrapper,
-  MetaDataType,
-  queryClient,
-  GridMetaDataType,
-  SubmitFnType,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -267,7 +264,7 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
         {/* <div id="draggable-dialog-title"> */}
         <FormWrapper
           key={"standingInstructionForm"}
-          metaData={AddSubDataMetaData as MetaDataType}
+          metaData={AddSubDataMetaData}
           onSubmitHandler={onSubmitHandler}
           initialValues={rows?.[0]?.data}
           formStyle={{

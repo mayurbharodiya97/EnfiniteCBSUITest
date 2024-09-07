@@ -2,12 +2,15 @@ import { Fragment, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { SubsidyGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 // import { GridMetaDataType } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { Alert, GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+
 export const Subsidyy = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);

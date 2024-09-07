@@ -1,9 +1,19 @@
+import {
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
 import * as React from "react";
 import { useMutation } from "react-query";
 import { CkycContext } from "../../CkycContext";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { Alert } from "components/common/alert";
 import * as API from "../../api";
-import { PopupRequestWrapper, Alert } from "@acuteinfo/common-base";
 
 export const ConfirmUpdateDialog = ({
   open,
@@ -152,8 +162,7 @@ export const ConfirmUpdateDialog = ({
       }}
       buttonNames={shouldUpdate && !mutation.isLoading ? ["Ok"] : ["Yes", "No"]}
       rows={[]}
-      // loading={{Yes: mutation.isLoading}}
-      loading={mutation.isLoading}
+      loading={{ Yes: mutation.isLoading }}
       // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />

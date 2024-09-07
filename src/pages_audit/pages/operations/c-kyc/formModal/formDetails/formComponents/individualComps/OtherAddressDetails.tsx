@@ -7,11 +7,12 @@ import {
   Fragment,
 } from "react";
 import { Grid, Typography, Divider, Skeleton, Button } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { other_address_meta_data } from "../../metadata/individual/otheraddressdetails";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../../../CkycContext";
 import { AuthContext } from "pages_audit/auth";
+import { utilFunction } from "components/utils";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
 

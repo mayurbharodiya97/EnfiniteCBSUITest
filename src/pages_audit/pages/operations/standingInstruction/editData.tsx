@@ -1,20 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog, Paper } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
+import { usePopupContext } from "components/custom/popupContext";
 import { StandingInstructionViewMetaData } from "./metaData/metaData";
+import { extractMetaData, utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { populateGridData } from "./metaData/gridMetaData";
-import {
-  MetaDataType,
-  GridWrapper,
-  GradientButton,
-  FormWrapper,
-  GridMetaDataType,
-  extractMetaData,
-  utilFunction,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+import Draggable from "react-draggable";
 import { t } from "i18next";
 
 export const StandingInstructionEditData = ({
@@ -165,7 +161,6 @@ export const StandingInstructionEditData = ({
           initialValues={{
             ...(currentData?.data ?? {}),
           }}
-          onSubmitHandler={() => {}}
           formState={{ MessageBox: MessageBox, docCd: "TRN/394" }}
           formStyle={{ background: "white", height: "auto" }}
           onFormButtonClickHandel={onPopulateDataClick}

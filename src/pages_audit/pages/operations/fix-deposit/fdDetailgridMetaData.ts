@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const FDDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,

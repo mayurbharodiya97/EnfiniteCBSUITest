@@ -45,7 +45,7 @@ export const EntryDescMasterFormMetadata = {
       txtTransform: "uppercase",
       placeholder: "EnterCode",
       isFieldFocused: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       __EDIT__: {
         isReadOnly: true,
         isFieldFocused: false,
@@ -131,7 +131,7 @@ export const EntryDescMasterFormMetadata = {
       maxLength: 50,
       placeholder: "EnterDescription",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
         // Duplication validation
 

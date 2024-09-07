@@ -1,3 +1,5 @@
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { FDDetailGridMetaData } from "./fdDetailgridMetaData";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FDRetriveForm } from "./fixDepositForm/fdRetriveForm";
@@ -6,24 +8,20 @@ import { FixDepositForm } from "./fixDepositForm/fdStepperForm";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 import { PaidFDGrid } from "./paidFDGrid";
 import { Dialog, Paper } from "@mui/material";
 import { ViewMasterForm } from "./fixDepositForm/viewMasterForm";
 import { FDContext } from "./context/fdContext";
 import { FDDetailForm } from "./fixDepositForm/fdDetailForm";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { utilFunction } from "components/utils";
 import { IntPaidDtlGrid } from "./intPaidDtlGrid";
 import Draggable from "react-draggable";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Document from "../DailyTransaction/TRNHeaderTabs/Document";
-import {
-  LoaderPaperComponent,
-  GridWrapper,
-  usePopupContext,
-  ActionTypes,
-  utilFunction,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+
 export const FDDetailGrid = () => {
   const {
     FDState,

@@ -262,24 +262,6 @@ export const verifyDayendChecksumsMetaData = {
       minWidth: 100,
       maxWidth: 170,
     },
-    {
-      accessor: "REPORT",
-      columnName: "",
-      componentType: "buttonRowCell",
-      buttonLabel: "REPORT",
-      sequence: 14,
-      alignment: "center",
-      width: 80,
-      minWidth: 70,
-      maxWidth: 100,
-      shouldExclude: (initialValue, original, prevRows, nextRows) => {
-        if (original?.CLR !== "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-    },
   ],
 };
 export const dayEndErroeLogMetaData = {
@@ -370,88 +352,6 @@ export const dayEndErroeLogMetaData = {
       width: 300,
       minWidth: 100,
       maxWidth: 200,
-    },
-  ],
-};
-export const executeChecksumsReportMetaData = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "",
-    rowIdColumn: "ACCT_CD",
-    defaultColumnConfig: {
-      width: 400,
-      maxWidth: 450,
-      minWidth: 300,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    hideHeader: false,
-    disableGroupBy: true,
-    enablePagination: true,
-    pageSizes: [15, 30, 50],
-    defaultPageSize: 20,
-    containerHeight: {
-      min: "67vh",
-      max: "67vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    isCusrsorFocused: true,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "SR_NO",
-      columnName: "SrNo",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 70,
-      minWidth: 60,
-      maxWidth: 120,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "BRANCH_CD",
-      columnName: "branch",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 70,
-      minWidth: 60,
-      maxWidth: 120,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "ACCT_CD",
-      columnName: "AcRef",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 170,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
-      accessor: "VOUCHER_NO",
-      columnName: "VersionNo",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 90,
-      maxWidth: 110,
-    },
-    {
-      accessor: "MESSAGE",
-      columnName: "Remarks",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 400,
-      minWidth: 200,
-      maxWidth: 500,
     },
   ],
 };

@@ -15,32 +15,31 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FormWrapper, MetaDataType, queryClient } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { StockEditViewWrapper } from "./documents/documentViewUpload";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { StockEntryMetaData } from "./stockEntryMetadata";
 import { StockGridMetaData } from "./stockGridMetadata";
+import { ActionTypes } from "components/dataTable";
 import { ForceExpireStock } from "./forceExpire/forceExpire";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, RemarksAPIWrapper } from "@acuteinfo/common-base";
+import { ClearCacheProvider, queryClient } from "cache";
 import {
   crudStockData,
   insertValidate,
   securityFieldDTL,
   stockGridData,
 } from "./api";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const StockEntryCustom = () => {
   const [isData, setIsData] = useState({

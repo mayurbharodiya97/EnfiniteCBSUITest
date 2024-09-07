@@ -1,19 +1,18 @@
 import { Grid } from "@mui/material";
+import {
+  FilterFormMetaType,
+  FormComponentView,
+} from "components/formcomponent";
 import { RetrieveDataFilterForm, ckyc_retrieved_meta_data } from "./metadata";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-
-import {
-  FormComponentView,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  FilterFormMetaType,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { DeactivateCustomer } from "./DeactivateCustomer";
 // import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";

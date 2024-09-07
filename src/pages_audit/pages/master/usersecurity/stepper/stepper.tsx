@@ -16,6 +16,7 @@ import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import { StepIconProps } from "@mui/material/StepIcon";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import AccessWrapper from "./applicationAccess";
 import OnBoard from "./userOnboard";
@@ -23,20 +24,17 @@ import { SecurityContext } from "../context/SecuityForm";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
+import { utilFunction } from "components/utils";
+import { usePopupContext } from "components/custom/popupContext";
 import _ from "lodash";
 import BranchAccessRights from "./branchAccess";
 import { ProductAccess } from "./productAccess";
 import LoginShift from "./loginShiftAccess";
 import BiometricLogins from "./bioMetricLogin";
-
 import {
   ColorlibConnector,
   ColorlibStepIconRoot,
-  GradientButton,
-  usePopupContext,
-  utilFunction,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+} from "components/dyanmicForm/stepperForm/style";
 import { enqueueSnackbar } from "notistack";
 import { LoginShiftConfirmation } from "../../userSecurityConfirmation/loginShift";
 import { BiometricLoginConfirmation } from "../../userSecurityConfirmation/boimetricLogin";
@@ -98,7 +96,6 @@ const CombinedStepper = ({ defaultView }) => {
     },
     onSuccess: async (data) => {
       CloseMessageBox();
-      //@ts-ignore
       enqueueSnackbar(data, {
         variant: "success",
       });

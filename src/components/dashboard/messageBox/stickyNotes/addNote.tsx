@@ -5,11 +5,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import { CircularProgress, Dialog, Grid, Paper, Tooltip } from "@mui/material";
 import { GridDeleteForeverIcon } from "@mui/x-data-grid";
 import logo from "assets/images/easy_bankcore_Logo.png";
-import {
-  utilFunction,
-  GradientButton,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+import { GradientButton } from "components/styledComponent/button";
+import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";

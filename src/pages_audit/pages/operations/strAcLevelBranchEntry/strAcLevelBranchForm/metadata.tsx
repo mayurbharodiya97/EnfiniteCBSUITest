@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "../api";
 
 export const strLevelBranchEditFormMetaData = {
@@ -237,7 +237,7 @@ export const suspiciousTransactionGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 50,
       minWidth: 80,

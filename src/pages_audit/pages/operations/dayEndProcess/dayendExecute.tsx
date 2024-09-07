@@ -1,25 +1,22 @@
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import * as API from "./api";
+import { ClearCacheProvider, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   verifyDayendChecksumsMetaData,
   dayEndErroeLogMetaData,
 } from "./gridMetadata";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
 import { Dialog } from "@mui/material";
+import { LoadingTextAnimation } from "components/common/loader";
 import { enqueueSnackbar } from "notistack";
-import {
-  Alert,
-  GridWrapper,
-  LoadingTextAnimation,
-  usePopupContext,
-  ActionTypes,
-  GridMetaDataType,
-  ClearCacheProvider,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -259,7 +256,7 @@ export const DayendExecute = ({ open, close }) => {
                 }
               }}
               // loading={gridDataLoading || validateLoading || checksumsLoading}
-              enableExport={true}
+              ReportExportButton={true}
               setAction={handleAction}
             />
           ) : (
