@@ -67,6 +67,50 @@ export const VerifyDayendChecksums = ({
     [navigate, close]
   );
 
+  // Process array of items and add CLR from API response
+  const processArray = async (data: Item[]): Promise<void> => {
+    const results: (Item & { CLR?: string })[] = [...gridData]; // Initialize with existing gridData
+
+    for (const item of data) {
+      const reqPara = {
+        FLAG: "C",
+        SCREEN_REF: "TRN/399",
+        FOR_BRANCH: "099 ",
+        EOD_EOS_FLG: "E",
+        CHKSM_TYPE: item?.CHKSM_TYPE,
+        SR_CD: item?.SR_CD,
+        MENDETORY: item?.MENDETORY,
+        EOD_VER_ID: item?.EOD_VER_ID,
+      };
+
+      try {
+        const response: ApiResponse = await API.executeChecksums(reqPara);
+        if (response && response[0]?.MESSAGE !== "") {
+          // Show the message box with the response message
+          const buttonName = await MessageBox({
+            messageTitle: "Validation Failed",
+            message: response[0]?.MESSAGE,
+            buttonNames: ["Ok"],
+          });
+
+          if (buttonName !== "Ok") {
+            // If the user did not click "Ok", break the loop or handle accordingly
+            break; // or continue; depending on your requirement
+          }
+        }
+
+        // Continue with the item processing
+        const updatedItem = { ...item, CLR: response[0]?.CLR };
+        results.push(updatedItem);
+        setGridData([...results]); // Update state immediately
+      } catch (error) {
+        console.error("Mutation failed:", error);
+        results.push(item);
+        setGridData([...results]); // Update state immediately
+      }
+    }
+  };
+
   // Mutation to get checksum data
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
     onError: (error: any) => {
@@ -84,6 +128,21 @@ export const VerifyDayendChecksums = ({
         console.error("Error processing data:", error);
         enqueueSnackbar("Failed to update data", { variant: "error" });
       }
+    },
+  });
+
+  // Mutation to execute checksums
+  const executeEodMutation = useMutation(API.executeChecksums, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown error occurred";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, { variant: "error" });
+      CloseMessageBox();
+    },
+    onSuccess: () => {
+      CloseMessageBox();
     },
   });
 
@@ -150,59 +209,17 @@ export const VerifyDayendChecksums = ({
             // Handle other statuses if necessary
           }
         }
+        console.log("Data validated successfully:", data);
       },
       onError: (error) => {
         console.error("Error validating data:", error);
       },
     }
   );
+
   useEffect(() => {
     setReqData(validatedData);
   }, [validatedData]);
-  // Process array of items and add CLR from API response
-  const processArray = async (data: Item[]): Promise<void> => {
-    const results: (Item & { CLR?: string })[] = [...gridData]; // Initialize with existing gridData
-
-    for (const item of data) {
-      const reqPara = {
-        
-        FLAG: "C",
-        SCREEN_REF: "TRN/399",
-        FOR_BRANCH: reqData[0]?.BRANCH_LIST,
-        EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
-        CHKSM_TYPE: item?.CHKSM_TYPE,
-        SR_CD: item?.SR_CD,
-        MENDETORY: item?.MENDETORY,
-        EOD_VER_ID: item?.EOD_VER_ID,
-      };
-
-      try {
-        const response: ApiResponse = await API.executeChecksums(reqPara);
-        if (response && response[0]?.MESSAGE !== "") {
-          // Show the message box with the response message
-          const buttonName = await MessageBox({
-            messageTitle: "Validation Failed",
-            message: response[0]?.MESSAGE,
-            buttonNames: ["Ok"],
-          });
-
-          if (buttonName !== "Ok") {
-            // If the user did not click "Ok", break the loop or handle accordingly
-            break; // or continue; depending on your requirement
-          }
-        }
-
-        // Continue with the item processing
-        const updatedItem = { ...item, CLR: response[0]?.CLR };
-        results.push(updatedItem);
-        setGridData([...results]); // Update state immediately
-      } catch (error) {
-        console.error("Mutation failed:", error);
-        results.push(item);
-        setGridData([...results]); // Update state immediately
-      }
-    }
-  };
 
   // Mutation to get document URL
   const docUrlMutation = useMutation(API.getDocUrl, {

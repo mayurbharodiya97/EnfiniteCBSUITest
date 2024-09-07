@@ -52,6 +52,7 @@ const DayEndProcess = () => {
     })
   );
 
+ 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDayendprocessFlag"]);
