@@ -3,8 +3,8 @@ import { Dialog } from "@mui/material";
 import * as API from "./api";
 import { DependenciesData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
+import Report from "components/report";
 import { t } from "i18next";
-import { ReportGrid } from "@acuteinfo/common-base";
 const Dependencies = ({ open, onClose, rowsData }) => {
   const { authState } = useContext(AuthContext);
   return (
@@ -19,11 +19,12 @@ const Dependencies = ({ open, onClose, rowsData }) => {
         },
       }}
     >
-      <ReportGrid
+      <Report
         reportID={"CUSTOMERDEPENDENCYDTL"}
         reportName={"reportID-" + "getDependenciesData"}
         dataFetcher={API.getDependenciesData}
         metaData={DependenciesData}
+        disableFilters
         maxHeight={window.innerHeight - 151}
         title={t(
           `DependenciesOfCustomer_id = ${rowsData?.[0]?.data?.CUSTOMER_ID}`

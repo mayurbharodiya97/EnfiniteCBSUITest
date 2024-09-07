@@ -1,26 +1,17 @@
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic/";
 import { useQuery } from "react-query";
-import * as API from "./api";
+import * as API from './api';
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
+import { ClearCacheProvider, queryClient } from "cache";
 import { DataRetrival } from "./DataRetrival";
 import { RetrieveGridMetaData } from "./paySlipMetadata";
 import { PaySlipIssueEntryData } from "./PayslipIsuueEntryform";
-import {
-  Alert,
-  ClearCacheProvider,
-  queryClient,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -43,9 +34,10 @@ const actions: ActionTypes[] = [
 ];
 
 const RetriveDataGrid = () => {
+
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation()
   const isDataChangedRef = useRef<any>(null);
   const initialRender = useRef<any>(true);
   const [RetreivedData, setRetrievedData] = useState([]);
@@ -55,7 +47,8 @@ const RetriveDataGrid = () => {
     async (data) => {
       if (data.name === "Retrive") {
         setopenDataRetrivalForm(true);
-      } else {
+      }
+      else {
         navigate(data?.name, {
           state: data?.rows,
         });
@@ -64,27 +57,24 @@ const RetriveDataGrid = () => {
     [navigate]
   );
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch: slipdataRefetch,
-  } = useQuery<any, any>(["getRetrievalPaySlipEntryData"], () =>
-    API.getRetrievalPaySlipEntryData({
-      companyID: authState?.companyID,
-      branchCode: authState?.user?.branchCode,
-      FROM_DT: authState?.workingDate,
-      TO_DT: authState?.workingDate,
-      USER_LEVEL: authState?.role,
-      GD_DATE: authState?.workingDate,
-    })
+  const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<any, any>(
+    ["getRetrievalPaySlipEntryData"],
+    () =>
+      API.getRetrievalPaySlipEntryData({
+        companyID: authState?.companyID,
+        branchCode: authState?.user?.branchCode,
+        FROM_DT: authState?.workingDate,
+        TO_DT: authState?.workingDate,
+        USER_LEVEL: authState?.role,
+        GD_DATE: authState?.workingDate
+      })
   );
 
+
   useEffect(() => {
-    setGridVal(data);
+    setGridVal(data)
   }, [data]);
+
 
   useEffect(() => {
     if (initialRender.current) {
@@ -97,7 +87,7 @@ const RetriveDataGrid = () => {
 
   const setGridVal = async (data) => {
     await setRetrievedData(data);
-  };
+  }
 
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
@@ -113,6 +103,8 @@ const RetriveDataGrid = () => {
       queryClient.removeQueries(["getRetrievalPaySlipEntryData"]);
     };
   }, []);
+
+
 
   return (
     <Fragment>
@@ -146,9 +138,10 @@ const RetriveDataGrid = () => {
           element={
             <PaySlipIssueEntryData
               defaultView={"add"}
-              closeDialog={ClosedEventCall}
+              closeDialog={(ClosedEventCall)}
               slipdataRefetch={slipdataRefetch}
             />
+
           }
         />
         <Route
@@ -163,14 +156,14 @@ const RetriveDataGrid = () => {
         />
       </Routes>
       <DataRetrival
-        closeDialog={() => {
-          setopenDataRetrivalForm(false);
-        }}
+        closeDialog={() => { setopenDataRetrivalForm(false) }}
         open={openDataRetrivalForm}
         onUpload={async (result) => {
           setRetrievedData(result);
-        }}
-      />
+        }} />
+
+
+
     </Fragment>
   );
 };

@@ -1,15 +1,14 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { useLocation } from "react-router-dom";
+import { GradientButton } from "components/styledComponent/button";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
+import { useTranslation } from "react-i18next";
 import { FDRetriveMetadata } from "./metaData/fdRetriveMetaData";
 import { FDContext } from "../context/fdContext";
-import {
-  usePopupContext,
-  SubmitFnType,
-  GradientButton,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
 
 export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
   const {

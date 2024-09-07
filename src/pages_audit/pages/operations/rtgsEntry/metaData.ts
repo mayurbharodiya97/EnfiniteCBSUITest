@@ -1,11 +1,12 @@
+import { utilFunction } from "components/utils";
 import {
   getAccountDetail,
   getIfscBankDetail,
   getIfscBenDetail,
   getJointDetailsList,
-  getAcctTypeData,
+  getAcctTypeData
 } from "./api";
-import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
@@ -95,7 +96,7 @@ export const RtgsEntryFormMetaData = {
             COMP_CD: authState?.companyID,
             ENT_BRANCH_CD: authState?.user?.branchCode,
             MSG_TYPE: "0",
-            ENTRY_TYPE: dependentValue?.ENTRY_TYPE?.value,
+            ENTRY_TYPE: dependentValue?.ENTRY_TYPE?.value
           });
         }
       },
@@ -103,7 +104,9 @@ export const RtgsEntryFormMetaData = {
       disableCaching: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["PleaseSelectTransactionType"] }],
+        rules: [
+          { name: "required", params: ["PleaseSelectTransactionType"] },
+        ],
       },
       __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
     },
@@ -159,7 +162,9 @@ export const RtgsEntryFormMetaData = {
       disableCaching: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["PleaseSelectCommDefinition"] }],
+        rules: [
+          { name: "required", params: ["PleaseSelectCommDefinition"] },
+        ],
       },
     },
 
@@ -236,7 +241,7 @@ export const RtgsEntryFormMetaData = {
               TRAN_BAL: { value: "" },
               ACCT_CD: { value: "" },
             };
-          },
+          }
         },
         accountTypeMetadata: {
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
@@ -263,6 +268,7 @@ export const RtgsEntryFormMetaData = {
             ],
           },
           _optionsKey: "get_Account_Type",
+
         },
         accountCodeMetadata: {
           fullWidth: true,
@@ -367,15 +373,15 @@ export const RtgsEntryFormMetaData = {
                 ACCT_CD:
                   returnVal !== ""
                     ? {
-                        value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                        ignoreUpdate: true,
-                        isFieldFocused: false,
-                      }
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
                     : {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
                 TRAN_BAL: {
                   value: returnVal?.TRAN_BAL ?? "",
                 },
@@ -402,7 +408,7 @@ export const RtgsEntryFormMetaData = {
                 },
                 TYPE_CD: {
                   value: returnVal?.TYPE_CD ?? "",
-                },
+                }
               };
             } else if (!field?.value) {
               return {
@@ -438,7 +444,7 @@ export const RtgsEntryFormMetaData = {
             formState,
             auth,
             dependentFieldsValues
-          ) => {},
+          ) => { }
         },
       },
       __EDIT__: {
@@ -467,7 +473,7 @@ export const RtgsEntryFormMetaData = {
             formState,
             auth,
             dependentFieldsValues
-          ) => {},
+          ) => { }
         },
       },
     },
@@ -629,7 +635,7 @@ export const RtgsEntryFormMetaData = {
       placeholder: "Cheque No.",
       type: "text",
       autoComplete: "off",
-      __EDIT__: { isReadOnly: true },
+      __EDIT__: { isReadOnly: true, },
       __NEW__: {
         FormatProps: {
           allowNegative: false,
@@ -697,7 +703,7 @@ export const RtgsEntryFormMetaData = {
               ),
               CHEQUE_NO: field.value,
               TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value,
-              SCREEN_REF: "MST/552",
+              SCREEN_REF: "MST/552"
             });
             let btn99;
 
@@ -1042,6 +1048,7 @@ export const RtgsEntryFormMetaData = {
       },
       name: "ENABLE_DISABLE",
       label: "",
+
     },
     {
       render: {
@@ -1208,7 +1215,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1322,7 +1329,7 @@ export const IFSCBankDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1446,15 +1453,16 @@ export const rtgsAccountDetailFormMetaData: any = {
       },
       Divider: {
         fullWidth: true,
-      },
+      }
     },
   },
   fields: [
+
+
     {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
       GridProps: { xs: 0, md: 6.7, sm: 6.7, lg: 6.7, xl: 6.7 },
     },
     {
@@ -1598,20 +1606,20 @@ export const rtgsAccountDetailFormMetaData: any = {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD",
+          name: "SR_CD"
         },
         {
           render: {
             componentType: "hidden",
           },
-          name: "TRAN_CD",
+          name: "TRAN_CD"
         },
 
         {
           render: {
             componentType: "hidden",
           },
-          name: "FILED_HIDDEN",
+          name: "FILED_HIDDEN"
         },
         {
           render: {
@@ -1624,15 +1632,14 @@ export const rtgsAccountDetailFormMetaData: any = {
           __EDIT__: {
             dependentFields: ["FILED_HIDDEN"],
             isReadOnly: (field, dependentField, formState) => {
-              if (
-                dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value ===
-                "Y"
+              if (dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value === "Y"
               ) {
                 return true;
+
               } else {
-                return false;
+                return false
               }
-            },
+            }
           },
           options: async (dependentValue, formState, _, authState) => {
             // return formState?.rtgsAcData
@@ -1648,10 +1655,7 @@ export const rtgsAccountDetailFormMetaData: any = {
                   : "",
               ACCT_CD:
                 formState?.rtgsAcData?.PARA_BNFCRY === "Y"
-                  ? formState?.rtgsAcData?.ACCT_CD.padStart(6, "0")?.padEnd(
-                      20,
-                      " "
-                    ) ?? ""
+                  ? formState?.rtgsAcData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? ""
                   : "",
               // FLAG: "N",
               FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
@@ -1668,7 +1672,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
-            console.log("formState", formState);
+            console.log("formState", formState)
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&
@@ -1757,6 +1761,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             }
           },
           disableCaching: true,
+
         },
         {
           render: {
@@ -1908,15 +1913,14 @@ export const rtgsAccountDetailFormMetaData: any = {
           __EDIT__: {
             dependentFields: ["FILED_HIDDEN"],
             isReadOnly: (field, dependentField, formState) => {
-              if (
-                dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value ===
-                "Y"
+              if (dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value === "Y"
               ) {
                 return true;
+
               } else {
-                return false;
+                return false
               }
-            },
+            }
           },
           FormatProps: {
             allowNegative: false,
@@ -2284,7 +2288,10 @@ export const AuditBenfiDetailFormMetadata = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (field?.value) {
+          if (
+            field?.value
+          ) {
+
             let postData = await getIfscBenDetail({
               IFSC_CODE: field?.value ?? "",
               ENTRY_TYPE: "",
@@ -2332,18 +2339,17 @@ export const AuditBenfiDetailFormMetadata = {
             btn99 = 0;
 
             return {
-              TO_IFSCCODE:
-                returnVal !== ""
-                  ? {
-                      value: field?.value,
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
-                  : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+              TO_IFSCCODE: returnVal !== ""
+                ? {
+                  value: field?.value,
+                  ignoreUpdate: true,
+                  isFieldFocused: false,
+                }
+                : {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
               BANK_NM: { value: returnVal.BANK_NM ?? "" },
               BRANCH_NM: { value: returnVal.BRANCH_NM ?? "" },
               CONTACT_DTL: { value: returnVal.CONTACT_DTL ?? "" },
@@ -2366,8 +2372,10 @@ export const AuditBenfiDetailFormMetadata = {
             };
           }
         },
+
       },
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+
     },
     {
       render: {
@@ -2441,10 +2449,7 @@ export const AuditBenfiDetailFormMetadata = {
         schemaValidation: {
           type: "string",
           rules: [
-            {
-              name: "required",
-              params: ["PleaseEnterTheBeneficiaryAcAddress"],
-            },
+            { name: "required", params: ["PleaseEnterTheBeneficiaryAcAddress"] },
           ],
         },
       },
@@ -2466,10 +2471,7 @@ export const AuditBenfiDetailFormMetadata = {
         schemaValidation: {
           type: "string",
           rules: [
-            {
-              name: "required",
-              params: ["Please enter the Beneficiary A/c Mobile No."],
-            },
+            { name: "required", params: ["Please enter the Beneficiary A/c Mobile No."] },
           ],
         },
       },
@@ -2493,17 +2495,13 @@ export const AuditBenfiDetailFormMetadata = {
         schemaValidation: {
           type: "string",
           rules: [
-            {
-              name: "required",
-              params: ["PleaseEnterTheBeneficiaryAcEmailID"],
-            },
+            { name: "required", params: ["PleaseEnterTheBeneficiaryAcEmailID"] },
           ],
         },
         validate: (columnValue, allField, flag) => {
-          let emailRegex =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           if (columnValue.value && !emailRegex.test(columnValue.value)) {
-            return "PleaseEnterValidEmailID";
+            return "PleaseEnterValidEmailID"
           }
           return "";
         },
@@ -2589,6 +2587,7 @@ export const AuditBenfiDetailFormMetadata = {
       name: "FLAG",
       label: "Flag",
       __NEW__: {
+
         render: {
           componentType: "checkbox",
         },
@@ -2605,7 +2604,7 @@ export const AuditBenfiDetailFormMetadata = {
             message: "ThisRecordWillNotSaveBeneficiaryMaster",
           });
         }
-        return {};
+        return {}
       },
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -2626,6 +2625,7 @@ export const AuditBenfiDetailFormMetadata = {
             return true;
           }
         },
+
       },
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -2774,11 +2774,13 @@ export const RetrieveFormConfigMetaData = {
     },
   },
   fields: [
+
+
     {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,
@@ -2903,7 +2905,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       accessor: "SR_NO",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -2931,8 +2933,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 100,
       maxWidth: 150,
-    },
-    {
+    }, {
       accessor: "TRAN_DT",
       columnName: "TranDate",
       sequence: 4,
@@ -2966,6 +2967,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 250,
     },
+
 
     {
       accessor: "COMP_CD",

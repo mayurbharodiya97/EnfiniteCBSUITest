@@ -1,5 +1,5 @@
 import { AuthSDK } from "./fns/auth";
-// import "./yup";
+import "./yup";
 
 AuthSDK.inititateAPI(
   `${new URL("./", process.env.REACT_APP_API_URL).href}` ?? "",

@@ -10,8 +10,9 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { useQuery, useMutation, useQueries } from "react-query";
 import * as API from "../api";
+import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ListPopupMessageWrapper } from "./listPopupBox/listPopupBox";
 import { useTranslation } from "react-i18next";
 import StickyNotes from "./stickyNotes/stickyNotes";
@@ -22,7 +23,6 @@ import {
   NotesMessageBox,
   TipsMessageBox,
 } from "assets/icons/svgIcons";
-import { queryClient } from "@acuteinfo/common-base";
 
 
 export const MessageBox = ({ screenFlag = "" }: any) => {

@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const checkUsername = async (...reqdata) => {
@@ -16,7 +16,7 @@ export const getCustomerId = async (...reqdata) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTIDVAL", {
       COMP_CD: reqdata?.[1]?.COMP_CD,
-      CUSTOMER_ID: reqdata?.[1]?.CUSTOMER_ID,
+      CUSTOMER_ID : reqdata?.[1]?.CUSTOMER_ID,
     });
   if (status === "0") {
     return { data, status };
@@ -26,7 +26,8 @@ export const getCustomerId = async (...reqdata) => {
 };
 export const getsecmstgrpdrpdwn = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETSECMSTGRPNMDDW", {});
+    await AuthSDK.internalFetcher("GETSECMSTGRPNMDDW", {
+    });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -240,11 +241,11 @@ export const getLoginShiftddw = async ({ COMP_CD, BRANCH_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getLoginShiftAccess = async ({ userid, comp_cd }) => {
+export const getLoginShiftAccess = async ({ userid,comp_cd }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSECUSERLOGINSHIFTEXIST", {
       USER_NAME: userid,
-      COMP_CD: comp_cd,
+      COMP_CD : comp_cd
     });
   if (status === "0") {
     return data;

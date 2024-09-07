@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { isValid } from "date-fns";
 
 export const RetrieveFormConfigMetaData = {
@@ -45,11 +45,13 @@ export const RetrieveFormConfigMetaData = {
     },
   },
   fields: [
+
+
     {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,
@@ -173,7 +175,7 @@ export const RtgsConfirmGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -201,8 +203,7 @@ export const RtgsConfirmGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 100,
       maxWidth: 150,
-    },
-    {
+    }, {
       accessor: "TRAN_DT",
       columnName: "TranDate",
       sequence: 4,
@@ -301,6 +302,7 @@ export const RtgsConfirmGridMetaData: GridMetaDataType = {
       width: 150,
       minWidth: 120,
       maxWidth: 200,
+
     },
     {
       accessor: "AMOUNT",
@@ -516,6 +518,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
   ],
 };
 
+
 export const RtgsOrderingBranchConfirmFormMetaData = {
   form: {
     name: "rtgsEntry",
@@ -589,6 +592,7 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       defaultValue: "R42",
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       disableCaching: true,
+
     },
 
     {
@@ -764,6 +768,7 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       fullWidth: true,
 
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 3.3 },
+
     },
 
     {
@@ -839,6 +844,7 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       },
       name: "ENABLE_DISABLE",
       label: "",
+
     },
     {
       render: {
@@ -1106,6 +1112,7 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       defaultValue: "R42",
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       disableCaching: true,
+
     },
 
     {
@@ -1280,6 +1287,7 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       fullWidth: true,
 
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 3.3 },
+
     },
 
     {
@@ -1355,6 +1363,7 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       },
       name: "ENABLE_DISABLE",
       label: "",
+
     },
     {
       render: {
@@ -1455,6 +1464,7 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },
 
+
     {
       render: {
         componentType: "hidden",
@@ -1496,6 +1506,7 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       defaultValue: "R42",
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       disableCaching: true,
+
     },
     {
       render: {
@@ -1620,11 +1631,12 @@ export const rtgBenDetailConfirmFormMetaData: any = {
     },
   },
   fields: [
+
+
     {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
       GridProps: { xs: 0, md: 8, sm: 8, lg: 8, xl: 8 },
     },
     {
@@ -1768,20 +1780,20 @@ export const rtgBenDetailConfirmFormMetaData: any = {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD",
+          name: "SR_CD"
         },
         {
           render: {
             componentType: "hidden",
           },
-          name: "TRAN_CD",
+          name: "TRAN_CD"
         },
 
         {
           render: {
             componentType: "hidden",
           },
-          name: "FILED_HIDDEN",
+          name: "FILED_HIDDEN"
         },
         {
           render: {
@@ -1792,6 +1804,7 @@ export const rtgBenDetailConfirmFormMetaData: any = {
           defaultValue: "",
           GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
           disableCaching: true,
+
         },
         {
           render: {
@@ -1929,15 +1942,14 @@ export const rtgBenDetailConfirmFormMetaData: any = {
           __EDIT__: {
             dependentFields: ["FILED_HIDDEN"],
             isReadOnly: (field, dependentField, formState) => {
-              if (
-                dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value ===
-                "Y"
+              if (dependentField?.["beneficiaryAcDetails.FILED_HIDDEN"]?.value === "Y"
               ) {
                 return true;
+
               } else {
-                return false;
+                return false
               }
-            },
+            }
           },
           FormatProps: {
             allowNegative: false,

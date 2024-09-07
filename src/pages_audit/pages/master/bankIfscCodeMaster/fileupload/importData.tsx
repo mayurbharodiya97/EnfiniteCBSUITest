@@ -1,14 +1,24 @@
+import { ActionTypes, GridMetaDataType } from "components/dataTable";
+import { FileUploadControl } from "components/fileUpload";
+import { ConvertExcelToJSONData } from "components/utils";
 import { useContext, useState } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar, useSnackbar } from "notistack";
-import { Dialog } from "@mui/material";
-import { AdditionalcollumnMetadata } from "./additionalCollumMetadata";
+import { Alert } from "components/common/alert";
+import { LoadingTextAnimation } from "components/common/loader";
+import { AuthContext } from "pages_audit/auth";
 import {
-  usePopupContext,
-  ActionTypes,
-  FileUploadControl,
-} from "@acuteinfo/common-base";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { AdditionalcollumnMetadata } from "./additionalCollumMetadata";
+import { GeneralAPI } from "registry/fns/functions";
+import { usePopupContext } from "components/custom/popupContext";
+
 const actions: ActionTypes[] = [
   {
     actionName: "upload",
@@ -26,30 +36,34 @@ const actions: ActionTypes[] = [
   },
 ];
 
+
 export default function ImportData({ CloseFileUpload, refetchData }) {
   const [isFileUploadopen, setFileUpload] = useState(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const mutation = useMutation(API.uploadFileData, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-      CloseFileUpload();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar("data imported successfully", {
-        variant: "success",
-      });
-      refetchData();
-      CloseFileUpload();
-      CloseMessageBox();
-    },
-  });
+  const mutation = useMutation(API.uploadFileData,
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox();
+        CloseFileUpload();
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar("data imported successfully", {
+          variant: "success",
+        });
+        refetchData();
+        CloseFileUpload();
+        CloseMessageBox();
+      },
+    }
+  );
+
 
   return (
     <div>
@@ -96,13 +110,19 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
             else if (btnName === "No") {
               CloseFileUpload();
             }
+
           }}
           gridProps={{}}
           maxAllowedSize={1024 * 1204 * 10} //10Mb file
           allowedExtensions={["xlsx", "pdf", "csv", "txt", "xls"]}
-          onUpdateFileData={(files) => {}}
+          onUpdateFileData={(files) => { }}
         />
       </Dialog>
+
+
     </div>
   );
-}
+};
+
+
+

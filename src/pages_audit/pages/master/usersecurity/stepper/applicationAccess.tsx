@@ -6,19 +6,17 @@ import {
   useEffect,
   useState,
 } from "react";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
 import { applicationAccess } from "./metaData/metaDataGrid";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
+import { extractGridMetaData } from "components/utils";
 import { Alert } from "reactstrap";
 
-import {
-  extractGridMetaData,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "populate",
@@ -33,7 +31,10 @@ const NewApplicationAccess = forwardRef<any, any>(
     const Username = username?.USER_NAME;
     const [gridData, setGridData] = useState<any>([]);
     const [populateDataset, setpopulateDataset] = useState<any>([]);
-    const { userState, dispatchCommon } = useContext(SecurityContext);
+    const {
+      userState,
+      dispatchCommon,
+    } = useContext(SecurityContext);
     const navigate = useNavigate();
 
     // Get API for New User.

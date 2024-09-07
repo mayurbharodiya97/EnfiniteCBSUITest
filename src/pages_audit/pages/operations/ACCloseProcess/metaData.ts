@@ -1,8 +1,9 @@
 import { GeneralAPI } from "registry/fns/functions";
+import { utilFunction } from "components/utils";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { getAccountCloseReason, getTRXList } from "./api";
 import * as API from "./api";
 import { t } from "i18next";
-import { utilFunction, GridMetaDataType } from "@acuteinfo/common-base";
 
 export const accountFindmetaData = {
   form: {

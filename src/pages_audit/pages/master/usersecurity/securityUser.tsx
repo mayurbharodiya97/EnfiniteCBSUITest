@@ -1,20 +1,15 @@
 import { UserSecurity } from "./metaDataGrid";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
-import * as API from "./api";
+import * as API from "./api"
 import { Typography } from "@mui/material";
-import { SecurityContextWrapper } from "./context/SecuityForm";
+import {SecurityContextWrapper} from "./context/SecuityForm";
+import { ClearCacheContext, queryClient } from "cache";
 import Steppers from "./stepper/stepper";
-
-import {
-  ClearCacheContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -36,11 +31,11 @@ const actions: ActionTypes[] = [
 const Securityuser = () => {
   const navigate = useNavigate();
   const { getEntries } = useContext(ClearCacheContext);
-  const [rowData, setRowsData] = useState<any>([]);
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(["getSecurityUserGrid"], () => API.getSecurityUserGrid());
+  const [rowData, setRowsData] = useState<any>([])
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
+    ["getSecurityUserGrid"],
+    () => API.getSecurityUserGrid()
+  );
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "add") {
@@ -79,15 +74,7 @@ const Securityuser = () => {
         setAction={setCurrentAction}
         refetchData={() => refetch()}
       />
-      <Typography
-        sx={{
-          fontWeight: "bold",
-          color: "rgb(152 59 70 / 61%)",
-          marginLeft: "460px",
-          marginTop: "-36.2px",
-        }}
-        variant="subtitle1"
-      >
+      <Typography sx={{ fontWeight: "bold", color: "rgb(152 59 70 / 61%)", marginLeft: "460px", marginTop: "-36.2px" }} variant="subtitle1">
         Double click or right click for Edit-Detail.
       </Typography>
     </Fragment>
@@ -95,15 +82,17 @@ const Securityuser = () => {
 };
 
 const UserSecurityWrapper = () => {
+
   return (
     <SecurityContextWrapper>
-      <Routes>
-        <Route path="add" element={<Steppers defaultView={"new"} />} />
-        <Route path="edit" element={<Steppers defaultView={"edit"} />} />
-        <Route path="/*" element={<Securityuser />} />
-      </Routes>
+
+    <Routes>
+      <Route path="add" element={<Steppers  defaultView={"new"}/>} />
+      <Route path="edit" element={<Steppers  defaultView={"edit"}/>} />
+      <Route path="/*" element={<Securityuser />} />
+    </Routes>
     </SecurityContextWrapper>
   );
-};
+}
 
 export default UserSecurityWrapper;

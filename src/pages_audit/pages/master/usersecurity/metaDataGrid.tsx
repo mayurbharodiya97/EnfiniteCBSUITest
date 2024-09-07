@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const UserSecurity: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -23,7 +23,7 @@ export const UserSecurity: GridMetaDataType = {
     allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
-    allowRowSelection: false,
+    allowRowSelection:false,
   },
   filters: [
     {

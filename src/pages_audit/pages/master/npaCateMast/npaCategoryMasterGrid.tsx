@@ -1,3 +1,9 @@
+import { ClearCacheContext, queryClient } from "cache";
+import { Alert } from "components/common/alert";
+import { usePopupContext } from "components/custom/popupContext";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTable/types";
+import GridWrapper from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
@@ -8,15 +14,6 @@ import { NpaCategoryMasterGridMetaData } from "./gridMetadata";
 import { NpaCategoryMasterWrapper } from "./viewDetails/npaCategoryMasterForm";
 import { useTranslation } from "react-i18next";
 
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-  ClearCacheContext,
-} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -138,7 +135,7 @@ export const NpaCategoryMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        enableExport={data?.length > 0 ? true : false}
+        ReportExportButton={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

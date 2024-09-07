@@ -1,3 +1,4 @@
+import Report from "components/report";
 // import { Dialog } from "@material-ui/core";
 import * as API from "../../api";
 import { fundTrfSubDetailsMetaData } from "./metadata/fundTrfSubDetails";
@@ -12,7 +13,6 @@ import { format } from "date-fns";
 import { ScheduleDetailReports } from "./scheduledetailAPIResponse/scheduleDtlAPIResponse";
 import { virtualSubDetailsMetaData } from "./metadata/virtualSubDetails";
 import { Dialog } from "@mui/material";
-import { ReportGrid } from "@acuteinfo/common-base";
 
 export const StaticAdminUserDetailsReports = ({
   screenFlag,
@@ -60,13 +60,14 @@ export const StaticAdminUserDetailsReports = ({
     <>
       <Dialog fullWidth={false} maxWidth={"md"} open={open}>
         <div style={{ padding: "10px", margin: "5px" }}>
-          <ReportGrid
+          <Report
             key={"ReportDetail" + reportID}
             // reportID={'reportServiceAPI/' + reportID}
             reportID={apiURL + reportID}
             reportName={reportID}
             dataFetcher={API.getReportData}
             metaData={metaData}
+            disableFilters
             maxHeight={window.innerHeight - 250}
             title={metaData?.title ?? ""}
             options={{
@@ -78,7 +79,9 @@ export const StaticAdminUserDetailsReports = ({
             initialState={{
               groupBy: metaData?.groupBy ?? [],
             }}
+            screenFlag={reportID}
             onClose={onClose}
+            buttonNames={buttonNames}
             otherAPIRequestPara={otherAPIRequestPara}
             autoFetch={metaData?.autoFetch ?? true}
             onClickActionEvent={(index, id, data) => {

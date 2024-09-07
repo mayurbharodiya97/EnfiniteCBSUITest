@@ -1,7 +1,12 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { utilFunction } from "components/utils";
+import { render } from "react-dom";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { addMonths, format, subDays } from "date-fns";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { getDailyTransactionImportData } from "./api";
+
 
 export const DailyTransactionImportMetadata = {
   form: {
@@ -86,6 +91,7 @@ export const DailyTransactionImportMetadata = {
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
             DOC_CD: "MST/454",
+
           });
         },
         postValidationSetCrossFieldValues: (
@@ -138,7 +144,7 @@ export const DailyTransactionImportMetadata = {
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
             };
-            console.log("Apireq", Apireq);
+            console.log("Apireq", Apireq)
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
 
             let btn99, returnVal;
@@ -160,7 +166,7 @@ export const DailyTransactionImportMetadata = {
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                   });
                 }
-                returnVal = postData;
+                returnVal = postData
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
@@ -174,7 +180,7 @@ export const DailyTransactionImportMetadata = {
                 }
               } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
-                  returnVal = postData;
+                  returnVal = postData
                 } else {
                   returnVal = "";
                 }
@@ -202,18 +208,18 @@ export const DailyTransactionImportMetadata = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                      value: utilFunction.getPadAccountNumber(
-                        field?.value,
-                        dependentFieldsValues?.ACCT_TYPE?.optionData
-                      ),
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    }
+                    value: utilFunction.getPadAccountNumber(
+                      field?.value,
+                      dependentFieldsValues?.ACCT_TYPE?.optionData
+                    ),
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  }
                   : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -224,8 +230,8 @@ export const DailyTransactionImportMetadata = {
                 value: returnVal?.TYPE_CD ?? "",
               },
               DESCRIPTION: {
-                value: "",
-                isFieldFocused: true,
+                value: "", isFieldFocused: true,
+
               },
             };
           } else {
@@ -233,6 +239,7 @@ export const DailyTransactionImportMetadata = {
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
+
             };
           }
         },
@@ -362,7 +369,7 @@ export const DailyTransactionImportMetadata = {
             ),
             CHEQUE_NO: field.value,
             TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value,
-            SCREEN_REF: "MST/454",
+            SCREEN_REF: "MST/454"
           });
           let btn99;
 
@@ -594,3 +601,5 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
     },
   ],
 };
+
+

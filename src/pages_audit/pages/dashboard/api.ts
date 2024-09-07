@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -6,6 +6,7 @@ export const getDashboardData = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDASHBOARDDATA", {
       APP_TRAN_CD: "51",
+
     });
   if (status === "0") {
     return data;

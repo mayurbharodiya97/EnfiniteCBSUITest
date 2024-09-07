@@ -1,8 +1,14 @@
+import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { useContext, useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType } from "components/dataTable/types";
+import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { AllScreensGridMetaData } from "./gridMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { utilFunction } from "components/utils/utilFunctions";
 import {
   AppBar,
   Box,
@@ -13,15 +19,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  GradientButton,
-  utilFunction,
-  ActionTypes,
-  GridWrapper,
-  ClearCacheProvider,
-  ClearCacheContext,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { GradientButton } from "components/styledComponent/button";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -106,7 +105,7 @@ export const ReleaseUsers = ({ open = false, handleDialogClose }) => {
           style: {
             width: "75%",
             // minHeight: "36vh",
-            // height: "36vh",hghfghfgh
+            // height: "36vh",
           },
         }}
         maxWidth="lg"

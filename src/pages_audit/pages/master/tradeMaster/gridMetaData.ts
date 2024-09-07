@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const TradeMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -36,7 +36,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       width: 60,
       minWidth: 50,
       maxWidth: 100,
-      isAutoSequence: true,
+      isAutoSequence:true
     },
     {
       accessor: "TRADE_CD",

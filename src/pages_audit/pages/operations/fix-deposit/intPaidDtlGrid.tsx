@@ -1,19 +1,16 @@
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import { FDContext } from "./context/fdContext";
+import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
+import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { IntPaidDtlGridMetaData } from "./intPaidDtlGridMetaData";
 import { Dialog, Paper } from "@mui/material";
 import Draggable from "react-draggable";
-import {
-  Alert,
-  GridWrapper,
-  queryClient,
-  ActionTypes,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -101,7 +98,7 @@ export const IntPaidDtlGrid = ({ closeDialog }) => {
           actions={actions}
           loading={isLoading || isFetching}
           setAction={setCurrentAction}
-          enableExport={true}
+          ReportExportButton={true}
         />
       </div>
     </Dialog>
