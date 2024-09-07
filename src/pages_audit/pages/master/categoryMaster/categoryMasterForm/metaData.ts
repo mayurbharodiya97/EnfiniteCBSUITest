@@ -1,5 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { getPMISCData } from "../api";
+import { getDDDWAcctType, getPMISCData } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
 

@@ -1,4 +1,10 @@
-import React, { Fragment, useContext, useRef } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import {
   AppBar,
   Box,
@@ -28,18 +34,18 @@ import BranchAccessRights from "./branchAccess";
 import { ProductAccess } from "./productAccess";
 import LoginShift from "./loginShiftAccess";
 import BiometricLogins from "./bioMetricLogin";
-
-import {
-  ColorlibConnector,
-  ColorlibStepIconRoot,
-  GradientButton,
-  usePopupContext,
-  utilFunction,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 import { enqueueSnackbar } from "notistack";
 import { LoginShiftConfirmation } from "../../userSecurityConfirmation/loginShift";
 import { BiometricLoginConfirmation } from "../../userSecurityConfirmation/boimetricLogin";
+
+import {
+  ColorlibConnector,
+  usePopupContext,
+  GradientButton,
+  ColorlibStepIconRoot,
+  utilFunction,
+} from "@acuteinfo/common-base";
+
 const CombinedStepper = ({ defaultView }) => {
   let currentPath = useLocation().pathname;
   const navigate = useNavigate();
@@ -98,7 +104,6 @@ const CombinedStepper = ({ defaultView }) => {
     },
     onSuccess: async (data) => {
       CloseMessageBox();
-      //@ts-ignore
       enqueueSnackbar(data, {
         variant: "success",
       });
@@ -554,12 +559,8 @@ const CombinedStepper = ({ defaultView }) => {
         >
           <Typography component="span" variant="h5" color="primary" px={2}>
             {defaultView === "new"
-              ? utilFunction.getDynamicLabel(
-                  currentPath,
-                  authState?.menulistdata,
-                  true
-                )
-              : `${utilFunction.getDynamicLabel(
+              ? getDynamicLabel(currentPath, authState?.menulistdata, true)
+              : `${getDynamicLabel(
                   currentPath,
                   authState?.menulistdata,
                   true

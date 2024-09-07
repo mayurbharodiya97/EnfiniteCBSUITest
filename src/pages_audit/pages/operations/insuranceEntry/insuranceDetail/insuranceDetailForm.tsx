@@ -6,30 +6,25 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { usePopupContext } from "components/custom/popupContext";
 import { useLocation } from "react-router-dom";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
+import { queryClient } from "cache";
 import * as API from "../api";
 import { useTranslation } from "react-i18next";
+import { MasterDetailsForm } from "components/formcomponent";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { GradientButton } from "components/styledComponent/button";
 import { InsuranceDetailFormMetaData } from "./insuranceDetailMetadata";
 import { format } from "date-fns";
-import {
-  LoaderPaperComponent,
-  RemarksAPIWrapper,
-  GradientButton,
-  MasterDetailsMetaData,
-  MasterDetailsForm,
-  Alert,
-  queryClient,
-  usePopupContext,
-} from "@acuteinfo/common-base";
-export const InsuranceDetailForm = ({
-  handleDialogClose,
-  defaultView,
-  isDataChangedRef,
-}) => {
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+
+export const InsuranceDetailForm = ({ handleDialogClose, defaultView, isDataChangedRef }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
@@ -38,35 +33,47 @@ export const InsuranceDetailForm = ({
   const [formMode, setFormMode] = useState(defaultView);
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
 
-  const {
-    data: mainData,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useQuery<any, any>(
-    ["getInsuranceEntryDetail", rows?.[0]?.data?.TRAN_CD],
-    () =>
-      API.getInsuranceEntryDetail({
-        COMP_CD: rows?.[0]?.data?.COMP_CD,
-        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
-        ACCT_CD: rows?.[0]?.data?.ACCT_CD,
-        TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-      })
+  const { data: mainData, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getInsuranceEntryDetail", rows?.[0]?.data?.TRAN_CD], () =>
+    API.getInsuranceEntryDetail({
+      COMP_CD: rows?.[0]?.data?.COMP_CD,
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+      ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+    })
   );
   useEffect(() => {
     return () => {
-      queryClient.removeQueries([
-        "getInsuranceEntryDetail",
-        rows?.[0]?.data?.TRAN_CD,
-      ]);
+      queryClient.removeQueries(["getInsuranceEntryDetail", rows?.[0]?.data?.TRAN_CD]);
     };
   }, []);
 
-  const deleteInsuranceMutation = useMutation(
-    "deleteInsuranceMutation",
+  const deleteInsuranceMutation = useMutation("deleteInsuranceMutation", API.doInsuranceDml, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+      SetDeleteRemark(false);
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar((t("RecordSuccessfullyDeleted")), {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      handleDialogClose();
+      CloseMessageBox();
+      SetDeleteRemark(false);
+    },
+  });
+  const doInsuranceDml: any = useMutation(
     API.doInsuranceDml,
     {
       onError: (error: any) => {
@@ -77,42 +84,21 @@ export const InsuranceDetailForm = ({
         enqueueSnackbar(errorMsg, {
           variant: "error",
         });
-        CloseMessageBox();
-        SetDeleteRemark(false);
+        CloseMessageBox()
       },
+
       onSuccess: (data) => {
-        enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
+        enqueueSnackbar(t("DataUpdatedSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
+        CloseMessageBox()
         handleDialogClose();
         CloseMessageBox();
-        SetDeleteRemark(false);
+
       },
     }
   );
-  const doInsuranceDml: any = useMutation(API.doInsuranceDml, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
-
-    onSuccess: (data) => {
-      enqueueSnackbar(t("DataUpdatedSuccessfully"), {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      CloseMessageBox();
-      handleDialogClose();
-      CloseMessageBox();
-    },
-  });
   const validateInsuranceEntryData: any = useMutation(
     API.validateInsuranceEntryData,
     {
@@ -125,7 +111,8 @@ export const InsuranceDetailForm = ({
           variant: "error",
         });
       },
-      onSuccess: async (data, variables) => {},
+      onSuccess: async (data, variables) => {
+      },
     }
   );
 
@@ -142,38 +129,37 @@ export const InsuranceDetailForm = ({
       setFieldErrors,
       actionFlag,
     }) => {
-      let newData = data;
+      let newData = data
       // if (updPara.isNewRow) {
       //   updPara.isNewRow.forEach((item) => {
       //     delete item.SR_CD;
       //     delete item.TRAN_CD;
       //   });
       // }
-      console.log("newData", newData);
-      validateInsuranceEntryData.mutate(
-        {
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          ACCT_TYPE: data?.ACCT_TYPE,
-          ACCT_CD: data?.ACCT_CD,
-          INSURANCE_DATE: data?.INSURANCE_DATE,
-          DUE_DATE: data?.DUE_DATE,
-          COVER_NOTE: data?.COVER_NOTE,
-          INSURANCE_COMP_CD: data?.INSURANCE_COMP_CD,
-          POLICY_NO: data?.POLICY_NO,
-          INSURANCE_AMOUNT: data?.INSURANCE_AMOUNT,
-          NET_PREMIUM_AMT: data?.NET_PREMIUM_AMOUNT,
-          SERVICE_CHARGE: data?.SERVICE_CHARGE,
-          DTL_DATA:
-            data?.DETAILS_DATA?.isUpdatedRow?.length > 0
-              ? data?.DETAILS_DATA?.isUpdatedRow
-              : data?.DETAILS_DATA?.isNewRow?.length > 0
-              ? data?.DETAILS_DATA?.isNewRow
-              : mainData?.detailData,
-          SCREEN_REF: "RPT/70",
-        },
+      console.log("newData", newData)
+      validateInsuranceEntryData.mutate({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        ACCT_TYPE: data?.ACCT_TYPE,
+        ACCT_CD: data?.ACCT_CD,
+        INSURANCE_DATE: data?.INSURANCE_DATE,
+        DUE_DATE: data?.DUE_DATE,
+        COVER_NOTE: data?.COVER_NOTE,
+        INSURANCE_COMP_CD: data?.INSURANCE_COMP_CD,
+        POLICY_NO: data?.POLICY_NO,
+        INSURANCE_AMOUNT: data?.INSURANCE_AMOUNT,
+        NET_PREMIUM_AMT: data?.NET_PREMIUM_AMOUNT,
+        SERVICE_CHARGE: data?.SERVICE_CHARGE,
+        DTL_DATA: data?.DETAILS_DATA?.isUpdatedRow?.length > 0
+          ? data?.DETAILS_DATA?.isUpdatedRow
+          : data?.DETAILS_DATA?.isNewRow?.length > 0
+            ? data?.DETAILS_DATA?.isNewRow
+            : mainData?.detailData,
+        SCREEN_REF: "RPT/70"
+      },
         {
           onSuccess: async (data, variables) => {
+
             for (let i = 0; i < data?.length; i++) {
               if (data[i]?.O_STATUS === "0") {
                 const buttonName = await MessageBox({
@@ -185,20 +171,23 @@ export const InsuranceDetailForm = ({
                 if (buttonName === "Yes") {
                   doInsuranceDml.mutate({
                     ...newData,
-                    INSURANCE_DATE: format(
-                      new Date(newData?.INSURANCE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    DUE_DATE: format(
-                      new Date(newData?.DUE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+                    INSURANCE_DATE:
+                      format(
+                        new Date(newData?.INSURANCE_DATE),
+                        "dd/MMM/yyyy"),
+                    DUE_DATE:
+                      format(
+                        new Date(newData?.DUE_DATE),
+                        "dd/MMM/yyyy"),
+                    TRAN_DT:
+                      format(
+                        new Date(newData?.TRAN_DT),
+                        "dd/MMM/yyyy"),
                     COMP_CD: authState?.companyID,
                     _isNewRow: formMode === "new" ? true : false,
                     _isDeleteRow: false,
                     _isUpdateRow: formMode === "edit" ? true : false,
-                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : "",
+                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : ""
                   });
                 }
               } else if (data[i]?.O_STATUS === "9") {
@@ -212,25 +201,29 @@ export const InsuranceDetailForm = ({
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["No", "Yes"],
                   loadingBtnName: ["Yes"],
-                });
+                })
                 if (buttonName === "Yes") {
                   doInsuranceDml.mutate({
                     ...newData,
-                    INSURANCE_DATE: format(
-                      new Date(newData?.INSURANCE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    DUE_DATE: format(
-                      new Date(newData?.DUE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+                    INSURANCE_DATE:
+                      format(
+                        new Date(newData?.INSURANCE_DATE),
+                        "dd/MMM/yyyy"),
+                    DUE_DATE:
+                      format(
+                        new Date(newData?.DUE_DATE),
+                        "dd/MMM/yyyy"),
+                    TRAN_DT:
+                      format(
+                        new Date(newData?.TRAN_DT),
+                        "dd/MMM/yyyy"),
                     COMP_CD: authState?.companyID,
                     _isNewRow: formMode === "new" ? true : false,
                     _isDeleteRow: false,
                     _isUpdateRow: formMode === "edit" ? true : false,
-                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : "",
+                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : ""
                   });
+
                 }
               } else if (data[i]?.O_STATUS === "999") {
                 MessageBox({
@@ -239,9 +232,9 @@ export const InsuranceDetailForm = ({
                 });
               }
             }
-          },
-        }
-      );
+
+          }
+        })
       endSubmit(true);
     },
     [formMode]
@@ -251,11 +244,10 @@ export const InsuranceDetailForm = ({
 
   const detailsData = mainData?.detailData.map((item) => {
     return {
-      ...item,
-      _isNewRow: formMode === "new" ? true : false,
-    };
-  });
-  console.log("detailsData", detailsData);
+      ...item, _isNewRow: formMode === "new" ? true : false,
+    }
+  })
+  console.log("detailsData", detailsData)
   return (
     <>
       <Dialog
@@ -264,6 +256,7 @@ export const InsuranceDetailForm = ({
         PaperProps={{
           style: {
             width: "100%",
+
           },
         }}
         maxWidth="lg"
@@ -277,6 +270,7 @@ export const InsuranceDetailForm = ({
             errorDetail={error?.error_detail ?? ""}
           />
         ) : (
+
           <MasterDetailsForm
             key={"InsuranceEntryForm" + formMode}
             metaData={metadata}
@@ -351,31 +345,37 @@ export const InsuranceDetailForm = ({
                           } else {
                             SetDeleteRemark(true);
                           }
-                        }}
+                        }
+                        }
                         color={"primary"}
                       >
                         {t("Remove")}
                       </GradientButton>
-                      {mainData?.[0]?.ALLOW_EDIT === "Y" ? (
-                        <GradientButton
-                          onClick={() => {
-                            setFormMode("edit");
-                          }}
-                          color={"primary"}
-                        >
-                          {t("Edit")}
-                        </GradientButton>
-                      ) : null}
-                      {rows?.[0]?.data?.ALLOW_RENEW === "Y" ? (
-                        <GradientButton
-                          onClick={() => {
-                            setFormMode("new");
-                          }}
-                          color={"primary"}
-                        >
-                          {t("Renew")}
-                        </GradientButton>
-                      ) : null}
+                      {
+                        mainData?.[0]?.ALLOW_EDIT === "Y" ?
+                          <GradientButton
+                            onClick={() => {
+                              setFormMode("edit");
+                            }}
+                            color={"primary"}
+                          >
+                            {t("Edit")}
+                          </GradientButton>
+                          : null
+                      }
+                      {
+                        rows?.[0]?.data?.ALLOW_RENEW === "Y" ?
+                          <GradientButton
+                            onClick={() => {
+                              setFormMode("new");
+
+                            }}
+                            color={"primary"}
+                          >
+                            {t("Renew")}
+                          </GradientButton>
+                          : null
+                      }
                       <GradientButton
                         onClick={() => handleDialogClose()}
                         color={"primary"}
@@ -383,15 +383,19 @@ export const InsuranceDetailForm = ({
                         {t("Close")}
                       </GradientButton>
                     </>
-                  )}
+                  )
+                  }
                 </>
-              );
+              )
             }}
           </MasterDetailsForm>
+
         )}
         {isDeleteRemark && (
           <RemarksAPIWrapper
-            TitleText={t("EnterRemovalRemarksForInsuranceMaster")}
+            TitleText={
+              t("EnterRemovalRemarksForInsuranceMaster")
+            }
             onActionNo={() => SetDeleteRemark(false)}
             onActionYes={async (val, rows) => {
               const buttonName = await MessageBox({
@@ -407,10 +411,12 @@ export const InsuranceDetailForm = ({
                   _isDeleteRow: true,
                   COMP_CD: mainData?.[0]?.COMP_CD,
                   ENTERED_COMP_CD: mainData?.[0]?.ENTERED_COMP_CD,
-                  ENTERED_BRANCH_CD: mainData?.[0]?.ENTERED_BRANCH_CD,
+                  ENTERED_BRANCH_CD:
+                    mainData?.[0]?.ENTERED_BRANCH_CD,
                   TRAN_CD: mainData?.[0]?.TRAN_CD,
                   ENTERED_BY: mainData?.[0]?.ENTERED_BY,
-                  BRANCH_CD: mainData?.[0]?.BRANCH_CD,
+                  BRANCH_CD:
+                    mainData?.[0]?.BRANCH_CD,
                   ACCT_TYPE: mainData?.[0]?.ACCT_TYPE,
                   ACCT_CD: mainData?.[0]?.ACCT_CD,
                   INSURANCE_AMOUNT: mainData?.[0]?.INSURANCE_AMOUNT,
@@ -423,21 +429,25 @@ export const InsuranceDetailForm = ({
                   ACTIVITY_TYPE: "INSURANCE ENTRY SCREEN",
                   DETAILS_DATA: {
                     isNewRow: [],
-                    isDeleteRow: [...mainData?.detailData],
+                    isDeleteRow: [
+                      ...mainData?.detailData
+                    ],
                     isUpdatedRow: [],
                   },
                 });
               }
-            }}
+            }
+            }
             isEntertoSubmit={true}
             AcceptbuttonLabelText="Ok"
             CanceltbuttonLabelText="Cancel"
             open={isDeleteRemark}
-            defaultValue={"WRONG ENTRY FROM INSURANCE MASTER"}
+            defaultValue={"WRONG ENTRY FROM INSURANCE MASTER"
+            }
             rows={undefined}
           />
         )}
-      </Dialog>
+      </Dialog >
     </>
   );
 };

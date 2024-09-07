@@ -3,7 +3,7 @@ import {
   getIfscBankDetail,
   getIfscBenDetail,
   getJointDetailsList,
-  getAcctTypeData,
+  getAcctTypeData
 } from "./api";
 import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
 import { format, isValid } from "date-fns";
@@ -1648,10 +1648,7 @@ export const rtgsAccountDetailFormMetaData: any = {
                   : "",
               ACCT_CD:
                 formState?.rtgsAcData?.PARA_BNFCRY === "Y"
-                  ? formState?.rtgsAcData?.ACCT_CD.padStart(6, "0")?.padEnd(
-                      20,
-                      " "
-                    ) ?? ""
+                  ? formState?.rtgsAcData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? ""
                   : "",
               // FLAG: "N",
               FLAG: formState?.rtgsAcData?.PARA_BNFCRY,
@@ -1668,7 +1665,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
-            console.log("formState", formState);
+            console.log("formState", formState)
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&
@@ -2284,7 +2281,10 @@ export const AuditBenfiDetailFormMetadata = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (field?.value) {
+          if (
+            field?.value
+          ) {
+
             let postData = await getIfscBenDetail({
               IFSC_CODE: field?.value ?? "",
               ENTRY_TYPE: "",
@@ -2332,18 +2332,17 @@ export const AuditBenfiDetailFormMetadata = {
             btn99 = 0;
 
             return {
-              TO_IFSCCODE:
-                returnVal !== ""
-                  ? {
-                      value: field?.value,
-                      ignoreUpdate: true,
-                      isFieldFocused: false,
-                    }
-                  : {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+              TO_IFSCCODE: returnVal !== ""
+                ? {
+                  value: field?.value,
+                  ignoreUpdate: true,
+                  isFieldFocused: false,
+                }
+                : {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
               BANK_NM: { value: returnVal.BANK_NM ?? "" },
               BRANCH_NM: { value: returnVal.BRANCH_NM ?? "" },
               CONTACT_DTL: { value: returnVal.CONTACT_DTL ?? "" },

@@ -9,14 +9,14 @@ import { RetrievalParametersFormWrapper } from "./form/retrieveDataForm";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
 import { format } from "date-fns";
+import { isValidDate } from "components/utils/utilFunctions/function";
+import { usePopupContext } from "components/custom/popupContext";
 import {
   Alert,
   GridWrapper,
   GridMetaDataType,
-  usePopupContext,
   ActionTypes,
   queryClient,
-  utilFunction,
 } from "@acuteinfo/common-base";
 
 const Actions: ActionTypes[] = [
@@ -170,15 +170,13 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
             BRANCH_CD: authState?.user?.branchCode ?? "",
             TRAN_TYPE: retrievalParaRef?.current?.TRAN_TYPE ?? "",
             CUSTOMER_ID: retrievalParaRef?.current?.A_CUSTOM_USER_NM ?? "",
-            FROM_DT: utilFunction.isValidDate(
-              retrievalParaRef?.current?.FROM_DT
-            )
+            FROM_DT: isValidDate(retrievalParaRef?.current?.FROM_DT)
               ? format(
                   new Date(retrievalParaRef?.current?.FROM_DT),
                   "dd/MMM/yyyy"
                 )
               : format(new Date(), "dd/MMM/yyyy") ?? "",
-            TO_DT: utilFunction.isValidDate(retrievalParaRef?.current?.TO_DT)
+            TO_DT: isValidDate(retrievalParaRef?.current?.TO_DT)
               ? format(
                   new Date(retrievalParaRef?.current?.TO_DT),
                   "dd/MMM/yyyy"
@@ -198,10 +196,10 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
       TRAN_TYPE: retrievalParaRef?.current?.TRAN_TYPE ?? "",
       CUSTOMER_ID: retrievalParaRef?.current?.A_CUSTOM_USER_NM ?? "",
-      FROM_DT: utilFunction.isValidDate(retrievalParaRef?.current?.FROM_DT)
+      FROM_DT: isValidDate(retrievalParaRef?.current?.FROM_DT)
         ? format(new Date(retrievalParaRef?.current?.FROM_DT), "dd/MMM/yyyy")
         : format(new Date(), "dd/MMM/yyyy") ?? "",
-      TO_DT: utilFunction.isValidDate(retrievalParaRef?.current?.TO_DT)
+      TO_DT: isValidDate(retrievalParaRef?.current?.TO_DT)
         ? format(new Date(retrievalParaRef?.current?.TO_DT), "dd/MMM/yyyy")
         : format(new Date(), "dd/MMM/yyyy") ?? "",
     };

@@ -150,7 +150,7 @@ export const OrnamentTypeMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
-        enableExport={true}
+        ReportExportButton={true}
       />
 
       <Routes>

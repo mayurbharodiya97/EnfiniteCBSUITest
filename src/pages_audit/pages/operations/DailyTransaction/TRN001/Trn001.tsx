@@ -11,19 +11,23 @@ import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001.css";
+import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
+import { utilFunction } from "components/utils";
 import { TRN001Context } from "./Trn001Reducer";
 import RowsTable from "./rowsTable";
-
+import { GradientButton } from "components/styledComponent/button";
+import { Alert } from "components/common/alert";
+import { useLocation } from "react-router-dom";
 import {
   queryClient,
   usePopupContext,
-  Alert,
-  GradientButton,
-  utilFunction,
+  MessageBoxWrapper,
+  PopupMessageAPIWrapper,
+  MessageBoxNavigateWrapper,
 } from "@acuteinfo/common-base";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();

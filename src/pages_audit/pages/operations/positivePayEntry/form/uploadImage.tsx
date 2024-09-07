@@ -1,4 +1,4 @@
-import { FileUploadControl } from "@acuteinfo/common-base";
+import { FileUploadControl } from "components/fileUpload";
 import { Dialog } from "@mui/material";
 
 export default function UploadImageDialogue({ onClose, onUpload }) {

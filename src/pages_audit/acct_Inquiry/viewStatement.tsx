@@ -1,4 +1,5 @@
 import { CircularProgress, Dialog, useTheme } from "@mui/material";
+import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -14,7 +15,6 @@ import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 import {
   LoaderPaperComponent,
-  usePopupContext,
   GradientButton,
   InitialValuesType,
   SubmitFnType,
@@ -23,13 +23,8 @@ import {
   FormWrapper,
 } from "@acuteinfo/common-base";
 
-export const ViewStatement = ({
-  open,
-  onClose,
-  rowsData,
-  screenFlag,
-  close,
-}) => {
+
+export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => {
   const [disableButton, setDisableButton] = useState(false);
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -233,6 +228,14 @@ export const ViewStatement = ({
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}
+            loading={
+              acctInqData?.isLoading ||
+              acctInqData?.isFetching ||
+              passbookInqData?.isLoading ||
+              passbookInqData?.isFetching ||
+              passbookValidation?.isLoading ||
+              passbookValidation?.isFetching
+            }
             formStyle={{
               background: "white",
             }}
@@ -243,7 +246,7 @@ export const ViewStatement = ({
               acctInqData: acctInqData?.data?.[0],
               handleButonDisable: handleButonDisable,
               MessageBox: MessageBox,
-              docCD: "RPT/430",
+              docCD: "RPT/430"
             }}
             setDataOnFieldChange={(action, payload) => {
               if (action === "accountDetails") {
@@ -268,7 +271,7 @@ export const ViewStatement = ({
                     passbookValidation?.isFetching ||
                     disableButton
                   }
-                  endIcon={
+                  endicon={
                     acctInqData?.isLoading ||
                     acctInqData?.isFetching ||
                     passbookInqData?.isLoading ||

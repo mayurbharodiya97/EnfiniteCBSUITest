@@ -1,4 +1,5 @@
-import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const accountFindmetaData = {

@@ -1,24 +1,23 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
+import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { PositivePayEntryFormMetadata } from "./metadata";
+import { ImageViewer } from "components/fileUpload/preView";
 import UploadImageDialogue from "./uploadImage";
 import * as API from "../api";
 import { format } from "date-fns";
-import {
-  ImageViewer,
-  RemarksAPIWrapper,
-  GradientButton,
-  usePopupContext,
-  utilFunction,
-  SubmitFnType,
-  MetaDataType,
-  FormWrapper,
-} from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { isValidDate } from "components/utils/utilFunctions/function";
+
 interface PositivePayEntryFormWrapperProps {
   isDataChangedRef: any;
   closeDialog: () => void;
@@ -235,8 +234,7 @@ export const PositivePayEntry = ({
                   buttonNames: ["Ok"],
                 });
                 if (btnName === "Ok" && formMode !== "view") {
-                  endSubmit(true);
-                }
+                  endSubmit(true);                }
               } else if (data[i]?.O_STATUS === "9") {
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
@@ -423,7 +421,7 @@ export const PositivePayEntry = ({
                       if (confirmation === "Yes") {
                         const confirmData = {
                           ...rows?.[0]?.data,
-                          ENTERED_DATE: utilFunction.isValidDate(
+                          ENTERED_DATE: isValidDate(
                             rows?.[0]?.data?.ENTERED_DATE
                           )
                             ? format(
@@ -431,31 +429,25 @@ export const PositivePayEntry = ({
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          TRAN_DT: utilFunction.isValidDate(
-                            rows?.[0]?.data?.TRAN_DT
-                          )
+                          TRAN_DT: isValidDate(rows?.[0]?.data?.TRAN_DT)
                             ? format(
                                 new Date(rows?.[0]?.data?.TRAN_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          CHEQUE_DT: utilFunction.isValidDate(
-                            rows?.[0]?.data?.CHEQUE_DT
-                          )
+                          CHEQUE_DT: isValidDate(rows?.[0]?.data?.CHEQUE_DT)
                             ? format(
                                 new Date(rows?.[0]?.data?.CHEQUE_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          ACTIVITY_DATE: utilFunction.isValidDate(
-                            authState?.workingDate
-                          )
+                          ACTIVITY_DATE: isValidDate(authState?.workingDate)
                             ? format(
                                 new Date(authState?.workingDate),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          LAST_MODIFIED_DATE: utilFunction.isValidDate(
+                          LAST_MODIFIED_DATE: isValidDate(
                             rows?.[0]?.data?.LAST_MODIFIED_DATE
                           )
                             ? format(
@@ -584,21 +576,19 @@ export const PositivePayEntry = ({
             const rejectData = {
               ...rows,
               INS_UPD: "D",
-              ENTERED_DATE: utilFunction.isValidDate(rows?.ENTERED_DATE)
+              ENTERED_DATE: isValidDate(rows?.ENTERED_DATE)
                 ? format(new Date(rows?.ENTERED_DATE), "dd/MMM/yyyy") ?? ""
                 : "",
-              TRAN_DT: utilFunction.isValidDate(rows?.TRAN_DT)
+              TRAN_DT: isValidDate(rows?.TRAN_DT)
                 ? format(new Date(rows?.TRAN_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              CHEQUE_DT: utilFunction.isValidDate(rows?.CHEQUE_DT)
+              CHEQUE_DT: isValidDate(rows?.CHEQUE_DT)
                 ? format(new Date(rows?.CHEQUE_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              ACTIVITY_DATE: utilFunction.isValidDate(authState?.workingDate)
+              ACTIVITY_DATE: isValidDate(authState?.workingDate)
                 ? format(new Date(authState?.workingDate), "dd/MMM/yyyy") ?? ""
                 : "",
-              LAST_MODIFIED_DATE: utilFunction.isValidDate(
-                rows?.LAST_MODIFIED_DATE
-              )
+              LAST_MODIFIED_DATE: isValidDate(rows?.LAST_MODIFIED_DATE)
                 ? format(new Date(rows?.LAST_MODIFIED_DATE), "dd/MMM/yyyy") ??
                   ""
                 : "",

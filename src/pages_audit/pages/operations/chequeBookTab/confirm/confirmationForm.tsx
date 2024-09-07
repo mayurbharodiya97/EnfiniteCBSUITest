@@ -8,6 +8,7 @@ import { chequeBookCfm, validateCheqbkCfm } from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import {
   usePopupContext,
   Alert,
@@ -15,7 +16,6 @@ import {
   MetaDataType,
   queryClient,
 } from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const ChequebookCfmForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();

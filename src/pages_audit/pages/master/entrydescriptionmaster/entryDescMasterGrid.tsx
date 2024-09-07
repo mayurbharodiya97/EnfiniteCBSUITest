@@ -139,7 +139,7 @@ export const EntryDescMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        enableExport={data?.length > 0 ? true : false}
+        ReportExportButton={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

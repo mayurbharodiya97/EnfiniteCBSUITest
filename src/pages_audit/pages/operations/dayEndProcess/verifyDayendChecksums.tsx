@@ -1,25 +1,22 @@
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import * as API from "./api";
+import { ClearCacheProvider, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   verifyDayendChecksumsMetaData,
   dayEndErroeLogMetaData,
 } from "./gridMetadata";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
 import { Dialog } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import {
-  LoaderPaperComponent,
-  GridWrapper,
-  ActionTypes,
-  ClearCacheProvider,
-  queryClient,
-  GridMetaDataType,
-  usePopupContext,
-  Alert,
-} from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+
 // Define TypeScript interfaces
 interface Item {
   CHKSM_TYPE?: string;
@@ -168,6 +165,7 @@ export const VerifyDayendChecksums = ({
 
     for (const item of data) {
       const reqPara = {
+        
         FLAG: "C",
         SCREEN_REF: "TRN/399",
         FOR_BRANCH: reqData[0]?.BRANCH_LIST,

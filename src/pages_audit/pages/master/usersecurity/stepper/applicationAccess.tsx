@@ -33,7 +33,10 @@ const NewApplicationAccess = forwardRef<any, any>(
     const Username = username?.USER_NAME;
     const [gridData, setGridData] = useState<any>([]);
     const [populateDataset, setpopulateDataset] = useState<any>([]);
-    const { userState, dispatchCommon } = useContext(SecurityContext);
+    const {
+      userState,
+      dispatchCommon,
+    } = useContext(SecurityContext);
     const navigate = useNavigate();
 
     // Get API for New User.

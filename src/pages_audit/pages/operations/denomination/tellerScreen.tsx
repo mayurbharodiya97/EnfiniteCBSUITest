@@ -28,7 +28,11 @@ import {
 import DualTableCalc from "./dualTableCalc";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import { padding } from "@mui/system";
+import { FocusTrap } from "@mui/base";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
+import DualPartTable from "./dualPartTable";
 import {
   usePopupContext,
   GradientButton,

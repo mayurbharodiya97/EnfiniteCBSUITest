@@ -57,40 +57,41 @@ export const applicationAccess: GridMetaDataType = {
     },
   ],
 };
-export const userAccessbranch = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "BranchAccessRights",
-    rowIdColumn: "BRANCH_CD",
-    defaultColumnConfig: {
-      width: 200,
-      maxWidth: 250,
-      minWidth: 100,
+export const userAccessbranch: GridMetaDataType = {
+    gridConfig: {
+        dense: true,
+        gridLabel: "BranchAccessRights",
+        rowIdColumn: "BRANCH_CD",
+        defaultColumnConfig: {
+            width: 200,
+            maxWidth: 250,
+            minWidth: 100,
+        },
+        allowColumnReordering: true,
+        disableSorting: false,
+        hideHeader: false,
+        hideFooter: false,
+        disableGroupBy: true,
+        containerHeight: {
+            min: "48vh",
+            max: "48vh",
+        },
+        allowRowSelection: false,
     },
     allowColumnReordering: true,
     disableSorting: false,
     hideHeader: false,
     hideFooter: false,
     disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
     containerHeight: {
       min: "48vh",
       max: "48vh",
     },
     allowRowSelection: false,
   },
-  allowColumnReordering: true,
-  disableSorting: false,
-  hideHeader: false,
-  hideFooter: false,
-  disableGroupBy: true,
-  enablePagination: true,
-  pageSizes: [10, 20, 30],
-  defaultPageSize: 10,
-  containerHeight: {
-    min: "48vh",
-    max: "48vh",
-  },
-  allowRowSelection: false,
   columns: [
     {
       accessor: "BRANCH_CD",

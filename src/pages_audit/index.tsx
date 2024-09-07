@@ -52,20 +52,13 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     schemaValidation: {
       type: "string",
-      rules: [{ name: "required", params: ["AccountTypeReqired"] }],
+      rules: [{ name: "required", params: ["Account Type is required"] }],
     },
     name: "ACCT_TYPE",
-    label: "AccountType",
-    placeholder: "AccountTypePlaceHolder",
-    options: (dependentValue, formState, _, authState) => {
-      return GeneralAPI.get_Account_Type({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        USER_NAME: authState?.user?.id ?? "",
-        DOC_CD: formState?.docCD ?? "",
-      });
-    },
-    _optionsKey: "get_Account_Type",
+    label: "Account Type",
+    placeholder: "Select account type",
+    options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "getAccountTypeList",
     defaultAcctTypeTrue: true,
     defaultValue: "",
     GridProps: {
