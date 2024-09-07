@@ -1,12 +1,9 @@
 import React, { Fragment, useCallback, useState, useContext } from "react";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import {
-  ActionTypes,
-  GridMetaDataType,
-  GridWrapper,
-} from "@acuteinfo/common-base";
+import { ActionTypes } from "components/dataTable";
 import { Dialog } from "@mui/material";
 import { credit_card_dtl_grid_meta_data } from "./metadata";
 import { useLocation } from "react-router-dom";

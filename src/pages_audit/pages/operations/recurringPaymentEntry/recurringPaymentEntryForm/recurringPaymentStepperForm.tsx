@@ -14,34 +14,33 @@ import {
   Chip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
+import { GradientButton } from "components/styledComponent/button";
 import { RecurringContext } from "../context/recurringPaymentContext";
 import { RecurringPaymentEntryForm } from "./recurringPaymentEntryForm";
 import { RecurringPaymentTransferForm } from "./recurringPaymentTransferForm";
 import { makeStyles } from "@mui/styles";
 import { useMutation } from "react-query";
 import * as API from "../api";
+import { usePopupContext } from "components/custom/popupContext";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import {
   ColorlibConnector,
   ColorlibStepIconRoot,
-} from "@acuteinfo/common-base";
+} from "components/dyanmicForm/stepperForm/style";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 import { PayslipAndDDForm } from "../payslipAndNEFT/payslipAndDDForm";
 import { BeneficiaryAcctDetailsForm } from "../payslipAndNEFT/beneficiaryAcctDetailsForm";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import ClosingAdvice from "../closingAdvice";
+import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
+import { queryClient } from "cache";
+import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
-import {
-  GradientButton,
-  usePopupContext,
-  queryClient,
-  utilFunction,
-  LoaderPaperComponent,
-  SubmitFnType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -191,15 +190,13 @@ const RecurringPaymentStepperForm = ({
           : "0",
       PAYSLIP: Boolean(rpState?.recurPmtEntryData?.PAYSLIP) ? "Y" : "N",
       RTGS_NEFT: Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT) ? "Y" : "N",
-      INT_FROM_DT: utilFunction.isValidDate(
-        rpState?.recurPmtEntryData?.INT_FROM_DT
-      )
+      INT_FROM_DT: isValidDate(rpState?.recurPmtEntryData?.INT_FROM_DT)
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_FROM_DT),
             "yyyy-MMM-dd"
           ) ?? ""
         : format(new Date(), "yyyy-MMM-dd") ?? "",
-      INT_TO_DT: utilFunction.isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
+      INT_TO_DT: isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_TO_DT),
             "yyyy-MMM-dd"

@@ -41,7 +41,7 @@ export const LienReasonMstFormMetaData = {
       type: "text",
       isFieldFocused: true,
       autoComplete: "off",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Codeisrequired"] }],
@@ -83,7 +83,7 @@ export const LienReasonMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Descriptionisrequired"] }],

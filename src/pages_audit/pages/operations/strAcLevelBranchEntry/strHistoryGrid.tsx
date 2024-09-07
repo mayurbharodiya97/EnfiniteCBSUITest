@@ -1,18 +1,16 @@
 import { useRef, useCallback, useEffect, useState } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { useQuery } from "react-query";
 import * as API from "./api";
+import { ClearCacheProvider, queryClient } from "cache";
 import { strBranchLevelHistoryGridMetaData } from "./girdMetadata";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { Dialog } from "@mui/material";
-import {
-  ClearCacheProvider,
-  Alert,
-  GridWrapper,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "all",

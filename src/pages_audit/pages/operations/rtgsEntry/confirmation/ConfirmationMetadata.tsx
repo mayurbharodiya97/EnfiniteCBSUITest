@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { isValid } from "date-fns";
 
 export const RetrieveFormConfigMetaData = {
@@ -49,7 +49,7 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,
@@ -173,7 +173,7 @@ export const RtgsConfirmGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1624,7 +1624,6 @@ export const rtgBenDetailConfirmFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
       GridProps: { xs: 0, md: 8, sm: 8, lg: 8, xl: 8 },
     },
     {

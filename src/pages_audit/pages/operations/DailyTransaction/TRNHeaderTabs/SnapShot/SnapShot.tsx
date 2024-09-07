@@ -1,6 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { snapShotGridMetaData } from "./gridMetadata";
+// import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -8,15 +13,9 @@ import { useContext } from "react";
 import { useSnackbar } from "notistack";
 import { Grid } from "@mui/material";
 //date
+import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
-import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -126,9 +125,9 @@ export const SnapShot = ({ reqData }) => {
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        disableMultipleRowSelect={false}
-        variant={"standard"}
-        enableExport={true}
+        onlySingleSelectionAllow={false}
+        isNewRowStyle={true}
+        ReportExportButton={true}
       />
       <Grid
         item

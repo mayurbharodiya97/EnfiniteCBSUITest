@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip,
 } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 // import {
 //     kyc_proof_of_address_meta_data,
 //     kyc_proof_of_identity_meta_data,
@@ -16,6 +17,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 // import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 // import { DocumentGridMetaData } from './metadata/individual/personaldetails';
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../../../CkycContext";
@@ -23,7 +25,8 @@ import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query";
 import * as API from "../../../../api";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import { transformFileObject, utilFunction } from "@acuteinfo/common-base";
+import { transformFileObject } from "components/fileUpload/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 
 const PhotoSignature = () => {

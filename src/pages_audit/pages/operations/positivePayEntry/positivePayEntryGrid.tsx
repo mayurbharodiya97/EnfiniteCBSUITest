@@ -1,4 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { PositivePayEntryGridMetaData } from "./gridMetadata";
 import { PositivePayEntryFormWrapper } from "./form/positivePayEntry";
@@ -6,22 +8,15 @@ import { ResponseParametersFormWrapper } from "./form/responseParaForm";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
 import { format } from "date-fns";
 import ImportData from "./form/importData";
+import { queryClient } from "cache";
+import { isValidDate } from "components/utils/utilFunctions/function";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
-import {
-  Alert,
-  GridWrapper,
-  queryClient,
-  ActionTypes,
-  MetaDataType,
-  utilFunction,
-  FormWrapper,
-  usePopupContext,
-  extractMetaData,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -188,7 +183,7 @@ export const PositivePayEntryGrid = () => {
               retrievalParaRef?.current?.FLAG === "A"
                 ? ""
                 : retrievalParaRef?.current?.FLAG === "D" &&
-                  utilFunction.isValidDate(retrievalParaRef.current?.FROM_DATE)
+                  isValidDate(retrievalParaRef.current?.FROM_DATE)
                 ? format(
                     new Date(retrievalParaRef?.current?.FROM_DATE),
                     "dd/MMM/yyyy"
@@ -198,7 +193,7 @@ export const PositivePayEntryGrid = () => {
               retrievalParaRef?.current?.FLAG === "A"
                 ? ""
                 : retrievalParaRef?.current?.FLAG === "D" &&
-                  utilFunction.isValidDate(retrievalParaRef.current?.TO_DATE)
+                  isValidDate(retrievalParaRef.current?.TO_DATE)
                 ? format(
                     new Date(retrievalParaRef?.current?.TO_DATE),
                     "dd/MMM/yyyy"

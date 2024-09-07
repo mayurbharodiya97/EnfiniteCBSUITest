@@ -1,5 +1,5 @@
+import { utilFunction } from "components/utils";
 import * as API from "../api";
-import { utilFunction } from "@acuteinfo/common-base";
 export const CardDetailsMetaData = {
   form: {
     name: "atm-card-details",

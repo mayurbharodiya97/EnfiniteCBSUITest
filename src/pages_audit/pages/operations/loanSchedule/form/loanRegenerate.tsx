@@ -1,24 +1,20 @@
 import { Alert, AppBar, Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { LoanRegenerateFormMetaData } from "./metadata";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { queryClient } from "cache";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
-import {
-  usePopupContext,
-  GradientButton,
-  FormWrapper,
-  MetaDataType,
-  InitialValuesType,
-  SubmitFnType,
-  LoaderPaperComponent,
-  utilFunction,
-  queryClient,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
   const isErrorFuncRef = useRef<any>(null);

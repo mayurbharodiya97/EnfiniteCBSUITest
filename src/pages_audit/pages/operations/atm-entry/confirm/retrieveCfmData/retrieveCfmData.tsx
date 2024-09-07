@@ -7,18 +7,15 @@ import {
   useState,
 } from "react";
 import { useMutation } from "react-query";
+import { ClearCacheProvider } from "cache";
 import { Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import {
-  Alert,
-  GridWrapper,
-  GradientButton,
-  ActionTypes,
-  SubmitFnType,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
+import GridWrapper from "components/dataTableStatic";
+import { GradientButton } from "components/styledComponent/button";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { RetrieveGridMetaData } from "./retrieveCfmGridMetadata";

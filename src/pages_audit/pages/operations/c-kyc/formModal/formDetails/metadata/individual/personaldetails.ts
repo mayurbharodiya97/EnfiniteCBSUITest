@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { differenceInYears } from "date-fns";
 import * as API from "../../../../api";
 export const personal_detail_prefix_data = {
@@ -1554,7 +1554,7 @@ export const IdtpChargeConfigGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "Sr.No.",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,

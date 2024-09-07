@@ -1,5 +1,5 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { GeneralAPI } from "registry/fns/functions";

@@ -1,5 +1,7 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
+import { MessageBox } from "components/dashboard/messageBox/messageBox";
+
 export const getForm15GHDetail = async ({
   workingDate,
   enterCompanyID,

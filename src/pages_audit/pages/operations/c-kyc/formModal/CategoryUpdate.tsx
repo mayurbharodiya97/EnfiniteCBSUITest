@@ -1,17 +1,15 @@
 import { useContext, useMemo, useRef, useState } from "react";
 import * as API from "../api";
 import { Button, Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { update_categ_meta_data } from "./updateCategFormMetadata";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "../CkycContext";
-import {
-  CreateDetailsRequestData,
-  Alert,
-  FormWrapper,
-  MetaDataType,
-  LoaderPaperComponent,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { CreateDetailsRequestData } from "components/utils";
+
 const CategoryUpdate = ({ open, setChangeCategDialog }) => {
   const { authState } = useContext(AuthContext);
   const { state } = useContext(CkycContext);

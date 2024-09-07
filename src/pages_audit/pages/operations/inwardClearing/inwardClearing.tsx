@@ -14,35 +14,32 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { GradientButton, LoaderPaperComponent } from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { GradientButton } from "components/styledComponent/button";
 import { useSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
-import { TextField } from "@acuteinfo/common-base";
+import { TextField } from "components/styledComponent";
+import { queryClient } from "cache";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
   InwardCleaingGridMetaData,
   InwardClearingRetrievalMetadata,
 } from "./gridMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { ChequeSignForm } from "./inwardClearingForm/chequeSignForm";
 import { format } from "date-fns";
 import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPostForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-
-import {
-  usePopupContext,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-  MetaDataType,
-  FormWrapper,
-} from "@acuteinfo/common-base";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -734,7 +731,7 @@ export const InwardClearing = () => {
           loading={getInwardClearingData.isLoading || isFetching}
           actions={actions}
           setAction={setCurrentAction}
-          enableExport={true}
+          ReportExportButton={true}
           refetchData={() =>
             getInwardClearingData.mutate({
               data: {

@@ -1,11 +1,13 @@
 // import { Box, Button, Dialog, DialogTitle } from "@mui/material";
-import { ImageViewer, NoPreview, PDFViewer } from "@acuteinfo/common-base";
 import {
-  utilFunction,
-  transformFileObject,
-  UploadTarget,
-  FileObjectType,
-} from "@acuteinfo/common-base";
+  ImageViewer,
+  NoPreview,
+  PDFViewer,
+} from "components/fileUpload/preView";
+import { FileObjectType } from "components/fileUpload/type";
+import { UploadTarget } from "components/fileUpload/uploadTarget";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 // import { Fragment, useCallback, useEffect, useState } from "react";
 

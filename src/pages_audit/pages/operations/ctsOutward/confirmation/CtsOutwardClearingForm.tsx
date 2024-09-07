@@ -1,3 +1,7 @@
+import { ClearCacheProvider, queryClient } from "cache";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -13,8 +17,11 @@ import {
   inwardReturnChequeDetailConfirmMetaData,
 } from "./ConfirmationMetadata";
 import * as API from "./api";
+import { ActionTypes } from "components/dataTable";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 import {
   AppBar,
   Dialog,
@@ -24,26 +31,16 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
 import { ChequeSignImage } from "../../inwardClearing/inwardClearingForm/chequeSignImage";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Box } from "@mui/system";
 import { t } from "i18next";
-import {
-  RemarksAPIWrapper,
-  usePopupContext,
-  GridWrapper,
-  Alert,
-  LoaderPaperComponent,
-  ActionTypes,
-  queryClient,
-  ClearCacheProvider,
-  FormWrapper,
-  MetaDataType,
-  GradientButton,
-  extractMetaData,
-} from "@acuteinfo/common-base";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -411,8 +408,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       formMode
                     ) as MetaDataType
                   }
-                  initialValues={data?.[0] ?? {}}
-                  onSubmitHandler={() => {}}
+                  initialValues={data?.[0]}
+                  onSubmitHandler={{}}
                   //@ts-ignore
                   displayMode={formMode}
                   hideHeader={true}
@@ -434,7 +431,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     ) as MetaDataType
                   }
                   displayMode={formMode}
-                  onSubmitHandler={() => {}}
+                  onSubmitHandler={{}}
                   initialValues={{
                     chequeDetails: data?.[0]?.CHEQUE_DETAIL ?? "",
                   }}

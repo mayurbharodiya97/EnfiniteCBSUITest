@@ -1,23 +1,22 @@
 import { DashboardLayout } from "./dashboard-layout";
 import { Box, Card, CardContent, Fab } from "@mui/material";
 import { DashboardBox } from "components/dashboard/dashboardBox";
+import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Fragment, useContext, useState } from "react";
 import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 import Grid from "@mui/material/Grid";
 import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
 import { useEffect } from "react";
+import { queryClient } from "cache";
 import { Transactions } from "components/dashboard/transactions";
 import { AccountStatus } from "components/dashboard/account-status";
 
 import { AuthContext } from "pages_audit/auth";
 import { MessageBox } from "components/dashboard/messageBox/messageBox";
-import {
-  queryClient,
-  LoaderPaperComponent,
-  Alert,
-} from "@acuteinfo/common-base";
+
 interface updateAUTHDetailDataType {
   userID: any;
   COMP_CD: any;

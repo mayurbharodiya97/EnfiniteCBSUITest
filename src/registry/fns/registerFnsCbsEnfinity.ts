@@ -1,4 +1,4 @@
-import { singletonFunctionRegisrationFactory } from "@acuteinfo/common-base";
+import { singletonFunctionRegisrationFactory } from "components/utils";
 import { GeneralAPI } from "./functions";
 const { registerFn } = singletonFunctionRegisrationFactory;
 

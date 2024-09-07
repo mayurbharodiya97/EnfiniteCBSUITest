@@ -1,0 +1,32 @@
+.MuiPickersToolbar-toolbar {
+  background-color: var(--theme-color1) !important;
+}
+.MuiPickersClockPointer-pointer {
+  background-color: var(--theme-color1) !important;
+}
+.MuiPickersClock-pin {
+  background-color: var(--theme-color1) !important;
+}
+.MuiPickersClockPointer-thumb {
+  border: 14px solid var(--theme-color1) !important;
+  background-color: var(--theme-color2) !important;
+}
+.MuiPickersClockPointer-noPoint {
+  border: 14px solid var(--theme-color1) !important;
+  background-color: var(--theme-color1) !important;
+}
+
+.MuiPickersClockNumber-clockNumberSelected {
+  color: var(--theme-color2) !important;
+}
+.MuiPickersToolbarText-toolbarBtnSelected {
+  color: var(--theme-color2) !important;
+}
+.MuiPickersToolbarText-toolbarTxt:not(
+    .MuiPickersToolbarText-toolbarBtnSelected
+  ) {
+  color: var(--white-dim) !important;
+}
+.MuiDialogActions-root > button.MuiButton-textPrimary {
+  color: var(--theme-color1);
+}

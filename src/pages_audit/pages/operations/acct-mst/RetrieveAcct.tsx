@@ -1,26 +1,24 @@
 import React, { useCallback, useContext, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import { useMutation } from "react-query";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import * as API from "./api";
+import { GradientButton } from "components/styledComponent/button";
 import {
   retrieveAcctFormMetaData,
   retrieveAcctGridMetaData,
 } from "./metadata/retrieveAcctMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType } from "components/dataTable/types";
+import { ActionTypes } from "components/dataTable";
 import AcctModal from "./AcctModal";
+import { usePopupContext } from "components/custom/popupContext";
+import { utilFunction } from "components/utils";
 
-import {
-  usePopupContext,
-  GridWrapper,
-  GradientButton,
-  ActionTypes,
-  utilFunction,
-  GridMetaDataType,
-  Alert,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",

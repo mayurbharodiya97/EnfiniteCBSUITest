@@ -1,19 +1,12 @@
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { UserOnboardform } from "./metaData/metaDataForm";
 import { useLocation } from "react-router-dom";
 import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { SecurityContext } from "../context/SecuityForm";
 import { AuthContext } from "pages_audit/auth";
-
-import {
-  InitialValuesType,
-  usePopupContext,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { extractMetaData, utilFunction } from "components/utils";
+import { usePopupContext } from "components/custom/popupContext";
 
 function removeTrailingZeroes(number) {
   let str = number.toString();

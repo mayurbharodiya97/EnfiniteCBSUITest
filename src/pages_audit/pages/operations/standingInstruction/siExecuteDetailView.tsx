@@ -7,22 +7,20 @@ import {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
 import { siExecuteDetailViewGridMetaData } from "./metaData/gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { Dialog, Grid, Paper, Typography } from "@mui/material";
 import { StandingInstructionEditData } from "./editData";
 import AuditData from "./auditdatadisplay";
+import { usePopupContext } from "components/custom/popupContext";
 import { enqueueSnackbar } from "notistack";
+import { queryClient } from "cache";
+import Draggable from "react-draggable";
 import { t } from "i18next";
-import {
-  ActionTypes,
-  GridWrapper,
-  usePopupContext,
-  queryClient,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {

@@ -15,7 +15,7 @@ import {
   Collapse,
   CircularProgress,
 } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   personal_detail_prefix_data,
   personal_other_detail_meta_data,
@@ -30,6 +30,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api";
 import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
+import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "../TabNavigate";
 const PersonalDetails = () => {
   const { t } = useTranslation();

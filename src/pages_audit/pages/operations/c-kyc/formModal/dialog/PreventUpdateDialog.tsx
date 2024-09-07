@@ -6,8 +6,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import { CkycContext } from "../../CkycContext";
-import { PopupRequestWrapper } from "@acuteinfo/common-base";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 
 export const PreventUpdateDialog = ({ open, onClose }) => {
   const {
@@ -41,7 +42,7 @@ export const PreventUpdateDialog = ({ open, onClose }) => {
       }}
       buttonNames={["Close"]}
       rows={[]}
-      loading={undefined}
+      loading={{}}
       // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />

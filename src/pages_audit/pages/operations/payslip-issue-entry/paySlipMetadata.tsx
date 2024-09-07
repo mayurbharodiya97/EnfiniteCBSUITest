@@ -1,3 +1,4 @@
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import {
   getBankCodeData,
@@ -12,7 +13,7 @@ import {
   getCalculateGstComm,
   geTrxDdw,
 } from "./api";
-import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 
 export const RetrieveGridMetaData = {
   gridConfig: {
@@ -253,7 +254,6 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer",
       GridProps: {
         xs: 1,
         sm: 1,
@@ -352,7 +352,6 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer2",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -473,7 +472,7 @@ export const AccdetailsFormMetaData = {
           branchCodeMetadata: {
             name: "BRANCH_CD",
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            // isReadOnly: true,
+            isReadOnly: true,
           },
           accountTypeMetadata: {
             name: "ACCT_TYPE",
@@ -562,10 +561,9 @@ export const AccdetailsFormMetaData = {
                   ACCT_CD:
                     returnVal !== ""
                       ? {
-                          value: utilFunction.getPadAccountNumber(
-                            currentField?.value,
-                            dependentFieldValues?.ACCT_TYPE?.optionData
-                          ),
+                          value: currentField?.value
+                            .padStart(6, "0")
+                            ?.padEnd(20, " "),
                           ignoreUpdate: true,
                           isFieldFocused: false,
                         }
@@ -575,7 +573,7 @@ export const AccdetailsFormMetaData = {
                           ignoreUpdate: true,
                         },
                   ACCT_NM: {
-                    value: returnVal?.ACCT_NM ?? "",
+                    value: postData?.ACCT_NM ?? "",
                   },
                   TYPE_CD: {
                     value: postData?.TYPE_CD ?? "",
@@ -591,7 +589,6 @@ export const AccdetailsFormMetaData = {
                 };
               }
             },
-
             fullWidth: true,
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
@@ -2648,7 +2645,6 @@ export const DeleteDialogMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer3",
       GridProps: {
         xs: 5,
         sm: 5,

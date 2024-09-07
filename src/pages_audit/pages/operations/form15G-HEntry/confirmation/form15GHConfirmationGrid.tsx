@@ -1,18 +1,15 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
 import { useQuery } from "react-query";
+import { queryClient } from "cache";
 import * as API from "../api";
 import { Form15GHEntryGridMetaData } from "../gridMetaData";
 import { Form15GHEntryWrapper } from "../form";
 
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
 const Actions: ActionTypes[] = [
   {
     actionName: "view-details",

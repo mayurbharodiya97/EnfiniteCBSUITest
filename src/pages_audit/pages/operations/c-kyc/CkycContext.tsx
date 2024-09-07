@@ -2,7 +2,7 @@ import React, { useCallback, useReducer } from "react";
 import * as API from "./api";
 import { CkycStateType } from "./type";
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
+import { DefaultErrorObject, utilFunction } from "components/utils";
 import _ from "lodash";
 
 const initialState: any = {
@@ -572,6 +572,7 @@ const CkycProvider = ({ children }) => {
       // retrieveFormDataApiRes: {...retrieveApiRes},
       accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
     };
+    // retrieved-entry/fresh, but not saved as draft
     if (!Boolean(state?.isFreshEntryctx) || !Boolean(state?.isDraftSavedctx)) {
       // PHOTO_MST - getting photo sign on retrieve form data to populate images
       if (data && data.PHOTO_MST) {

@@ -1,3 +1,7 @@
+import { ClearCacheProvider, queryClient } from "cache";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
 import {
   FC,
   Fragment,
@@ -16,33 +20,23 @@ import {
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 import { AppBar, Collapse, Grid, IconButton, Typography } from "@mui/material";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { ActionTypes } from "components/dataTable";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AddNewBankMasterForm } from "./addNewBank";
 import { useSnackbar } from "notistack";
 import { RetrieveClearingForm } from "./retrieveClearing";
+import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import {
-  Alert,
-  GridWrapper,
-  RemarksAPIWrapper,
-  ActionTypes,
-  queryClient,
-  LoaderPaperComponent,
-  usePopupContext,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
-import getDynamicLabel from "components/common/custom/getDynamicLabel";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -323,14 +317,14 @@ const CtsOutwardClearingForm: FC<{
   }, [formMode]);
 
   if (zoneTranType === "S") {
-    CTSOutwardClearingFormMetaData.form.label = getDynamicLabel(
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
       currentPath,
       authState?.menulistdata,
       true
     );
     CTSOutwardClearingFormMetaData.fields[1].defaultValue = "0   ";
   } else if (zoneTranType === "R") {
-    CTSOutwardClearingFormMetaData.form.label = getDynamicLabel(
+    CTSOutwardClearingFormMetaData.form.label = utilFunction.getDynamicLabel(
       currentPath,
       authState?.menulistdata,
       true

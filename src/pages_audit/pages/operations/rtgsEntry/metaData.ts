@@ -1,3 +1,4 @@
+import { utilFunction } from "components/utils";
 import {
   getAccountDetail,
   getIfscBankDetail,
@@ -5,7 +6,7 @@ import {
   getJointDetailsList,
   getAcctTypeData,
 } from "./api";
-import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
@@ -1208,7 +1209,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1322,7 +1323,7 @@ export const IFSCBankDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -1454,7 +1455,6 @@ export const rtgsAccountDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
       GridProps: { xs: 0, md: 6.7, sm: 6.7, lg: 6.7, xl: 6.7 },
     },
     {
@@ -2778,7 +2778,7 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,
@@ -2903,7 +2903,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       accessor: "SR_NO",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,

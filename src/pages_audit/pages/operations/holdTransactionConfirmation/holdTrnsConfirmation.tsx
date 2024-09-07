@@ -1,22 +1,19 @@
+import { ClearCacheProvider, queryClient } from "cache";
+import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { t } from "i18next";
 import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 import { format } from "date-fns";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic";
 import { holdTrnsGridMetaData } from "./holdTrnsGridMetaData";
-import {
-  Alert,
-  GridWrapper,
-  usePopupContext,
-  GridMetaDataType,
-  ActionTypes,
-  RemarksAPIWrapper,
-  ClearCacheProvider,
-  queryClient,
-} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -174,7 +171,7 @@ const HoldTrnsConfirmation = () => {
         actions={actions}
         refetchData={() => refetch()}
         loading={isLoading || isFetching}
-        enableExport={true}
+        ReportExportButton={true}
         setAction={setCurrentAction}
       />
       {isDeleteRemark && (

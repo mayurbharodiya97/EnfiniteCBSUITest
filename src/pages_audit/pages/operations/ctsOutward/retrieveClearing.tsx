@@ -8,23 +8,20 @@ import {
 } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { ClearCacheProvider } from "cache";
 import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
 import { Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import GridWrapper from "components/dataTableStatic";
+import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import {
-  ActionTypes,
-  Alert,
-  GradientButton,
-  GridWrapper,
-  SubmitFnType,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",

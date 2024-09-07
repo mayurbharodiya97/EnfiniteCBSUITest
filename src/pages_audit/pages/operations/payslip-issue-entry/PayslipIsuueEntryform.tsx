@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AccdetailsFormMetaData,
   DraftdetailsFormMetaData,
@@ -18,6 +21,7 @@ import {
   regionMasterMetaData,
 } from "./paySlipMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 import { useMutation, useQuery } from "react-query";
 import {
   commonDataRetrive,
@@ -33,25 +37,20 @@ import {
 } from "./api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingTextAnimation } from "components/common/loader";
+import { ClearCacheProvider, queryClient } from "cache";
+import { SubmitFnType } from "packages/form";
+import { API } from "pages_audit/common";
+import { MasterDetailsForm } from "components/formcomponent";
 import { enqueueSnackbar } from "notistack";
+import GridWrapper, {
+  ActionTypes,
+  GridMetaDataType,
+} from "components/dataTable";
 import JointDetails from "./JointDetails";
 import { format } from "date-fns";
+import { ImageViewer } from "components/fileUpload/preView";
 import { t } from "i18next";
-import {
-  ImageViewer,
-  RemarksAPIWrapper,
-  MasterDetailsForm,
-  SubmitFnType,
-  ClearCacheProvider,
-  queryClient,
-  usePopupContext,
-  ActionTypes,
-  FormWrapper,
-  MetaDataType,
-  utilFunction,
-  extractMetaData,
-  GradientButton,
-} from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({
   root: {
@@ -796,11 +795,7 @@ const PayslipIsuueEntryform = ({
                     : acctDtlData ?? [],
               }}
               hideHeader={true}
-              formState={{
-                MessageBox: MessageBox,
-                Mode: formMode,
-                docCd: "RPT/014",
-              }}
+              formState={{ MessageBox: MessageBox, Mode: formMode }}
               formStyle={{
                 background: "white",
                 height: "31vh",
