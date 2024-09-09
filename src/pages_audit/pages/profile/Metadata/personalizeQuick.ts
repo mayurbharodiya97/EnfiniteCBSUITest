@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { t } from "i18next";
 import { GeneralAPI } from "registry/fns/functions";
 

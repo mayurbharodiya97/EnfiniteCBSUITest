@@ -115,8 +115,7 @@ export const metaData = {
       type: "text",
       txtTransform: "uppercase",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "textField",
       },
@@ -127,8 +126,7 @@ export const metaData = {
       maxLength: 110,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "textField",
       },
@@ -139,8 +137,7 @@ export const metaData = {
       maxLength: 500,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "phoneNumber",
       },
@@ -151,8 +148,7 @@ export const metaData = {
       maxLength: 10,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "textField",
       },
@@ -163,8 +159,7 @@ export const metaData = {
       maxLength: 115,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "textField",
       },
@@ -175,8 +170,7 @@ export const metaData = {
       maxLength: 50,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
-    },
-    {
+    }, {
       render: {
         componentType: "textField",
       },

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const AddBranchGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -39,7 +39,7 @@ export const AddBranchGridMetaData: GridMetaDataType = {
       alignment: "left",
       dependentOptionField: "VISIBLE_YN",
       componentType: "editableCheckbox",
-      enableColumnSelection: true,
+      SelectAllColumn: true,
       width: 100,
       minWidth: 80,
       maxWidth: 140,

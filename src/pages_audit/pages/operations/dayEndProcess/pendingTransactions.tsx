@@ -1,17 +1,15 @@
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import * as API from "./api";
+import { queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
-import {
-  Alert,
-  GridWrapper,
-  usePopupContext,
-  ActionTypes,
-  queryClient,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
 import {
   pendingTrnsEodReportMetaData,
   pendingTrnsMetadata,
@@ -145,7 +143,7 @@ export const PendinGTrns = ({ open, close }) => {
           }
         }}
         loading={isLoading || isFetching}
-        enableExport={true}
+        ReportExportButton={true}
         setAction={setCurrentAction}
       />
 

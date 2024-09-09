@@ -15,29 +15,24 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { StopPayGridMetaData } from "./stopPayGridMetadata";
+import { ClearCacheProvider, queryClient } from "cache";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
 import { ReleaseCheque } from "./releaseCheque/releaseCheque";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
-
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-  ClearCacheProvider,
-  RemarksAPIWrapper,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
 
 const StopPaymentEntryCustom = () => {
   const [isData, setIsData] = useState({
@@ -270,7 +265,8 @@ const StopPaymentEntryCustom = () => {
           >
             <FormWrapper
               key={"stopPayEntry"}
-              metaData={StopPayEntryMetadata as MetaDataType}
+              metaData={StopPayEntryMetadata ?? []}
+              initialValues={{}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
                 reqDataRef.current.insertReq = {
                   ...data,

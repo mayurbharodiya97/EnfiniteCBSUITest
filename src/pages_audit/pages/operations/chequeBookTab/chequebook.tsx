@@ -9,40 +9,39 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import {
-  GridWrapper,
-  MetaDataType,
-  FormWrapper,
-  GridMetaDataType,
-  Alert,
-  SubmitFnType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { ChequeBookEntryMetaData } from "./chequebookEntryMetadata";
 import { ChequebookDtlGridMetaData } from "./chequebookDetailMetadata";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-
+import { Alert } from "components/common/alert";
 import {
   getChequebookDTL,
   saveChequebookData,
   validateDeleteData,
   validateInsert,
 } from "./api";
+import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
+import { ClearCacheProvider, queryClient } from "cache";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { usePopupContext } from "components/custom/popupContext";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
 import { ChequeDtlGrid } from "./chequeDetail/chequeDetail";
 import { MultipleChequebook } from "./multipleChequebook/multipleChequebook";
 import { IssuedChequebook } from "./issuedChequebook/issuedChequebook";
-import {
-  usePopupContext,
-  RemarksAPIWrapper,
-  ClearCacheProvider,
-  queryClient,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const ChequebookTabCustom = () => {
   const chequeActions: ActionTypes[] = [
@@ -326,7 +325,7 @@ const ChequebookTabCustom = () => {
             }));
             getChequeDetail.data = [];
             if (newValue === "tab2") {
-              //API calling for issued chequebook Grid-details and set account-number and name inside the header
+              // API calling for issued chequebook Grid-details and set account-number and name inside the header
               myMasterRef?.current?.getFieldData().then((res) => {
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   ChequebookDtlGridMetaData.gridConfig.subGridLabel = ` \u00A0\u00A0 ${(
@@ -335,6 +334,7 @@ const ChequebookTabCustom = () => {
                     res?.ACCT_TYPE +
                     res?.ACCT_CD
                   ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+
                   const chequeDTLRequestPara = {
                     COMP_CD: authState?.companyID,
                     ACCT_CD: res?.ACCT_CD,

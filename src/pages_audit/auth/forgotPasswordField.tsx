@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { GradientButton, TextField } from "@acuteinfo/common-base";
+import { TextField } from "components/styledComponent/textfield";
+import { GradientButton } from "components/styledComponent/button";
 import {
   CircularProgress,
   FormHelperText,
@@ -77,8 +78,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             loginState.loading
               ? true
               : loginState.workingState === 0
-              ? false
-              : true
+                ? false
+                : true
           }
           autoComplete="off"
           ref={inputRef}
@@ -111,8 +112,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               loginState.loading
                 ? true
                 : loginState.workingState === 0
-                ? false
-                : true
+                  ? false
+                  : true
             }
             autoComplete="off"
             onKeyDown={(e) => {
@@ -267,8 +268,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   onSubmit(input, loginState.workingState);
                 }}
                 ref={inputButtonRef}
-                endicon={loginState.loading ? undefined : "East"}
-                // endicon={loginState.loading ? null : "East"}
+                endicon={loginState.loading ? null : "East"}
                 rotateIcon="scale(1.4) rotateX(360deg)"
               >
                 {loginState.loading ? (

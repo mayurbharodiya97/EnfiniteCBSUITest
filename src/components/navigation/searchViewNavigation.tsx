@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import clsx from "clsx";
-import { SearchBar } from "@acuteinfo/common-base";
+import { SearchBar } from "components/derived";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useStylesSideBar } from "./style";
 import { filterMetaDataByValue } from "./filterMetaData";
@@ -58,7 +58,7 @@ export const SearchViewNavigation: FC<NewSideBarNav> = ({
       </ListItem>
       {/* <div onClick={handleDrawerOpen}> */}
       <SearchBar
-        sx={{ overflow: "hidden" }}
+      sx={{overflow:"hidden"}}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onClick={handleClick}

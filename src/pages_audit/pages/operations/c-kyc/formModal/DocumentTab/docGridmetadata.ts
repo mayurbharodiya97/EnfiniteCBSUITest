@@ -1,5 +1,5 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
-import { MasterDetailsMetaData } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 
 export const DocumentGridMetadata: GridMetaDataType = {
   gridConfig: {
@@ -39,7 +39,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       width: 70,
       minWidth: 60,
       maxWidth: 120,
-      isAutoSequence: true,
+      isAutoSequence: true
     },
     {
       accessor: "SR_CD",
@@ -85,10 +85,10 @@ export const DocumentGridMetadata: GridMetaDataType = {
       componentType: "default",
       isReadOnly: true,
       // options: [{label: "label1", value: "value1"},{label: "label2", value: "value2"}],
-      //   options: (dependentValue, formState, _, authState) => {
-      //       console.log("fwezzzzfeqw", dependentValue, formState, _, authState)
-      //       // API.getDocumentTypes({COMP_CD: COMP_CD, CONSTITUTION: CONSTITUTION, CUST_TYPE: CUST_TYPE})
-      //   },
+    //   options: (dependentValue, formState, _, authState) => {
+    //       console.log("fwezzzzfeqw", dependentValue, formState, _, authState)
+    //       // API.getDocumentTypes({COMP_CD: COMP_CD, CONSTITUTION: CONSTITUTION, CUST_TYPE: CUST_TYPE})
+    //   },
       // options: [
       //   {label: "option1", value: "option1"},
       //   {label: "option2", value: "option2"},
@@ -123,7 +123,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 130,
       isReadOnly: true,
-    },
+    },  
     {
       accessor: "VALID_UPTO",
       // accessor: "VALID_TILL_DATE",
@@ -158,7 +158,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "VIEW_DTL",
       buttonLabel: "View/Edit",
-      sequence: 9,
+      sequence:9,
       width: 120,
       minWidth: 100,
       maxWidth: 130,
@@ -172,15 +172,12 @@ export const DocumentGridMetadata: GridMetaDataType = {
       // componentType: "deleteRowCell",
       // accessor: "_hidden",
       // buttonLabel: "Submit",
-      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+      shouldExclude:(initialValue,original,prevRows,nextRows)=>{
         // console.log("originalasesesdwed", original)
         // if(!Boolean(original?.IS_MANDATORY)) {
         //   return false;
         // }
-        if (
-          Object.hasOwn(original, "IS_MANDATORY") &&
-          original?.IS_MANDATORY === "Y"
-        ) {
+        if(Object.hasOwn(original, "IS_MANDATORY") && original?.IS_MANDATORY ==='Y') {
           return true;
         } else {
           return false;
@@ -200,7 +197,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
     {
       accessor: "REMARKS",
       columnName: "Remarks",
-      sequence: 11,
+      sequence:11,
       alignment: "left",
       componentType: "default",
       placeholder: "",
@@ -214,7 +211,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
     //   columnName: "VALID DATE APPLICABLE",
     //   componentType: "hidden",
     //   sequence: 7,
-    // },
+    // },    
     // {
     //   accessor: "SUBMIT_BTN",
     //   columnName: "Action",

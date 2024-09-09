@@ -1,4 +1,5 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 
 export const DocumentGridMetadata: GridMetaDataType = {
   gridConfig: {
@@ -47,10 +48,10 @@ export const DocumentGridMetadata: GridMetaDataType = {
       componentType: "default",
       isReadOnly: true,
       // options: [{label: "label1", value: "value1"},{label: "label2", value: "value2"}],
-      //   options: (dependentValue, formState, _, authState) => {
-      //       console.log("fwezzzzfeqw", dependentValue, formState, _, authState)
-      //       // API.getDocumentTypes({COMP_CD: COMP_CD, CONSTITUTION: CONSTITUTION, CUST_TYPE: CUST_TYPE})
-      //   },
+    //   options: (dependentValue, formState, _, authState) => {
+    //       console.log("fwezzzzfeqw", dependentValue, formState, _, authState)
+    //       // API.getDocumentTypes({COMP_CD: COMP_CD, CONSTITUTION: CONSTITUTION, CUST_TYPE: CUST_TYPE})
+    //   },
       // options: [
       //   {label: "option1", value: "option1"},
       //   {label: "option2", value: "option2"},
@@ -85,7 +86,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 300,
       isReadOnly: true,
-    },
+    },  
     {
       accessor: "DOC_WEIGHTAGE",
       columnName: "Document Weightage",
@@ -97,7 +98,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 300,
       isReadOnly: true,
-    },
+    },  
     {
       accessor: "REMARKS",
       columnName: "Remarks",
@@ -109,7 +110,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       minWidth: 200,
       maxWidth: 400,
       isReadOnly: true,
-    },
+    },  
     // {
     //   accessor: "VALID_DT_APPLICABLE",
     //   columnName: "VALID DATE APPLICABLE",
@@ -172,12 +173,12 @@ export const DocumentGridMetadata: GridMetaDataType = {
       componentType: "buttonRowCell",
       columnName: "Delete",
       sequence: 9,
-      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+      shouldExclude:(initialValue,original,prevRows,nextRows)=>{
         // console.log("originalasesesdwed", original)
-        if (!Boolean(original?.IS_MANDATORY)) {
+        if(!Boolean(original?.IS_MANDATORY)) {
           return false;
         }
-        if (original?.IS_MANDATORY !== "Y") {
+        if(original?.IS_MANDATORY !=='Y'){
           return false;
         }
         return true;

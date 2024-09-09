@@ -1,30 +1,20 @@
-import {
-  FC,
-  useRef,
-  useCallback,
-  useContext,
-  Fragment,
-  useEffect,
-} from "react";
+import { FC, useRef, useCallback, useContext, Fragment, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { ClearCacheProvider } from "cache";
 import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
 import { Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import GridWrapper from "components/dataTableStatic";
+import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import {
-  ActionTypes,
-  Alert,
-  GradientButton,
-  GridWrapper,
-  SubmitFnType,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -50,8 +40,8 @@ export const RetrieveClearing: FC<{
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
+      onSuccess: (data) => { },
+      onError: (error: any) => { },
     }
   );
 
@@ -90,26 +80,32 @@ export const RetrieveClearing: FC<{
   };
   useEffect(() => {
     mutation.mutate({
-      FROM_TRAN_DT:
-        zoneTranType === "S"
-          ? format(new Date(tranDate), "dd/MMM/yyyy")
-          : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-      TO_TRAN_DT:
-        zoneTranType === "S"
-          ? format(new Date(tranDate), "dd/MMM/yyyy")
-          : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+      FROM_TRAN_DT: zoneTranType === "S" ? format(
+        new Date(tranDate),
+        "dd/MMM/yyyy"
+      ) : format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
+      TO_TRAN_DT: zoneTranType === "S" ? format(
+        new Date(tranDate),
+        "dd/MMM/yyyy"
+      ) : format(
+        new Date(authState?.workingDate),
+        "dd/MMM/yyyy"
+      ),
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
       TRAN_TYPE: zoneTranType,
       CONFIRMED: "0",
       BANK_CD: "",
-      ZONE:
-        zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+      ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
       SLIP_CD: "",
       CHEQUE_NO: "",
-      CHEQUE_AMOUNT: "",
-    });
-  }, []);
+      CHEQUE_AMOUNT: ""
+
+    })
+  }, [])
   if (zoneTranType === "S") {
     RetrieveFormConfigMetaData.form.label = "Retrieve CTS O/W Clearing Data";
   } else if (zoneTranType === "R") {
@@ -143,7 +139,7 @@ export const RetrieveClearing: FC<{
               background: "white",
             }}
             onFormButtonClickHandel={() => {
-              let event: any = { preventDefault: () => {} };
+              let event: any = { preventDefault: () => { } };
               // if (mutation?.isLoading) {
               formRef?.current?.handleSubmit(event, "RETRIEVE");
               // }

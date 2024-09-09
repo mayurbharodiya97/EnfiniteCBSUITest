@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "@acuteinfo/common-base";
+} from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -138,16 +138,14 @@ export const getRtgsBenfDtlList = async (ApiReq) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ DISP_VAL, TO_ACCT_NO, AC_UQ_ID, ...other }, i) => {
-          return {
-            value: TO_ACCT_NO,
-            // value: TO_ACCT_NO,
-            label: DISP_VAL,
-            ...other,
-          };
-        }
-      );
+      responseData = responseData.map(({ DISP_VAL, TO_ACCT_NO, AC_UQ_ID, ...other }, i) => {
+        return {
+          value: TO_ACCT_NO,
+          // value: TO_ACCT_NO,
+          label: DISP_VAL,
+          ...other,
+        };
+      });
     }
     return responseData;
   } else {
@@ -267,12 +265,8 @@ export const getRtgsRetrieveData = async (ApiReq) => {
     return data.map((item) => {
       return {
         ...item,
-        HO_CONFIRMED:
-          item.HO_CONFIRMED === "0"
-            ? "Pending"
-            : item.HO_CONFIRMED === "Y"
-            ? "Confirm"
-            : item.HO_CONFIRMED,
+        HO_CONFIRMED: item.HO_CONFIRMED === "0" ? "Pending"
+          : item.HO_CONFIRMED === "Y" ? "Confirm" : item.HO_CONFIRMED,
       };
     });
   } else {

@@ -5,33 +5,29 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import {
-  DailyTransactionImportGridMetaData,
-  DailyTransactionImportMetadata,
-} from "./dailyTransactionImportMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { DailyTransactionImportGridMetaData, DailyTransactionImportMetadata } from "./dailyTransactionImportMetadata";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import {
-  SubmitFnType,
-  GridWrapper,
-  ClearCacheProvider,
-  ActionTypes,
-  usePopupContext,
-  GridMetaDataType,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { SubmitFnType } from "packages/form";
+
 const actions: ActionTypes[] = [
   {
     actionName: "errors",
     actionLabel: t("Errors"),
     multiple: false,
-    alwaysAvailable: true,
+    alwaysAvailable: true
     // rowDoubleClick: true,
   },
 ];
@@ -65,7 +61,8 @@ const DailyTransactionImport = () => {
           variant: "error",
         });
       },
-      onSuccess: async (data, variables) => {},
+      onSuccess: async (data, variables) => {
+      },
     }
   );
   const onSubmitHandler: SubmitFnType = async (
@@ -75,7 +72,7 @@ const DailyTransactionImport = () => {
     setFieldError,
     actionFlag
   ) => {
-    let newData = data;
+    let newData = data
     if (actionFlag === "SELECT") {
       getValidateToSelectFile.mutate({
         A_BRANCH_CD: data?.BRANCH_CD,
@@ -83,21 +80,24 @@ const DailyTransactionImport = () => {
         A_ACCT_CD: data?.ACCT_CD,
         A_CHEQUE_NO: data?.CHEQUE_NO,
         A_TYPE_CD: data?.TYPE_CD,
-        // A_TRAN_CD :data ?.A_TRAN_CD ,
+        // A_TRAN_CD :data ?.A_TRAN_CD , 
         // A_TABLE_NM :data ?.A_TABLE_NM ,
         A_SCREEN_REF: "MST/454",
         A_LOG_COMP: authState?.companyID,
-        A_LOG_BRANCH: authState?.user?.branchCode,
-      });
+        A_LOG_BRANCH: authState?.user?.branchCode
+
+
+      })
     }
     endSubmit(true);
   };
 
   return (
     <>
+
       <FormWrapper
         key={"DailyTransactionImportForm"}
-        metaData={DailyTransactionImportMetadata as MetaDataType}
+        metaData={DailyTransactionImportMetadata}
         initialValues={{}}
         onSubmitHandler={onSubmitHandler}
         formStyle={{
@@ -108,22 +108,27 @@ const DailyTransactionImport = () => {
         }}
         ref={formRef}
         onFormButtonClickHandel={() => {
-          let event: any = { preventDefault: () => {} };
+          let event: any = { preventDefault: () => { } };
           formRef?.current?.handleSubmit(event, "SELECT");
+
         }}
-      ></FormWrapper>
+      >
+      </FormWrapper >
 
       <>
         <GridWrapper
           key={`DailyTransactionImportGrid`}
           finalMetaData={DailyTransactionImportGridMetaData as GridMetaDataType}
           data={[]}
-          setData={() => {}}
+          setData={() => { }}
           // loading={getInsuranceDetailData.isLoading}
           actions={actions}
           setAction={setCurrentAction}
+
         />
       </>
+
+
     </>
   );
 };

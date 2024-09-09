@@ -6,24 +6,21 @@ import {
   LinearProgress,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { lienExpireMetadata } from "./expireLienMetadata";
+import { Alert } from "components/common/alert";
+import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { crudLien } from "../api";
 import { format } from "date-fns";
+import { usePopupContext } from "components/custom/popupContext";
+import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
 
-import {
-  usePopupContext,
-  Alert,
-  utilFunction,
-  FormWrapper,
-  queryClient,
-  MetaDataType,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 export const ExpireLien = ({ navigate, getLienDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -125,7 +122,7 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
         )}
         <FormWrapper
           key={"Expire-Lien"}
-          metaData={lienExpireMetadata as MetaDataType}
+          metaData={lienExpireMetadata}
           initialValues={
             {
               ...rows?.[0]?.data,

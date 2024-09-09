@@ -8,17 +8,15 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
+import { Transition } from "pages_audit/common";
 import { useRef, CSSProperties, useState, useMemo, useEffect } from "react";
 import { useStyles } from "./style";
 import AvatarEditor from "react-avatar-editor";
+import { transformFileObject } from "components/fileUpload/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import {
-  utilFunction,
-  transformFileObject,
-  Transition,
-  GradientButton,
-} from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils/utilFunctions";
 import { useSnackbar } from "notistack";
 const style = ({ disabled }): CSSProperties => ({
   pointerEvents: disabled ? "none" : "all",

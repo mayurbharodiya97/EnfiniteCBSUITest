@@ -1,5 +1,6 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
+
 
 export const getInsuranceConfirmData = async (apiReq) => {
   const { data, status, message, messageDetails } =
@@ -8,6 +9,7 @@ export const getInsuranceConfirmData = async (apiReq) => {
     });
   if (status === "0") {
     return data;
+
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -20,6 +22,7 @@ export const insuranceEntryConfirmation = async (apiReq) => {
     });
   if (status === "0") {
     return data;
+
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -36,3 +39,4 @@ export const doInsuranceDml = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+

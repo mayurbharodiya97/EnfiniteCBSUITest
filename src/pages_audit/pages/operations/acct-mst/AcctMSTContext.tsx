@@ -1,4 +1,4 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import _ from "lodash";
 import React, { useCallback, useReducer } from "react";
 
@@ -251,27 +251,27 @@ export const AcctMSTContext = React.createContext<any>({
   handleSavectx: () => {},
   handleUpdatectx: () => {},
 });
-const AcctMSTProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(Reducer, initialState);
+  const AcctMSTProvider = ({ children }) => {
+    const [state, dispatch] = useReducer(Reducer, initialState);
 
-  interface handleFromFormModeTyoe {
-    formmode?: string | null;
-    from?: string | null;
-  }
-  const handleFromFormModectx = useCallback((data: handleFromFormModeTyoe) => {
-    const keys = Object.keys(data);
-    let payload = {};
-    if (keys.includes("formmode")) {
-      payload["formmodectx"] = data["formmode"];
-    }
-    if (keys.includes("from")) {
-      payload["fromctx"] = data["from"];
-    }
-    dispatch({
-      type: "handleFromFormMode",
-      payload: payload,
-    });
-  }, []);
+    interface handleFromFormModeTyoe {
+      formmode?: string | null,
+      from?: string | null
+  } 
+  const handleFromFormModectx = useCallback((data:handleFromFormModeTyoe) => {
+      const keys = Object.keys(data)
+      let payload = {};
+      if(keys.includes("formmode")) {
+          payload["formmodectx"] = data["formmode"];
+      }
+      if(keys.includes("from")) {
+          payload["fromctx"] = data["from"];
+      }
+      dispatch({
+          type: "handleFromFormMode", 
+          payload: payload
+      })
+  }, [])
 
   const handleFormModalClosectx = useCallback(() => {
     dispatch({
@@ -333,25 +333,22 @@ const AcctMSTProvider = ({ children }) => {
   }, [state.isSidebarExpandedctx]);
 
   interface handleHeaderFormSubmitType {
-    acctType: any;
-    reqID: any;
+    acctType:any, 
+    reqID: any
   }
-  const handleHeaderFormSubmit = useCallback(
-    (reqObj: handleHeaderFormSubmitType) => {
-      let payload: any = {};
-      if (Boolean(reqObj.acctType)) {
-        payload.accTypeValuectx = reqObj.acctType;
-      }
-      if (Boolean(reqObj.reqID)) {
-        payload.req_cd_ctx = reqObj.reqID;
-      }
-      dispatch({
-        type: "update_accTypeValuectx",
-        payload: { ...payload },
-      });
-    },
-    []
-  );
+  const handleHeaderFormSubmit = useCallback((reqObj:handleHeaderFormSubmitType) => {
+    let payload:any = {}
+    if(Boolean(reqObj.acctType)) {
+      payload.accTypeValuectx = reqObj.acctType; 
+    }
+    if(Boolean(reqObj.reqID)) {
+      payload.req_cd_ctx = reqObj.reqID; 
+    }
+    dispatch({
+      type: "update_accTypeValuectx",
+      payload: {...payload}
+    })
+  }, [])
 
   const handleApiRes = useCallback((apiRes) => {
     // console.log("asdasdas>>", apiRes)
@@ -363,31 +360,31 @@ const AcctMSTProvider = ({ children }) => {
     const GPARAM155 = apiRes?.[0]?.GPARA_155; // hide/display fields
 
     dispatch({
-      type: "update_ApiResctx",
-      payload: {
-        tabsApiResctx: apiRes,
-        tabNameList: steps,
-        param320: PARAM320,
-        gparam155: GPARAM155,
-      },
-    });
-  }, []);
+        type: "update_ApiResctx",
+        payload: {
+            tabsApiResctx: apiRes,
+            tabNameList: steps,
+            param320: PARAM320,
+            gparam155: GPARAM155,
+        }
+    })
+  }, [])
 
-  const handleColTabChangectx = useCallback((value: any) => {
+  const handleColTabChangectx = useCallback((value:any) => {
     dispatch({
-      type: "update_colTabValuectx",
-      payload: {
-        colTabValuectx: value,
-      },
-    });
-  }, []);
+        type: "update_colTabValuectx",
+        payload: {
+            colTabValuectx: value,
+        }
+    })
+  },[])
 
   const handleFormModalOpenctx = useCallback(() => {
     dispatch({
-      type: "handleFormModalOpen",
-      payload: { isFormModalOpenctx: true, isFreshEntryctx: true },
-    });
-  }, []);
+        type: "handleFormModalOpen", 
+        payload: {isFormModalOpenctx: true, isFreshEntryctx: true }
+    })
+  }, [])
 
   const handleFormModalOpenOnEditctx = (recordData:any[]) => {
     if(
@@ -399,81 +396,77 @@ const AcctMSTProvider = ({ children }) => {
         req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
         acctNumberctx: recordData[0].data?.ACCT_CD ?? "",
         accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
-        isFormModalOpenctx: true,
-        isFreshEntryctx: false,
+        isFormModalOpenctx: true, isFreshEntryctx: false
       };
       dispatch({
         type: "handleCategoryChangectx",
-        payload: payload,
-      });
+        payload: payload
+      })
     }
-  };
+  }
 
-  const handleFormLoading = useCallback((isloading: boolean) => {
+  const handleFormLoading = useCallback((isloading:boolean) => {
     dispatch({
       type: "handle_formloading",
       payload: {
-        isLoading: isloading,
-      },
-    });
-  }, []);
+        isLoading: isloading
+      }
+    })
+  }, [])
 
-  const handleCurrFormctx = useCallback(
-    (obj) => {
-      let currVal = state?.currentFormctx;
-      dispatch({
+  const handleCurrFormctx = useCallback((obj) => {
+    let currVal = state?.currentFormctx
+    dispatch({
         type: "set_currentFormObj",
         payload: {
-          currentFormctx: {
-            ...currVal,
-            ...obj,
-          },
-        },
-      });
-    },
-    [state?.currentFormctx]
-  );
-  const handleStepStatusctx = ({ status = "error", coltabvalue = 0 }) => {
+            currentFormctx: {
+                ...currVal,
+                ...obj 
+            }
+        }
+    })
+  }, [state?.currentFormctx])
+  const handleStepStatusctx = ({status= "error", coltabvalue= 0}) => {
     dispatch({
-      type: "update_stepStatus",
-      payload: {
-        steps: {
-          ...state?.steps,
-          [coltabvalue]: { status: status },
-        },
-      },
-    });
-  };
+        type: "update_stepStatus",
+        payload: {
+            steps: {
+                ...state?.steps,
+                [coltabvalue]: {status: status}
+            }
+        }
+    })
+  }
 
   const handleFormDataonSavectx = (data) => {
     dispatch({
-      type: "update_formData",
-      payload: {
-        formDatactx: { ...data },
-      },
-    });
-  };
+        type: "update_formData",
+        payload: {
+            formDatactx: {...data}
+        }
+    })
+  }
 
   const handlecustomerIDctx = (data) => {
     dispatch({
-      type: "update_customerIDctx",
-      payload: {
-        customerIDctx: data,
-      },
-    });
-  };
+        type: "update_customerIDctx",
+        payload: {
+            customerIDctx: data
+        }
+    })
+  }
 
-  const handleModifiedColsctx = (tabModifiedCols) => {
+  const handleModifiedColsctx = (tabModifiedCols ) => {    
     dispatch({
-      type: "modify_tabCols",
-      payload: {
-        modifiedFormCols: { ...tabModifiedCols },
-      },
-    });
-  };
+        type: "modify_tabCols",
+        payload: {
+            modifiedFormCols: {...tabModifiedCols}
+        }
+    })
+  }
 
   const handleFormDataonRetrievectx = (data) => {
-    let retrieveApiRes = data;
+    let retrieveApiRes = data
     let payload = {};
     if(Array.isArray(data?.JOINT_ACCOUNT_DTL) && data?.JOINT_ACCOUNT_DTL?.length>0) {
       data?.JOINT_ACCOUNT_DTL.forEach(jointRow => {
@@ -536,21 +529,20 @@ const AcctMSTProvider = ({ children }) => {
     }
     payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
     dispatch({
-      type: "update_retrieveFormData",
-      payload: payload,
-    });
-  };
+        type: "update_retrieveFormData",
+        payload: payload
+    })
+  }
 
   const handleSavectx = (e, refs) => {
     // ref(e, "save")
     Promise.all([refs])
-      .then((response) => {
-        console.log("evalSave in success ", response);
-      })
-      .catch((err) => {
-        console.log("evalSave out catch", err.message);
-      });
-  };
+    .then((response) => {
+      console.log("evalSave in success ", response)
+    }).catch(err => {
+      console.log("evalSave out catch", err.message)
+    })    
+  }
 
   const handleUpdatectx = async ({COMP_CD}) => {
 
@@ -692,7 +684,7 @@ const AcctMSTProvider = ({ children }) => {
   return (
     <AcctMSTContext.Provider
       value={{
-        AcctMSTState: state,
+        AcctMSTState:state,
         handleFormLoading,
         handleFromFormModectx,
         handleFormModalClosectx,

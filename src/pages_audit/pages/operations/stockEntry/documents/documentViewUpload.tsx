@@ -13,21 +13,19 @@ import { stockViewEditMSTMetaData } from "./documentMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { uploadDocument, viewDocument } from "../api";
+import { queryClient } from "cache";
+import { MasterDetailsForm } from "components/formcomponent";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
+import { GradientButton } from "components/styledComponent/button";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
-import {
-  MasterDetailsMetaData,
-  LoaderPaperComponent,
-  Alert,
-  MasterDetailsForm,
-  transformFileObject,
-  utilFunction,
-  queryClient,
-  GradientButton,
-} from "@acuteinfo/common-base";
 
 export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const [isopenImgViewer, setOpenImgViewer] = useState<boolean>(false);
@@ -238,7 +236,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                 ...newInitialData,
                 DETAILS_DATA: viewDocuments?.data,
               }}
-              subHeaderLabel={`\u00A0\u00A0 
+              subHeaderLable={`\u00A0\u00A0 
           ${(
             rows?.[0]?.data?.COMP_CD +
             rows?.[0]?.data?.BRANCH_CD +

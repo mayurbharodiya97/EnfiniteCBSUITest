@@ -1,6 +1,6 @@
 import { Button, Dialog } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useTranslation } from "react-i18next";
 import { securityDetailMetaData } from "./securityDetailFormMetaData";
 

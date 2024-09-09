@@ -1,21 +1,18 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useRef, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
 import { AreaMasterGridMetaData } from "./gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
+import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { AreaMasterFormWrapper } from "./viewDetails/areaMasterForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 let actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -36,6 +33,7 @@ let actions: ActionTypes[] = [
     multiple: false,
   },
 ];
+
 
 const AreaMaster = () => {
   const {authState} = useContext(AuthContext);
@@ -76,7 +74,10 @@ const AreaMaster = () => {
       branchCode: authState?.user?.branchCode,
     })
   );
-  const { data: miscdata } = useQuery<any, any>(["getMiscTableConfig"], () =>
+  const { data: miscdata } = useQuery<
+    any,
+    any
+  >(["getMiscTableConfig"], () =>
     API.GETMISCTABLECONFIG("AREA_MST")
   );
   let userLevel;
@@ -175,6 +176,7 @@ const AreaMaster = () => {
           }
         />
       </Routes>
+
     </Fragment>
   );
 };

@@ -1,15 +1,13 @@
 import {
   DefaultErrorObject,
-  utilFunction,
-} from "@acuteinfo/common-base";
-import { format } from "date-fns";
+} from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getStrBranchLevelData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETSTRDATA`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -34,7 +32,7 @@ export const getGroundSuspicionData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETSTRGOSDTL`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -75,12 +73,15 @@ export const getSuspStatusData = async () => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DATA_VAL, DISP_VAL }) => {
-        return {
-          value: DATA_VAL,
-          label: DISP_VAL,
-        };
-      });
+      responseData = responseData.map(
+        ({ DATA_VAL, DISP_VAL }) => {
+          return {
+            value: DATA_VAL,
+            label: DISP_VAL,
+
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -93,12 +94,15 @@ export const getSuspReasonData = async (Apireq) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ REASON, REASON_TRAN_SR_CD }) => {
-        return {
-          value: REASON_TRAN_SR_CD,
-          label: REASON,
-        };
-      });
+      responseData = responseData.map(
+        ({ REASON, REASON_TRAN_SR_CD }) => {
+          return {
+            value: REASON_TRAN_SR_CD,
+            label: REASON,
+
+          };
+        }
+      );
     }
     return responseData;
   } else {

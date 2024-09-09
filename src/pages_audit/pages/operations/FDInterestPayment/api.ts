@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const fetchFDPaymentDetails = async (reqData) => {
@@ -34,3 +34,5 @@ export const updateFDInterestPayment = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+

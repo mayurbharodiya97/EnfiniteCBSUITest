@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { useNavigate, useLocation } from "react-router";
+import { queryClient } from "cache";
 import {
   AuthContextType,
   AuthStateType,
@@ -15,7 +16,7 @@ import {
 import * as API from "./api";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
-import { utilFunction, queryClient } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils/utilFunctions";
 import { GeneralAPI } from "registry/fns/functions";
 import CRC32C from "crc-32";
 import { LinearProgress } from "@mui/material";
@@ -155,11 +156,7 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
-        hoLogin:
-          payload.branchCode === payload.baseBranchCode &&
-          state?.companyID === state?.baseCompanyID
-            ? "Y"
-            : "N",
+        hoLogin: payload.branchCode === payload.baseBranchCode && state?.companyID === state?.baseCompanyID ? "Y" : "N",
         user: {
           ...state.user,
           branchCode: payload.branchCode,

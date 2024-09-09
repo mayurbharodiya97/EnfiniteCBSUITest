@@ -1,5 +1,5 @@
-import GridWrapper, { GridMetaDataType } from "@acuteinfo/common-base";
-import { FilterFormMetaType } from "@acuteinfo/common-base";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { getCIFCategories } from "./api";
 
 export const customer_data_meta_data = {
@@ -263,7 +263,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       width: 140,
       minWidth: 140,
       maxWidth: 180,
-    },
+    }
     // {
     //   columnName: "Remarks",
     //   componentType: "buttonRowCell",

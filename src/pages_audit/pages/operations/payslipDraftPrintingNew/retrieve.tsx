@@ -1,23 +1,21 @@
 import { retrievePayslip } from "./retrieveMetadata";
+import { SubmitFnType } from "packages/form";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { t } from "i18next";
 import { useCallback, useContext, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { RetrieveGridMetadata } from "./retrieveGridMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { format } from "date-fns";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import PlaySlipDraftPrintingNew from "./ddPrinting/playslipDraftPrinting";
+import { usePopupContext } from "components/custom/popupContext";
 import i18n from "components/multiLanguage/languagesConfiguration";
-import {
-  usePopupContext,
-  GridWrapper,
-  FormWrapper,
-  MetaDataType,
-  ActionTypes,
-  SubmitFnType,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "print",
@@ -51,14 +49,10 @@ const PlaySlipRetrieve = () => {
         ...data,
       });
     };
-  const {
-    data: para,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useQuery<any, any>(
+    const { data:para, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
     ["getDDPrintPara"],
     () =>
       API.getDDPrintPara({
@@ -66,28 +60,26 @@ const PlaySlipRetrieve = () => {
         branch_cd: authState?.user?.branchCode,
         user_level: authState?.role,
       }),
-    {
-      onSuccess: (data) => {
-        // Update the ref when data is successfully fetched
-        paraRef.current = data;
-      },
-    }
+      {
+        onSuccess: (data) => {
+          // Update the ref when data is successfully fetched
+          paraRef.current = data;
+        }
+      }
   );
-  console.log("paraRef", paraRef.current);
+  console.log("paraRef",paraRef.current);
   const mutation: any = useMutation(
     "getPaySlipRetrieveData",
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
         if (data?.length <= 0) {
-          endSubmit(
-            false,
-            MessageBox({
-              message: "No Transaction Found!",
-              messageTitle: "Validation",
-              buttonNames: ["Ok"],
-            })
-          );
+          endSubmit(false, MessageBox({
+            message: "No Transaction Found!",
+            messageTitle: "Validation",
+            buttonNames: ["Ok"],
+          }));
+
         } else if (Array.isArray(data) && data?.length > 0) {
           const filteredData = data.filter((item) => !item.PRINT_CNT);
           setGridData(filteredData);
@@ -148,7 +140,7 @@ const PlaySlipRetrieve = () => {
         formStyle={{
           background: "white",
         }}
-        formState={{ para: para }}
+        formState={{para:para}}
         onFormButtonClickHandel={() => {
           let event: any = { preventDefault: () => {} };
           formRef?.current?.handleSubmit(event, "BUTTON_CLICK");

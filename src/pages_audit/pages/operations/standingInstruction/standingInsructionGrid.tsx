@@ -1,20 +1,16 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useRef, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
 import { standingInsructionGridMetaData } from "./metaData/gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
+import { Alert } from "components/common/alert";
+import { usePopupContext } from "components/custom/popupContext";
 import { StandingInstructionFormWrapper } from "./standingInstructionTemplate";
-import {
-  ClearCacheProvider,
-  usePopupContext,
-  queryClient,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+import { ClearCacheProvider, queryClient } from "cache";
 import SIAsExcutedGrid from "./siAsExcuted";
 import SearchGrid from "./searchGrid";
 import AddSubData from "./addSubdata";
@@ -69,15 +65,11 @@ const StandingInstructionGrid = () => {
     async (data) => {
       // if (data?.name === "view-details") {
       //   setViewDetailData(data?.rows?.[0]);
-      //   setIsViewDetailOpen(true);
+      //   setIsViewDetailOpen(true); 
       // } else {
-      //   setIsViewDetailOpen(false);
+      //   setIsViewDetailOpen(false); 
       // }
-      if (
-        data?.name === "si-as-executed" ||
-        data?.name === "search" ||
-        data?.name === "view-details"
-      ) {
+      if (data?.name === "si-as-executed" || data?.name === "search" || data?.name === "view-details" ) {
         setOpens(true);
       }
       navigate(data?.name, {
@@ -86,14 +78,10 @@ const StandingInstructionGrid = () => {
     },
     [navigate, MessageBox]
   );
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch: mainRefetch,
-  } = useQuery<any, any>(["getStandingInstructionData"], () =>
+  const { data, isLoading, isFetching, isError, error, refetch: mainRefetch } = useQuery<
+    any,
+    any
+  >(["getStandingInstructionData"], () =>
     API.getStandingInstructionData({
       companyID: authController?.authState?.companyID,
       branchCode: authController?.authState?.user?.branchCode,
@@ -102,10 +90,7 @@ const StandingInstructionGrid = () => {
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
-      if (
-        location.pathname ===
-        "/cbsenfinity/operation/standing-instruction-entry"
-      ) {
+      if (location.pathname === "/cbsenfinity/operation/standing-instruction-entry") {
         navigate("add");
       }
     }
@@ -160,29 +145,15 @@ const StandingInstructionGrid = () => {
 
         <Route
           path="si-as-executed"
-          element={
-            <SIAsExcutedGrid open={opens} onClose={() => setOpens(false)} />
-          }
+          element={<SIAsExcutedGrid open={opens} onClose={() => setOpens(false)} />}
         />
         <Route
           path="search"
-          element={
-            <SearchGrid
-              open={opens}
-              onClose={() => setOpens(false)}
-              mainRefetch={mainRefetch}
-            />
-          }
+          element={<SearchGrid open={opens} onClose={() => setOpens(false)} mainRefetch={mainRefetch} />}
         />
         <Route
           path="view-details"
-          element={
-            <AddSubData
-              open={opens}
-              onClose={() => setOpens(false)}
-              mainRefetch={mainRefetch}
-            />
-          }
+          element={<AddSubData open={opens} onClose={() => setOpens(false)} mainRefetch={mainRefetch} />}
         />
       </Routes>
     </Fragment>
