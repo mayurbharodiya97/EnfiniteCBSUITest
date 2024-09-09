@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
@@ -39,6 +39,8 @@ import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
 import useLogoPics from "components/common/logoPics/logoPics";
 import { format } from "date-fns";
+import { useIdleTimer } from "react-idle-timer";
+
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -85,6 +87,28 @@ export const MyAppBar = ({
       fontSize: 13,
     },
   }));
+  const isTimeoutData = useMemo(() => {
+    let timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
+    if (isNaN(timeout) || timeout <= 0) {
+      timeout = Number(authController?.authState?.idealTimer);
+      // timeout = 300000;
+    } else {
+      timeout = timeout * 1000;
+    }
+    return timeout;
+  }, []);
+  const idleTimer = useIdleTimer({
+    timeout: isTimeoutData,
+    promptTimeout: Number(authController.authState?.idealTimer),
+  });
+  const showMessageForIdeal = () => {
+    const remainingTime = idleTimer.getRemainingTime();
+    return (
+      "Your Session will Timeout After " +
+      Math.ceil(remainingTime / 1000) +
+      " Sec."
+    );
+  };
   // const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
   //   ["getBankimgAndProfileimg"],
   //   () =>
@@ -284,6 +308,9 @@ export const MyAppBar = ({
               justifyContent={"flex-end"}
               alignItems={"center"}
             >
+              <Typography fontSize={"17px"} color={"#1C1C1C"}>
+                {showMessageForIdeal()}
+              </Typography>
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
                 {Greetings()} {authController.authState.user.id}
               </Typography>
