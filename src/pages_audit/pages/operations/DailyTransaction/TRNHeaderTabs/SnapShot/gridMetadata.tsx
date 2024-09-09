@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const snapShotGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,

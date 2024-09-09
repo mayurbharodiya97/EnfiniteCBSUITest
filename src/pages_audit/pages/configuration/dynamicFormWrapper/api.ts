@@ -1,5 +1,7 @@
+import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
-import { filters, DefaultErrorObject } from "@acuteinfo/common-base";
+import { filters } from "components/report";
+
 export const getDynamicFormMetaData = async ({
   DOC_CD,
   COMP_CD,

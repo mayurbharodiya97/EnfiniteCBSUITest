@@ -1,10 +1,10 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import {
   clearingBankMasterConfigDML,
   getAccountSlipJoinDetail,
   getBankChequeAlert,
 } from "./api";
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
@@ -438,7 +438,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       accessor: "SR_CD",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -557,7 +557,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,
@@ -1094,7 +1094,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
+
       GridProps: {
         xs: 0,
         md: 1,

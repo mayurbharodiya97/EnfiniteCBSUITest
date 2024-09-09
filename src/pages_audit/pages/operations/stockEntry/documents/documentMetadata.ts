@@ -1,4 +1,4 @@
-import { MasterDetailsMetaData } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 export const stockViewEditMSTMetaData = {
   masterForm: {
     form: {

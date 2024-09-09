@@ -1,6 +1,5 @@
 import { textTransform } from "@mui/system";
 import * as API from "../api";
-
 export const AreaMasterMetaData = {
   form: {
     name: "Area Master",
@@ -49,7 +48,7 @@ export const AreaMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],

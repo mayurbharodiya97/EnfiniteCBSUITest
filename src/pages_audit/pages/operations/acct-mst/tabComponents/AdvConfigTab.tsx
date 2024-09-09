@@ -1,9 +1,10 @@
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import { advConnfig_tab_metadata } from "../tabMetadata/advConfigMetadata";
 import TabNavigate from "../TabNavigate";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+
 const AdvConfigTab = () => {
   const {
     AcctMSTState,
@@ -21,7 +22,7 @@ const AdvConfigTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmit(e, "save", false)];
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
     handleSavectx(e, refs);
   };
   useEffect(() => {

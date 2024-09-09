@@ -1,5 +1,6 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction, GridMetaDataType } from "@acuteinfo/common-base";
 
 export const retrieveAcctFormMetaData = {
   form: {

@@ -3,13 +3,11 @@ import { Dialog, CircularProgress } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns/esm";
 import { useMutation } from "react-query";
+import { GradientButton } from "components/styledComponent/button";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { RetrievalParameterFormMetaData } from "./paySlipMetadata";
 import * as API from "./api";
-import {
-  GradientButton,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+
 export const DataRetrival = ({ closeDialog, open, onUpload }) => {
   const formRef = useRef(null);
   const { authState } = useContext(AuthContext);

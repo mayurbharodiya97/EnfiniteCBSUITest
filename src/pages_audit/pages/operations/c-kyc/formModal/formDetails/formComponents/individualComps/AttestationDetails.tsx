@@ -19,6 +19,7 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   attest_history_meta_data,
   attestation_detail_meta_data,
@@ -28,18 +29,16 @@ import { useTranslation } from "react-i18next";
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import _ from "lodash";
+import { GradientButton } from "components/styledComponent/button";
+import { ConfirmUpdateDialog } from "../../../dialog/ConfirmUpdateDialog";
 import { CustomerSaveDialog } from "../../../dialog/CustomerSave";
 import TabNavigate from "../TabNavigate";
-import {
-  utilFunction,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  PopupRequestWrapper,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { utilFunction } from "components/utils";
+
 const actions = [
   {
     actionName: "close",
@@ -577,7 +576,8 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
           }}
           buttonNames={["Yes", "No"]}
           rows={[]}
-          loading={mutation.isLoading}
+          loading={{ Yes: mutation.isLoading }}
+          // loading={{ Yes: getData?.isLoading, No: false }}
           open={docValidateDialog}
         />
       )}

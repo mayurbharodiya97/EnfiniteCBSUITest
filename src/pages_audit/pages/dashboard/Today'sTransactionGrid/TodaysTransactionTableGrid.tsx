@@ -1,13 +1,10 @@
-import {
-  GridWrapper,
-  ClearCacheProvider,
-  Alert,
-  ActionTypes,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import GridWrapper from "components/dataTableStatic";
 import { TodaysTransactionTableGridMetaData } from "./gridMetaData";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import { ClearCacheProvider } from "cache";
 import { Fragment, useCallback, useState } from "react";
 import Scroll from "./openScroll/scroll";
+import { Alert } from "components/common/alert";
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -74,7 +71,7 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
         data={mutation?.data ?? []}
         setData={() => null}
-        enableExport={true}
+        ReportExportButton={true}
         actions={actions}
         setAction={setCurrentAction}
         headerToolbarStyle={{

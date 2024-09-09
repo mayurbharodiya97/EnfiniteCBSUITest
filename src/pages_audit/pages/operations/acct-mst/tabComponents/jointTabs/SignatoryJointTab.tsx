@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { AcctMSTContext } from "../../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
 import { signatoryjoint_tab_metadata } from "../../tabMetadata/signatoryJointMetadata";
@@ -25,7 +25,7 @@ const SignatoryJointTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmit(e, "save", false)];
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
     handleSavectx(e, refs);
   };
 

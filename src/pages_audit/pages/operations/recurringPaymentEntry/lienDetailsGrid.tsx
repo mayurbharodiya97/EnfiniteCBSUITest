@@ -1,11 +1,8 @@
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { useCallback } from "react";
 import { LienGridMetaData } from "../lienEntry/lienEntryGridMetaData";
-import {
-  Alert,
-  ActionTypes,
-  GridWrapper,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [

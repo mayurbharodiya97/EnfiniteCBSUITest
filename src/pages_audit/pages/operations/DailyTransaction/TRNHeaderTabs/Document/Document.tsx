@@ -12,6 +12,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { DocumentGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -20,15 +21,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import { ActionTypes } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  utilFunction,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
 
 const actions: ActionTypes[] = [
   {
@@ -137,8 +134,8 @@ export const Document = ({ reqData }) => {
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        disableMultipleRowSelect={true}
-        variant={"standard"}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
         // defaultSelectedRowId={1}
         //  controlsAtBottom={true}
       />

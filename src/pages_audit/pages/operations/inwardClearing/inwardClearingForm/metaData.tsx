@@ -1,3 +1,4 @@
+import { utilFunction } from "components/utils";
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import {
@@ -5,7 +6,7 @@ import {
   getDividendViewMasterData,
   getInwardAccountDetail,
 } from "../api";
-import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const chequeReturnPostFormMetaData = {
   form: {
     name: "InwardClearingChequeDetail",

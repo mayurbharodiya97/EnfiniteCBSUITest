@@ -7,20 +7,18 @@ import {
   useState,
 } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic/";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
+import { ClearCacheProvider, queryClient } from "cache";
 import { DataRetrival } from "./DataRetrival";
 import { RetrieveGridMetaData } from "./paySlipMetadata";
 import { PaySlipIssueEntryData } from "./PayslipIsuueEntryform";
-import {
-  Alert,
-  ClearCacheProvider,
-  queryClient,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",

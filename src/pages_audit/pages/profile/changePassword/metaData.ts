@@ -1,4 +1,4 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils/utilFunctions";
 
 export const PasswordChangeMetaData = {
   form: {

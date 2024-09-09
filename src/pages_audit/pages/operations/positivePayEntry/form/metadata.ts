@@ -1,11 +1,10 @@
+import { utilFunction } from "components/utils";
 import { format, isValid } from "date-fns";
 import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData, GetPositivePayImportDdwn } from "../api";
-import {
-  utilFunction,
-  GridColumnType,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { GridColumnType } from "components/dataTableStatic";
+import { GridMetaDataType } from "components/dataTableStatic";
+
 export const PositivePayEntryFormMetadata = {
   form: {
     name: "positivePayEntry",

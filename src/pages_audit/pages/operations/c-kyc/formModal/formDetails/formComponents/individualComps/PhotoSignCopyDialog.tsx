@@ -13,6 +13,7 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import {
   Box,
   Button,
@@ -31,23 +32,25 @@ import {
   Typography,
   makeStyles,
 } from "@mui/material";
+import { transformFileObject } from "components/fileUpload/utils";
+import { DefaultErrorObject, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
+import AvatarEditor from "react-avatar-editor";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
+import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
+import { Alert } from "components/common/alert";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { GeneralAPI } from "registry/fns/functions";
-import {
-  PopupRequestWrapper,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  queryClient,
-  transformFileObject,
-  utilFunction,
-} from "@acuteinfo/common-base";
+
 interface PhotoSignProps {
   open: boolean;
   onClose: any;
@@ -838,7 +841,7 @@ export const PhotoSignCommonComp = ({ onClose, viewMode }) => {
                 }}
                 buttonNames={["Ok", "Cancel"]}
                 rows={[]}
-                loading={undefined}
+                loading={{}}
                 open={dialogOpen}
               />
             }

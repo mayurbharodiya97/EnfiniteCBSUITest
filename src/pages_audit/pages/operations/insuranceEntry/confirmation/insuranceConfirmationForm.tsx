@@ -1,20 +1,18 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useState } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 import * as API from "./api";
+import { ClearCacheProvider } from "cache";
 import { insuranceConfirmFormMetaData } from "./confirmMetadata";
-import {
-  RemarksAPIWrapper,
-  ClearCacheProvider,
-  Alert,
-  usePopupContext,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+
 const InsuranceConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -109,7 +107,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
           key={"insuranceConfirmForm"}
           metaData={insuranceConfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
-          onSubmitHandler={() => {}}
+          onSubmitHandler={{}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{

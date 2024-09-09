@@ -11,11 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { NumberFormatCustom } from "components/derived";
 import { useState, useCallback, Fragment } from "react";
 import "./Trn001.css";
-import { getCurrencySymbol } from "@acuteinfo/common-base";
+import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import Draggable from "react-draggable";
-import { NumberFormatCustom } from "components/custom/NumberFormatCustom";
 
 const useAutocompleteHandlers = (onChangeCallback) => {
   const [highlightedOption, setHighlightedOption] = useState(null);

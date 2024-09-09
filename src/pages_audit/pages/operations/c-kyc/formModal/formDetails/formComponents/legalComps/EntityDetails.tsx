@@ -21,7 +21,9 @@ import {
   Dialog,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridMetaDataType } from "../../../../../../../../components/dataTableStatic/types";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useTranslation } from "react-i18next";
@@ -34,14 +36,7 @@ import { ckyc_retrieved_meta_data } from "pages_audit/pages/operations/c-kyc/met
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
 // import { format } from 'date-fns';
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 const actions = [
   {
     actionName: "close",
