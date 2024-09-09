@@ -1994,7 +1994,7 @@ export const denoTableMetadataTotal: any = {
           defaultValue: "1",
           options: [
             { label: "1 - CASH DEPOSITE", value: "1" },
-            { label: "4 - CASH WITHDRAWAL", value: "W" },
+            { label: "4 - CASH WITHDRAWAL", value: "4" },
           ],
           _optionKey: "TRXdata",
           dependentFields: ["SDC"],
@@ -2116,7 +2116,7 @@ export const denoTableMetadataTotal: any = {
             }
           },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
-            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "W") {
+            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "4") {
               return false;
             } else {
               return true;
@@ -2322,7 +2322,7 @@ export const denoTableMetadataTotal: any = {
             }
           },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
-            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "W") {
+            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "4") {
               return false;
             } else {
               return true;
@@ -2346,7 +2346,7 @@ export const denoTableMetadataTotal: any = {
           type: "number",
           dependentFields: ["TRX", "CHQNO"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
-            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "W") {
+            if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "4") {
               return false;
             } else {
               return true;
@@ -2493,7 +2493,7 @@ export const denoTableMetadataTotal: any = {
             const CHQNO = dependentFields?.["singleDenoRow.CHQNO"]?.value;
             const ACCT_CD = dependentFields?.["singleDenoRow.ACCT_CD"]?.value;
             if (
-              TRX === "W" &&
+              TRX === "4" &&
               FLAG_HIDE === "A" &&
               FLAG_CHQ === "A" &&
               Boolean(CHQNO) &&
