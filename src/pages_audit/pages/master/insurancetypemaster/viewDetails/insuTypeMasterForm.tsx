@@ -1,23 +1,20 @@
 import { CircularProgress, Dialog } from "@mui/material";
+import { usePopupContext } from "components/custom/popupContext";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { Transition } from "pages_audit/common";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { InsuTypeMasterFormMetadata } from "./metaData";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
-import {
-  Transition,
-  SubmitFnType,
-  GradientButton,
-  utilFunction,
-  extractMetaData,
-  MetaDataType,
-  FormWrapper,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+
 export const InsuranceTypeMasterForm = ({
   isDataChangedRef,
   closeDialog,

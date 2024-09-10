@@ -1,4 +1,7 @@
 import { AppBar, Box, CircularProgress, Dialog } from "@mui/material";
+import { MasterDetailsForm } from "components/formcomponent";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { GradientButton } from "components/styledComponent/button";
 import {
   Fragment,
   useCallback,
@@ -11,25 +14,19 @@ import {
 import { GstOutwardForm } from "./gstOutwarsMasterMetaData";
 import { t } from "i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { TemplateDetail } from "../templateDetail/templateDetail";
+import { ActionTypes } from "components/dataTable";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import * as APIs from "../gstOutwardEntryConfirmation/api";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
+import { ClearCacheContext, queryClient } from "cache";
 import { cloneDeep } from "lodash";
-import {
-  Alert,
-  utilFunction,
-  ClearCacheContext,
-  queryClient,
-  ActionTypes,
-  usePopupContext,
-  GradientButton,
-  MasterDetailsMetaData,
-  MasterDetailsForm,
-} from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
+import { Alert } from "components/common/alert";
 const actions: ActionTypes[] = [
   {
     actionName: "add",

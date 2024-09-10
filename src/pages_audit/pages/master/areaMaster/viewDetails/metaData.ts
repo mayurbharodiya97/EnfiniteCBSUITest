@@ -1,6 +1,5 @@
-import { textTransform } from '@mui/system';
+import { textTransform } from "@mui/system";
 import * as API from "../api";
-
 export const AreaMasterMetaData = {
   form: {
     name: "Area Master",
@@ -49,7 +48,7 @@ export const AreaMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
@@ -64,7 +63,7 @@ export const AreaMasterMetaData = {
       type: "text",
       required: true,
       placeholder: "Name",
-      maxLength:100,
+      maxLength: 100,
       txtTransform: "uppercase",
       preventSpecialCharInput: true,
       schemaValidation: {
@@ -83,15 +82,15 @@ export const AreaMasterMetaData = {
         allowNegative: false,
         decimalScale: 0,
         isAllowed: (values) => {
-          if (values?.value?.length > 6  ) {
+          if (values?.value?.length > 6) {
             return false;
           }
           return true;
         },
       },
-      require:false,
+      require: false,
       preventSpecialCharInput: true,
-      GridProps: {  xs: 12, sm: 3, md: 3, lg: 3, xl:3 },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
     },
     {
       render: { componentType: "autocomplete" },

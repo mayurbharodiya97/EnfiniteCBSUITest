@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const ChequebookDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -86,7 +86,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "center",
       componentType: "default",
-      // isDisplayTotal: true,
+      isDisplayTotal: true,
       width: 136,
       minWidth: 100,
       maxWidth: 150,
@@ -99,8 +99,8 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       sequence: 7,
       alignment: "right",
       componentType: "currency",
-      // isDisplayTotal: true,
-      // totalDecimalCount: 2,
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
       width: 109,
       minWidth: 80,
       maxWidth: 130,
@@ -111,8 +111,8 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "right",
       componentType: "currency",
-      // isDisplayTotal: true,
-      // totalDecimalCount: 2,
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
       width: 70,
       minWidth: 100,
       maxWidth: 130,
@@ -191,7 +191,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       sequence: 10,
       alignment: "center",
       componentType: "default",
-      // isDisplayTotal: true,
+      isDisplayTotal: true,
       width: 125,
       minWidth: 70,
       maxWidth: 140,

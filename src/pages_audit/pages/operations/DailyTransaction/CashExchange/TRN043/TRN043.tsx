@@ -1,10 +1,7 @@
 import React from "react";
+import FormWrapper from "components/dyanmicForm";
 import { cashEntryMetaData } from "./metadata";
-import {
-  FormWrapper,
-  MetaDataType,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 
 import { Button, Card } from "@mui/material";
 const TRN043 = () => {
@@ -32,9 +29,8 @@ const TRN043 = () => {
 
       <FormWrapper
         key={`cashEntryMetaData`}
-        metaData={cashEntryMetaData as MetaDataType}
+        metaData={cashEntryMetaData}
         onSubmitHandler={onSubmitHandler}
-        initialValues={{}}
         // hideHeader={true}
         formStyle={{
           background: "white",

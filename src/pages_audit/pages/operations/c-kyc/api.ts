@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -1071,9 +1071,9 @@ export const getKYCDocumentGridData = async ({
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
-      COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
-      CUSTOMER_TYPE: CUST_TYPE ?? null, 
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      CUSTOMER_TYPE: CUST_TYPE ?? null,
       ACCT_TYPE: null,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
@@ -1189,12 +1189,12 @@ export const updatePhotoSignData = async (reqData) => {
   }
 };
 
-export const getCustLatestDtl = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+export const getCustLatestDtl = async ({ COMP_CD, CUSTOMER_ID, REQ_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTLATESTPHOTODTL", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID, 
-      REQ_CD: REQ_CD
+      COMP_CD: COMP_CD,
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD,
     });
   if (status === "0") {
     return data;
@@ -1203,22 +1203,27 @@ export const getCustLatestDtl = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
   }
 };
 
-export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID, REQ_CD}) => {
+export const getPhotoSignHistory = async ({ COMP_CD, CUSTOMER_ID, REQ_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
-      COMP_CD: COMP_CD, 
+      COMP_CD: COMP_CD,
       CUSTOMER_ID: CUSTOMER_ID,
-      REQ_CD: REQ_CD
+      REQ_CD: REQ_CD,
     });
   if (status === "0") {
-    return data
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM}) => {
-  if(CUSTOMER_ID) {
+export const getControllCustInfo = async ({
+  COMP_CD,
+  BRANCH_CD,
+  CUSTOMER_ID,
+  FROM,
+}) => {
+  if (CUSTOMER_ID) {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETVIEWDTL", {
         COMP_CD: COMP_CD,
@@ -1619,27 +1624,32 @@ export const getAttestData = async ({
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
     });
-    if(status === "0") {
-      return data;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-} 
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
-export const getOptionsOnPinParentArea = async (pinCode, formState, _, authState) => {
-  if(Boolean(pinCode) && pinCode?.length>5) {
+export const getOptionsOnPinParentArea = async (
+  pinCode,
+  formState,
+  _,
+  authState
+) => {
+  if (Boolean(pinCode) && pinCode?.length > 5) {
     const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETAREALIST", {
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      PIN_CODE: pinCode,
-      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
-      // PARENT_AREA: PARENT_AREA,
-      FLAG: "P",
-      PARENT_AREA: "",
-    });
+      await AuthSDK.internalFetcher("GETAREALIST", {
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        PIN_CODE: pinCode,
+        // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+        // PARENT_AREA: PARENT_AREA,
+        FLAG: "P",
+        PARENT_AREA: "",
+      });
 
-    if(status == 0) {
+    if (status == 0) {
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
@@ -1655,7 +1665,7 @@ export const getOptionsOnPinParentArea = async (pinCode, formState, _, authState
       return responseData;
     }
   } else return [];
-}
+};
 
 export const getOptionsOnPinParentAreaOtherAdd = async (
   dependentValue,

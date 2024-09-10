@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "@acuteinfo/common-base";
+} from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -303,8 +303,7 @@ export const getRtgsBenDetailData = async (ApiReq) => {
 };
 export const getAcctTypeData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
-    });
+    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {});
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {

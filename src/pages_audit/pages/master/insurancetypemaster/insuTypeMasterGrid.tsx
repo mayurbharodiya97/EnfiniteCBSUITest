@@ -1,3 +1,9 @@
+import { ClearCacheContext, queryClient } from "cache";
+import { Alert } from "components/common/alert";
+import { usePopupContext } from "components/custom/popupContext";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTable/types";
+import GridWrapper from "components/dataTableStatic";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
@@ -7,15 +13,7 @@ import * as API from "./api";
 import { InsuTypeMasterGridMetaData } from "./gridMetadata";
 import { InsuTypeMasterWrapper } from "./viewDetails/insuTypeMasterForm";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  usePopupContext,
-  ActionTypes,
-  GridMetaDataType,
-  GridWrapper,
-  ClearCacheContext,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -137,7 +135,7 @@ export const InsuTypeMasterGrid = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        enableExport={data?.length > 0 ? true : false}
+        ReportExportButton={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}

@@ -3,17 +3,15 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import { useTranslation } from "react-i18next";
 import { suspiciousTransactionGridMetaData } from "./metadata";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable/types";
+import { CreateDetailsRequestData } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
+import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
+import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
-import {
-  GridWrapper,
-  Alert,
-  ActionTypes,
-  utilFunction,
-  usePopupContext,
-} from "@acuteinfo/common-base";
 import { t } from "i18next";
 
 const actions: ActionTypes[] = [
@@ -157,8 +155,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
           if (finalResult.length === 0) {
             // setMode("view");
           } else {
-            //@ts-ignore
-            finalResult = utilFunction.CreateDetailsRequestData(finalResult);
+            finalResult = CreateDetailsRequestData(finalResult);
             // Check NEW_INSERT condition and push old data to finalResult.isDeleteRow
             if (!finalResult.isDeleteRow) {
               finalResult.isDeleteRow = [];

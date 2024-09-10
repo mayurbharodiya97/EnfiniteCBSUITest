@@ -3,7 +3,8 @@ import { forwardRef, Fragment, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { biometric, loginShift } from "./metaDataGrid";
-import { GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 
 export const BiometricLoginConfirmation = forwardRef<any, any>(
   ({ userId }, ref) => {

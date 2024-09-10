@@ -13,20 +13,18 @@
 // } from "@material-ui/core";
 // import CloseIcon from "@material-ui/icons/Close";
 import CloseIcon from "@mui/icons-material/Close";
+import { useDialogStyles } from "components/detailPopupGridData";
+import { Transition } from "pages_audit/common";
 import { useQuery } from "react-query";
 import * as API from "../api";
 import "./styles.css";
 import logo from "assets/images/logo.jpg";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 import { ReactInstance, useContext, useRef } from "react";
 import { AuthContext } from "pages_audit/auth";
-import {
-  Tooltip,
-  PrintButton,
-  Alert,
-  LoaderPaperComponent,
-  useDialogStyles,
-  Transition,
-} from "@acuteinfo/common-base";
+import { PrintButton } from "components/common/printButton";
+import { Tooltip } from "components/styledComponent/tooltip";
 import {
   Dialog,
   IconButton,

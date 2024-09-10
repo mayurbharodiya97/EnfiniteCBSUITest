@@ -2,7 +2,7 @@ import React, { useCallback, useReducer } from "react";
 import * as API from "./api";
 import { CkycStateType } from "./type";
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
+import { DefaultErrorObject, utilFunction } from "components/utils";
 import _ from "lodash";
 
 const initialState: any = {
@@ -239,77 +239,81 @@ const CkycProvider = ({ children }) => {
     // console.log("qweqeqeqwsxqswq", recordData)
     // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
     // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
-    if(recordData[0]?.data?.CATEG_NM && recordData[0]?.data?.CONSTITUTION_NAME) {
-        const categConstitutionValue = {
-            value: recordData[0]?.data?.CATEGORY_CODE,
-            label: recordData[0]?.data?.CATEG_NM,
-            CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
-            CONSTITUTION_NAME: recordData[0]?.data?.CONSTITUTION_NAME,
-            
-            
+    if (
+      recordData[0]?.data?.CATEG_NM &&
+      recordData[0]?.data?.CONSTITUTION_NAME
+    ) {
+      const categConstitutionValue = {
+        value: recordData[0]?.data?.CATEGORY_CODE,
+        label: recordData[0]?.data?.CATEG_NM,
+        CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
+        CONSTITUTION_NAME: recordData[0]?.data?.CONSTITUTION_NAME,
 
-            // value: "05  ",
-            // label: "OTHER",
-            // CONSTITUTION_TYPE: "01",
-            // CONSTITUTION_NAME: "INDIVIDUAL",
-        }
-        let payload = {
-            categConstitutionValuectx: categConstitutionValue,
-            categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
-            constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-            isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isCustActivectx: recordData[0]?.data?.ACTIVE, isFreshEntryctx: false,
-            customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
-            req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
-        }
-        if(recordData[0]?.data?.CONFIRMED) {
-                    // A - ALL ,
-                    // Y - CONFIRMED,
-                    // M - SENT TO MODIFICATION 
-                    // R - REJECT 
-                    // P - SENT TO CONFIRMATION
-            payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED
-        }
-        if(recordData[0]?.data?.UPD_TAB_FLAG_NM) {
-            // D	EXISTING_DOC_MODIFY
-            // M	EXISTING_MODIFY
-            // O	EXISTING_OTHER_ADD_MODIFY
-            // P	EXISTING_PHOTO_MODIFY
-            // A	FRESH_MODIFY
-            payload["update_casectx"] = recordData[0]?.data?.UPD_TAB_FLAG_NM
-        }
+        // value: "05  ",
+        // label: "OTHER",
+        // CONSTITUTION_TYPE: "01",
+        // CONSTITUTION_NAME: "INDIVIDUAL",
+      };
+      let payload = {
+        categConstitutionValuectx: categConstitutionValue,
+        categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+        constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+        isFormModalOpenctx: true,
+        entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE,
+        isCustActivectx: recordData[0]?.data?.ACTIVE,
+        isFreshEntryctx: false,
+        customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
+        req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID))
+          ? parseInt(recordData[0]?.data?.REQUEST_ID)
+          : "",
+      };
+      if (recordData[0]?.data?.CONFIRMED) {
+        // A - ALL ,
+        // Y - CONFIRMED,
+        // M - SENT TO MODIFICATION
+        // R - REJECT
+        // P - SENT TO CONFIRMATION
+        payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED;
+      }
+      if (recordData[0]?.data?.UPD_TAB_FLAG_NM) {
+        // D	EXISTING_DOC_MODIFY
+        // M	EXISTING_MODIFY
+        // O	EXISTING_OTHER_ADD_MODIFY
+        // P	EXISTING_PHOTO_MODIFY
+        // A	FRESH_MODIFY
+        payload["update_casectx"] = recordData[0]?.data?.UPD_TAB_FLAG_NM;
+      }
 
+      dispatch({
+        type: "handleCategoryChangectx",
+        payload: payload,
+        // payload: {
+        //     // categConstitutionValuectx: categConstitutionValue,
+        //     // categoryValuectx: "05  ",
+        //     // constitutionValuectx: "01",
+        //     // isFormModalOpenctx: true, entityTypectx: "I", isFreshEntryctx: false,
+        //     // customerIDctx: "2",
 
-        dispatch({
-            type: "handleCategoryChangectx",
-            payload: payload
-            // payload: {
-            //     // categConstitutionValuectx: categConstitutionValue,
-            //     // categoryValuectx: "05  ",
-            //     // constitutionValuectx: "01",
-            //     // isFormModalOpenctx: true, entityTypectx: "I", isFreshEntryctx: false,
-            //     // customerIDctx: "2",
+        //     categConstitutionValuectx: categConstitutionValue,
+        //     categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+        //     constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+        //     isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+        //     customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
+        //     req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
+        //     // retrieveFormDataApiRes: retrieveFormdata,
 
+        //     // categConstitutionValuectx: "kuashd",
+        //     // categoryValuectx: "kub",
+        //     // constitutionValuectx: "yuu",
+        //     // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false
 
-            //     categConstitutionValuectx: categConstitutionValue,
-            //     categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
-            //     constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-            //     isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
-            //     customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
-            //     req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
-            //     // retrieveFormDataApiRes: retrieveFormdata,
-                
-            //     // categConstitutionValuectx: "kuashd",
-            //     // categoryValuectx: "kub",
-            //     // constitutionValuectx: "yuu",
-            //     // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
-
-            //     // categoryValuectx: value?.value,
-            //     // constitutionValuectx: value?.CONSTITUTION_TYPE,
-            //     // colTabValuectx: 0,
-            // }
-        })
+        //     // categoryValuectx: value?.value,
+        //     // constitutionValuectx: value?.CONSTITUTION_TYPE,
+        //     // colTabValuectx: 0,
+        // }
+      });
     }
-}
+  };
 
   const onDraftSavectx = () => {
     dispatch({
@@ -568,6 +572,7 @@ const CkycProvider = ({ children }) => {
       // retrieveFormDataApiRes: {...retrieveApiRes},
       accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
     };
+    // retrieved-entry/fresh, but not saved as draft
     if (!Boolean(state?.isFreshEntryctx) || !Boolean(state?.isDraftSavedctx)) {
       // PHOTO_MST - getting photo sign on retrieve form data to populate images
       if (data && data.PHOTO_MST) {

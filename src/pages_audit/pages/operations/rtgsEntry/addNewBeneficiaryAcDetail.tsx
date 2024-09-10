@@ -6,30 +6,25 @@ import {
   useContext,
   useCallback,
 } from "react";
-import {
-  SubmitFnType,
-  GridWrapper,
-  ActionTypes,
-  GridMetaDataType,
-  GradientButton,
-  usePopupContext,
-  extractMetaData,
-  utilFunction,
-  LoaderPaperComponent,
-  queryClient,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
 import { Theme, Dialog } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import {
   AddNewBenfiDetailGridMetadata,
   AuditBenfiDetailFormMetadata,
 } from "./metaData";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { ActionTypes, GridMetaDataType } from "components/dataTable";
+import { GradientButton } from "components/styledComponent/button";
+import { usePopupContext } from "components/custom/popupContext";
+import { extractMetaData, utilFunction } from "components/utils";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { queryClient } from "cache";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 
@@ -59,7 +54,7 @@ export const AddNewBeneficiaryDetail: FC<{
   isOpen?: any;
   onClose?: any;
   isBenAuditTrailData?: any;
-  isRefresh?: any
+  isRefresh?: any;
 }> = ({ isOpen, onClose, isBenAuditTrailData, isRefresh }) => {
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -124,7 +119,7 @@ export const AddNewBeneficiaryDetail: FC<{
     },
 
     onSuccess: (data) => {
-      isRefresh()
+      isRefresh();
       setisAddOpen(false);
       refetch();
       enqueueSnackbar(data, {

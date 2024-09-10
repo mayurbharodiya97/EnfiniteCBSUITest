@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ClearCacheProvider } from "@acuteinfo/common-base";
+import { ClearCacheProvider } from "cache";
 import { StaticAdminUserReports } from "../reports/staticReports/staticReports";
 
 const DynamicGridConfig = lazy(() => import("./dynamicGridConfig"));

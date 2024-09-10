@@ -1,14 +1,24 @@
+import { ActionTypes, GridMetaDataType } from "components/dataTable";
+import { FileUploadControl } from "components/fileUpload";
+import { ConvertExcelToJSONData } from "components/utils";
 import { useContext, useState } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar, useSnackbar } from "notistack";
-import { Dialog } from "@mui/material";
-import { AdditionalcollumnMetadata } from "./additionalCollumMetadata";
+import { Alert } from "components/common/alert";
+import { LoadingTextAnimation } from "components/common/loader";
+import { AuthContext } from "pages_audit/auth";
 import {
-  usePopupContext,
-  ActionTypes,
-  FileUploadControl,
-} from "@acuteinfo/common-base";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { AdditionalcollumnMetadata } from "./additionalCollumMetadata";
+import { GeneralAPI } from "registry/fns/functions";
+import { usePopupContext } from "components/custom/popupContext";
+
 const actions: ActionTypes[] = [
   {
     actionName: "upload",
@@ -81,19 +91,17 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               const TRAN_CD = base64Object[0].DESCRIPTION[1];
               const FILEBLOB = base64Object;
               mutation.mutate({
-                 FILE_FORMAT,
-                  TRAN_CD,
-                   FILEBLOB,
-                   ACCT_CD:"XX",
-                   ACCT_TYPE:"XX",
-                   SCROLL_NO:"",
-                   CHEQUE_NO:"",
-                   REMARKS:"",
-                  TABLE_NM:"RTGS_IFSCCODE_MST"
-
-                 });
-            }
-            else if (btnName === "No") {
+                FILE_FORMAT,
+                TRAN_CD,
+                FILEBLOB,
+                ACCT_CD: "XX",
+                ACCT_TYPE: "XX",
+                SCROLL_NO: "",
+                CHEQUE_NO: "",
+                REMARKS: "",
+                TABLE_NM: "RTGS_IFSCCODE_MST",
+              });
+            } else if (btnName === "No") {
               CloseFileUpload();
             }
           }}

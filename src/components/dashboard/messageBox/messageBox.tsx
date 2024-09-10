@@ -10,8 +10,9 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { useQuery, useMutation, useQueries } from "react-query";
 import * as API from "../api";
+import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ListPopupMessageWrapper } from "./listPopupBox/listPopupBox";
 import { useTranslation } from "react-i18next";
 import StickyNotes from "./stickyNotes/stickyNotes";
@@ -22,8 +23,6 @@ import {
   NotesMessageBox,
   TipsMessageBox,
 } from "assets/icons/svgIcons";
-import { queryClient } from "@acuteinfo/common-base";
-
 
 export const MessageBox = ({ screenFlag = "" }: any) => {
   const [toggle, setToggle] = useState(false);
@@ -35,7 +34,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
 
   const result = useQueries([
     {
-      queryKey: ["getDashboardMessageBoxData",screenFlag],
+      queryKey: ["getDashboardMessageBoxData", screenFlag],
       queryFn: () =>
         API.getDashboardMessageBoxData({
           screenFlag,
@@ -52,15 +51,17 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
     },
   ]);
 
-  const dataLength = result?.[0]?.isLoading 
-  ? <CircularProgress size={20} thickness={4.6} /> 
-  : result?.[0]?.data?.length || "0";
+  const dataLength = result?.[0]?.isLoading ? (
+    <CircularProgress size={20} thickness={4.6} />
+  ) : (
+    result?.[0]?.data?.length || "0"
+  );
 
-const dataNoteLength = result?.[1]?.isLoading 
-  ? <CircularProgress size={20} thickness={4.6} /> 
-  : result?.[1]?.data?.[0]?.CNT || "0";
-
-
+  const dataNoteLength = result?.[1]?.isLoading ? (
+    <CircularProgress size={20} thickness={4.6} />
+  ) : (
+    result?.[1]?.data?.[0]?.CNT || "0"
+  );
 
   useEffect(() => {
     return () => {
@@ -87,9 +88,7 @@ const dataNoteLength = result?.[1]?.isLoading
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
-      screenFlag === "Notes"
-        ? result?.[1]?.refetch()
-        : result?.[0]?.refetch();
+      screenFlag === "Notes" ? result?.[1]?.refetch() : result?.[0]?.refetch();
       isDataChangedRef.current = false;
     }
     setIsOpenSave(false);
@@ -328,7 +327,9 @@ const dataNoteLength = result?.[1]?.isLoading
               formView={"view"}
               screenFlag={screenFlag}
               isDataChangedRef={isDataChangedRef}
-              isAnnouncementLoading={result?.[0]?.isLoading || result?.[0]?.isFetching}
+              isAnnouncementLoading={
+                result?.[0]?.isLoading || result?.[0]?.isFetching
+              }
             />
           ) : null}
         </>

@@ -6,25 +6,24 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { usePopupContext } from "components/custom/popupContext";
 import { useLocation } from "react-router-dom";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
+import { queryClient } from "cache";
 import * as API from "../api";
 import { useTranslation } from "react-i18next";
+import { MasterDetailsForm } from "components/formcomponent";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { GradientButton } from "components/styledComponent/button";
 import { InsuranceDetailFormMetaData } from "./insuranceDetailMetadata";
 import { format } from "date-fns";
-import {
-  LoaderPaperComponent,
-  RemarksAPIWrapper,
-  GradientButton,
-  MasterDetailsMetaData,
-  MasterDetailsForm,
-  Alert,
-  queryClient,
-  usePopupContext,
-} from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+
 export const InsuranceDetailForm = ({
   handleDialogClose,
   defaultView,

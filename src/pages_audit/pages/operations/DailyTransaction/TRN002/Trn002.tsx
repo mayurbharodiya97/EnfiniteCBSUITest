@@ -31,24 +31,23 @@ import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
 import { TRN002_TableMetaData } from "./gridMetadata";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import DailyTransTabs from "../TRNHeaderTabs";
+import CommonFooter from "../TRNCommon/CommonFooter";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
+import { queryClient } from "cache";
+import { GradientButton } from "components/styledComponent/button";
 import { DynFormHelperText, PaperComponent } from "../TRN001/components";
+import { Alert } from "components/common/alert";
 import { TRN001Context } from "../TRN001/Trn001Reducer";
-import {
-  queryClient,
-  RemarksAPIWrapper,
-  PopupMessageAPIWrapper,
-  GridWrapper,
-  ActionTypes,
-  GridMetaDataType,
-  usePopupContext,
-  Alert,
-  GradientButton,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
   {
@@ -678,8 +677,8 @@ export const Trn002 = () => {
           refetchData={() => refetch()}
           actions={actions}
           setAction={setCurrentAction}
-          disableMultipleRowSelect={true}
-          variant={"outlined"}
+          onlySingleSelectionAllow={true}
+          isNewRowStyle={true}
           defaultSelectedRowId={
             filteredbyScroll?.length > 0 ? filteredbyScroll?.[0]?.TRAN_CD : ""
           }

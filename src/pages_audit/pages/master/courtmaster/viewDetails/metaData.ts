@@ -48,7 +48,7 @@ export const CourtMasterFormMetadata = {
       maxLength: 4,
       placeholder: "EnterCode",
       isFieldFocused: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
         // Duplication validation
 

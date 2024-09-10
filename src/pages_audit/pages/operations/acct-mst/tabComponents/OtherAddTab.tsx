@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -116,7 +116,7 @@ const OtherAddTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmit(e, "save", false)];
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
     handleSavectx(e, refs);
   };
 

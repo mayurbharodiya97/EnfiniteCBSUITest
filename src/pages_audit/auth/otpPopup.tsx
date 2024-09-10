@@ -1,5 +1,5 @@
 import { FormHelperText } from "@mui/material";
-import { GradientButton } from "@acuteinfo/common-base";
+import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
 import Visibility from "@mui/icons-material/Visibility";
@@ -131,14 +131,14 @@ export const OTPModel = ({
       </span>
     );
   };
- 
+
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
-    }else if (Boolean(OTPError)){
+    } else if (Boolean(OTPError)) {
       setOTP("");
     }
-  }, [loginState.otpmodelClose,OTPError]);
+  }, [loginState.otpmodelClose, OTPError]);
   return (
     <Fragment>
       <Container maxWidth="sm">
@@ -285,15 +285,15 @@ export const OTPModel = ({
                   previousStep(false, "");
                 }}
                 className={classes.otpButtons}
-                textColor={"var(--theme-color3) "}
+                color={"var(--theme-color3) "}
                 style={{
                   border: "var(--theme-color3)1px solid",
                   minWidth: "50%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
-                  // hover: {
-                  //   background: "var(--theme-color2) !important",
-                  // },
+                  hover: {
+                    background: "var(--theme-color2) !important",
+                  },
                 }}
                 // customstyle = {{color : "var(--theme-color3) !important"}}
                 starticon={"West"}
@@ -313,7 +313,7 @@ export const OTPModel = ({
                 onClick={ClickEventHandler}
                 ref={inputButtonRef}
                 className={classes.otpButtons}
-                endicon={loginState.loading ? undefined : "TaskAlt"}
+                endicon={loginState.loading ? null : "TaskAlt"}
                 rotateIcon="scale(1.4)"
               >
                 {loginState.loading ? (
@@ -556,7 +556,7 @@ export const OTPModelForm = ({
               onClick={handleCloseEvent}
               className={classes.otpButtons}
               starticon={"West"}
-              textColor={"var(--theme-color2) !important"}
+              color={"var(--theme-color2) !important"}
               rotateIcon="scale(1.4) rotateX(360deg)"
               style={{
                 border: "var(--theme-color3)1px solid",

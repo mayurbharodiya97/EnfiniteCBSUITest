@@ -1,6 +1,6 @@
-import { ClearCacheProvider } from "@acuteinfo/common-base";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
-import { extractMetaData } from "@acuteinfo/common-base";
+import { ClearCacheProvider } from "cache";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { extractMetaData } from "components/utils";
 import { useContext, useRef, useState, useEffect } from "react";
 import { metaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";

@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -65,7 +65,7 @@ const CurrentTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -83,7 +83,7 @@ const CurrentTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmit(e, "save", false)];
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
     handleSavectx(e, refs);
   };
 

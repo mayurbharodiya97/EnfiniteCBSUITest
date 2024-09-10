@@ -1,5 +1,4 @@
-
-import * as API from '../api'
+import * as API from "../api";
 export const Viewformmetadata = {
   form: {
     name: "Priority main master",
@@ -87,7 +86,7 @@ export const Viewformmetadata = {
       type: "text",
       required: true,
       placeholder: "Description",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       maxLength: 50,
       multiline: true,
       txtTransform: "uppercase",

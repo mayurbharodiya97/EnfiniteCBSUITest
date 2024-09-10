@@ -1,6 +1,6 @@
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { t } from "i18next";
 

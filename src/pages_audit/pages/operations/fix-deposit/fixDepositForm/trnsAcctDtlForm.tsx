@@ -1,11 +1,8 @@
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext } from "react";
 import { TransferAcctDetailFormMetadata } from "./metaData/trnsAcctDtlMetaData";
-import {
-  usePopupContext,
-  InitialValuesType,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { InitialValuesType } from "packages/form";
+import { usePopupContext } from "components/custom/popupContext";
 import { FDContext } from "../context/fdContext";
 
 export const TransferAcctDetailForm = forwardRef<any, any>(

@@ -1,11 +1,20 @@
-import { ClearCacheProvider } from "@acuteinfo/common-base";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { ClearCacheProvider } from "cache";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, useContext, useRef, useState } from "react";
-import { extractMetaData, utilFunction } from "@acuteinfo/common-base";
+import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
-import { GradientButton, usePopupContext } from "@acuteinfo/common-base";
-
+import { usePopupContext } from "components/custom/popupContext";
+import * as API from "./api";
+import { useMutation } from "react-query";
+import { enqueueSnackbar } from "notistack";
+import { t } from "i18next";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { format } from "date-fns";
+import { PrintButton } from "components/common/printButton";
+import { GradientButton } from "components/styledComponent/button";
+import { makeStyles } from "@mui/styles";
+import logo from "assets/images/logo.jpg";
 import {
   Button,
   CircularProgress,
@@ -20,10 +29,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useDialogStyles } from "components/detailPopupGridData";
 import {
   EMICalculateMetaData,
   EMICalculatorSecondPartMetaData,
 } from "./metaData";
+import { MasterDetailsForm } from "components/formcomponent";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { cloneDeep } from "lodash";
+
 const EMICalculatorForm = () => {
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -79,7 +93,6 @@ const EMICalculatorForm = () => {
         formStyle={{
           background: "white",
         }}
-        onSubmitHandler={() => {}}
         ref={myMasterRef}
         initialValues={apiData || emiDetail}
         formState={{
@@ -119,7 +132,6 @@ const EMICalculatorForm = () => {
           background: "white",
         }}
         // ref={myMasterRef}
-        onSubmitHandler={() => {}}
         initialValues={emi}
         formState={{
           MessageBox: MessageBox,
@@ -138,7 +150,6 @@ const EMICalculatorForm = () => {
       >
         <FormWrapper
           key={"EMICalculateMetaData" + formMode}
-          onSubmitHandler={() => {}}
           metaData={
             extractMetaData(
               EMICalculatorSecondPartMetaData,

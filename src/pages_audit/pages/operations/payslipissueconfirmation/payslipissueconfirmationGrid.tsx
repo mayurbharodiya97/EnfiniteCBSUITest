@@ -1,3 +1,5 @@
+import { ClearCacheProvider, queryClient } from "cache";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
   Fragment,
   useCallback,
@@ -7,21 +9,17 @@ import {
   useState,
 } from "react";
 import { RetrievedinfoGridMetaData } from "./RetrivalInfoGridMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
+import { Alert } from "components/common/alert";
 import { DataRetrival } from "./RetriveData";
 import { PayslipConfirmationFormDetails } from "./payslipConfirmationForm";
 import { enqueueSnackbar } from "notistack";
-import {
-  Alert,
-  GridWrapper,
-  ActionTypes,
-  queryClient,
-  ClearCacheProvider,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-all",

@@ -6,6 +6,9 @@ import {
   useState,
   useEffect,
 } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
@@ -15,21 +18,13 @@ import {
   RtgsConfirmGridMetaData,
 } from "./ConfirmationMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
-import { ClearCacheContext, ClearCacheProvider } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-
-import {
-  utilFunction,
-  Alert,
-  GridWrapper,
-  FormWrapper,
-  ActionTypes,
-  queryClient,
-  MetaDataType,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 
 const actions: ActionTypes[] = [
   {
@@ -50,26 +45,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
   const { getEntries } = useContext(ClearCacheContext);
   const { t } = useTranslation();
   let currentPath = useLocation().pathname;
-  const getDynamicLabel = (path: string, data: any, setScreenCode: boolean) => {
-    const relativePath = path.replace("/cbsenfinity/", "");
-    let cleanedPath;
 
-    if (relativePath.includes("/")) {
-      cleanedPath = relativePath.split("/").slice(0, 2).join("/");
-    } else {
-      cleanedPath = relativePath;
-    }
-    let screenList = utilFunction.GetAllChieldMenuData(data, true);
-    const matchingPath = screenList.find((item) => item.href === cleanedPath);
-
-    if (matchingPath) {
-      return setScreenCode
-        ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
-        : `${matchingPath.label}`;
-    }
-
-    return "";
-  };
   const mutation: any = useMutation(
     "getRetrievalClearingData",
     API.getRtgsRetrBranchConfirmData,
@@ -169,21 +145,15 @@ const RtgsConfirmationGrid = ({ flag }) => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
       const initialData = {
-        FROM_DT: format(
-          new Date(authState?.workingDate),
-          "dd/MMM/yyyy"
-        ),
-        TO_DT: format(
-          new Date(authState?.workingDate),
-          "dd/MMM/yyyy"
-        ),
+        FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+        TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
         COMP_CD: authState.companyID,
         BRANCH_CD: authState.user.branchCode,
         FLAG: flag === "BO" ? "P" : "RTGSHO",
-        FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO"
-      }
+        FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO",
+      };
       mutation.mutate({
-        ...formData || initialData,
+        ...(formData || initialData),
       });
       isDataChangedRef.current = false;
     }
@@ -350,7 +320,7 @@ const RtgsConfirmationGrid = ({ flag }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
-              formLabel={getDynamicLabel(
+              formLabel={utilFunction.getDynamicLabel(
                 currentPath,
                 authState?.menulistdata,
                 true

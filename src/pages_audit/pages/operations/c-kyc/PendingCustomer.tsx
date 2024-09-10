@@ -1,23 +1,21 @@
 import { Grid, Typography } from "@mui/material";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { t } from "i18next";
 import { ckyc_pending_req_meta_data } from "./metadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { format } from "date-fns";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
+import { queryClient } from "cache";
 import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
 const PendingCustomer = () => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -46,7 +44,7 @@ const PendingCustomer = () => {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       // REQ_FLAG: "A",
-      REQ_FLAG: "P", //for checking only 
+      REQ_FLAG: "P", //for checking only
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"
     })

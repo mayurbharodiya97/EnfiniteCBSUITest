@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import clsx from "clsx";
-import { SearchBar } from "@acuteinfo/common-base";
+import { SearchBar } from "components/derived";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useStylesSideBar } from "./style";
 import { filterMetaDataByValue } from "./filterMetaData";

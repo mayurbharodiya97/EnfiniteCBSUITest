@@ -11,18 +11,16 @@ import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation, useQuery } from "react-query";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetadata } from "./documentGridMetadata";
 import { useNavigate } from "react-router-dom";
 import KYCDocumentMasterDetails from "./KYCDocumentMasterDetails";
+import { utilFunction } from "components/utils";
 import { Button, Grid } from "@mui/material";
 import { t } from "i18next";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { addMonths, format } from "date-fns";
 import _ from "lodash";
-import {
-  utilFunction,
-  GridWrapper,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 import TabNavigate from "../TabNavigate";
 const Document = () => {
   const { authState } = useContext(AuthContext);

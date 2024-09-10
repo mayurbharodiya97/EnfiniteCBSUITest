@@ -1,20 +1,16 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useRef, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
 import { standingInsructionGridMetaData } from "./metaData/gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
+import { Alert } from "components/common/alert";
+import { usePopupContext } from "components/custom/popupContext";
 import { StandingInstructionFormWrapper } from "./standingInstructionTemplate";
-import {
-  ClearCacheProvider,
-  usePopupContext,
-  queryClient,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+import { ClearCacheProvider, queryClient } from "cache";
 import SIAsExcutedGrid from "./siAsExcuted";
 import SearchGrid from "./searchGrid";
 import AddSubData from "./addSubdata";

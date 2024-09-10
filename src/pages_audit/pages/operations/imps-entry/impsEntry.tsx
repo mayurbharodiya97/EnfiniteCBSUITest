@@ -6,26 +6,25 @@ import {
   Grid,
   LinearProgress,
 } from "@mui/material";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { t } from "i18next";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "pages_audit/auth";
 import { impsEntryMetadata, impsRegDetails } from "./impsEntryMetadata";
+import { ClearCacheProvider } from "cache";
 import { useMutation, useQuery } from "react-query";
+
 import * as API from "./api";
+import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { DayLimit } from "./dayLimit/dayLimit";
-import {
-  extractMetaData,
-  Alert,
-  ClearCacheProvider,
-  usePopupContext,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { extractMetaData } from "components/utils";
+
 export const ImpsEntryCustom = () => {
   const [isData, setIsData] = useState({
     isVisible: false,

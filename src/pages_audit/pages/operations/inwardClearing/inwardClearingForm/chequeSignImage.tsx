@@ -2,10 +2,10 @@ import { FC, useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Grid, Card, CardContent, Dialog, Theme } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import noPhotoAvailble from "../../../../../assets/images/noPhotoAvailble.png";
 import AvatarEditor from "react-avatar-editor";
-import { GradientButton } from "@acuteinfo/common-base";
+import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
 import { useTranslation } from "react-i18next";
 

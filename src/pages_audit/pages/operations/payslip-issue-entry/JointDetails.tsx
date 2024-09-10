@@ -1,11 +1,9 @@
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic/";
 import { SlipJoinDetailGridMetaData } from "./paySlipMetadata";
 import { useCallback } from "react";
-import {
-  LoaderPaperComponent,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 const actions: ActionTypes[] = [
   {
@@ -34,8 +32,10 @@ function JointDetails({ data, onClose, loading }) {
           loading={loading}
           setAction={setCurrentAction}
           actions={actions}
-        />) : <LoaderPaperComponent />
-      }
+        />
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </div>
   );
 }

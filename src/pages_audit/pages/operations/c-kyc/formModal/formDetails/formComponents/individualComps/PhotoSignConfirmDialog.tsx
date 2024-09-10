@@ -13,22 +13,22 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
+import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import _ from "lodash";
+import { Alert } from "components/common/alert";
 import { ActionDialog } from "../../../dialog/ActionDialog";
+import { usePopupContext } from "components/custom/popupContext";
 import { GeneralAPI } from "registry/fns/functions";
-import {
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  utilFunction,
-  transformFileObject,
-} from "@acuteinfo/common-base";
+
 interface PhotoSignProps {
   open: boolean;
   onClose: any;

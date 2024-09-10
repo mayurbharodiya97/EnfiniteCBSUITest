@@ -1,20 +1,17 @@
 import { CircularProgress, Dialog } from "@mui/material";
+import { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ParaDetailMetadata } from "./metaData";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { GradientButton } from "components/styledComponent/button";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useMemo, useRef, useState } from "react";
 import * as API from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import {
-  usePopupContext,
-  PopupMessageAPIWrapper,
-  GradientButton,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-  InitialValuesType,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
+import { extractMetaData, utilFunction } from "components/utils";
+import { usePopupContext } from "components/custom/popupContext";
+
 const EditDetail = ({ open, onClose, rowsData, refetch, formView }) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);

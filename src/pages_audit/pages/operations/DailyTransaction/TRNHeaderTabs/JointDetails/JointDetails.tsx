@@ -10,16 +10,15 @@ import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
 import { JointDetailGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { Alert } from "components/common/alert";
+import { ActionTypes } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AccDetailContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+
 export const JointDetails = ({ reqData }) => {
   const actions: ActionTypes[] = [
     {

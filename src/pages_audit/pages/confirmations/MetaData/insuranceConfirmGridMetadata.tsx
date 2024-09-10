@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const insuranceEntryConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -33,7 +33,7 @@ export const insuranceEntryConfirmGridMetaData: GridMetaDataType = {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "rigth",
       componentType: "default",
       width: 100,
       minWidth: 100,
