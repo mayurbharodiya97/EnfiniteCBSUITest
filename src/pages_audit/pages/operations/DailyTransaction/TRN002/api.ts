@@ -4,7 +4,7 @@ import {
   utilFunction,
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
-import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
+import { format, parse } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
 //List
 export const getTRN002List = async (reqData) => {
@@ -67,6 +67,8 @@ export const confirmScroll = async (reqData) => {
 
 //validate
 export const getConfirmDataValidation = async (reqData) => {
+  const parsedDate = parse(reqData?.OP_DATE, "dd/MM/yyyy", new Date());
+  const formattedDate = format(parsedDate, "dd/MMM/yyyy");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATECONFRIMEDDATA", {
       BRANCH_CD: reqData?.BRANCH_CD,
@@ -88,7 +90,7 @@ export const getConfirmDataValidation = async (reqData) => {
       DRAWING_POWER: reqData?.DRAWING_POWER,
       OD_APPLICABLE: reqData?.OD_APPLICABLE,
       AMOUNT: reqData?.AMOUNT,
-      OP_DATE: format(new Date(reqData?.OP_DATE), "dd/MMM/yyyy"),
+      OP_DATE: formattedDate,
       ENTERED_COMP_CD: reqData?.ENTERED_COMP_CD,
       ENTERED_BRANCH_CD: reqData?.ENTERED_BRANCH_CD,
       ENTERED_BY: reqData?.ENTERED_BY,

@@ -8,12 +8,10 @@ import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
 import {
   Box,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Paper,
   TextField,
   Typography,
@@ -22,28 +20,20 @@ import {
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 
-import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 
-import { useLocation } from "react-router-dom";
 import { GradientButton } from "components/styledComponent/button";
 import { DynFormHelperText, PaperComponent } from "../components";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
+import { usePopupContext } from "components/custom/popupContext";
 
 const actions: ActionTypes[] = [
-  // {
-  //   actionName: "view-detail",
-  //   actionLabel: "",
-  //   multiple: false,
-  //   rowDoubleClick: true,
-  // },
   {
     actionName: "Delete",
     actionLabel: "Remove",
     multiple: false,
     rowDoubleClick: false,
-    // alwaysAvailable: true,
   },
 ];
 
@@ -66,7 +56,6 @@ export const TRN001_Table = ({
     scrollErr: "",
     remarkErr: "",
   });
-  const [isConfirmed, setIsConfirmed] = useState<any>(false);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const myGridRef = useRef<any>(null);
@@ -239,7 +228,7 @@ export const TRN001_Table = ({
     if (gridData?.length > 0) {
       const msgBoxRes = await MessageBox({
         messageTitle: "Alert",
-        message: `Are you sure you want to delete ${
+        message: `Are you sure you want to remove ${
           gridData?.length ?? ""
         } records?`,
         defFocusBtnName: "Yes",
@@ -301,21 +290,13 @@ export const TRN001_Table = ({
       enqueueSnackbar("No Records Found", {
         variant: "error",
       });
+      setScrollNo("");
     }
   };
 
   useEffect(() => {
     refetch();
   }, [setViewOnly]);
-
-  useEffect(() => {
-    if (gridData?.length > 0) {
-      const confirRec = gridData?.some((record) => {
-        return record?.CONFIRMED === "Y";
-      });
-      setIsConfirmed(confirRec);
-    }
-  }, [gridData]);
 
   TRN001_TableMetaData.gridConfig.gridLabel = `Today's Transactions By ${authState?.user?.name}`;
 
@@ -353,31 +334,6 @@ export const TRN001_Table = ({
             trnGridData?.[0]?.TRAN_CD ? trnGridData?.[0]?.TRAN_CD : ""
           }
         />
-
-        {/* <Grid
-          item
-          xs={12}
-          sm={12}
-          sx={{
-            right: "30px",
-            float: "right",
-            position: "relative",
-            top: "-2.67rem",
-            display: "flex",
-            gap: "4rem",
-            alignItems: "center",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Total Records : {trnGridData?.length ?? 0}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Debit : ₹ {debit ?? 0}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Credit : ₹ {credit ?? 0}
-          </Typography>
-        </Grid> */}
       </Paper>
       <Box padding={"8px"}>
         <GradientButton
@@ -401,7 +357,7 @@ export const TRN001_Table = ({
       </Box>
       {Boolean(deleteDialog) ? (
         <RemarksAPIWrapper
-          TitleText={`Do you want to Delete the transaction - VoucherNo. ${dataRow?.TRAN_CD} ?`}
+          TitleText={`Do you want to remove the transaction - VoucherNo. ${dataRow?.TRAN_CD} ?`}
           onActionYes={(input) => handleDelete(input)}
           onActionNo={() => {
             setDeleteDialog(false);
@@ -458,12 +414,6 @@ export const TRN001_Table = ({
               color="secondary"
             />
             <DynFormHelperText msg={errors?.scrollErr} />
-            {/* {Boolean(isConfirmed) && Boolean(scrollNo) && (
-              <Typography variant="body2" sx={{color"red"}}>
-                Scroll No. {scrollNo} has been confirmed. Are you sure you want
-                to delete this record?
-              </Typography>
-            )} */}
             <TextField
               style={{ minWidth: "400px", marginTop: "20px" }}
               fullWidth={true}

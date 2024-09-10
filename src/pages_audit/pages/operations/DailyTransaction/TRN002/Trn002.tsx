@@ -1,23 +1,15 @@
-//UI
 import {
   Box,
-  Button,
-  Card,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
-
 import "./Trn002.css";
-
-//logic
-import React, {
+import {
   useCallback,
   useEffect,
   useRef,
@@ -25,7 +17,6 @@ import React, {
   useContext,
   Fragment,
 } from "react";
-import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
@@ -36,10 +27,8 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import DailyTransTabs from "../TRNHeaderTabs";
-import CommonFooter from "../TRNCommon/CommonFooter";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
 import { queryClient } from "cache";
@@ -49,7 +38,7 @@ import { Alert } from "components/common/alert";
 import { TRN001Context } from "../TRN001/Trn001Reducer";
 import { usePopupContext } from "components/custom/popupContext";
 
-const actions: ActionTypes[] = [
+let action: ActionTypes[] = [
   {
     actionName: "Delete",
     actionLabel: "Remove",
@@ -72,28 +61,19 @@ export const Trn002 = () => {
   const myGridRef = useRef<any>(null);
   const cardsDataRef = useRef<any>(null);
   const controllerRef = useRef<AbortController>();
-  const [rows, setRows] = useState<any>([]);
-  const [rows2, setRows2] = useState<any>([]);
-  const [refRows, setRefRows] = useState<any>([]);
-  const [filteredRows, setFilteredRows] = useState<any>([]);
-
-  const [tabsData, setTabsData] = useState<any>([]);
   const [dataRow, setDataRow] = useState<any>({});
-  const [credit, setCredit] = useState<number>(0);
-  const [debit, setDebit] = useState<number>(0);
-  const [confirmed, setConfirmed] = useState<number>(0);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
-  // const [remarks, setRemarks] = useState<any>("");
   const [cardsData, setCardsData] = useState([]);
   const [reqData, setReqData] = useState([]);
-  /////////newNEW//////////
   const [gridData, setGridData] = useState<any>([]);
   const [filteredGridDdata, setFilteredGrdData] = useState<any>([]);
   const [filteredbyScroll, setFilteredByScroll] = useState<any>([]);
   const [scrollDelDialog, setScrollDelDialog] = useState<any>(false);
   const [scrollConfDialog, setScrollConfDialog] = useState<any>(false);
+  const [isConfirmed, setIsConfirmed] = useState<any>(false);
   const [scrollNo, setScrollNo] = useState<any>([]);
+  // const [action, setAction] = useState<any>(initialAction);
   const [errors, setErrors] = useState<any>({
     scrollErr: "",
     remarkErr: "",
@@ -153,7 +133,9 @@ export const Trn002 = () => {
       const result = filteredGridDdata?.filter((item: any) =>
         item?.SCROLL1?.includes(inputVal)
       );
-      setFilteredGrdData(result?.length > 0 ? result : filteredbyScroll);
+      setFilteredGrdData(result?.length > 0 ? result : []);
+      const isConfirmed = result?.some((record) => record?.CONFIRMED === "Y");
+      setIsConfirmed(isConfirmed);
     }
   };
   const getConfirmDataValidation = useMutation(
@@ -202,7 +184,6 @@ export const Trn002 = () => {
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
-      // setCardStore({ ...cardStore, cardsInfo: data });
       setCardsData(data);
     },
     onError: (error: any) => {
@@ -215,7 +196,6 @@ export const Trn002 = () => {
         });
       }
       setCardsData([]);
-      // setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
 
@@ -277,30 +257,31 @@ export const Trn002 = () => {
         });
       }
       setDeleteDialog(false);
-      // handleGetTRN002List();
       refetch();
     },
     onError: (error: any) => {
       setDeleteDialog(false);
     },
   });
-  // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-  //   onSuccess: (data) => {
-  //     setTabsData(data);
+
+  // const changeAction = useCallback(
+  //   (row) => {
+  //     let updatedActions = [...action];
+  //     if (row?.CONFIRMED === "Y") {
+  //       updatedActions = updatedActions.filter(
+  //         (action) => action?.actionName !== "view"
+  //       );
+  //     }
+  //     setAction(updatedActions);
   //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //   },
-  // });
-  // function define  ======================================================================
+  //   [action]
+  // );
 
   const setCurrentAction = useCallback(async (data) => {
     let row = data.rows[0]?.data;
+    // changeAction(row);
     setDataRow(row);
-    // getConfirmDataValidation.mutate(row);
-    if (data.name === "_rowChanged") {
+    if (data?.name === "_rowChanged") {
       let obj: any = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
@@ -308,7 +289,6 @@ export const Trn002 = () => {
         PARENT_TYPE: row?.PARENT_TYPE ?? "",
         PARENT_CODE: row?.PARENT_CODE ?? "",
         BRANCH_CD: row?.BRANCH_CD,
-        // authState: authState,
       };
       setReqData(obj);
       let reqData = {
@@ -370,31 +350,7 @@ export const Trn002 = () => {
   const handleViewAll = () => {
     if (gridData?.length > 0) {
       setFilteredGrdData(gridData);
-      handleUpdateSum(gridData);
     }
-  };
-
-  const handleUpdateSum = (arr) => {
-    let crSum = 0;
-    let drSum = 0;
-    arr?.map((a) => {
-      if (
-        a.TYPE_CD.includes("1") ||
-        a.TYPE_CD.includes("2") ||
-        a.TYPE_CD.includes("3")
-      ) {
-        crSum = crSum + Number(a?.AMOUNT);
-      }
-      if (
-        a.TYPE_CD.includes("4") ||
-        a.TYPE_CD.includes("5") ||
-        a.TYPE_CD.includes("6")
-      ) {
-        drSum = drSum + Number(a?.AMOUNT);
-      }
-    });
-    setCredit(crSum);
-    setDebit(drSum);
   };
 
   const handleDeleteByVoucher = (input) => {
@@ -467,7 +423,7 @@ export const Trn002 = () => {
         DRAWING_POWER: cardData?.DRAWING_POWER,
         OD_APPLICABLE: cardData?.OD_APPLICABLE,
         AMOUNT: filteredGridDdata[0]?.AMOUNT,
-        OP_DATE: format(new Date(cardData?.OP_DATE), "dd/MMM/yyyy"),
+        OP_DATE: cardData?.OP_DATE,
         ENTERED_COMP_CD: filteredGridDdata[0]?.ENTERED_COMP_CD,
         ENTERED_BRANCH_CD: filteredGridDdata[0]?.ENTERED_BRANCH_CD,
         ENTERED_BY: filteredGridDdata[0]?.ENTERED_BY,
@@ -478,6 +434,7 @@ export const Trn002 = () => {
       getConfirmDataValidation?.mutate(validateReq);
     } else if (msgBoxRes === "No") {
       CloseMessageBox();
+      setScrollNo("");
     }
   };
 
@@ -553,7 +510,7 @@ export const Trn002 = () => {
     setScrollDelDialog(false);
     const msgBoxRes = await MessageBox({
       messageTitle: "Alert",
-      message: `Are you sure you want to delete ${
+      message: `Are you sure you want to remove ${
         filteredGridDdata?.length ?? ""
       } records?`,
       defFocusBtnName: "Yes",
@@ -618,6 +575,7 @@ export const Trn002 = () => {
       }
     } else if (msgBoxRes === "No") {
       CloseMessageBox();
+      setScrollNo("");
     }
   };
 
@@ -694,7 +652,7 @@ export const Trn002 = () => {
           </Fragment>
         ) : null}
         <GridWrapper
-          key={`TRN002_TableMetaData${isLoading}${filteredGridDdata}`}
+          key={`TRN002_TableMetaData${isLoading}${filteredGridDdata}${action}`}
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={filteredGridDdata ?? []}
           setData={() => null}
@@ -708,7 +666,7 @@ export const Trn002 = () => {
           }
           ref={myGridRef}
           refetchData={() => refetch()}
-          actions={actions}
+          actions={action}
           setAction={setCurrentAction}
           onlySingleSelectionAllow={true}
           isNewRowStyle={true}
@@ -716,39 +674,6 @@ export const Trn002 = () => {
             filteredbyScroll?.length > 0 ? filteredbyScroll?.[0]?.TRAN_CD : ""
           }
         />
-        {/* <Grid
-          item
-          xs={12}
-          sm={12}
-          sx={{
-            height: "23px",
-            right: "30px",
-            float: "right",
-            position: "relative",
-            top: "-2.67rem",
-            display: "flex",
-            gap: "4rem",
-            alignItems: "center",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Confirmed Records : {confirmed}
-          </Typography>
-          <Typography
-            sx={{ fontWeight: "bold" }}
-            variant="subtitle1"
-            // style={{ color: "green" }}
-          >
-            Credit : ₹ {credit}
-          </Typography>
-          <Typography
-            sx={{ fontWeight: "bold" }}
-            variant="subtitle1"
-            // style={{ color: "tomato" }}
-          >
-            Debit : ₹ {debit}
-          </Typography>
-        </Grid> */}
       </Paper>
       <Box padding={"8px"}>
         <GradientButton
@@ -766,21 +691,15 @@ export const Trn002 = () => {
         >
           Scroll Remove
         </GradientButton>
-        <GradientButton
-          onClick={() => setScrollConfDialog(true)}
-          sx={{ margin: "5px" }}
-        >
-          Scroll Confirm
-        </GradientButton>
+        {!Boolean(isConfirmed) ? (
+          <GradientButton
+            onClick={() => setScrollConfDialog(true)}
+            sx={{ margin: "5px" }}
+          >
+            Scroll Confirm
+          </GradientButton>
+        ) : null}
       </Box>
-      {/* <CommonFooter
-        viewOnly={true}
-        filteredRows={filteredRows}
-        handleFilterByScroll={handleFilterByScroll}
-        handleViewAll={handleViewAll}
-        handleRefresh={() => handleGetTRN002List()}
-      /> */}
-
       {Boolean(scrollDelDialog) || Boolean(scrollConfDialog) ? (
         <Dialog
           maxWidth="lg"
@@ -823,12 +742,6 @@ export const Trn002 = () => {
               color="secondary"
             />
             <DynFormHelperText msg={errors?.scrollErr} />
-            {/* {Boolean(isConfirmed) && (
-              <Typography variant="h6">
-                Scroll No. {scrollNo} has been confirmed. Are you sure you want
-                to delete this record?
-              </Typography>
-            )} */}
             {Boolean(scrollDelDialog) ? (
               <>
                 <TextField
@@ -864,7 +777,7 @@ export const Trn002 = () => {
         {Boolean(deleteDialog) ? (
           <RemarksAPIWrapper
             TitleText={
-              "Do you want to Delete the transaction - VoucherNo." +
+              "Do you want to remove the transaction - VoucherNo." +
               dataRow?.TRAN_CD +
               " ?"
             }
