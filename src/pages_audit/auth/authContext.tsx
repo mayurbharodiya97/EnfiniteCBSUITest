@@ -45,7 +45,7 @@ const inititalState: AuthStateType = {
     employeeID: "",
   },
   hoLogin: "",
-  idealTimer:""
+  idealTimer: "",
 };
 
 const authReducer = (
@@ -156,7 +156,11 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
-        hoLogin: payload.branchCode === payload.baseBranchCode && state?.companyID === state?.baseCompanyID ? "Y" : "N",
+        hoLogin:
+          payload.branchCode === payload.baseBranchCode &&
+          state?.companyID === state?.baseCompanyID
+            ? "Y"
+            : "N",
         user: {
           ...state.user,
           branchCode: payload.branchCode,
@@ -191,7 +195,11 @@ export const AuthProvider = ({ children }) => {
         Boolean(localStorageAuthState?.isLoggedIn) &&
         Boolean(localStorageAuthState?.user?.id)
       ) {
-        API.LogoutAPI({ userID: localStorageAuthState?.user?.id });
+        API.LogoutAPI({
+          USER_ID: localStorageAuthState?.user?.id,
+          APP_TRAN_CD: "51",
+          REQ_FLAG: "N",
+        });
       }
     }
     localStorage.removeItem("authDetails");
