@@ -32,9 +32,8 @@ import { t } from "i18next";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { SubmitFnType } from "packages/form";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
@@ -170,9 +169,8 @@ const AtmEntryCustom = ({ parameter }) => {
       }
     });
   };
-  console.log("<<<isDataaa11", isData);
 
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
     let result = gridRef?.current?.cleanData?.();
     let gridDtl =
       result?.length > 0
@@ -193,7 +191,7 @@ const AtmEntryCustom = ({ parameter }) => {
           })
         : result;
 
-    console.log("<<<isdata", isData, result, gridDtl);
+    console.log("<<<isdata", isData);
     let apiReq = {
       ...data,
       SMS_ALERT: Boolean(data?.SMS_ALERT) ? "Y" : "N",
@@ -211,7 +209,7 @@ const AtmEntryCustom = ({ parameter }) => {
     endSubmit(true);
     console.log("<<<onsub", data, apiReq);
   };
-
+  console.log("<<<onsubijhihhfhkfhkdjfklfnlsdn");
   return (
     <>
       {validateInsert?.isLoading ? (

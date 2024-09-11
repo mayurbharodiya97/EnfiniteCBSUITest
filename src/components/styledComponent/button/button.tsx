@@ -61,7 +61,7 @@ const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
           },
         },
       }}
-      tabindex={tabIndex}
+      // tabindex={tabIndex}
       startIcon={StartIcon ? <StartIcon /> : null}
       endIcon={
         FormButtonCicular ? (

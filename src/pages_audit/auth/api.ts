@@ -184,16 +184,20 @@ export const RefreshTokenData = async (refreshToken) => {
     return null;
   }
 };
-export const LogoutAPI = async ({ userID }) => {
-  const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
-    USER_ID: userID,
-    APP_TRAN_CD: 51,
-  });
-  //if (status === "0") {
-  return message;
-  //} else {
-  //  throw DefaultErrorObject(message, messageDetails);
-  //}
+export const LogoutAPI = async (apiReq) => {
+  const { data, status, message } = await AuthSDK.internalFetcher(
+    "LOGOUTUSER",
+    {
+      // USER_ID: userID,
+      // APP_TRAN_CD: 51,
+      ...apiReq,
+    }
+  );
+  if (status !== "0") {
+    return { message, status };
+    //} else {
+    //  throw DefaultErrorObject(message, messageDetails);
+  }
 };
 
 // export const verifyPasswordAndLogin = async (
