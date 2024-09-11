@@ -1,4 +1,12 @@
-import { Fragment, cloneElement, useContext, useEffect, useMemo } from "react";
+import {
+  Fragment,
+  cloneElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "./authContext";
 import { useIdleTimer } from "react-idle-timer";
@@ -15,22 +23,22 @@ export const ProtectedRoutes = ({ children }) => {
     isBranchSelected,
     message,
     closeMessageBox,
+    isIdealLogouted,
   } = useContext(AuthContext);
 
   const isTimeoutData = useMemo(() => {
-    let timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
+    let timeout = Number(authState?.idealTimer);
     if (isNaN(timeout) || timeout <= 0) {
-      timeout = Number(authState?.idealTimer);
-      // timeout = 300000;
+      timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
     } else {
       timeout = timeout * 1000;
     }
     return timeout;
   }, []);
-  // console.log("isTimeoutData=>", isTimeoutData);
   const onIdle = () => {
     alert("logout");
     logout();
+    isIdealLogouted();
   };
 
   const onActive = (event) => {
@@ -48,7 +56,7 @@ export const ProtectedRoutes = ({ children }) => {
   const idleTimer = useIdleTimer({
     timeout: isTimeoutData,
     promptTimeout: Number(authState?.idealTimer),
-    // promptTimeout: 30000,
+    // promptTimeout: 300000,
     onIdle,
     onActive,
     onAction,
@@ -66,7 +74,6 @@ export const ProtectedRoutes = ({ children }) => {
       }
     );
   };
-  //console.log(idleTimer);
   useEffect(() => {
     if (!isLoggedIn()) {
       //console.log("isLoggedIn()=>", isLoggedIn());
@@ -110,7 +117,10 @@ export const ProtectedRoutes = ({ children }) => {
     }
     return false;
   }, [window.location.pathname]);
-  let newChildren = cloneElement(children, { isValidURL: isValidURL });
+  let newChildren = cloneElement(children, {
+    isValidURL: isValidURL,
+    idleTimer: idleTimer,
+  });
   if (isLoggedIn()) {
     //cloneElement()
     return (

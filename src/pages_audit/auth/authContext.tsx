@@ -45,7 +45,8 @@ const inititalState: AuthStateType = {
     employeeID: "",
   },
   hoLogin: "",
-  idealTimer:""
+  idealTimer: "",
+  isIdealLogout: false,
 };
 
 const authReducer = (
@@ -64,6 +65,12 @@ const authReducer = (
         ...state,
         isBranchSelect: true,
         menulistdata: action.payload?.menulistdata,
+      };
+    }
+    case "idelLogout": {
+      return {
+        ...state,
+        isIdealLogout: action.payload, // Update the state based on the payload
       };
     }
     default: {
@@ -91,6 +98,7 @@ export const AuthContext = createContext<AuthContextType>({
     icon: "",
     buttonNames: "",
   },
+  isIdealLogouted: () => false,
 });
 
 export const AccDetailContext = createContext<any>({
@@ -113,7 +121,6 @@ export const AuthProvider = ({ children }) => {
       setProfileImagestate(imgData);
     }
   };
-
   /*eslint-disable react-hooks/exhaustive-deps*/
   const login = useCallback(
     (payload: AuthStateType, stopNavigation?: boolean) => {
@@ -156,7 +163,11 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
-        hoLogin: payload.branchCode === payload.baseBranchCode && state?.companyID === state?.baseCompanyID ? "Y" : "N",
+        hoLogin:
+          payload.branchCode === payload.baseBranchCode &&
+          state?.companyID === state?.baseCompanyID
+            ? "Y"
+            : "N",
         user: {
           ...state.user,
           branchCode: payload.branchCode,
@@ -221,6 +232,10 @@ export const AuthProvider = ({ children }) => {
 
   const isBranchSelected = () => {
     return state.isBranchSelect;
+  };
+  const isIdealLogouted = () => {
+    // Handle ideal logout state
+    dispatch({ type: "idelLogout", payload: true });
   };
 
   const setLoginDatainLocalStorage = async (payload) => {
@@ -382,6 +397,7 @@ export const AuthProvider = ({ children }) => {
         MessageBox,
         closeMessageBox,
         message,
+        isIdealLogouted,
       }}
     >
       <AccDetailContext.Provider

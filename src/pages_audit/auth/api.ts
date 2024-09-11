@@ -16,13 +16,13 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const validatePasswords = async ({ ...request }:any) => {
+export const validatePasswords = async ({ ...request }: any) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
-      ...request
+      ...request,
     });
   if (status === "0") {
-    return { validateStatus :status, validateData:data[0]};
+    return { validateStatus: status, validateData: data[0] };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -87,7 +87,7 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId || '00',
+      REQUEST_CD: transactionId || "00",
       OTP: otpnumber,
       AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
@@ -271,9 +271,14 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
-    idealTimer :data?.IDLE_TIMER,
-    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
-    access: {},  
+    idealTimer: data?.IDLE_TIMER,
+    isIdealLogout: false,
+    hoLogin:
+      data?.BRANCHCODE === data?.BASEBRANCHCODE &&
+      data?.COMPANYID === data?.BASECOMPANYID
+        ? "Y"
+        : "N",
+    access: {},
   };
 };
 
