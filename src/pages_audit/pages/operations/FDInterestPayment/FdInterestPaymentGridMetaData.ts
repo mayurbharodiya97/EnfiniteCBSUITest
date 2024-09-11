@@ -141,6 +141,10 @@ export const accountFindmetaData = {
                 isFieldFocused: false,
               },
             };
+          } else if (!currentField?.value) {
+            return {
+              ACCT_NM: { value: "" },
+            };
           }
         },
         fullWidth: true,
@@ -184,7 +188,7 @@ export const FdInterestPaymentGridMetaData: GridMetaDataType = {
       maxWidth: 450,
       minWidth: 300,
     },
-    allowRowSelection: true,
+    allowRowSelection: false,
     allowColumnReordering: true,
     disableSorting: true,
     hideHeader: false,
@@ -196,7 +200,7 @@ export const FdInterestPaymentGridMetaData: GridMetaDataType = {
       min: "79vh",
       max: "79vh",
     },
-    allowColumnHiding: false,
+    allowColumnHiding: true,
     isCusrsorFocused: true,
   },
   columns: [
@@ -204,7 +208,7 @@ export const FdInterestPaymentGridMetaData: GridMetaDataType = {
       accessor: "CUSTOMER_ID",
       columnName: "CustomerId",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 80,
@@ -214,7 +218,7 @@ export const FdInterestPaymentGridMetaData: GridMetaDataType = {
       accessor: "FULL_ACCOUNT",
       columnName: "AccountNum",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,

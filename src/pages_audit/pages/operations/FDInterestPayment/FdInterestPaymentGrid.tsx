@@ -1,4 +1,4 @@
-import { CircularProgress, Dialog } from "@mui/material";
+import { Chip, CircularProgress, Dialog, Grid } from "@mui/material";
 import { usePopupContext } from "components/custom/popupContext";
 import { ActionTypes } from "components/dataTable";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
@@ -7,6 +7,7 @@ import { GradientButton } from "components/styledComponent/button";
 import { cloneDeep } from "lodash";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { Transition } from "pages_audit/common";
 import {
   Fragment,
   useCallback,
@@ -15,6 +16,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -24,7 +26,7 @@ import {
   PaidFDGridMetaData,
 } from "./FdInterestPaymentGridMetaData";
 import { FdInterestPaymentDetail } from "./viewDetails";
-import { useTranslation } from "react-i18next";
+import { queryClient } from "cache";
 const baseActions: ActionTypes[] = [
   {
     actionName: "retrieve",
@@ -108,7 +110,7 @@ export const FdInterestPaymentGrid = () => {
                 ? "NEFT :" + " " + item.TO_IFSCCODE + "-" + item.TO_ACCT_TYPE
                 : "-",
             _rowColor: Boolean(item.PAYMENT_MODE)
-              ? "rgb(255, 0, 0)"
+              ? "rgb(130, 224, 170)"
               : undefined,
           }));
 
@@ -140,7 +142,6 @@ export const FdInterestPaymentGrid = () => {
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
-
         setFormOpen(true);
         setFdPaymentInstructions([]);
         formDataRef.current = [];
@@ -406,7 +407,7 @@ export const FdInterestPaymentGrid = () => {
           : item.PAYMENT_MODE === "NEFT"
           ? "NEFT :" + " " + item.TO_IFSCCODE + "-" + item.TO_ACCT_TYPE
           : "-",
-      _rowColor: Boolean(item.PAYMENT_MODE) ? "rgb(255, 0, 0)" : undefined,
+      _rowColor: Boolean(item.PAYMENT_MODE) ? "rgb(130, 224, 170)" : undefined,
     }));
   };
 
@@ -430,16 +431,34 @@ export const FdInterestPaymentGrid = () => {
     }
   };
 
+  useEffect(() => {
+    const keysToRemove = [
+      "getFDPaymentInstrudtl",
+      "updateFDInterestPayment",
+      "fetchPaidFDDetails",
+      "getPMISCData",
+      "getAccountTypeList",
+    ].map((key) => [key, authState?.user?.branchCode]);
+    return () => {
+      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+    };
+  }, []);
+
+  console.log("formDataRef.current", formDataRef.current);
+
   return (
     <Fragment>
       <Dialog
         open={isFormOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "30%",
-            maxWidth: "50%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="sm"
       >
         <FormWrapper
           key={"accountFindmetaData"}
@@ -506,15 +525,42 @@ export const FdInterestPaymentGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
       />
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        sx={{
+          height: "23px",
+          width: "60%",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          gap: "4rem",
+          alignItems: "center",
+        }}
+      >
+        <Chip
+          sx={{
+            backgroundColor: "rgb(130, 224, 170)",
+            color: "black",
+          }}
+          size="small"
+          label={`Success`}
+        />
+      </Grid>
 
       <Dialog
         open={isPaidFDOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
         <GridWrapper
           key={"PaidFD"}
@@ -530,12 +576,15 @@ export const FdInterestPaymentGrid = () => {
       </Dialog>
       <Dialog
         open={isFDDetailOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
         <FdInterestPaymentDetail
           closeDialog={handleFDDetailClose}
@@ -545,7 +594,7 @@ export const FdInterestPaymentGrid = () => {
           updateRow={updateRow}
           fdDetails={fdPaymentInstructions}
           defaultView={
-            Boolean(rowsData?.[0]?.data?.PAYMENT_MODE) ? "view" : "new"
+            Boolean(rowsData?.[0]?.data?.PAYMENT_MODE) ? "edit" : "new"
           }
         />
       </Dialog>
