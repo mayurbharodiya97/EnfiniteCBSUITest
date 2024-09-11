@@ -190,7 +190,7 @@ export const LogoutAPI = async (apiReq) => {
     {
       // USER_ID: userID,
       // APP_TRAN_CD: 51,
-      // ...apiReq
+      ...apiReq,
     }
   );
   if (status !== "0") {
