@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, CircularProgress, Toolbar, Typography } from "@mui/material";
 import { ClearCacheProvider, queryClient } from "cache";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
@@ -11,7 +11,6 @@ import { PendinGTrns } from "./pendingTransactions";
 import { usePopupContext } from "components/custom/popupContext";
 import { VerifyDayendChecksums } from "./verifyDayendChecksums";
 import { t } from "i18next";
-import { DayendExecute } from "./dayendExecute";
 
 const useTypeStyles: any = makeStyles((theme: Theme) => ({
   root: {
@@ -52,7 +51,6 @@ const DayEndProcess = () => {
     })
   );
 
- 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDayendprocessFlag"]);
@@ -90,9 +88,11 @@ const DayEndProcess = () => {
             onClick={(event) => {
               setOpenDayendProcess(true);
             }}
-            color={"primary"}
+            // disabled={}
+            //   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+            //   color={"primary"}
           >
-            {data && data[0]?.EOD_FLAG === "D"
+            {data && data[0]?.EOD_FLAG === "H"
               ? t("DayEndHover")
               : t("DayEndProcess")}
           </GradientButton>
@@ -115,9 +115,14 @@ const DayEndProcess = () => {
         ""
       )}
       {openDayendProcess ? (
-        <DayendExecute
+        <VerifyDayendChecksums
           open={openDayendProcess}
           close={() => setOpenDayendProcess(false)}
+          flag={"D"}
+          restartLoop={() => {
+            setOpenVerifyChecksums(false);
+            setOpenVerifyChecksums(true);
+          }}
         />
       ) : (
         ""
@@ -126,10 +131,13 @@ const DayEndProcess = () => {
         <VerifyDayendChecksums
           open={openVerifyChecksums}
           close={() => setOpenVerifyChecksums(false)}
+          flag={"C"}
+          restartLoop={() => {
+            setOpenVerifyChecksums(false);
+            setTimeout(() => setOpenVerifyChecksums(true), 1000); // Restart with 1-second delay
+          }}
         />
-      ) : (
-        ""
-      )}
+      ) : null}
     </>
   );
 };

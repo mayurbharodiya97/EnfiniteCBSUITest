@@ -2,7 +2,7 @@ export const pendingTrnsMetadata = {
   gridConfig: {
     dense: true,
     gridLabel: "Pending Transactions",
-    rowIdColumn: "SCREEN_NM",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -16,13 +16,14 @@ export const pendingTrnsMetadata = {
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "67vh",
-      max: "67vh",
+      min: "80vh",
+      max: "50vh",
     },
-    allowFilter: true,
-    allowColumnHiding: true,
-    allowRowSelection: true,
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
     isCusrsorFocused: true,
+    allowGlobalFilter: false,
   },
   filters: [],
   columns: [
@@ -95,7 +96,7 @@ export const pendingTrnsEodReportMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "ACCT_CD",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -115,6 +116,7 @@ export const pendingTrnsEodReportMetaData = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    disableGlobalFilter: true,
     isCusrsorFocused: true,
   },
   filters: [],
@@ -131,7 +133,7 @@ export const pendingTrnsEodReportMetaData = {
       isAutoSequence: true,
     },
     {
-      accessor: "ACCT_CD",
+      accessor: "ACCT_CD_DISP",
       columnName: "AcRef",
       sequence: 2,
       alignment: "left",
@@ -177,10 +179,10 @@ export const verifyDayendChecksumsMetaData = {
     hideHeader: false,
     disableGroupBy: true,
     enablePagination: true,
-    pageSizes: [15, 30, 50],
-    defaultPageSize: 20,
+    pageSizes: [30, 50, 100],
+    defaultPageSize: 100,
     containerHeight: {
-      min: "80vh",
+      min: "70vh",
       max: "67vh",
     },
     allowFilter: false,
@@ -218,20 +220,10 @@ export const verifyDayendChecksumsMetaData = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 380,
-      minWidth: 90,
-      maxWidth: 400,
+      width: 400,
+      minWidth: 200,
+      maxWidth: 500,
     },
-    // {
-    //   accessor: "EOD_VER_ID",
-    //   columnName: "eodVersion",
-    //   sequence: 4,
-    //   alignment: "left",
-    //   componentType: "default",
-    //   width: 100,
-    //   minWidth: 90,
-    //   maxWidth: 110,
-    // },
     {
       accessor: "MENDETORY",
       columnName: "Mandatory",
@@ -247,7 +239,7 @@ export const verifyDayendChecksumsMetaData = {
       columnName: "StartTime",
       sequence: 6,
       alignment: "left",
-      componentType: "date",
+      componentType: "default",
       width: 150,
       minWidth: 100,
       maxWidth: 170,
@@ -257,10 +249,51 @@ export const verifyDayendChecksumsMetaData = {
       columnName: "endTime",
       sequence: 7,
       alignment: "left",
-      componentType: "date",
+      componentType: "default",
       width: 150,
       minWidth: 100,
       maxWidth: 170,
+    },
+    {
+      accessor: "REPORT",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "REPORT",
+      sequence: 14,
+      alignment: "center",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (
+          original?.CLR !== "Y" &&
+          original?.CLR !== "P" &&
+          original?.CLR !== "X"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      accessor: "PROCESS",
+      columnName: "",
+      componentType: "icondefault",
+      buttonLabel: "Open",
+      sequence: 14,
+      alignment: "center",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
+      isImageURL: true,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.CLR === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
   ],
 };
@@ -277,6 +310,7 @@ export const dayEndErroeLogMetaData = {
     allowColumnReordering: true,
     disableSorting: false,
     hideHeader: false,
+    disableGlobalFilter: true,
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [15, 30, 50],
@@ -352,6 +386,98 @@ export const dayEndErroeLogMetaData = {
       width: 300,
       minWidth: 100,
       maxWidth: 200,
+    },
+  ],
+};
+export const executeChecksumsReportMetaData = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "",
+    rowIdColumn: "INDEX",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [15, 30, 50],
+    defaultPageSize: 20,
+    containerHeight: {
+      min: "67vh",
+      max: "67vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+    disableGlobalFilter: true,
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "right",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 120,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "BRANCH_CD",
+      columnName: "branch",
+      sequence: 2,
+      alignment: "right",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 120,
+    },
+    {
+      accessor: "ACCT_TYPE",
+      columnName: "AcctType",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 90,
+      minWidth: 60,
+      maxWidth: 120,
+    },
+    {
+      accessor: "ACCT_CD",
+      columnName: "AcRef",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
+      accessor: "VOUCHER_NO",
+      columnName: "VersionNo",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 90,
+      maxWidth: 110,
+    },
+    {
+      accessor: "MESSAGE",
+      columnName: "Remarks",
+      sequence: 6,
+      alignment: "left",
+      componentType: "default",
+      width: 400,
+      minWidth: 200,
+      maxWidth: 500,
     },
   ],
 };

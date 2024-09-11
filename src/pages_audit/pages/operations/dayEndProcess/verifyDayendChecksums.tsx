@@ -1,65 +1,80 @@
-import { AuthContext } from "pages_audit/auth";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import * as API from "./api";
 import { ClearCacheProvider, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   verifyDayendChecksumsMetaData,
-  dayEndErroeLogMetaData,
+  executeChecksumsReportMetaData,
 } from "./gridMetadata";
 import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { Dialog } from "@mui/material";
+import { Chip, Dialog, Paper } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { AuthContext } from "pages_audit/auth";
+import LoaderImg from "./Loader.gif";
+import { GradientButton } from "components/styledComponent/button";
+import { t } from "i18next";
 
-// Define TypeScript interfaces
 interface Item {
   CHKSM_TYPE?: string;
   SR_CD?: string;
   MENDETORY?: string;
   EOD_VER_ID?: string;
   CLR?: string;
-  // other properties if any
+  PROCESS?: any;
+  ED_TIME: string;
+  ST_TIME: string;
 }
 
-interface ApiResponse {
-  CLR?: string;
-}
-
-// Define actions for GridWrapper component
 const actions: ActionTypes[] = [
   {
     actionName: "close",
     actionLabel: "Close",
-    multiple: undefined,
     alwaysAvailable: true,
+    multiple: undefined,
   },
 ];
 
 export const VerifyDayendChecksums = ({
   open,
   close,
+  flag,
+  restartLoop,
 }: {
   open: boolean;
+  restartLoop: () => void;
   close: () => void;
+  flag: string;
 }) => {
   const { authState } = useContext(AuthContext);
   const [openReport, setOpenReport] = useState(false);
+  const [docData, setDocData] = useState<any>({});
+  const [openedWindow, setOpenedWindow] = useState<Window | null>(null);
+  const [isExit, setIsExit] = useState(false);
+  const [blob, setBlob] = useState<Blob | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [gridData, setGridData] = useState<Item[]>([]);
   const [reqData, setReqData] = useState<any>({});
+  const [currentData, setCurrentData] = useState<any>({});
+  const [loopStart, setloopStart] = useState<any>(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [showComponent, setShowComponent] = useState(open); // Manage component visibility
+
   const navigate = useNavigate();
+  const gridRef = useRef<HTMLDivElement | null>(null);
 
   const handleAction = useCallback(
     async (data: any) => {
       if (data?.name === "close") {
         close();
+      } else if (data?.name === "start") {
+        // Close and reopen the component
+        setShowComponent(false);
+        setTimeout(() => setShowComponent(true), 0);
       } else {
         navigate(data?.name, { state: data?.rows });
       }
@@ -67,86 +82,170 @@ export const VerifyDayendChecksums = ({
     [navigate, close]
   );
 
-  // Process array of items and add CLR from API response
-  const processArray = async (data: Item[]): Promise<void> => {
-    const results: (Item & { CLR?: string })[] = [...gridData]; // Initialize with existing gridData
-
-    for (const item of data) {
-      const reqPara = {
-        FLAG: "C",
-        SCREEN_REF: "TRN/399",
-        FOR_BRANCH: "099 ",
-        EOD_EOS_FLG: "E",
-        CHKSM_TYPE: item?.CHKSM_TYPE,
-        SR_CD: item?.SR_CD,
-        MENDETORY: item?.MENDETORY,
-        EOD_VER_ID: item?.EOD_VER_ID,
-      };
-
-      try {
-        const response: ApiResponse = await API.executeChecksums(reqPara);
-        if (response && response[0]?.MESSAGE !== "") {
-          // Show the message box with the response message
-          const buttonName = await MessageBox({
-            messageTitle: "Validation Failed",
-            message: response[0]?.MESSAGE,
-            buttonNames: ["Ok"],
-          });
-
-          if (buttonName !== "Ok") {
-            // If the user did not click "Ok", break the loop or handle accordingly
-            break; // or continue; depending on your requirement
-          }
-        }
-
-        // Continue with the item processing
-        const updatedItem = { ...item, CLR: response[0]?.CLR };
-        results.push(updatedItem);
-        setGridData([...results]); // Update state immediately
-      } catch (error) {
-        console.error("Mutation failed:", error);
-        results.push(item);
-        setGridData([...results]); // Update state immediately
-      }
-    }
-  };
-
-  // Mutation to get checksum data
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
     onError: (error: any) => {
-      let errorMsg = "Unknown error occurred";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
+      const errorMsg =
+        typeof error === "object"
+          ? error?.error_msg || "Unknown error occurred"
+          : "Unknown error occurred";
       enqueueSnackbar(errorMsg, { variant: "error" });
       CloseMessageBox();
     },
     onSuccess: async (data: Item[]) => {
-      try {
-        await processArray(data);
-      } catch (error) {
-        console.error("Error processing data:", error);
-        enqueueSnackbar("Failed to update data", { variant: "error" });
+      setGridData(data);
+
+      // Function to process each record
+      const processRecord = async (
+        record: Item,
+        index: number
+      ): Promise<string> => {
+        const startTime = new Date();
+
+        // Update grid data to reflect processing start
+        setGridData((prevGridData) => {
+          const updatedGridData = [...prevGridData];
+          updatedGridData[index] = {
+            ...updatedGridData[index],
+            CLR: "P",
+            PROCESS: LoaderImg,
+            ST_TIME: formatTime(startTime),
+            ED_TIME: "",
+          };
+          return updatedGridData;
+        });
+
+        try {
+          // Execute API call
+          const response = await API.executeChecksums({
+            FLAG: flag,
+            SCREEN_REF: "TRN/399",
+            FOR_BRANCH: reqData[0]?.BRANCH_LIST[0],
+            EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
+            CHKSM_TYPE: record.CHKSM_TYPE,
+            SR_CD: record.SR_CD,
+            MENDETORY: record.MENDETORY,
+            EOD_VER_ID: record.EOD_VER_ID,
+          });
+
+          const endTime = new Date();
+          const elapsedTime = formatTime(endTime);
+
+          // Update grid data based on response
+          if (response[0]?.CLR) {
+            setGridData((prevGridData) => {
+              const updatedGridData = [...prevGridData];
+              updatedGridData[index] = {
+                ...updatedGridData[index],
+                CLR: response[0].CLR,
+                PROCESS: "",
+                ED_TIME: elapsedTime,
+              };
+              return updatedGridData;
+            });
+          }
+
+          // Check for stopping conditions
+          if (
+            flag === "D" &&
+            response[0]?.CLR === "E" &&
+            response[0]?.EXIT_YN === "Y"
+          ) {
+            // Show message if conditions are met
+            await MessageBox({
+              messageTitle: "Error",
+              message: response[0]?.MESSAGE || "Unknown error occurred",
+              icon: "ERROR",
+              buttonNames: ["Ok"],
+            });
+            CloseMessageBox(); // Ensure the message box is closed
+            setloopStart(true);
+
+            return "stop"; // Return to signal the loop to stop
+          }
+          // if (loopStart === true) {
+          //   return "stop";
+          // }
+          if (flag === "C" && response[0]?.MESSAGE !== "") {
+            // Handle message box response if FLAG is "C"
+            const buttonName = await MessageBox({
+              messageTitle: "Error",
+              message: response[0]?.MESSAGE,
+              icon: "ERROR",
+              buttonNames: ["Ok"],
+            });
+
+            if (buttonName !== "Ok") {
+              return "stop"; // Stop processing if the button clicked is not "Ok"
+            }
+          }
+        } catch (error) {
+          enqueueSnackbar("Error executing EOD for record", {
+            variant: "error",
+          });
+        }
+
+        return "continue"; // Continue the process if no stop condition is met
+      };
+
+      // Process each record and respect the stop condition
+      const processRecords = async (records: Item[]) => {
+        console.log(records);
+
+        for (let i = 0; i < records.length; i++) {
+          const result = await processRecord(records[i], i);
+          console.log(result);
+
+          if (result === "stop") {
+            break; // Exit the loop if processRecord signals to stop
+          }
+        }
+      };
+
+      // Function to format time
+      const formatTime = (date: Date): string => {
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+        return `${hours}:${minutes}:${seconds}`;
+      };
+
+      // Execute the record processing
+      await processRecords(data);
+
+      // Show success message
+      await MessageBox({
+        messageTitle: "Success",
+        message: "EOD CheckSum completed successfully.",
+        buttonNames: ["Ok"],
+      });
+
+      // Check if mandatory checks passed
+      const mandatoryPassedCount = data.filter(
+        (item) => item.CLR === "Y" && item.MENDETORY === "Y"
+      ).length;
+
+      if (mandatoryPassedCount === 0) {
+        await MessageBox({
+          messageTitle: "CheckSum Incomplete",
+          message:
+            "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience.",
+          buttonNames: ["Ok"],
+        });
       }
+      // Execute getSessionDtl API call after processing records and handling mandatory checks
+      // if (loopStart) {
+      // Only execute if the loop was stopped
+      await API.getSessionDtl({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        BASE_BRANCH_CD: authState?.baseCompanyID,
+        BASE_COMP_CD: authState?.user?.baseBranchCode,
+        WORKING_DATE: authState?.workingDate,
+      }); // Ensure this API call is correctly defined in your API module
+      // }
     },
   });
 
-  // Mutation to execute checksums
-  const executeEodMutation = useMutation(API.executeChecksums, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown error occurred";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, { variant: "error" });
-      CloseMessageBox();
-    },
-    onSuccess: () => {
-      CloseMessageBox();
-    },
-  });
-
-  // Query to validate EOD
   const {
     data: validatedData,
     isLoading: validateLoading,
@@ -155,11 +254,7 @@ export const VerifyDayendChecksums = ({
     isSuccess: validateSuccess,
   } = useQuery(
     ["getValidateEod"],
-    () =>
-      API.getValidateEod({
-        SCREEN_REF: "TRN/399",
-        FLAG: "C",
-      }),
+    () => API.getValidateEod({ SCREEN_REF: "TRN/399", FLAG: flag }),
     {
       onSuccess: async (data: any) => {
         const responseData = Array.isArray(data) ? data[0] : {};
@@ -173,13 +268,12 @@ export const VerifyDayendChecksums = ({
 
           if (status === "999") {
             const buttonName = await MessageBox({
-              messageTitle: "Validation Failed",
+              messageTitle: "Error",
               message: message,
+              icon: "ERROR",
               buttonNames: ["Ok"],
             });
-            if (buttonName === "Ok") {
-              close();
-            }
+            if (buttonName === "Ok") close();
           } else if (status === "9") {
             await MessageBox({
               messageTitle: "Alert",
@@ -195,21 +289,17 @@ export const VerifyDayendChecksums = ({
             if (buttonName === "No") {
               CloseMessageBox();
               close();
-            }
-            if (buttonName === "Yes") {
+            } else if (buttonName === "Yes") {
               checkSumsDataMutation.mutate({
-                FLAG: "C",
+                FLAG: flag,
                 SCREEN_REF: "TRN/399",
                 FOR_BRANCH: data[0]?.BRANCH_LIST[0],
                 EOD_EOS_FLG: data[0]?.EOD_EOS_FLG,
               });
               CloseMessageBox();
             }
-          } else {
-            // Handle other statuses if necessary
           }
         }
-        console.log("Data validated successfully:", data);
       },
       onError: (error) => {
         console.error("Error validating data:", error);
@@ -218,25 +308,32 @@ export const VerifyDayendChecksums = ({
   );
 
   useEffect(() => {
-    setReqData(validatedData);
+    if (validatedData) {
+      setReqData(validatedData);
+    }
   }, [validatedData]);
 
-  // Mutation to get document URL
-  const docUrlMutation = useMutation(API.getDocUrl, {
+  const docurlMutation = useMutation(API.getDocUrl, {
     onError: async (error: any) => {
       await MessageBox({
-        message: error?.error_msg ?? "Error occurred",
+        message: error?.error_msg,
         messageTitle: "Error",
         buttonNames: ["Ok"],
       });
     },
-    onSuccess: (data: any) => {
-      window.open(`/cbsenfinity/${data[0]?.DOC_URL}`, "_blank");
+    onSuccess: async (data) => {
+      setDocData(data);
+      const url = `/cbsenfinity/${data[0]?.DOCUMENT_URL}`;
+      const newWindow = window.open(url, "_blank");
+      if (newWindow) {
+        setOpenedWindow(newWindow);
+        newWindow.focus();
+        queryClient.removeQueries(["getDocUrl"]);
+      }
     },
   });
 
-  // Mutation to get pending transaction report
-  const reportMutation = useMutation(API.getpendingtrnReport, {
+  const reportMutation = useMutation(API.getDayEnderrLog, {
     onError: async (error: any) => {
       await MessageBox({
         message: error?.error_msg ?? "Error occurred",
@@ -244,17 +341,31 @@ export const VerifyDayendChecksums = ({
         buttonNames: ["Ok"],
       });
     },
-    onSuccess: (data: any) => {
+    onSuccess: async (data: any) => {
       setRowData(data);
-      setOpenReport(true);
     },
   });
-  let updateData = (data: Item[]): Item[] => {
-    return data.map((item) => ({
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getValidateEod"]);
+    };
+  }, []);
+
+  if (isExit === true) {
+    actions.push({
+      actionName: "start",
+      actionLabel: "Start",
+      alwaysAvailable: true,
+      multiple: false,
+    });
+  }
+
+  const updateData = (gridData: Item[] = []): Item[] => {
+    return gridData.map((item) => ({
       ...item,
-      // Set row color based on DOC_STATUS
       _rowColor:
-        item.CLR === "N"
+        item?.CLR === "N"
           ? "rgb(255, 0, 0)"
           : item.CLR === "P"
           ? "rgb(40, 180, 99)"
@@ -268,74 +379,128 @@ export const VerifyDayendChecksums = ({
     }));
   };
 
-  const updatedData = updateData(gridData);
-  console.log(updatedData);
-
-  // Update grid label based on gridData
-  verifyDayendChecksumsMetaData.gridConfig.gridLabel =
-    gridData.length > 0 //@ts-ignore
-      ? `${gridData[0]?.TITLE} Version Id:${gridData[0]?.EOD_VER_ID}`
-      : "Day End Process";
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getValidateEod"]);
-    };
-  }, []);
-
   return (
     <ClearCacheProvider>
       <Dialog
         open={open}
         fullWidth
-        maxWidth="xl"
+        maxWidth="lg"
         style={{ height: "100%" }}
         PaperProps={{
           style: { width: "80%", padding: "7px" },
         }}
       >
-        {validateError && (
-          <Alert
-            severity="error"
-            //@ts-ignore
-            errorMsg={validateErrorDetails?.error_msg ?? "Something went wrong"}
-            //@ts-ignore
-            errorDetail={validateErrorDetails?.error_detail}
-            color="error"
-          />
-        )}
-
         {gridData.length > 0 ? (
-          <GridWrapper
-            key={"pendingtrns"}
-            finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
-            data={updatedData}
-            setData={() => null}
-            actions={actions}
-            onClickActionEvent={(index, id, currentData) => {
-              if (id === "REPORT") {
-                // Uncomment and implement as needed
-                // reportMutation.mutate(reportPayload);
-              }
-              if (id === "OPEN") {
-                // Uncomment and implement as needed
-                // docUrlMutation.mutate(docUrlPayload);
-              }
-            }}
-            setAction={handleAction}
-          />
+          <>
+            <GridWrapper
+              ref={gridRef}
+              key={`verifyDayendChecksumsMetaData` + gridData}
+              finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
+              data={updateData(gridData)}
+              setData={() => null}
+              actions={actions}
+              onClickActionEvent={(index, id, currentData) => {
+                if (id === "REPORT") {
+                  setCurrentData(currentData);
+                  reportMutation.mutate({
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: reqData[0]?.BRANCH_LIST[0],
+                    TRAN_DT: authState?.workingDate,
+                    VERSION: currentData?.EOD_VER_ID,
+                    SR_CD: currentData?.SR_CD,
+                  });
+                  setOpenReport(true);
+                } else if (id === "OPEN") {
+                  docurlMutation.mutate({
+                    BASE_COMP: authState?.baseCompanyID,
+                    BASE_BRANCH: authState?.user?.baseBranchCode,
+                    DOC_CD: currentData?.DOCU_CD,
+                  });
+                }
+              }}
+              setAction={handleAction}
+            />
+            <Paper sx={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <Chip
+                  label="Success"
+                  color="default"
+                  style={{
+                    backgroundColor: "rgb(130, 224, 170)",
+                    color: "white",
+                  }}
+                />
+                <Chip
+                  label="In Process"
+                  color="default"
+                  style={{
+                    backgroundColor: "rgb(40, 180, 99)",
+                    color: "white",
+                  }}
+                />
+                <Chip
+                  label="Warning"
+                  color="default"
+                  style={{
+                    backgroundColor: "rgb(244, 208, 63)",
+                    color: "white",
+                  }}
+                />
+                <Chip
+                  label="Error"
+                  color="default"
+                  style={{
+                    backgroundColor: "rgb(241, 148, 138)",
+                    color: "white",
+                  }}
+                />
+              </div>
+              <div>
+                {loopStart && (
+                  <GradientButton
+                    onClick={(event) => {
+                      // restartLoop();
+                      setGridData([]);
+
+                      checkSumsDataMutation.mutate({
+                        FLAG: flag,
+                        SCREEN_REF: "TRN/399",
+                        FOR_BRANCH: reqData[0]?.BRANCH_LIST[0],
+                        EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
+                      });
+                    }}
+                    color={"primary"}
+                  >
+                    {t("start")}
+                  </GradientButton>
+                )}
+              </div>
+            </Paper>
+          </>
         ) : (
           <div style={{ width: "100%" }}>
             <LoaderPaperComponent />
           </div>
         )}
+        {docurlMutation.isLoading && (
+          <Dialog
+            open={docurlMutation.isLoading}
+            PaperProps={{
+              style: { width: "60%", overflow: "auto" },
+            }}
+            maxWidth="lg"
+          >
+            <LoaderPaperComponent />
+          </Dialog>
+        )}
         {openReport && (
           <ViewEodReport
             open={openReport}
             close={() => setOpenReport(false)}
-            metaData={dayEndErroeLogMetaData}
+            metaData={executeChecksumsReportMetaData}
             reportData={rowData}
-            reportLabel={`EOD Error Log : ${authState?.workingDate} and Version ${rowData} User Defined Checksum`}
+            reportLabel={`EOD Error Log : ${authState?.workingDate} and Version :${currentData?.EOD_VER_ID} ${currentData?.DESCRIPTION}`}
+            loading={reportMutation.isLoading}
           />
         )}
       </Dialog>
