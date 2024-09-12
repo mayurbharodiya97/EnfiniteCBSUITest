@@ -23,7 +23,6 @@ export const ProtectedRoutes = ({ children }) => {
     isBranchSelected,
     message,
     closeMessageBox,
-    isIdealLogouted,
   } = useContext(AuthContext);
 
   const isTimeoutData = useMemo(() => {
@@ -37,8 +36,7 @@ export const ProtectedRoutes = ({ children }) => {
   }, []);
   const onIdle = () => {
     alert("logout");
-    logout();
-    isIdealLogouted();
+    logout("I");
   };
 
   const onActive = (event) => {

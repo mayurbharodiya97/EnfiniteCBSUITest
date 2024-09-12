@@ -197,6 +197,8 @@ export const LogoutAPI = async (apiReq) => {
     return { message, status };
     //} else {
     //  throw DefaultErrorObject(message, messageDetails);
+  } else if (status === "0" && data[0].O_FLAG === "I") {
+    alert(data[0].O_MESSAGE);
   }
 };
 
@@ -276,7 +278,6 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       employeeID: data?.EMP_ID,
     },
     idealTimer: data?.IDLE_TIMER,
-    isIdealLogout: false,
     hoLogin:
       data?.BRANCHCODE === data?.BASEBRANCHCODE &&
       data?.COMPANYID === data?.BASECOMPANYID

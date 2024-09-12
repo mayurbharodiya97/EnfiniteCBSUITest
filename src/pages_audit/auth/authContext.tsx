@@ -46,7 +46,6 @@ const inititalState: AuthStateType = {
   },
   hoLogin: "",
   idealTimer: "",
-  isIdealLogout: false,
 };
 
 const authReducer = (
@@ -65,12 +64,6 @@ const authReducer = (
         ...state,
         isBranchSelect: true,
         menulistdata: action.payload?.menulistdata,
-      };
-    }
-    case "idelLogout": {
-      return {
-        ...state,
-        isIdealLogout: action.payload, // Update the state based on the payload
       };
     }
     default: {
@@ -98,7 +91,6 @@ export const AuthContext = createContext<AuthContextType>({
     icon: "",
     buttonNames: "",
   },
-  isIdealLogouted: () => false,
 });
 
 export const AccDetailContext = createContext<any>({
@@ -194,41 +186,44 @@ export const AuthProvider = ({ children }) => {
     },
     [dispatch, navigate, comingFromRoute]
   );
-  const logout = useCallback(() => {
-    let result = localStorage.getItem("authDetails");
-    if (result !== null) {
-      let localStorageAuthState: any = JSON.parse(result);
-      if (
-        Boolean(localStorageAuthState?.isLoggedIn) &&
-        Boolean(localStorageAuthState?.user?.id)
-      ) {
-        API.LogoutAPI({
-          USER_ID: localStorageAuthState?.user?.id,
-          APP_TRAN_CD: "51",
-          REQ_FLAG: "N",
-        });
+  const logout = useCallback(
+    (reqFlag = "N") => {
+      let result = localStorage.getItem("authDetails");
+      if (result !== null) {
+        let localStorageAuthState: any = JSON.parse(result);
+        if (
+          Boolean(localStorageAuthState?.isLoggedIn) &&
+          Boolean(localStorageAuthState?.user?.id)
+        ) {
+          API.LogoutAPI({
+            USER_ID: localStorageAuthState?.user?.id,
+            APP_TRAN_CD: "51",
+            REQ_FLAG: reqFlag,
+          });
+        }
       }
-    }
-    localStorage.removeItem("authDetails");
-    localStorage.removeItem("tokenchecksum");
-    localStorage.removeItem("token_status");
-    localStorage.removeItem("charchecksum");
-    localStorage.removeItem("specialChar");
-    dispatch({
-      type: "logout",
-      payload: {},
-    });
-    if (Boolean(timeoutID)) {
-      clearTimeout(timeoutID);
-    }
-    queryClient.clear();
-    if (window.location.pathname === "/cbsenfinity/forgotpassword") {
-    } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
-    } else {
-      setComingFromRoute("/cbsenfinity");
-      navigate("/cbsenfinity/login");
-    }
-  }, [dispatch, navigate]);
+      localStorage.removeItem("authDetails");
+      localStorage.removeItem("tokenchecksum");
+      localStorage.removeItem("token_status");
+      localStorage.removeItem("charchecksum");
+      localStorage.removeItem("specialChar");
+      dispatch({
+        type: "logout",
+        payload: {},
+      });
+      if (Boolean(timeoutID)) {
+        clearTimeout(timeoutID);
+      }
+      queryClient.clear();
+      if (window.location.pathname === "/cbsenfinity/forgotpassword") {
+      } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
+      } else {
+        setComingFromRoute("/cbsenfinity");
+        navigate("/cbsenfinity/login");
+      }
+    },
+    [dispatch, navigate]
+  );
 
   const isLoggedIn = () => {
     return state.isLoggedIn;
@@ -236,10 +231,6 @@ export const AuthProvider = ({ children }) => {
 
   const isBranchSelected = () => {
     return state.isBranchSelect;
-  };
-  const isIdealLogouted = () => {
-    // Handle ideal logout state
-    dispatch({ type: "idelLogout", payload: true });
   };
 
   const setLoginDatainLocalStorage = async (payload) => {
@@ -401,7 +392,6 @@ export const AuthProvider = ({ children }) => {
         MessageBox,
         closeMessageBox,
         message,
-        isIdealLogouted,
       }}
     >
       <AccDetailContext.Provider

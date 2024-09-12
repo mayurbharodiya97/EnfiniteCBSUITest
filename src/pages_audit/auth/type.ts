@@ -25,7 +25,6 @@ export interface AuthStateType {
   };
   hoLogin: string;
   idealTimer: string;
-  isIdealLogout: Boolean;
 }
 
 export interface BranchSelectData {
@@ -52,5 +51,4 @@ export interface AuthContextType {
   MessageBox: any;
   closeMessageBox: any;
   message: any;
-  isIdealLogouted: any;
 }
