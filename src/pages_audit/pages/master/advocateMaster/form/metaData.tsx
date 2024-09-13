@@ -135,6 +135,12 @@ export const AdvocateMstFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["MobileNoisRequired"] }],
       },
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 9) {
+          return "The length of your Mobile Number is less than 10 character.";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
     },
     {
@@ -146,6 +152,7 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterAddress",
       autoComplete: "off",
       type: "text",
+      maxLength: 100,
       preventSpecialCharInput: true,
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },
@@ -159,6 +166,7 @@ export const AdvocateMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       preventSpecialCharInput: true,
+      maxLength: 200,
       schemaValidation: {
         type: "string",
         rules: [{ name: "email", params: ["InvalidEmailID"] }],

@@ -197,8 +197,8 @@ export const AdvocateMstFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
           overflow: "auto",
+          maxWidth: "70%",
         },
       }}
       maxWidth="lg"
