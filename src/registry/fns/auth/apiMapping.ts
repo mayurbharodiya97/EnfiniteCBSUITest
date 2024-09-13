@@ -2609,6 +2609,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
     packageName: "",
   },
+  UPDEODRUNNINGSTATUS: {
+    url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

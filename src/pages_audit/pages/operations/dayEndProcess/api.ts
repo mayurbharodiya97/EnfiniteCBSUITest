@@ -226,3 +226,17 @@ export const getSessionDtl = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const updateEodRunningStatus = async ({ COMP_CD, BRANCH_CD, FLAG }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("UPDEODRUNNINGSTATUS", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      FLAG: FLAG,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

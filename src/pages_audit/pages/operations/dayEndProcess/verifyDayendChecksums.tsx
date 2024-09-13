@@ -94,6 +94,14 @@ export const VerifyDayendChecksums = ({
     onSuccess: async (data: Item[]) => {
       setGridData(data);
 
+      // Function to format time
+      const formatTime = (date: Date): string => {
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+        return `${hours}:${minutes}:${seconds}`;
+      };
+
       // Function to process each record
       const processRecord = async (
         record: Item,
@@ -159,12 +167,9 @@ export const VerifyDayendChecksums = ({
             });
             CloseMessageBox(); // Ensure the message box is closed
             setloopStart(true);
-
-            return "stop"; // Return to signal the loop to stop
+            return "stop"; // Signal to stop processing
           }
-          // if (loopStart === true) {
-          //   return "stop";
-          // }
+
           if (flag === "C" && response[0]?.MESSAGE !== "") {
             // Handle message box response if FLAG is "C"
             const buttonName = await MessageBox({
@@ -175,7 +180,7 @@ export const VerifyDayendChecksums = ({
             });
 
             if (buttonName !== "Ok") {
-              return "stop"; // Stop processing if the button clicked is not "Ok"
+              return "stop"; // Stop processing if button clicked is not "Ok"
             }
           }
         } catch (error) {
@@ -196,53 +201,56 @@ export const VerifyDayendChecksums = ({
           console.log(result);
 
           if (result === "stop") {
-            break; // Exit the loop if processRecord signals to stop
+            await API.updateEodRunningStatus({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: authState?.user?.branchCode,
+              FLAG: "N",
+            });
+            return false;
           }
         }
-      };
 
-      // Function to format time
-      const formatTime = (date: Date): string => {
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        return `${hours}:${minutes}:${seconds}`;
+        return true;
       };
 
       // Execute the record processing
-      await processRecords(data);
+      const allRecordsProcessed = await processRecords(data);
 
-      // Show success message
-      await MessageBox({
-        messageTitle: "Success",
-        message: "EOD CheckSum completed successfully.",
-        buttonNames: ["Ok"],
-      });
-
-      // Check if mandatory checks passed
-      const mandatoryPassedCount = data.filter(
-        (item) => item.CLR === "Y" && item.MENDETORY === "Y"
-      ).length;
-
-      if (mandatoryPassedCount === 0) {
+      // Show success message only if flag is "C" and all records were processed successfully
+      if (flag === "C" && allRecordsProcessed) {
         await MessageBox({
-          messageTitle: "CheckSum Incomplete",
-          message:
-            "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience.",
+          messageTitle: "Success",
+          message: "EOD CheckSum completed successfully.",
           buttonNames: ["Ok"],
+          icon: "SUCCESS",
         });
       }
+
+      // Check if mandatory checks passed only if all records were processed successfully
+      if (flag === "D" && allRecordsProcessed) {
+        const mandatoryPassedCount = data.filter(
+          (item) => item.CLR === "Y" && item.MENDETORY === "Y"
+        ).length;
+
+        if (mandatoryPassedCount === 0) {
+          await MessageBox({
+            messageTitle: "Validation Failed.",
+            message:
+              "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience.",
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+        }
+      }
+
       // Execute getSessionDtl API call after processing records and handling mandatory checks
-      // if (loopStart) {
-      // Only execute if the loop was stopped
-      await API.getSessionDtl({
+      const sessionDtl = await API.getSessionDtl({
         COMP_CD: authState?.companyID,
         BRANCH_CD: authState?.user?.branchCode,
         BASE_BRANCH_CD: authState?.baseCompanyID,
         BASE_COMP_CD: authState?.user?.baseBranchCode,
         WORKING_DATE: authState?.workingDate,
       }); // Ensure this API call is correctly defined in your API module
-      // }
     },
   });
 
@@ -468,6 +476,7 @@ export const VerifyDayendChecksums = ({
                         FOR_BRANCH: reqData[0]?.BRANCH_LIST[0],
                         EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
                       });
+                      setloopStart(false);
                     }}
                     color={"primary"}
                   >
