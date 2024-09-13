@@ -167,7 +167,7 @@ export const pendingTrnsEodReportMetaData = {
 export const verifyDayendChecksumsMetaData = {
   gridConfig: {
     dense: true,
-    gridLabel: "Day End Process",
+    gridLabel: "",
     rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 400,

@@ -1,6 +1,7 @@
-import { Avatar, Tooltip } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
 import { utilFunction } from "components/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 //import { boolean } from "yup";
 import { CellWrapper } from "./cellWrapper";
 
@@ -11,10 +12,12 @@ export const IconRowCellRenderer = (props) => {
       showTooltip = false,
       transform = (value) => value,
       isAutoSequence = false,
+      isImageURL = false,
+      shouldExclude,
     },
     row,
   } = props;
-  //console.log(isAutoSequence);
+
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   let newValue;
   if (isAutoSequence) {
@@ -22,17 +25,35 @@ export const IconRowCellRenderer = (props) => {
   } else {
     newValue = transform(value);
   }
-  //console.log(newValue);
+
+  const isShouldExclude = useMemo(() => {
+    if (typeof shouldExclude === "function") {
+      return shouldExclude(newValue, row?.original);
+    }
+    return false;
+  }, [newValue, row.original]);
+
   useEffect(() => {
     if (Boolean(newValue)) {
-      let blob = utilFunction.base64toBlob(newValue);
-      let url =
-        typeof blob === "object" && Boolean(blob)
-          ? URL.createObjectURL(blob)
-          : "";
+      let url = "";
+      if (isImageURL) {
+        url = newValue;
+      } else {
+        let blob = utilFunction.base64toBlob(newValue);
+
+        url =
+          typeof blob === "object" && Boolean(blob)
+            ? URL.createObjectURL(blob)
+            : "";
+      }
       setProfilePictureURL(url);
     }
   }, [newValue]);
+
+  if (isShouldExclude) {
+    return <CellWrapper showBorder {...props}></CellWrapper>;
+  }
+
   let result = showTooltip ? (
     <Tooltip title={newValue}>
       <div>
@@ -46,7 +67,6 @@ export const IconRowCellRenderer = (props) => {
           }}
         ></Avatar>
       </div>
-      {/* <span>{newValue}</span> */}
     </Tooltip>
   ) : (
     <div>

@@ -43,10 +43,8 @@ export const VerifyDayendChecksums = ({
   open,
   close,
   flag,
-  restartLoop,
 }: {
   open: boolean;
-  restartLoop: () => void;
   close: () => void;
   flag: string;
 }) => {
@@ -54,27 +52,22 @@ export const VerifyDayendChecksums = ({
   const [openReport, setOpenReport] = useState(false);
   const [docData, setDocData] = useState<any>({});
   const [openedWindow, setOpenedWindow] = useState<Window | null>(null);
-  const [isExit, setIsExit] = useState(false);
-  const [blob, setBlob] = useState<Blob | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [gridData, setGridData] = useState<Item[]>([]);
   const [reqData, setReqData] = useState<any>({});
   const [currentData, setCurrentData] = useState<any>({});
-  const [loopStart, setloopStart] = useState<any>(false);
+  const [loopStart, setLoopStart] = useState<any>(false);
+  const [switchBranchPara, setSwitchBranchPara] = useState<any>(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [showComponent, setShowComponent] = useState(open); // Manage component visibility
-
+  const currentBranch = useRef<any>(null);
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement | null>(null);
+  console.log(currentBranch.current);
 
   const handleAction = useCallback(
     async (data: any) => {
       if (data?.name === "close") {
         close();
-      } else if (data?.name === "start") {
-        // Close and reopen the component
-        setShowComponent(false);
-        setTimeout(() => setShowComponent(true), 0);
       } else {
         navigate(data?.name, { state: data?.rows });
       }
@@ -127,7 +120,7 @@ export const VerifyDayendChecksums = ({
           const response = await API.executeChecksums({
             FLAG: flag,
             SCREEN_REF: "TRN/399",
-            FOR_BRANCH: reqData[0]?.BRANCH_LIST[0],
+            FOR_BRANCH: currentBranch.current,
             EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
             CHKSM_TYPE: record.CHKSM_TYPE,
             SR_CD: record.SR_CD,
@@ -166,7 +159,7 @@ export const VerifyDayendChecksums = ({
               buttonNames: ["Ok"],
             });
             CloseMessageBox(); // Ensure the message box is closed
-            setloopStart(true);
+            setLoopStart(true);
             return "stop"; // Signal to stop processing
           }
 
@@ -242,6 +235,7 @@ export const VerifyDayendChecksums = ({
           });
         }
       }
+      setSwitchBranchPara(true);
 
       // Execute getSessionDtl API call after processing records and handling mandatory checks
       const sessionDtl = await API.getSessionDtl({
@@ -298,12 +292,30 @@ export const VerifyDayendChecksums = ({
               CloseMessageBox();
               close();
             } else if (buttonName === "Yes") {
-              checkSumsDataMutation.mutate({
-                FLAG: flag,
-                SCREEN_REF: "TRN/399",
-                FOR_BRANCH: data[0]?.BRANCH_LIST[0],
-                EOD_EOS_FLG: data[0]?.EOD_EOS_FLG,
-              });
+              const branchList = ["002 ", "003 ", "004 "]; // Placeholder for actual branch list
+              if (branchList.length > 0) {
+                if (switchBranchPara) {
+                  // Sequential processing of branches
+                  for (const branch of branchList) {
+                    console.log("branch", branch);
+                    currentBranch.current = branch;
+
+                    // Create a function to process each branch sequentially
+                    const processBranch = async (branch: string) => {
+                      await checkSumsDataMutation.mutateAsync({
+                        FLAG: flag,
+                        SCREEN_REF: "TRN/399",
+                        FOR_BRANCH: branch,
+                        EOD_EOS_FLG: data[0]?.EOD_EOS_FLG,
+                      });
+                      // Proceed to the next branch
+                    };
+
+                    // Process the current branch
+                    await processBranch(branch);
+                  }
+                }
+              }
               CloseMessageBox();
             }
           }
@@ -359,15 +371,11 @@ export const VerifyDayendChecksums = ({
       queryClient.removeQueries(["getValidateEod"]);
     };
   }, []);
-
-  if (isExit === true) {
-    actions.push({
-      actionName: "start",
-      actionLabel: "Start",
-      alwaysAvailable: true,
-      multiple: false,
-    });
-  }
+  let label = gridData
+    ? //@ts-ignore
+      gridData[0]?.TITLE
+    : "Day Ebd Process";
+  verifyDayendChecksumsMetaData.gridConfig.gridLabel = label;
 
   const updateData = (gridData: Item[] = []): Item[] => {
     return gridData.map((item) => ({
@@ -402,7 +410,7 @@ export const VerifyDayendChecksums = ({
           <>
             <GridWrapper
               ref={gridRef}
-              key={`verifyDayendChecksumsMetaData` + gridData}
+              key={`verifyDayendChecksumsMetaData` + label}
               finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
               data={updateData(gridData)}
               setData={() => null}
@@ -473,10 +481,10 @@ export const VerifyDayendChecksums = ({
                       checkSumsDataMutation.mutate({
                         FLAG: flag,
                         SCREEN_REF: "TRN/399",
-                        FOR_BRANCH: reqData[0]?.BRANCH_LIST[0],
+                        FOR_BRANCH: currentBranch.current,
                         EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
                       });
-                      setloopStart(false);
+                      setLoopStart(false);
                     }}
                     color={"primary"}
                   >

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppBar, CircularProgress, Toolbar, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { ClearCacheProvider, queryClient } from "cache";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
@@ -12,7 +12,7 @@ import { usePopupContext } from "components/custom/popupContext";
 import { VerifyDayendChecksums } from "./verifyDayendChecksums";
 import { t } from "i18next";
 
-const useTypeStyles: any = makeStyles((theme: Theme) => ({
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -58,13 +58,17 @@ const DayEndProcess = () => {
   }, []);
 
   const handleOpenPendingTrns = async () => {
-    const btnName = await MessageBox({
-      message: "DeleteData",
-      messageTitle: "Confirmation",
-      buttonNames: ["Yes", "No"],
-    });
-    if (btnName === "Yes") {
-      setOpenPendingTrns(true);
+    try {
+      const btnName = await MessageBox({
+        message: "DeleteData",
+        messageTitle: "Confirmation",
+        buttonNames: ["Yes", "No"],
+      });
+      if (btnName === "Yes") {
+        setOpenPendingTrns(true);
+      }
+    } catch (err) {
+      console.error("Error in MessageBox:", err);
     }
   };
 
@@ -120,10 +124,9 @@ const DayEndProcess = () => {
               COMP_CD: authState?.companyID,
               BRANCH_CD: authState?.user?.branchCode,
               FLAG: "N",
-            });
+            }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"D"}
-          restartLoop={handleRestartVerifyChecksums}
         />
       )}
       {openVerifyChecksums && (
@@ -136,10 +139,9 @@ const DayEndProcess = () => {
               COMP_CD: authState?.companyID,
               BRANCH_CD: authState?.user?.branchCode,
               FLAG: "N",
-            });
+            }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"C"}
-          restartLoop={handleRestartVerifyChecksums}
         />
       )}
     </>
