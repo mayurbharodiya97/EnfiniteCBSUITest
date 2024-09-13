@@ -25,7 +25,7 @@ import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadat
 import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { tempODConfirmGridMetaData } from "./MetaData/temporaryODGridMetadata";
 import { RetrieveData } from "../operations/chequeBookTab/confirm/retrieveData";
-import { ChequebookCfmForm } from "../operations/chequeBookTab/confirm/confirmationForm";
+import { ChequebookCfmForm } from "../operations/chequeBookTab/entryForm/entryForm";
 import { LimitConfirmationForm } from "../operations/limit-entry/confirm/confirmationForm";
 import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirmationForm";
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
@@ -115,7 +115,7 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = lienConfirmGridMetaData;
   } else if (screenFlag === "tempOdCFM") {
     gridMetaData = tempODConfirmGridMetaData;
-  }else if (screenFlag=== "insuranceCFM"){
+  } else if (screenFlag === "insuranceCFM") {
     gridMetaData = insuranceEntryConfirmGridMetaData;
   }
 
@@ -187,7 +187,7 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ): (
+              ) : (
                 <></>
               )
             }
