@@ -359,6 +359,7 @@ export const FDDetailGrid = () => {
                     BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                    ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
                     BTN_FLAG: "Y",
                   }}
                 />
@@ -407,6 +408,7 @@ export const FDDetailGrid = () => {
                     BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                    ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
                   }}
                   closeDialog={handleDialogClose}
                   // closeDialog={handleDialogClose}
