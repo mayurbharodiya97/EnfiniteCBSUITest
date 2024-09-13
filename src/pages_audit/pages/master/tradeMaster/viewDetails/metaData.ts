@@ -1,4 +1,4 @@
-import * as API from '../api';
+import * as API from "../api";
 export const TradeMasterMetaData = {
   form: {
     name: "Trade Master",
@@ -14,14 +14,14 @@ export const TradeMasterMetaData = {
           xs: 12,
           sm: 12,
           md: 12,
-          lg:12,
-          xl:12
+          lg: 12,
+          xl: 12,
         },
         container: {
           direction: "row",
           spacing: 2,
-          width:200,
-          maxwidth:500
+          width: 200,
+          maxwidth: 500,
         },
       },
     },
@@ -47,23 +47,24 @@ export const TradeMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
+      maxLength: 4,
       preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
       },
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl:12  },
-      __EDIT__:{isReadOnly:true}
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      __EDIT__: { isReadOnly: true },
     },
     {
       render: { componentType: "textField" },
       name: "TRADE_NM",
       label: "Description",
       type: "text",
-      required: true, 
+      required: true,
       placeholder: "Description",
-      maxLength:100,
-      multiline:true,
+      maxLength: 100,
+      multiline: true,
       isFieldFocused: true,
       txtTransform: "uppercase",
       schemaValidation: {
@@ -93,28 +94,27 @@ export const TradeMasterMetaData = {
         }
         return "";
       },
-      GridProps: {  xs: 12, sm: 12, md: 12, lg: 12, xl:12 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "CKYC_OCCUPATION",
-      label: "CKYCGroup", 
-      placeholder:"CKYCGroup",
-      options:()=> API.getPMISCData("CKYC_OCCUPATION"),
+      label: "CKYCGroup",
+      placeholder: "CKYCGroup",
+      options: () => API.getPMISCData("CKYC_OCCUPATION"),
       _optionsKey: "getDataForCkycGroup",
       __VIEW__: { isReadOnly: true },
-      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl:6},
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
       render: { componentType: "autocomplete" },
       name: "CONSTITUTION_TYPE",
       label: "Constitution",
-      placeholder:"Constitution",
+      placeholder: "Constitution",
       options: () => API.getPMISCData("BANK_CONS_TYPE"),
       _optionsKey: "getDataForConstitution",
       defaultValue: "B",
-      GridProps: {  xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
   ],
 };
-

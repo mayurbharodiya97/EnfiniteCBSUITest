@@ -22,7 +22,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -36,7 +36,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       width: 60,
       minWidth: 50,
       maxWidth: 100,
-      isAutoSequence:true
+      isAutoSequence: true,
     },
     {
       accessor: "TRADE_CD",
