@@ -331,69 +331,48 @@ export const LimitSecurityData = async (apiReqPara) => {
                 };
 
                 let postData = await getFDdetailBFD(ApiReq);
-
-                if (postData?.[0]?.RESTRICTION) {
+                let responseData: any = [];
+                const messagebox = async (msgTitle, msg, buttonNames) => {
                   let buttonName = await formState.MessageBox({
-                    messageTitle: "Validation Failed...!",
-                    message: postData?.[0]?.RESTRICTION,
+                    messageTitle: msgTitle,
+                    message: msg,
+                    buttonNames: buttonNames,
                   });
-                  if (buttonName === "Ok") {
-                    return {
-                      SECURITY_VALUE: {
-                        value: "",
-                      },
-                      FD_NO: {
-                        value: "",
-                        isFieldFocused: true,
-                      },
-                      EXPIRY_DT: {
-                        value: "",
-                      },
-                      INT_RATE: {
-                        value: "",
-                      },
-                    };
+                  return buttonName;
+                };
+                if (postData?.length) {
+                  for (let i = 0; i < postData?.length; i++) {
+                    if (postData[i]?.O_STATUS !== "0") {
+                      let btnName = await messagebox(
+                        postData[i]?.O_STATUS === "999"
+                          ? "validation fail"
+                          : "ALert message",
+                        postData[i]?.O_MESSAGE,
+                        postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
+                      );
+                      if (btnName === "No" || postData[i]?.O_STATUS === "999") {
+                        return {
+                          SECURITY_VALUE: {
+                            value: "",
+                          },
+                          FD_NO: {
+                            value: "",
+                            isFieldFocused: true,
+                          },
+                          EXPIRY_DT: {
+                            value: "",
+                          },
+                          INT_RATE: {
+                            value: "",
+                          },
+                        };
+                      }
+                    } else {
+                      responseData.push(postData[i]);
+                    }
                   }
-                } else if (postData?.[0]?.MESSAGE1 || postData?.[0]?.MESSAGE2) {
-                  let buttonName = await formState.MessageBox({
-                    messageTitle: "Risk Category Alert",
-                    message: postData?.[0]?.MESSAGE1,
-                    buttonNames: ["Yes", "No"],
-                    defFocusBtnName: "Yes",
-                  });
-                  if (buttonName === "Yes") {
-                    return {
-                      SECURITY_VALUE: {
-                        value: postData?.[0]?.SECURITY_VALUE,
-                      },
-                      EXPIRY_DT: {
-                        value: postData?.[0]?.EXPIRY_DT,
-                      },
-                      INT_RATE: {
-                        value: postData?.[0]?.INT_RATE,
-                      },
-                      TRAN_DT: {
-                        isFieldFocused: true,
-                      },
-                    };
-                  } else {
-                    return {
-                      SECURITY_VALUE: {
-                        value: "",
-                      },
-                      EXPIRY_DT: {
-                        value: "",
-                      },
-                      INT_RATE: {
-                        value: "",
-                      },
-                      FD_NO: {
-                        value: "",
-                        isFieldFocused: true,
-                      },
-                    };
-                  }
-                } else {
+                }
+                if (responseData?.length) {
                   return {
                     SECURITY_VALUE: {
                       value: postData?.[0]?.SECURITY_VALUE,

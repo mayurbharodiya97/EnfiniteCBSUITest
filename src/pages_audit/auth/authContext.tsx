@@ -195,7 +195,11 @@ export const AuthProvider = ({ children }) => {
         Boolean(localStorageAuthState?.isLoggedIn) &&
         Boolean(localStorageAuthState?.user?.id)
       ) {
-        API.LogoutAPI({ userID: localStorageAuthState?.user?.id });
+        API.LogoutAPI({
+          USER_ID: localStorageAuthState?.user?.id,
+          APP_TRAN_CD: "51",
+          REQ_FLAG: "N",
+        });
       }
     }
     localStorage.removeItem("authDetails");
