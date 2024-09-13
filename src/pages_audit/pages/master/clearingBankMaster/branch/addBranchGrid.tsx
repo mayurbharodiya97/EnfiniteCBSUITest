@@ -141,7 +141,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         open={true}
         PaperProps={{
           style: {
-            width: "auto",
+            width: "70%",
             overflow: "auto",
             padding: "10px",
           },
