@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { RetrievalFormMetaData } from "./retrieveFormMetadata";
-
+import { utilFunction } from "components/utils";
 export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   const { t } = useTranslation();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -23,6 +23,12 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   ) => {
     endSubmit(true);
     if (Boolean(data)) {
+      if (Boolean(data["ACCT_CD"])) {
+        data["ACCT_CD"] = utilFunction.getPadAccountNumber(
+          data["ACCT_CD"],
+          data["ACCT_TYPE"]
+        );
+      }
       retrieveDataRef.current = data;
       retrievalParaValues({
         COMP_CD: authState?.companyID ?? "",
@@ -52,6 +58,7 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         formState={{
           MessageBox: MessageBox,
           handleButtonDisable: handleButtonDisable,
+          docCD: "MST/006",
         }}
         controlsAtBottom={true}
         containerstyle={{ padding: "10px" }}

@@ -270,8 +270,6 @@ export const getNoOfInstallment = async ({
     });
   if (status === "0") {
     return data;
-  } else if (status === "999") {
-    return { status: status, message: message };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -350,6 +348,18 @@ export const deleteProceedData = async (apiReq) => {
 export const saveProceedData = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOSAVELOANRECHEDULE", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const updateInterestRate = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUPDATERATE", {
       ...apiReq,
     });
   if (status === "0") {

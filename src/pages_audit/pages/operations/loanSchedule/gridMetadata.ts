@@ -18,8 +18,8 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     // pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "25vh",
-      max: "25vh",
+      min: "28vh",
+      max: "28vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
@@ -54,7 +54,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "right",
       componentType: "default",
-      width: 150,
+      width: 170,
       minWidth: 120,
       maxWidth: 250,
       isDisplayTotal: true,
@@ -76,7 +76,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       sequence: 5,
       alignment: "right",
       componentType: "default",
-      width: 130,
+      width: 140,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -109,7 +109,24 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 220,
-      maxWidth: 500,
+      maxWidth: 700,
+      showTooltip: true,
+    },
+    {
+      columnName: "",
+      componentType: "buttonRowCell",
+      accessor: "REVISE_FLAG",
+      sequence: 20,
+      buttonLabel: "Revise",
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.ACTIVE === "Y") {
+          return false;
+        }
+        return true;
+      },
+      width: 100,
+      minWidth: 80,
+      maxWidth: 110,
     },
     {
       accessor: "SR_CD",
@@ -125,7 +142,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
   ],
 };
 
-export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
+export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "",
@@ -143,8 +160,10 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
     // pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "50vh",
-      max: "50vh",
+      // min: "25vh",
+      // max: "25vh",
+      min: "45vh",
+      max: "45vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
@@ -170,90 +189,36 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
       width: 200,
       minWidth: 170,
       maxWidth: 250,
-      isReadOnly: true,
     },
     {
       accessor: "BEGIN_BAL",
       columnName: "Beginning Balance",
       sequence: 3,
       alignment: "right",
-      className: "textInputFromRight",
-      componentType: "editableNumberFormat",
-      placeholder: "0.00",
+      componentType: "default",
       width: 180,
       minWidth: 160,
       maxWidth: 200,
-      isReadOnly: true,
     },
     {
       accessor: "INT_RATE",
       columnName: "Interest Rate(%)",
       sequence: 4,
       alignment: "right",
-      componentType: "editableNumberFormat",
-      placeholder: "0.00",
+      componentType: "default",
       width: 150,
       minWidth: 140,
       maxWidth: 200,
-      className: "textInputFromRight",
-      __VIEW__: {
-        isReadOnly: true,
-      },
-      __EDIT__: { isReadOnly: false },
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 5) {
-            return false;
-          }
-          if (values.floatValue === 0) {
-            return false;
-          }
-          return true;
-        },
-        decimalScale: 2,
-        fixedDecimalScale: true,
-      },
-      validation: (value, data, prev) => {
-        console.log("value", value, data, prev);
-        // data.SR_CD
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["This field is required"] }],
-      },
     },
     {
       accessor: "INST_RS",
       columnName: "Installment Amount",
       sequence: 5,
       alignment: "right",
-      componentType: "editableNumberFormat",
-      placeholder: "0.00",
-      width: 150,
-      minWidth: 140,
+      componentType: "default",
+      width: 180,
+      minWidth: 160,
       maxWidth: 200,
-      className: "textInputFromRight",
-      __VIEW__: {
-        isReadOnly: true,
-      },
-      __EDIT__: { isReadOnly: false },
-      FormatProps: {
-        decimalScale: 2,
-        fixedDecimalScale: true,
-        isAllowed: (values) => {
-          if (values?.value?.length > 11) {
-            return false;
-          }
-          // if (values.floatValue === 0) {
-          //   return false;
-          // }
-          return true;
-        },
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["This field is required"] }],
-      },
       isDisplayTotal: true,
       totalDecimalCount: 2,
     },
@@ -262,152 +227,50 @@ export const LoanScheduleBalanceGridMetadata: GridMetaDataType = {
       columnName: "Principal Demand",
       sequence: 6,
       alignment: "right",
-      componentType: "editableNumberFormat",
-      className: "textInputFromRight",
-      placeholder: "0.00",
+      componentType: "default",
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isDisplayTotal: true,
       totalDecimalCount: 2,
-      isReadOnly: true,
     },
     {
       accessor: "INT_DEMAND_AMT",
       columnName: "Interest Demand",
       sequence: 7,
       alignment: "right",
-      componentType: "editableNumberFormat",
-      className: "textInputFromRight",
-      placeholder: "0.00",
+      componentType: "default",
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isDisplayTotal: true,
       totalDecimalCount: 2,
-      isReadOnly: true,
     },
     {
       accessor: "END_BAL",
       columnName: "Ending Balance",
       sequence: 8,
       alignment: "right",
-      componentType: "editableNumberFormat",
-      className: "textInputFromRight",
-      placeholder: "0.00",
+      componentType: "default",
       width: 200,
       minWidth: 150,
       maxWidth: 250,
-      isReadOnly: true,
     },
-  ],
-};
-
-export const LoanRescheduleGridDetails: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "",
-    rowIdColumn: "SR_CD",
-    defaultColumnConfig: {
-      width: 350,
-      minWidth: 300,
-      maxWidth: 400,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    hideHeader: true,
-    disableGroupBy: true,
-    // enablePagination: true,
-    // pageSizes: [20, 40, 60],
-    defaultPageSize: 20,
-    containerHeight: {
-      min: "25vh",
-      max: "25vh",
-    },
-    isCusrsorFocused: true,
-    allowRowSelection: false,
-  },
-  columns: [
     {
-      accessor: "SR_CD",
-      columnName: "SrNo",
-      sequence: 1,
-      alignment: "left",
-      componentType: "default",
+      columnName: "",
+      componentType: "buttonRowCell",
+      accessor: "EDIT_BTN",
+      sequence: 20,
+      buttonLabel: "Edit",
       width: 100,
-      minWidth: 60,
-      maxWidth: 150,
-    },
-    {
-      accessor: "INS_START_DT",
-      columnName: "Installment Start Date",
-      sequence: 2,
-      alignment: "center",
-      componentType: "date",
-      dateFormat: "dd/MM/yyyy",
-      width: 200,
-      minWidth: 170,
-      maxWidth: 250,
-    },
-    {
-      accessor: "BEGIN_BAL",
-      columnName: "Beginning Balance",
-      sequence: 3,
-      alignment: "right",
-      componentType: "default",
-      width: 180,
-      minWidth: 160,
-      maxWidth: 200,
-    },
-    {
-      accessor: "INT_RATE",
-      columnName: "Interest Rate",
-      sequence: 4,
-      alignment: "right",
-      componentType: "default",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
-    },
-    {
-      accessor: "INST_RS",
-      columnName: "Installment Amount",
-      sequence: 5,
-      alignment: "right",
-      componentType: "default",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
-    },
-    {
-      accessor: "PRIN_DEMAND_AMT",
-      columnName: "Principal Demand",
-      sequence: 6,
-      alignment: "right",
-      componentType: "default",
-      width: 180,
-      minWidth: 160,
-      maxWidth: 200,
-    },
-    {
-      accessor: "INT_DEMAND_AMT",
-      columnName: "Interest Demand",
-      sequence: 7,
-      alignment: "right",
-      componentType: "default",
-      width: 180,
-      minWidth: 160,
-      maxWidth: 200,
-    },
-    {
-      accessor: "END_BAL",
-      columnName: "Ending Balance",
-      sequence: 8,
-      alignment: "right",
-      componentType: "default",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
+      minWidth: 80,
+      maxWidth: 110,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.EDIT_FLAG === "Y") {
+          return false;
+        }
+        return true;
+      },
     },
   ],
 };

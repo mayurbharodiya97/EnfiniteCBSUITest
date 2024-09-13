@@ -56,14 +56,6 @@ export const RetrievalFormMetaData = {
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            USER_NAME: authState?.user?.id ?? "",
-            DOC_CD: "MST/006",
-          });
-        },
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,

@@ -9,8 +9,7 @@ import { useTranslation } from "react-i18next";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import {
-  LoanRescheduleGridDetails,
-  LoanScheduleBalanceGridMetadata,
+  LoanScheduleDetailsGridMetadata,
   LoanScheduleGridMetaData,
 } from "../gridMetadata";
 import {
@@ -384,6 +383,10 @@ export const LoanRescheduleForm = ({
     min: "15vh",
     max: "15vh",
   };
+  LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
+    min: "25vh",
+    max: "25vh",
+  };
 
   const handleDeleteData = async () => {
     if (
@@ -478,6 +481,8 @@ export const LoanRescheduleForm = ({
               headerData: headerData,
               MessageBox: MessageBox,
               flag: false,
+              instAmtFlag: false,
+              noOfInstFlag: false,
               disableCheckBox: deleteMutation.isLoading,
               disableButton:
                 proceedDataMutation.isLoading ||
@@ -540,7 +545,6 @@ export const LoanRescheduleForm = ({
             />
           )}
           <GridWrapper
-            // key={`loanRescheduleGridData` + gridData}
             key={`loanRescheduleGridData`}
             finalMetaData={LoanScheduleGridMetaData as GridMetaDataType}
             data={gridData ?? []}
@@ -556,9 +560,8 @@ export const LoanRescheduleForm = ({
             />
           )}
           <GridWrapper
-            // key={`loanRescheduleDetailsData` + detailsGridData}
-            key={`loanRescheduleDetailsData`}
-            finalMetaData={LoanRescheduleGridDetails as GridMetaDataType}
+            key={`loanRescheduleDetailsGridData`}
+            finalMetaData={LoanScheduleDetailsGridMetadata as GridMetaDataType}
             data={detailsGridData ?? []}
             setData={setDetailsGridData}
             loading={detaiIsFetching || detailsLoading}

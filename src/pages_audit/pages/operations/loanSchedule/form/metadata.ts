@@ -7,6 +7,7 @@ import {
   getNoOfInstallment,
   getRescheduleDropDown,
   getRescheduleLoanInterestAmount,
+  updateInterestRate,
 } from "../api";
 
 export const LoanRegenerateFormMetaData = {
@@ -54,6 +55,14 @@ export const LoanRegenerateFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "VALIDATE_LIMIT_AMT",
+      label: "",
+      placeholder: "",
+    },
+    {
+      render: {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
@@ -62,34 +71,52 @@ export const LoanRegenerateFormMetaData = {
       maxLength: 15,
       fullWidth: true,
       isFieldFocused: true,
-      dependentFields: ["INT_RATE", "INST_NO", "TYPE_CD", "INSTALLMENT_TYPE"],
+      dependentFields: [
+        "INT_RATE",
+        "INST_NO",
+        "TYPE_CD",
+        "INSTALLMENT_TYPE",
+        "SANCTIONED_AMT",
+        "VALIDATE_LIMIT_AMT",
+      ],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
         const formattedValue = parseFloat(
           formState?.dtlData?.LIMIT_AMOUNT || 0
         ).toFixed(2);
-
-        if (formattedValue === currentField?.value) {
-          if (!formState.flag) {
-            formState.flag = true;
-            return {};
-          }
-        }
-        if (currentField?.displayValue.trim() === "") {
+        if (formattedValue === currentField?.value && !formState.flag) {
           return {};
         }
         if (
+          Number(currentField?.value) >
+          Number(dependentFieldsValues?.["SANCTIONED_AMT"]?.value)
+        ) {
+          const buttonName = await formState.MessageBox({
+            messageTitle: "Validation Failed",
+            message:
+              "Disburse Amount can not be greater than Sanctioned Amount.",
+            buttonNames: ["Ok"],
+          });
+          if (buttonName === "Ok") {
+            return {
+              LIMIT_AMOUNT: {
+                value: dependentFieldsValues?.["VALIDATE_LIMIT_AMT"]?.value,
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
           currentField?.value &&
-          dependentFieldsValues?.["INT_RATE"]?.value &&
-          dependentFieldsValues?.["INST_NO"]?.value &&
+          Number(currentField?.value) <=
+            Number(dependentFieldsValues?.["SANCTIONED_AMT"]?.value) &&
           dependentFieldsValues?.["TYPE_CD"]?.value &&
-          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value &&
-          formState?.flag === true
+          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value
         ) {
           const reqParams = {
             LIMIT_AMOUNT: currentField?.value ?? "",
@@ -99,18 +126,34 @@ export const LoanRegenerateFormMetaData = {
             INSTALLMENT_TYPE:
               dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
           };
-          formState?.handleInterestAmountFlag(true);
           const getApiData = await getLoanInterestAmount(reqParams);
-
+          formState.flag = true;
           return {
             INST_RS: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
             },
+            VALIDATE_INT_RS: {
+              value: getApiData?.[0]?.INST_RS ?? "",
+            },
+            VALIDATE_LIMIT_AMT: {
+              value: currentField?.value ?? "",
+            },
           };
         } else if (!currentField?.value) {
-          return {};
+          return {
+            INST_RS: {
+              value: "",
+              ignoreUpdate: true,
+            },
+            VALIDATE_LIMIT_AMT: {
+              value: currentField?.value ?? "",
+            },
+          };
         }
+      },
+      FormatProps: {
+        allowNegative: false,
       },
       GridProps: { xs: 12, sm: 4, md: 3.5, lg: 3.5, xl: 3.5 },
     },
@@ -146,21 +189,23 @@ export const LoanRegenerateFormMetaData = {
         "INST_NO",
         "TYPE_CD",
         "INSTALLMENT_TYPE",
+        "RATE_WEF",
       ],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
-        if (currentField?.displayValue.trim() === "") {
+        const formattedValue = parseFloat(
+          formState?.dtlData?.INT_RATE || 0
+        ).toFixed(2);
+        if (formattedValue === currentField?.value && !formState.intRateFlag) {
           return {};
         }
         if (
           currentField?.value &&
-          dependentFieldsValues?.["LIMIT_AMOUNT"]?.value &&
-          dependentFieldsValues?.["INST_NO"]?.value &&
           dependentFieldsValues?.["TYPE_CD"]?.value &&
           dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value
         ) {
@@ -173,14 +218,36 @@ export const LoanRegenerateFormMetaData = {
               dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
           };
           const getApiData = await getLoanInterestAmount(reqParams);
+          formState.intRateFlag = true;
           return {
             INST_RS: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
             },
+            VALIDATE_INT_RS: {
+              value: getApiData?.[0]?.INST_RS ?? "",
+            },
+            RATE_WEF: {
+              value: authState?.workingDate
+                ? format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+                : "",
+            },
           };
         } else if (!currentField?.value) {
-          return {};
+          return {
+            INST_RS: {
+              value: "",
+              ignoreUpdate: true,
+            },
+            VALIDATE_INT_RS: {
+              value: "",
+            },
+            RATE_WEF: {
+              value: authState?.workingDate
+                ? format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+                : "",
+            },
+          };
         }
       },
       FormatProps: {
@@ -216,8 +283,10 @@ export const LoanRegenerateFormMetaData = {
       label: "No. of Installment",
       placeholder: "",
       fullWidth: true,
+      autoComplete: "off",
       maxLength: 5,
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values) => {
           if (values?.value?.length > 5) {
             return false;
@@ -239,23 +308,23 @@ export const LoanRegenerateFormMetaData = {
         "INSTALLMENT_TYPE",
         "INS_START_DT",
       ],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
-        if (currentField?.displayValue.trim() === "") {
+        if (
+          formState?.dtlData?.INST_NO === currentField?.value &&
+          !formState.noOfInstFlag
+        ) {
           return {};
         }
+        formState.noOfInstFlag = true;
         if (
-          currentField?.value &&
-          dependentFieldsValues?.["INT_RATE"]?.value &&
-          dependentFieldsValues?.["LIMIT_AMOUNT"]?.value &&
           dependentFieldsValues?.["TYPE_CD"]?.value &&
-          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value &&
-          dependentFieldsValues?.["INS_START_DT"]?.value
+          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value
         ) {
           const reqParams = {
             INST_NO: currentField?.value ?? "",
@@ -283,16 +352,16 @@ export const LoanRegenerateFormMetaData = {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
             },
+            VALIDATE_INT_RS: {
+              value: getApiData?.[0]?.INST_RS ?? "",
+            },
             INST_DUE_DT: {
               value: getDataForDueDate?.[0]?.DUE_DATE ?? "",
               ignoreUpdate: true,
             },
           };
-        } else if (!currentField?.value) {
-          return {};
         }
       },
-
       GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
@@ -310,6 +379,34 @@ export const LoanRegenerateFormMetaData = {
           return false;
         }
       },
+      dependentFields: ["VALIDATE_INT_RS"],
+      runPostValidationHookAlways: true,
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        if (
+          Number(currentField?.value) <
+          Number(dependentFieldsValues?.["VALIDATE_INT_RS"]?.value)
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "ValidationFailed",
+            message: "Installment Amount can not be reduced.",
+            buttonNames: ["Ok"],
+          });
+          if (buttonName === "Ok") {
+            return {
+              INST_RS: {
+                value: dependentFieldsValues?.["VALIDATE_INT_RS"]?.value ?? "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        }
+      },
       schemaValidation: {
         type: "string",
         rules: [
@@ -317,6 +414,14 @@ export const LoanRegenerateFormMetaData = {
         ],
       },
       GridProps: { xs: 12, sm: 6, md: 3.5, lg: 3.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "VALIDATE_INT_RS",
+      label: "",
+      placeholder: "",
     },
     {
       render: {
@@ -439,6 +544,14 @@ export const LoanRescheduleFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "VALIDATE",
+      label: "",
+      placeholder: "",
+    },
+    {
+      render: {
         componentType: "checkbox",
       },
       name: "EMI_AMT_CHANGE",
@@ -457,7 +570,6 @@ export const LoanRescheduleFormMetaData = {
       validationRun: "onChange",
       GridProps: { xs: 6, sm: 3, md: 2.5, lg: 2, xl: 1.5 },
     },
-
     {
       render: {
         componentType: "rateOfInt",
@@ -471,6 +583,7 @@ export const LoanRescheduleFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Interest Rate is Required"] }],
       },
+      isFieldFocused: true,
       dependentFields: [
         "IDEAL_ACTUAL",
         "IDEAL_BALANCE",
@@ -487,34 +600,14 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
-        if (currentField?.value === "") {
-          formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
-        }
-        if (currentField?.displayValue.trim() === "") {
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
+        const formattedValue = parseFloat(
+          formState?.headerData?.[0]?.INT_RATE || 0
+        ).toFixed(2);
+        if (formattedValue === currentField?.value && !formState.flag) {
           return {};
         }
-        const formattedValue = parseFloat(
-          formState?.headerData[0]?.INT_RATE || 0
-        ).toFixed(2);
-
-        if (formattedValue === currentField?.value) {
-          if (!formState.flag) {
-            formState.flag = true;
-            return {};
-          }
-        }
-
-        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
-        if (
-          currentField?.value &&
-          dependentFieldsValues?.["IDEAL_ACTUAL"]?.value &&
-          dependentFieldsValues?.["IDEAL_BALANCE"]?.value &&
-          dependentFieldsValues?.["OUTSTANDING_BAL"]?.value &&
-          dependentFieldsValues?.["OUT_SUBSIDY"]?.value &&
-          dependentFieldsValues?.["TYPE_CD"]?.value &&
-          dependentFieldsValues?.["FINAL_INST_NO"]?.value &&
-          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value
-        ) {
+        if (currentField?.value) {
           const reqParams = {
             IDEAL_ACTUAL: dependentFieldsValues?.["IDEAL_ACTUAL"]?.value ?? "",
             IDEAL_BALANCE:
@@ -524,30 +617,61 @@ export const LoanRescheduleFormMetaData = {
             OUT_SUBSIDY: dependentFieldsValues?.["OUT_SUBSIDY"]?.value ?? "",
             TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value ?? "",
             FINAL_INST_NO:
-              dependentFieldsValues?.["FINAL_INST_NO"]?.value ?? "",
-            INT_RATE: currentField?.value ?? "",
+              Number(dependentFieldsValues?.["FINAL_INST_NO"]?.value) > 0
+                ? dependentFieldsValues?.["FINAL_INST_NO"]?.value
+                : "0",
+            INT_RATE:
+              Number(currentField?.value) > 0 ? currentField?.value : "0",
             INSTALLMENT_TYPE:
               dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
           };
-          formState.handleInterestRateFlag(true);
           const getApiData = await getRescheduleLoanInterestAmount(reqParams);
+          formState.flag = true;
           return {
             INST_RS: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
+              // isFieldFocused: false,
             },
             VALIDATE_INT_AMT: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
             },
+            IDEAL_ACTUAL: {
+              isFieldFocused: true,
+              ignoreUpdate: true,
+            },
+            VALIDATE: {
+              value: getApiData?.[0]?.INST_RS ?? "",
+              ignoreUpdate: true,
+            },
           };
-        } else if (!currentField?.value) {
-          formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
-          return {};
+        } else {
+          return {
+            INST_RS: {
+              value: "",
+              ignoreUpdate: true,
+            },
+            VALIDATE_INT_AMT: {
+              value: "",
+            },
+            IDEAL_ACTUAL: {
+              isFieldFocused: true,
+              ignoreUpdate: true,
+            },
+            VALIDATE: {
+              value: "",
+              ignoreUpdate: true,
+            },
+          };
         }
       },
       maxLength: 5,
       FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: true,
+        decimalScale: 2,
+        fixedDecimalScale: true,
         isAllowed: (values) => {
           //@ts-ignore
           if (values.floatValue > 99.99) {
@@ -583,44 +707,43 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
         if (currentField?.displayValue.trim() === "") {
           return {};
         }
-        if (
-          currentField?.value &&
-          dependentFieldsValues?.["INT_RATE"]?.value &&
-          dependentFieldsValues?.["IDEAL_BALANCE"]?.value &&
-          dependentFieldsValues?.["OUTSTANDING_BAL"]?.value &&
-          dependentFieldsValues?.["OUT_SUBSIDY"]?.value &&
-          dependentFieldsValues?.["TYPE_CD"]?.value &&
-          dependentFieldsValues?.["FINAL_INST_NO"]?.value &&
-          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value
-        ) {
-          const reqParams = {
-            INT_RATE: dependentFieldsValues?.["INT_RATE"]?.value ?? "",
-            IDEAL_BALANCE:
-              dependentFieldsValues?.["IDEAL_BALANCE"]?.value ?? "",
-            OUTSTANDING_BAL:
-              dependentFieldsValues?.["OUTSTANDING_BAL"]?.value ?? "",
-            OUT_SUBSIDY: dependentFieldsValues?.["OUT_SUBSIDY"]?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value ?? "",
-            FINAL_INST_NO:
-              dependentFieldsValues?.["FINAL_INST_NO"]?.value ?? "",
-            IDEAL_ACTUAL: currentField?.value ?? "",
-            INSTALLMENT_TYPE:
-              dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
-          };
-          const getApiData = await getRescheduleLoanInterestAmount(reqParams);
-          return {
-            INST_RS: {
-              value: getApiData?.[0]?.INST_RS ?? "",
-              ignoreUpdate: true,
-            },
-          };
-        } else if (!currentField?.value) {
-          return {};
-        }
+        const reqParams = {
+          INT_RATE:
+            Number(dependentFieldsValues?.["INT_RATE"]?.value) > 0
+              ? dependentFieldsValues?.["INT_RATE"]?.value
+              : "0",
+          IDEAL_BALANCE: dependentFieldsValues?.["IDEAL_BALANCE"]?.value ?? "",
+          OUTSTANDING_BAL:
+            dependentFieldsValues?.["OUTSTANDING_BAL"]?.value ?? "",
+          OUT_SUBSIDY: dependentFieldsValues?.["OUT_SUBSIDY"]?.value ?? "",
+          TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value ?? "",
+          FINAL_INST_NO:
+            Number(dependentFieldsValues?.["FINAL_INST_NO"]?.value) > 0
+              ? dependentFieldsValues?.["FINAL_INST_NO"]?.value
+              : "0",
+          IDEAL_ACTUAL: currentField?.value ?? "",
+          INSTALLMENT_TYPE:
+            dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
+        };
+        const getApiData = await getRescheduleLoanInterestAmount(reqParams);
+        return {
+          INST_RS: {
+            value: getApiData?.[0]?.INST_RS ?? "",
+            ignoreUpdate: true,
+            isFieldFocused: true,
+          },
+          VALIDATE_INT_AMT: {
+            value: getApiData?.[0]?.INST_RS ?? "",
+            ignoreUpdate: true,
+          },
+          VALIDATE: {
+            value: getApiData?.[0]?.INST_RS ?? "",
+            ignoreUpdate: true,
+          },
+        };
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 3, xl: 3 },
     },
@@ -630,7 +753,6 @@ export const LoanRescheduleFormMetaData = {
       label: "Installment Amount",
       placeholder: "",
       fullWidth: true,
-      // maxLength: 15,
       autoComplete: "off",
       required: true,
       schemaValidation: {
@@ -644,6 +766,7 @@ export const LoanRescheduleFormMetaData = {
         "VALIDATE_INT_AMT",
         "OUTSTANDING_BAL",
         "INT_RATE",
+        "VALIDATE",
       ],
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -652,23 +775,21 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
-        if (currentField?.value === "") {
-          formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
+        if (
+          currentField?.value ===
+          parseFloat(dependentFieldsValues?.["VALIDATE"]?.value).toFixed(2)
+        ) {
+          return {};
         }
         const formattedValue = parseFloat(
-          dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value || 0
+          formState?.headerData?.[0]?.INST_RS || 0
         ).toFixed(2);
-        if (formattedValue === currentField?.value) {
-          if (!formState.flag) {
-            formState.flag = true;
-            return {};
-          }
+        if (formattedValue === currentField?.value && !formState.instAmtFlag) {
+          return {};
         }
-        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
         if (
-          Number(currentField?.value?.trim()) <
-            Number(dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value.trim()) &&
+          Number(currentField?.value) <
+            Number(dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value) &&
           !Boolean(dependentFieldsValues?.["EMI_AMT_CHANGE"]?.value)
         ) {
           const buttonName = await formState.MessageBox({
@@ -676,23 +797,26 @@ export const LoanRescheduleFormMetaData = {
             message: "Installment Amount can not be reduced.",
             buttonNames: ["Ok"],
           });
+          formState.instAmtFlag = true;
           if (buttonName === "Ok") {
             return {
               INST_RS: {
                 value: dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value,
-                ignoreUpdate: true,
+              },
+              VALIDATE: {
+                value: currentField?.value,
               },
             };
           }
         } else if (Boolean(dependentFieldsValues?.["EMI_AMT_CHANGE"]?.value)) {
           const reqParams = {
-            INST_RS: currentField?.value ?? "",
+            INST_RS: currentField?.value ?? "0",
             OUTSTANDING_BAL:
               dependentFieldsValues?.["OUTSTANDING_BAL"]?.value ?? "",
             INT_RATE: dependentFieldsValues?.["INT_RATE"]?.value ?? "",
           };
-          formState.handleInterestRateFlag(true);
           const getApiData = await getNoOfInstallment(reqParams);
+          formState.instAmtFlag = true;
           return {
             INST_NO: {
               value: getApiData?.[0]?.INST_NO ?? "",
@@ -700,32 +824,42 @@ export const LoanRescheduleFormMetaData = {
             },
             FINAL_INST_NO: {
               value: getApiData?.[0]?.INST_NO ?? "",
-              ignoreUpdate: true,
             },
             VALIDATE_INT_AMT: {
               value: currentField?.value,
+            },
+            VALIDATE: {
+              value: currentField?.value,
+            },
+            VALIDATE_INST_NO: {
+              value: getApiData?.[0]?.INST_NO ?? "",
+              ignoreUpdate: true,
             },
           };
         } else {
-          formState.setDataOnFieldChange("DELETE_DATA", {
-            DELETE_DATA: true,
-          });
           return {
             VALIDATE_INT_AMT: {
+              value: currentField?.value ?? "",
+            },
+            VALIDATE: {
               value: currentField?.value,
+            },
+            VALIDATE_INST_NO: {
+              value: "",
+              ignoreUpdate: true,
             },
           };
         }
       },
-      AlwaysRunPostValidationSetCrossFieldValues: (args) => {
-        return {
-          alwaysRun: Boolean(args["EMI_AMT_CHANGE"]?.value) ? false : true,
-          touchAndValidate: Boolean(args["EMI_AMT_CHANGE"]?.value)
-            ? false
-            : true,
-        };
-      },
       GridProps: { xs: 12, sm: 3, md: 2.5, lg: 2.5, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "VALIDATE_INST_NO",
+      label: "",
+      placeholder: "",
     },
     {
       render: {
@@ -754,7 +888,6 @@ export const LoanRescheduleFormMetaData = {
         ],
       },
       dependentFields: [
-        "FINAL_INST_NO",
         "REMAINING_INST_NO",
         "IDEAL_ACTUAL",
         "IDEAL_BALANCE",
@@ -763,81 +896,98 @@ export const LoanRescheduleFormMetaData = {
         "TYPE_CD",
         "INT_RATE",
         "INSTALLMENT_TYPE",
+        "INST_START_DT",
+        "VALIDATE_INST_NO",
       ],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
-        if (currentField?.value === "") {
-          formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
-        }
-
-        if (currentField?.displayValue.trim() === "") {
-          return {};
-        }
-        formState.setDataOnFieldChange("DELETE_DATA", {
-          DELETE_DATA: true,
-        });
         if (
-          currentField?.value &&
-          dependentFieldsValues?.["REMAINING_INST_NO"]?.value &&
-          dependentFieldsValues?.["IDEAL_ACTUAL"]?.value &&
-          dependentFieldsValues?.["IDEAL_BALANCE"]?.value &&
-          dependentFieldsValues?.["OUTSTANDING_BAL"]?.value &&
-          dependentFieldsValues?.["OUT_SUBSIDY"]?.value &&
-          dependentFieldsValues?.["TYPE_CD"]?.value &&
-          dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value &&
-          dependentFieldsValues?.["INT_RATE"]?.value
+          currentField?.value ===
+            dependentFieldsValues?.["VALIDATE_INST_NO"]?.value &&
+          currentField?.value !== ""
         ) {
-          const reqParams = {
-            INST_NO: currentField?.value ?? "",
-            REMAINING_INST_NO:
-              dependentFieldsValues?.["REMAINING_INST_NO"]?.value ?? "",
-            ORG_INST_NO: formState?.headerData[0]?.INST_NO ?? "",
-          };
-          const getFinalInstallmentData = await getFinalInstallment(reqParams);
-          const getFinalInstNumber = Boolean(
-            getFinalInstallmentData?.[0]?.FINAL_INST_NO
-          )
-            ? getFinalInstallmentData?.[0]?.FINAL_INST_NO ?? ""
-            : dependentFieldsValues?.["FINAL_INST_NO"]?.value ?? "";
-          const installmentParams = {
-            IDEAL_ACTUAL: dependentFieldsValues?.["IDEAL_ACTUAL"]?.value ?? "",
-            IDEAL_BALANCE:
-              dependentFieldsValues?.["IDEAL_BALANCE"]?.value ?? "",
-            OUTSTANDING_BAL:
-              dependentFieldsValues?.["OUTSTANDING_BAL"]?.value ?? "",
-            OUT_SUBSIDY: dependentFieldsValues?.["OUT_SUBSIDY"]?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value ?? "",
-            FINAL_INST_NO: getFinalInstNumber ?? "",
-            INT_RATE: dependentFieldsValues?.["INT_RATE"]?.value ?? "",
-            INSTALLMENT_TYPE:
-              dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
-          };
-
-          const getApiData = await getRescheduleLoanInterestAmount(
-            installmentParams
-          );
-
-          return {
-            FINAL_INST_NO: {
-              value: getFinalInstallmentData?.[0]?.FINAL_INST_NO ?? "",
-              ignoreUpdate: true,
-            },
-            INST_RS: {
-              value: getApiData?.[0]?.INST_RS ?? "",
-              ignoreUpdate: true,
-            },
-          };
-        } else if (!currentField?.value) {
-          formState.setDataOnFieldChange("DELETE_DATA", {
-            DELETE_DATA: true,
-          });
           return {};
         }
+        if (
+          formState?.headerData?.[0]?.INST_NO === currentField?.value &&
+          !formState.noOfInstFlag
+        ) {
+          return {};
+        }
+        const reqParams = {
+          INST_NO: Number(currentField?.value) > 0 ? currentField?.value : "0",
+          REMAINING_INST_NO:
+            dependentFieldsValues?.["REMAINING_INST_NO"]?.value ?? "",
+          ORG_INST_NO: formState?.headerData[0]?.INST_NO ?? "",
+        };
+        const getFinalInstallmentData = await getFinalInstallment(reqParams);
+        formState.noOfInstFlag = true;
+        const getFinalInstNumber = Boolean(
+          getFinalInstallmentData?.[0]?.FINAL_INST_NO
+        )
+          ? getFinalInstallmentData?.[0]?.FINAL_INST_NO ?? ""
+          : "";
+        const installmentParams = {
+          IDEAL_ACTUAL: dependentFieldsValues?.["IDEAL_ACTUAL"]?.value ?? "",
+          IDEAL_BALANCE: dependentFieldsValues?.["IDEAL_BALANCE"]?.value ?? "",
+          OUTSTANDING_BAL:
+            dependentFieldsValues?.["OUTSTANDING_BAL"]?.value ?? "",
+          OUT_SUBSIDY: dependentFieldsValues?.["OUT_SUBSIDY"]?.value ?? "",
+          TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value ?? "",
+          FINAL_INST_NO: getFinalInstNumber ?? "",
+          INT_RATE:
+            Number(dependentFieldsValues?.["INT_RATE"]?.value) > 0
+              ? dependentFieldsValues?.["INT_RATE"]?.value
+              : "0",
+          INSTALLMENT_TYPE:
+            dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
+        };
+        const getInstallmentAmtData = await getRescheduleLoanInterestAmount(
+          installmentParams
+        );
+        const dueDatePara = {
+          INSTALLMENT_TYPE:
+            dependentFieldsValues?.["INSTALLMENT_TYPE"]?.value ?? "",
+          INST_START_DATE: dependentFieldsValues?.["INST_START_DT"]?.value
+            ? format(
+                new Date(dependentFieldsValues?.["INST_START_DT"]?.value),
+                "dd/MMM/yyyy"
+              )
+            : "",
+          INST_NO: Number(currentField?.value) > 0 ? currentField?.value : "0",
+        };
+        const getDueDateData = await getDueDate(dueDatePara);
+
+        return {
+          FINAL_INST_NO: {
+            value: getFinalInstallmentData?.[0]?.FINAL_INST_NO ?? "",
+            ignoreUpdate: true,
+          },
+          INST_DUE_DT: {
+            value: getDueDateData?.[0]?.DUE_DATE ?? "",
+            ignoreUpdate: true,
+          },
+          INST_RS: {
+            value: getInstallmentAmtData?.[0]?.INST_RS ?? "",
+            ignoreUpdate: true,
+          },
+          VALIDATE_INT_AMT: {
+            value: getInstallmentAmtData?.[0]?.INST_RS ?? "",
+          },
+          VALIDATE: {
+            value: getInstallmentAmtData?.[0]?.INST_RS ?? "",
+            ignoreUpdate: true,
+          },
+          VALIDATE_INST_NO: {
+            value: currentField?.value,
+            ignoreUpdate: true,
+          },
+        };
       },
       GridProps: { xs: 12, sm: 3, md: 2, lg: 2.5, xl: 2.5 },
     },
@@ -851,11 +1001,21 @@ export const LoanRescheduleFormMetaData = {
       type: "text",
       required: true,
       txtTransform: "uppercase",
+      maxLength: 32,
+      autoComplete: "off",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Remarks is Required"] }],
       },
-      autoComplete: "off",
+      runPostValidationHookAlways: true,
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
+      },
       GridProps: { xs: 12, sm: 9, md: 4.5, lg: 4, xl: 4 },
     },
     {
@@ -876,8 +1036,16 @@ export const LoanRescheduleFormMetaData = {
       type: "text",
       fullWidth: true,
       txtTransform: "uppercase",
-      // maxLength: 25,
+      maxLength: 50,
       autoComplete: "off",
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
+      },
       GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
@@ -899,6 +1067,13 @@ export const LoanRescheduleFormMetaData = {
       placeholder: "",
       iconStyle: {
         fontSize: "25px !important",
+      },
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (Boolean(formState?.disableButton)) {
+          return true;
+        } else {
+          return false;
+        }
       },
       GridProps: { xs: 3, sm: 3, md: 2, lg: 1.5, xl: 1.2 },
     },
@@ -943,4 +1118,363 @@ export const LoanRescheduleFormMetaData = {
       placeholder: "",
     },
   ],
+};
+
+export const LoanReviseMetaData = {
+  masterForm: {
+    form: {
+      name: "loanReviseFormMetadata",
+      label: "",
+      resetFieldOnUnmount: false,
+      validationRun: "onBlur",
+      render: {
+        ordering: "auto",
+        renderType: "simple",
+        gridConfig: {
+          item: {
+            xs: 12,
+            sm: 4,
+            md: 4,
+          },
+          container: {
+            direction: "row",
+            spacing: 1,
+          },
+        },
+      },
+      componentProps: {
+        textField: {
+          fullWidth: true,
+        },
+        numberFormat: {
+          fullWidth: true,
+        },
+      },
+    },
+    fields: [
+      {
+        render: {
+          componentType: "datePicker",
+        },
+        name: "INS_START_DT",
+        label: "Installment Start Date",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "BEGIN_BAL",
+        label: "Beginning Balance",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "rateOfInt",
+        },
+        name: "INT_RATE",
+        label: "Interest Rate",
+        type: "text",
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["Interest Rate is Required"] }],
+        },
+        // When interest rate update pass null installment amount
+        dependentFields: [
+          "INS_START_DT",
+          "BEGIN_BAL",
+          "PRIN_DEMAND_AMT",
+          "INSTALLMENT_TYPE",
+          "INST_NO",
+          "TYPE_CD",
+          "REPAY_PRIN_AMT",
+          "SR_CD",
+          "TOTAL_RECORDS",
+        ],
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldsValues
+        ) => {
+          if (currentField?.displayValue === "") {
+            return {};
+          }
+          const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
+          const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
+          const reqPara = {
+            INT_RATE: currentField?.value ?? "",
+            INST_RS: "",
+            INS_START_DT: formattedDate ?? "",
+            BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
+            PRIN_DEMAND_AMT:
+              dependentFieldsValues["PRIN_DEMAND_AMT"]?.value ?? "",
+            INSTALLMENT_TYPE:
+              dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
+            INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
+            TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
+            REPAY_PRIN_AMT:
+              dependentFieldsValues["REPAY_PRIN_AMT"]?.value ?? "",
+            CM_INST_NO: dependentFieldsValues["SR_CD"]?.value ?? "",
+            SCREEN_REF: "MST/006",
+          };
+          const getApiData = await updateInterestRate(reqPara);
+          formState.setDataOnFieldChange("GRID_DATA", {
+            ...getApiData,
+            INT_RATE: currentField?.value,
+          });
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "INST_RS",
+        label: "Installment Amount",
+        type: "text",
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Installment Amount is Required"] },
+          ],
+        },
+        dependentFields: [
+          "INT_RATE",
+          "INS_START_DT",
+          "BEGIN_BAL",
+          "PRIN_DEMAND_AMT",
+          "INSTALLMENT_TYPE",
+          "INST_NO",
+          "TYPE_CD",
+          "REPAY_PRIN_AMT",
+          "SR_CD",
+          "TOTAL_RECORDS",
+        ],
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldsValues
+        ) => {
+          if (currentField?.displayValue === "") {
+            return {};
+          }
+          const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
+          const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
+          const reqPara = {
+            INST_RS: currentField?.value ?? "",
+            INT_RATE: dependentFieldsValues["INT_RATE"]?.value ?? "",
+            INS_START_DT: formattedDate ?? "",
+            BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
+            PRIN_DEMAND_AMT:
+              dependentFieldsValues["PRIN_DEMAND_AMT"]?.value ?? "",
+            INSTALLMENT_TYPE:
+              dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
+            INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
+            TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
+            REPAY_PRIN_AMT:
+              dependentFieldsValues["REPAY_PRIN_AMT"]?.value ?? "",
+            CM_INST_NO: dependentFieldsValues["SR_CD"]?.value ?? "",
+            SCREEN_REF: "MST/006",
+          };
+          const getApiData = await updateInterestRate(reqPara);
+          formState.setDataOnFieldChange("GRID_DATA", {
+            ...getApiData,
+            INT_RATE: currentField?.value,
+          });
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "PRIN_DEMAND_AMT",
+        label: "Principal Demand",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "INT_DEMAND_AMT",
+        label: "Interest Demand",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "END_BAL",
+        label: "Ending Balance",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "INSTALLMENT_TYPE",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "INST_NO",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "TYPE_CD",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "REPAY_PRIN_AMT",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "SR_CD",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "TOTAL_RECORDS",
+        label: "",
+        placeholder: "",
+      },
+    ],
+  },
+  detailsGrid: {
+    gridConfig: {
+      dense: true,
+      gridLabel: "Loan schedule",
+      rowIdColumn: "SR_CD",
+      defaultColumnConfig: {
+        width: 350,
+        minWidth: 300,
+        maxWidth: 400,
+      },
+      allowColumnReordering: true,
+      disableSorting: false,
+      hideHeader: true,
+      disableGroupBy: true,
+      enablePagination: false,
+      containerHeight: { min: "40vh", max: "40vh" },
+      allowRowSelection: false,
+      disableLoader: false,
+    },
+    columns: [
+      {
+        accessor: "SR_CD",
+        columnName: "SrNo",
+        sequence: 1,
+        alignment: "left",
+        componentType: "default",
+        width: 70,
+        minWidth: 60,
+        maxWidth: 100,
+      },
+      {
+        accessor: "INST_START_DT",
+        columnName: "Installment Start Date",
+        sequence: 2,
+        alignment: "left",
+        componentType: "datePicker",
+        width: 150,
+        minWidth: 140,
+        maxWidth: 200,
+      },
+      {
+        accessor: "BEGIN_BAL",
+        columnName: "Beginning Balance",
+        sequence: 3,
+        alignment: "left",
+        componentType: "default",
+        width: 150,
+        minWidth: 140,
+        maxWidth: 200,
+      },
+      {
+        accessor: "INT_RATE",
+        columnName: "Interest Rate(%)",
+        sequence: 4,
+        alignment: "right",
+        componentType: "default",
+        width: 150,
+        minWidth: 140,
+        maxWidth: 200,
+      },
+      {
+        accessor: "INST_RS",
+        columnName: "Installment Amount",
+        sequence: 5,
+        alignment: "right",
+        componentType: "default",
+        width: 150,
+        minWidth: 140,
+        maxWidth: 200,
+        isDisplayTotal: true,
+        totalDecimalCount: 2,
+      },
+      {
+        accessor: "PRIN_DEMAND_AMT",
+        columnName: "Principal Demand",
+        sequence: 6,
+        alignment: "right",
+        componentType: "default",
+        width: 180,
+        minWidth: 160,
+        maxWidth: 200,
+        isDisplayTotal: true,
+        totalDecimalCount: 2,
+      },
+      {
+        accessor: "INT_DEMAND_AMT",
+        columnName: "Interest Demand",
+        sequence: 7,
+        alignment: "right",
+        componentType: "default",
+        width: 180,
+        minWidth: 160,
+        maxWidth: 200,
+        isDisplayTotal: true,
+        totalDecimalCount: 2,
+      },
+      {
+        accessor: "END_BAL",
+        columnName: "Ending Balance",
+        sequence: 8,
+        alignment: "right",
+        componentType: "default",
+        width: 200,
+        minWidth: 150,
+        maxWidth: 250,
+      },
+    ],
+  },
 };

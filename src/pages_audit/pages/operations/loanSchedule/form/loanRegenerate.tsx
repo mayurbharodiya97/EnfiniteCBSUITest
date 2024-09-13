@@ -244,14 +244,23 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
             key={"loanRegenerateForm"}
             metaData={LoanRegenerateFormMetaData as MetaDataType}
             onSubmitHandler={onSubmitHandler}
-            initialValues={detailsData?.[0] as InitialValuesType}
+            initialValues={
+              {
+                ...detailsData?.[0],
+                VALIDATE_LIMIT_AMT: detailsData?.[0]?.LIMIT_AMOUNT,
+                VALIDATE_INT_RS: detailsData?.[0]?.INST_RS,
+              } as InitialValuesType
+            }
             formStyle={{
               background: "white",
             }}
             formState={{
+              MessageBox: MessageBox,
               rows: rows,
               dtlData: dtlData,
               flag: false,
+              intRateFlag: false,
+              noOfInstFlag: false,
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
