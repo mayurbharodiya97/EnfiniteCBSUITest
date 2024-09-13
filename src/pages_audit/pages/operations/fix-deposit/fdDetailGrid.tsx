@@ -29,6 +29,7 @@ export const FDDetailGrid = () => {
     updateRetrieveFormData,
     resetAllData,
     updateViewDtlGridData,
+    setActiveStep,
   } = useContext(FDContext);
   const [openRetriveForm, setOpenRetriveForm] = useState(false);
   const [openDetailForm, setOpenDetailForm] = useState(false);
@@ -40,7 +41,6 @@ export const FDDetailGrid = () => {
   const acctNoDataRef: any = useRef({});
   const { authState } = useContext(AuthContext);
   let currentPath = useLocation().pathname;
-  const [gridMetadata, setGridMetadata] = useState(FDDetailGridMetaData);
 
   const actions: ActionTypes[] =
     Object.keys(FDState?.retrieveFormData).length === 0
@@ -77,12 +77,12 @@ export const FDDetailGrid = () => {
             multiple: undefined,
             alwaysAvailable: true,
           },
-          // {
-          //   actionName: "docs",
-          //   actionLabel: "Docs",
-          //   multiple: undefined,
-          //   alwaysAvailable: true,
-          // },
+          {
+            actionName: "docs",
+            actionLabel: "Docs",
+            multiple: undefined,
+            alwaysAvailable: true,
+          },
           {
             actionName: "add",
             actionLabel: "New FD",
@@ -191,11 +191,11 @@ export const FDDetailGrid = () => {
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
                   messageTitle: "Validation Failed",
-                  message: data?.O_MESSAGE ?? "Confirmation Pending.",
+                  message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else {
-                updateFDDetailsFormData([actionData?.rows?.[0]?.data]);
+                // updateFDDetailsFormData([actionData?.rows?.[0]?.data]);
                 navigate(actionData?.name, {
                   state: actionData?.rows,
                 });
@@ -205,11 +205,6 @@ export const FDDetailGrid = () => {
           }
         );
       } else if (data?.name === "add") {
-        updateFDDetailsFormData([
-          {
-            TRANS_ACCT_NM: "",
-          },
-        ]);
         navigate(data?.name, {
           state: [],
         });
@@ -223,6 +218,12 @@ export const FDDetailGrid = () => {
   );
 
   const handleDialogClose = useCallback(() => {
+    updateFDDetailsFormData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
+    setActiveStep(0);
     setOpenDetailForm(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
@@ -235,55 +236,32 @@ export const FDDetailGrid = () => {
     setOpenRetriveForm(false);
   };
 
-  //   useEffect(() => {
-  //     if (initialRender.current) {
-  //       initialRender.current = false;
-  //       if (location.pathname === "/cbsenfinity/operation/fix-deposit") {
-  //         setOpenRetriveForm(true);
-  //       }
-  //     }
-  //   }, [location.pathname, navigate]);
-
-  console.log("FDState grid", FDState);
-
-  //Form Header title
   useEffect(() => {
-    if (
-      FDState?.retrieveFormData?.ACCT_NM &&
-      FDState?.retrieveFormData?.BRANCH_CD &&
-      FDState?.retrieveFormData?.ACCT_TYPE &&
-      FDState?.retrieveFormData?.ACCT_CD
-    ) {
-      let label = utilFunction.getDynamicLabel(
-        currentPath,
-        authState?.menulistdata,
-        true
-      );
-      const label2 = `${label ?? ""} of A/c No.: ${
-        FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-      }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-        FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-      } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-
-      const updatedGridMetadata = {
-        ...gridMetadata,
-        gridConfig: {
-          ...gridMetadata.gridConfig,
-          gridLabel: label2,
-        },
-      };
-      setGridMetadata(updatedGridMetadata);
-    } else {
-      const updatedGridMetadata = {
-        ...gridMetadata,
-        gridConfig: {
-          ...gridMetadata.gridConfig,
-          gridLabel: "",
-        },
-      };
-      setGridMetadata(updatedGridMetadata);
+    if (initialRender.current) {
+      initialRender.current = false;
+      if (location.pathname === "/cbsenfinity/operation/fix-deposit") {
+        setOpenRetriveForm(true);
+      }
     }
-  }, [Object.keys(FDState?.retrieveFormData).length]);
+  }, [location.pathname, navigate]);
+
+  //Grid Header title
+  const label = utilFunction?.getDynamicLabel(
+    currentPath,
+    authState?.menulistdata,
+    true
+  );
+  FDDetailGridMetaData.gridConfig.gridLabel = Object.keys(
+    FDState?.retrieveFormData
+  ).length
+    ? label +
+      " " +
+      `of A/c No.: ${FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""}-${
+        FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""
+      }-${FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""} ${
+        FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""
+      }`
+    : label;
 
   return (
     <>
@@ -298,7 +276,7 @@ export const FDDetailGrid = () => {
           Object.keys(FDState?.retrieveFormData).length +
           FDState?.viewDtlGridData?.length
         }
-        finalMetaData={gridMetadata as GridMetaDataType}
+        finalMetaData={FDDetailGridMetaData as GridMetaDataType}
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
         loading={getFDViewDtlMutation?.isLoading}
@@ -430,6 +408,7 @@ export const FDDetailGrid = () => {
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
                   }}
+                  closeDialog={handleDialogClose}
                   // closeDialog={handleDialogClose}
                 />
               </div>

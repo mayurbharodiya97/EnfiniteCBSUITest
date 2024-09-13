@@ -44,14 +44,12 @@ export const ViewMasterForm = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `View Master of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    ViewMasterMetadata.form.label = label2;
-  }, []);
+  //Form Header title
+  ViewMasterMetadata.form.label = `View Master of A/c No.: ${
+    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog

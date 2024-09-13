@@ -53,14 +53,12 @@ export const IntPaidDtlGrid = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `Int Paid Detail of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    IntPaidDtlGridMetaData.gridConfig.gridLabel = label2;
-  }, []);
+  //Grid Header title
+  IntPaidDtlGridMetaData.gridConfig.gridLabel = `Int Paid Detail of A/c No.: ${
+    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog

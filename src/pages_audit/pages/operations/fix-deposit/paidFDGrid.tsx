@@ -54,14 +54,12 @@ export const PaidFDGrid = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `Paid FD Detail of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    PaidFDGridMetaData.gridConfig.gridLabel = label2;
-  }, []);
+  //Grid Header title
+  PaidFDGridMetaData.gridConfig.gridLabel = `Paid FD Detail of A/c No.: ${
+    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog
