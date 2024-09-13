@@ -27,7 +27,6 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
     name: "BRANCH_CD",
     label: "Branch Code",
     placeholder: "Select branch code",
-    defaultValue: "",
     // options: [
     //   { label: "1 branch", value: "1" },
     //   { label: "2 branch", value: "2" },
@@ -138,7 +137,10 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
 const EntryPoint = () => (
   <Fragment>
     <CustomPropertiesConfigurationProvider
-      config={{ customExtendedTypes: meta }}
+      config={{
+        customExtendedTypes: meta,
+        defaultGridConfig: { variant: "contained" },
+      }}
     >
       <AuthProvider>
         <Routes>

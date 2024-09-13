@@ -36,6 +36,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       ) : (
         <>
           <ForgotPasswordControllerWrapper
+            OTPResendRequest={API.OTPResendRequest}
+            validatePasswordFn={API.validatePasswords}
             navigate={navigate}
             bannerDetails={{
               bannerImg: imageData?.[0]?.BANK_LOGO ?? "",
