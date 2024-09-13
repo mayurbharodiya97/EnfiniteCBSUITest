@@ -292,7 +292,7 @@ export const VerifyDayendChecksums = ({
               CloseMessageBox();
               close();
             } else if (buttonName === "Yes") {
-              const branchList = ["002 ", "003 ", "004 "]; // Placeholder for actual branch list
+              const branchList = data[0]?.BRANCH_LIST;
               if (branchList.length > 0) {
                 if (switchBranchPara) {
                   // Sequential processing of branches

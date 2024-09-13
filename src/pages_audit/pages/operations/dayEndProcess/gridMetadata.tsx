@@ -107,6 +107,7 @@ export const pendingTrnsEodReportMetaData = {
     hideHeader: false,
     disableGroupBy: true,
     enablePagination: true,
+    disableGlobalFilter: true,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
@@ -116,7 +117,6 @@ export const pendingTrnsEodReportMetaData = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
-    disableGlobalFilter: true,
     isCusrsorFocused: true,
   },
   filters: [],
@@ -180,6 +180,7 @@ export const verifyDayendChecksumsMetaData = {
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [30, 50, 100],
+    disableGlobalFilter: true,
     defaultPageSize: 100,
     containerHeight: {
       min: "70vh",

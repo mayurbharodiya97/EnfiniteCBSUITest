@@ -96,9 +96,7 @@ const DayEndProcess = () => {
             onClick={() => setOpenDayendProcess(true)}
             color={"primary"}
           >
-            {data && data[0]?.EOD_FLAG === "H"
-              ? t("DayEndHover")
-              : t("DayEndProcess")}
+            {data && data[0]?.EOD_FLAG === "H" ? t("DayHandover") : t("DayEnd")}
           </GradientButton>
           <GradientButton
             onClick={() => setOpenVerifyChecksums(true)}
