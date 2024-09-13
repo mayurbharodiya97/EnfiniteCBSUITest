@@ -19,8 +19,8 @@ export const AgentMasterGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [

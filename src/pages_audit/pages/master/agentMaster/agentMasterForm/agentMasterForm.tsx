@@ -77,9 +77,10 @@ const AgentMasterForm = ({
       Number(newData?.SECURITY_PER) !== 0
     ) {
       await MessageBox({
+        messageTitle: "ValidationFailed",
         message: "SecurityAmtPerValidation",
-        messageTitle: "Alert",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
       return;
     } else {
@@ -97,8 +98,8 @@ const AgentMasterForm = ({
           data: {
             ...newData,
             ...upd,
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
             _isNewRow: defaultView === "new" ? true : false,
           },
           displayData,
@@ -154,6 +155,7 @@ const AgentMasterForm = ({
             gridData: gridData,
             rows: rows?.[0]?.data,
             handleButtonDisable: handleButtonDisable,
+            docCD: "MST/041",
           }}
           formStyle={{
             background: "white",
