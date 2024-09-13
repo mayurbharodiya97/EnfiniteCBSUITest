@@ -1,4 +1,11 @@
-import { useReducer, useContext, useEffect, useState, useRef } from "react";
+import {
+  useReducer,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
@@ -79,7 +86,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordVerificationFailure":
@@ -95,7 +102,7 @@ const reducer = (state, action) => {
         username: "",
         transactionID: "",
         comapanyCD: "",
-        branchCD: ""
+        branchCD: "",
       };
     case "usernameVerificationFailure": {
       return {
@@ -111,7 +118,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "inititatePasswordVerification": {
@@ -130,7 +137,7 @@ const reducer = (state, action) => {
         access_token: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordRotation": {
@@ -241,8 +248,6 @@ export const AuthLoginController = () => {
   const [loginState, dispath] = useReducer(reducer, inititalState);
   const [openpwdreset, setOpenPwdReset] = useState(false);
   const failureCount = useRef(0);
-  const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
-  const urlObj = useRef<any>(null);
   const { t } = useTranslation();
   const otpResendRef = useRef(1);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -260,24 +265,19 @@ export const AuthLoginController = () => {
     data: imageData,
     isLoading,
     isFetching,
-  } = useQuery<any, any>(["getLoginImageData"], () =>
-    API.getLoginImageData({ APP_TRAN_CD: "51" })
-  );
+  } = useQuery<any, any>(["getLoginImageData"], () => API.getImageData());
   const imageDataString = JSON.stringify(imageData);
-  localStorage.setItem("imageData", imageDataString);
-
-  const imageDataFromStorage: any = localStorage.getItem("imageData");
   // const imageDataObject = JSON.parse(imageDataFromStorage);
 
-  useEffect(() => {
-    if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
-      let blob = utilFunction.base64toBlob(imageData?.[0]?.DASHBOARD_APP_LOGO);
-      urlObj.current =
-        typeof blob === "object" && Boolean(blob)
-          ? URL.createObjectURL(blob)
-          : "";
-      setDashboardLogoURL(urlObj.current);
+  const dashboardAppLogo = useMemo(() => {
+    const dashAppLogo = imageData?.[0]?.DASHBOARD_APP_LOGO;
+    if (dashAppLogo) {
+      const blob = utilFunction.base64toBlob(dashAppLogo);
+      if (blob) {
+        return URL.createObjectURL(blob);
+      }
     }
+    return "";
   }, [imageData]);
 
   useEffect(() => {
@@ -523,10 +523,7 @@ export const AuthLoginController = () => {
                 padding={"25px"}
               >
                 <Tooltip describeChild title="Enfinity-CBS-UI-V1.0.17">
-                  <img
-                    src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
-                    alt="Logo"
-                  />
+                  <img src={dashboardAppLogo} alt="Logo" />
                 </Tooltip>
               </Grid>
               <Grid
