@@ -25,7 +25,7 @@ import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
-import { Dialog } from "@mui/material";
+import { CircularProgress, Dialog } from "@mui/material";
 import { FileUploadControl } from "components/fileUpload";
 
 const actions: ActionTypes[] = [
@@ -46,7 +46,7 @@ const DailyTransactionImport = () => {
   const [gridData, setGridData] = useState<any>([]);
   const hasUpdated = useRef(false);
   const [isSelectFileOpen, setIsSelectFileOpen] = useState(false);
-
+  const gridRef = useRef<any>(null);
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "errors") {
@@ -70,7 +70,13 @@ const DailyTransactionImport = () => {
           variant: "error",
         });
       },
-      onSuccess: async (data, variables) => {},
+      onSuccess: async (data, variables) => {
+        enqueueSnackbar(t("DataSaveSuccessfully"), {
+          variant: "success",
+        });
+        formRef?.current?.handleFormReset({ preventDefault: () => {} });
+        setGridData([]);
+      },
     }
   );
   const getValidateToSelectFile: any = useMutation(
@@ -141,14 +147,23 @@ const DailyTransactionImport = () => {
         ...data,
       });
     } else {
-      getDailyTransactionUploadData.mutate({
-        ...data,
-        COMP_CD: authState.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        ACCT_TYPE: data?.FROM_ACCT_TYPE,
-        ACCT_CD: data?.FROM_ACCT_CD,
-        FLAG: "P",
-      });
+      if (
+        gridRef.current?.cleanData?.().length &&
+        gridRef.current?.cleanData?.().length > 0
+      ) {
+        getDailyTransactionUploadData.mutate({
+          COMP_CD: authState.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          ACCT_TYPE: data?.FROM_ACCT_TYPE,
+          ACCT_CD: data?.FROM_ACCT_CD,
+          FLAG: "P",
+          IGNR_INSUF: data?.IGNR_INSUF,
+          CHEQUE_NO: data?.CHEQUE_NO,
+          OPP_ENT: data?.OPP_ENT,
+          REMARKS: data?.REMARKS,
+          TABLE_NM: data?.TABLE_NM,
+        });
+      }
     }
     endSubmit(true);
   };
@@ -196,7 +211,11 @@ const DailyTransactionImport = () => {
                 handleSubmit(event, "Save");
               }}
               disabled={isSubmitting}
-              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              endIcon={
+                getDailyTransactionUploadData.isLoading ? (
+                  <CircularProgress size={20} />
+                ) : null
+              }
               color={"primary"}
             >
               {t("Upload Data")}
@@ -214,6 +233,7 @@ const DailyTransactionImport = () => {
           // loading={getInsuranceDetailData.isLoading}
           actions={actions}
           setAction={setCurrentAction}
+          ref={gridRef}
         />
       </>
 

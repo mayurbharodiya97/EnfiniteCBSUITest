@@ -8,7 +8,6 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { getDailyTransactionImportData } from "./api";
 import { fi } from "date-fns/locale";
 
-
 export const DailyTransactionImportMetadata = {
   form: {
     name: "DailyTransactionImport",
@@ -92,7 +91,6 @@ export const DailyTransactionImportMetadata = {
             BRANCH_CD: authState?.user?.branchCode,
             USER_NAME: authState?.user?.id,
             DOC_CD: "MST/454",
-
           });
         },
         postValidationSetCrossFieldValues: (
@@ -146,7 +144,7 @@ export const DailyTransactionImportMetadata = {
               BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
             };
-            console.log("Apireq", Apireq)
+            console.log("Apireq", Apireq);
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
 
             let btn99, returnVal;
@@ -170,7 +168,7 @@ export const DailyTransactionImportMetadata = {
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                   });
                 }
-                returnVal = postData
+                returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
@@ -184,7 +182,7 @@ export const DailyTransactionImportMetadata = {
                 }
               } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
-                  returnVal = postData
+                  returnVal = postData;
                 } else {
                   returnVal = "";
                 }
@@ -203,7 +201,7 @@ export const DailyTransactionImportMetadata = {
                   TABLE_NM: "",
                   IGNR_INSUF: "",
                 });
-                console.log("gridDetail", gridDetail)
+                console.log("gridDetail", gridDetail);
                 formState.setDataOnFieldChange("GRID_DETAIL", gridDetail);
               }
             }
@@ -212,18 +210,18 @@ export const DailyTransactionImportMetadata = {
               FROM_ACCT_CD:
                 returnVal !== ""
                   ? {
-                    value: utilFunction.getPadAccountNumber(
-                      field?.value,
-                      dependentFieldsValues?.FROM_ACCT_TYPE?.optionData
-                    ),
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  }
+                      value: utilFunction.getPadAccountNumber(
+                        field?.value,
+                        dependentFieldsValues?.FROM_ACCT_TYPE?.optionData
+                      ),
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    }
                   : {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -234,8 +232,7 @@ export const DailyTransactionImportMetadata = {
                 value: returnVal?.TYPE_CD ?? "",
               },
               DESCRIPTION: {
-                value: "", isFieldFocused: true,
-
+                isFieldFocused: true,
               },
             };
           } else {
@@ -244,7 +241,6 @@ export const DailyTransactionImportMetadata = {
               FROM_ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
-
             };
           }
         },
@@ -295,6 +291,15 @@ export const DailyTransactionImportMetadata = {
         });
       },
       _optionsKey: "getDailyImportConfigData",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["Please Enter Configuration"],
+          },
+        ],
+      },
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -302,20 +307,20 @@ export const DailyTransactionImportMetadata = {
         dependentFieldValues
       ) => {
         if (field.value) {
-          console.log("field", field)
+          console.log("field", field);
           return {
             TABLE_NM: {
-              value: field?.optionData?.[0]?.TABLE_NM
+              value: field?.optionData?.[0]?.TABLE_NM,
             },
             TRAN_CD: {
-              value: field?.optionData?.[0]?.TRAN_CD
-            }
-          }
+              value: field?.optionData?.[0]?.TRAN_CD,
+            },
+          };
         } else {
           return {
             TABLE_NM: { value: "" },
-            TRAN_CD: { value: "" }
-          }
+            TRAN_CD: { value: "" },
+          };
         }
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -349,7 +354,6 @@ export const DailyTransactionImportMetadata = {
           if (values?.value?.length > 10) {
             return false;
           }
-
           return true;
         },
       },
@@ -362,7 +366,12 @@ export const DailyTransactionImportMetadata = {
           },
         ],
       },
-      dependentFields: ["FROM_ACCT_CD", "FROM_ACCT_TYPE", "FROM_BRANCH_CD", "TYPE_CD"],
+      dependentFields: [
+        "FROM_ACCT_CD",
+        "FROM_ACCT_TYPE",
+        "FROM_BRANCH_CD",
+        "TYPE_CD",
+      ],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -408,7 +417,7 @@ export const DailyTransactionImportMetadata = {
             ),
             CHEQUE_NO: field.value,
             TYPE_CD: dependentFieldsValues?.["TYPE_CD"]?.value,
-            SCREEN_REF: "MST/454"
+            SCREEN_REF: "MST/454",
           });
           let btn99;
 
@@ -640,5 +649,3 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
     },
   ],
 };
-
-
