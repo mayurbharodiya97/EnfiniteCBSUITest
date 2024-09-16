@@ -1,5 +1,6 @@
 import { DefaultErrorObject } from "components/utils";
 import { AddIDinResponseData, utilFunction } from "components/utils";
+import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const CashReceiptEntrysData2 = async ({ a, b }) => {
@@ -295,6 +296,33 @@ export const getTokenValidation = async (reqData) => {
       ACCT_CD: reqData?.ACCT_CD,
       TOKEN_NO: reqData?.TOKEN_NO,
       SCREEN_REF: reqData?.SCREEN_REF,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getAmountValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECREDITDEBITAMT", {
+      ...reqData,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getChqDateValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECHQDATE", {
+      BRANCH_CD: reqData?.BRANCH_CD ?? "",
+      TYPE_CD: reqData?.TYPE_CD ?? "",
+      CHEQUE_NO: reqData?.CHEQUE_NO ?? "",
+      CHEQUE_DT: format(new Date(reqData?.CHEQUE_DT), "dd/MMM/yyyy"),
     });
   if (status === "0") {
     return data;

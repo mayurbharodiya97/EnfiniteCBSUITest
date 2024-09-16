@@ -22,6 +22,7 @@ export const SingleDeno = () => {
   const myFormRef = useRef<any>(null);
   const prevCardReq = useRef<any>(null);
   const endSubmitRef = useRef<any>(null);
+  const cardDtlRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const customParameter = useContext(CustomPropertiesConfigurationContext);
@@ -33,11 +34,8 @@ export const SingleDeno = () => {
     singleDenoRow: [
       {
         BRANCH_CD: authState?.user?.branchCode,
-        ACCT_TYPE: "",
-        ACCT_CD: "",
       },
     ],
-    RECEIPT_TOTAL: "0",
   });
   const [arrFieldData, setArrFieldData] = useState<any>({});
   const {
@@ -114,23 +112,35 @@ export const SingleDeno = () => {
   ) => {
     endSubmitRef.current = { endSubmit };
     if (Object?.keys(data)?.length > 0) {
-      if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT > 0) {
-        data.TRN = "1";
-      } else if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT < 0) {
-        data.TRN = "4";
+      if (
+        (Boolean(data?.FINAL_AMOUNT) &&
+          Boolean(Number(data?.FINAL_AMOUNT) > 0)) ||
+        (Boolean(data?.FINAL_AMOUNT) && Boolean(Number(data?.FINAL_AMOUNT) < 0))
+      ) {
+        if (data?.FINAL_AMOUNT > 0) {
+          data.TRN = "1";
+        } else if (data?.FINAL_AMOUNT < 0) {
+          data.TRN = "4";
+        }
+        setFormData(data);
+        const formattedDate = format(
+          parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+          "dd/MMM/yyyy"
+        ).toUpperCase();
+        getData?.mutate({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          USER_NAME: authState?.user?.id,
+          TRAN_DT: formattedDate,
+          endSubmit: endSubmit,
+        });
+      } else {
+        endSubmitRef?.current?.endSubmit(true);
+        enqueueSnackbar(
+          "Final amount must be either greater than or less than zero.",
+          { variant: "error" }
+        );
       }
-      setFormData(data);
-      const formattedDate = format(
-        parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-        "dd/MMM/yyyy"
-      ).toUpperCase();
-      getData?.mutate({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        USER_NAME: authState?.user?.id,
-        TRAN_DT: formattedDate,
-        endSubmit: endSubmit,
-      });
     }
   };
 
@@ -193,6 +203,42 @@ export const SingleDeno = () => {
     }
   }, [getData?.isLoading]);
 
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardDtlRef?.current?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  useEffect(() => {
+    if (cardDetails?.length) {
+      cardDtlRef.current = cardDetails;
+    }
+  }, [cardDetails]);
+
   return (
     <>
       <DailyTransTabs
@@ -210,7 +256,7 @@ export const SingleDeno = () => {
       <FormWrapper
         onSubmitHandler={handleSubmit}
         initialValues={singleDenoRows ?? {}}
-        key={"single-deno"}
+        key={"single-deno" + denoTableMetadataTotal + singleDenoRows}
         metaData={denoTableMetadataTotal as MetaDataType}
         formStyle={{}}
         hideHeader={true}
@@ -219,10 +265,29 @@ export const SingleDeno = () => {
           onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
           setCardDetails,
           docCD: "TRN/042",
+          getCardColumnValue,
         }}
-        onFormButtonClickHandel={() => {
-          let event: any = { preventDefault: () => {} };
-          myFormRef?.current?.handleSubmit(event, "SAVE");
+        onFormButtonClickHandel={(id) => {
+          if (id === "DENOBTN") {
+            let event: any = { preventDefault: () => {} };
+            myFormRef?.current?.handleSubmit(event, "SAVE");
+          }
+          // else if (id === "ADDNEWROW") {
+          //   //@ts-ignore
+          //   setSingleDenoRows((oldRow) => {
+          //     console.log(oldRow,'oldROW>>',oldRow?.singleDenoRow[0]);
+          //     return {
+          //       ...oldRow,
+          //       singleDenoRow: [
+          //         ...oldRow?.singleDenoRow,
+          //         {
+          //           ...oldRow?.singleDenoRow[0],
+          //           BRANCH_CD: authState?.user?.branchCode,
+          //         },
+          //       ],
+          //     };
+          //   });
+          // }
         }}
         setDataOnFieldChange={(action, payload) => {
           if (action === "ACCT_CD") {
@@ -260,7 +325,6 @@ export const SingleDeno = () => {
                 reqData: tabApiReqPara,
               });
             }
-          } else if (action === "RECEIPT") {
           }
         }}
         ref={myFormRef}

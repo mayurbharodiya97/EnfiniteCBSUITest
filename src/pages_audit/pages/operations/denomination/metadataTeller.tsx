@@ -4,6 +4,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { utilFunction } from "components/utils";
+import { Troubleshoot } from "@mui/icons-material";
 
 export const TellerScreenMetadata: any = {
   form: {
@@ -979,77 +980,6 @@ export const TellerScreenMetadata: any = {
     // },
   ],
 };
-// export const denoViewTrnGridMetaData: GridMetaDataType = {
-//   gridConfig: {
-//     dense: true,
-//     gridLabel: "View Transactions",
-//     rowIdColumn: "id",
-
-//     defaultColumnConfig: {
-//       width: 200,
-//       maxWidth: 300,
-//       minWidth: 200,
-//     },
-
-//     allowColumnReordering: false,
-//     disableSorting: false,
-//     hideHeader: false,
-//     disableGroupBy: true,
-//     enablePagination: false,
-//     containerHeight: {
-//       min: "420px",
-//       max: "420px",
-//     },
-//     allowFilter: false,
-//     allowColumnHiding: false,
-//     allowRowSelection: false,
-//     isCusrsorFocused: true,
-//     hideFooter: true,
-//   },
-//   columns: [
-//     {
-//       accessor: "SR_NO",
-//       columnName: "Sr.No",
-//       sequence: 1,
-//       isAutoSequence: true,
-//       alignment: "left",
-//       componentType: "default",
-//       width: 100,
-//       minWidth: 100,
-//       maxWidth: 100,
-//     },
-//     {
-//       accessor: "Column1",
-//       columnName: "Column1",
-//       sequence: 2,
-//       alignment: "left",
-//       componentType: "default",
-//       width: 300,
-//       minWidth: 200,
-//       maxWidth: 350,
-//     },
-//     {
-//       accessor: "Column2",
-//       columnName: "Column2",
-//       sequence: 3,
-//       alignment: "left",
-//       componentType: "default",
-//       width: 90,
-//       minWidth: 100,
-//       maxWidth: 200,
-//     },
-//     {
-//       accessor: "Column3",
-//       columnName: "Column3",
-//       sequence: 4,
-//       alignment: "left",
-//       componentType: "default",
-//       width: 180,
-//       minWidth: 180,
-//       maxWidth: 180,
-//     },
-//   ],
-// };
 
 export const cashReportMetaData = {
   title: "View Transactions",
@@ -1059,17 +989,6 @@ export const cashReportMetaData = {
   retrievalType: "",
   groupBy: [""],
   columns: [
-    // {
-    //   accessor: "sr_no",
-    //   columnName: "SrNo",
-    //   sequence: 1,
-    //   alignment: "left",
-    //   componentType: "default",
-    //   width: 65,
-    //   minWidth: 65,
-    //   maxWidth: 130,
-    //   isAutoSequence: true,
-    // },
     {
       accessor: "BRANCH_CD",
       columnName: "BrCode",
@@ -1106,7 +1025,6 @@ export const cashReportMetaData = {
       sequence: 5,
       alignment: "left",
       Cell: components.DateCell,
-      // dateFormat: "dd/MM/yyyy",
       format: "dd/MM/yyyy",
       width: 120,
       minWidth: 60,
@@ -1152,8 +1070,6 @@ export const cashReportMetaData = {
       minWidth: 60,
       maxWidth: 220,
       color: "red",
-      // currencyRefColumn: "CURR_CD",
-      // symbolPosi: "end",
     },
     {
       accessor: "CREDIT",
@@ -1231,417 +1147,6 @@ export const cashReportMetaData = {
     },
   ],
 };
-// export const denoTableMetadata = {
-//   form: {
-//     name: "single_denomination",
-//     label: "",
-//     resetFieldOnUnmount: false,
-//     validationRun: "onBlur",
-//     submitAction: "home",
-//     render: {
-//       ordering: "auto",
-//       renderType: "simple",
-//       gridConfig: {
-//         item: {
-//           xs: 12,
-//           sm: 12,
-//           md: 12,
-//           lg: 12,
-//           xl: 12,
-//         },
-//         container: {
-//           direction: "row",
-//           spacing: 3,
-//         },
-//       },
-//     },
-//     componentProps: {
-//       textField: {
-//         fullWidth: true,
-//       },
-//       select: {
-//         fullWidth: true,
-//       },
-//       datePicker: {
-//         fullWidth: true,
-//       },
-//       numberFormat: {
-//         fullWidth: true,
-//       },
-//       inputMask: {
-//         fullWidth: true,
-//       },
-//       datetimePicker: {
-//         fullWidth: true,
-//       },
-//       divider: {
-//         fullWidth: true,
-//       },
-//     },
-//   },
-//   fields: [
-//     {
-//       render: {
-//         componentType: "arrayField",
-//       },
-//       name: "singleDenoRow",
-//       label: "Single Denomination",
-//       isRemoveButton: true,
-//       displayCountName: "row",
-//       isScreenStyle: true,
-//       disagreeButtonName: "No",
-//       agreeButtonName: "Yes",
-//       errorTitle: "Are you Sure you want to delete this row?",
-//       removeRowFn: "deleteFormArrayFieldData",
-//       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-//       _fields: [
-//         // {
-//         //   render: {
-//         //     componentType: "branchCode",
-//         //   },
-//         //   GridProps: {
-//         //     xs: 6,
-//         //     sm: 6,
-//         //     md: 2,
-//         //     lg: 1,
-//         //     xl: 1,
-//         //   },
-//         // },
-//         // {
-//         //   render: {
-//         //     componentType: "accountType",
-//         //   },
-//         //   GridProps: {
-//         //     xs: 6,
-//         //     sm: 6,
-//         //     md: 2,
-//         //     lg: 1,
-//         //     xl: 1,
-//         //   },
-//         // },
-//         // {
-//         //   render: {
-//         //     componentType: "accountCode",
-//         //   },
-//         //   GridProps: {
-//         //     xs: 6,
-//         //     sm: 6,
-//         //     md: 2,
-//         //     lg: 1.2,
-//         //     xl: 1.2,
-//         //   },
-//         // },
-//         {
-//           render: { componentType: "_accountNumber" },
-//           branchCodeMetadata: {
-//             GridProps: {
-//               xs: 6,
-//               sm: 3,
-//               md: 2,
-//               lg: 1.2,
-//               xl: 1.2,
-//             },
-//           },
-//           accountTypeMetadata: {
-//             dependentFields: ["BRANCH_CD"],
-//             postValidationSetCrossFieldValues: (
-//               field,
-//               formState,
-//               authState,
-//               dependentFieldValues
-//             ) => {
-//               console.log(dependentFieldValues, "dependentFieldValues");
-//               formState.setDataOnFieldChange("ACCT_TYPE", {
-//                 currentField: field,
-//                 branchCode:
-//                   dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value ??
-//                   "",
-//               });
-//             },
-//             GridProps: {
-//               xs: 6,
-//               sm: 3,
-//               md: 2,
-//               lg: 1.2,
-//               xl: 1.2,
-//             },
-//           },
-//           accountCodeMetadata: {
-//             postValidationSetCrossFieldValues: async (
-//               field,
-//               formState,
-//               authState,
-//               dependentFieldValues
-//             ) => {
-//               console.log(
-//                 field,
-//                 formState,
-//                 authState,
-//                 dependentFieldValues,
-//                 "metadtaatahdnbbndka"
-//               );
-//               const companyCode = authState?.companyID;
-//               const branchCode =
-//                 dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
-//               const accountType =
-//                 dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
-//               let accountCode = field?.value ?? "";
-//               if (
-//                 Boolean(companyCode) &&
-//                 Boolean(branchCode) &&
-//                 Boolean(accountType) &&
-//                 Boolean(accountCode)
-//               ) {
-//                 accountCode = utilFunction?.getPadAccountNumber(
-//                   field?.value,
-//                   dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-//                     ?.optionData?.[0]
-//                 );
-//                 const reqParameters = {
-//                   BRANCH_CD: branchCode,
-//                   COMP_CD: companyCode,
-//                   ACCT_TYPE: accountType,
-//                   ACCT_CD: accountCode,
-//                   SCREEN_REF: "ETRN/039",
-//                 };
-//                 const apiResponse = await GeneralAPI.getAccNoValidation(
-//                   reqParameters
-//                 );
-//                 if (apiResponse?.RESTRICTION) {
-//                   formState.MessageBox({
-//                     messageTitle: "Validation Failed...!",
-//                     message: apiResponse.RESTRICTION,
-//                     buttonNames: ["Ok"],
-//                     defFocusBtnName: "Ok",
-//                     icon: "ERROR",
-//                   });
-//                   return {
-//                     ACCT_CD: { value: "" },
-//                     ACCT_TYPE: { value: "" },
-//                     RECEIPT: { value: "" },
-//                     PAYMENT: { value: "" },
-//                   };
-//                 }
-
-//                 if (apiResponse?.MESSAGE1) {
-//                   formState.MessageBox({
-//                     messageTitle: "Validation Alert",
-//                     message: apiResponse.MESSAGE1,
-//                     buttonNames: ["Ok"],
-//                     defFocusBtnName: "Ok",
-//                     icon: "INFO",
-//                   });
-//                 }
-
-//                 const carousalCardDataReqParameters = {
-//                   COMP_CD: companyCode,
-//                   ACCT_TYPE: accountType,
-//                   BRANCH_CD: branchCode,
-//                   ACCT_CD: accountCode,
-//                   PARENT_TYPE:
-//                     dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-//                       ?.optionData?.[0]?.PARENT_TYPE ?? "",
-//                 };
-
-//                 const carousalCardData = await CommonApi.getCarousalCards({
-//                   reqData: carousalCardDataReqParameters,
-//                 });
-
-//                 formState.setDataOnFieldChange("ACCT_CD", {
-//                   accountCode,
-//                   dependentFieldValues,
-//                   carousalCardData,
-//                 });
-//                 formState.previousFieldValue = accountCode;
-//                 return {
-//                   ACCT_CD: { value: accountCode ?? "", ignoreUpdate: true },
-//                 };
-//                 console.log(apiResponse, "apiResponse9090909");
-//                 // console.log(accountCode, "accountCode9090909");
-//               }
-//             },
-//             GridProps: {
-//               xs: 6,
-//               sm: 3,
-//               md: 2,
-//               lg: 1.2,
-//               xl: 1.2,
-//             },
-//           },
-//         },
-//         {
-//           render: {
-//             componentType: "autocomplete",
-//           },
-//           name: "TRX",
-//           label: "TRX",
-//           placeholder: "TRX",
-//           defaultValue: "1",
-//           options: [
-//             { label: "1 - CASH DEPOSITE", value: "D" },
-//             { label: "4 - CASH WITHDRAWAL", value: "W" },
-//           ],
-//           _optionKey: "TRXdata",
-//           GridProps: {
-//             xs: 6,
-//             sm: 3,
-//             md: 2,
-//             lg: 1,
-//             xl: 1,
-//           },
-//         },
-//         {
-//           render: {
-//             componentType: "numberFormat",
-//           },
-//           name: "TOKEN",
-//           label: "Token",
-//           placeholder: "Token",
-//           type: "text",
-//           GridProps: {
-//             xs: 6,
-//             sm: 3,
-//             md: 2,
-//             lg: 1,
-//             xl: 1,
-//           },
-//           dependentFields: ["TRX"],
-//           shouldExclude(fieldData, dependentFieldsValues, formState) {
-//             if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "W") {
-//               return false;
-//             } else {
-//               return true;
-//             }
-//           },
-//         },
-//         {
-//           render: {
-//             componentType: "autocomplete",
-//           },
-//           name: "SDC",
-//           label: "SDC",
-//           placeholder: "SDC",
-//           defaultValue: "CHGT",
-//           type: "select",
-//           options: API.getSDCList,
-//           _optionsKey: "getSDCList",
-//           GridProps: { xs: 6, sm: 3, md: 2, lg: 1.3, xl: 1.3 },
-//         },
-//         {
-//           render: {
-//             componentType: "textField",
-//           },
-//           name: "Remarks",
-//           label: "Remarks",
-//           placeholder: "Remarks",
-//           type: "text",
-//           GridProps: { xs: 6, sm: 3, md: 4, lg: 1, xl: 1 },
-//         },
-//         {
-//           render: {
-//             componentType: "numberFormat",
-//           },
-//           name: "CHQNO",
-//           label: "Chq.No",
-//           placeholder: "Chq.No",
-//           type: "number",
-//           GridProps: { xs: 6, sm: 3, md: 2, lg: 1, xl: 1 },
-//         },
-//         {
-//           render: {
-//             componentType: "amountField",
-//           },
-//           name: "RECEIPT",
-//           label: "Receipt",
-//           placeholder: "Receipt",
-//           type: "text",
-//           validationRun: "all",
-//           validate: (currentField, value) => {
-//             if (currentField?.value) {
-//               return;
-//             }
-//           },
-//           postValidationSetCrossFieldValues: async (
-//             field,
-//             formState,
-//             authState,
-//             dependentFieldsValues
-//           ) => {
-//             if (
-//               !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value
-//               ) &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value
-//               ) &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value
-//               ) &&
-//               Boolean(field?.value)
-//             ) {
-//               formState.setDataOnFieldChange("RECEIPT", {
-//                 field,
-//                 dependentFieldsValues,
-//               });
-//             }
-//             if (field?.value) {
-//               return {
-//                 RECEIPT_TOTAL: { value: field.value ?? "0" },
-//               };
-//             } else {
-//               return {
-//                 RECEIPT_TOTAL: { value: "" },
-//               };
-//             }
-//           },
-//           GridProps: { xs: 6, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
-//         },
-//         {
-//           render: {
-//             componentType: "amountField",
-//           },
-//           name: "PAYMENT",
-//           label: "Payment",
-//           placeholder: "Payment",
-//           type: "text",
-//           validationRun: "all",
-//           validate: (currentField, value) => {
-//             if (currentField?.value) {
-//               return;
-//             }
-//           },
-//           postValidationSetCrossFieldValues: async (
-//             field,
-//             formState,
-//             authState,
-//             dependentFieldsValues
-//           ) => {
-//             if (
-//               !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value
-//               ) &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value
-//               ) &&
-//               Boolean(
-//                 dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value
-//               ) &&
-//               Boolean(field?.value)
-//             ) {
-//               formState.setDataOnFieldChange("PAYMENT", {
-//                 field,
-//                 dependentFieldsValues,
-//               });
-//             }
-//           },
-//           GridProps: { xs: 6, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
-//         },
-//       ],
-//     },
-//   ],
-// };
 export const denoTableMetadataTotal: any = {
   form: {
     refID: 1667,
@@ -1686,63 +1191,95 @@ export const denoTableMetadataTotal: any = {
   fields: [
     {
       render: {
+        componentType: "spacer",
+      },
+      name: "SPCER",
+      GridProps: {
+        xs: 0.0,
+        md: 1.5,
+        sm: 1.3,
+        lg: 10.8,
+        xl: 10.8,
+      },
+    },
+    // {
+    //   render: {
+    //     componentType: "formbutton",
+    //   },
+    //   name: "ADDNEWROW",
+    //   label: "AddRow",
+    //   endsIcon: "AddCircleOutlineRounded",
+    //   rotateIcon: "scale(2)",
+    //   placeholder: "",
+    //   type: "text",
+    //   tabIndex: "-1",
+    //   iconStyle: {
+    //     fontSize: "25px !important",
+    //   },
+    //   GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1.2, xl: 1.2 },
+    // },
+    {
+      render: {
         componentType: "arrayField",
       },
       name: "singleDenoRow",
       isRemoveButton: true,
       displayCountName: "row",
       isScreenStyle: true,
-      // fixedRows: true,
+      addRowFn: (data) => {
+        const rowsArray = Array.isArray(data?.singleDenoRow)
+          ? data?.singleDenoRow
+          : [];
+        if (rowsArray?.length > 0) {
+          const row = rowsArray[rowsArray?.length - 1];
+          if (Boolean(row?.TRX)) {
+            if (Boolean(row?.TRX === "1")) {
+              if (
+                Boolean(row?.BRANCH_CD) &&
+                Boolean(row?.ACCT_TYPE) &&
+                Boolean(row?.ACCT_CD) &&
+                Boolean(row?.TRX) &&
+                Boolean(row?.SDC) &&
+                Boolean(row?.REMARK) &&
+                Boolean(row?.RECEIPT)
+              ) {
+                return true;
+              }
+              return false;
+            } else if (Boolean(row?.TRX === "4")) {
+              if (
+                Boolean(row?.BRANCH_CD) &&
+                Boolean(row?.ACCT_TYPE) &&
+                Boolean(row?.ACCT_CD) &&
+                Boolean(row?.TRX) &&
+                Boolean(row?.TOKEN) &&
+                Boolean(row?.SDC) &&
+                Boolean(row?.REMARK) &&
+                Boolean(row?.CHQNO) &&
+                Boolean(row?.CHQ_DT) &&
+                Boolean(row?.PAYMENT)
+              ) {
+                return true;
+              }
+              return false;
+            }
+            return false;
+          }
+          return false;
+        }
+        return false;
+      },
       disagreeButtonName: "No",
       agreeButtonName: "Yes",
+      isDivider: false,
       errorTitle: "Are you Sure you want to delete this row?",
       removeRowFn: "deleteFormArrayFieldData",
       changeRowOrder: true,
-      // addRowFn: (...rest) => {
-      //   console.log(rest, "restDatadatadatadata");
-      // },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
-        // {
-        //   render: {
-        //     componentType: "branchCode",
-        //   },
-        //   GridProps: {
-        //     xs: 6,
-        //     sm: 6,
-        //     md: 2,
-        //     lg: 1,
-        //     xl: 1,
-        //   },
-        // },
-        // {
-        //   render: {
-        //     componentType: "accountType",
-        //   },
-        //   GridProps: {
-        //     xs: 6,
-        //     sm: 6,
-        //     md: 2,
-        //     lg: 1,
-        //     xl: 1,
-        //   },
-        // },
-        // {
-        //   render: {
-        //     componentType: "accountCode",
-        //   },
-        //   GridProps: {
-        //     xs: 6,
-        //     sm: 6,
-        //     md: 2,
-        //     lg: 1.2,
-        //     xl: 1.2,
-        //   },
-        // },
         {
           render: { componentType: "_accountNumber" },
           branchCodeMetadata: {
-            // isFieldFocused: true,
             postValidationSetCrossFieldValues: async (
               field,
               formState,
@@ -1750,12 +1287,11 @@ export const denoTableMetadataTotal: any = {
               dependentFieldsValues
             ) => {
               return {
-                // ACCT_TYPE: { value: "" },
                 ACCT_CD: { value: "" },
                 FLAG_HIDE: { value: "" },
                 TRX: { value: "1" },
                 CHQNO: { value: "" },
-                CHQ_DT: { value: "" },
+                CHQ_DT: { value: authState?.workingDate ?? "" },
                 RECEIPT: { value: "" },
                 PAYMENT: { value: "" },
               };
@@ -1776,7 +1312,6 @@ export const denoTableMetadataTotal: any = {
               authState,
               dependentFieldValues
             ) => {
-              // console.log(dependentFieldValues, "dependentFieldValues");
               formState.setDataOnFieldChange("ACCT_TYPE", {
                 currentField: field,
                 branchCode:
@@ -1788,7 +1323,7 @@ export const denoTableMetadataTotal: any = {
                 FLAG_HIDE: { value: "" },
                 TRX: { value: "1" },
                 CHQNO: { value: "" },
-                CHQ_DT: { value: "" },
+                CHQ_DT: { value: authState?.workingDate ?? "" },
                 RECEIPT: { value: "" },
                 PAYMENT: { value: "" },
               };
@@ -1809,13 +1344,6 @@ export const denoTableMetadataTotal: any = {
               authState,
               dependentFieldValues
             ) => {
-              // console.log(
-              //   field,
-              //   formState,
-              //   authState,
-              //   dependentFieldValues,
-              //   "metadtaatahdnbbndka"
-              // );
               const previousValue = formState.previousFieldValue || "";
               if (field.value !== previousValue) {
                 const companyCode = authState?.companyID;
@@ -1863,9 +1391,9 @@ export const denoTableMetadataTotal: any = {
                           return {
                             ACCT_CD: { value: "" },
                             FLAG_HIDE: { value: "" },
-                            // TRX: { value: "1" },
+                            TRX: { value: "1" },
                             CHQNO: { value: "" },
-                            CHQ_DT: { value: "" },
+                            CHQ_DT: { value: authState?.workingDate ?? "" },
                             RECEIPT: { value: "" },
                             PAYMENT: { value: "" },
                           };
@@ -1880,9 +1408,9 @@ export const denoTableMetadataTotal: any = {
                           return {
                             ACCT_CD: { value: "" },
                             FLAG_HIDE: { value: "" },
-                            // TRX: { value: "1" },
+                            TRX: { value: "1" },
                             CHQNO: { value: "" },
-                            CHQ_DT: { value: "" },
+                            CHQ_DT: { value: authState?.workingDate ?? "" },
                             RECEIPT: { value: "" },
                             PAYMENT: { value: "" },
                           };
@@ -1895,35 +1423,6 @@ export const denoTableMetadataTotal: any = {
                       }
                     }
                   }
-
-                  // if (apiResponse?.RESTRICTION) {
-                  //   formState.MessageBox({
-                  //     messageTitle: "Validation Failed...!",
-                  //     message: apiResponse.RESTRICTION,
-                  //     buttonNames: ["Ok"],
-                  //     defFocusBtnName: "Ok",
-                  //     icon: "ERROR",
-                  //   });
-                  //   return {
-                  //     ACCT_CD: { value: "" },
-                  //     FLAG_HIDE: { value: "" },
-                  //     TRX: { value: "1" },
-                  //     CHQNO: { value: "" },
-                  //     CHQ_DT: { value: "" },
-                  //     RECEIPT: { value: "" },
-                  //     PAYMENT: { value: "" },
-                  //   };
-                  // }
-
-                  // if (apiResponse?.MESSAGE1) {
-                  //   formState.MessageBox({
-                  //     messageTitle: "Validation Alert",
-                  //     message: apiResponse.MESSAGE1,
-                  //     buttonNames: ["Ok"],
-                  //     defFocusBtnName: "Ok",
-                  //     icon: "INFO",
-                  //   });
-                  // }
 
                   const carousalCardDataReqParameters = {
                     COMP_CD: companyCode,
@@ -1948,12 +1447,12 @@ export const denoTableMetadataTotal: any = {
                   return {
                     ACCT_CD: { value: accountCode ?? "" },
                     FLAG_HIDE: { value: "A" },
-                    // TRX: { value: "1" },
+                    TRX: { value: "1" },
                     CHQNO: {
-                      value: "0",
+                      value: apiResponse?.CHEQUE_NO ?? "",
                       ignoreUpdate: true,
                     },
-                    CHQ_DT: { value: "" },
+                    CHQ_DT: { value: authState?.workingDate ?? "" },
                     RECEIPT: { value: "" },
                     PAYMENT: { value: "" },
                   };
@@ -1969,7 +1468,6 @@ export const denoTableMetadataTotal: any = {
             },
             schemaValidation: {},
             validate: (currentField, dependentFields, formState) => {
-              // console.log(formState, currentField?.value, "formState");
               if (!currentField?.value) {
                 formState?.setCardDetails([]);
                 return "Account code is required";
@@ -1992,6 +1490,11 @@ export const denoTableMetadataTotal: any = {
           label: "TRX",
           placeholder: "TRX",
           defaultValue: "1",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["TRX is required"] }],
+          },
           options: [
             { label: "1 - CASH DEPOSITE", value: "1" },
             { label: "4 - CASH WITHDRAWAL", value: "4" },
@@ -2010,8 +1513,7 @@ export const denoTableMetadataTotal: any = {
               TOKEN: { value: "" },
               SDC: { value: sdcValue ?? "" },
               REMARK: { value: "" },
-              CHQNO: { value: "" },
-              CHQ_DT: { value: "" },
+              CHQ_DT: { value: authState?.workingDate ?? "" },
               RECEIPT: { value: "" },
               PAYMENT: { value: "" },
             };
@@ -2053,6 +1555,11 @@ export const denoTableMetadataTotal: any = {
           },
           name: "TOKEN",
           label: "Token",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Token is required"] }],
+          },
           placeholder: "Token",
           type: "text",
           GridProps: {
@@ -2067,50 +1574,72 @@ export const denoTableMetadataTotal: any = {
             field,
             formState,
             authState,
-            dependentFieldValues
+            dependentFieldsValues
           ) => {
             const branchCode =
-              dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
-            const accountType =
-              dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
+              dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
+            const acctType =
+              dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
             const acctCode =
-              dependentFieldValues?.["singleDenoRow.ACCT_CD"]?.value ?? "";
-            const reqPara = {
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: branchCode,
-              ACCT_TYPE: accountType,
-              ACCT_CD: acctCode,
-              TOKEN_NO: field?.value ?? "",
-              SCREEN_REF: "TRN/042",
-            };
+              dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value ?? "";
             if (
-              Boolean(branchCode) &&
-              Boolean(accountType) &&
+              !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
               Boolean(acctCode) &&
+              Boolean(branchCode) &&
+              Boolean(acctType) &&
               Boolean(field?.value)
             ) {
-              const getTokenValidate = await API.getTokenValidation(reqPara);
-
-              const getBtnName = async (msgObj) => {
-                let btnNm = await formState?.MessageBox(msgObj);
-                return { btnNm, msgObj };
+              const apiRequest = {
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: branchCode ?? "",
+                ACCT_TYPE: acctType ?? "",
+                ACCT_CD: acctCode ?? "",
+                TOKEN_NO: field?.value ?? "",
+                SCREEN_REF: "TRN/042",
               };
-              for (let i = 0; i < getTokenValidate?.MSG?.length; i++) {
-                if (getTokenValidate?.MSG?.length > 0) {
-                  if (getTokenValidate?.MSG[i]?.O_STATUS === "999") {
-                    const { btnNm, msgObj } = await getBtnName({
-                      messageTitle: "ValidationFailed",
-                      message: getTokenValidate?.MSG[i]?.O_MESSAGE,
-                    });
-                    if (btnNm === "Yes") {
-                      return {
-                        CHQNO: { value: "" },
-                        CHQ_DT: { value: "" },
-                        RECEIPT: { value: "" },
-                        PAYMENT: { value: "" },
-                      };
-                    }
+              const tokenValidate: any = await API?.getTokenValidation(
+                apiRequest
+              );
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < tokenValidate?.length; i++) {
+                const status: any = tokenValidate[i]?.O_STATUS;
+                const message = tokenValidate[i]?.O_MESSAGE;
+                if (status === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "ValidationFailed",
+                    message,
+                  });
+                  return {
+                    TOKEN: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (status === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "RiskCategoryAlert",
+                    message,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (btnName === "No") {
+                    return {
+                      TOKEN: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                    };
                   }
+                } else if (status === "9") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message,
+                  });
                 }
               }
             }
@@ -2130,28 +1659,15 @@ export const denoTableMetadataTotal: any = {
           name: "SDC",
           label: "SDC",
           placeholder: "SDC",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["SDC is required"] }],
+          },
           defaultValue: "",
           type: "select",
           options: API.getSDCList,
           _optionsKey: "getSDCList",
-
-          // postValidationSetCrossFieldValues: async (
-          //   field,
-          //   formState,
-          //   authState,
-          //   dependentFieldValues
-          // ) => {
-          //   console.log(field, "field{}{}{}{}{}{}{}{}");
-          //   // let sdc;
-
-          //   // if (field?.optionData?.[0]?.CODE) {
-          //   //   sdc = field?.optionData?.[0]?.DISLAY_STANDARD;
-          //   // }
-          //   // // console.log(sdc, "field{}{}{}{}{}{}{}{}SDC");
-          //   // return {
-          //   //   REMARK: { value: sdc },
-          //   // };
-          // },
           GridProps: { xs: 12, sm: 3, md: 2, lg: 1.3, xl: 1.3 },
         },
         {
@@ -2162,6 +1678,11 @@ export const denoTableMetadataTotal: any = {
           label: "Remarks",
           placeholder: "Remarks",
           type: "text",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Remark is required"] }],
+          },
           dependentFields: ["TRX", "SDC"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             if (
@@ -2194,6 +1715,11 @@ export const denoTableMetadataTotal: any = {
           type: "number",
           GridProps: { xs: 6, sm: 3, md: 2, lg: 1, xl: 1 },
           dependentFields: ["TRX", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Cheque No. is required"] }],
+          },
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -2212,7 +1738,6 @@ export const denoTableMetadataTotal: any = {
 
             if (chequeNo && branchCd && acctyType && acctCd) {
               const reqParameters = {
-                // COMP_CD: authState?.companyID,
                 BRANCH_CD: branchCd,
                 ACCT_TYPE: acctyType,
                 ACCT_CD: acctCd,
@@ -2221,18 +1746,12 @@ export const denoTableMetadataTotal: any = {
               };
 
               const apiResponse = await API?.getChqValidation(reqParameters);
-              let button, returnValue;
 
               const getBtnName = async (msgObj) => {
                 let btnNm = await formState?.MessageBox(msgObj);
                 return { btnNm, msgObj };
               };
               for (let i = 0; i < apiResponse?.length; i++) {
-                // console.log(
-                //   apiResponse[i]?.ERR_CODE,
-                //   apiResponse[i]?.ERR_MSG,
-                //   "apiResponse[i]?.ERR_MSG btnNm"
-                // );
                 if (apiResponse[i]?.ERR_CODE === "999") {
                   const { btnNm, msgObj } = await getBtnName({
                     messageTitle: "ValidationFailed",
@@ -2242,22 +1761,18 @@ export const denoTableMetadataTotal: any = {
                     return {
                       CHQNO: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                       CHQ_DT: {
-                        value: "",
-                        // isFieldFocused: true,
+                        CHQ_DT: { value: authState?.workingDate ?? "" },
                         ignoreUpdate: true,
                       },
                       RECEIPT: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                       PAYMENT: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                     };
@@ -2272,22 +1787,18 @@ export const denoTableMetadataTotal: any = {
                     return {
                       CHQNO: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                       CHQ_DT: {
-                        value: "",
-                        // isFieldFocused: true,
+                        CHQ_DT: { value: authState?.workingDate ?? "" },
                         ignoreUpdate: true,
                       },
                       RECEIPT: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                       PAYMENT: {
                         value: "",
-                        // isFieldFocused: true,
                         ignoreUpdate: true,
                       },
                       FLAG_CHQ: {
@@ -2328,23 +1839,92 @@ export const denoTableMetadataTotal: any = {
               return true;
             }
           },
-          validate: (currentField, dependentFields, formState) => {
-            // console.log(formState, currentField?.value, "formState");
-            if (!currentField?.value) {
-              return "Cheque No. code is required";
-            }
-          },
         },
         {
           render: {
             componentType: "datePicker",
           },
           name: "CHQ_DT",
-          isWorkingDate: false,
+          isWorkingDate: true,
           label: "Chq.Date",
           placeholder: "Chq.D",
           type: "number",
           dependentFields: ["TRX", "CHQNO"],
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Cheque Date is required"] }],
+          },
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            const branchCode =
+              dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
+            const chequeNo =
+              dependentFieldsValues?.["singleDenoRow.CHQNO"]?.value ?? "";
+            const typeCd =
+              dependentFieldsValues?.["singleDenoRow.TRX"]?.value ?? "";
+            if (
+              !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
+              Boolean(branchCode) &&
+              Boolean(field?.value)
+            ) {
+              const apiRequest = {
+                BRANCH_CD: branchCode ?? "",
+                TYPE_CD: typeCd ?? "",
+                CHEQUE_NO: chequeNo ?? "",
+                CHEQUE_DT: field?.value ?? "",
+              };
+              const chequeDateValidate: any = await API?.getChqDateValidation(
+                apiRequest
+              );
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < chequeDateValidate?.length; i++) {
+                const status: any = chequeDateValidate[i]?.O_STATUS;
+                const message = chequeDateValidate[i]?.O_MESSAGE;
+                if (status === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "ValidationFailed",
+                    message,
+                  });
+                  return {
+                    TOKEN: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (status === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "RiskCategoryAlert",
+                    message,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (btnName === "No") {
+                    return {
+                      TOKEN: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (status === "9") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message,
+                  });
+                }
+              }
+            }
+          },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (dependentFieldsValues?.["singleDenoRow.TRX"]?.value === "4") {
               return false;
@@ -2352,7 +1932,6 @@ export const denoTableMetadataTotal: any = {
               return true;
             }
           },
-          isReadOnly: true,
           GridProps: { xs: 6, sm: 3, md: 2, lg: 1, xl: 1 },
         },
         {
@@ -2362,18 +1941,20 @@ export const denoTableMetadataTotal: any = {
           name: "RECEIPT",
           label: "Receipt",
           placeholder: "Receipt",
-          type: "text",
           required: true,
-          validationRun: "all",
           FormatProps: {
             allowNegative: false,
           },
-          // validate: (currentField, value) => {
-          //   if (currentField?.value) {
-          //     return;
-          //   }
-          // },
-
+          validate: (currentField, dependentFields) => {
+            if (
+              !currentField?.value &&
+              dependentFields?.["singleDenoRow.TRX"]?.value === "1"
+            ) {
+              return "Receipt Is Required";
+            } else {
+              return "";
+            }
+          },
           dependentFields: [
             "ACCT_CD",
             "BRANCH_CD",
@@ -2381,6 +1962,7 @@ export const denoTableMetadataTotal: any = {
             "TRX",
             "singleDenoRow",
             "FLAG_HIDE",
+            "CHQNO",
           ],
           postValidationSetCrossFieldValues: async (
             field,
@@ -2388,20 +1970,98 @@ export const denoTableMetadataTotal: any = {
             authState,
             dependentFieldsValues
           ) => {
+            const branchCode =
+              dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
+            const acctType =
+              dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
+            const acctCode =
+              dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value ?? "";
+            const typeCode =
+              dependentFieldsValues?.["singleDenoRow.TRX"]?.value ?? "";
+            const chequeNo =
+              dependentFieldsValues?.["singleDenoRow.CHQNO"]?.value ?? "";
             if (
               !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
-              Boolean(
-                dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value
-              ) &&
-              Boolean(
-                dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value
-              ) &&
-              Boolean(dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value)
+              Boolean(acctCode) &&
+              Boolean(branchCode) &&
+              Boolean(acctType) &&
+              Boolean(field?.value)
             ) {
-              formState.setDataOnFieldChange("RECEIPT", {
-                field,
-                dependentFieldsValues,
-              });
+              const cardData = await formState?.getCardColumnValue();
+              const apiRequest = {
+                BRANCH_CD: branchCode,
+                ACCT_TYPE: acctType,
+                ACCT_CD: acctCode,
+                TYPE_CD: typeCode,
+                COMP_CD: authState?.companyID ?? "",
+                CHEQUE_NO: chequeNo,
+                AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
+                SHADOW_CL: cardData?.TRAN_BAL,
+                HOLD_BAL: cardData?.HOLD_BAL, ///////
+                LEAN_AMT: cardData?.LIEN_AMT,
+                AGAINST_CLEARING: cardData?.AGAINST_CLEARING, ///////
+                MIN_BALANCE: cardData?.MIN_BALANCE, ///////
+                CONF_BAL: cardData?.CONF_BAL,
+                TRAN_BAL: cardData?.TRAN_BAL,
+                UNCL_BAL: cardData?.UNCL_BAL,
+                LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
+                DRAWING_POWER: cardData?.DRAWING_POWER,
+                AMOUNT: field?.value ?? "",
+                OD_APPLICABLE: cardData?.OD_APPLICABLE,
+                OP_DATE: cardData?.OP_DATE,
+                INST_NO: cardData?.INST_NO,
+                INST_RS: cardData?.INST_RS,
+                PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
+                STATUS: cardData?.STATUS,
+                TYPE: "C",
+                SCREEN_REF: "TRN/042",
+                TRAN_CD: "",
+              };
+              const amountValidate: any = await API?.getAmountValidation(
+                apiRequest
+              );
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < amountValidate?.length; i++) {
+                const status: any = amountValidate[i]?.O_STATUS;
+                const message = amountValidate[i]?.O_MESSAGE;
+                if (status === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "ValidationFailed",
+                    message,
+                  });
+                  return {
+                    RECEIPT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (status === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "RiskCategoryAlert",
+                    message,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (btnName === "No") {
+                    return {
+                      RECEIPT: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (status === "9") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message,
+                  });
+                }
+              }
               if (field?.value) {
                 return {
                   RECEIPT_TOTAL: { value: field.value ?? "0" },
@@ -2432,16 +2092,25 @@ export const denoTableMetadataTotal: any = {
           name: "PAYMENT",
           label: "Payment",
           placeholder: "Payment",
-          type: "text",
+          // type: "text",
           required: true,
-          validationRun: "all",
+          // validationRun: "all",
           FormatProps: {
             allowNegative: false,
           },
-          // validate: (currentField, value) => {
-          //   if (currentField?.value) {
-          //     return;
-          //   }
+          validate: (currentField, dependentFields) => {
+            if (
+              !currentField?.value &&
+              dependentFields?.["singleDenoRow.TRX"]?.value === "4"
+            ) {
+              return "Payment Is Required";
+            } else {
+              return "";
+            }
+          },
+          // schemaValidation: {
+          //   type: "string",
+          //   rules: [{ name: "required", params: ["Payment Is Required"] }],
           // },
           dependentFields: [
             "ACCT_CD",
@@ -2459,20 +2128,97 @@ export const denoTableMetadataTotal: any = {
             authState,
             dependentFieldsValues
           ) => {
+            const branchCode =
+              dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value ?? "";
+            const acctType =
+              dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value ?? "";
+            const acctCode =
+              dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value ?? "";
+            const typeCode =
+              dependentFieldsValues?.["singleDenoRow.TRX"]?.value ?? "";
+            const chequeNo =
+              dependentFieldsValues?.["singleDenoRow.CHQNO"]?.value ?? "";
             if (
               !dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.error &&
-              Boolean(
-                dependentFieldsValues?.["singleDenoRow.ACCT_CD"]?.value
-              ) &&
-              Boolean(
-                dependentFieldsValues?.["singleDenoRow.BRANCH_CD"]?.value
-              ) &&
-              Boolean(dependentFieldsValues?.["singleDenoRow.ACCT_TYPE"]?.value)
+              Boolean(acctCode) &&
+              Boolean(branchCode) &&
+              Boolean(acctType) &&
+              Boolean(field?.value)
             ) {
-              formState.setDataOnFieldChange("PAYMENT", {
-                field,
-                dependentFieldsValues,
-              });
+              const cardData = await formState?.getCardColumnValue();
+              const apiRequest = {
+                BRANCH_CD: branchCode,
+                ACCT_TYPE: acctType,
+                ACCT_CD: acctCode,
+                TYPE_CD: typeCode,
+                COMP_CD: authState?.companyID ?? "",
+                CHEQUE_NO: chequeNo,
+                AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
+                SHADOW_CL: cardData?.TRAN_BAL,
+                HOLD_BAL: cardData?.HOLD_BAL, ///////
+                LEAN_AMT: cardData?.LIEN_AMT,
+                AGAINST_CLEARING: cardData?.AGAINST_CLEARING, ///////
+                MIN_BALANCE: cardData?.MIN_BALANCE, ///////
+                CONF_BAL: cardData?.CONF_BAL,
+                TRAN_BAL: cardData?.TRAN_BAL,
+                UNCL_BAL: cardData?.UNCL_BAL,
+                LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
+                DRAWING_POWER: cardData?.DRAWING_POWER,
+                AMOUNT: field?.value ?? "",
+                OD_APPLICABLE: cardData?.OD_APPLICABLE,
+                OP_DATE: cardData?.OP_DATE,
+                INST_NO: cardData?.INST_NO,
+                INST_RS: cardData?.INST_RS,
+                PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
+                STATUS: cardData?.STATUS,
+                TYPE: "C",
+                SCREEN_REF: "TRN/042",
+                TRAN_CD: "",
+              };
+              const amountValidate: any = await API?.getAmountValidation(
+                apiRequest
+              );
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < amountValidate?.length; i++) {
+                const status: any = amountValidate[i]?.O_STATUS;
+                const message = amountValidate[i]?.O_MESSAGE;
+                if (status === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "ValidationFailed",
+                    message,
+                  });
+                  return {
+                    RECEIPT: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (status === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "RiskCategoryAlert",
+                    message,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (btnName === "No") {
+                    return {
+                      RECEIPT: {
+                        value: "",
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (status === "9") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Alert",
+                    message,
+                  });
+                }
+              }
               if (field?.value) {
                 return {
                   PAYMENT_TOTAL: { value: field.value ?? "0" },
@@ -2485,7 +2231,6 @@ export const denoTableMetadataTotal: any = {
             }
           },
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            // console.log(dependentFields, "dependentFields887");
             const TRX = dependentFields?.["singleDenoRow.TRX"]?.value;
             const FLAG_HIDE =
               dependentFields?.["singleDenoRow.FLAG_HIDE"]?.value;
@@ -2507,19 +2252,33 @@ export const denoTableMetadataTotal: any = {
         },
       ],
     },
-    {
-      render: {
-        componentType: "spacer",
-      },
-      name: "SPCER",
-      GridProps: {
-        xs: 0.0,
-        md: 1.5,
-        sm: 1.3,
-        lg: 5,
-        xl: 5,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "spacer",
+    //   },
+    //   name: "SPCER",
+    //   GridProps: {
+    //     xs: 0.0,
+    //     md: 1.5,
+    //     sm: 1.3,
+    //     lg: 5,
+    //     xl: 5,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "BTN_DIS_R",
+    //   defaultValue: "",
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "BTN_DIS_P",
+    //   defaultValue: "",
+    // },
     {
       render: {
         componentType: "amountField",
@@ -2527,43 +2286,18 @@ export const denoTableMetadataTotal: any = {
       name: "RECEIPT_TOTAL",
       label: "Receipt Total",
       placeholder: "Receipt Total",
-      defaultValue: "0",
       dependentFields: ["singleDenoRow"],
-      validationRun: "all",
-      validate: (currentField, value) => {
-        if (currentField?.value) {
-          return;
-        }
-      },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
+      type: "text",
+      validationRun: "onBlur",
+      defaultValue: "0",
+      setValueOnDependentFieldsChange: (dependentFieldState) => {
         let accumulatedTakeoverLoanAmount = (
-          Array.isArray(dependentFieldsValues?.["singleDenoRow"])
-            ? dependentFieldsValues?.["singleDenoRow"]
+          Array.isArray(dependentFieldState?.["singleDenoRow"])
+            ? dependentFieldState?.["singleDenoRow"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.RECEIPT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.RECEIPT?.value), 0);
 
-        if (Number(field.value) === Number(accumulatedTakeoverLoanAmount)) {
-          return {};
-        }
-
-        if (accumulatedTakeoverLoanAmount) {
-          return {
-            RECEIPT_TOTAL: {
-              value: accumulatedTakeoverLoanAmount ?? 0,
-            },
-          };
-        } else {
-          return {
-            RECEIPT_TOTAL: {
-              value: "",
-            },
-          };
-        }
+        return accumulatedTakeoverLoanAmount;
       },
       isReadOnly: true,
       GridProps: { xs: 5.7, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
@@ -2577,70 +2311,20 @@ export const denoTableMetadataTotal: any = {
       placeholder: "Payments Total",
       defaultValue: "0",
       dependentFields: ["singleDenoRow"],
-      validationRun: "all",
-      validate: (currentField, value) => {
-        if (currentField?.value) {
-          return;
-        }
-      },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
+      type: "text",
+      validationRun: "onBlur",
+      setValueOnDependentFieldsChange: (dependentFieldState) => {
         let accumulatedTakeoverLoanAmount = (
-          Array.isArray(dependentFieldsValues?.["singleDenoRow"])
-            ? dependentFieldsValues?.["singleDenoRow"]
+          Array.isArray(dependentFieldState?.["singleDenoRow"])
+            ? dependentFieldState?.["singleDenoRow"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.PAYMENT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.PAYMENT?.value), 0);
 
-        if (Number(field.value) === Number(accumulatedTakeoverLoanAmount)) {
-          return {};
-        }
-
-        if (accumulatedTakeoverLoanAmount) {
-          return {
-            PAYMENT_TOTAL: {
-              value: accumulatedTakeoverLoanAmount ?? 0,
-            },
-          };
-        } else {
-          return {
-            PAYMENT_TOTAL: {
-              value: "",
-            },
-          };
-        }
+        return accumulatedTakeoverLoanAmount;
       },
       isReadOnly: true,
       GridProps: { xs: 5.7, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
     },
-    // {
-    //   render: {
-    //     componentType: "spacer",
-    //   },
-    //   GridProps: {
-    //     xs: 3.1,
-    //     sm: 3.1,
-    //     md: 3.1,
-    //     lg: 8.9,
-    //     xl: 8.9,
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "spacer",
-    //   },
-    //   name: "SPCR2",
-    //   GridProps: {
-    //     xs: 0.5,
-    //     sm: 0,
-    //     md: 0,
-    //     lg: 8.9,
-    //     xl: 8.9,
-    //   },
-    // },
     {
       render: {
         componentType: "amountField",
@@ -2652,7 +2336,6 @@ export const denoTableMetadataTotal: any = {
       dependentFields: ["RECEIPT_TOTAL", "PAYMENT_TOTAL"],
       isReadOnly: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
-        // console.log(dependentFields, "dependentFields++++++++========>");
         if (
           dependentFields?.RECEIPT_TOTAL?.value ||
           dependentFields?.PAYMENT_TOTAL?.value
@@ -2671,12 +2354,24 @@ export const denoTableMetadataTotal: any = {
       render: {
         componentType: "formbutton",
       },
-      name: "DENO_BTN",
+      name: "DENOBTN",
       label: "Denomination",
       endsIcon: "",
       rotateIcon: "",
       placeholder: "",
       type: "text",
+      // dependentFields: ["BTN_DIS_R", "BTN_DIS_P"],
+      // shouldExclude(fieldData, dependentVal, formState) {
+      //   console.log(dependentVal, "dependentValdependentVal?/");
+      //   if (
+      //     Boolean(dependentVal?.BTN_DIS_R?.value === "Y") ||
+      //     Boolean(dependentVal?.BTN_DIS_P?.value === "Y")
+      //   ) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       GridProps: {
         xs: 2.5,
         sm: 1.5,
