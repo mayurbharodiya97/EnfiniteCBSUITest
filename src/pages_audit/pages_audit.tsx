@@ -62,6 +62,7 @@ export const PagesAudit = (props, { columns }) => {
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
           columns={columns}
+          idleTimer={props?.idleTimer}
         />
         <Drawer
           open={drawerOpen}

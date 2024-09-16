@@ -39,6 +39,7 @@ const DialogWithAppbar = ({
           hideSidebarIcon={true}
           offProfileNavigate={true}
           isNewStyle={true}
+          idleTimer
         />
       </Box>
       {Boolean(title) && (

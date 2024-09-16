@@ -197,6 +197,8 @@ export const LogoutAPI = async (apiReq) => {
     return { message, status };
     //} else {
     //  throw DefaultErrorObject(message, messageDetails);
+  } else if (status === "0" && data[0].O_FLAG === "I") {
+    alert(data[0].O_MESSAGE);
   }
 };
 
