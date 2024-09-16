@@ -114,6 +114,7 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
       await MessageBox({
         messageTitle: "Error",
         message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -137,6 +138,7 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
       await MessageBox({
         messageTitle: "Error",
         message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -146,11 +148,13 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
           await MessageBox({
             messageTitle: "ValidationFailed",
             message: response?.O_MESSAGE ?? "",
+            icon: "ERROR",
           });
         } else if (response?.O_STATUS === "9") {
           await MessageBox({
             messageTitle: "Alert",
             message: response?.O_MESSAGE ?? "",
+            icon: "WARNING",
           });
         } else if (response?.O_STATUS === "99") {
           const buttonName = await MessageBox({
@@ -240,6 +244,8 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
   ) => {
     endSubmit(true);
 
+    console.log("data", data);
+
     const newData = data?.TRNDTLS?.map((obj) => ({
       ...obj,
       CHEQUE_DT: isValidDate(obj.CHEQUE_DATE)
@@ -247,10 +253,18 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
         : "",
     }));
 
-    if (parseFloat(data?.DIFF_AMOUNT) < 0) {
+    if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
       MessageBox({
-        messageTitle: "Validation Failed",
-        message: "Total Debit amount can not be greater than Total FD Amount.",
+        messageTitle: t("ValidationFailed"),
+        message: "Total debit amount can't be Zero/Negative.",
+        icon: "ERROR",
+      });
+    } else if (
+      parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
+    ) {
+      MessageBox({
+        messageTitle: t("ValidationFailed"),
+        message: "Total debit amount should be equal to total FD amount.",
         icon: "ERROR",
       });
     } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {

@@ -445,6 +445,10 @@ export const TransferAcctDetailFormMetadata = {
             "DC_ACCT_CD",
             "TYPE_CD",
           ],
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: true,
+          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -601,6 +605,10 @@ export const TransferAcctDetailFormMetadata = {
             "DC_ACCT_TYPE",
             "DC_ACCT_CD",
           ],
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: true,
+          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,

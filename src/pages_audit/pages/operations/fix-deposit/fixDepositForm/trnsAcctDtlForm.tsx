@@ -86,6 +86,7 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
                     return await MessageBox({
                       messageTitle: t("ValidationFailed"),
                       message: "Required value missing.",
+                      icon: "ERROR",
                     });
                   } else {
                     updateSourceAcctFormData([{}, ...data?.TRNDTLS]);

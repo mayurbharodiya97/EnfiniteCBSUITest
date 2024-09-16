@@ -52,6 +52,7 @@ export const FDDetailForm = forwardRef<any, any>(
         await MessageBox({
           messageTitle: "Error",
           message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -277,6 +278,7 @@ export const FDDetailForm = forwardRef<any, any>(
                       return await MessageBox({
                         messageTitle: t("ValidationFailed"),
                         message: "Required value missing.",
+                        icon: "ERROR",
                       });
                     } else {
                       updateFDDetailsFormData([
