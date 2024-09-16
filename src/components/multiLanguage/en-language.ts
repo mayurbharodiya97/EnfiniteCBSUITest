@@ -1639,6 +1639,7 @@ export const en_language_data = {
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",
+  PendingTrnsProceedL: "Do you want to proceed pending transactions?",
   DayEnd: "Day End",
   DayHandover: "Day Handover",
   VersionNo: "Version No.",

@@ -60,7 +60,7 @@ const DayEndProcess = () => {
   const handleOpenPendingTrns = async () => {
     try {
       const btnName = await MessageBox({
-        message: "DeleteData",
+        message: t("PendingTrnsProceed"),
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
       });
