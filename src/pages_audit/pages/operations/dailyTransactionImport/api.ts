@@ -7,9 +7,9 @@ export const getDailyImportConfigData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
+      responseData = responseData.map(({ DESCRIPTION, ...other }) => {
         return {
-          value: TRAN_CD,
+          value: DESCRIPTION,
           label: DESCRIPTION,
           ...other,
         };
@@ -26,8 +26,23 @@ export const getDailyTransactionImportData = async (apiReq) => {
       ...apiReq,
     });
   if (status === "0") {
-    return data;
+    // return data;
+    let responseData = data;
+    responseData.map((item, i) => {
+      item.DEBIT_AC = [
+        item.FROM_BRANCH_CD,
+        item.FROM_ACCT_TYPE,
+        item.FROM_ACCT_CD,
+      ]
+        .filter(Boolean)
+        .join("-");
+      item.CREDIT_AC = [item.TO_BRANCH_CD, item.TO_ACCT_TYPE, item.TO_ACCT_CD]
+        .filter(Boolean)
+        .join("-");
 
+      return item;
+    });
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -39,7 +54,6 @@ export const getValidateToSelectFile = async (apiReq) => {
     });
   if (status === "0") {
     return data;
-
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -7,7 +7,14 @@ import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 
 const LockerTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleStepStatusctx, handleSavectx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handleCurrFormctx,
+    handleStepStatusctx,
+    handleSavectx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+  } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -103,14 +110,14 @@ const LockerTab = () => {
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -119,7 +126,7 @@ const LockerTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
@@ -149,12 +156,16 @@ const LockerTab = () => {
         key={"acct-tab-locker-form" + initialVal}
         metaData={locker_tab_metadata as MetaDataType}
         formStyle={{}}
-        formState={{GPARAM155: AcctMSTState?.gparam155 }}
+        formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

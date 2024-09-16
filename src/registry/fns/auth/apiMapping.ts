@@ -2586,7 +2586,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
