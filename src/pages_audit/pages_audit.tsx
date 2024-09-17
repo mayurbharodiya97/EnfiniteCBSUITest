@@ -24,6 +24,7 @@ import { AppbarWrapper, SidebarWrapper } from "@acuteinfo/common-screens";
 import Logo from "assets/images/easy_bankcore_Logo.png";
 import useLogoPics from "components/logoPics/logoPics";
 import { LogoutModal } from "./appBar/logoutModal";
+import { AppBar } from "./appBar";
 
 export const PagesAudit = (props, { columns }) => {
   const { authState } = useContext(AuthContext);
@@ -64,7 +65,7 @@ export const PagesAudit = (props, { columns }) => {
     <Fragment>
       <AuthContextProvider authState={authState}>
         <div className={classes.root}>
-          <AppbarWrapper
+          {/* <AppbarWrapper
             authState={authController?.authState}
             handleDrawerClose={handleDrawerClose}
             handleDrawerOpen={handleDrawerOpen}
@@ -84,6 +85,12 @@ export const PagesAudit = (props, { columns }) => {
             }
             menuIconPosition="left"
             hideGreetings={false}
+          /> */}
+          <AppBar
+            handleDrawerOpen={handleDrawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            open={drawerOpen}
+            columns={undefined}
           />
           <SidebarWrapper
             authState={authController?.authState ?? {}}
@@ -101,29 +108,29 @@ export const PagesAudit = (props, { columns }) => {
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
                 /> */}
-                <Route path="profile" element={<Profile />} />
-                <Route path="dashboard/*" element={<Dashboard />} />
-                <Route path="master/*" element={<Master />} />
-                <Route path="operation/*" element={<OperationsMenu />} />
-                <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="configuration/*" element={<Configuration />} />
-                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                <Route
-                  path="operation/daily_tran_F1"
-                  element={
-                    <TRN001Provider>
-                      <Trn001 />
-                    </TRN001Provider>
-                  }
-                />
-                <Route
-                  path="operation/cnf_daily_tran_F2"
-                  element={
-                    <TRN001Provider>
-                      <Trn002 />
-                    </TRN001Provider>
-                  }
-                />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="dashboard/*" element={<Dashboard />} />
+                  <Route path="master/*" element={<Master />} />
+                  <Route path="operation/*" element={<OperationsMenu />} />
+                  <Route path="view-statement/*" element={<AccountDetails />} />
+                  <Route path="configuration/*" element={<Configuration />} />
+                  <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                  <Route
+                    path="operation/daily_tran_F1"
+                    element={
+                      <TRN001Provider>
+                        <Trn001 />
+                      </TRN001Provider>
+                    }
+                  />
+                  <Route
+                    path="operation/cnf_daily_tran_F2"
+                    element={
+                      <TRN001Provider>
+                        <Trn002 />
+                      </TRN001Provider>
+                    }
+                  />
 
                   {/* <Route
                   path="branch-selection/*"
