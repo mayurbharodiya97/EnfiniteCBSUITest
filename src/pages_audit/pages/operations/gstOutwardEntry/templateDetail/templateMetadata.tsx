@@ -47,10 +47,12 @@ export const TemplateDetailMetadata = {
       label: "Template",
       isFieldFocused: true,
       options: async (dependentValue, formState, _, authState) => {
+        const res = await formState?.REFDATA?.current?.getFieldData();
         const APIrequest = await API.getGstOtwardTemplateDdw({
           BASE_COMP_CD: authState?.baseCompanyID,
           BASE_BRANCH_CD: authState?.user?.baseBranchCode,
           TEMPLATE_TYPE: "OUT",
+          GSTMODE: res?.MODE,
         });
         formState.optionRef(APIrequest);
         return APIrequest;
