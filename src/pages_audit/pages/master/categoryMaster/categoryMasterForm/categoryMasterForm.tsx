@@ -29,13 +29,15 @@ const CategoryMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.categoryMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -76,8 +78,8 @@ const CategoryMasterForm = ({
         data: {
           ...newData,
           ...upd,
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
           _isNewRow: defaultView === "new" ? true : false,
         },
         displayData,
@@ -126,7 +128,7 @@ const CategoryMasterForm = ({
             formMode === "new"
               ? {
                   ...rows?.[0]?.data,
-                  BRANCH_CD: authState?.user?.branchCode,
+                  BRANCH_CD: authState?.user?.branchCode ?? "",
                 }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
@@ -138,6 +140,7 @@ const CategoryMasterForm = ({
             gridData: gridData,
             rows: rows?.[0]?.data,
             handleButtonDisable: handleButtonDisable,
+            docCD: "MST/050",
           }}
         >
           {({ isSubmitting, handleSubmit }) => (

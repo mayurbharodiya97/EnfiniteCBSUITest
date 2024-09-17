@@ -29,13 +29,15 @@ const AgentMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.agentMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },

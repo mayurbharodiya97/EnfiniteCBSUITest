@@ -45,13 +45,15 @@ export const AgentMasterGrid = () => {
   const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.agentMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
