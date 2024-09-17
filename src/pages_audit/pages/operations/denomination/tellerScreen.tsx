@@ -43,6 +43,7 @@ const TellerScreen = () => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
+  const cardDtlRef = useRef<any>(null);
   const textFieldRef: any = useRef(null);
   const popupReqWrapperRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -574,6 +575,42 @@ const TellerScreen = () => {
   //   console.log(cardTabsReq, "cardTabsReq");
   // }, [cardTabsReq]);
 
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardDtlRef?.current?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  useEffect(() => {
+    if (cardDetails?.length) {
+      cardDtlRef.current = cardDetails;
+    }
+  }, [cardDetails]);
+
   return (
     <>
       <DailyTransTabs
@@ -600,7 +637,12 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox, setCardDetails, docCd: "TRN/039" }}
+        formState={{
+          MessageBox: MessageBox,
+          setCardDetails,
+          docCd: "TRN/039",
+          getCardColumnValue,
+        }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
             let event: any = { preventDefault: () => {} };
