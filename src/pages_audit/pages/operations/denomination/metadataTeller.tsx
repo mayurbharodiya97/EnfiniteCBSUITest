@@ -1849,7 +1849,7 @@ export const denoTableMetadataTotal: any = {
           label: "Chq.Date",
           placeholder: "Chq.D",
           type: "number",
-          dependentFields: ["TRX", "CHQNO"],
+          dependentFields: ["TRX", "CHQNO", "BRANCH_CD"],
           required: true,
           schemaValidation: {
             type: "string",
@@ -1887,8 +1887,8 @@ export const denoTableMetadataTotal: any = {
                 return { btnName, obj };
               };
               for (let i = 0; i < chequeDateValidate?.length; i++) {
-                const status: any = chequeDateValidate[i]?.O_STATUS;
-                const message = chequeDateValidate[i]?.O_MESSAGE;
+                const status: any = chequeDateValidate[i]?.STATUS;
+                const message = chequeDateValidate[i]?.MESSAGE1;
                 if (status === "999") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
