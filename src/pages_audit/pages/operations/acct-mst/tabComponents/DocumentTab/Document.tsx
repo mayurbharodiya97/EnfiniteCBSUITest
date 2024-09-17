@@ -284,7 +284,7 @@ const Document = () => {
   }, [girdData]);
 
   return (
-    <Grid item sx={{ position: "absolute", width: "-webkit-fill-available" }}>
+    <Grid container>
       <GridWrapper
         key={`operatorMasterGrid` + girdData + setGridData}
         finalMetaData={DocumentGridMetadata as GridMetaDataType}
