@@ -155,7 +155,7 @@ export const CourtMasterFormMetadata = {
       name: "COUNTRY_NM",
       label: "Country",
       dependentFields: ["AREA_CD"],
-      ignoreUpdate: true,
+      ignoreInSubmit: true,
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
         return dependentFields["AREA_CD"]?.optionData?.[0]?.COUNTRY_NM
@@ -173,28 +173,12 @@ export const CourtMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "hidden",
-      },
-      name: "COUNTRY_CD",
-      dependentFields: ["AREA_CD"],
-      ignoreUpdate: true,
-
-      runValidationOnDependentFieldsChange: true,
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        return dependentFields["AREA_CD"]?.optionData?.[0]?.COUNTRY_CD
-          ? dependentFields["AREA_CD"]?.optionData?.[0]?.COUNTRY_CD
-          : "";
-      },
-    },
-
-    {
-      render: {
         componentType: "textField",
       },
       name: "STATE_NM",
       label: "State",
       isReadOnly: true,
-      ignoreUpdate: true,
+      ignoreInSubmit: true,
       dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -212,27 +196,12 @@ export const CourtMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "hidden",
-      },
-      name: "STATE_CD",
-      dependentFields: ["AREA_CD"],
-      ignoreUpdate: true,
-
-      runValidationOnDependentFieldsChange: true,
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        return dependentFields["AREA_CD"]?.optionData?.[0]?.STATE_CD
-          ? dependentFields["AREA_CD"]?.optionData?.[0]?.STATE_CD
-          : "";
-      },
-    },
-    {
-      render: {
         componentType: "textField",
       },
       name: "DIST_NM",
       label: "District",
       isReadOnly: true,
-      ignoreUpdate: true,
+      ignoreInSubmit: true,
       dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -250,27 +219,12 @@ export const CourtMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "hidden",
-      },
-      name: "DIST_CD",
-      dependentFields: ["AREA_CD"],
-      ignoreUpdate: true,
-
-      runValidationOnDependentFieldsChange: true,
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        return dependentFields["AREA_CD"]?.optionData?.[0]?.DISTRICT_CD
-          ? dependentFields["AREA_CD"]?.optionData?.[0]?.DISTRICT_CD
-          : "";
-      },
-    },
-    {
-      render: {
         componentType: "textField",
       },
       name: "CITY_NM",
       label: "City",
       isReadOnly: true,
-      ignoreUpdate: true,
+      ignoreInSubmit: true,
       dependentFields: ["AREA_CD"],
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -292,8 +246,6 @@ export const CourtMasterFormMetadata = {
       },
       name: "CITY_CD",
       dependentFields: ["AREA_CD"],
-      ignoreUpdate: true,
-
       runValidationOnDependentFieldsChange: true,
       setValueOnDependentFieldsChange: (dependentFields) => {
         return dependentFields["AREA_CD"]?.optionData?.[0]?.CITY_CD
@@ -303,13 +255,13 @@ export const CourtMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "PIN_CODE",
       label: "PinCode",
       fullWidth: true,
       placeholder: "EnterPinCode",
-
+      maxLength: 12,
       validate: async (currentField, ...rest) => {
         if (rest?.[1]?.PinCode) {
           if (currentField?.value === "") {
@@ -317,6 +269,20 @@ export const CourtMasterFormMetadata = {
           }
         }
         return "";
+      },
+      FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: false,
+        isAllowed: (values) => {
+          //@ts-ignore
+          if (values?.value?.length > 13) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
       GridProps: {
         xs: 12,
