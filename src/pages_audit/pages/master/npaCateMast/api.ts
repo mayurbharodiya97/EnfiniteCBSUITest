@@ -11,10 +11,8 @@ export const getNpaCategoryMasterGridData = async (reqData: any) => {
     return data?.map((item: any) => {
       return {
         ...item,
-        SECURE_PROV_PERC:
-          item?.SECURE_PROV_PERC === "0" ? ".00" : item?.SECURE_PROV_PERC,
-        UNSECURE_PROV_PERC:
-          item?.UNSECURE_PROV_PERC === "0" ? ".00" : item?.UNSECURE_PROV_PERC,
+        SECURE_PROV_PERC: parseFloat(item.SECURE_PROV_PERC).toFixed(2),
+        UNSECURE_PROV_PERC: parseFloat(item.UNSECURE_PROV_PERC).toFixed(2),
       };
     });
   } else {
