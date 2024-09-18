@@ -96,6 +96,7 @@ export const CourtMasterFormMetadata = {
       label: "CourtName",
       maxLength: 100,
       placeholder: "EnterCourtName",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
         // Duplication validation
         const gridData = rest[1]?.gridData;
@@ -299,6 +300,7 @@ export const CourtMasterFormMetadata = {
       name: "ADD1",
       label: "Address1",
       placeholder: "EnterAddress",
+      preventSpecialCharInput: true,
       maxLength: 100,
       GridProps: {
         xs: 12,
@@ -313,6 +315,7 @@ export const CourtMasterFormMetadata = {
         componentType: "textField",
       },
       name: "ADD2",
+      preventSpecialCharInput: true,
       label: "Address2",
       placeholder: "EnterAddress",
       maxLength: 100,
@@ -331,6 +334,7 @@ export const CourtMasterFormMetadata = {
       name: "CONTACT1",
       label: "Contact1",
       placeholder: "EnterContactNumber",
+      preventSpecialCharInput: true,
       maxLength: 20,
       fullWidth: true,
       GridProps: {
@@ -348,6 +352,7 @@ export const CourtMasterFormMetadata = {
       name: "CONTACT2",
       label: "Contact2",
       placeholder: "EnterContactNumber",
+      preventSpecialCharInput: true,
       maxLength: 20,
       fullWidth: true,
       GridProps: {
@@ -365,6 +370,7 @@ export const CourtMasterFormMetadata = {
       name: "CONTACT3",
       label: "Contact3",
       placeholder: "EnterContactNumber",
+      preventSpecialCharInput: true,
       maxLength: 20,
       fullWidth: true,
       GridProps: {
