@@ -72,11 +72,6 @@ const DayEndProcess = () => {
     }
   };
 
-  const handleRestartVerifyChecksums = () => {
-    setOpenVerifyChecksums(false);
-    setTimeout(() => setOpenVerifyChecksums(true), 1000);
-  };
-
   return (
     <>
       <AppBar position="relative" color="secondary">

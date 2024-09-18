@@ -52,17 +52,25 @@ export const VerifyDayendChecksums = ({
   const [openReport, setOpenReport] = useState(false);
   const [docData, setDocData] = useState<any>({});
   const [openedWindow, setOpenedWindow] = useState<Window | null>(null);
+  const warningCountRef = useRef(0);
+  const [currentSRCD, setCurrentSRCD] = useState<string | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [gridData, setGridData] = useState<Item[]>([]);
   const [reqData, setReqData] = useState<any>({});
   const [currentData, setCurrentData] = useState<any>({});
   const [loopStart, setLoopStart] = useState<any>(false);
+  const [warningsObj, setWarningsObj] = useState({});
   const [switchBranchPara, setSwitchBranchPara] = useState<any>(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const currentBranch = useRef<any>(null);
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement | null>(null);
-  console.log(currentBranch.current);
+  console.log("warningsObj", warningsObj);
+
+  // State to track processed batch count
+  const [batchCount, setBatchCount] = useState<number>(0);
+  console.log(switchBranchPara);
+  console.log(currentBranch);
 
   const handleAction = useCallback(
     async (data: any) => {
@@ -75,6 +83,140 @@ export const VerifyDayendChecksums = ({
     [navigate, close]
   );
 
+  const formatTime = (date: Date): string => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+  useEffect(() => {
+    if (currentBranch.current) {
+      // Update state whenever the current branch changes
+      setWarningsObj((prevWarnings) => ({
+        ...prevWarnings,
+        [currentBranch.current]: warningCountRef.current,
+      }));
+    }
+  }, [currentBranch.current]);
+  console.log("openwarnmings", warningsObj);
+
+  const processRecord = async (
+    record: Item,
+    index: number
+  ): Promise<string> => {
+    const startTime = new Date();
+    setCurrentSRCD(record.SR_CD ?? null);
+
+    // Update grid data to reflect processing start
+    setGridData((prevGridData) => {
+      const updatedGridData = [...prevGridData];
+      updatedGridData[index] = {
+        ...updatedGridData[index],
+        CLR: "P",
+        PROCESS: LoaderImg,
+        ST_TIME: formatTime(startTime),
+        ED_TIME: "",
+      };
+      return updatedGridData;
+    });
+
+    try {
+      // Execute API call
+      const response = await API.executeChecksums({
+        FLAG: flag,
+        SCREEN_REF: "TRN/399",
+        FOR_BRANCH: currentBranch.current,
+        EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
+        CHKSM_TYPE: record.CHKSM_TYPE,
+        SR_CD: record.SR_CD,
+        MENDETORY: record.MENDETORY,
+        EOD_VER_ID: record.EOD_VER_ID,
+      });
+
+      const endTime = new Date();
+      const elapsedTime = formatTime(endTime);
+
+      // Update grid data based on response
+      if (response[0]?.CLR) {
+        setGridData((prevGridData) => {
+          const updatedGridData = [...prevGridData];
+          updatedGridData[index] = {
+            ...updatedGridData[index],
+            CLR: response[0].CLR,
+            PROCESS: "",
+            ED_TIME: elapsedTime,
+          };
+          return updatedGridData;
+        });
+      }
+
+      // Check for stopping conditions
+      if (
+        flag === "D" &&
+        response[0]?.CLR === "E" &&
+        response[0]?.EXIT_YN === "Y"
+      ) {
+        // Show message if conditions are met
+        await MessageBox({
+          messageTitle: "Error",
+          message: response[0]?.MESSAGE || "Unknown error occurred",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
+        CloseMessageBox(); // Ensure the message box is closed
+        setLoopStart(true);
+        return "stop"; // Signal to stop processing
+      }
+
+      if (flag === "C" && response[0]?.MESSAGE !== "") {
+        // Handle message box response if FLAG is "C"
+        const buttonName = await MessageBox({
+          messageTitle: "Error",
+          message: response[0]?.MESSAGE,
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
+
+        if (buttonName !== "Ok") {
+          return "stop"; // Stop processing if button clicked is not "Ok"
+        }
+      }
+      if (response[0]?.CLR === "W") {
+        warningCountRef.current += 1;
+      }
+      // Update batch count every 13 records processed
+      if (
+        (index + 1) % 11 === 0 ||
+        (index + 1) % 12 === 0 ||
+        (index + 1) % 13 === 0 ||
+        ((index + 1) % 20 === 0 || (index + 1) % 21) === 0
+      ) {
+        setBatchCount((prevCount) => prevCount + 1);
+      }
+    } catch (error) {
+      enqueueSnackbar("Error executing EOD for record", {
+        variant: "error",
+      });
+    }
+
+    return "continue"; // Continue the process if no stop condition is met
+  };
+
+  const processRecords = async (records: Item[]) => {
+    for (let i = 0; i < records.length; i++) {
+      const result = await processRecord(records[i], i);
+      if (result === "stop") {
+        await API.updateEodRunningStatus({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          FLAG: "N",
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
     onError: (error: any) => {
       const errorMsg =
@@ -86,130 +228,8 @@ export const VerifyDayendChecksums = ({
     },
     onSuccess: async (data: Item[]) => {
       setGridData(data);
-
-      // Function to format time
-      const formatTime = (date: Date): string => {
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        return `${hours}:${minutes}:${seconds}`;
-      };
-
-      // Function to process each record
-      const processRecord = async (
-        record: Item,
-        index: number
-      ): Promise<string> => {
-        const startTime = new Date();
-
-        // Update grid data to reflect processing start
-        setGridData((prevGridData) => {
-          const updatedGridData = [...prevGridData];
-          updatedGridData[index] = {
-            ...updatedGridData[index],
-            CLR: "P",
-            PROCESS: LoaderImg,
-            ST_TIME: formatTime(startTime),
-            ED_TIME: "",
-          };
-          return updatedGridData;
-        });
-
-        try {
-          // Execute API call
-          const response = await API.executeChecksums({
-            FLAG: flag,
-            SCREEN_REF: "TRN/399",
-            FOR_BRANCH: currentBranch.current,
-            EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
-            CHKSM_TYPE: record.CHKSM_TYPE,
-            SR_CD: record.SR_CD,
-            MENDETORY: record.MENDETORY,
-            EOD_VER_ID: record.EOD_VER_ID,
-          });
-
-          const endTime = new Date();
-          const elapsedTime = formatTime(endTime);
-
-          // Update grid data based on response
-          if (response[0]?.CLR) {
-            setGridData((prevGridData) => {
-              const updatedGridData = [...prevGridData];
-              updatedGridData[index] = {
-                ...updatedGridData[index],
-                CLR: response[0].CLR,
-                PROCESS: "",
-                ED_TIME: elapsedTime,
-              };
-              return updatedGridData;
-            });
-          }
-
-          // Check for stopping conditions
-          if (
-            flag === "D" &&
-            response[0]?.CLR === "E" &&
-            response[0]?.EXIT_YN === "Y"
-          ) {
-            // Show message if conditions are met
-            await MessageBox({
-              messageTitle: "Error",
-              message: response[0]?.MESSAGE || "Unknown error occurred",
-              icon: "ERROR",
-              buttonNames: ["Ok"],
-            });
-            CloseMessageBox(); // Ensure the message box is closed
-            setLoopStart(true);
-            return "stop"; // Signal to stop processing
-          }
-
-          if (flag === "C" && response[0]?.MESSAGE !== "") {
-            // Handle message box response if FLAG is "C"
-            const buttonName = await MessageBox({
-              messageTitle: "Error",
-              message: response[0]?.MESSAGE,
-              icon: "ERROR",
-              buttonNames: ["Ok"],
-            });
-
-            if (buttonName !== "Ok") {
-              return "stop"; // Stop processing if button clicked is not "Ok"
-            }
-          }
-        } catch (error) {
-          enqueueSnackbar("Error executing EOD for record", {
-            variant: "error",
-          });
-        }
-
-        return "continue"; // Continue the process if no stop condition is met
-      };
-
-      // Process each record and respect the stop condition
-      const processRecords = async (records: Item[]) => {
-        console.log(records);
-
-        for (let i = 0; i < records.length; i++) {
-          const result = await processRecord(records[i], i);
-          console.log(result);
-
-          if (result === "stop") {
-            await API.updateEodRunningStatus({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: authState?.user?.branchCode,
-              FLAG: "N",
-            });
-            return false;
-          }
-        }
-
-        return true;
-      };
-
-      // Execute the record processing
       const allRecordsProcessed = await processRecords(data);
 
-      // Show success message only if flag is "C" and all records were processed successfully
       if (flag === "C" && allRecordsProcessed) {
         await MessageBox({
           messageTitle: "Success",
@@ -219,12 +239,16 @@ export const VerifyDayendChecksums = ({
         });
       }
 
-      // Check if mandatory checks passed only if all records were processed successfully
       if (flag === "D" && allRecordsProcessed) {
         const mandatoryPassedCount = data.filter(
           (item) => item.CLR === "Y" && item.MENDETORY === "Y"
         ).length;
-
+        await MessageBox({
+          messageTitle: "Processing Complete",
+          message: ` Warnings: ${warningCountRef.current}. Branch: ${currentBranch.current}`,
+          icon: "WARNING",
+          buttonNames: ["Ok"],
+        });
         if (mandatoryPassedCount === 0) {
           await MessageBox({
             messageTitle: "Validation Failed.",
@@ -237,14 +261,13 @@ export const VerifyDayendChecksums = ({
       }
       setSwitchBranchPara(true);
 
-      // Execute getSessionDtl API call after processing records and handling mandatory checks
       const sessionDtl = await API.getSessionDtl({
         COMP_CD: authState?.companyID,
         BRANCH_CD: authState?.user?.branchCode,
         BASE_BRANCH_CD: authState?.baseCompanyID,
         BASE_COMP_CD: authState?.user?.baseBranchCode,
         WORKING_DATE: authState?.workingDate,
-      }); // Ensure this API call is correctly defined in your API module
+      });
     },
   });
 
@@ -292,15 +315,20 @@ export const VerifyDayendChecksums = ({
               CloseMessageBox();
               close();
             } else if (buttonName === "Yes") {
-              const branchList = data[0]?.BRANCH_LIST;
+              const branchList = ["002 ", "004 ", "005 "];
+              // const branchList = data[0]?.BRANCH_LIST;
               if (branchList.length > 0) {
                 if (switchBranchPara) {
-                  // Sequential processing of branches
                   for (const branch of branchList) {
-                    console.log("branch", branch);
                     currentBranch.current = branch;
+                    // setWarningsObj((prevWarnings) => {
+                    //   return {
+                    //     ...prevWarnings,
+                    //     [currentBranch.current]: warningCountRef.current,
+                    //   };
+                    // });
 
-                    // Create a function to process each branch sequentially
+                    warningCountRef.current = 0;
                     const processBranch = async (branch: string) => {
                       await checkSumsDataMutation.mutateAsync({
                         FLAG: flag,
@@ -308,10 +336,11 @@ export const VerifyDayendChecksums = ({
                         FOR_BRANCH: branch,
                         EOD_EOS_FLG: data[0]?.EOD_EOS_FLG,
                       });
-                      // Proceed to the next branch
                     };
-
-                    // Process the current branch
+                    setWarningsObj((prevWarnings) => ({
+                      ...prevWarnings,
+                      [branch]: warningCountRef.current,
+                    }));
                     await processBranch(branch);
                   }
                 }
@@ -371,15 +400,17 @@ export const VerifyDayendChecksums = ({
       queryClient.removeQueries(["getValidateEod"]);
     };
   }, []);
+
   let label = gridData
     ? //@ts-ignore
-      gridData[0]?.TITLE
-    : "Day Ebd Process";
+      `${gridData[0]?.TITLE} Version Id: ${gridData[0]?.EOD_VER_ID}`
+    : "Day End Process";
   verifyDayendChecksumsMetaData.gridConfig.gridLabel = label;
 
   const updateData = (gridData: Item[] = []): Item[] => {
-    return gridData.map((item) => ({
+    return gridData.map((item, index) => ({
       ...item,
+      INDEX: `${index}`,
       _rowColor:
         item?.CLR === "N"
           ? "rgb(255, 0, 0)"
@@ -400,21 +431,22 @@ export const VerifyDayendChecksums = ({
       <Dialog
         open={open}
         fullWidth
-        maxWidth="lg"
+        maxWidth="xl"
         style={{ height: "100%" }}
         PaperProps={{
-          style: { width: "80%", padding: "7px" },
+          style: { width: "87%", padding: "7px" },
         }}
       >
         {gridData.length > 0 ? (
           <>
             <GridWrapper
               ref={gridRef}
-              key={`verifyDayendChecksumsMetaData` + label}
+              key={`verifyDayendChecksumsMetaData` + label + batchCount}
               finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
               data={updateData(gridData)}
               setData={() => null}
               actions={actions}
+              hideActionBar={true}
               onClickActionEvent={(index, id, currentData) => {
                 if (id === "REPORT") {
                   setCurrentData(currentData);
@@ -435,6 +467,8 @@ export const VerifyDayendChecksums = ({
                 }
               }}
               setAction={handleAction}
+              onlySingleSelectionAllow={false}
+              defaultSelectedRowId={currentSRCD ?? null}
             />
             <Paper sx={{ display: "flex", justifyContent: "space-between" }}>
               <div>
@@ -474,10 +508,8 @@ export const VerifyDayendChecksums = ({
               <div>
                 {loopStart && (
                   <GradientButton
-                    onClick={(event) => {
-                      // restartLoop();
+                    onClick={() => {
                       setGridData([]);
-
                       checkSumsDataMutation.mutate({
                         FLAG: flag,
                         SCREEN_REF: "TRN/399",

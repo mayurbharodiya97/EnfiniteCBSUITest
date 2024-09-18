@@ -66,7 +66,7 @@ export const ViewEodReport = ({
             overflow: "auto",
           },
         }}
-        maxWidth="xl"
+        maxWidth="lg"
       >
         {loading ? (
           <LoaderPaperComponent />
