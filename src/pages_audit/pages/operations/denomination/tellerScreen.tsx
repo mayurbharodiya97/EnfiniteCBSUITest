@@ -39,6 +39,8 @@ import { CustomPropertiesConfigurationContext } from "components/propertiesconfi
 import { padding } from "@mui/system";
 import { FocusTrap } from "@mui/base";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
+import { utilFunction } from "components/utils";
+import { useLocation } from "react-router-dom";
 const TellerScreen = () => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
@@ -54,6 +56,7 @@ const TellerScreen = () => {
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const { authState }: any = useContext(AuthContext);
+  let currentPath = useLocation().pathname;
   const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { denoTableType } = customParameter;
   // const { cardStore, setCardStore } = useContext(AccDetailContext);
@@ -614,7 +617,11 @@ const TellerScreen = () => {
   return (
     <>
       <DailyTransTabs
-        heading="Teller Transaction (Maker) (ETRN/039)"
+        heading={utilFunction.getDynamicLabel(
+          currentPath,
+          authState?.menulistdata,
+          false
+        )}
         tabsData={tabsDetails}
         cardsData={cardDetails}
         reqData={cardTabsReq}
@@ -677,6 +684,10 @@ const TellerScreen = () => {
               });
             }
           } else if (action === "TRN") {
+            TellerScreenMetadata.form.label =
+              payload?.value === "1"
+                ? "Cash Receipt Entry - TRN/039"
+                : "Cash Payment Entry - TRN/040";
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({
                   type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
@@ -864,7 +875,7 @@ const TellerScreen = () => {
           initRemainExcess={
             Boolean(state?.fieldsData?.TRN === "1")
               ? state?.fieldsData?.RECEIPT
-              : Boolean(state?.fieldsData?.TRN === "P")
+              : Boolean(state?.fieldsData?.TRN === "4")
               ? state?.fieldsData?.PAYMENT
               : "0"
           }

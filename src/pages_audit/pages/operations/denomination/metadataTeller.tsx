@@ -8,7 +8,7 @@ import { utilFunction } from "components/utils";
 export const TellerScreenMetadata: any = {
   form: {
     name: "TellerOperation",
-    label: "Teller Transaction(Maker) - (TRN/039)",
+    label: "Cash Receipt Entry - TRN/039",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -81,16 +81,19 @@ export const TellerScreenMetadata: any = {
               ? "4   "
               : "";
           return {
-            BRANCH_CD: { value: authState?.user?.branchCode ?? "" },
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
-            FLAG: { value: "" },
-            TOKEN: { value: "" },
-            SDC: { value: sdc ?? "" },
-            CHEQUE_NO: { value: "" },
-            CHEQUE_DT: { value: "" },
-            RECEIPT: { value: "" },
-            PAYMENT: { value: "" },
+            BRANCH_CD: {
+              value: authState?.user?.branchCode ?? "",
+              ignoreUpdate: true,
+            },
+            ACCT_TYPE: { value: "", ignoreUpdate: true },
+            ACCT_CD: { value: "", ignoreUpdate: true },
+            FLAG: { value: "", ignoreUpdate: true },
+            TOKEN: { value: "", ignoreUpdate: true },
+            SDC: { value: sdc ?? "", ignoreUpdate: true },
+            CHEQUE_NO: { value: "", ignoreUpdate: true },
+            CHEQUE_DT: { value: "", ignoreUpdate: true },
+            RECEIPT: { value: "", ignoreUpdate: true },
+            PAYMENT: { value: "", ignoreUpdate: true },
           };
         }
       },
@@ -139,13 +142,16 @@ export const TellerScreenMetadata: any = {
         ) => {
           formState.setDataOnFieldChange("BRANCH_CD", currentField);
           return {
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
-            FLAG: { value: "" },
-            CHEQUE_NO: { value: "" },
-            CHEQUE_DT: { value: authState?.workingDate ?? "" },
-            RECEIPT: { value: "" },
-            PAYMENT: { value: "" },
+            ACCT_TYPE: { value: "", ignoreUpdate: true },
+            ACCT_CD: { value: "", ignoreUpdate: true },
+            FLAG: { value: "", ignoreUpdate: true },
+            CHEQUE_NO: { value: "", ignoreUpdate: true },
+            CHEQUE_DT: {
+              value: authState?.workingDate ?? "",
+              ignoreUpdate: true,
+            },
+            RECEIPT: { value: "", ignoreUpdate: true },
+            PAYMENT: { value: "", ignoreUpdate: true },
           };
         },
         GridProps: {
@@ -174,12 +180,15 @@ export const TellerScreenMetadata: any = {
           const sdcValue =
             dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
           return {
-            ACCT_CD: { value: "" },
-            FLAG: { value: "" },
-            CHEQUE_NO: { value: "" },
-            CHEQUE_DT: { value: "" },
-            RECEIPT: { value: "" },
-            PAYMENT: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: true },
+            FLAG: { value: "", ignoreUpdate: true },
+            CHEQUE_NO: { value: "", ignoreUpdate: true },
+            CHEQUE_DT: {
+              value: authState?.workingDate ?? "",
+              ignoreUpdate: true,
+            },
+            RECEIPT: { value: "", ignoreUpdate: true },
+            PAYMENT: { value: "", ignoreUpdate: true },
           };
         },
         GridProps: {
@@ -250,12 +259,15 @@ export const TellerScreenMetadata: any = {
                     });
                     if (btnNm === "Ok") {
                       return {
-                        ACCT_CD: { value: "" },
-                        FLAG: { value: "" },
-                        CHEQUE_NO: { value: "" },
-                        CHEQUE_DT: { value: "" },
-                        RECEIPT: { value: "" },
-                        PAYMENT: { value: "" },
+                        ACCT_CD: { value: "", ignoreUpdate: true },
+                        FLAG: { value: "", ignoreUpdate: true },
+                        CHEQUE_NO: { value: "", ignoreUpdate: true },
+                        CHEQUE_DT: {
+                          value: authState?.workingDate ?? "",
+                          ignoreUpdate: true,
+                        },
+                        RECEIPT: { value: "", ignoreUpdate: true },
+                        PAYMENT: { value: "", ignoreUpdate: true },
                       };
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
@@ -266,12 +278,15 @@ export const TellerScreenMetadata: any = {
                     });
                     if (btnNm === "No") {
                       return {
-                        ACCT_CD: { value: "" },
-                        FLAG: { value: "" },
-                        CHEQUE_NO: { value: "" },
-                        CHEQUE_DT: { value: "" },
-                        RECEIPT: { value: "" },
-                        PAYMENT: { value: "" },
+                        ACCT_CD: { value: "", ignoreUpdate: true },
+                        FLAG: { value: "", ignoreUpdate: true },
+                        CHEQUE_NO: { value: "", ignoreUpdate: true },
+                        CHEQUE_DT: {
+                          value: authState?.workingDate ?? "",
+                          ignoreUpdate: true,
+                        },
+                        RECEIPT: { value: "", ignoreUpdate: true },
+                        PAYMENT: { value: "", ignoreUpdate: true },
                       };
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "9") {
@@ -335,14 +350,17 @@ export const TellerScreenMetadata: any = {
                 dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
               return {
                 ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
-                FLAG: { value: "A" },
+                FLAG: { value: "A", ignoreUpdate: true },
                 CHEQUE_NO: {
                   value: postData?.CHEQUE_NO ?? "",
                   ignoreUpdate: true,
                 },
-                CHEQUE_DT: { value: "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
+                CHEQUE_DT: {
+                  value: authState?.workingDate ?? "",
+                  ignoreUpdate: true,
+                },
+                RECEIPT: { value: "", ignoreUpdate: true },
+                PAYMENT: { value: "", ignoreUpdate: true },
               };
             }
           }
@@ -661,8 +679,7 @@ export const TellerScreenMetadata: any = {
                     ignoreUpdate: true,
                   },
                   CHEQUE_DT: {
-                    value: "",
-                    // isFieldFocused: true,
+                    value: authState?.workingDate ?? "",
                     ignoreUpdate: true,
                   },
                   RECEIPT: {
@@ -691,8 +708,7 @@ export const TellerScreenMetadata: any = {
                     ignoreUpdate: true,
                   },
                   CHEQUE_DT: {
-                    value: "",
-                    // isFieldFocused: true,
+                    value: authState?.workingDate ?? "",
                     ignoreUpdate: true,
                   },
                   RECEIPT: {
