@@ -6,18 +6,16 @@ import React, {
   useState,
 } from "react";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import FormWrapper from "components/dyanmicForm";
 import { usePopupContext } from "components/custom/popupContext";
-import { Route, Routes, useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTableStatic";
 import {
   DailyTransactionImportGridMetaData,
   DailyTransactionImportMetadata,
 } from "./dailyTransactionImportMetadata";
 import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
-import { ClearCacheProvider, queryClient } from "cache";
+import { ClearCacheProvider } from "cache";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
@@ -31,10 +29,9 @@ import { FileUploadControl } from "components/fileUpload";
 const actions: ActionTypes[] = [
   {
     actionName: "errors",
-    actionLabel: t("Errors"),
+    actionLabel: t("errors"),
     multiple: false,
     alwaysAvailable: true,
-    // rowDoubleClick: true,
   },
 ];
 const DailyTransactionImport = () => {
@@ -42,21 +39,53 @@ const DailyTransactionImport = () => {
   const formRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [gridData, setGridData] = useState<any>([]);
   const hasUpdated = useRef(false);
   const [isSelectFileOpen, setIsSelectFileOpen] = useState(false);
   const gridRef = useRef<any>(null);
-  const setCurrentAction = useCallback(
-    async (data) => {
-      if (data?.name === "errors") {
-        navigate(data?.name, {
-          state: data?.rows,
+  const [actionMenu, setActionMenu] = useState(actions);
+  const [filteredGridData, setFilteredGridData] = useState<any>([]);
+  const [paraType, setParaType] = useState("E");
+  const [reqPara, setReqPara] = useState({});
+
+  const setCurrentAction = useCallback(async (data) => {
+    if (data.name === "errors") {
+      setActionMenu((values: any) => {
+        return values.map((item) => {
+          if (item.actionName === "errors") {
+            return { ...item, actionName: "all", actionLabel: t("All") };
+          } else {
+            return item;
+          }
         });
+      });
+      setParaType("A");
+    } else if (data.name === "all") {
+      setActionMenu((values: any) => {
+        return values.map((item) => {
+          if (item.actionName === "all") {
+            return {
+              ...item,
+              actionName: "errors",
+              actionLabel: t("errors"),
+            };
+          } else {
+            return item;
+          }
+        });
+      });
+      setParaType("E");
+    }
+  }, []);
+  useEffect(() => {
+    if (Array.isArray(gridData)) {
+      if (paraType === "E") {
+        setFilteredGridData(gridData.filter((item) => item.STATUS === "Y"));
+      } else if (paraType === "A") {
+        setFilteredGridData(gridData);
       }
-    },
-    [navigate]
-  );
+    }
+  }, [gridData, paraType]);
 
   const getDailyTransactionUploadData: any = useMutation(
     API.getDailyTransactionImportData,
@@ -79,6 +108,22 @@ const DailyTransactionImport = () => {
       },
     }
   );
+  const deleteImportedData: any = useMutation(API.deleteImportedData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: async (data, variables) => {
+      setIsSelectFileOpen(true);
+      CloseMessageBox();
+    },
+  });
   const getValidateToSelectFile: any = useMutation(
     API.getValidateToSelectFile,
     {
@@ -92,31 +137,42 @@ const DailyTransactionImport = () => {
         });
       },
       onSuccess: async (data, variables) => {
-        for (let i = 0; i < data?.length; i++) {
-          if (data[i]?.O_STATUS === "0") {
+        setReqPara(variables);
+        // for (let i = 0; i < data?.length; i++) {
+        if (data[0]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: t("Alert"),
+            message: data[0]?.O_MESSAGE,
+          });
+        } else if (data[0]?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: t("Confirmation"),
+            message: data[0]?.O_MESSAGE,
+            // buttonNames: ["No", "Yes"],
+            buttonNames: ["Merge", "Replace"],
+            loadingBtnName: ["Replace"],
+          });
+          if (buttonName === "Replace") {
+            deleteImportedData.mutate({
+              A_COMP_CD: authState?.companyID,
+              WORKING_DATE: variables?.WORKING_DATE,
+              A_TABLE_NM: variables?.A_TABLE_NM,
+              A_BRANCH_CD: variables?.A_BRANCH_CD,
+              A_ACCT_TYPE: variables?.A_ACCT_TYPE,
+              A_ACCT_CD: variables?.A_ACCT_CD,
+            });
+          } else if (buttonName === "Merge") {
             setIsSelectFileOpen(true);
-          } else if (data[i]?.O_STATUS === "9") {
-            MessageBox({
-              messageTitle: t("Alert"),
-              message: data[i]?.O_MESSAGE,
-            });
-          } else if (data[i]?.O_STATUS === "99") {
-            const buttonName = await MessageBox({
-              messageTitle: t("Confirmation"),
-              message: data[i]?.O_MESSAGE,
-              buttonNames: ["No", "Yes"],
-              loadingBtnName: ["Yes"],
-            });
-            // if (buttonName === "Yes") {
-
-            // }
-          } else if (data[i]?.O_STATUS === "999") {
-            MessageBox({
-              messageTitle: t("ValidationFailed"),
-              message: data[i]?.O_MESSAGE,
-            });
           }
+        } else if (data[0]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: data[0]?.O_MESSAGE,
+          });
+        } else if (data[0]?.O_STATUS === "0") {
+          setIsSelectFileOpen(true);
         }
+        // }
       },
     }
   );
@@ -218,7 +274,7 @@ const DailyTransactionImport = () => {
               }
               color={"primary"}
             >
-              {t("Upload Data")}
+              {t("UploadData")}
             </GradientButton>
           </>
         )}
@@ -226,12 +282,16 @@ const DailyTransactionImport = () => {
 
       <>
         <GridWrapper
-          key={`DailyTransactionImportGrid` + gridData + hasUpdated.current}
+          key={
+            `DailyTransactionImportGrid` +
+            gridData +
+            hasUpdated.current +
+            paraType
+          }
           finalMetaData={DailyTransactionImportGridMetaData as GridMetaDataType}
-          data={gridData ?? []}
+          data={filteredGridData ?? []}
           setData={setGridData}
-          // loading={getInsuranceDetailData.isLoading}
-          actions={actions}
+          actions={actionMenu}
           setAction={setCurrentAction}
           ref={gridRef}
         />
@@ -253,7 +313,20 @@ const DailyTransactionImport = () => {
                 ResultFunc,
                 base64Object,
                 result
-              ) => {}}
+              ) => {
+                const request = {
+                  ...base64Object[0],
+                  ...reqPara,
+                };
+                console.log(
+                  "base64Object",
+                  request,
+                  formDataObj,
+                  proccessFunc,
+                  ResultFunc,
+                  result
+                );
+              }}
               gridProps={{}}
               maxAllowedSize={1024 * 1204 * 10} //10Mb file
               allowedExtensions={["xlsx", "pdf", "csv", "txt", "xls", "TXT"]}

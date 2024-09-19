@@ -9,7 +9,8 @@ type TButtonName =
   | "No"
   | "Close"
   | "Accept"
-  | "Decline";
+  | "Decline"
+  | (string & Record<never, never>);
 
 type TMessage = {
   isOpen?: boolean;
