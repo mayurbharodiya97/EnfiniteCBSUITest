@@ -10,7 +10,7 @@ import { FDRetriveMetadata } from "./metaData/fdRetriveMetaData";
 import { FDContext } from "../context/fdContext";
 import { utilFunction } from "components/utils";
 
-export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
+export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
   const {
     FDState,
     updateRetrieveFormData,
@@ -47,6 +47,7 @@ export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
       WORKING_DT: authState?.workingDate ?? "",
     };
     getFDViewDtlMutation?.mutate(reqParam);
+    handleDialogClose();
   };
 
   return (
@@ -86,21 +87,23 @@ export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
           <>
             <GradientButton
               onClick={handleSubmit}
-              endIcon={
-                getFDViewDtlMutation?.isLoading ? (
-                  <CircularProgress size={20} />
-                ) : null
-              }
+              // endIcon={
+              //   getFDViewDtlMutation?.isLoading ? (
+              //     <CircularProgress size={20} />
+              //   ) : null
+              // }
               disabled={
                 isSubmitting ||
-                getFDViewDtlMutation?.isFetching ||
+                // getFDViewDtlMutation?.isFetching ||
                 FDState?.disableButton
               }
               color={"primary"}
             >
               Ok
             </GradientButton>
-            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+            <GradientButton onClick={() => handleDialogClose(false)}>
+              Close
+            </GradientButton>
           </>
         )}
       </FormWrapper>

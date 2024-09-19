@@ -2625,6 +2625,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/SAVEFDDETAILS",
     packageName: "",
   },
+  CHECKALLOWFDPAY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWFDPAY",
+    packageName: "",
+  },
+  GETPREMATRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREMATRATE",
+    packageName: "",
+  },
+  GETFDPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

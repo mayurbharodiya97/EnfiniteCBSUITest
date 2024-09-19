@@ -343,6 +343,37 @@ export const saveFDDetails = async (reqData) => {
   }
 };
 
+//payment
+export const checkAllowFDPay = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHECKALLOWFDPAY", { ...reqData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getPrematureRate = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPREMATRATE", { ...reqData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getFDPaymentDtl = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDPAYMENTDTL", { ...reqData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 ////////Old api
 export const getFDAccountsDetail = async (Apireq) => {
   const { data, status, message, messageDetails } =

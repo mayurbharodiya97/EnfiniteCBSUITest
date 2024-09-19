@@ -189,7 +189,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "_accountNumber",
           },
           branchCodeMetadata: {
-            name: "DC_BRANCH_CD",
+            name: "BRANCH_CD",
             isFieldFocus: true,
             fullWidth: true,
             runPostValidationHookAlways: true,
@@ -202,17 +202,17 @@ export const TransferAcctDetailFormMetadata = {
             ) => {
               if (formState?.isSubmitting) return {};
               return {
-                DC_ACCT_TYPE: { value: "" },
-                DC_ACCT_CD: { value: "" },
-                DC_ACCT_NM: { value: "" },
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
               };
             },
 
             GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 },
           },
           accountTypeMetadata: {
-            name: "DC_ACCT_TYPE",
-            dependentFields: ["DC_BRANCH_CD"],
+            name: "ACCT_TYPE",
+            dependentFields: ["BRANCH_CD"],
             runPostValidationHookAlways: true,
             validationRun: "onChange",
             postValidationSetCrossFieldValues: async (
@@ -224,8 +224,7 @@ export const TransferAcctDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               if (
                 currentField?.value &&
-                dependentFieldValues?.["TRNDTLS.DC_BRANCH_CD"]?.value
-                  ?.length === 0
+                dependentFieldValues?.["TRNDTLS.BRANCH_CD"]?.value?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "Alert",
@@ -236,12 +235,12 @@ export const TransferAcctDetailFormMetadata = {
 
                 if (buttonName === "Ok") {
                   return {
-                    DC_ACCT_TYPE: {
+                    ACCT_TYPE: {
                       value: "",
                       isFieldFocused: false,
                       ignoreUpdate: true,
                     },
-                    DC_BRANCH_CD: {
+                    BRANCH_CD: {
                       value: "",
                       isFieldFocused: true,
                       ignoreUpdate: true,
@@ -250,16 +249,16 @@ export const TransferAcctDetailFormMetadata = {
                 }
               }
               return {
-                DC_ACCT_CD: { value: "" },
-                DC_ACCT_NM: { value: "" },
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
               };
             },
             fullWidth: true,
             GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 },
           },
           accountCodeMetadata: {
-            name: "DC_ACCT_CD",
-            dependentFields: ["DC_BRANCH_CD", "DC_ACCT_TYPE"],
+            name: "ACCT_CD",
+            dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
             runPostValidationHookAlways: true,
             postValidationSetCrossFieldValues: async (
               currentField,
@@ -270,8 +269,8 @@ export const TransferAcctDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               if (
                 currentField.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value
-                  ?.length === 0
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value?.length ===
+                  0
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "Alert",
@@ -282,12 +281,12 @@ export const TransferAcctDetailFormMetadata = {
 
                 if (buttonName === "Ok") {
                   return {
-                    DC_ACCT_CD: {
+                    ACCT_CD: {
                       value: "",
                       isFieldFocused: false,
                       ignoreUpdate: true,
                     },
-                    DC_ACCT_TYPE: {
+                    ACCT_TYPE: {
                       value: "",
                       isFieldFocused: true,
                       ignoreUpdate: true,
@@ -296,18 +295,18 @@ export const TransferAcctDetailFormMetadata = {
                 }
               } else if (
                 currentField?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value
+                dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value
               ) {
                 const reqParameters = {
                   BRANCH_CD:
-                    dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value,
+                    dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value,
                   COMP_CD: authState?.companyID,
                   ACCT_TYPE:
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value,
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value,
                   ACCT_CD: utilFunction.getPadAccountNumber(
                     currentField?.value,
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.optionData
                   ),
                   SCREEN_REF: "FD_DR_ACT",
                 };
@@ -358,12 +357,12 @@ export const TransferAcctDetailFormMetadata = {
                 }
                 btn99 = 0;
                 return {
-                  DC_ACCT_CD:
+                  ACCT_CD:
                     returnVal !== ""
                       ? {
                           value: utilFunction.getPadAccountNumber(
                             currentField?.value,
-                            dependentFieldsValues?.DC_ACCT_TYPE?.optionData
+                            dependentFieldsValues?.ACCT_TYPE?.optionData
                           ),
                           isFieldFocused: false,
                           ignoreUpdate: true,
@@ -373,7 +372,7 @@ export const TransferAcctDetailFormMetadata = {
                           isFieldFocused: true,
                           ignoreUpdate: true,
                         },
-                  DC_ACCT_NM: {
+                  ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
                   },
                   TRAN_BAL: {
@@ -388,13 +387,10 @@ export const TransferAcctDetailFormMetadata = {
                   STATUS: {
                     value: returnVal?.STATUS ?? "",
                   },
-                  DC_COMP_CD: {
-                    value: authState?.companyID ?? "",
-                  },
                 };
               } else if (!currentField?.value) {
                 return {
-                  DC_ACCT_NM: { value: "" },
+                  ACCT_NM: { value: "" },
                   TRAN_BAL: { value: "" },
                   TYPE_CD: { value: "" },
                   CHEQUE_NO: { value: "" },
@@ -410,7 +406,7 @@ export const TransferAcctDetailFormMetadata = {
           render: {
             componentType: "textField",
           },
-          name: "DC_ACCT_NM",
+          name: "ACCT_NM",
           label: "Account Name",
           type: "text",
           fullWidth: true,
@@ -439,12 +435,7 @@ export const TransferAcctDetailFormMetadata = {
           type: "text",
           autoComplete: "off",
           required: true,
-          dependentFields: [
-            "DC_BRANCH_CD",
-            "DC_ACCT_TYPE",
-            "DC_ACCT_CD",
-            "TYPE_CD",
-          ],
+          dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD", "TYPE_CD"],
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: true,
             touchAndValidate: true,
@@ -459,7 +450,7 @@ export const TransferAcctDetailFormMetadata = {
 
             if (
               currentField.value &&
-              dependentFieldsValues?.["TRNDTLS.DC_ACCT_CD"]?.value.length === 0
+              dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "Alert",
@@ -474,7 +465,7 @@ export const TransferAcctDetailFormMetadata = {
                     isFieldFocused: false,
                     ignoreUpdate: true,
                   },
-                  DC_ACCT_TYPE: {
+                  ACCT_TYPE: {
                     value: "",
                     isFieldFocused: true,
                     ignoreUpdate: true,
@@ -483,17 +474,15 @@ export const TransferAcctDetailFormMetadata = {
               }
             } else if (
               currentField.value &&
-              dependentFieldsValues?.["TRNDTLS.DC_ACCT_CD"]?.value.length
+              dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value.length
             ) {
               if (formState?.isSubmitting) return {};
               let postData = await GeneralAPI.getChequeNoValidation({
-                BRANCH_CD:
-                  dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value,
-                ACCT_TYPE:
-                  dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value,
+                BRANCH_CD: dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value,
+                ACCT_TYPE: dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value,
                 ACCT_CD: utilFunction.getPadAccountNumber(
-                  dependentFieldsValues?.["TRNDTLS.DC_ACCT_CD"]?.value,
-                  dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
+                  dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value,
+                  dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.optionData
                 ),
                 CHEQUE_NO: currentField.value,
                 TYPE_CD: dependentFieldsValues?.["TRNDTLS.TYPE_CD"]?.value,
@@ -601,9 +590,9 @@ export const TransferAcctDetailFormMetadata = {
           dependentFields: [
             "TRAN_BAL",
             "STATUS",
-            "DC_BRANCH_CD",
-            "DC_ACCT_TYPE",
-            "DC_ACCT_CD",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
           ],
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: true,
@@ -639,20 +628,18 @@ export const TransferAcctDetailFormMetadata = {
               }
             } else {
               if (
-                dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_ACCT_CD"]?.value
+                dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value
               ) {
                 const reqParameters = {
                   A_COMP_CD: authState?.companyID ?? "",
                   A_BRANCH_CD:
-                    dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value ??
-                    "",
+                    dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value ?? "",
                   A_ACCT_TYPE:
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value ??
-                    "",
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value ?? "",
                   A_ACCT_CD:
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_CD"]?.value ?? "",
+                    dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value ?? "",
                   A_TYPE_CD: "6",
                   A_AMOUNT: currentField?.value ?? "",
                   A_TYPE: "C",
@@ -709,12 +696,6 @@ export const TransferAcctDetailFormMetadata = {
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
         },
 
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "DC_COMP_CD",
-        },
         {
           render: {
             componentType: "hidden",

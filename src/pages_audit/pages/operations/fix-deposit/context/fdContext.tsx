@@ -22,7 +22,9 @@ const inititalState: FDStateType = {
   retrieveFormData: {},
   fdParaDetailData: {},
   acctNoData: {},
+  fdPaymentData: {},
   viewDtlGridData: [],
+  checkAllowFDPayApiData: {},
 };
 
 const FDReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -114,11 +116,27 @@ export const FDContextWrapper = ({ children }) => {
       },
     });
   };
+  const updateFDPaymentData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        fdPaymentData: data,
+      },
+    });
+  };
   const updateViewDtlGridData = (data) => {
     dispatch({
       type: "commonType",
       payload: {
         viewDtlGridData: data,
+      },
+    });
+  };
+  const updateCheckAllowFDPayApiData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        checkAllowFDPayApiData: data,
       },
     });
   };
@@ -144,6 +162,8 @@ export const FDContextWrapper = ({ children }) => {
         updateFDParaDetailData,
         updateAcctNoData,
         updateViewDtlGridData,
+        updateFDPaymentData,
+        updateCheckAllowFDPayApiData,
       }}
     >
       {children}

@@ -21,13 +21,13 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const IntPaidDtlGrid = ({ closeDialog }) => {
+export const IntPaidDtlGrid = ({ handleDialogClose }) => {
   const { t } = useTranslation();
   const { FDState } = useContext(FDContext);
   const { authState } = useContext(AuthContext);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "close") {
-      closeDialog();
+      handleDialogClose();
     }
   }, []);
 

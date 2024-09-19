@@ -15,7 +15,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import Draggable from "react-draggable";
 import { useLocation } from "react-router-dom";
 
-export const ViewMasterForm = ({ closeDialog }) => {
+export const ViewMasterForm = ({ handleDialogClose }) => {
   const { authState } = useContext(AuthContext);
   const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
@@ -106,7 +106,9 @@ export const ViewMasterForm = ({ closeDialog }) => {
               background: "white",
             }}
           >
-            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+            <GradientButton onClick={() => handleDialogClose()}>
+              Close
+            </GradientButton>
           </FormWrapper>
         )}
       </div>

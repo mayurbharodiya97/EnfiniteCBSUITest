@@ -78,9 +78,9 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
                   console.log("dataArray item", item);
 
                   if (
-                    !Boolean(item.DC_BRANCH_CD.trim()) ||
-                    !Boolean(item.DC_ACCT_TYPE.trim()) ||
-                    !Boolean(item.DC_ACCT_CD.trim()) ||
+                    !Boolean(item.BRANCH_CD.trim()) ||
+                    !Boolean(item.ACCT_TYPE.trim()) ||
+                    !Boolean(item.ACCT_CD.trim()) ||
                     !Boolean(item.CHEQUE_NO.trim())
                   ) {
                     return await MessageBox({

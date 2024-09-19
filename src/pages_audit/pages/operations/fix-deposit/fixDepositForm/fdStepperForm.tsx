@@ -61,7 +61,11 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const FixDepositForm = ({ defaultView, closeDialog }) => {
+export const FixDepositForm = ({
+  defaultView,
+  handleDialogClose,
+  isDataChangedRef,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
   const {
@@ -118,13 +122,45 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
       });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      // isDataChangedRef.current = true;
-      CloseMessageBox();
-      // closeDialog();
+    onSuccess: async (data) => {
+      console.log("data", data);
+
+      for (const response of data ?? []) {
+        if (response?.O_STATUS === "999") {
+          await MessageBox({
+            messageTitle: "ValidationFailed",
+            message: response?.O_MESSAGE ?? "",
+            icon: "ERROR",
+          });
+        } else if (response?.O_STATUS === "9") {
+          await MessageBox({
+            messageTitle: "Alert",
+            message: response?.O_MESSAGE ?? "",
+            icon: "WARNING",
+          });
+        } else if (response?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: response?.O_MESSAGE ?? "",
+            buttonNames: ["Yes", "No"],
+            defFocusBtnName: "Yes",
+          });
+          if (buttonName === "No") {
+            break;
+          }
+        } else if (response?.O_STATUS === "0") {
+          const buttonName = await MessageBox({
+            messageTitle: "Voucher(s) Confirmation",
+            message: response?.VOUCHER_MSG ?? "",
+            buttonNames: ["Ok"],
+          });
+          if (buttonName === "Ok") {
+            isDataChangedRef.current = true;
+            CloseMessageBox();
+            handleDialogClose();
+          }
+        }
+      }
     },
   });
 
@@ -270,7 +306,7 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
     } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {
       const buttonName = await MessageBox({
         messageTitle: "Confirmation",
-        message: "Are you sure create FD?",
+        message: "Proceed?",
         buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
         loadingBtnName: ["Yes"],
@@ -316,7 +352,9 @@ export const FixDepositForm = ({ defaultView, closeDialog }) => {
                 FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
               } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`}
             </Typography>
-            <GradientButton onClick={closeDialog}>{t("Close")}</GradientButton>
+            <GradientButton onClick={handleDialogClose}>
+              {t("Close")}
+            </GradientButton>
           </Toolbar>
         </AppBar>
         <Stack sx={{ width: "100%", position: "relative" }} spacing={4}>

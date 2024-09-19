@@ -25,7 +25,13 @@ import { format } from "date-fns";
 
 export const FDDetailForm = forwardRef<any, any>(
   (
-    { defaultView, closeDialog, screenFlag, detailsFormSubmitHandler },
+    {
+      defaultView,
+      handleDialogClose,
+      screenFlag,
+      detailsFormSubmitHandler,
+      isDataChangedRef,
+    },
     ref: any
   ) => {
     const {
@@ -57,12 +63,12 @@ export const FDDetailForm = forwardRef<any, any>(
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(data, {
+        isDataChangedRef.current = true;
+        enqueueSnackbar(t("DataUpdatedSuccessfully"), {
           variant: "success",
         });
-        // isDataChangedRef.current = true;
         CloseMessageBox();
-        closeDialog();
+        handleDialogClose();
       },
     });
 
@@ -75,43 +81,34 @@ export const FDDetailForm = forwardRef<any, any>(
     ) => {
       endSubmit(true);
       let newData = {
-        // ...data?.FDDTL?.[0],
-        // MONTHLY_INT: Boolean(data?.FDDTL?.[0]?.MONTHLY_INT)
-        //   ? data?.FDDTL?.[0]?.MONTHLY_INT
-        //   : "0",
-        // TRSF_AMT: Number(rows?.[0]?.data?.TRSF_AMT ?? 0).toFixed(0),
-        // MATURITY_AMT: Number(rows?.[0]?.data?.MATURITY_AMT ?? 0).toFixed(0),
-
-        MATURE_INST: data?.FDDTL?.[0]?.MATURE_INST ?? "",
         CR_BRANCH_CD: data?.FDDTL?.[0]?.CR_BRANCH_CD ?? "",
+        CR_ACCT_TYPE: data?.FDDTL?.[0]?.CR_ACCT_TYPE ?? "",
         CR_ACCT_CD:
           utilFunction.getPadAccountNumber(
             data?.FDDTL?.[0]?.CR_ACCT_CD,
             data?.FDDTL?.[0]?.CR_ACCT_TYPE
           ) ?? "",
-        CR_ACCT_TYPE: data?.FDDTL?.[0]?.CR_ACCT_TYPE ?? "",
+        CR_ACCT_NM: data?.FDDTL?.[0]?.CR_ACCT_NM ?? "",
+        MATURE_INST: data?.FDDTL?.[0]?.MATURE_INST ?? "",
         FD_NO: data?.FDDTL?.[0]?.FD_NO ?? "",
+        BRANCH_CD: data?.FDDTL?.[0]?.BRANCH_CD ?? "",
+        ACCT_TYPE: data?.FDDTL?.[0]?.ACCT_TYPE ?? "",
         ACCT_CD:
           utilFunction.getPadAccountNumber(
             data?.FDDTL?.[0]?.ACCT_CD,
             data?.FDDTL?.[0]?.ACCT_TYPE
           ) ?? "",
-        ACCT_TYPE: data?.FDDTL?.[0]?.ACCT_TYPE ?? "",
-        BRANCH_CD: data?.FDDTL?.[0]?.BRANCH_CD ?? "",
+        NOMINEE_NM: data?.FDDTL?.[0]?.NOMINEE_NM ?? "",
+        FD_REMARK: data?.FDDTL?.[0]?.FD_REMARK ?? "",
       };
 
       let oldData = {
         ...rows?.[0]?.data,
-        MATURE_INST: Boolean(rows?.[0]?.data?.MATURE_INST?.trim() ?? "")
-          ? rows?.[0]?.data?.MATURE_INST
-          : "",
-        NOMINEE_NM: Boolean(rows?.[0]?.data?.NOMINEE_NM?.trim() ?? "")
-          ? rows?.[0]?.data?.NOMINEE_NM
-          : "",
       };
       let upd = utilFunction.transformDetailsData(newData, oldData);
       console.log("upd newData", newData);
       console.log("upd oldData", oldData);
+      console.log("upd ", upd);
 
       if (defaultView === "view" && screenFlag !== "openLienForm") {
         finalSubmitDataRef.current = {
@@ -121,22 +118,22 @@ export const FDDetailForm = forwardRef<any, any>(
             IsNewRow: defaultView === "new" ? true : false,
             SCREEN_REF: "RPT/401",
             COMP_CD: authState?.companyID ?? "",
-            PAYMENT_TYPE: rows?.[0]?.data?.PAYMENT_MODE ?? "",
-            // MATURITY_DT: isValidDate(newData?.MATURITY_DT)
-            //   ? format(new Date(newData?.MATURITY_DT), "yyyy/MMM/dd")
-            //   : "",
-            // TRAN_DT: isValidDate(newData?.TRAN_DT)
-            //   ? format(new Date(newData?.TRAN_DT), "yyyy/MMM/dd")
-            //   : "",
+            PAYMENT_TYPE: rows?.[0]?.data?.INT_PAYMENT_MODE ?? "",
+            ...(Number(FDState.acctNoData.DEP_FAC) > 0
+              ? { UNIT_AMOUNT: rows?.[0]?.data?.UNIT_AMOUNT ?? "" }
+              : {}),
           },
         };
 
         if (finalSubmitDataRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
           return {};
         } else {
+          console.log("finalSubmitDataRef", {
+            ...finalSubmitDataRef.current?.data,
+          });
           const btnName = await MessageBox({
-            message: "SaveData",
             messageTitle: "Confirmation",
+            message: "Proceed?",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
@@ -219,7 +216,10 @@ export const FDDetailForm = forwardRef<any, any>(
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton onClick={() => closeDialog()} color={"primary"}>
+                <GradientButton
+                  onClick={() => handleDialogClose()}
+                  color={"primary"}
+                >
                   {t("Close")}
                 </GradientButton>
               </>
