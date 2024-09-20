@@ -35,6 +35,8 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         BRANCH_CD: retrieveDataRef?.current?.BRANCH_CD ?? "",
         ACCT_TYPE: retrieveDataRef?.current?.ACCT_TYPE ?? "",
         ACCT_CD: retrieveDataRef?.current?.ACCT_CD ?? "",
+        ALLOW_REGERATE: retrieveDataRef?.current?.ALLOW_REGERATE ?? "",
+        ALLOW_RESCHEDULE: retrieveDataRef?.current?.ALLOW_RESCHEDULE ?? "",
       });
     }
   };
@@ -57,6 +59,7 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         }}
         formState={{
           MessageBox: MessageBox,
+          CloseMessageBox: CloseMessageBox,
           handleButtonDisable: handleButtonDisable,
           docCD: "MST/006",
         }}

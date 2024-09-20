@@ -47,7 +47,7 @@ export const LoanRegenerateFormMetaData = {
         componentType: "amountField",
       },
       name: "SANCTIONED_AMT",
-      label: "Sanctioned Amount",
+      label: "SanctionedAmount",
       type: "text",
       isReadOnly: true,
       fullWidth: true,
@@ -66,7 +66,7 @@ export const LoanRegenerateFormMetaData = {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
-      label: "Disbursed Amount",
+      label: "DisbursedAmount",
       type: "text",
       maxLength: 15,
       fullWidth: true,
@@ -79,7 +79,6 @@ export const LoanRegenerateFormMetaData = {
         "SANCTIONED_AMT",
         "VALIDATE_LIMIT_AMT",
       ],
-      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -97,9 +96,8 @@ export const LoanRegenerateFormMetaData = {
           Number(dependentFieldsValues?.["SANCTIONED_AMT"]?.value)
         ) {
           const buttonName = await formState.MessageBox({
-            messageTitle: "Validation Failed",
-            message:
-              "Disburse Amount can not be greater than Sanctioned Amount.",
+            messageTitle: "ValidationFailed",
+            message: "DisburseAmounTValidationMsg",
             buttonNames: ["Ok"],
           });
           if (buttonName === "Ok") {
@@ -160,7 +158,7 @@ export const LoanRegenerateFormMetaData = {
     {
       render: { componentType: "datePicker" },
       name: "INS_START_DT",
-      label: "Installment Start Date",
+      label: "InstallmentStartDate",
       placeholder: "",
       validate: (currentField, dependentFields, formState) => {
         if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
@@ -168,6 +166,12 @@ export const LoanRegenerateFormMetaData = {
         }
         return "";
       },
+      ///////////////////////////////////////////////// confirm this
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Installment Start Date is Required."] }],
+      // },
+      // isRequired: true,
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4, md: 3, lg: 3, xl: 3 },
     },
@@ -176,13 +180,13 @@ export const LoanRegenerateFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "INT_RATE",
-      label: "Interest Rate",
+      label: "InterestRate",
       fullWidth: true,
       required: true,
       maxLength: 5,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Interest Rate is Required"] }],
+        rules: [{ name: "required", params: ["InterestRateIsRequired"] }],
       },
       dependentFields: [
         "LIMIT_AMOUNT",
@@ -264,7 +268,7 @@ export const LoanRegenerateFormMetaData = {
     {
       render: { componentType: "datePicker" },
       name: "INST_DUE_DT",
-      label: "Due Date",
+      label: "DueDate",
       placeholder: "",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4.5, md: 3, lg: 3, xl: 3 },
@@ -280,7 +284,7 @@ export const LoanRegenerateFormMetaData = {
     {
       render: { componentType: "numberFormat" },
       name: "INST_NO",
-      label: "No. of Installment",
+      label: "NoofInstallment",
       placeholder: "",
       fullWidth: true,
       autoComplete: "off",
@@ -297,9 +301,7 @@ export const LoanRegenerateFormMetaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["No. of Installment is Required"] },
-        ],
+        rules: [{ name: "required", params: ["NoOfInstallmentIsRequired"] }],
       },
       dependentFields: [
         "LIMIT_AMOUNT",
@@ -367,7 +369,7 @@ export const LoanRegenerateFormMetaData = {
     {
       render: { componentType: "amountField" },
       name: "INST_RS",
-      label: "Installment Amount",
+      label: "InstallmentAmount",
       placeholder: "",
       fullWidth: true,
       maxLength: 15,
@@ -393,7 +395,7 @@ export const LoanRegenerateFormMetaData = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "ValidationFailed",
-            message: "Installment Amount can not be reduced.",
+            message: "InstallmentAmountValidation",
             buttonNames: ["Ok"],
           });
           if (buttonName === "Ok") {
@@ -409,9 +411,7 @@ export const LoanRegenerateFormMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Installment Amount is Required"] },
-        ],
+        rules: [{ name: "required", params: ["InstallmentAmountIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 3.5, lg: 3.5, xl: 3.5 },
     },
@@ -481,7 +481,7 @@ export const LoanRescheduleFormMetaData = {
       name: "INST_START_DT",
       label: "Installment Start Date",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
     {
       render: {
@@ -490,7 +490,7 @@ export const LoanRescheduleFormMetaData = {
       name: "RATE_WEF",
       label: "Effective Date",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
     {
       render: {
@@ -499,7 +499,7 @@ export const LoanRescheduleFormMetaData = {
       name: "INST_DUE_DT",
       label: "Due Date",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
     {
       render: {
@@ -509,7 +509,7 @@ export const LoanRescheduleFormMetaData = {
       label: "Over Due",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 1.8, xl: 1.5 },
     },
     {
       render: {
@@ -519,7 +519,7 @@ export const LoanRescheduleFormMetaData = {
       label: "Outstanding",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 1.9, xl: 1.5 },
     },
     {
       render: {
@@ -532,15 +532,7 @@ export const LoanRescheduleFormMetaData = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "divider",
-      },
-      label: "",
-      name: "loanReschedule",
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 1.9, xl: 1.5 },
     },
     {
       render: {
@@ -568,7 +560,7 @@ export const LoanRescheduleFormMetaData = {
         formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
       },
       validationRun: "onChange",
-      GridProps: { xs: 6, sm: 3, md: 2.5, lg: 2, xl: 1.5 },
+      GridProps: { xs: 6, sm: 3, md: 2.2, lg: 1.6, xl: 1.5 },
     },
     {
       render: {
@@ -680,7 +672,7 @@ export const LoanRescheduleFormMetaData = {
           return true;
         },
       },
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.2, xl: 1.5 },
     },
     {
       render: {
@@ -745,7 +737,7 @@ export const LoanRescheduleFormMetaData = {
           },
         };
       },
-      GridProps: { xs: 12, sm: 4, md: 3, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 4, md: 2.3, lg: 2, xl: 1.4 },
     },
     {
       render: { componentType: "amountField" },
@@ -775,12 +767,12 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
-        if (
-          currentField?.value ===
-          parseFloat(dependentFieldsValues?.["VALIDATE"]?.value).toFixed(2)
-        ) {
-          return {};
-        }
+        // if (
+        //   currentField?.value ===
+        //   parseFloat(dependentFieldsValues?.["VALIDATE"]?.value).toFixed(2)
+        // ) {
+        //   return {};
+        // }
         const formattedValue = parseFloat(
           formState?.headerData?.[0]?.INST_RS || 0
         ).toFixed(2);
@@ -842,7 +834,7 @@ export const LoanRescheduleFormMetaData = {
               value: currentField?.value ?? "",
             },
             VALIDATE: {
-              value: currentField?.value,
+              value: currentField?.value ?? "",
             },
             VALIDATE_INST_NO: {
               value: "",
@@ -851,7 +843,11 @@ export const LoanRescheduleFormMetaData = {
           };
         }
       },
-      GridProps: { xs: 12, sm: 3, md: 2.5, lg: 2.5, xl: 3 },
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
+      },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.4 },
     },
     {
       render: {
@@ -989,7 +985,7 @@ export const LoanRescheduleFormMetaData = {
           },
         };
       },
-      GridProps: { xs: 12, sm: 3, md: 2, lg: 2.5, xl: 2.5 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 1.5, xl: 1.3 },
     },
     {
       render: {
@@ -1016,7 +1012,7 @@ export const LoanRescheduleFormMetaData = {
       ) => {
         formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
       },
-      GridProps: { xs: 12, sm: 9, md: 4.5, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 9, md: 4, lg: 3.2, xl: 2.2 },
     },
     {
       render: { componentType: "numberFormat" },
@@ -1025,7 +1021,7 @@ export const LoanRescheduleFormMetaData = {
       placeholder: "",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 1 },
     },
     {
       render: {
@@ -1046,7 +1042,7 @@ export const LoanRescheduleFormMetaData = {
       ) => {
         formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
       },
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.5, xl: 2.5 },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3.2 },
     },
     {
       render: { componentType: "amountField" },
@@ -1055,7 +1051,7 @@ export const LoanRescheduleFormMetaData = {
       placeholder: "",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2, xl: 1.5 },
     },
     {
       render: {
@@ -1156,8 +1152,75 @@ export const LoanReviseMetaData = {
         render: {
           componentType: "datePicker",
         },
+        name: "HDR_DISBURSEMENT_DT",
+        label: "DisbursementDate",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "HDR_DISBURSEMENT_AMT",
+        label: "DisbursementAmount",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "HDR_INSTALLMENT_TYPE",
+        label: "InstallmentType",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "numberFormat",
+        },
+        name: "HDR_INST_NO",
+        label: "NoofInstallment",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "datePicker",
+        },
+        name: "HDR_INS_START_DT",
+        label: "NextInstallmentStartDate",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "amountField",
+        },
+        name: "HDR_INST_RS",
+        label: "DisburseInstallmentAmount",
+        type: "text",
+        isReadOnly: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
+      },
+      {
+        render: {
+          componentType: "divider",
+          sequence: 1,
+        },
+        name: "loanScheduleDivider",
+        label: "",
+        GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      },
+      {
+        render: {
+          componentType: "datePicker",
+        },
         name: "INS_START_DT",
-        label: "Installment Start Date",
+        label: "InstallmentStartDate",
         isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
       },
@@ -1166,7 +1229,7 @@ export const LoanReviseMetaData = {
           componentType: "amountField",
         },
         name: "BEGIN_BAL",
-        label: "Beginning Balance",
+        label: "BeginningBalance",
         type: "text",
         isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
@@ -1176,13 +1239,13 @@ export const LoanReviseMetaData = {
           componentType: "rateOfInt",
         },
         name: "INT_RATE",
-        label: "Interest Rate",
+        label: "InterestRate",
         type: "text",
+        isFieldFocused: true,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["Interest Rate is Required"] }],
         },
-        // When interest rate update pass null installment amount
         dependentFields: [
           "INS_START_DT",
           "BEGIN_BAL",
@@ -1193,39 +1256,137 @@ export const LoanReviseMetaData = {
           "REPAY_PRIN_AMT",
           "SR_CD",
           "TOTAL_RECORDS",
+          "ACCT_CD",
+          "ACCT_TYPE",
+          "TRAN_CD",
+          "VALIDATE_INT_RATE",
         ],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
           dependentFieldsValues
         ) => {
-          if (currentField?.displayValue === "") {
+          if (
+            Boolean(currentField?.value) &&
+            currentField?.displayValue === ""
+          ) {
             return {};
           }
-          const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
-          const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
-          const reqPara = {
-            INT_RATE: currentField?.value ?? "",
-            INST_RS: "",
-            INS_START_DT: formattedDate ?? "",
-            BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
-            PRIN_DEMAND_AMT:
-              dependentFieldsValues["PRIN_DEMAND_AMT"]?.value ?? "",
-            INSTALLMENT_TYPE:
-              dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
-            INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
-            TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
-            REPAY_PRIN_AMT:
-              dependentFieldsValues["REPAY_PRIN_AMT"]?.value ?? "",
-            CM_INST_NO: dependentFieldsValues["SR_CD"]?.value ?? "",
-            SCREEN_REF: "MST/006",
-          };
-          const getApiData = await updateInterestRate(reqPara);
-          formState.setDataOnFieldChange("GRID_DATA", {
-            ...getApiData,
-            INT_RATE: currentField?.value,
-          });
+          if (
+            currentField?.value ===
+              dependentFieldsValues["VALIDATE_INT_RATE"]?.value &&
+            currentField?.value !== ""
+          ) {
+            return {};
+          }
+          if (currentField?.value) {
+            const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
+            const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
+            const reqPara = {
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
+              ACCT_TYPE: dependentFieldsValues["ACCT_TYPE"]?.value ?? "",
+              ACCT_CD: dependentFieldsValues["ACCT_CD"]?.value ?? "",
+              TRAN_CD: dependentFieldsValues["TRAN_CD"]?.value ?? "",
+              SR_CD: dependentFieldsValues["SR_CD"]?.value ?? "",
+              INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
+              TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
+              INT_RATE: currentField?.value ?? "",
+              INST_RS: "",
+              INSTALLMENT_TYPE:
+                dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
+              INS_START_DT: formattedDate ?? "",
+              BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
+              PREV_PRIN_DEMAND_AMT:
+                formState?.previousRowData?.PRIN_DEMAND_AMT ?? "",
+              PREV_REPAY_PRIN_AMT:
+                formState?.previousRowData?.REPAY_PRIN_AMT ?? "",
+              SCREEN_REF: "MST/006",
+            };
+            const getApiData = await updateInterestRate(reqPara);
+            formState.setCount((prev) => prev + 1);
+            formState.setDataOnFieldChange(
+              "GRID_DATA",
+              getApiData.map((item) => ({
+                ...item,
+                INT_RATE: currentField?.value,
+              }))
+            );
+            return {
+              INT_RATE: {
+                value: currentField?.value,
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              VALIDATE_INT_RATE: {
+                value: currentField?.value,
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INST_RS: {
+                value: getApiData?.[0]?.INST_RS ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              VALIDATE_INST_RS: {
+                value: getApiData?.[0]?.INST_RS ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              PRIN_DEMAND_AMT: {
+                value: getApiData?.[0]?.PRIN_DEMAND_AMT ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INT_DEMAND_AMT: {
+                value: getApiData?.[0]?.INT_DEMAND_AMT ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              END_BAL: {
+                value: getApiData?.[0]?.END_BAL ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+            };
+          } else {
+            formState.setCount((prev) => prev + 1);
+            formState.setDataOnFieldChange("GRID_DATA", []);
+            return {
+              INT_RATE: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              VALIDATE_INT_RATE: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              INST_RS: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              VALIDATE_INST_RS: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              PRIN_DEMAND_AMT: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INT_DEMAND_AMT: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
       },
@@ -1234,7 +1395,7 @@ export const LoanReviseMetaData = {
           componentType: "amountField",
         },
         name: "INST_RS",
-        label: "Installment Amount",
+        label: "InstallmentAmount",
         type: "text",
         schemaValidation: {
           type: "string",
@@ -1243,7 +1404,6 @@ export const LoanReviseMetaData = {
           ],
         },
         dependentFields: [
-          "INT_RATE",
           "INS_START_DT",
           "BEGIN_BAL",
           "PRIN_DEMAND_AMT",
@@ -1253,39 +1413,138 @@ export const LoanReviseMetaData = {
           "REPAY_PRIN_AMT",
           "SR_CD",
           "TOTAL_RECORDS",
+          "ACCT_CD",
+          "ACCT_TYPE",
+          "TRAN_CD",
+          "INT_RATE",
+          "VALIDATE_INST_RS",
         ],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
           dependentFieldsValues
         ) => {
-          if (currentField?.displayValue === "") {
+          if (
+            Boolean(currentField?.value) &&
+            currentField?.displayValue === ""
+          ) {
             return {};
           }
-          const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
-          const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
-          const reqPara = {
-            INST_RS: currentField?.value ?? "",
-            INT_RATE: dependentFieldsValues["INT_RATE"]?.value ?? "",
-            INS_START_DT: formattedDate ?? "",
-            BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
-            PRIN_DEMAND_AMT:
-              dependentFieldsValues["PRIN_DEMAND_AMT"]?.value ?? "",
-            INSTALLMENT_TYPE:
-              dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
-            INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
-            TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
-            REPAY_PRIN_AMT:
-              dependentFieldsValues["REPAY_PRIN_AMT"]?.value ?? "",
-            CM_INST_NO: dependentFieldsValues["SR_CD"]?.value ?? "",
-            SCREEN_REF: "MST/006",
-          };
-          const getApiData = await updateInterestRate(reqPara);
-          formState.setDataOnFieldChange("GRID_DATA", {
-            ...getApiData,
-            INT_RATE: currentField?.value,
-          });
+          if (
+            currentField?.value ===
+              dependentFieldsValues["VALIDATE_INST_RS"]?.value &&
+            currentField?.value !== ""
+          ) {
+            return {};
+          }
+          if (currentField?.value) {
+            const date = new Date(dependentFieldsValues["INS_START_DT"]?.value);
+            const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
+            const reqPara = {
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
+              ACCT_TYPE: dependentFieldsValues["ACCT_TYPE"]?.value ?? "",
+              ACCT_CD: dependentFieldsValues["ACCT_CD"]?.value ?? "",
+              TRAN_CD: dependentFieldsValues["TRAN_CD"]?.value ?? "",
+              SR_CD: dependentFieldsValues["SR_CD"]?.value ?? "",
+              INST_NO: dependentFieldsValues["TOTAL_RECORDS"]?.value ?? "",
+              TYPE_CD: dependentFieldsValues["TYPE_CD"]?.value ?? "",
+              INT_RATE: dependentFieldsValues["INT_RATE"]?.value ?? "",
+              INST_RS: currentField?.value ?? "",
+              INSTALLMENT_TYPE:
+                dependentFieldsValues["INSTALLMENT_TYPE"]?.value ?? "",
+              INS_START_DT: formattedDate ?? "",
+              BEGIN_BAL: dependentFieldsValues["BEGIN_BAL"]?.value ?? "",
+              PREV_PRIN_DEMAND_AMT:
+                formState?.previousRowData?.PRIN_DEMAND_AMT ?? "",
+              PREV_REPAY_PRIN_AMT:
+                formState?.previousRowData?.REPAY_PRIN_AMT ?? "",
+              SCREEN_REF: "MST/006",
+            };
+            const getApiData = await updateInterestRate(reqPara);
+            formState.setCount((prev) => prev + 1);
+            formState.setDataOnFieldChange(
+              "GRID_DATA",
+              getApiData.map((item) => ({
+                ...item,
+                INT_RATE: dependentFieldsValues["INT_RATE"]?.value ?? "",
+              }))
+            );
+            return {
+              INT_RATE: {
+                value: dependentFieldsValues["INT_RATE"]?.value ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              VALIDATE_INT_RATE: {
+                value: dependentFieldsValues["INT_RATE"]?.value ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INST_RS: {
+                value: currentField?.value,
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              VALIDATE_INST_RS: {
+                value: currentField?.value,
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              PRIN_DEMAND_AMT: {
+                value: getApiData?.[0]?.PRIN_DEMAND_AMT ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INT_DEMAND_AMT: {
+                value: getApiData?.[0]?.INT_DEMAND_AMT ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              END_BAL: {
+                value: getApiData?.[0]?.END_BAL ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+            };
+          } else {
+            formState.setCount((prev) => prev + 1);
+            formState.setDataOnFieldChange("GRID_DATA", []);
+            return {
+              INT_RATE: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              VALIDATE_INT_RATE: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INST_RS: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              VALIDATE_INST_RS: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: true,
+              },
+              PRIN_DEMAND_AMT: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              INT_DEMAND_AMT: {
+                value: "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
       },
@@ -1294,7 +1553,7 @@ export const LoanReviseMetaData = {
           componentType: "amountField",
         },
         name: "PRIN_DEMAND_AMT",
-        label: "Principal Demand",
+        label: "PrincipalDemand",
         type: "text",
         isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
@@ -1304,7 +1563,7 @@ export const LoanReviseMetaData = {
           componentType: "amountField",
         },
         name: "INT_DEMAND_AMT",
-        label: "Interest Demand",
+        label: "InterestDemand",
         type: "text",
         isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
@@ -1314,10 +1573,26 @@ export const LoanReviseMetaData = {
           componentType: "amountField",
         },
         name: "END_BAL",
-        label: "Ending Balance",
+        label: "EndingBalance",
         type: "text",
         isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.75, xl: 1.75 },
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "VALIDATE_INST_RS",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "VALIDATE_INT_RATE",
+        label: "",
+        placeholder: "",
       },
       {
         render: {
@@ -1332,6 +1607,30 @@ export const LoanReviseMetaData = {
           componentType: "hidden",
         },
         name: "INST_NO",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ACCT_TYPE",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "ACCT_CD",
+        label: "",
+        placeholder: "",
+      },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "TRAN_CD",
         label: "",
         placeholder: "",
       },
@@ -1372,7 +1671,7 @@ export const LoanReviseMetaData = {
   detailsGrid: {
     gridConfig: {
       dense: true,
-      gridLabel: "Loan schedule",
+      gridLabel: "LoanSchedule",
       rowIdColumn: "SR_CD",
       defaultColumnConfig: {
         width: 350,
@@ -1400,18 +1699,19 @@ export const LoanReviseMetaData = {
         maxWidth: 100,
       },
       {
-        accessor: "INST_START_DT",
-        columnName: "Installment Start Date",
+        accessor: "INS_START_DT",
+        columnName: "InstallmentStartDate",
         sequence: 2,
-        alignment: "left",
-        componentType: "datePicker",
+        alignment: "center",
+        componentType: "date",
+        dateFormat: "dd/MM/yyyy",
         width: 150,
         minWidth: 140,
         maxWidth: 200,
       },
       {
         accessor: "BEGIN_BAL",
-        columnName: "Beginning Balance",
+        columnName: "BeginningBalance",
         sequence: 3,
         alignment: "left",
         componentType: "default",
@@ -1421,7 +1721,7 @@ export const LoanReviseMetaData = {
       },
       {
         accessor: "INT_RATE",
-        columnName: "Interest Rate(%)",
+        columnName: "InterestRate",
         sequence: 4,
         alignment: "right",
         componentType: "default",
@@ -1431,7 +1731,7 @@ export const LoanReviseMetaData = {
       },
       {
         accessor: "INST_RS",
-        columnName: "Installment Amount",
+        columnName: "InstallmentAmount",
         sequence: 5,
         alignment: "right",
         componentType: "default",
@@ -1443,7 +1743,7 @@ export const LoanReviseMetaData = {
       },
       {
         accessor: "PRIN_DEMAND_AMT",
-        columnName: "Principal Demand",
+        columnName: "PrincipalDemand",
         sequence: 6,
         alignment: "right",
         componentType: "default",
@@ -1455,7 +1755,7 @@ export const LoanReviseMetaData = {
       },
       {
         accessor: "INT_DEMAND_AMT",
-        columnName: "Interest Demand",
+        columnName: "InterestDemand",
         sequence: 7,
         alignment: "right",
         componentType: "default",
@@ -1467,7 +1767,7 @@ export const LoanReviseMetaData = {
       },
       {
         accessor: "END_BAL",
-        columnName: "Ending Balance",
+        columnName: "EndingBalance",
         sequence: 8,
         alignment: "right",
         componentType: "default",

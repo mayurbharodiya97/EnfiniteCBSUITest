@@ -12,26 +12,26 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { RetrievalFormWrapper } from "./form/retrieveForm";
-import { extractGridMetaData } from "components/utils";
 import { queryClient } from "cache";
 import { Alert } from "components/common/alert";
 import { LoanReviseFormWrapper } from "./form/loanReviseForm";
 
 export const LoanScheduleGrid = () => {
   const isDataChangedRef = useRef(false);
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const retrievalParaRef = useRef<any>(null);
-  const location = useLocation();
   const initialRender = useRef(true);
+  const headerDataRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [srCd, setSrCd] = useState<any>(null);
   const [headerGridData, setHeaderGridData] = useState<any>([]);
   const [detailsGridData, setDetailsGridData] = useState<any>([]);
-  const headerDataRef = useRef<any>(null);
-  const [editButton, setEditButton] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
   const [reviseData, setReviseData] = useState<any>(null);
+  const [previousRowData, setPreviousRowData] = useState<any>(null);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [actions, setActions] = useState<ActionTypes[]>([
     {
       actionName: "retrieve",
@@ -48,6 +48,40 @@ export const LoanScheduleGrid = () => {
         {
           actionName: "retrieve",
           actionLabel: "Retrieve",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+      ]);
+    } else if (retrievalParaRef.current?.ALLOW_REGERATE === "N") {
+      setActions([
+        {
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "reschedule",
+          actionLabel: "Reschedule",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+      ]);
+    } else if (retrievalParaRef.current?.ALLOW_RESCHEDULE === "N") {
+      setActions([
+        {
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "regenerate",
+          actionLabel: "Regenerate",
           multiple: undefined,
           rowDoubleClick: false,
           alwaysAvailable: true,
@@ -106,8 +140,11 @@ export const LoanScheduleGrid = () => {
     onError: (error: any) => {},
   });
 
-  const { data, isLoading, isError, error, isFetching } = useQuery<any, any>(
-    ["getLoanScheduleDetails", authState?.user?.branchCode, srCd, editButton],
+  const { data, isLoading, isError, error, isFetching, refetch } = useQuery<
+    any,
+    any
+  >(
+    ["getLoanScheduleDetails", authState?.user?.branchCode, srCd],
     () =>
       API.getLoanScheduleDetails({
         BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -119,7 +156,7 @@ export const LoanScheduleGrid = () => {
         USER_LEVEL: authState?.role ?? "",
       }),
     {
-      enabled: Boolean(srCd) || editButton,
+      enabled: Boolean(srCd),
       onSuccess(data) {
         if (Array.isArray(data) && data.length > 0) {
           const updatedData = data.map((item) => ({
@@ -130,7 +167,6 @@ export const LoanScheduleGrid = () => {
             PRIN_DEMAND_AMT: Number(item?.PRIN_DEMAND_AMT ?? 0).toFixed(2),
             INT_DEMAND_AMT: Number(item?.INT_DEMAND_AMT ?? 0).toFixed(2),
             END_BAL: Number(item?.END_BAL ?? 0).toFixed(2),
-            EDIT_FLAG: Boolean(editButton) ? item?.ALLOW_EDIT : "N",
           }));
           setDetailsGridData(updatedData);
         } else {
@@ -146,7 +182,6 @@ export const LoanScheduleGrid = () => {
         "getLoanScheduleDetails",
         authState?.user?.branchCode,
         srCd,
-        editButton,
       ]);
     };
   }, []);
@@ -161,28 +196,16 @@ export const LoanScheduleGrid = () => {
         headerDataRef.current = null;
         LoanScheduleGridMetaData.gridConfig.gridLabel = "";
       } else if (data?.name === "regenerate") {
-        if (
-          Boolean(headerDataRef.current) &&
-          Array.isArray(headerDataRef.current) &&
-          headerDataRef.current?.[0]?.ALLOW_REGERATE === "Y"
-        ) {
-          navigate(data?.name, {
-            state: headerDataRef.current,
-          });
-        }
+        navigate(data?.name, {
+          state: headerDataRef.current,
+        });
       } else if (data?.name === "reschedule") {
-        if (
-          Boolean(headerDataRef.current) &&
-          Array.isArray(headerDataRef.current) &&
-          headerDataRef.current?.[0]?.ALLOW_RESCHEDULE === "Y"
-        ) {
-          navigate(data?.name, {
-            state: data?.rows?.[0]?.original,
-          });
-        }
+        navigate(data?.name, {
+          state: data?.rows?.[0]?.original,
+        });
       } else if (data?.name === "_rowChanged") {
+        setSelectedRowData(data?.rows?.[0]);
         setSrCd(data?.rows?.[0]?.data?.SR_CD);
-        setEditButton(false);
       } else {
         navigate(data?.name, {
           state: data?.rows,
@@ -216,9 +239,10 @@ export const LoanScheduleGrid = () => {
     loanScheduleHeaderData.mutate(retrieveData);
   };
 
-  const handleClose = () => {
+  const handleRetrieveFormClose = () => {
     setOpen(false);
   };
+
   const handleDialogClose = useCallback(() => {
     LoanScheduleGridMetaData.gridConfig.hideHeader = false;
     LoanScheduleGridMetaData.gridConfig.containerHeight = {
@@ -235,7 +259,6 @@ export const LoanScheduleGrid = () => {
   const handleFormClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      // refetch();
       setOpen(true);
       setHeaderGridData([]);
       setDetailsGridData([]);
@@ -247,6 +270,10 @@ export const LoanScheduleGrid = () => {
 
   const handleEditClose = () => {
     setEditOpen(false);
+    if (isDataChangedRef.current === true) {
+      refetch();
+      isDataChangedRef.current = false;
+    }
   };
 
   return (
@@ -275,11 +302,6 @@ export const LoanScheduleGrid = () => {
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }
         // hideActions={true}
-        onClickActionEvent={async (index, id, data) => {
-          if (id === "REVISE_FLAG") {
-            setEditButton(true);
-          }
-        }}
       />
       {isError && (
         <Alert
@@ -302,6 +324,10 @@ export const LoanScheduleGrid = () => {
               TOTAL_RECORDS: String(detailsGridData.length),
             });
             setEditOpen(true);
+            if (index > 0 && Boolean(data.SR_CD)) {
+              const previousRowData = detailsGridData[index - 1];
+              setPreviousRowData(previousRowData);
+            }
           }
         }}
       />
@@ -329,7 +355,7 @@ export const LoanScheduleGrid = () => {
 
       {open && (
         <RetrievalFormWrapper
-          closeDialog={handleClose}
+          closeDialog={handleRetrieveFormClose}
           retrievalParaValues={selectedDatas}
         />
       )}
@@ -339,6 +365,8 @@ export const LoanScheduleGrid = () => {
           isDataChangedRef={isDataChangedRef}
           closeDialog={handleEditClose}
           reviseData={reviseData}
+          previousRowData={previousRowData}
+          selectedRowData={selectedRowData}
         />
       )}
     </>

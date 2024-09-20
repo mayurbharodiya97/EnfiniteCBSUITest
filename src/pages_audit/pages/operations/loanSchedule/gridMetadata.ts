@@ -14,8 +14,6 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    // enablePagination: true,
-    // pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
       min: "28vh",
@@ -39,7 +37,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISBURSEMENT_DT",
-      columnName: "Disbursement Date",
+      columnName: "DisbursementDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
@@ -50,7 +48,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DISBURSEMENT_AMT",
-      columnName: "Disbursement Amount",
+      columnName: "DisbursementAmount",
       sequence: 3,
       alignment: "right",
       componentType: "default",
@@ -62,7 +60,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INST_TYPE_DIS",
-      columnName: "Installment Type",
+      columnName: "InstallmentType",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -72,7 +70,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INST_NO",
-      columnName: "No. of Installment",
+      columnName: "NoofInstallment",
       sequence: 5,
       alignment: "right",
       componentType: "default",
@@ -82,7 +80,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INS_START_DT",
-      columnName: "Next Installment Start Date",
+      columnName: "NextInstallmentStartDate",
       sequence: 6,
       alignment: "center",
       componentType: "date",
@@ -93,7 +91,7 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INST_RS",
-      columnName: "Disburse Installment Amount",
+      columnName: "DisburseInstallmentAmount",
       sequence: 7,
       alignment: "right",
       componentType: "default",
@@ -113,24 +111,8 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
       showTooltip: true,
     },
     {
-      columnName: "",
-      componentType: "buttonRowCell",
-      accessor: "REVISE_FLAG",
-      sequence: 20,
-      buttonLabel: "Revise",
-      shouldExclude: (initialValue, original, prevRows, nextRows) => {
-        if (original?.ACTIVE === "Y") {
-          return false;
-        }
-        return true;
-      },
-      width: 100,
-      minWidth: 80,
-      maxWidth: 110,
-    },
-    {
       accessor: "SR_CD",
-      columnName: "Sr cd",
+      columnName: "Srcd",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -156,12 +138,8 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
     disableSorting: false,
     hideHeader: true,
     disableGroupBy: true,
-    // enablePagination: true,
-    // pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      // min: "25vh",
-      // max: "25vh",
       min: "45vh",
       max: "45vh",
     },
@@ -175,24 +153,24 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 60,
-      maxWidth: 150,
+      width: 60,
+      minWidth: 40,
+      maxWidth: 100,
     },
     {
       accessor: "INS_START_DT",
-      columnName: "Installment Start Date",
+      columnName: "InstallmentStartDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 200,
-      minWidth: 170,
-      maxWidth: 250,
+      width: 170,
+      minWidth: 150,
+      maxWidth: 200,
     },
     {
       accessor: "BEGIN_BAL",
-      columnName: "Beginning Balance",
+      columnName: "BeginningBalance",
       sequence: 3,
       alignment: "right",
       componentType: "default",
@@ -202,17 +180,17 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "INT_RATE",
-      columnName: "Interest Rate(%)",
+      columnName: "InterestRate",
       sequence: 4,
       alignment: "right",
       componentType: "default",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 130,
+      minWidth: 100,
+      maxWidth: 150,
     },
     {
       accessor: "INST_RS",
-      columnName: "Installment Amount",
+      columnName: "InstallmentAmount",
       sequence: 5,
       alignment: "right",
       componentType: "default",
@@ -224,7 +202,7 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "PRIN_DEMAND_AMT",
-      columnName: "Principal Demand",
+      columnName: "PrincipalDemand",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -236,7 +214,7 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "INT_DEMAND_AMT",
-      columnName: "Interest Demand",
+      columnName: "InterestDemand",
       sequence: 7,
       alignment: "right",
       componentType: "default",
@@ -248,7 +226,7 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "END_BAL",
-      columnName: "Ending Balance",
+      columnName: "EndingBalance",
       sequence: 8,
       alignment: "right",
       componentType: "default",
@@ -257,16 +235,16 @@ export const LoanScheduleDetailsGridMetadata: GridMetaDataType = {
       maxWidth: 250,
     },
     {
-      columnName: "",
+      columnName: "Action",
       componentType: "buttonRowCell",
       accessor: "EDIT_BTN",
-      sequence: 20,
+      sequence: 9,
       buttonLabel: "Edit",
       width: 100,
       minWidth: 80,
       maxWidth: 110,
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
-        if (original?.EDIT_FLAG === "Y") {
+        if (original?.ALLOW_EDIT === "Y") {
           return false;
         }
         return true;

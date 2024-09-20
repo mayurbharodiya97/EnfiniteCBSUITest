@@ -1716,6 +1716,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/GETUPDATERATE",
     packageName: "",
   },
+  DOUPDATERATEAMOUNT: {
+    url: "/loanServiceAPI/DOUPDATERATEAMOUNT",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",

@@ -1,6 +1,10 @@
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
-import { getAccCodeValidation } from "../api";
+import {
+  getAccCodeValidation,
+  regenerateData,
+  validateRegenerateData,
+} from "../api";
 
 export const RetrievalFormMetaData = {
   form: {
@@ -127,10 +131,49 @@ export const RetrievalFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  loadingBtnName: ["Yes"],
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
                   returnVal = "";
+                }
+                if (
+                  btnName === "Yes" &&
+                  postData?.[i]?.O_COLUMN_NM === "REGENERATE"
+                ) {
+                  const requestPara = {
+                    COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: authState?.user?.branchCode ?? "",
+                    ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                    ACCT_CD: utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldValues?.ACCT_TYPE?.optionData
+                    ),
+                    LIMIT_AMOUNT: postData?.[i]?.LIMIT_AMOUNT ?? "",
+                    INT_RATE: postData?.[i]?.INT_RATE ?? "",
+                    INST_RS: postData?.[i]?.INST_RS ?? "",
+                    INST_NO: postData?.[i]?.INST_NO ?? "",
+                    INST_DUE_DT: postData?.[i]?.INST_DUE_DT ?? "",
+                    DISBURSEMENT_DT: postData?.[i]?.DISBURSEMENT_DT ?? "",
+                    INSTALLMENT_TYPE: postData?.[i]?.INSTALLMENT_TYPE ?? "",
+                    INS_START_DT: postData?.[i]?.INS_START_DT ?? "",
+                    TYPE_CD: postData?.[i]?.TYPE_CD ?? "",
+                    SCREEN_REF: "MST/006",
+                  };
+                  const getApiData = await regenerateData(requestPara);
+                  if (getApiData?.status === "999") {
+                    const btnName = await formState.MessageBox({
+                      messageTitle: "ValidationFailed",
+                      message: getApiData?.messageDetails ?? "",
+                      buttonNames: ["Ok"],
+                      icon: "ERROR",
+                    });
+                    if (btnName === "Ok") {
+                      formState.CloseMessageBox();
+                    }
+                  } else if (getApiData?.status === "0") {
+                    formState.CloseMessageBox();
+                  }
                 }
               } else if (postData?.[i]?.O_STATUS === "0") {
                 formState.handleButtonDisable(false);
@@ -165,12 +208,20 @@ export const RetrievalFormMetaData = {
               BALANCE: {
                 value: returnVal?.BALANCE ?? "",
               },
+              ALLOW_RESCHEDULE: {
+                value: returnVal?.ALLOW_RESCHEDULE ?? "",
+              },
+              ALLOW_REGERATE: {
+                value: returnVal?.ALLOW_REGERATE ?? "",
+              },
             };
           } else if (!currentField?.value) {
             formState.handleButtonDisable(false);
             return {
               ACCT_NM: { value: "" },
               BALANCE: { value: "" },
+              ALLOW_RESCHEDULE: { value: "" },
+              ALLOW_REGERATE: { value: "" },
             };
           }
           return {};
@@ -198,6 +249,22 @@ export const RetrievalFormMetaData = {
       type: "text",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ALLOW_RESCHEDULE",
+      label: "",
+      placeholder: "",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ALLOW_REGERATE",
+      label: "",
+      placeholder: "",
     },
   ],
 };

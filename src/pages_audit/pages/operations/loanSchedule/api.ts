@@ -21,7 +21,6 @@ export const getLoanScheduleHeaderData = async ({
   BRANCH_CD,
   ACCT_TYPE,
   ACCT_CD,
-  GD_DATE,
   ENT_COMP_CD,
   ENT_BRANCH_CD,
 }) => {
@@ -31,7 +30,6 @@ export const getLoanScheduleHeaderData = async ({
       BRANCH_CD: BRANCH_CD,
       ACCT_TYPE: ACCT_TYPE,
       ACCT_CD: ACCT_CD,
-      GD_DATE: GD_DATE,
       ENT_COMP_CD: ENT_COMP_CD,
       ENT_BRANCH_CD: ENT_BRANCH_CD,
     });
@@ -113,13 +111,15 @@ export const validateRegenerateData = async (ApiReq) => {
   }
 };
 
-export const regenerateDataConfirmation = async (ApiReq) => {
+export const regenerateData = async (ApiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOREGENRATELAONSCHEDULE", {
       ...ApiReq,
     });
   if (status === "0") {
     return data;
+  } else if (status === "999") {
+    return { message: message, status: status, messageDetails: messageDetails };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -364,6 +364,18 @@ export const updateInterestRate = async (apiReq) => {
     });
   if (status === "0") {
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const saveUpdatedInterestRate = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOUPDATERATEAMOUNT", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

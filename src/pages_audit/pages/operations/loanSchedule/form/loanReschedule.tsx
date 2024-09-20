@@ -1,8 +1,8 @@
 import { AppBar, Dialog } from "@mui/material";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { LoanRescheduleFormMetaData } from "./metadata";
 import { useTranslation } from "react-i18next";
@@ -66,16 +66,7 @@ export const LoanRescheduleForm = ({
   );
 
   const proceedDataMutation = useMutation(proceedData, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      // closeDialog();
-    },
+    onError: (error: any) => {},
     onSuccess: (data, variables) => {},
   });
 
@@ -162,22 +153,14 @@ export const LoanRescheduleForm = ({
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
+      CloseMessageBox();
       closeDialog();
     },
     onSuccess: (data) => {},
   });
 
   const saveMutation = useMutation(saveProceedData, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      // closeDialog();
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
 
@@ -205,8 +188,6 @@ export const LoanRescheduleForm = ({
     setFieldError,
     actionFlag
   ) => {
-    //@ts-ignore
-    endSubmit(true);
     if (Boolean(data) && data.length > 0) {
       delete data["VALIDATE_INT_AMT"];
       delete data["REMAINING_INST_NO"];
@@ -257,7 +238,6 @@ export const LoanRescheduleForm = ({
       ...headerData?.[0],
       EMI_AMT_CHANGE: Boolean(headerData?.[0]?.EMI_AMT_CHANGE) ? "Y" : "N",
     };
-    let upd = utilFunction.transformDetailsData(newData, oldData);
 
     if (actionFlag === "PROCEED") {
       isErrorFuncRef.current = {
@@ -309,8 +289,19 @@ export const LoanRescheduleForm = ({
                 }
               } else if (data[i]?.O_STATUS === "0") {
                 setFetchData(true);
+                endSubmit(true);
               }
             }
+          },
+          onError: (error: any) => {
+            let errorMsg = t("Unknownerroroccured");
+            if (typeof error === "object") {
+              errorMsg = error?.error_msg ?? errorMsg;
+            }
+            enqueueSnackbar(errorMsg, {
+              variant: "error",
+            });
+            endSubmit(true);
           },
         }
       );
@@ -371,6 +362,17 @@ export const LoanRescheduleForm = ({
               }
             }
           },
+          onError: (error: any) => {
+            let errorMsg = t("Unknownerroroccured");
+            if (typeof error === "object") {
+              errorMsg = error?.error_msg ?? errorMsg;
+            }
+            enqueueSnackbar(errorMsg, {
+              variant: "error",
+            });
+            endSubmit(true);
+            CloseMessageBox();
+          },
         });
       } else if (btnName === "No") {
         endSubmit(true);
@@ -397,7 +399,7 @@ export const LoanRescheduleForm = ({
     ) {
       const confirmation = await MessageBox({
         messageTitle: "Confirmation",
-        message: "Are to sure to close and lose changes?",
+        message: "DeleteProceedMessage",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
@@ -422,7 +424,7 @@ export const LoanRescheduleForm = ({
     }
   };
 
-  const handleDeletee = () => {
+  const handleDeleteProceedData = () => {
     if (Array.isArray(gridRef?.current) && gridRef?.current.length > 0) {
       const deletePara = {
         DETAILS_DATA: {
@@ -497,7 +499,7 @@ export const LoanRescheduleForm = ({
             ref={formRef}
             setDataOnFieldChange={(action, payload) => {
               if (action === "DELETE_DATA" && Boolean(payload?.DELETE_DATA)) {
-                handleDeletee();
+                handleDeleteProceedData();
               }
             }}
           >
@@ -560,7 +562,7 @@ export const LoanRescheduleForm = ({
             />
           )}
           <GridWrapper
-            key={`loanRescheduleDetailsGridData`}
+            key={`loanRescheduleDetailsData`}
             finalMetaData={LoanScheduleDetailsGridMetadata as GridMetaDataType}
             data={detailsGridData ?? []}
             setData={setDetailsGridData}
@@ -585,7 +587,6 @@ export const LoanRescheduleFormWrapper = ({
           width: "100%",
           overflow: "auto",
           height: "auto",
-          // padding: "0px",
         },
       }}
       maxWidth="xl"

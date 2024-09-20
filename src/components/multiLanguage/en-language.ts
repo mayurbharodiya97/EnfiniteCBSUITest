@@ -1902,4 +1902,25 @@ export const en_language_data = {
   BeneficiaryAccountName: "Beneficiary Account Name",
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
+
+  //loan Schedule
+  DisbursementDate: "Disbursement Date",
+  DisbursementAmount: "Disbursement Amount",
+  NextInstallmentStartDate: "Next Installment Start Date",
+  DisburseInstallmentAmount: "Disburse Installment Amount",
+  InstallmentStartDate: "Installment Start Date",
+  BeginningBalance: "Beginning Balance",
+  PrincipalDemand: "Principal Demand",
+  InterestDemand: "Interest Demand",
+  EndingBalance: "Ending Balance",
+  DeleteProceedMessage: "Are to sure to close and lose changes?",
+  DisburseAmounTValidationMsg:
+    "Disburse Amount can not be greater than Sanctioned Amount.",
+  InstallmentAmountValidation: "Installment Amount can not be reduced.",
+  InstallmentAmountIsRequired: "Installment Amount is Required.",
+  NoOfInstallmentIsRequired: "No. of Installment is Required.",
+  InterestRateIsRequired: "Interest Rate is Required.",
+  SanctionedAmount: "Sanctioned Amount",
+  DisbursedAmount: "Disbursed Amount",
+  LoanSchedule: "Loan Schedule",
 };
