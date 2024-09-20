@@ -28,13 +28,15 @@ const OrnamentTypeMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.ornamentTypeMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -61,15 +63,15 @@ const OrnamentTypeMasterForm = ({
     };
     let oldData = {
       ...rows?.[0]?.data,
-      ORN_MARGIN: Number(rows?.[0]?.data?.ORN_MARGIN ?? 0).toFixed(2),
     };
+
     let upd = utilFunction.transformDetailsData(newData, oldData);
     isErrorFuncRef.current = {
       data: {
         ...newData,
         ...upd,
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
         _isNewRow: defaultView === "new" ? true : false,
       },
       displayData,

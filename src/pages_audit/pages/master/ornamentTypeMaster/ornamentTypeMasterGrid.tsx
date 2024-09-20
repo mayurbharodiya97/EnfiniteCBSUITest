@@ -45,13 +45,15 @@ export const OrnamentTypeMasterGrid = () => {
   const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.ornamentTypeMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -98,8 +100,8 @@ export const OrnamentTypeMasterGrid = () => {
     any
   >(["getOrnamentTypeMasterGirdData", authState?.user?.branchCode], () =>
     API.getOrnamentTypeMasterGirdData({
-      companyID: authState?.companyID,
-      branchCode: authState?.user?.branchCode,
+      companyID: authState?.companyID ?? "",
+      branchCode: authState?.user?.branchCode ?? "",
     })
   );
 
