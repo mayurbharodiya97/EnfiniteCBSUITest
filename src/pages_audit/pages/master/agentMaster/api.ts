@@ -46,7 +46,7 @@ export const getAgentMstConfigDDW = async (...reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
       COMP_CD: reqData?.[3]?.companyID ?? "",
-      BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
+      BRANCH_CD: reqData?.[3]?.user?.baseBranchCode ?? "",
       CODE: "OTH",
     });
   if (status === "0") {
@@ -75,7 +75,7 @@ export const getAgentMstConfigPigmyDDW = async (...reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAGENTMSTCONFIGPIGMYDDW", {
       COMP_CD: reqData?.[3]?.companyID ?? "",
-      BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
+      BRANCH_CD: reqData?.[3]?.user?.baseBranchCode ?? "",
     });
   if (status === "0") {
     let responseData = data;
