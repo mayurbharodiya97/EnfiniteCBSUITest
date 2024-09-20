@@ -2613,6 +2613,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
     packageName: "",
   },
+  DOEOD: {
+    url: "/enfinityBankProcessingServiceAPI/DOEOD",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

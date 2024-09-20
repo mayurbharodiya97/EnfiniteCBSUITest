@@ -11,13 +11,14 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
-import { Chip, Dialog, Paper } from "@mui/material";
+import { Chip, Dialog, Paper, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AuthContext } from "pages_audit/auth";
 import LoaderImg from "./Loader.gif";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
+import Typograhpy from "components/common/typograhpy";
 
 interface Item {
   CHKSM_TYPE?: string;
@@ -60,17 +61,19 @@ export const VerifyDayendChecksums = ({
   const [currentData, setCurrentData] = useState<any>({});
   const [loopStart, setLoopStart] = useState<any>(false);
   const [warningsObj, setWarningsObj] = useState({});
+  // const { authState, logout } = useContext(AuthContext);
+  const warningsObjRef = useRef<any>({});
+  const npaCalckref = useRef<any>();
+  const mewSessionref = useRef<any>();
+  warningsObjRef.current = warningsObj;
   const [switchBranchPara, setSwitchBranchPara] = useState<any>(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const currentBranch = useRef<any>(null);
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement | null>(null);
-  console.log("warningsObj", warningsObj);
 
   // State to track processed batch count
   const [batchCount, setBatchCount] = useState<number>(0);
-  console.log(switchBranchPara);
-  console.log(currentBranch);
 
   const handleAction = useCallback(
     async (data: any) => {
@@ -82,6 +85,8 @@ export const VerifyDayendChecksums = ({
     },
     [navigate, close]
   );
+  console.log(mewSessionref?.current);
+  console.log(npaCalckref?.current);
 
   const formatTime = (date: Date): string => {
     const hours = String(date.getHours()).padStart(2, "0");
@@ -91,14 +96,21 @@ export const VerifyDayendChecksums = ({
   };
   useEffect(() => {
     if (currentBranch.current) {
-      // Update state whenever the current branch changes
       setWarningsObj((prevWarnings) => ({
         ...prevWarnings,
-        [currentBranch.current]: warningCountRef.current,
+
+        [currentBranch.current]: [
+          warningCountRef.current,
+          //@ts-ignore
+          gridData[0]?.TITLE.slice(21),
+        ],
       }));
     }
-  }, [currentBranch.current]);
-  console.log("openwarnmings", warningsObj);
+  }, [warningCountRef.current]);
+
+  useEffect(() => {
+    warningsObjRef.current = warningsObj;
+  }, [warningsObj]);
 
   const processRecord = async (
     record: Item,
@@ -199,7 +211,7 @@ export const VerifyDayendChecksums = ({
       });
     }
 
-    return "continue"; // Continue the process if no stop condition is met
+    return "continue";
   };
 
   const processRecords = async (records: Item[]) => {
@@ -216,7 +228,36 @@ export const VerifyDayendChecksums = ({
     }
     return true;
   };
-
+  const DoEodMutation = useMutation(API.doEod, {
+    onError: (error: any) => {},
+    onSuccess: async (data) => {
+      for (const response of data[0] ?? []) {
+        if (response?.O_STATUS === "999") {
+          await MessageBox({
+            messageTitle: "ValidationFailed",
+            message: response?.O_MESSAGE ?? "",
+          });
+        } else if (response?.O_STATUS === "9") {
+          await MessageBox({
+            messageTitle: "Alert",
+            message: response?.O_MESSAGE ?? "",
+          });
+        } else if (response?.O_STATUS === "99") {
+          const buttonName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: response?.O_MESSAGE ?? "",
+            buttonNames: ["Yes", "No"],
+            defFocusBtnName: "Yes",
+          });
+          if (buttonName === "No") {
+            break;
+          }
+        } else if (response?.O_STATUS === "0") {
+          console.log("day has been ended");
+        }
+      }
+    },
+  });
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
     onError: (error: any) => {
       const errorMsg =
@@ -243,12 +284,12 @@ export const VerifyDayendChecksums = ({
         const mandatoryPassedCount = data.filter(
           (item) => item.CLR === "Y" && item.MENDETORY === "Y"
         ).length;
-        await MessageBox({
-          messageTitle: "Processing Complete",
-          message: ` Warnings: ${warningCountRef.current}. Branch: ${currentBranch.current}`,
-          icon: "WARNING",
-          buttonNames: ["Ok"],
-        });
+        // await MessageBox({
+        //   messageTitle: "Processing Complete",
+        //   message: ` Warnings: ${warningCountRef.current}. Branch: ${currentBranch.current}`,
+        //   icon: "WARNING",
+        //   buttonNames: ["Ok"],
+        // });
         if (mandatoryPassedCount === 0) {
           await MessageBox({
             messageTitle: "Validation Failed.",
@@ -315,18 +356,12 @@ export const VerifyDayendChecksums = ({
               CloseMessageBox();
               close();
             } else if (buttonName === "Yes") {
-              const branchList = ["002 ", "004 ", "005 "];
-              // const branchList = data[0]?.BRANCH_LIST;
+              // const branchList = ["002 ", "003 "];
+              const branchList = data[0]?.BRANCH_LIST;
               if (branchList.length > 0) {
                 if (switchBranchPara) {
                   for (const branch of branchList) {
                     currentBranch.current = branch;
-                    // setWarningsObj((prevWarnings) => {
-                    //   return {
-                    //     ...prevWarnings,
-                    //     [currentBranch.current]: warningCountRef.current,
-                    //   };
-                    // });
 
                     warningCountRef.current = 0;
                     const processBranch = async (branch: string) => {
@@ -337,12 +372,125 @@ export const VerifyDayendChecksums = ({
                         EOD_EOS_FLG: data[0]?.EOD_EOS_FLG,
                       });
                     };
-                    setWarningsObj((prevWarnings) => ({
-                      ...prevWarnings,
-                      [branch]: warningCountRef.current,
-                    }));
+
                     await processBranch(branch);
                   }
+                }
+                // Prepare the message to display
+                let message = "";
+                // for (const [branch, warnings] of Object.entries(warningsObj)) {
+                //   console.log("branch", branch + warnings);
+
+                //   message += `Branch: ${branch} Warning= ${warnings}.\n`;
+                // }
+
+                for (let key in warningsObjRef.current) {
+                  message += `Branch: ${warningsObjRef.current[key][1]} Warning= ${warningsObjRef.current[key][0]}.\n`;
+                }
+
+                const confirmation = await MessageBox({
+                  messageTitle: "EOD CheckSum having Warning(s).",
+                  message: `${message}\nAre you sure to Continue?`,
+                  icon: "WARNING",
+                  buttonNames: ["Yes", "No"],
+                });
+                if (confirmation === "Yes") {
+                  const sessionDtl = await API.getSessionDtl({
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: authState?.user?.branchCode,
+                    BASE_BRANCH_CD: authState?.baseCompanyID,
+                    BASE_COMP_CD: authState?.user?.baseBranchCode,
+                    WORKING_DATE: authState?.workingDate,
+                  });
+                  for (const response of sessionDtl[0]?.MSG ?? []) {
+                    if (response?.O_STATUS === "999") {
+                      await MessageBox({
+                        messageTitle: "ValidationFailed",
+                        message: response?.O_MESSAGE ?? "",
+                      });
+                    } else if (response?.O_STATUS === "9") {
+                      await MessageBox({
+                        messageTitle: "Alert",
+                        message: response?.O_MESSAGE ?? "",
+                      });
+                    } else if (response?.O_STATUS === "99") {
+                      const buttonName = await MessageBox({
+                        messageTitle: "Confirmation",
+                        message: response?.O_MESSAGE ?? "",
+                        buttonNames: ["Yes", "No"],
+                        // defFocusBtnName: "Yes",
+                      });
+                      if (buttonName === "Yes") {
+                        if (response?.O_COLUMN_NM === "AUTO_NPA") {
+                          npaCalckref.current = "Y";
+                        } else {
+                          console.log("condition true");
+
+                          npaCalckref.current = "N";
+                        }
+
+                        if (response?.O_COLUMN_NM === "NEW_SESSION") {
+                          mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
+                          console.log(
+                            "condition true",
+                            sessionDtl[0]?.NEW_SESSION
+                          );
+                        } else {
+                          mewSessionref.current =
+                            sessionDtl[0]?.DEFAULT_SESSION;
+                        }
+                        if (flag === "D") {
+                          DoEodMutation.mutate({
+                            FLAG: flag,
+                            SCREEN_REF: "TRN/399",
+                            NPA_CALC: npaCalckref?.current,
+                            NEW_SESSION: mewSessionref?.current,
+                          });
+                        }
+                      } else if (buttonName === "No") {
+                        npaCalckref.current = "N";
+                        if (response?.O_COLUMN_NM === "NEW_SESSION") {
+                          mewSessionref.current =
+                            sessionDtl[0]?.DEFAULT_SESSION;
+                        } else {
+                          mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
+                        }
+                        if (flag === "D") {
+                          DoEodMutation.mutate({
+                            FLAG: flag,
+                            SCREEN_REF: "TRN/399",
+                            NPA_CALC: npaCalckref?.current,
+                            NEW_SESSION: mewSessionref?.current,
+                          });
+                        }
+                      }
+                    } else if (response?.O_STATUS === "0") {
+                      if (
+                        response?.O_COLUMN_NM !== "AUTO_NPA" &&
+                        response?.O_COLUMN_NM !== "NEW_SESSION"
+                      ) {
+                        npaCalckref.current = "N";
+                        mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
+                      }
+                      if (flag === "D") {
+                        DoEodMutation.mutate({
+                          FLAG: flag,
+                          SCREEN_REF: "TRN/399",
+                          NPA_CALC: npaCalckref?.current,
+                          NEW_SESSION: mewSessionref?.current,
+                        });
+                      }
+                    }
+                  }
+
+                  // if (sessionDtl) {
+                  //   await API.doEod({
+                  //     FLAG: flag,
+                  //     SCREEN_REF: "TRN/399",
+                  //     NPA_CALC: "",
+                  //     NEW_SESSION: "NEW_SESSION",
+                  //   });
+                  // }
                 }
               }
               CloseMessageBox();
@@ -350,9 +498,7 @@ export const VerifyDayendChecksums = ({
           }
         }
       },
-      onError: (error) => {
-        console.error("Error validating data:", error);
-      },
+      onError: (error) => {},
     }
   );
 
@@ -452,7 +598,7 @@ export const VerifyDayendChecksums = ({
                   setCurrentData(currentData);
                   reportMutation.mutate({
                     COMP_CD: authState?.companyID,
-                    BRANCH_CD: reqData[0]?.BRANCH_LIST[0],
+                    BRANCH_CD: currentBranch.current,
                     TRAN_DT: authState?.workingDate,
                     VERSION: currentData?.EOD_VER_ID,
                     SR_CD: currentData?.SR_CD,
@@ -506,6 +652,14 @@ export const VerifyDayendChecksums = ({
                 />
               </div>
               <div>
+                <Typography
+                  component="span"
+                  variant="subtitle2"
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  {" Checksum Executed. Doing DayEnd or Handover"}
+                </Typography>
+
                 {loopStart && (
                   <GradientButton
                     onClick={() => {

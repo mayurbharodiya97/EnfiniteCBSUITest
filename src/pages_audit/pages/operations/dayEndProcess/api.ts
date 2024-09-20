@@ -240,3 +240,18 @@ export const updateEodRunningStatus = async ({ COMP_CD, BRANCH_CD, FLAG }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const doEod = async ({ FLAG, SCREEN_REF, NPA_CALC, NEW_SESSION }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOEOD", {
+      FLAG: FLAG,
+      SCREEN_REF: SCREEN_REF,
+      NPA_CALC: NPA_CALC,
+      NEW_SESSION: NEW_SESSION,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
