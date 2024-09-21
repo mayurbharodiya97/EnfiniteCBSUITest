@@ -69,3 +69,27 @@ export const deleteImportedData = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const dailyTranimportFileData = async ({ ...reqData }) => {
+  try {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("IMPORTFILEDATA", {
+        ...reqData,
+      });
+    if (status === "0") {
+      const dataStatus = data;
+      if (Boolean(dataStatus?.[0]?.PPS_DATA)) {
+        dataStatus?.[0]?.PPS_DATA.map((item) => {
+          if (item?.ERROR_FLAG === "Y") {
+            item._rowColor = "red";
+          }
+        });
+      }
+      return dataStatus;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  } catch (error) {
+    throw error;
+  }
+};

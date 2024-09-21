@@ -176,6 +176,47 @@ const DailyTransactionImport = () => {
       },
     }
   );
+  const dailyTranimportFileData = useMutation(API.dailyTranimportFileData, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: async (data) => {
+      if (Boolean(data)) {
+        for (let i = 0; i < data?.length; i++) {
+          if (data[i]?.O_STATUS === "999") {
+            const btnName = await MessageBox({
+              messageTitle: "ValidationFailed",
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["Ok"],
+            });
+          } else if (data[i]?.O_STATUS === "9") {
+            const btnName = await MessageBox({
+              messageTitle: "Alert",
+              message: data?.[0]?.O_MESSAGE,
+            });
+          } else if (data[i]?.O_STATUS === "99") {
+            const btnName = await MessageBox({
+              messageTitle: "Confirmation",
+              message: data?.[0]?.O_MESSAGE,
+              buttonNames: ["Yes", "No"],
+            });
+          } else if (data[i]?.STATUS === "0") {
+            enqueueSnackbar(t("dataImportedSuccessfully"), {
+              variant: "success",
+            });
+            CloseMessageBox();
+          }
+        }
+      }
+    },
+  });
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -314,18 +355,12 @@ const DailyTransactionImport = () => {
                 base64Object,
                 result
               ) => {
+                // const FILEBLOB = base64Object
                 const request = {
                   ...base64Object[0],
                   ...reqPara,
                 };
-                console.log(
-                  "base64Object",
-                  request,
-                  formDataObj,
-                  proccessFunc,
-                  ResultFunc,
-                  result
-                );
+                console.log("base64Object", base64Object);
               }}
               gridProps={{}}
               maxAllowedSize={1024 * 1204 * 10} //10Mb file
