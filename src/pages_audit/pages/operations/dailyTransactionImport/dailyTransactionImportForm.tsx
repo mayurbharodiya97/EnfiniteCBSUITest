@@ -1,4 +1,5 @@
 import React, {
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -19,12 +20,13 @@ import { ClearCacheProvider } from "cache";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
 import { CircularProgress, Dialog } from "@mui/material";
 import { FileUploadControl } from "components/fileUpload";
+import { Alert } from "components/common/alert";
 
 const actions: ActionTypes[] = [
   {
@@ -39,15 +41,14 @@ const DailyTransactionImport = () => {
   const formRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
-  const [gridData, setGridData] = useState<any>([]);
   const hasUpdated = useRef(false);
   const [isSelectFileOpen, setIsSelectFileOpen] = useState(false);
   const gridRef = useRef<any>(null);
   const [actionMenu, setActionMenu] = useState(actions);
   const [filteredGridData, setFilteredGridData] = useState<any>([]);
   const [paraType, setParaType] = useState("E");
-  const [reqPara, setReqPara] = useState({});
-
+  const [reqPara, setReqPara] = useState<any>({});
+  const gridDataRef = useRef<any>(false);
   const setCurrentAction = useCallback(async (data) => {
     if (data.name === "errors") {
       setActionMenu((values: any) => {
@@ -77,15 +78,38 @@ const DailyTransactionImport = () => {
       setParaType("E");
     }
   }, []);
+
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
+    ["getDailyTransactionImportData"],
+    () =>
+      API.getDailyTransactionImportData({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: gridDataRef.current?.BRANCH_CD,
+        ACCT_CD: gridDataRef.current?.ACCT_CD,
+        ACCT_TYPE: gridDataRef.current?.ACCT_TYPE,
+        FLAG: "R",
+        CHEQUE_NO: "",
+        OPP_ENT: "",
+        REMARKS: "",
+        TABLE_NM: "",
+        IGNR_INSUF: "",
+      }),
+    {
+      enabled: false,
+    }
+  );
   useEffect(() => {
-    if (Array.isArray(gridData)) {
+    if (Array.isArray(data)) {
       if (paraType === "E") {
-        setFilteredGridData(gridData.filter((item) => item.STATUS === "Y"));
+        setFilteredGridData(data.filter((item) => item.STATUS === "Y"));
       } else if (paraType === "A") {
-        setFilteredGridData(gridData);
+        setFilteredGridData(data);
       }
     }
-  }, [gridData, paraType]);
+  }, [data, paraType]);
 
   const getDailyTransactionUploadData: any = useMutation(
     API.getDailyTransactionImportData,
@@ -104,7 +128,7 @@ const DailyTransactionImport = () => {
           variant: "success",
         });
         formRef?.current?.handleFormReset({ preventDefault: () => {} });
-        setGridData([]);
+        setFilteredGridData([]);
       },
     }
   );
@@ -186,6 +210,7 @@ const DailyTransactionImport = () => {
         variant: "error",
       });
       CloseMessageBox();
+      setIsSelectFileOpen(false);
     },
     onSuccess: async (data) => {
       if (Boolean(data)) {
@@ -212,6 +237,8 @@ const DailyTransactionImport = () => {
               variant: "success",
             });
             CloseMessageBox();
+            setIsSelectFileOpen(false);
+            refetch();
           }
         }
       }
@@ -267,13 +294,13 @@ const DailyTransactionImport = () => {
 
   if (
     DailyTransactionImportGridMetaData &&
-    gridData.length > 0 &&
+    data?.length > 0 &&
     !hasUpdated.current
   ) {
     DailyTransactionImportGridMetaData.gridConfig.gridLabel =
       DailyTransactionImportGridMetaData.gridConfig.gridLabel +
       " " +
-      gridData[0]?.DEBIT_AC;
+      data[0]?.DEBIT_AC;
     hasUpdated.current = true; // Set flag to true to prevent further updates
   }
 
@@ -296,8 +323,13 @@ const DailyTransactionImport = () => {
           formRef?.current?.handleSubmit(event, "SELECT");
         }}
         setDataOnFieldChange={(action, payload) => {
-          if (action === "GRID_DETAIL") {
-            setGridData(payload);
+          if (action === "API_REQ") {
+            gridDataRef.current = payload;
+            if (payload && payload.BRANCH_CD && payload.ACCT_CD) {
+              refetch(); // Manually trigger the API call
+            }
+          } else if (action === "GRID_DETAIL") {
+            setFilteredGridData([]);
           }
         }}
       >
@@ -322,19 +354,26 @@ const DailyTransactionImport = () => {
       </FormWrapper>
 
       <>
+        {isError ? (
+          <Fragment>
+            <div style={{ width: "100%", paddingTop: "10px" }}>
+              <Alert
+                severity={error?.severity ?? "error"}
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+              />
+            </div>
+          </Fragment>
+        ) : null}
         <GridWrapper
-          key={
-            `DailyTransactionImportGrid` +
-            gridData +
-            hasUpdated.current +
-            paraType
-          }
+          key={`DailyTransactionImportGrid` + hasUpdated.current + paraType}
           finalMetaData={DailyTransactionImportGridMetaData as GridMetaDataType}
           data={filteredGridData ?? []}
-          setData={setGridData}
+          setData={setFilteredGridData}
           actions={actionMenu}
           setAction={setCurrentAction}
           ref={gridRef}
+          loading={isLoading}
         />
       </>
 
@@ -355,12 +394,15 @@ const DailyTransactionImport = () => {
                 base64Object,
                 result
               ) => {
-                // const FILEBLOB = base64Object
-                const request = {
-                  ...base64Object[0],
+                const FILEBLOB = [base64Object[0]];
+                dailyTranimportFileData.mutate({
+                  FILEBLOB: FILEBLOB,
                   ...reqPara,
-                };
-                console.log("base64Object", base64Object);
+                  SCREEN_REF: "MST/454",
+                  ACCT_TYPE: reqPara?.A_ACCT_TYPE,
+                  SCROLL_NO: "",
+                  ACCT_CD: reqPara?.A_ACCT_CD,
+                });
               }}
               gridProps={{}}
               maxAllowedSize={1024 * 1204 * 10} //10Mb file

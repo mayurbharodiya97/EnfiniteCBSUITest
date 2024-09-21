@@ -179,22 +179,7 @@ export const DailyTransactionImportMetadata = {
                 } else {
                   returnVal = "";
                 }
-                let gridDetail = await getDailyTransactionImportData({
-                  COMP_CD: auth?.companyID,
-                  BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    field?.value,
-                    dependentFieldsValues?.["FROM_ACCT_TYPE"]?.optionData
-                  ),
-                  ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
-                  FLAG: "R",
-                  CHEQUE_NO: "",
-                  OPP_ENT: "",
-                  REMARKS: "",
-                  TABLE_NM: "",
-                  IGNR_INSUF: "",
-                });
-                formState.setDataOnFieldChange("GRID_DETAIL", gridDetail);
+                formState.setDataOnFieldChange("API_REQ", Apireq);
               }
             }
             btn99 = 0;
