@@ -213,6 +213,16 @@ export const AgentMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
             currentField.value &&
             dependentFieldsValues?.AGENT_TYPE_CD?.value?.length === 0
           ) {
@@ -494,6 +504,16 @@ export const AgentMasterFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
 
+          if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              SECURITY_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
           if (
             currentField.value &&
             dependentFieldsValues?.SECURITY_TYPE_CD?.value?.length === 0
@@ -859,6 +879,16 @@ export const AgentMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              OTHER_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
             currentField.value &&
             dependentFieldsValues?.OTH_ACCT_TYPE?.value?.length === 0
           ) {
@@ -1141,6 +1171,16 @@ export const AgentMasterFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
 
+          if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              PTAX_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
           if (
             currentField.value &&
             dependentFieldsValues?.PTAX_ACCT_TYPE?.value?.length === 0

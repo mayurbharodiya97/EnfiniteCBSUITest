@@ -299,6 +299,10 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -308,6 +312,15 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              TDS_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          } else if (
             currentField.value &&
             dependentFieldsValues?.TDS_ACCT_TYPE?.value?.length === 0
           ) {
@@ -528,6 +541,10 @@ export const CategoryMasterFormMetaData = {
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: true,
+      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -535,7 +552,9 @@ export const CategoryMasterFormMetaData = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
+        if (!Boolean(currentField?.displayValue)) {
+          return {};
+        } else if (
           currentField.value &&
           dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value?.length === 0
         ) {
@@ -746,6 +765,10 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -755,6 +778,15 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              TDS_REC_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          } else if (
             currentField.value &&
             dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value?.length === 0
           ) {
