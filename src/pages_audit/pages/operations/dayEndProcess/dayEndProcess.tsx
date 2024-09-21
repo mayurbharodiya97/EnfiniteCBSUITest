@@ -71,6 +71,11 @@ const DayEndProcess = () => {
       console.error("Error in MessageBox:", err);
     }
   };
+  let isHOLoggined =
+    authState?.user?.branchCode === authState?.user?.baseBranchCode
+      ? true
+      : false;
+  console.log(isHOLoggined, "isHOLoggined");
 
   return (
     <>
@@ -120,6 +125,10 @@ const DayEndProcess = () => {
             }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"D"}
+          processFlag={
+            data && data[0]?.EOD_FLAG === "H" ? t("DayHandover") : t("DayEnd")
+          }
+          isHOLoggined={isHOLoggined}
         />
       )}
       {openVerifyChecksums && (
@@ -135,6 +144,10 @@ const DayEndProcess = () => {
             }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"C"}
+          processFlag={
+            data && data[0]?.EOD_FLAG === "H" ? t("DayHandover") : t("DayEnd")
+          }
+          isHOLoggined={isHOLoggined}
         />
       )}
     </>

@@ -19,6 +19,7 @@ import LoaderImg from "./Loader.gif";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
 import Typograhpy from "components/common/typograhpy";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 interface Item {
   CHKSM_TYPE?: string;
@@ -31,37 +32,35 @@ interface Item {
   ST_TIME: string;
 }
 
-const actions: ActionTypes[] = [
-  {
-    actionName: "close",
-    actionLabel: "Close",
-    alwaysAvailable: true,
-    multiple: undefined,
-  },
-];
-
 export const VerifyDayendChecksums = ({
   open,
   close,
   flag,
+  processFlag,
+  isHOLoggined,
 }: {
   open: boolean;
   close: () => void;
   flag: string;
+  processFlag: string;
+  isHOLoggined: boolean;
 }) => {
   const { authState } = useContext(AuthContext);
   const [openReport, setOpenReport] = useState(false);
   const [docData, setDocData] = useState<any>({});
-  const [openedWindow, setOpenedWindow] = useState<Window | null>(null);
+  const [sessionStart, setSessionStart] = useState<any>(false);
   const warningCountRef = useRef(0);
+  const errCount = useRef(0);
   const [currentSRCD, setCurrentSRCD] = useState<string | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [gridData, setGridData] = useState<Item[]>([]);
   const [reqData, setReqData] = useState<any>({});
   const [currentData, setCurrentData] = useState<any>({});
   const [loopStart, setLoopStart] = useState<any>(false);
+  const [showClose, setShowclose] = useState<any>(false);
+  const [isReportBtnHide, setISreportBTNhide] = useState<any>(false);
+  const [isProcessStop, setIsProcessStop] = useState<any>(false);
   const [warningsObj, setWarningsObj] = useState({});
-  // const { authState, logout } = useContext(AuthContext);
   const warningsObjRef = useRef<any>({});
   const npaCalckref = useRef<any>();
   const mewSessionref = useRef<any>();
@@ -71,17 +70,16 @@ export const VerifyDayendChecksums = ({
   const currentBranch = useRef<any>(null);
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement | null>(null);
-
+  const { logout } = useContext(AuthContext);
   // State to track processed batch count
   const [batchCount, setBatchCount] = useState<number>(0);
+  console.log("isProcessStop", isProcessStop);
+  console.log("loopStart", loopStart);
+  console.log(errCount.current);
 
   const handleAction = useCallback(
     async (data: any) => {
-      if (data?.name === "close") {
-        close();
-      } else {
-        navigate(data?.name, { state: data?.rows });
-      }
+      navigate(data?.name, { state: data?.rows });
     },
     [navigate, close]
   );
@@ -111,7 +109,62 @@ export const VerifyDayendChecksums = ({
   useEffect(() => {
     warningsObjRef.current = warningsObj;
   }, [warningsObj]);
+  const startSession = () => {
+    setSessionStart(true);
+    sessionDtlMutation.mutate({
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+      BASE_BRANCH_CD: authState?.baseCompanyID,
+      BASE_COMP_CD: authState?.user?.baseBranchCode,
+      WORKING_DATE: authState?.workingDate,
+    });
+    setSessionStart(false);
+  };
+  const handleEodWarnings = async () => {
+    if (flag === "D") {
+      let message = "";
 
+      for (let key in warningsObjRef.current) {
+        message += `Branch: ${warningsObjRef.current[key][1]} Warning= ${warningsObjRef.current[key][0]}.\n`;
+      }
+
+      const confirmation = await MessageBox({
+        messageTitle: "EOD CheckSum having Warning(s).",
+        message: `${message}\nAre you sure to Continue?`,
+        icon: "WARNING",
+        buttonNames: ["Yes", "No"],
+      });
+      if (confirmation === "Yes") {
+        startSession();
+      }
+    }
+  };
+  const updateEodRunningStatus = async () => {
+    try {
+      await API.updateEodRunningStatus({
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+        FLAG: "N",
+      });
+      console.log("EOD running status updated successfully.");
+    } catch (error) {
+      console.error("Error updating EOD running status:", error);
+    }
+  };
+  console.log(isReportBtnHide);
+
+  // useEffect(() => {
+  //   if (isReportBtnHide === true) {
+  //     verifyDayendChecksumsMetaData.columns[6].shouldExclude = (
+  //       initialValue,
+  //       original,
+  //       prevRows,
+  //       nextRows
+  //     ) => {
+  //       return false;
+  //     };
+  //   }
+  // }, []);
   const processRecord = async (
     record: Item,
     index: number
@@ -171,12 +224,14 @@ export const VerifyDayendChecksums = ({
         // Show message if conditions are met
         await MessageBox({
           messageTitle: "Error",
-          message: response[0]?.MESSAGE || "Unknown error occurred",
+          message: response[0]?.MESSAGE,
           icon: "ERROR",
           buttonNames: ["Ok"],
         });
         CloseMessageBox(); // Ensure the message box is closed
         setLoopStart(true);
+        setShowclose(true);
+        setISreportBTNhide(true);
         return "stop"; // Signal to stop processing
       }
 
@@ -193,8 +248,30 @@ export const VerifyDayendChecksums = ({
           return "stop"; // Stop processing if button clicked is not "Ok"
         }
       }
+      if (
+        flag === "D" &&
+        isHOLoggined &&
+        processFlag === t("DayEnd") &&
+        response[0]?.CLR === "W"
+      ) {
+        // Handle message box response if FLAG is "C"
+
+        const buttonName = await MessageBox({
+          messageTitle: "Error",
+          message: "Would you like to see warnings of this Checksum?",
+          icon: "WARNING",
+          buttonNames: ["Yes", "No"],
+        });
+        if (buttonName !== "No") {
+          setLoopStart(true);
+          return "stop";
+        }
+      }
       if (response[0]?.CLR === "W") {
         warningCountRef.current += 1;
+      }
+      if (response[0]?.CLR === "Y" && record.MENDETORY === "Y") {
+        errCount.current += 1;
       }
       // Update batch count every 13 records processed
       if (
@@ -218,11 +295,7 @@ export const VerifyDayendChecksums = ({
     for (let i = 0; i < records.length; i++) {
       const result = await processRecord(records[i], i);
       if (result === "stop") {
-        await API.updateEodRunningStatus({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          FLAG: "N",
-        });
+        updateEodRunningStatus();
         return false;
       }
     }
@@ -231,7 +304,56 @@ export const VerifyDayendChecksums = ({
   const DoEodMutation = useMutation(API.doEod, {
     onError: (error: any) => {},
     onSuccess: async (data) => {
-      for (const response of data[0] ?? []) {
+      let btn99, returnVal;
+
+      const getButtonName = async (obj) => {
+        let btnName = await MessageBox(obj);
+        return { btnName, obj };
+      };
+
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]?.O_STATUS === "999") {
+          const { btnName, obj } = await getButtonName({
+            messageTitle: t("ValidationFailed"),
+            message: data[i]?.O_MESSAGE,
+          });
+          returnVal = "";
+        } else if (data[i]?.O_STATUS === "99") {
+          const { btnName, obj } = await getButtonName({
+            messageTitle: t("Confirmation"),
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["Yes", "No"],
+          });
+          btn99 = btnName;
+          if (btnName === "No") {
+            returnVal = "";
+          }
+        } else if (data[i]?.O_STATUS === "9") {
+          if (btn99 !== "No") {
+            const { btnName, obj } = await getButtonName({
+              messageTitle: t("Alert"),
+              message: data[i]?.O_MESSAGE,
+            });
+          }
+          returnVal = "";
+        } else if (data[i]?.O_STATUS === "0") {
+          const { btnName, obj } = await getButtonName({
+            messageTitle: t("Confirmation"),
+            message: data[i]?.O_MESSAGE,
+            buttonNames: ["Ok"],
+          });
+          btn99 = btnName;
+          if (btnName === "Ok") {
+            logout();
+          }
+        }
+      }
+    },
+  });
+  const sessionDtlMutation = useMutation(API.getSessionDtl, {
+    onError: (error: any) => {},
+    onSuccess: async (sessionDtl) => {
+      for (const response of sessionDtl[0]?.MSG ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
             messageTitle: "ValidationFailed",
@@ -247,13 +369,63 @@ export const VerifyDayendChecksums = ({
             messageTitle: "Confirmation",
             message: response?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
-            defFocusBtnName: "Yes",
+            // defFocusBtnName: "Yes",
           });
-          if (buttonName === "No") {
-            break;
+          if (buttonName === "Yes") {
+            if (response?.O_COLUMN_NM === "AUTO_NPA") {
+              npaCalckref.current = "Y";
+            } else {
+              console.log("condition true");
+
+              npaCalckref.current = "N";
+            }
+
+            if (response?.O_COLUMN_NM === "NEW_SESSION") {
+              mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
+              console.log("condition true", sessionDtl[0]?.NEW_SESSION);
+            } else {
+              mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
+            }
+            if (flag === "D") {
+              DoEodMutation.mutate({
+                FLAG: flag,
+                SCREEN_REF: "TRN/399",
+                NPA_CALC: npaCalckref?.current,
+                NEW_SESSION: mewSessionref?.current,
+              });
+            }
+          } else if (buttonName === "No") {
+            npaCalckref.current = "N";
+            if (response?.O_COLUMN_NM === "NEW_SESSION") {
+              mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
+            } else {
+              mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
+            }
+            if (flag === "D") {
+              DoEodMutation.mutate({
+                FLAG: flag,
+                SCREEN_REF: "TRN/399",
+                NPA_CALC: npaCalckref?.current,
+                NEW_SESSION: mewSessionref?.current,
+              });
+            }
           }
         } else if (response?.O_STATUS === "0") {
-          console.log("day has been ended");
+          if (
+            response?.O_COLUMN_NM !== "AUTO_NPA" &&
+            response?.O_COLUMN_NM !== "NEW_SESSION"
+          ) {
+            npaCalckref.current = "N";
+            mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
+          }
+          if (flag === "D") {
+            DoEodMutation.mutate({
+              FLAG: flag,
+              SCREEN_REF: "TRN/399",
+              NPA_CALC: npaCalckref?.current,
+              NEW_SESSION: mewSessionref?.current,
+            });
+          }
         }
       }
     },
@@ -271,7 +443,14 @@ export const VerifyDayendChecksums = ({
       setGridData(data);
       const allRecordsProcessed = await processRecords(data);
 
+      if (flag === "D" && allRecordsProcessed) {
+        if (isHOLoggined === false) {
+          setLoopStart(true);
+          handleEodWarnings();
+        }
+      }
       if (flag === "C" && allRecordsProcessed) {
+        setLoopStart(true);
         await MessageBox({
           messageTitle: "Success",
           message: "EOD CheckSum completed successfully.",
@@ -281,34 +460,25 @@ export const VerifyDayendChecksums = ({
       }
 
       if (flag === "D" && allRecordsProcessed) {
-        const mandatoryPassedCount = data.filter(
-          (item) => item.CLR === "Y" && item.MENDETORY === "Y"
-        ).length;
-        // await MessageBox({
-        //   messageTitle: "Processing Complete",
-        //   message: ` Warnings: ${warningCountRef.current}. Branch: ${currentBranch.current}`,
-        //   icon: "WARNING",
-        //   buttonNames: ["Ok"],
-        // });
-        if (mandatoryPassedCount === 0) {
+        // const mandatoryPassedCount = gridData.filter(
+        //   (item) => item.CLR === "Y" && item.MENDETORY === "Y"
+        // ).length;
+        // console.log(gridData);
+
+        if (errCount.current === 0) {
+          updateEodRunningStatus();
+
           await MessageBox({
             messageTitle: "Validation Failed.",
             message:
-              "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience.",
+              "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience." +
+              errCount.current,
             buttonNames: ["Ok"],
             icon: "ERROR",
           });
         }
       }
       setSwitchBranchPara(true);
-
-      const sessionDtl = await API.getSessionDtl({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        BASE_BRANCH_CD: authState?.baseCompanyID,
-        BASE_COMP_CD: authState?.user?.baseBranchCode,
-        WORKING_DATE: authState?.workingDate,
-      });
     },
   });
 
@@ -358,8 +528,10 @@ export const VerifyDayendChecksums = ({
             } else if (buttonName === "Yes") {
               // const branchList = ["002 ", "003 "];
               const branchList = data[0]?.BRANCH_LIST;
+
               if (branchList.length > 0) {
                 if (switchBranchPara) {
+                  setLoopStart(false);
                   for (const branch of branchList) {
                     currentBranch.current = branch;
 
@@ -375,125 +547,10 @@ export const VerifyDayendChecksums = ({
 
                     await processBranch(branch);
                   }
-                }
-                // Prepare the message to display
-                let message = "";
-                // for (const [branch, warnings] of Object.entries(warningsObj)) {
-                //   console.log("branch", branch + warnings);
-
-                //   message += `Branch: ${branch} Warning= ${warnings}.\n`;
-                // }
-
-                for (let key in warningsObjRef.current) {
-                  message += `Branch: ${warningsObjRef.current[key][1]} Warning= ${warningsObjRef.current[key][0]}.\n`;
-                }
-
-                const confirmation = await MessageBox({
-                  messageTitle: "EOD CheckSum having Warning(s).",
-                  message: `${message}\nAre you sure to Continue?`,
-                  icon: "WARNING",
-                  buttonNames: ["Yes", "No"],
-                });
-                if (confirmation === "Yes") {
-                  const sessionDtl = await API.getSessionDtl({
-                    COMP_CD: authState?.companyID,
-                    BRANCH_CD: authState?.user?.branchCode,
-                    BASE_BRANCH_CD: authState?.baseCompanyID,
-                    BASE_COMP_CD: authState?.user?.baseBranchCode,
-                    WORKING_DATE: authState?.workingDate,
-                  });
-                  for (const response of sessionDtl[0]?.MSG ?? []) {
-                    if (response?.O_STATUS === "999") {
-                      await MessageBox({
-                        messageTitle: "ValidationFailed",
-                        message: response?.O_MESSAGE ?? "",
-                      });
-                    } else if (response?.O_STATUS === "9") {
-                      await MessageBox({
-                        messageTitle: "Alert",
-                        message: response?.O_MESSAGE ?? "",
-                      });
-                    } else if (response?.O_STATUS === "99") {
-                      const buttonName = await MessageBox({
-                        messageTitle: "Confirmation",
-                        message: response?.O_MESSAGE ?? "",
-                        buttonNames: ["Yes", "No"],
-                        // defFocusBtnName: "Yes",
-                      });
-                      if (buttonName === "Yes") {
-                        if (response?.O_COLUMN_NM === "AUTO_NPA") {
-                          npaCalckref.current = "Y";
-                        } else {
-                          console.log("condition true");
-
-                          npaCalckref.current = "N";
-                        }
-
-                        if (response?.O_COLUMN_NM === "NEW_SESSION") {
-                          mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
-                          console.log(
-                            "condition true",
-                            sessionDtl[0]?.NEW_SESSION
-                          );
-                        } else {
-                          mewSessionref.current =
-                            sessionDtl[0]?.DEFAULT_SESSION;
-                        }
-                        if (flag === "D") {
-                          DoEodMutation.mutate({
-                            FLAG: flag,
-                            SCREEN_REF: "TRN/399",
-                            NPA_CALC: npaCalckref?.current,
-                            NEW_SESSION: mewSessionref?.current,
-                          });
-                        }
-                      } else if (buttonName === "No") {
-                        npaCalckref.current = "N";
-                        if (response?.O_COLUMN_NM === "NEW_SESSION") {
-                          mewSessionref.current =
-                            sessionDtl[0]?.DEFAULT_SESSION;
-                        } else {
-                          mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
-                        }
-                        if (flag === "D") {
-                          DoEodMutation.mutate({
-                            FLAG: flag,
-                            SCREEN_REF: "TRN/399",
-                            NPA_CALC: npaCalckref?.current,
-                            NEW_SESSION: mewSessionref?.current,
-                          });
-                        }
-                      }
-                    } else if (response?.O_STATUS === "0") {
-                      if (
-                        response?.O_COLUMN_NM !== "AUTO_NPA" &&
-                        response?.O_COLUMN_NM !== "NEW_SESSION"
-                      ) {
-                        npaCalckref.current = "N";
-                        mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
-                      }
-                      if (flag === "D") {
-                        DoEodMutation.mutate({
-                          FLAG: flag,
-                          SCREEN_REF: "TRN/399",
-                          NPA_CALC: npaCalckref?.current,
-                          NEW_SESSION: mewSessionref?.current,
-                        });
-                      }
-                    }
-                  }
-
-                  // if (sessionDtl) {
-                  //   await API.doEod({
-                  //     FLAG: flag,
-                  //     SCREEN_REF: "TRN/399",
-                  //     NPA_CALC: "",
-                  //     NEW_SESSION: "NEW_SESSION",
-                  //   });
-                  // }
+                  handleEodWarnings();
                 }
               }
-              CloseMessageBox();
+              // CloseMessageBox();
             }
           }
         }
@@ -521,7 +578,6 @@ export const VerifyDayendChecksums = ({
       const url = `/cbsenfinity/${data[0]?.DOCUMENT_URL}`;
       const newWindow = window.open(url, "_blank");
       if (newWindow) {
-        setOpenedWindow(newWindow);
         newWindow.focus();
         queryClient.removeQueries(["getDocUrl"]);
       }
@@ -576,12 +632,13 @@ export const VerifyDayendChecksums = ({
     <ClearCacheProvider>
       <Dialog
         open={open}
-        fullWidth
+        // fullWidth
+        fullScreen
         maxWidth="xl"
-        style={{ height: "100%" }}
-        PaperProps={{
-          style: { width: "87%", padding: "7px" },
-        }}
+        // style={{ height: "100%" }}
+        // PaperProps={{
+        //   style: { width: "87%", padding: "7px" },
+        // }}
       >
         {gridData.length > 0 ? (
           <>
@@ -591,7 +648,7 @@ export const VerifyDayendChecksums = ({
               finalMetaData={verifyDayendChecksumsMetaData as GridMetaDataType}
               data={updateData(gridData)}
               setData={() => null}
-              actions={actions}
+              actions={[]}
               hideActionBar={true}
               onClickActionEvent={(index, id, currentData) => {
                 if (id === "REPORT") {
@@ -616,51 +673,75 @@ export const VerifyDayendChecksums = ({
               onlySingleSelectionAllow={false}
               defaultSelectedRowId={currentSRCD ?? null}
             />
-            <Paper sx={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <Chip
-                  label="Success"
-                  color="default"
-                  style={{
-                    backgroundColor: "rgb(130, 224, 170)",
-                    color: "white",
-                  }}
-                />
-                <Chip
-                  label="In Process"
-                  color="default"
-                  style={{
-                    backgroundColor: "rgb(40, 180, 99)",
-                    color: "white",
-                  }}
-                />
-                <Chip
-                  label="Warning"
-                  color="default"
-                  style={{
-                    backgroundColor: "rgb(244, 208, 63)",
-                    color: "white",
-                  }}
-                />
-                <Chip
-                  label="Error"
-                  color="default"
-                  style={{
-                    backgroundColor: "rgb(241, 148, 138)",
-                    color: "white",
-                  }}
-                />
-              </div>
-              <div>
+            <Paper
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: 2,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{ display: "flex", gap: "4px", marginBottom: "4px" }}
+                >
+                  <Chip
+                    label="Success"
+                    variant="outlined"
+                    color="default"
+                    style={{
+                      backgroundColor: "rgb(130, 224, 170)",
+                      color: "white",
+                    }}
+                  />
+                  <Chip
+                    label="In Process"
+                    color="default"
+                    variant="outlined"
+                    style={{
+                      backgroundColor: "rgb(40, 180, 99)",
+                      color: "white",
+                    }}
+                  />
+                  <Chip
+                    label="Warning"
+                    color="default"
+                    variant="outlined"
+                    style={{
+                      backgroundColor: "rgb(244, 208, 63)",
+                      color: "white",
+                    }}
+                  />
+                  <Chip
+                    label="Error"
+                    color="default"
+                    variant="outlined"
+                    style={{
+                      backgroundColor: "rgb(241, 148, 138)",
+                      color: "white",
+                    }}
+                  />
+                </div>
                 <Typography
                   component="span"
                   variant="subtitle2"
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{
+                    whiteSpace: "nowrap",
+                    paddingLeft: "33px",
+                  }}
                 >
-                  {" Checksum Executed. Doing DayEnd or Handover"}
+                  {DoEodMutation?.isLoading || sessionDtlMutation?.isLoading
+                    ? ` Checksum Executed. Doing ${processFlag}`
+                    : ""}
                 </Typography>
-
-                {loopStart && (
+              </div>
+              <div>
+                {loopStart && flag === "D" && (
                   <GradientButton
                     onClick={() => {
                       setGridData([]);
@@ -675,6 +756,16 @@ export const VerifyDayendChecksums = ({
                     color={"primary"}
                   >
                     {t("start")}
+                  </GradientButton>
+                )}
+                {loopStart && (
+                  <GradientButton
+                    onClick={() => {
+                      close();
+                    }}
+                    color={"primary"}
+                  >
+                    {t("Close")}
                   </GradientButton>
                 )}
               </div>
