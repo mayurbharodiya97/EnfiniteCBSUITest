@@ -216,14 +216,6 @@ export const ForgotPasswordFields = ({
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {loginState.confirmPasswordValidateloading ? (
-                      <CircularProgress
-                        color="secondary"
-                        variant="indeterminate"
-                        size={25}
-                        thickness={4.6}
-                      />
-                    ) : null}
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={() => {

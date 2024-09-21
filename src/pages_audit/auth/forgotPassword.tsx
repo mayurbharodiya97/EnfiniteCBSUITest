@@ -43,7 +43,6 @@ const inititalState = {
   forgotOtpSentText: "",
   newPasswordMessage: "",
   passwordValidateloading: false,
-  confirmPasswordValidateloading: false,
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -132,7 +131,6 @@ const reducer = (state, action) => {
         isApiError: false,
         apierrorMessage: "",
         passwordValidateloading: false,
-        confirmPasswordValidateloading: false,
       };
     }
     case "initverifyPasswordSetReq": {
@@ -161,8 +159,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         passwordValidateloading: action?.payload?.passwordValidateloading,
-        confirmPasswordValidateloading:
-          action?.payload?.confirmPasswordValidateloading,
         isPasswordError: false,
         isConfirmPasswordError: false,
       };
@@ -171,7 +167,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         passwordValidateloading: false,
-        confirmPasswordValidateloading: false,
         isPasswordError: false,
         isConfirmPasswordError: false,
       };
@@ -205,38 +200,62 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       data?.password.trim()?.length > 0 ||
       data?.confirmpassword.trim()?.length > 0
     ) {
-      dispath({
-        type: "initPasswordValidate",
-        payload: {
-          passwordValidateloading: flag === "P" ? true : false,
-          confirmPasswordValidateloading: flag === "C" ? true : false,
-        },
-      });
-      const { validateStatus, validateData } = await API.validatePasswords({
-        USER_ID: data.userName,
-        PASSWORD: flag === "P" ? data?.password : data?.confirmpassword,
-        SCREEN_REF: "FORGET_PW",
-      });
-      if (validateStatus === "0") {
-        switch (validateData?.O_STATUS) {
-          case "999":
-            dispath({
-              type: "verifyPasswordFailed",
-              payload: {
-                isPasswordError: flag === "P" ? true : false,
-                isConfirmPasswordError: flag === "P" ? false : true,
-                userMessageforPassword:
-                  flag === "P" ? validateData?.O_MESSAGE : "",
-                userMessageforconfirmPassword:
-                  flag === "P" ? "" : validateData?.O_MESSAGE ?? "",
-                apierrorMessage: validateData?.O_MESSAGE,
-              },
-            });
-            break;
-          case "0":
-            dispath({ type: "passwordValidateSuccess" });
-            break;
+      if (flag === "P") {
+        dispath({
+          type: "initPasswordValidate",
+          payload: {
+            passwordValidateloading: flag === "P" ? true : false,
+          },
+        });
+        const { validateStatus, validateData } = await API.validatePasswords({
+          USER_ID: data.userName,
+          PASSWORD: flag === "P" ? data?.password : data?.confirmpassword,
+          SCREEN_REF: "FORGET_PW",
+        });
+        if (validateStatus === "0") {
+          switch (validateData?.O_STATUS) {
+            case "999":
+              dispath({
+                type: "verifyPasswordFailed",
+                payload: {
+                  isPasswordError: flag === "P" ? true : false,
+                  isConfirmPasswordError: flag === "P" ? false : true,
+                  userMessageforPassword:
+                    flag === "P" ? validateData?.O_MESSAGE : "",
+                  userMessageforconfirmPassword:
+                    flag === "P" ? "" : validateData?.O_MESSAGE ?? "",
+                  apierrorMessage: validateData?.O_MESSAGE,
+                },
+              });
+              break;
+            case "0":
+              dispath({ type: "passwordValidateSuccess" });
+              break;
+          }
         }
+      } else {
+        let validationData = {
+          isPasswordError: false,
+          userMessageforPassword: "",
+          isConfirmPasswordError: false,
+          userMessageforconfirmPassword: "",
+        };
+        if (!Boolean(data.confirmpassword)) {
+          validationData.isConfirmPasswordError = true;
+          validationData.userMessageforconfirmPassword =
+            "Confirmpasswordisrequired";
+        } else if (
+          Boolean(data.password) &&
+          data.password !== data.confirmpassword
+        ) {
+          validationData.isConfirmPasswordError = true;
+          validationData.userMessageforconfirmPassword =
+            "New Password and Confirm Password did not matched";
+        }
+        dispath({
+          type: "verifyPasswordFailed",
+          payload: validationData,
+        });
       }
     }
   };
