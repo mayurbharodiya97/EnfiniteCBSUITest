@@ -22,10 +22,10 @@ export const OTPModel = ({
   OTPError,
   setOTPError,
   previousStep,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
   resendFlag,
-  marginCondition
+  marginCondition,
 }) => {
   const [OTP, setOTP] = useState("");
   const [showPasswordTime, setShowPasswordTime] = useState(0);
@@ -102,7 +102,7 @@ export const OTPModel = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -131,14 +131,14 @@ export const OTPModel = ({
       </span>
     );
   };
- 
+
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
-    }else if (Boolean(OTPError)){
+    } else if (Boolean(OTPError)) {
       setOTP("");
     }
-  }, [loginState.otpmodelClose,OTPError]);
+  }, [loginState.otpmodelClose, OTPError]);
   return (
     <Fragment>
       <Container maxWidth="sm">
@@ -184,7 +184,7 @@ export const OTPModel = ({
               }}
             >
               {loginState?.authType === "OTP"
-                ? t("otp.EnterOTPsentToMobile")
+                ? loginState?.otpSentText ?? ""
                 : loginState?.authType === "TOTP"
                 ? t("otp.PleaseEnterOTP")
                 : null}
@@ -206,7 +206,7 @@ export const OTPModel = ({
               {t("otp.Hello")}{" "}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
-                loginState.username.slice(1)
+                  loginState.username.slice(1)
                 : null}
               {loginState?.authType === "OTP" && (
                 <ResendOTP
@@ -338,7 +338,7 @@ export const OTPModelForm = ({
   OTPError,
   setOTPError,
   resendFlag,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
 }) => {
   const [OTP, setOTP] = useState("");
@@ -354,8 +354,6 @@ export const OTPModelForm = ({
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
-
-
 
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
@@ -404,7 +402,7 @@ export const OTPModelForm = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -435,8 +433,10 @@ export const OTPModelForm = ({
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
+    } else if (Boolean(OTPError)) {
+      setOTP("");
     }
-  }, [loginState.otpmodelClose]);
+  }, [loginState.otpmodelClose, OTPError]);
 
   return (
     <Fragment>
@@ -467,15 +467,27 @@ export const OTPModelForm = ({
           >
             {t("otp.GenerateNewOTP")}
           </div> */}
+          <div
+            style={{
+              color: "#949597",
+              fontSize: "16px",
+              fontWeight: "400",
+              alignItems: "center",
+              fontStyle: "normal",
+              lineHeight: "33px",
+            }}
+          >
+            {loginState?.forgotOtpSentText ?? ""}
+          </div>
           <div className={classes.OTPalignName}>
             {t("otp.Hello")}{" "}
             {loginState?.username
               ? loginState.username.charAt(0).toUpperCase() +
-              loginState.username.slice(1)
+                loginState.username.slice(1)
               : null}
             {loginState.otploading ||
-              otpresendCount >= 3 ||
-              loginState?.auth_type === "TOTP" ? null : (
+            otpresendCount >= 3 ||
+            loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
                 onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}

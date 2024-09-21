@@ -40,6 +40,10 @@ const inititalState = {
   auth_type: "O",
   transactionID: "",
   contactUser: "",
+  forgotOtpSentText: "",
+  newPasswordMessage: "",
+  passwordValidateloading: false,
+  confirmPasswordValidateloading: false,
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -84,6 +88,7 @@ const reducer = (state, action) => {
         branch_cd: action?.payload?.branch_cd,
         otpValidFor: action?.payload?.otpValidFor,
         contactUser: action?.payload?.contactUser,
+        forgotOtpSentText: action?.payload?.forgotOtpSentText,
       };
     }
     case "inititateOTPVerification": {
@@ -103,6 +108,7 @@ const reducer = (state, action) => {
         OtpuserMessage: "",
         workingState: 1,
         otpmodelClose: Boolean(action?.payload?.otpmodelclose),
+        newPasswordMessage: action?.payload?.newPasswordMessage,
       };
     }
     case "OTPVerificationFailed": {
@@ -125,6 +131,8 @@ const reducer = (state, action) => {
           action?.payload?.userMessageforconfirmPassword ?? "",
         isApiError: false,
         apierrorMessage: "",
+        passwordValidateloading: false,
+        confirmPasswordValidateloading: false,
       };
     }
     case "initverifyPasswordSetReq": {
@@ -147,6 +155,25 @@ const reducer = (state, action) => {
       return {
         ...state,
         requestCd: action?.payload?.requestCd,
+      };
+    }
+    case "initPasswordValidate": {
+      return {
+        ...state,
+        passwordValidateloading: action?.payload?.passwordValidateloading,
+        confirmPasswordValidateloading:
+          action?.payload?.confirmPasswordValidateloading,
+        isPasswordError: false,
+        isConfirmPasswordError: false,
+      };
+    }
+    case "passwordValidateSuccess": {
+      return {
+        ...state,
+        passwordValidateloading: false,
+        confirmPasswordValidateloading: false,
+        isPasswordError: false,
+        isConfirmPasswordError: false,
       };
     }
     default: {
@@ -173,6 +200,47 @@ export const ForgotPasswordController = ({ screenFlag }) => {
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
 
+  const validatePassword = async (data, flag) => {
+    if (
+      data?.password.trim()?.length > 0 ||
+      data?.confirmpassword.trim()?.length > 0
+    ) {
+      dispath({
+        type: "initPasswordValidate",
+        payload: {
+          passwordValidateloading: flag === "P" ? true : false,
+          confirmPasswordValidateloading: flag === "C" ? true : false,
+        },
+      });
+      const { validateStatus, validateData } = await API.validatePasswords({
+        USER_ID: data.userName,
+        PASSWORD: flag === "P" ? data?.password : data?.confirmpassword,
+        SCREEN_REF: "FORGET_PW",
+      });
+      if (validateStatus === "0") {
+        switch (validateData?.O_STATUS) {
+          case "999":
+            dispath({
+              type: "verifyPasswordFailed",
+              payload: {
+                isPasswordError: flag === "P" ? true : false,
+                isConfirmPasswordError: flag === "P" ? false : true,
+                userMessageforPassword:
+                  flag === "P" ? validateData?.O_MESSAGE : "",
+                userMessageforconfirmPassword:
+                  flag === "P" ? "" : validateData?.O_MESSAGE ?? "",
+                apierrorMessage: validateData?.O_MESSAGE,
+              },
+            });
+            break;
+          case "0":
+            dispath({ type: "passwordValidateSuccess" });
+            break;
+        }
+      }
+    }
+  };
+
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -198,6 +266,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
               branch_cd: resdata?.BRANCH_CD,
               otpValidFor: resdata?.OTP_VALID,
               contactUser: resdata?.CONTACT2,
+              forgotOtpSentText: resdata?.OTP_SENT_TEXT,
             },
           });
           setOpen(true);
@@ -211,14 +280,12 @@ export const ForgotPasswordController = ({ screenFlag }) => {
           });
         }
       } else if (flag === 1) {
-        console.log("data", data);
         dispath({ type: "initverifyPasswordSetReq" });
         const { validateStatus, validateData } = await API.validatePasswords({
           USER_ID: data?.userName,
           PASSWORD: data?.password,
           SCREEN_REF: "FORGET_PW",
         });
-        // console.log("validateData", validateData?.O_MESSAGE, validateStatus)
         if (validateStatus === "0") {
           switch (validateData?.O_STATUS) {
             case "999":
@@ -367,7 +434,10 @@ export const ForgotPasswordController = ({ screenFlag }) => {
         } else {
           dispath({
             type: "OTPVerificationComplate",
-            payload: { otpmodelclose: true },
+            payload: {
+              otpmodelclose: true,
+              newPasswordMessage: resdata?.MESSAGE,
+            },
           });
         }
       } else if (status === "99") {
@@ -415,14 +485,43 @@ export const ForgotPasswordController = ({ screenFlag }) => {
             <MultiLanguages />
           </Grid>
           <Container maxWidth="xs">
-            <Grid alignItems="center" style={{ paddingTop: "20px" }}>
-              <h2 style={{ margin: "10px 0" }}>
+            <Grid alignItems="center">
+              <h2 style={{ margin: "4px 0" }}>
                 {loginState.workingState === 1
                   ? t("Setnewpassword")
                   : screenFlag === "totp"
                   ? "Forgot TOTP"
                   : t("ForgotPassword")}
               </h2>
+              {loginState.workingState === 1 ? (
+                <>
+                  <div
+                    style={{
+                      color: "#949597",
+                      fontSize: "16px",
+                      fontWeight: "400",
+                      alignItems: "center",
+                      fontStyle: "normal",
+                      lineHeight: "27px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        marginRight: "12px",
+                        color: "#1C1C1C",
+                      }}
+                    >
+                      {" "}
+                      {t("otp.Hello")}{" "}
+                      {loginState?.username
+                        ? loginState.username.charAt(0).toUpperCase() +
+                          loginState.username.slice(1)
+                        : null}
+                    </span>
+                    {loginState?.newPasswordMessage ?? ""}
+                  </div>
+                </>
+              ) : null}
               {open ? (
                 <OTPModelForm
                   classes={classes}
@@ -451,6 +550,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                   classes={classes}
                   loginState={loginState}
                   onSubmit={onSubmitHandel}
+                  validatePassword={validatePassword}
                 />
               )}
             </Grid>

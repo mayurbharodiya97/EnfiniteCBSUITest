@@ -12,7 +12,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
+export const ForgotPasswordFields = ({
+  classes,
+  loginState,
+  onSubmit,
+  validatePassword,
+}) => {
   const [input, setInput] = useState({
     userName: loginState.workingState === 1 ? loginState?.username : "",
     mobileno: "",
@@ -78,8 +83,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             loginState.loading
               ? true
               : loginState.workingState === 0
-                ? false
-                : true
+              ? false
+              : true
           }
           autoComplete="off"
           ref={inputRef}
@@ -99,7 +104,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             fullWidth
             type={"text"}
             name="mobileno"
-            value={input.mobileno || ""}
+            value={input.mobileno.trimStart() || ""}
             onChange={handleChange}
             error={loginState.isMobileError}
             helperText={
@@ -112,8 +117,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               loginState.loading
                 ? true
                 : loginState.workingState === 0
-                  ? false
-                  : true
+                ? false
+                : true
             }
             autoComplete="off"
             onKeyDown={(e) => {
@@ -134,8 +139,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               fullWidth
               type={showPassword ? "text" : "password"}
               name="password"
-              value={input.password || ""}
+              value={input.password.trimStart() || ""}
               onChange={handleChange}
+              onBlur={async () => await validatePassword(input, "P")}
               error={loginState.isPasswordError}
               helperText={
                 loginState.isPasswordError
@@ -154,6 +160,14 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
+                    {loginState.passwordValidateloading ? (
+                      <CircularProgress
+                        color="secondary"
+                        variant="indeterminate"
+                        size={25}
+                        thickness={4.6}
+                      />
+                    ) : null}
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={() => {
@@ -182,8 +196,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               fullWidth
               type={showConfirmPassword ? "text" : "password"}
               name="confirmpassword"
-              value={input.confirmpassword || ""}
+              value={input.confirmpassword.trimStart() || ""}
               onChange={handleChange}
+              onBlur={async () => await validatePassword(input, "C")}
               error={loginState.isConfirmPasswordError}
               helperText={
                 loginState.isConfirmPasswordError
@@ -201,6 +216,14 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
+                    {loginState.confirmPasswordValidateloading ? (
+                      <CircularProgress
+                        color="secondary"
+                        variant="indeterminate"
+                        size={25}
+                        thickness={4.6}
+                      />
+                    ) : null}
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={() => {

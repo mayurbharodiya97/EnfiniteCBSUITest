@@ -44,6 +44,7 @@ const inititalState = {
   isScanning: false,
   auth_type: "O",
   otpValidFor: 60,
+  otpSentText: "",
 };
 
 const reducer = (state, action) => {
@@ -79,7 +80,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordVerificationFailure":
@@ -95,7 +96,7 @@ const reducer = (state, action) => {
         username: "",
         transactionID: "",
         comapanyCD: "",
-        branchCD: ""
+        branchCD: "",
       };
     case "usernameVerificationFailure": {
       return {
@@ -111,7 +112,7 @@ const reducer = (state, action) => {
         transactionID: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "inititatePasswordVerification": {
@@ -130,7 +131,7 @@ const reducer = (state, action) => {
         access_token: "",
         comapanyCD: "",
         branchCD: "",
-        contactUser: ""
+        contactUser: "",
       };
     }
     case "passwordRotation": {
@@ -169,6 +170,7 @@ const reducer = (state, action) => {
         // authType: "TOTP",
         auth_data: action?.payload?.auth_data,
         otpValidFor: action?.payload?.otpValidFor,
+        otpSentText: action?.payload?.otpSentText,
       };
     }
     case "inititatebiometricVerification": {
@@ -318,6 +320,7 @@ export const AuthLoginController = () => {
             authType: data?.AUTH_TYPE,
             auth_data: data?.AUTH_DATA,
             otpValidFor: data?.OTP_VALID,
+            otpSentText: data?.OTP_SENT_TEXT,
           },
         });
         if (data?.STATUS === "0") {
