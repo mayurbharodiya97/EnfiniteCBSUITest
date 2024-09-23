@@ -8,7 +8,12 @@ export const getAdvocateMstData = async ({ companyID, branchCode }) => {
       BRANCH_CD: branchCode,
     });
   if (status === "0") {
-    return data;
+    return data?.map((item) => {
+      return {
+        ...item,
+        STATUS: item?.STATUS === "I" ? true : false,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
