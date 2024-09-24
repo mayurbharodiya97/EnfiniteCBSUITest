@@ -155,11 +155,11 @@ const EntryPoint = () => (
           />
           <Route
             path="branch-selection/*"
-            element={<BranchSelectionGridWrapper selectionMode={"S"} />}
+            element={<BranchSelectionGrid selectionMode={"S"} />}
           />
           <Route
             path="change-branch/*"
-            element={<BranchSelectionGridWrapper selectionMode={"C"} />}
+            element={<BranchSelectionGrid selectionMode={"C"} />}
           />
           <Route
             path="*"
