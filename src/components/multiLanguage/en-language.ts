@@ -1644,6 +1644,7 @@ export const en_language_data = {
   TotalNoofrecords: "Total No. of records: ",
   DayHandover: "Day Handover",
   VersionNo: "Version No.",
+  openNewSession: "Open New Session",
   AcRef: "A/c No. /Ref No.",
   Sequence: "Sequence",
   eodVersion: "EOD Version",

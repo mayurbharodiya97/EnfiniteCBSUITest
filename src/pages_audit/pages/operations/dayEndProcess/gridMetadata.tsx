@@ -188,7 +188,7 @@ export const verifyDayendChecksumsMetaData = {
     defaultPageSize: 10,
     containerHeight: {
       min: "70vh",
-      max: "76vh",
+      max: "73vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

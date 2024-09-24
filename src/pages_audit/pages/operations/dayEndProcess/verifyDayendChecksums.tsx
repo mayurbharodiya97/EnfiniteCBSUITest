@@ -23,6 +23,7 @@ import { AuthContext } from "pages_audit/auth";
 import LoaderImg from "./Loader.gif";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
+import { LoadingTextAnimation } from "components/common/loader";
 
 interface Item {
   CHKSM_TYPE?: string;
@@ -96,7 +97,7 @@ export const VerifyDayendChecksums = ({
         [currentBranch.current]: [
           warningCountRef.current,
           //@ts-ignore
-          gridData[0]?.TITLE.slice(21),
+          gridData[0]?.BRANCH_NM,
         ],
       }));
     }
@@ -121,7 +122,7 @@ export const VerifyDayendChecksums = ({
       let message = "";
 
       for (let key in warningsObjRef.current) {
-        message += `Branch: ${warningsObjRef.current[key][1]} Warning= ${warningsObjRef.current[key][0]}.\n`;
+        message += `${warningsObjRef.current[key][1]} Warning= ${warningsObjRef.current[key][0]}.\n`;
       }
 
       const confirmation = await MessageBox({
@@ -344,9 +345,9 @@ export const VerifyDayendChecksums = ({
           const buttonName = await MessageBox({
             messageTitle: "Confirmation",
             message: response?.O_MESSAGE ?? "",
-            buttonNames: ["Yes", "No"],
+            buttonNames: [t("openNewSession"), t("DayEnd")],
           });
-          if (buttonName === "Yes") {
+          if (buttonName === "openNewSession") {
             if (response?.O_COLUMN_NM === "AUTO_NPA") {
               npaCalckref.current = "Y";
             } else {
@@ -366,7 +367,7 @@ export const VerifyDayendChecksums = ({
                 NEW_SESSION: mewSessionref?.current,
               });
             }
-          } else if (buttonName === "No") {
+          } else if (buttonName === "DayEnd") {
             npaCalckref.current = "N";
             if (response?.O_COLUMN_NM === "NEW_SESSION") {
               mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
@@ -558,7 +559,7 @@ export const VerifyDayendChecksums = ({
 
   let label = gridData
     ? //@ts-ignore
-      `${gridData[0]?.TITLE} Version Id: ${gridData[0]?.EOD_VER_ID}`
+      `${gridData[0]?.TITLE} ${gridData[0]?.EOD_VER_ID}`
     : "Day End Process";
   verifyDayendChecksumsMetaData.gridConfig.gridLabel = label;
 
@@ -685,23 +686,26 @@ export const VerifyDayendChecksums = ({
                     }}
                   />
                 </div>
-                <Typography
-                  component="span"
-                  variant="subtitle2"
+                <div
                   style={{
                     whiteSpace: "nowrap",
                     paddingLeft: "33px",
+                    display: "flex",
+                    alignContent: "center",
+                    justifyContent: "center",
                   }}
                 >
                   {DoEodMutation?.isLoading || sessionDtlMutation?.isLoading
-                    ? ` Checksum Executed. Doing ${processFlag}`
+                    ? ` Checksum Executed. Doing ${processFlag} `
                     : ""}
                   {sessionDtlMutation.isLoading || DoEodMutation.isLoading ? (
-                    <CircularProgress size={22} />
+                    <div style={{ marginLeft: "12px" }}>
+                      <LoadingTextAnimation />
+                    </div>
                   ) : (
                     ""
                   )}
-                </Typography>
+                </div>
               </div>
               <div>
                 {loopStart && flag === "D" && (
