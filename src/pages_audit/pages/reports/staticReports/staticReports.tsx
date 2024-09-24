@@ -1,4 +1,3 @@
-import Report from "components/report";
 import * as API from "../api";
 import { accountDeletionMetaData } from "./metaData/accountDeletion";
 import { adminUserActivityMetaData } from "./metaData/adminPanelUserActivity";
@@ -8,6 +7,7 @@ import { StaticAdminUserDetailsReports } from "./reportDetailsData/staticReports
 import { format } from "date-fns";
 import { TrnParticularsDetailsReports } from "./trnParticulars/trnParticulars";
 import { communMasterConfig } from "./metaData/comonMSTDetail";
+import { ReportGrid } from "@acuteinfo/common-base";
 
 export const StaticAdminUserReports = ({ screenFlag, subScreenFlag = "" }) => {
   const [isOpenSave, setIsOpenSave] = useState<any>(false);
@@ -31,13 +31,12 @@ export const StaticAdminUserReports = ({ screenFlag, subScreenFlag = "" }) => {
   // UTILITYBILLRPT
   return (
     <>
-      <Report
+      <ReportGrid
         key={"reportID" + screenFlag + subScreenFlag}
         reportID={apiURL + screenFlag}
         reportName={screenFlag}
         dataFetcher={API.getReportData}
         metaData={metaData}
-        disableFilters
         maxHeight={window.innerHeight - 310}
         title={metaData.title}
         options={{

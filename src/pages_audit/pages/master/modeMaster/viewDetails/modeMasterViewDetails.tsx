@@ -1,20 +1,23 @@
+import {
+  FormWrapper,
+  MetaDataType,
+  extractMetaData,
+  utilFunction,
+  InitialValuesType,
+  SubmitFnType,
+  GradientButton,
+  usePopupContext,
+  LoaderPaperComponent,
+} from "@acuteinfo/common-base";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
-
-
 const ModeMasterForm = ({
   isDataChangedRef,
   closeDialog,
@@ -27,7 +30,8 @@ const ModeMasterForm = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const mutation = useMutation(API.updateModeMasterData,
+  const mutation = useMutation(
+    API.updateModeMasterData,
 
     {
       onError: (error: any) => {
@@ -106,28 +110,25 @@ const ModeMasterForm = ({
 
   return (
     <>
-      {!gridData ? (<LoaderPaperComponent />
+      {!gridData ? (
+        <LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"modeMasterForm" + formMode}
-          metaData={
-            extractMetaData(
-              metaData,
-              formMode
-            ) as MetaDataType
-          }
+          metaData={extractMetaData(metaData, formMode) as MetaDataType}
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           formState={{
             gridData: gridData,
             rows: rows?.[0]?.data,
+            authState: authState,
           }}
           initialValues={
             formMode === "add"
               ? {
-                ...rows?.[0]?.data,
-                MODE_CD: codeIncreByOne,
-              }
+                  ...rows?.[0]?.data,
+                  MODE_CD: codeIncreByOne,
+                }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
           formStyle={{
@@ -143,7 +144,9 @@ const ModeMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -164,7 +167,9 @@ const ModeMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save

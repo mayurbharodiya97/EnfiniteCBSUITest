@@ -1,13 +1,15 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useTranslation } from "react-i18next";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { RetrievalFormMetaData } from "./retrieveFormMetadata";
-
+import {
+  usePopupContext,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   const { t } = useTranslation();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -44,7 +46,6 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         metaData={RetrievalFormMetaData as MetaDataType}
         initialValues={{}}
         onSubmitHandler={onSubmitHandler}
-        isLoading={true}
         //@ts-ignore
         formStyle={{
           background: "white",

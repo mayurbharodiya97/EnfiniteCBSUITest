@@ -1,15 +1,17 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { ResponseParameterFormMetaData } from "./metadata";
-
+import {
+  usePopupContext,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 export const ResponseParametersForm = ({
   closeDialog,
   retrievalParaValues,
@@ -33,7 +35,7 @@ export const ResponseParametersForm = ({
         ENT_COMP_CD: authState?.companyID ?? "",
         ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
         FROM_DATE:
-          isValidDate(retrieveDataRef?.current?.FROM_DATE) &&
+          utilFunction.isValidDate(retrieveDataRef?.current?.FROM_DATE) &&
           retrieveDataRef.current?.FLAG === "D"
             ? format(
                 new Date(retrieveDataRef?.current?.FROM_DATE),
@@ -41,7 +43,7 @@ export const ResponseParametersForm = ({
               ) ?? ""
             : "",
         TO_DATE:
-          isValidDate(retrieveDataRef?.current?.TO_DATE) &&
+          utilFunction.isValidDate(retrieveDataRef?.current?.TO_DATE) &&
           retrieveDataRef.current?.FLAG === "D"
             ? format(
                 new Date(retrieveDataRef?.current?.TO_DATE),
