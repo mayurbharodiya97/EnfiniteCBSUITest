@@ -1,23 +1,26 @@
 import { Dialog, AppBar, CircularProgress } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
 import { form15GHEntryMetaData } from "./metaData";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
-import { utilFunction } from "components/utils";
-import { PDFViewer } from "components/fileUpload/preView";
 import { useTranslation } from "react-i18next";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
+
+import {
+  usePopupContext,
+  Alert,
+  PDFViewer,
+  utilFunction,
+  MasterDetailsMetaData,
+  queryClient,
+  MasterDetailsForm,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 interface Form15GHEntryFormWrapperProps {
   isDataChangedRef: any;
@@ -70,14 +73,30 @@ const Form15GHEntry = ({
     rows?.retrieveData && Object.keys(rows?.retrieveData).length > 0
       ? rows?.retrieveData
       : rows?.[0]?.data || {};
+  const getDynamicLabel = (path: string, data: any, setScreenCode: boolean) => {
+    const relativePath = path.replace("/cbsenfinity/", "");
+    let cleanedPath;
+
+    if (relativePath.includes("/")) {
+      cleanedPath = relativePath.split("/").slice(0, 2).join("/");
+    } else {
+      cleanedPath = relativePath;
+    }
+    let screenList = utilFunction.GetAllChieldMenuData(data, true);
+    const matchingPath = screenList.find((item) => item.href === cleanedPath);
+
+    if (matchingPath) {
+      return setScreenCode
+        ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
+        : `${matchingPath.label}`;
+    }
+
+    return "";
+  };
 
   useEffect(() => {
     if (formMode === "edit" || (formMode === "view" && formData)) {
-      let label = utilFunction.getDynamicLabel(
-        currentPath,
-        authState?.menulistdata,
-        false
-      );
+      let label = getDynamicLabel(currentPath, authState?.menulistdata, false);
       const label2 = `${label ?? ""}\u00A0\u00A0 ${
         formData?.CONFIRMED_DIS ?? ""
       }\u00A0\u00A0 ${t("Uploaded")}: ${
