@@ -2586,7 +2586,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
+    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
@@ -2624,17 +2624,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-    PackageName +
-    (url.startsWith("./")
-      ? url.substring(1)
-      : url.startsWith("/")
+      PackageName +
+      (url.startsWith("./")
+        ? url.substring(1)
+        : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-      ? url
-      : url.startsWith("/")
-        ? "." + url
-        : "./" + url;
+    ? url
+    : url.startsWith("/")
+    ? "." + url
+    : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

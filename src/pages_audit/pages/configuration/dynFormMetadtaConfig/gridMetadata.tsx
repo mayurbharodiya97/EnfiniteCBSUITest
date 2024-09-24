@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const DynFormGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,

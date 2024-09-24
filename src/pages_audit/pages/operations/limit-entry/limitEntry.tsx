@@ -15,27 +15,32 @@ import React, {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { limitEntryMetaData } from "./limitEntryMetadata";
-import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { ForceExpire } from "./forceExpire/forceExpire";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import * as API from "./api";
 import { FdDetails } from "./fdDetail/fdDetails";
 import { NscDetails } from "./nscDetail/nscDetails";
 import { useTranslation } from "react-i18next";
 import { SecurityDetailForm } from "./securityDetail/securityDetail";
+
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  RemarksAPIWrapper,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 const LimitEntryCustom = () => {
   const actions: ActionTypes[] = [
