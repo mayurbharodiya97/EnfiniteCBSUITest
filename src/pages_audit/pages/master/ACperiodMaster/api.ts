@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+  import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getInstallmentPeriodData = async ({ companyID, branchCode }) => {
@@ -7,15 +7,17 @@ export const getInstallmentPeriodData = async ({ companyID, branchCode }) => {
       COMP_CD: companyID,
       BRANCH_CD: branchCode,
     });
-
+    
   if (status === "0") {
-    return data;
+    return data
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+
 };
 
 export const deleteInstallmentPeriodData = async (data) => {
+  
   const { status, message } = await AuthSDK.internalFetcher(
     "DOACCOUNTPERIODMST",
     data
@@ -41,3 +43,4 @@ export const updateInstallmentPeriodData = async ({ data: reqdata }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { t } from "i18next";
 
 export const StockGridMetaData: GridMetaDataType = {
@@ -163,7 +163,7 @@ export const StockGridMetaData: GridMetaDataType = {
       width: 120,
       maxWidth: 150,
       minWidth: 90,
-      setButtonName: (initialValue) => {
+      isColumnName: (initialValue) => {
         if (initialValue) {
           return initialValue === "U" ? "Upload" : "UploadView";
         }

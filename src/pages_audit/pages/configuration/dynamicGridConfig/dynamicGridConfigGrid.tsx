@@ -1,18 +1,16 @@
+import { ClearCacheContext, queryClient } from "cache";
 import { useQuery } from "react-query";
 import { Fragment, useEffect, useContext, useRef, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType } from "components/dataTable/types";
+import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { DynamicGridConfigGridMData } from "./gridMetadata";
 import { DynamicGridConfigWrapper } from "./dynamicGridConfigCrud/DynGridConfig";
 import { AuthContext } from "pages_audit/auth";
-import {
-  ActionTypes,
-  GridMetaDataType,
-  GridWrapper,
-  Alert,
-  queryClient,
-  ClearCacheContext,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",

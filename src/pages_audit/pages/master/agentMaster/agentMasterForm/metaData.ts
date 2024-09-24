@@ -4,7 +4,7 @@ import {
   getAgentMstConfigDDW,
   getAgentMstConfigPigmyDDW,
 } from "../api";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { t } from "i18next";
 
 export const AgentMasterFormMetaData = {
@@ -59,7 +59,7 @@ export const AgentMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -102,7 +102,7 @@ export const AgentMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CategoryNameisrequired"] }],

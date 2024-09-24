@@ -1,24 +1,22 @@
 import { AppBar, Button, Dialog, IconButton } from "@mui/material";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { Transition } from "pages_audit/common";
+import { useDialogStyles } from "pages_audit/common/dialogStyles";
+import { MasterDetailsForm } from "components/formcomponent";
 import { DocMasterDTLMetadata } from "./docMasterDTLMetadata";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as API from "../../../../api";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { Alert } from "components/common/alert";
 import { useSnackbar } from "notistack";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import FilePreviewUpload from "./FilePreviewUpload";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns";
 import _ from "lodash";
-import {
-  PopupMessageAPIWrapper,
-  Alert,
-  MasterDetailsMetaData,
-  MasterDetailsForm,
-  useDialogStyles,
-  Transition,
-  LoaderPaperComponent,
-} from "@acuteinfo/common-base";
 
 interface updateExtDocumentDataType {
   data: object;
@@ -49,7 +47,9 @@ export const DocMasterDTLForm = ({
   const [isLoading, setLoading] = useState(false);
   const [isFileViewOpen, setIsFileViewOpen] = useState(false);
   const [formMode, setFormMode] = useState(defaultmode);
-  const { state }: any = useLocation();
+  const {
+    state
+  }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [openAccept, setopenAccept] = useState(false);
@@ -60,11 +60,7 @@ export const DocMasterDTLForm = ({
   // console.log("stateeeeeeee2", state);
   const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
   const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
-  const IS_FROM_MAIN = Boolean(
-    Array.isArray(state?.rows) && state?.rows?.length > 0
-  )
-    ? state?.rows?.[0]?.data?.IS_FROM_MAIN
-    : "Y";
+  const IS_FROM_MAIN = Boolean(Array.isArray(state?.rows) && state?.rows?.length>0) ? state?.rows?.[0]?.data?.IS_FROM_MAIN : "Y"
   let newFlag = "";
   DocMasterDTLMetadata.masterForm.form.label = `KYC Document View ${
     custID ? `Customer ID - ${custID}` : null
@@ -115,6 +111,7 @@ export const DocMasterDTLForm = ({
         //   REQ_CD: reqCD,
         // };
 
+        
         enqueueSnackbar("Record Updated successfully.", {
           variant: "success",
         });
@@ -603,7 +600,7 @@ export const DocMasterDTLForm = ({
                     </Button>
                     <Button
                       onClick={() => {
-                        if (defaultmode === "new") {
+                        if(defaultmode === "new") {
                           ClosedEventCall();
                         } else {
                           setFormMode("view");

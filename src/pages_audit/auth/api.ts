@@ -1,33 +1,9 @@
+import { utilFunction } from "components/utils/utilFunctions";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
-import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 import CRC32C from "crc-32";
-export const ResetPassword = async (
-  username,
-  password,
-  newpassword,
-  accessToken,
-  token_type
-) => {
-  const { data, status, message, messageDetails, responseType, access_token } =
-    await AuthSDK.internalFetcherPreLogin(
-      "CHANGEPASSWORD",
-      {
-        USER_ID: username,
-        OLD_PASSWORD: password,
-        NEW_PASSWORD: newpassword,
-      },
-      {
-        Authorization: utilFunction.getAuthorizeTokenText(
-          accessToken,
-          token_type
-        ),
-        USER_ID: username,
-      }
-    );
-  return { status, data, message, messageDetails };
-};
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
@@ -208,16 +184,22 @@ export const RefreshTokenData = async (refreshToken) => {
     return null;
   }
 };
-export const LogoutAPI = async ({ userID }) => {
-  const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
-    USER_ID: userID,
-    APP_TRAN_CD: 51,
-  });
-  //if (status === "0") {
-  return message;
-  //} else {
-  //  throw DefaultErrorObject(message, messageDetails);
-  //}
+export const LogoutAPI = async (apiReq) => {
+  const { data, status, message } = await AuthSDK.internalFetcher(
+    "LOGOUTUSER",
+    {
+      // USER_ID: userID,
+      // APP_TRAN_CD: 51,
+      ...apiReq,
+    }
+  );
+  if (status !== "0") {
+    return { message, status };
+    //} else {
+    //  throw DefaultErrorObject(message, messageDetails);
+  } else if (status === "0" && data[0].O_FLAG === "I") {
+    alert(data[0].O_MESSAGE);
+  }
 };
 
 // export const verifyPasswordAndLogin = async (

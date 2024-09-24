@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -27,70 +27,90 @@ const OtherAddTab = () => {
     actionFlag,
     hasError
   ) => {
-    if(data && !hasError) {
-      let newData = AcctMSTState?.formDatactx
-      if(data?.OTHER_ADDRESS_DTL) {
-        let filteredCols:any[]=[]
-        filteredCols = Object.keys(data.OTHER_ADDRESS_DTL[0])
-        filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
-        if(AcctMSTState?.isFreshEntryctx) {
-          filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
+    if (data && !hasError) {
+      let newData = AcctMSTState?.formDatactx;
+      if (data?.OTHER_ADDRESS_DTL) {
+        let filteredCols: any[] = [];
+        filteredCols = Object.keys(data.OTHER_ADDRESS_DTL[0]);
+        filteredCols = filteredCols.filter(
+          (field) => !field.includes("_ignoreField")
+        );
+        if (AcctMSTState?.isFreshEntryctx) {
+          filteredCols = filteredCols.filter(
+            (field) => !field.includes("SR_CD")
+          );
         }
         let newFormatOtherAdd = data?.OTHER_ADDRESS_DTL?.map((formRow, i) => {
-          let formFields = Object.keys(formRow)
-          formFields = formFields.filter(field => !field.includes("_ignoreField"))
-          const formData = _.pick(data?.OTHER_ADDRESS_DTL[i], formFields)
+          let formFields = Object.keys(formRow);
+          formFields = formFields.filter(
+            (field) => !field.includes("_ignoreField")
+          );
+          const formData = _.pick(data?.OTHER_ADDRESS_DTL[i], formFields);
           const commonData = {
             ACCT_CD: AcctMSTState?.acctNumberctx,
             IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
-          }
-          return {...formData, ...commonData};
-        })
-        newData["OTHER_ADDRESS_DTL"] = [...newFormatOtherAdd]
-        handleFormDataonSavectx(newData)
-        if(!AcctMSTState?.isFreshEntryctx) {
-          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-          tabModifiedCols = {
-              ...tabModifiedCols,
-              OTHER_ADDRESS_DTL: [...filteredCols]
-          }
-          handleModifiedColsctx(tabModifiedCols)
-        }
-      } else {
-        newData["OTHER_ADDRESS_DTL"] = []
-        handleFormDataonSavectx(newData)
-        if(!AcctMSTState?.isFreshEntryctx) {
-          let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+          };
+          return { ...formData, ...commonData };
+        });
+        newData["OTHER_ADDRESS_DTL"] = [...newFormatOtherAdd];
+        handleFormDataonSavectx(newData);
+        if (!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
           tabModifiedCols = {
             ...tabModifiedCols,
-            OTHER_ADDRESS_DTL: []
-          }
-          handleModifiedColsctx(tabModifiedCols)
-        }  
+            OTHER_ADDRESS_DTL: [...filteredCols],
+          };
+          handleModifiedColsctx(tabModifiedCols);
+        }
+      } else {
+        newData["OTHER_ADDRESS_DTL"] = [];
+        handleFormDataonSavectx(newData);
+        if (!AcctMSTState?.isFreshEntryctx) {
+          let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            OTHER_ADDRESS_DTL: [],
+          };
+          handleModifiedColsctx(tabModifiedCols);
+        }
       }
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
     } else {
-      handleStepStatusctx({status: "error", coltabvalue: AcctMSTState?.colTabValuectx})
-      setFormStatus(old => [...old, false])
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: AcctMSTState?.colTabValuectx,
+      });
+      setFormStatus((old) => [...old, false]);
     }
-    endSubmit(true)
-  }
+    endSubmit(true);
+  };
 
   const initialVal = useMemo(() => {
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]?.length >0
-          ? {OTHER_ADDRESS_DTL: [...AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []]}
-          : {OTHER_ADDRESS_DTL: [{}]}
-        : AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]
-          ? {OTHER_ADDRESS_DTL: [...AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []]}
-          : {OTHER_ADDRESS_DTL: [...AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS_DTL"] ?? []]}
-    )
+    return AcctMSTState?.isFreshEntryctx
+      ? AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]?.length > 0
+        ? {
+            OTHER_ADDRESS_DTL: [
+              ...(AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []),
+            ],
+          }
+        : { OTHER_ADDRESS_DTL: [{}] }
+      : AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]
+      ? {
+          OTHER_ADDRESS_DTL: [
+            ...(AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"] ?? []),
+          ],
+        }
+      : {
+          OTHER_ADDRESS_DTL: [
+            ...(AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS_DTL"] ??
+              []),
+          ],
+        };
   }, [
-    AcctMSTState?.isFreshEntryctx, 
+    AcctMSTState?.isFreshEntryctx,
     AcctMSTState?.retrieveFormDataApiRes["OTHER_ADDRESS_DTL"],
-    AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"]
-  ])
+    AcctMSTState?.formDatactx["OTHER_ADDRESS_DTL"],
+  ]);
 
   const handleSave = (e) => {
     handleCurrFormctx({
@@ -107,9 +127,9 @@ const OtherAddTab = () => {
       colTabValuectx: AcctMSTState?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
-  }, [])
-  
+    });
+  }, []);
+
   useEffect(() => {
     if (
       Boolean(

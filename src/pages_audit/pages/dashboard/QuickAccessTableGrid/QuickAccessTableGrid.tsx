@@ -1,14 +1,8 @@
+import GridWrapper from "components/dataTableStatic";
 import { QuickAccessTableGridMetaData } from "./gridMetaData";
-import {
-  GridWrapper,
-  ActionTypes,
-  GridMetaDataType,
-  ClearCacheProvider,
-  queryClient,
-  SearchBar,
-  Alert,
-  GradientButton,
-} from "@acuteinfo/common-base";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import { ClearCacheProvider, queryClient } from "cache";
+import { SearchBar } from "components/derived";
 
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import * as API from "../api";
@@ -22,7 +16,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -190,14 +186,12 @@ const QuickAccessTableGrid = () => {
         >
           <GradientButton
             onClick={() => handleButtonClick("Recent")}
-            textColor={
-              activeButton === "Recent"
-                ? "var(--theme-color2)"
-                : "var(--theme-color1)"
+            color={
+              activeButton === "Recent" ? "var(--theme-color2)" : "#ffffffb3"
             }
             style={{
               backgroundColor:
-                activeButton === "Recent" ? "var(--theme-color1)" : "inherit",
+                activeButton === "Recent" ? "var(--theme-color3)" : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
@@ -211,10 +205,10 @@ const QuickAccessTableGrid = () => {
           </GradientButton>
           <GradientButton
             onClick={() => handleButtonClick("Favourites")}
-            textColor={
+            color={
               activeButton === "Favourites"
                 ? "var(--theme-color2)"
-                : "var(--theme-color1)"
+                : "#ffffffb3"
             }
             style={{
               backgroundColor:

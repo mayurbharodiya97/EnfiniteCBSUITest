@@ -1,6 +1,6 @@
-import { GridColumnType } from "@acuteinfo/common-base";
+import { GridColumnType } from "components/dataTableStatic";
 import { GeneralAPI } from "registry/fns/functions";
-import * as Api from "../api";
+import * as Api from '../api'
 export const AdditionalcollumnMetadata: GridColumnType[] = [
     {
         columnName: "Select Cofiguration",

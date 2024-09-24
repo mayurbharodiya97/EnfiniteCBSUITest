@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const gridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -133,7 +133,8 @@ export const gridMetadata: GridMetaDataType = {
       sequence: 11,
       alignment: "left",
       componentType: "default",
-      width: 200,
+      width: 200
+      ,
       minWidth: 100,
       maxWidth: 300,
     },

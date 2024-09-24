@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import * as API from "./api";
 import { useQuery } from "react-query";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { DynamicGridConfigGridMData } from "./gridMetadata";
+import { queryClient } from "cache";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import LangWiseMSGFormdata from "./LangWiseMSGFormdata/LangWiseMSGFormdata";
-import {
-  GridWrapper,
-  ActionTypes,
-  GridMetaDataType,
-  queryClient,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",

@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -28,13 +28,12 @@ const HypothicationTab = () => {
     hasError
   ) => {
     if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
-
+      let formFields = Object.keys(data); // array, get all form-fields-name
+      formFields = formFields.filter(
+        (field) => !field.includes("_ignoreField")
+      ); // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current);
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
@@ -51,9 +50,11 @@ const HypothicationTab = () => {
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx) {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+      if (!AcctMSTState?.isFreshEntryctx) {
+        let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
+        let updatedCols = tabModifiedCols.MAIN_DETAIL
+          ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current])
+          : _.uniq([...formFieldsRef.current]);
 
         tabModifiedCols = {
           ...tabModifiedCols,
@@ -130,18 +131,19 @@ const HypothicationTab = () => {
   }, [formStatus]);
 
   const initialVal = useMemo(() => {
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
-        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
-    )
+    return AcctMSTState?.isFreshEntryctx
+      ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      ? {
+          ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}),
+          ...(AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}),
+        }
+      : { ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}) };
   }, [
-    AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes, 
-    AcctMSTState?.formDatactx["MAIN_DETAIL"]
-  ])
+    AcctMSTState?.isFreshEntryctx,
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["MAIN_DETAIL"],
+  ]);
 
   return (
     <Grid sx={{ mb: 4 }}>

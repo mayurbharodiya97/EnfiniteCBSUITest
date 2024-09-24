@@ -1,18 +1,15 @@
+import { FileUploadControl } from "components/fileUpload";
 import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { Dialog } from "@mui/material";
+import { usePopupContext } from "components/custom/popupContext";
 import { ImportGridMetaData, PositivePayImportMetaData } from "./metadata";
 import { importFileData } from "../api";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
-import {
-  usePopupContext,
-  GridWrapper,
-  ActionTypes,
-  FileUploadControl,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {

@@ -1,4 +1,4 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { getAccCodeValidation } from "../api";
 

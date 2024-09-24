@@ -1,18 +1,16 @@
 import { useContext, useRef } from "react";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import { RemarksAPIWrapper, usePopupContext } from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
-export const DeleteDialog = ({
-  open,
-  onClose,
-  rowData,
-  siRefetch,
-  mainRefetch,
-}) => {
+
+
+export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const deleteMutation: any = useMutation(API.addStandingInstructionTemplate, {
@@ -25,7 +23,7 @@ export const DeleteDialog = ({
         variant: "error",
       });
       CloseMessageBox();
-      onClose();
+      onClose()
     },
     onSuccess: (data) => {
       enqueueSnackbar(t("deleteSuccessfully"), {
@@ -39,10 +37,13 @@ export const DeleteDialog = ({
     },
   });
 
+
   return (
     <>
       <RemarksAPIWrapper
-        TitleText={t("EnterRemovalRemarksForSI")}
+        TitleText={
+          t("EnterRemovalRemarksForSI")
+        }
         onActionNo={onClose}
         onActionYes={async (val, rows) => {
           const buttonName = await MessageBox({
@@ -74,7 +75,8 @@ export const DeleteDialog = ({
                 ? val
                 : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
               ACTIVITY_TYPE: "SI_ENTRY",
-            });
+            }
+            );
           }
         }}
         isEntertoSubmit={true}
@@ -87,3 +89,4 @@ export const DeleteDialog = ({
     </>
   );
 };
+

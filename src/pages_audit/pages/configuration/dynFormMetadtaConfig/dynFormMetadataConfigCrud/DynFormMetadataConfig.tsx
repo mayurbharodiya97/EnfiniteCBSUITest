@@ -2,26 +2,22 @@ import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Dialog, IconButton } from "@mui/material";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
-
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { queryClient } from "cache";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import GridWrapper from "components/dataTableStatic";
 import {
-  CreateDetailsRequestData,
-  utilFunction,
-  Alert,
-  GridWrapper,
-  FormWrapper,
-  MetaDataType,
-  queryClient,
-  InitialValuesType,
-  SubmitFnType,
-  GradientButton,
-  PopupMessageAPIWrapper,
+  FullScreenLoader,
   LoaderPaperComponent,
-} from "@acuteinfo/common-base";
-
+} from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
 import {
   DynamicFormConfigGridMetaDataEdit,
   DynamicFormConfigGridMetaDataView,

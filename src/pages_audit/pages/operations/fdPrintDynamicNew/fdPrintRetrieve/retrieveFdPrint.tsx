@@ -1,28 +1,22 @@
+import { SubmitFnType } from "packages/form";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { t } from "i18next";
 import { useCallback, useContext, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 import { retrieveForm, RetrieveGrid } from "./retrieveFormMetadata";
 import FdPrintDynamicNew from "../fdPrintDynamicNew";
-import {
-  FormWrapper,
-  GridWrapper,
-  MetaDataType,
-  SubmitFnType,
-  usePopupContext,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+
 const actionSequence = [
   { name: "view-new", label: "View Only New", filter: "ONLY_NEW" },
   { name: "view-only-renew", label: "View only Renew", filter: "ONLY_RENEW" },
-  {
-    name: "view-manual-renew",
-    label: "View Manual Renew",
-    filter: "MANUAL_RENEW",
-  },
+  { name: "view-manual-renew", label: "View Manual Renew", filter: "MANUAL_RENEW" },
   { name: "view-auto-renew", label: "View Auto Renew", filter: "AUTO_RENEW" },
   { name: "view-all", label: "View All" },
   { name: "view-pending", label: "View Pending", filter: "PENDING" },
@@ -56,41 +50,27 @@ const FdPrintingRetrieve = () => {
   const { MessageBox } = usePopupContext();
   const navigate = useNavigate();
 
-  const mutation = useMutation(
-    "getPaySlipRetrieveData",
-    API.retrieveFdPrintData,
-    {
-      onSuccess: (data, { endSubmit }) => {
-        if (data?.length <= 0) {
-          endSubmit(
-            false,
-            MessageBox({
-              message: "No Transaction Found!",
-              messageTitle: "Validation",
-              buttonNames: ["Ok"],
-            })
-          );
-        } else {
-          dataRef.current = data;
-          setGridData(data.filter((item) => item.PENDING === "Y"));
-        }
-      },
-      onError: (error: any, { endSubmit }) => {
-        endSubmit(
-          false,
-          error?.error_msg ?? t("UnknownErrorOccured"),
-          error?.error_detail ?? ""
-        );
-      },
-    }
-  );
+  const mutation = useMutation("getPaySlipRetrieveData", API.retrieveFdPrintData, {
+    onSuccess: (data, { endSubmit }) => {
+      if (data?.length <= 0) {
+        endSubmit(false, MessageBox({
+          message: "No Transaction Found!",
+          messageTitle: "Validation",
+          buttonNames: ["Ok"],
+        }));
+      } else {
+        dataRef.current = data;
+        setGridData(data.filter((item) => item.PENDING === "Y"));
+      }
+    },
+    onError: (error:any, { endSubmit }) => {
+      endSubmit(false, error?.error_msg ?? t("UnknownErrorOccured"), error?.error_detail ?? "");
+    },
+  });
 
   const updateActions = (currentAction) => {
-    const actionIndex = actionSequence.findIndex(
-      (a) => a.name === currentAction.name
-    );
-    const nextAction =
-      actionSequence[(actionIndex + 1) % actionSequence.length];
+    const actionIndex = actionSequence.findIndex(a => a.name === currentAction.name);
+    const nextAction = actionSequence[(actionIndex + 1) % actionSequence.length];
     actions[1] = {
       actionName: nextAction.name,
       actionLabel: nextAction.label,
@@ -99,26 +79,27 @@ const FdPrintingRetrieve = () => {
       alwaysAvailable: true,
     };
     if (nextAction.filter) {
-      setGridData(
-        dataRef.current.filter((item) => item[nextAction.filter] === "Y")
-      );
+      setGridData(dataRef.current.filter((item) => item[nextAction.filter] === "Y"));
     } else {
       setGridData(dataRef.current);
     }
   };
 
-  const setCurrentAction = useCallback((data) => {
-    if (data.name === "print") {
-      setComponentToShow("ViewDetail");
-      setDilogueOpen(true);
-      setSelectedRowsData(data.rows);
-    } else {
-      updateActions(data);
-    }
-  }, []);
+  const setCurrentAction = useCallback(
+    (data) => {
+      if (data.name === "print") {
+        setComponentToShow("ViewDetail");
+        setDilogueOpen(true);
+        setSelectedRowsData(data.rows);
+      } else {
+        updateActions(data);
+      }
+    },
+    []
+  );
 
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    console.log("data", data);
+    console.log("data",data);
     let apiReq = {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,

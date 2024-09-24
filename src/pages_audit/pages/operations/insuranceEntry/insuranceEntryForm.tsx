@@ -9,38 +9,35 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import {
-  DetailInsuranceGridMetaData,
-  insuranceAccountRetrievemetaData,
-  InsuranceEntryFormMetaData,
-  ViewInsuranceMetaData,
-} from "./insuranceEntryMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { DetailInsuranceGridMetaData, insuranceAccountRetrievemetaData, InsuranceEntryFormMetaData, ViewInsuranceMetaData } from "./insuranceEntryMetadata";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
+import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+import { MasterDetailsForm } from "components/formcomponent";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { InsuranceDetailForm } from "./insuranceDetail/insuranceDetailForm";
 import { format } from "date-fns";
+import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
-import {
-  LoaderPaperComponent,
-  Alert,
-  FormWrapper,
-  MetaDataType,
-  usePopupContext,
-  ActionTypes,
-  GridWrapper,
-  GradientButton,
-  MasterDetailsForm,
-  MasterDetailsMetaData,
-  GridMetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const actions: ActionTypes[] = [
   {
@@ -62,8 +59,8 @@ const InsuranceEntry = () => {
   const navigate = useNavigate();
   const [reqData, setReqData] = useState<any>({});
   const [formDataRefresh, setFormDataRefresh] = useState(0);
-  const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
-  const [isRetrieveData, setIsRetrieveData] = useState<any>({});
+  const [isRetrieveOpen, setIsRetrieveOpen] = useState(false)
+  const [isRetrieveData, setIsRetrieveData] = useState<any>({})
   const isDataChangedRef = useRef(false);
 
   const setCurrentAction = useCallback(
@@ -86,53 +83,59 @@ const InsuranceEntry = () => {
       },
     }
   );
-  const getInsuranceDetailData: any = useMutation(API.getInsuranceDetailData, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-    },
-    onSuccess: (data) => {
-      data.forEach((item) => {
-        const dueDate = new Date(item?.DUE_DATE); // Parse due date to a Date object
-        const workingDate = new Date(authState?.workingDate); // Parse working date to a Date object
-
-        if (item?.CONFIRMED === "Y") {
-          if (dueDate > workingDate) {
-            item._rowColor = "rgb(255,225,225)"; // Pink color for future due dates
-          } else if (dueDate < workingDate) {
-            item._rowColor = "rgb(192,192,192)"; // Gray color for past due dates
-          }
+  const getInsuranceDetailData: any = useMutation(
+    API.getInsuranceDetailData,
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
         }
-      });
-    },
-  });
-  const doInsuranceDml: any = useMutation(API.doInsuranceDml, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      },
+      onSuccess: (data) => {
+        data.forEach((item) => {
+          const dueDate = new Date(item?.DUE_DATE); // Parse due date to a Date object
+          const workingDate = new Date(authState?.workingDate); // Parse working date to a Date object
 
-    onSuccess: (data) => {
-      enqueueSnackbar(t("DataSaveSuccessfully"), {
-        variant: "success",
-      });
-      CloseMessageBox();
-      myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
-      setFormDataRefresh((old) => old + 1);
-      setIsData((old) => ({ value: "tab1", isVisible: false }));
-    },
-  });
+          if (item?.CONFIRMED === 'Y') {
+            if (dueDate > workingDate) {
+              item._rowColor = "rgb(255,225,225)"; // Pink color for future due dates
+            } else if (dueDate < workingDate) {
+              item._rowColor = "rgb(192,192,192)"; // Gray color for past due dates
+            }
+          }
+        });
+      },
+    }
+  );
+  const doInsuranceDml: any = useMutation(
+    API.doInsuranceDml,
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox()
+      },
+
+      onSuccess: (data) => {
+        enqueueSnackbar(t("DataSaveSuccessfully"), {
+          variant: "success",
+        });
+        CloseMessageBox()
+        myMasterRef?.current?.handleFormReset({ preventDefault: () => { } });
+        setFormDataRefresh((old) => old + 1);
+        setIsData((old) => ({ value: "tab1", isVisible: false, }));
+      },
+    }
+  );
   const validateInsuranceEntryData: any = useMutation(
     API.validateInsuranceEntryData,
     {
@@ -145,7 +148,8 @@ const InsuranceEntry = () => {
           variant: "error",
         });
       },
-      onSuccess: async (data, variables) => {},
+      onSuccess: async (data, variables) => {
+      },
     }
   );
   const handleDialogClose = () => {
@@ -159,7 +163,7 @@ const InsuranceEntry = () => {
             ACCT_TYPE: reqData?.ACCT_TYPE,
             BRANCH_CD: reqData?.BRANCH_CD,
             USER_LEVEL: authState?.role,
-            A_GD_DATE: authState?.workingDate,
+            A_GD_DATE: authState?.workingDate
           };
           getInsuranceDetailData.mutate(RequestPara);
         }
@@ -178,26 +182,26 @@ const InsuranceEntry = () => {
     resultDisplayValueObj,
     endSubmit,
   }) => {
-    let newData = data;
-    validateInsuranceEntryData.mutate(
-      {
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        ACCT_TYPE: data?.ACCT_TYPE,
-        ACCT_CD: data?.ACCT_CD,
-        INSURANCE_DATE: data?.INSURANCE_DATE,
-        DUE_DATE: data?.DUE_DATE,
-        COVER_NOTE: data?.COVER_NOTE,
-        INSURANCE_COMP_CD: data?.INSURANCE_COMP_CD,
-        POLICY_NO: data?.POLICY_NO,
-        INSURANCE_AMOUNT: data?.INSURANCE_AMOUNT,
-        NET_PREMIUM_AMT: data?.NET_PREMIUM_AMOUNT,
-        SERVICE_CHARGE: data?.SERVICE_CHARGE,
-        DTL_DATA: data?.DETAILS_DATA?.isNewRow,
-        SCREEN_REF: "RPT/70",
-      },
+    let newData = data
+    validateInsuranceEntryData.mutate({
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+      ACCT_TYPE: data?.ACCT_TYPE,
+      ACCT_CD: data?.ACCT_CD,
+      INSURANCE_DATE: data?.INSURANCE_DATE,
+      DUE_DATE: data?.DUE_DATE,
+      COVER_NOTE: data?.COVER_NOTE,
+      INSURANCE_COMP_CD: data?.INSURANCE_COMP_CD,
+      POLICY_NO: data?.POLICY_NO,
+      INSURANCE_AMOUNT: data?.INSURANCE_AMOUNT,
+      NET_PREMIUM_AMT: data?.NET_PREMIUM_AMOUNT,
+      SERVICE_CHARGE: data?.SERVICE_CHARGE,
+      DTL_DATA: data?.DETAILS_DATA?.isNewRow,
+      SCREEN_REF: "RPT/70"
+    },
       {
         onSuccess: async (data, variables) => {
+
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "0") {
               const buttonName = await MessageBox({
@@ -209,12 +213,18 @@ const InsuranceEntry = () => {
               if (buttonName === "Yes") {
                 doInsuranceDml.mutate({
                   ...newData,
-                  INSURANCE_DATE: format(
-                    new Date(newData?.INSURANCE_DATE),
-                    "dd/MMM/yyyy"
-                  ),
-                  DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
-                  TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+                  INSURANCE_DATE:
+                    format(
+                      new Date(newData?.INSURANCE_DATE),
+                      "dd/MMM/yyyy"),
+                  DUE_DATE:
+                    format(
+                      new Date(newData?.DUE_DATE),
+                      "dd/MMM/yyyy"),
+                  TRAN_DT:
+                    format(
+                      new Date(newData?.TRAN_DT),
+                      "dd/MMM/yyyy"),
                   COVER_NOTE: newData?.COVER_NOTE,
                   INACTIVE_DATE: "",
                   COMM_TYPE_CD: "",
@@ -227,7 +237,7 @@ const InsuranceEntry = () => {
                   _UPDATEDCOLUMNS: [],
                   _OLDROWVALUE: {},
                   _isNewRow: true,
-                  _isDeleteRow: false,
+                  _isDeleteRow: false
                 });
               }
             } else if (data[i]?.O_STATUS === "9") {
@@ -241,16 +251,22 @@ const InsuranceEntry = () => {
                 message: data[i]?.O_MESSAGE,
                 buttonNames: ["No", "Yes"],
                 loadingBtnName: ["Yes"],
-              });
+              })
               if (buttonName === "Yes") {
                 doInsuranceDml.mutate({
                   ...newData,
-                  INSURANCE_DATE: format(
-                    new Date(newData?.INSURANCE_DATE),
-                    "dd/MMM/yyyy"
-                  ),
-                  DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
-                  TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+                  INSURANCE_DATE:
+                    format(
+                      new Date(newData?.INSURANCE_DATE),
+                      "dd/MMM/yyyy"),
+                  DUE_DATE:
+                    format(
+                      new Date(newData?.DUE_DATE),
+                      "dd/MMM/yyyy"),
+                  TRAN_DT:
+                    format(
+                      new Date(newData?.TRAN_DT),
+                      "dd/MMM/yyyy"),
                   COVER_NOTE: newData?.COVER_NOTE,
                   INACTIVE_DATE: "",
                   COMM_TYPE_CD: "",
@@ -263,7 +279,7 @@ const InsuranceEntry = () => {
                   _UPDATEDCOLUMNS: [],
                   _OLDROWVALUE: {},
                   _isNewRow: true,
-                  _isDeleteRow: false,
+                  _isDeleteRow: false
                 });
               }
             } else if (data[i]?.O_STATUS === "999") {
@@ -273,9 +289,9 @@ const InsuranceEntry = () => {
               });
             }
           }
-        },
-      }
-    );
+
+        }
+      })
     endSubmit(true);
   };
 
@@ -296,11 +312,7 @@ const InsuranceEntry = () => {
             if (newValue === "tab2") {
               //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
               if (reqData && Object.keys(reqData).length > 0) {
-                if (
-                  reqData?.ACCT_CD &&
-                  reqData?.ACCT_TYPE &&
-                  reqData?.BRANCH_CD
-                ) {
+                if (reqData?.ACCT_CD && reqData?.ACCT_TYPE && reqData?.BRANCH_CD) {
                   const RequestPara = {
                     COMP_CD: authState?.companyID,
                     ACCT_CD: reqData?.ACCT_CD,
@@ -312,18 +324,14 @@ const InsuranceEntry = () => {
               }
             } else if (newValue === "tab3") {
               if (reqData && Object.keys(reqData).length > 0) {
-                if (
-                  reqData?.ACCT_CD &&
-                  reqData?.ACCT_TYPE &&
-                  reqData?.BRANCH_CD
-                ) {
+                if (reqData?.ACCT_CD && reqData?.ACCT_TYPE && reqData?.BRANCH_CD) {
                   const RequestPara = {
                     COMP_CD: authState?.companyID,
                     ACCT_CD: reqData?.ACCT_CD,
                     ACCT_TYPE: reqData?.ACCT_TYPE,
                     BRANCH_CD: reqData?.BRANCH_CD,
                     USER_LEVEL: authState?.role,
-                    A_GD_DATE: authState?.workingDate,
+                    A_GD_DATE: authState?.workingDate
                   };
                   getInsuranceDetailData.mutate(RequestPara);
                 }
@@ -336,9 +344,7 @@ const InsuranceEntry = () => {
         >
           <Tab value="tab1" label={t("InsuranceEntry")} />
           {isData.isVisible && <Tab value="tab2" label={t("InsuranceView")} />}
-          {isData.isVisible && (
-            <Tab value="tab3" label={t("InsuranceDetail")} />
-          )}
+          {isData.isVisible && <Tab value="tab3" label={t("InsuranceDetail")} />}
         </Tabs>
       </Box>
 
@@ -353,7 +359,8 @@ const InsuranceEntry = () => {
           }}
         >
           <>
-            {doInsuranceDml?.isError || validateInsuranceEntryData?.isError ? (
+            {(doInsuranceDml?.isError) ||
+              (validateInsuranceEntryData?.isError) ? (
               <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
                 <AppBar position="relative" color="primary">
                   <Alert
@@ -379,20 +386,16 @@ const InsuranceEntry = () => {
               style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
             >
               <MasterDetailsForm
-                key={
-                  "InsuranceEntryForm" + formDataRefresh + isRetrieveData.length
-                }
+                key={"InsuranceEntryForm" + formDataRefresh + isRetrieveData.length}
                 metaData={metadata}
                 // displayMode={"new"}
                 initialData={{
                   ...isRetrieveData,
                   TRAN_DT: authState.workingDate,
                   INSURANCE_DATE: authState.workingDate,
-                  DETAILS_DATA: [
-                    {
-                      _isNewRow: true,
-                    },
-                  ],
+                  DETAILS_DATA: [{
+                    _isNewRow: true
+                  }],
                 }}
                 onSubmitData={onSubmitHandler}
                 // isLoading={validateInsuranceEntryData?.isLoading}
@@ -420,16 +423,11 @@ const InsuranceEntry = () => {
                 {({ isSubmitting, handleSubmit }) => {
                   return (
                     <>
-                      <Button
-                        onClick={() => {
-                          setIsRetrieveOpen(true);
-                        }}
-                        color={"primary"}
-                        disabled={isSubmitting}
-                      >
+                      <Button onClick={() => { setIsRetrieveOpen(true) }}
+                        color={"primary"} disabled={isSubmitting}>
                         {t("Retrieve")}
                       </Button>
-                      <Button onClick={AddNewRow} color={"primary"}>
+                      <Button onClick={AddNewRow} color={"primary"} >
                         {t("AddRow")}
                       </Button>
 
@@ -460,9 +458,13 @@ const InsuranceEntry = () => {
                 <Alert
                   severity="error"
                   errorMsg={
-                    getInsuranceViewData?.error?.error_msg ?? "Unknow Error"
+                    getInsuranceViewData?.error?.error_msg ??
+                    "Unknow Error"
                   }
-                  errorDetail={getInsuranceViewData?.error?.error_detail ?? ""}
+                  errorDetail={
+                    getInsuranceViewData?.error?.error_detail ??
+                    ""
+                  }
                   color="error"
                 />
               </AppBar>
@@ -477,9 +479,10 @@ const InsuranceEntry = () => {
               key={"Insurance-View" + getInsuranceViewData?.isSuccess}
               metaData={(ViewInsuranceMetaData as MetaDataType) ?? {}}
               initialValues={getInsuranceViewData?.data?.[0] ?? {}}
-              onSubmitHandler={() => {}}
+              onSubmitHandler={{}}
               displayMode={"view"}
-            ></FormWrapper>
+            >
+            </FormWrapper>
           </div>
           <div
             style={{ display: isData.value === "tab3" ? "inherit" : "none" }}
@@ -488,8 +491,7 @@ const InsuranceEntry = () => {
               <Alert
                 severity="error"
                 errorMsg={
-                  getInsuranceDetailData.error?.error_msg ??
-                  "Something went to wrong.."
+                  getInsuranceDetailData.error?.error_msg ?? "Something went to wrong.."
                 }
                 errorDetail={getInsuranceDetailData.error?.error_detail}
                 color="error"
@@ -500,106 +502,107 @@ const InsuranceEntry = () => {
                 key={`Insurance-Detail`}
                 finalMetaData={DetailInsuranceGridMetaData as GridMetaDataType}
                 data={getInsuranceDetailData?.data ?? []}
-                setData={() => {}}
+                setData={() => { }}
                 loading={getInsuranceDetailData.isLoading}
                 actions={actions}
                 setAction={setCurrentAction}
+
               />
             </>
           </div>
           <>
-            {isRetrieveOpen ? (
-              <>
-                <Dialog
-                  open={isRetrieveOpen}
-                  PaperProps={{
-                    style: {
-                      width: "100%",
-                    },
-                  }}
-                  maxWidth="sm"
-                >
-                  <FormWrapper
-                    key={"accountFindmetaData"}
-                    metaData={insuranceAccountRetrievemetaData as MetaDataType}
-                    formStyle={{
-                      background: "white",
-                    }}
-                    controlsAtBottom={true}
-                    onSubmitHandler={async (
-                      data: any,
-                      displayData,
-                      endSubmit,
-                      setFieldError,
-                      action
-                    ) => {
-                      //@ts-ignore
-                      endSubmit(true);
-                      setIsRetrieveData(data);
-                      setIsRetrieveOpen(false);
-                      setFormDataRefresh((old) => old + 1);
-                    }}
-                    formState={{
-                      MessageBox: MessageBox,
-                    }}
-                    setDataOnFieldChange={(action, payload) => {
-                      if (action === "IS_VISIBLE") {
-                        setIsData((old) => ({
-                          ...old,
-                          isVisible: payload?.IS_VISIBLE,
-                        }));
-                      } else if (action === "TAB_REQUEST") {
-                        setReqData(payload);
-                      }
-                    }}
-                  >
-                    {({ isSubmitting, handleSubmit }) => (
-                      <>
-                        <GradientButton
-                          onClick={(event) => {
-                            handleSubmit(event, "Save");
-                          }}
-                          color={"primary"}
-                        >
-                          Ok
-                        </GradientButton>
+            {
+              isRetrieveOpen ?
+                <>
+                  <Dialog
+                    open={isRetrieveOpen}
+                    PaperProps={{
+                      style: {
+                        width: "100%",
 
-                        <GradientButton
-                          onClick={() => {
-                            setIsRetrieveOpen(false);
-                            setFormDataRefresh((old) => old + 1);
-                            setIsRetrieveData({});
-                          }}
-                          color={"primary"}
+                      },
+                    }}
+                    maxWidth="sm"
+                  >
+                    <FormWrapper
+                      key={"accountFindmetaData"}
+                      metaData={insuranceAccountRetrievemetaData as MetaDataType}
+                      formStyle={{
+                        background: "white",
+                      }}
+                      controlsAtBottom={true}
+                      onSubmitHandler={async (
+                        data: any,
+                        displayData,
+                        endSubmit,
+                        setFieldError,
+                        action
+                      ) => {
+                        //@ts-ignore
+                        endSubmit(true);
+                        setIsRetrieveData(data);
+                        setIsRetrieveOpen(false)
+                        setFormDataRefresh((old) => old + 1);
+                      }}
+                      formState={{
+                        MessageBox: MessageBox,
+                      }}
+                      setDataOnFieldChange={(action, payload) => {
+                        if (action === "IS_VISIBLE") {
+                          setIsData((old) => ({
+                            ...old,
+                            isVisible: payload?.IS_VISIBLE,
+                          }));
+                        } else if (action === "TAB_REQUEST") {
+                          setReqData(payload);
+                        }
+                      }}
+                    >
+                      {({ isSubmitting, handleSubmit }) => (
+                        <>
+                          <GradientButton
+                            onClick={(event) => {
+                              handleSubmit(event, "Save");
+                            }}
+                            color={"primary"}
+                          >
+                            Ok
+                          </GradientButton>
+
+                          <GradientButton
+                            onClick={() => {
+                              setIsRetrieveOpen(false)
+                              setFormDataRefresh((old) => old + 1)
+                              setIsRetrieveData({});
+                            }}
+                            color={"primary"}
                           // disabled={
                           //   isSubmitting || getAccountDetails.isLoading || disableButton
                           // }
-                        >
-                          Cancel
-                        </GradientButton>
-                      </>
-                    )}
-                  </FormWrapper>
-                </Dialog>
-              </>
-            ) : null}
+                          >
+                            Cancel
+                          </GradientButton>
+                        </>
+                      )}
+                    </FormWrapper>
+                  </Dialog>
+                </>
+                : null}
+
           </>
         </Grid>
 
         <>
-          <Routes>
+          < Routes >
             <Route
               path="view-detail/*"
               element={
-                <InsuranceDetailForm
-                  handleDialogClose={handleDialogClose}
-                  isDataChangedRef={isDataChangedRef}
-                  defaultView={"view"}
-                />
+                <InsuranceDetailForm handleDialogClose={handleDialogClose} isDataChangedRef={isDataChangedRef} defaultView={"view"} />
               }
             />
-          </Routes>
+          </Routes >
         </>
+
       </Container>
     </>
   );

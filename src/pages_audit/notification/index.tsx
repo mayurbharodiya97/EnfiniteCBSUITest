@@ -1,6 +1,6 @@
 import { Notification } from "./notification";
 
-import { AutoRefreshProvider } from "@acuteinfo/common-base";
+import { AutoRefreshProvider } from "components/utils/autoRefresh";
 
 export const NotificationWrapper = () => {
   return (

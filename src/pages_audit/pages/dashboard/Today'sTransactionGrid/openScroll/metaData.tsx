@@ -1,4 +1,4 @@
-import { components } from "@acuteinfo/common-base";
+import { components } from "components/report";
 
 export const scrollMetaData = {
   title: "",

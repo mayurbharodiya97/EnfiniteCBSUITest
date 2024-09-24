@@ -15,12 +15,10 @@ import "./accDetails.css";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
-import {
-  GradientButton,
-  formatCurrency,
-  getCurrencySymbol,
-  usePropertiesConfigContext,
-} from "@acuteinfo/common-base";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+import { GradientButton } from "components/styledComponent/button";
 import { DailyTransTabsWithDialog } from "../DailyTransTabs";
 
 const useStyles = makeStyles((theme) => ({
@@ -78,7 +76,7 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
   const [isOpenCust360, setIsOpenCust360] = useState<boolean>(false);
   const [rowsDatas, setRowsDatas] = useState<any>([]);
   const classes = useStyles();
-  const customParameter = usePropertiesConfigContext();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
   const { authState } = useContext(AuthContext);
   let cardsInfo = cardsData ?? [];

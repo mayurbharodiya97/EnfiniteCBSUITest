@@ -1,7 +1,11 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
+import { queryClient } from "cache";
 import { Form15GHEntryGridMetaData } from "./gridMetaData";
 import { Form15GHEntryWrapper } from "./form/form15G-HEntry";
 import * as API from "./api";
@@ -9,15 +13,8 @@ import { RetrievalParametersFormWrapper } from "./form/retrieveDataForm";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
 import { format } from "date-fns";
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  usePopupContext,
-  ActionTypes,
-  queryClient,
-  utilFunction,
-} from "@acuteinfo/common-base";
+import { isValidDate } from "components/utils/utilFunctions/function";
+import { usePopupContext } from "components/custom/popupContext";
 
 const Actions: ActionTypes[] = [
   {
@@ -170,15 +167,13 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
             BRANCH_CD: authState?.user?.branchCode ?? "",
             TRAN_TYPE: retrievalParaRef?.current?.TRAN_TYPE ?? "",
             CUSTOMER_ID: retrievalParaRef?.current?.A_CUSTOM_USER_NM ?? "",
-            FROM_DT: utilFunction.isValidDate(
-              retrievalParaRef?.current?.FROM_DT
-            )
+            FROM_DT: isValidDate(retrievalParaRef?.current?.FROM_DT)
               ? format(
                   new Date(retrievalParaRef?.current?.FROM_DT),
                   "dd/MMM/yyyy"
                 )
               : format(new Date(), "dd/MMM/yyyy") ?? "",
-            TO_DT: utilFunction.isValidDate(retrievalParaRef?.current?.TO_DT)
+            TO_DT: isValidDate(retrievalParaRef?.current?.TO_DT)
               ? format(
                   new Date(retrievalParaRef?.current?.TO_DT),
                   "dd/MMM/yyyy"
@@ -198,10 +193,10 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
       TRAN_TYPE: retrievalParaRef?.current?.TRAN_TYPE ?? "",
       CUSTOMER_ID: retrievalParaRef?.current?.A_CUSTOM_USER_NM ?? "",
-      FROM_DT: utilFunction.isValidDate(retrievalParaRef?.current?.FROM_DT)
+      FROM_DT: isValidDate(retrievalParaRef?.current?.FROM_DT)
         ? format(new Date(retrievalParaRef?.current?.FROM_DT), "dd/MMM/yyyy")
         : format(new Date(), "dd/MMM/yyyy") ?? "",
-      TO_DT: utilFunction.isValidDate(retrievalParaRef?.current?.TO_DT)
+      TO_DT: isValidDate(retrievalParaRef?.current?.TO_DT)
         ? format(new Date(retrievalParaRef?.current?.TO_DT), "dd/MMM/yyyy")
         : format(new Date(), "dd/MMM/yyyy") ?? "",
     };

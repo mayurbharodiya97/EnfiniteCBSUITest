@@ -5,7 +5,7 @@ import { useStyles } from "./style";
 import { AuthContext } from "./authContext";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 
 export const BankDetails = ({ imageData }: any) => {
   const { isLoggedIn, login } = useContext(AuthContext);

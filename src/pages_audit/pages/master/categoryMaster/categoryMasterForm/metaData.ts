@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData } from "../api";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { t } from "i18next";
 
 export const CategoryMasterFormMetaData = {
@@ -55,7 +55,7 @@ export const CategoryMasterFormMetaData = {
       isFieldFocused: true,
       required: true,
       autoComplete: "off",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -99,7 +99,7 @@ export const CategoryMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
