@@ -810,7 +810,7 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              thirdButton={{
+              optionalActionButton={{
                 callback: handleAnnexureFormData,
                 label: "Annexure",
               }}
@@ -859,7 +859,7 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              thirdButton={{
+              optionalActionButton={{
                 callback: () => {
                   setState((old) => ({
                     ...old,

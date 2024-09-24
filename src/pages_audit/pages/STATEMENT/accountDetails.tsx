@@ -30,7 +30,9 @@ import Title from "./title";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import ExportToPDF from "components/report/export/statementPdf";
 import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
+import exportToPDF from "components/report/export/statementPdf";
+import { ExcelForStatementExport } from "components/report/export/statementExcel";
+
 const AccountDetails = () => {
   const [open, setOpen] = useState(false);
   const [openViewStatement, setOpenViewStatement] = useState(false);
@@ -321,7 +323,7 @@ const AccountDetails = () => {
                 >
                   <GradientButton
                     onClick={() =>
-                      ExportToPDF(
+                      exportToPDF(
                         data,
                         // companyName,
                         generatedBy,

@@ -512,126 +512,23 @@ export const AuthLoginController = () => {
         <FullScreenLoader />
       ) : (
         <>
-          <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-            <BankDetails imageData={imageData} />
-            <Grid item xs={11} md={6} lg={6} sm={6}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                padding={"25px"}
-              >
-                <Tooltip describeChild title="Enfinity-CBS-UI-V1.0.17">
-                  <img
-                    src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
-                    alt="Logo"
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                padding={"0 35px 0 0"}
-              >
-                <MultiLanguages />
-              </Grid>
-
-              {openpwdreset ? (
-                <PasswordRotation
-                  classes={classes}
-                  open={openpwdreset}
-                  username={loginState.username}
-                  accessToken={loginState.access_token}
-                  tokenType={loginState.token_type}
-                  handleClose={handlePasswordRotationClose}
-                />
-              ) : (
-                <>
-                  {loginState.currentFlow === "username" ? (
-                    <UsernamePasswordField
-                      key="username"
-                      classes={classes}
-                      loginState={loginState}
-                      verifyUsernamePassword={verifyUsernamePassword}
-                    />
-                  ) : (
-                    <>
-                      {loginState.authType === "OTP" ||
-                      loginState.authType === "TOTP" ? (
-                        <OTPModel
-                          key="otp"
-                          classes={classes}
-                          loginState={loginState}
-                          VerifyOTP={VerifyOTP}
-                          previousStep={changeUserName}
-                          OTPError={t(loginState?.OtpuserMessage ?? "")}
-                          setOTPError={(error) => {
-                            dispath({
-                              type: "OTPVerificationFailed",
-                              payload: { error: error },
-                            });
-                          }}
-                          open={true}
-                          handleClose={changeUserName}
-                          resendFlag={"LOGIN"}
-                          setNewRequestID={(newRequestID) => {
-                            dispath({
-                              type: "OTPResendSuccess",
-                              payload: { transactionID: newRequestID },
-                            });
-                            otpResendRef.current = otpResendRef.current + 1;
-                          }}
-                          otpresendCount={otpResendRef.current}
-                          marginCondition={"4em"}
-                        />
-                      ) : (
-                        //       : loginState.authType === "TOTP" ? (
-                        // <>
-                        //   {" "}
-                        //   <OTPModelForm
-                        //     key={"OTPForm"}
-                        //     classes={classes}
-                        //     // handleClose={() => {}}
-                        //     handleClose={changeUserName}
-                        //     loginState={loginState}
-                        //     VerifyOTP={VerifyOTP}
-                        //     OTPError={loginState?.OtpuserMessage ?? ""}
-                        //     setOTPError={(error) => {
-                        //       dispath({
-                        //         type: "OTPVerificationFailed",
-                        //         payload: { error: error },
-                        //       });
-                        //     }}
-                        //     resendFlag={"LOGIN"}
-                        //     setNewRequestID={(newRequestID) => {
-                        //       dispath({
-                        //         type: "OTPResendSuccess",
-                        //         payload: { transactionID: newRequestID },
-                        //       });
-                        //       otpResendRef.current = otpResendRef.current + 1;
-                        //     }}
-                        //     otpresendCount={otpResendRef.current}
-                        //   />
-                        // </>
-                        //       )
-
-                        <VerifyFinger
-                          key="biometric"
-                          classes={classes}
-                          loginState={loginState}
-                          verifyFinger={verifyFinger}
-                          previousStep={changeUserName}
-                        />
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </Grid>
-          </Grid>
+          <AuthControllerWrapper
+            bannerDetails={{
+              bannerImg: imageData?.[0]?.BANK_LOGO ?? "",
+              bannerTitle: imageData?.[0]?.APP_NM ?? "",
+              bannerNote: imageData?.[0]?.NOTE ?? "",
+            }}
+            logoUrl={imageData?.[0]?.DASHBOARD_APP_LOGO ?? ""}
+            logoTitle="Enfinity v1.1.17"
+            veirfyUsernameandPassword={veirfyUsernameandPassword}
+            verifyOTP={verifyOTP}
+            loginFn={login}
+            OTPResendRequest={API.OTPResendRequest}
+            ResetPassword={API.ResetPassword}
+            validatePasswordFn={API.validatePasswords}
+            LanguageComponent={MultiLanguages}
+            forgotPasswordEndpoint="forgotpassword"
+          />
         </>
       )}
     </>

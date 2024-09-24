@@ -218,7 +218,7 @@ export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
       componentType: "default",
       placeholder: "",
       isDisplayTotal: true,
-      isSelectedTotal: true,
+      // isSelectedTotal: true,
       width: 180,
       minWidth: 200,
       maxWidth: 250,
@@ -440,7 +440,7 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       minWidth: 200,
       maxWidth: 250,
       isDisplayTotal: true,
-      isSelectedTotal: true,
+      // isSelectedTotal: true,
     },
     {
       accessor: "AMOUNT",
@@ -453,7 +453,7 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       minWidth: 250,
       maxWidth: 300,
       isDisplayTotal: true,
-      isSelectedTotal: true,
+      // isSelectedTotal: true,
     },
     {
       accessor: "CNT",

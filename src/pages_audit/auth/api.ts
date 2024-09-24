@@ -7,7 +7,7 @@ import CRC32C from "crc-32";
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLOGINIMGDATA", {
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
       APP_TRAN_CD: APP_TRAN_CD,
     });
   if (status === "0") {

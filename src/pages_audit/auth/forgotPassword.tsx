@@ -393,70 +393,29 @@ export const ForgotPasswordController = ({ screenFlag }) => {
   }, []);
   return (
     <>
-      <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <BankDetails imageData={imageData} />
-        <Grid item xs={6} md={6} lg={6} sm={6}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            padding={"31px"}
-          >
-            <img src={logo} alt="Logo" />
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            padding={"0 35px 0 0"}
-          >
-            <MultiLanguages />
-          </Grid>
-          <Container maxWidth="xs">
-            <Grid alignItems="center" style={{ paddingTop: "20px" }}>
-              <h2 style={{ margin: "10px 0" }}>
-                {loginState.workingState === 1
-                  ? t("Setnewpassword")
-                  : screenFlag === "totp"
-                  ? "Forgot TOTP"
-                  : t("ForgotPassword")}
-              </h2>
-              {open ? (
-                <OTPModelForm
-                  classes={classes}
-                  handleClose={handleClose}
-                  loginState={loginState}
-                  VerifyOTP={VerifyOTP}
-                  OTPError={t(loginState?.OtpuserMessage ?? "")}
-                  setOTPError={(error) => {
-                    dispath({
-                      type: "OTPVerificationFailed",
-                      payload: { error: error },
-                    });
-                  }}
-                  resendFlag={"FORGET_PW"}
-                  setNewRequestID={(newRequestID) => {
-                    dispath({
-                      type: "OTPResendSuccess",
-                      payload: { requestCd: newRequestID },
-                    });
-                    otpResendRef.current = otpResendRef.current + 1;
-                  }}
-                  otpresendCount={otpResendRef.current}
-                />
-              ) : (
-                <ForgotPasswordFields
-                  classes={classes}
-                  loginState={loginState}
-                  onSubmit={onSubmitHandel}
-                />
-              )}
-            </Grid>
-          </Container>
-        </Grid>
-      </Grid>
+      {isLoading || isFetching ? (
+        <FullScreenLoader />
+      ) : (
+        <>
+          <ForgotPasswordControllerWrapper
+            OTPResendRequest={API.OTPResendRequest}
+            validatePasswordFn={API.validatePasswords}
+            navigate={navigate}
+            bannerDetails={{
+              bannerImg: imageData?.[0]?.BANK_LOGO ?? "",
+              bannerTitle: imageData?.[0]?.APP_NM ?? "",
+              bannerNote: imageData?.[0]?.NOTE ?? "",
+            }}
+            logoUrl={logo}
+            LanguageComponent={MultiLanguages}
+            screenFlag={screenFlag}
+            updatenewPassword={updatenewPassword}
+            veirfyUsernameandMobileNo={veirfyUsernameandMobileNo}
+            verifyOTPForPWDReset={verifyOTPForPWDReset}
+            loginPageEndpoint="login"
+          />
+        </>
+      )}
     </>
   );
 };
