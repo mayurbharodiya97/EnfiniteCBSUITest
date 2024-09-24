@@ -7,7 +7,6 @@ import {
   verifyDayendChecksumsMetaData,
   executeChecksumsReportMetaData,
 } from "./gridMetadata";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
@@ -24,8 +23,6 @@ import { AuthContext } from "pages_audit/auth";
 import LoaderImg from "./Loader.gif";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
-import Typograhpy from "components/common/typograhpy";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 interface Item {
   CHKSM_TYPE?: string;
@@ -53,7 +50,6 @@ export const VerifyDayendChecksums = ({
 }) => {
   const { authState } = useContext(AuthContext);
   const [openReport, setOpenReport] = useState(false);
-  const [docData, setDocData] = useState<any>({});
   const [sessionStart, setSessionStart] = useState<any>(false);
   const warningCountRef = useRef(0);
   const errCount = useRef(0);
@@ -63,10 +59,7 @@ export const VerifyDayendChecksums = ({
   const [reqData, setReqData] = useState<any>({});
   const [currentData, setCurrentData] = useState<any>({});
   const [loopStart, setLoopStart] = useState<any>(false);
-  const [showClose, setShowclose] = useState<any>(false);
-  const [isReportBtnHide, setISreportBTNhide] = useState<any>(false);
   const [branchLoppStop, setBranchloopStop] = useState<any>(false);
-  const [isProcessStop, setIsProcessStop] = useState<any>(false);
   const [warningsObj, setWarningsObj] = useState({});
   const warningsObjRef = useRef<any>({});
   const npaCalckref = useRef<any>();
@@ -79,7 +72,7 @@ export const VerifyDayendChecksums = ({
   const navigate = useNavigate();
   const gridRef = useRef<HTMLDivElement | null>(null);
   const { logout } = useContext(AuthContext);
-  // State to track processed batch count
+
   const [batchCount, setBatchCount] = useState<number>(0);
 
   const handleAction = useCallback(
@@ -88,7 +81,6 @@ export const VerifyDayendChecksums = ({
     },
     [navigate, close]
   );
-  console.log(switchBranchPara, "switchBranchPara");
 
   const formatTime = (date: Date): string => {
     const hours = String(date.getHours()).padStart(2, "0");
@@ -109,7 +101,6 @@ export const VerifyDayendChecksums = ({
       }));
     }
   }, [warningCountRef.current]);
-  console.log(resultRef.current, "123");
 
   useEffect(() => {
     warningsObjRef.current = warningsObj;
@@ -154,23 +145,9 @@ export const VerifyDayendChecksums = ({
         BRANCH_CD: authState?.user?.branchCode,
         FLAG: "N",
       });
-    } catch (error) {
-      console.error("Error updating EOD running status:", error);
-    }
+    } catch (error) {}
   };
 
-  // useEffect(() => {
-  //   if (isReportBtnHide === true) {
-  //     verifyDayendChecksumsMetaData.columns[6].shouldExclude = (
-  //       initialValue,
-  //       original,
-  //       prevRows,
-  //       nextRows
-  //     ) => {
-  //       return false;
-  //     };
-  //   }
-  // }, []);
   const processRecord = async (
     record: Item,
     index: number
@@ -178,7 +155,6 @@ export const VerifyDayendChecksums = ({
     const startTime = new Date();
     setCurrentSRCD(record.SR_CD ?? null);
 
-    // Update grid data to reflect processing start
     setGridData((prevGridData) => {
       const updatedGridData = [...prevGridData];
       updatedGridData[index] = {
@@ -192,7 +168,6 @@ export const VerifyDayendChecksums = ({
     });
 
     try {
-      // Execute API call
       const response = await API.executeChecksums({
         FLAG: flag,
         SCREEN_REF: "TRN/399",
@@ -207,7 +182,6 @@ export const VerifyDayendChecksums = ({
       const endTime = new Date();
       const elapsedTime = formatTime(endTime);
 
-      // Update grid data based on response
       if (response[0]?.CLR) {
         setGridData((prevGridData) => {
           const updatedGridData = [...prevGridData];
@@ -221,13 +195,11 @@ export const VerifyDayendChecksums = ({
         });
       }
 
-      // Check for stopping conditions
       if (
         flag === "D" &&
         response[0]?.CLR === "E" &&
         record?.MENDETORY == "Y"
       ) {
-        // Show message if conditions are met
         await MessageBox({
           messageTitle: "Error",
           message: response[0]?.MESSAGE,
@@ -236,15 +208,12 @@ export const VerifyDayendChecksums = ({
         });
         CloseMessageBox();
         setLoopStart(true);
-        setShowclose(true);
-        setISreportBTNhide(true);
         setBranchloopStop(true);
         setSwitchBranchPara(false);
         return "stop";
       }
 
       if (flag === "C" && response[0]?.MESSAGE !== "") {
-        // Handle message box response if FLAG is "C"
         const buttonName = await MessageBox({
           messageTitle: "Error",
           message: response[0]?.MESSAGE,
@@ -253,7 +222,7 @@ export const VerifyDayendChecksums = ({
         });
 
         if (buttonName !== "Ok") {
-          return "stop"; // Stop processing if button clicked is not "Ok"
+          return "stop";
         }
       }
       if (
@@ -262,8 +231,6 @@ export const VerifyDayendChecksums = ({
         processFlag === t("DayEnd") &&
         response[0]?.CLR === "W"
       ) {
-        // Handle message box response if FLAG is "C"
-
         const buttonName = await MessageBox({
           messageTitle: "Error",
           message: "Would you like to see warnings of this Checksum?",
@@ -281,7 +248,7 @@ export const VerifyDayendChecksums = ({
       if (response[0]?.CLR === "Y" && record.MENDETORY === "Y") {
         errCount.current += 1;
       }
-      // Update batch count every 13 records processed
+
       if (
         (index + 1) % 11 === 0 ||
         (index + 1) % 12 === 0 ||
@@ -378,7 +345,6 @@ export const VerifyDayendChecksums = ({
             messageTitle: "Confirmation",
             message: response?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
-            // defFocusBtnName: "Yes",
           });
           if (buttonName === "Yes") {
             if (response?.O_COLUMN_NM === "AUTO_NPA") {
@@ -389,7 +355,6 @@ export const VerifyDayendChecksums = ({
 
             if (response?.O_COLUMN_NM === "NEW_SESSION") {
               mewSessionref.current = sessionDtl[0]?.NEW_SESSION;
-              console.log("condition true", sessionDtl[0]?.NEW_SESSION);
             } else {
               mewSessionref.current = sessionDtl[0]?.DEFAULT_SESSION;
             }
@@ -486,7 +451,6 @@ export const VerifyDayendChecksums = ({
       } else setSwitchBranchPara(false);
     },
   });
-  console.log(switchBranchPara, "switchBranchPara");
 
   const {
     data: validatedData,
@@ -532,7 +496,6 @@ export const VerifyDayendChecksums = ({
               CloseMessageBox();
               close();
             } else if (buttonName === "Yes") {
-              // const branchList = ["002 ", "003 "];
               const branchList = data[0]?.BRANCH_LIST;
               console.log(currentBranch.current, "BRANCH");
 
@@ -560,7 +523,6 @@ export const VerifyDayendChecksums = ({
                   handleEodWarnings();
                 }
               }
-              // CloseMessageBox();
             }
           }
         }
@@ -574,25 +536,6 @@ export const VerifyDayendChecksums = ({
       setReqData(validatedData);
     }
   }, [validatedData]);
-
-  const docurlMutation = useMutation(API.getDocUrl, {
-    onError: async (error: any) => {
-      await MessageBox({
-        message: error?.error_msg,
-        messageTitle: "Error",
-        buttonNames: ["Ok"],
-      });
-    },
-    onSuccess: async (data) => {
-      setDocData(data);
-      const url = `/cbsenfinity/${data[0]?.DOCUMENT_URL}`;
-      const newWindow = window.open(url, "_blank");
-      if (newWindow) {
-        newWindow.focus();
-        queryClient.removeQueries(["getDocUrl"]);
-      }
-    },
-  });
 
   const reportMutation = useMutation(API.getDayEnderrLog, {
     onError: async (error: any) => {
@@ -670,12 +613,6 @@ export const VerifyDayendChecksums = ({
                     SR_CD: currentData?.SR_CD,
                   });
                   setOpenReport(true);
-                } else if (id === "OPEN") {
-                  docurlMutation.mutate({
-                    BASE_COMP: authState?.baseCompanyID,
-                    BASE_BRANCH: authState?.user?.baseBranchCode,
-                    DOC_CD: currentData?.DOCU_CD,
-                  });
                 }
               }}
               setAction={handleAction}
@@ -803,17 +740,7 @@ export const VerifyDayendChecksums = ({
             <LoaderPaperComponent />
           </div>
         )}
-        {docurlMutation.isLoading && (
-          <Dialog
-            open={docurlMutation.isLoading}
-            PaperProps={{
-              style: { width: "60%", overflow: "auto" },
-            }}
-            maxWidth="lg"
-          >
-            <LoaderPaperComponent />
-          </Dialog>
-        )}
+
         {openReport && (
           <ViewEodReport
             open={openReport}
