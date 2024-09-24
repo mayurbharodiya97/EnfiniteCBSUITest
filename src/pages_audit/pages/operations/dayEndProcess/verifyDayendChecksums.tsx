@@ -11,7 +11,13 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
 import { usePopupContext } from "components/custom/popupContext";
-import { Chip, Dialog, Paper, Typography } from "@mui/material";
+import {
+  Chip,
+  CircularProgress,
+  Dialog,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AuthContext } from "pages_audit/auth";
@@ -59,11 +65,13 @@ export const VerifyDayendChecksums = ({
   const [loopStart, setLoopStart] = useState<any>(false);
   const [showClose, setShowclose] = useState<any>(false);
   const [isReportBtnHide, setISreportBTNhide] = useState<any>(false);
+  const [branchLoppStop, setBranchloopStop] = useState<any>(false);
   const [isProcessStop, setIsProcessStop] = useState<any>(false);
   const [warningsObj, setWarningsObj] = useState({});
   const warningsObjRef = useRef<any>({});
   const npaCalckref = useRef<any>();
   const mewSessionref = useRef<any>();
+  const resultRef = useRef<any>();
   warningsObjRef.current = warningsObj;
   const [switchBranchPara, setSwitchBranchPara] = useState<any>(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -73,9 +81,6 @@ export const VerifyDayendChecksums = ({
   const { logout } = useContext(AuthContext);
   // State to track processed batch count
   const [batchCount, setBatchCount] = useState<number>(0);
-  console.log("isProcessStop", isProcessStop);
-  console.log("loopStart", loopStart);
-  console.log(errCount.current);
 
   const handleAction = useCallback(
     async (data: any) => {
@@ -83,8 +88,7 @@ export const VerifyDayendChecksums = ({
     },
     [navigate, close]
   );
-  console.log(mewSessionref?.current);
-  console.log(npaCalckref?.current);
+  console.log(switchBranchPara, "switchBranchPara");
 
   const formatTime = (date: Date): string => {
     const hours = String(date.getHours()).padStart(2, "0");
@@ -105,6 +109,7 @@ export const VerifyDayendChecksums = ({
       }));
     }
   }, [warningCountRef.current]);
+  console.log(resultRef.current, "123");
 
   useEffect(() => {
     warningsObjRef.current = warningsObj;
@@ -137,6 +142,9 @@ export const VerifyDayendChecksums = ({
       if (confirmation === "Yes") {
         startSession();
       }
+      if (confirmation === "No") {
+        setLoopStart(true);
+      }
     }
   };
   const updateEodRunningStatus = async () => {
@@ -146,12 +154,10 @@ export const VerifyDayendChecksums = ({
         BRANCH_CD: authState?.user?.branchCode,
         FLAG: "N",
       });
-      console.log("EOD running status updated successfully.");
     } catch (error) {
       console.error("Error updating EOD running status:", error);
     }
   };
-  console.log(isReportBtnHide);
 
   // useEffect(() => {
   //   if (isReportBtnHide === true) {
@@ -219,7 +225,7 @@ export const VerifyDayendChecksums = ({
       if (
         flag === "D" &&
         response[0]?.CLR === "E" &&
-        response[0]?.EXIT_YN === "Y"
+        record?.MENDETORY == "Y"
       ) {
         // Show message if conditions are met
         await MessageBox({
@@ -228,11 +234,13 @@ export const VerifyDayendChecksums = ({
           icon: "ERROR",
           buttonNames: ["Ok"],
         });
-        CloseMessageBox(); // Ensure the message box is closed
+        CloseMessageBox();
         setLoopStart(true);
         setShowclose(true);
         setISreportBTNhide(true);
-        return "stop"; // Signal to stop processing
+        setBranchloopStop(true);
+        setSwitchBranchPara(false);
+        return "stop";
       }
 
       if (flag === "C" && response[0]?.MESSAGE !== "") {
@@ -294,6 +302,7 @@ export const VerifyDayendChecksums = ({
   const processRecords = async (records: Item[]) => {
     for (let i = 0; i < records.length; i++) {
       const result = await processRecord(records[i], i);
+      resultRef.current = result;
       if (result === "stop") {
         updateEodRunningStatus();
         return false;
@@ -375,8 +384,6 @@ export const VerifyDayendChecksums = ({
             if (response?.O_COLUMN_NM === "AUTO_NPA") {
               npaCalckref.current = "Y";
             } else {
-              console.log("condition true");
-
               npaCalckref.current = "N";
             }
 
@@ -430,6 +437,7 @@ export const VerifyDayendChecksums = ({
       }
     },
   });
+
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
     onError: (error: any) => {
       const errorMsg =
@@ -445,11 +453,11 @@ export const VerifyDayendChecksums = ({
 
       if (flag === "D" && allRecordsProcessed) {
         if (isHOLoggined === false) {
-          setLoopStart(true);
           handleEodWarnings();
         }
       }
       if (flag === "C" && allRecordsProcessed) {
+        setSwitchBranchPara(true);
         setLoopStart(true);
         await MessageBox({
           messageTitle: "Success",
@@ -460,11 +468,6 @@ export const VerifyDayendChecksums = ({
       }
 
       if (flag === "D" && allRecordsProcessed) {
-        // const mandatoryPassedCount = gridData.filter(
-        //   (item) => item.CLR === "Y" && item.MENDETORY === "Y"
-        // ).length;
-        // console.log(gridData);
-
         if (errCount.current === 0) {
           updateEodRunningStatus();
 
@@ -478,9 +481,12 @@ export const VerifyDayendChecksums = ({
           });
         }
       }
-      setSwitchBranchPara(true);
+      if (branchLoppStop === false) {
+        setSwitchBranchPara(true);
+      } else setSwitchBranchPara(false);
     },
   });
+  console.log(switchBranchPara, "switchBranchPara");
 
   const {
     data: validatedData,
@@ -528,14 +534,18 @@ export const VerifyDayendChecksums = ({
             } else if (buttonName === "Yes") {
               // const branchList = ["002 ", "003 "];
               const branchList = data[0]?.BRANCH_LIST;
+              console.log(currentBranch.current, "BRANCH");
 
               if (branchList.length > 0) {
                 if (switchBranchPara) {
                   setLoopStart(false);
                   for (const branch of branchList) {
+                    if (resultRef.current === "stop") {
+                      return false;
+                    }
                     currentBranch.current = branch;
-
                     warningCountRef.current = 0;
+
                     const processBranch = async (branch: string) => {
                       await checkSumsDataMutation.mutateAsync({
                         FLAG: flag,
@@ -627,18 +637,17 @@ export const VerifyDayendChecksums = ({
           : undefined,
     }));
   };
-
+  let Records = gridData.length;
   return (
     <ClearCacheProvider>
       <Dialog
         open={open}
-        // fullWidth
-        fullScreen
+        fullWidth
         maxWidth="xl"
-        // style={{ height: "100%" }}
-        // PaperProps={{
-        //   style: { width: "87%", padding: "7px" },
-        // }}
+        style={{ height: "100%" }}
+        PaperProps={{
+          style: { width: "100%", padding: "7px" },
+        }}
       >
         {gridData.length > 0 ? (
           <>
@@ -674,10 +683,11 @@ export const VerifyDayendChecksums = ({
               defaultSelectedRowId={currentSRCD ?? null}
             />
             <Paper
-              sx={{
+              style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: 2,
+                padding: "8px 10px 10px 8px",
+                overflow: "hidden",
               }}
             >
               <div
@@ -687,8 +697,19 @@ export const VerifyDayendChecksums = ({
                   alignItems: "center",
                 }}
               >
+                <Typography
+                  component="span"
+                  variant="subtitle2"
+                  style={{
+                    whiteSpace: "nowrap",
+                    paddingInline: "33px",
+                  }}
+                >
+                  {t("TotalNoofrecords")}
+                  {Records}
+                </Typography>
                 <div
-                  style={{ display: "flex", gap: "4px", marginBottom: "4px" }}
+                  style={{ display: "flex", gap: "4px", marginBottom: "1px" }}
                 >
                   <Chip
                     label="Success"
@@ -738,6 +759,11 @@ export const VerifyDayendChecksums = ({
                   {DoEodMutation?.isLoading || sessionDtlMutation?.isLoading
                     ? ` Checksum Executed. Doing ${processFlag}`
                     : ""}
+                  {sessionDtlMutation.isLoading || DoEodMutation.isLoading ? (
+                    <CircularProgress size={22} />
+                  ) : (
+                    ""
+                  )}
                 </Typography>
               </div>
               <div>
@@ -745,6 +771,7 @@ export const VerifyDayendChecksums = ({
                   <GradientButton
                     onClick={() => {
                       setGridData([]);
+                      resultRef.current = null;
                       checkSumsDataMutation.mutate({
                         FLAG: flag,
                         SCREEN_REF: "TRN/399",

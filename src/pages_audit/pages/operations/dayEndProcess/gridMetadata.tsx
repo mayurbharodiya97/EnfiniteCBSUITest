@@ -179,6 +179,7 @@ export const verifyDayendChecksumsMetaData = {
     allowColumnReordering: true,
     disableSorting: false,
     hideHeader: false,
+    hideFooter: true,
     hideActionBar: true,
     disableGroupBy: true,
     enablePagination: false,
@@ -187,7 +188,7 @@ export const verifyDayendChecksumsMetaData = {
     defaultPageSize: 10,
     containerHeight: {
       min: "70vh",
-      max: "67vh",
+      max: "76vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

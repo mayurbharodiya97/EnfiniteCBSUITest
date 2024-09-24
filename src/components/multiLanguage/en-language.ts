@@ -1641,6 +1641,7 @@ export const en_language_data = {
   PendingTransactions: "Pending Transactions",
   PendingTrnsProceed: "Do you want to proceed pending transactions?",
   DayEnd: "Day End",
+  TotalNoofrecords: "Total No. of records: ",
   DayHandover: "Day Handover",
   VersionNo: "Version No.",
   AcRef: "A/c No. /Ref No.",

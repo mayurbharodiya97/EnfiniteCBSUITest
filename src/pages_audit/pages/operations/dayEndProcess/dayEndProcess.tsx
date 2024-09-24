@@ -76,6 +76,9 @@ const DayEndProcess = () => {
       ? true
       : false;
   console.log(isHOLoggined, "isHOLoggined");
+  console.log(
+    data && data[0]?.EOD_FLAG === "H" ? t("DayHandover") : t("DayEnd")
+  );
 
   return (
     <>
