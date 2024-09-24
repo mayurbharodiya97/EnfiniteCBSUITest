@@ -10,7 +10,7 @@ const FdInterestCalculator = () => {
   const [calcSwitch, setCalcSwitch] = useState("P");
   const { authState } = useContext(AuthContext);
   const [formKey, setFormKey] = useState(Date.now());
-
+  const formRef = useRef<any>();
   const handleButtonClick = async (id: string) => {
     let event: any = { preventDefault: () => {} };
     if (id === "NEW_DATE_BTN") {
@@ -19,6 +19,9 @@ const FdInterestCalculator = () => {
     } else if (id === "NEW_PERIOD_BTN") {
       setCalcSwitch("P");
       setFormKey(Date.now());
+    } else if (id === "CAL_COMPARE_SHEET_BTN") {
+      let event: any = { preventDefault: () => {} };
+      formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
     }
   };
 
@@ -26,9 +29,14 @@ const FdInterestCalculator = () => {
     <>
       <FormWrapper
         key={formKey}
+        ref={formRef}
         metaData={extractMetaData(metaData, formMode) as MetaDataType}
         displayMode={formMode}
-        onSubmitHandler={() => {}}
+        onSubmitHandler={(data) => {
+          console.log(data);
+          if (data?.CALCSWITCH === "S") {
+          }
+        }}
         initialValues={{
           COMP_CD: authState.companyID,
           BRANCH_CD: authState.user.branchCode,
