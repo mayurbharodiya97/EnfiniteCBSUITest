@@ -1,18 +1,21 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ParaDetailMetadata } from "./metaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { GradientButton } from "components/styledComponent/button";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useMemo, useRef, useState } from "react";
-import * as API from "./api"
+import * as API from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { extractMetaData, utilFunction } from "components/utils";
-import { usePopupContext } from "components/custom/popupContext";
-
- const EditDetail = ({ open, onClose, rowsData ,refetch,formView}) => {
+import {
+  usePopupContext,
+  PopupMessageAPIWrapper,
+  GradientButton,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  InitialValuesType,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
+const EditDetail = ({ open, onClose, rowsData, refetch, formView }) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(formView);
@@ -38,7 +41,7 @@ import { usePopupContext } from "components/custom/popupContext";
       });
     },
   });
-  const mutation = useMutation((API.updateParameterData),{
+  const mutation = useMutation(API.updateParameterData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
@@ -71,8 +74,8 @@ import { usePopupContext } from "components/custom/popupContext";
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-   const onSubmitHandler: SubmitFnType = (
-    data:any,
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
     displayData,
     endSubmit,
     setFieldError,
@@ -81,28 +84,28 @@ import { usePopupContext } from "components/custom/popupContext";
     //@ts-ignore
     endSubmit(true);
     let newData = {
-      ...data
+      ...data,
     };
     let oldData = {
-      ...rowsData?.[0]?.data
+      ...rowsData?.[0]?.data,
     };
     let upd = utilFunction.transformDetailsData(newData, oldData);
-    isErrorFuncRef.current = {   
+    isErrorFuncRef.current = {
       data: {
         ...newData,
         ...upd,
-      }, 
-      displayData, 
-      endSubmit, 
-      setFieldError 
+      },
+      displayData,
+      endSubmit,
+      setFieldError,
     };
     if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
       setIsOpenSave(false);
       setFormMode("view");
     } else {
       result.mutate({
-        para_cd:data?.PARA_CD ?? "",
-        para_value:data?.PARA_VALUE ?? "",
+        para_cd: data?.PARA_CD ?? "",
+        para_value: data?.PARA_VALUE ?? "",
       });
     }
   };
@@ -117,39 +120,39 @@ import { usePopupContext } from "components/custom/popupContext";
       comp_cd: rowsData[0].data?.COMP_CD ?? "",
       branch_cd: rowsData[0].data?.BRANCH_CD ?? "",
       paraCode: rowsData1?.PARA_CD ?? "",
-    })
-  }
+    });
+  };
   const masterMetadata: MetaDataType = useMemo(
     () => extractMetaData(ParaDetailMetadata, formMode),
     [ParaDetailMetadata, formMode, ""]
   ) as MetaDataType;
   return (
     <>
-    <Dialog
-      open={open}
-      fullWidth={true}
-      PaperProps={{
-        style: {
-          maxWidth: "900px",
-        },
-      }}
-    >
-    <FormWrapper
-      key={`paraEditDetail` + formMode}
-      metaData={masterMetadata as MetaDataType}
-      initialValues={rowsData?.[0]?.data as InitialValuesType}
-      onSubmitHandler={onSubmitHandler}
-        //@ts-ignore
-      displayMode={formMode}
-      formStyle={{
-        background: "white",
-        height: "calc(53vh - 100px)",
-        overflowY: "auto",
-        overflowX: "hidden",
-      }}
-      containerstyle={{ padding: "10px" }}
-    >   
-       {({ isSubmitting, handleSubmit }) => (
+      <Dialog
+        open={open}
+        fullWidth={true}
+        PaperProps={{
+          style: {
+            maxWidth: "900px",
+          },
+        }}
+      >
+        <FormWrapper
+          key={`paraEditDetail` + formMode}
+          metaData={masterMetadata as MetaDataType}
+          initialValues={rowsData?.[0]?.data as InitialValuesType}
+          onSubmitHandler={onSubmitHandler}
+          //@ts-ignore
+          displayMode={formMode}
+          formStyle={{
+            background: "white",
+            height: "calc(53vh - 100px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+          containerstyle={{ padding: "10px" }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
             <>
               {formMode === "edit" ? (
                 <>
@@ -159,9 +162,7 @@ import { usePopupContext } from "components/custom/popupContext";
                     }}
                     disabled={isSubmitting}
                     endIcon={
-                      result?.isLoading ? (
-                        <CircularProgress size={20} />
-                      ) : null
+                      result?.isLoading ? <CircularProgress size={20} /> : null
                     }
                     color={"primary"}
                   >
@@ -178,40 +179,38 @@ import { usePopupContext } from "components/custom/popupContext";
                 </>
               ) : (
                 <>
-                 {(rowsData?.[0]?.data?.CONFIRMED === "N" || rowsData?.[0]?.data?.ALLOW_VALUE_EDIT_FLAG === "N") ? null : (
-            <GradientButton
-              onClick={() => {
-                setFormMode("edit");
-              }}
-              color={"primary"}
-            >
-              Edit
-            </GradientButton>
-          )}
-                  <GradientButton
-                    onClick={onClose}
-                    color={"primary"}
-                  >
+                  {rowsData?.[0]?.data?.CONFIRMED === "N" ||
+                  rowsData?.[0]?.data?.ALLOW_VALUE_EDIT_FLAG === "N" ? null : (
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("edit");
+                      }}
+                      color={"primary"}
+                    >
+                      Edit
+                    </GradientButton>
+                  )}
+                  <GradientButton onClick={onClose} color={"primary"}>
                     Close
                   </GradientButton>
                 </>
               )}
             </>
           )}
-    </FormWrapper>
-    {isOpenSave ? (
-      <PopupMessageAPIWrapper
-        MessageTitle="Confirmation"
-        Message="Do you want to save this record?"
-        onActionYes={(rowVal) => onPopupYes(rowVal)}
-        onActionNo={() => onActionCancel()}
-        rows={isErrorFuncRef.current?.data}
-        open={isOpenSave}
-        loading={mutation.isLoading}
-      />
-    ) : null}
-    </Dialog>
-  </>
+        </FormWrapper>
+        {isOpenSave ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Confirmation"
+            Message="Do you want to save this record?"
+            onActionYes={(rowVal) => onPopupYes(rowVal)}
+            onActionNo={() => onActionCancel()}
+            rows={isErrorFuncRef.current?.data}
+            open={isOpenSave}
+            loading={mutation.isLoading}
+          />
+        ) : null}
+      </Dialog>
+    </>
   );
 };
 export default EditDetail;

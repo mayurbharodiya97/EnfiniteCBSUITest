@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   useCallback,
   useContext,
@@ -9,18 +8,13 @@ import {
   useState,
 } from "react";
 import { TellerScreenMetadata } from "./metadataTeller";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { GradientButton } from "components/styledComponent/button";
 import TellerDenoTable from "./tellerDenoTable";
 import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { cashReportMetaData } from "./metadataTeller";
-import { ActionTypes } from "components/dataTable/types";
 import { format, parse } from "date-fns";
-import Report from "components/report";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
@@ -31,16 +25,24 @@ import {
   SingleTableInititalState,
   SingleTableActionTypes,
 } from "./denoTableActionTypes";
-import { usePopupContext } from "components/custom/popupContext";
 import DualTableCalc from "./dualTableCalc";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { padding } from "@mui/system";
-import { FocusTrap } from "@mui/base";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
 import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
+import {
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  InitialValuesType,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  usePropertiesConfigContext,
+  ReportGrid,
+} from "@acuteinfo/common-base";
+
 const TellerScreen = () => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
@@ -57,7 +59,7 @@ const TellerScreen = () => {
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const { authState }: any = useContext(AuthContext);
   let currentPath = useLocation().pathname;
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const customParameter = usePropertiesConfigContext();
   const { denoTableType } = customParameter;
   // const { cardStore, setCardStore } = useContext(AccDetailContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -913,12 +915,11 @@ const TellerScreen = () => {
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}
       {state?.viewAcctDetails ? (
         <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>
-          <Report
+          <ReportGrid
             reportID={"transactionServiceAPI/GETTODAYTRANDATA"}
             reportName={"GETTODAYTRANDATA"}
             dataFetcher={API.cashReportData}
             metaData={cashReportMetaData}
-            disableFilters
             maxHeight={window.innerHeight - 250}
             title={cashReportMetaData?.title}
             options={{

@@ -2,10 +2,9 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
-
 
 export const delteRtgsBranchConfirm = async (formData) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
@@ -25,8 +24,7 @@ export const rtgsHoConfirmtionAndDelete = async (formData) => {
     });
   if (status === "0") {
     return message;
-  }
-  else {
+  } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
@@ -59,12 +57,10 @@ export const getRtgsBranchConfirmtion = async (apiReq) => {
     });
   if (status === "0") {
     return message;
-  }
-  else {
+  } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
 
 export const getRtgsRetrBranchConfirmData = async (ApiReq) => {
   const { data, status, message, messageDetails } =
@@ -75,8 +71,12 @@ export const getRtgsRetrBranchConfirmData = async (ApiReq) => {
     return data.map((item) => {
       return {
         ...item,
-        HO_CONFIRM: item.HO_CONFIRMED === "0" ? "Pending"
-          : item.HO_CONFIRMED === "Y" ? "Confirm" : item.HO_CONFIRMED,
+        HO_CONFIRM:
+          item.HO_CONFIRMED === "0"
+            ? "Pending"
+            : item.HO_CONFIRMED === "Y"
+            ? "Confirm"
+            : item.HO_CONFIRMED,
       };
     });
   } else {
@@ -97,10 +97,10 @@ export const getRtgsBranchConfirmOrderingData = async (ApiReq) => {
       COMP_CD: data?.[0]?.COMP_CD,
       ENT_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
       MSG_TYPE: data?.[0]?.TRAN_TYPE,
-    })
+    });
     return {
       hdrData: data[0],
-      acBalanceData: acBalanceData[0]
+      acBalanceData: acBalanceData[0],
     };
     // }
     // return data
@@ -150,22 +150,15 @@ export const rtgsVerifyOTP = async (
   otpValidSec,
   sentDate
 ) => {
-  const {
-    data,
-    status,
-    message,
-    messageDetails,
-  } = await AuthSDK.internalFetcherPreLogin(
-    "DOVERIFYOTP",
-    {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcherPreLogin("DOVERIFYOTP", {
       TRN_TYPE: "RN_HO_CONF",
-      TRAN_CD: transactionId || '00',
+      TRAN_CD: transactionId || "00",
       RECV_OTP: recvOtp,
       OTP: otpnumber,
       OTP_VALID_SEC: otpValidSec,
       SENT_DATE: sentDate,
-    },
-  );
+    });
   if (status === "0") {
     return {
       data: data[0],
@@ -178,26 +171,29 @@ export const rtgsVerifyOTP = async (
   }
 };
 
-const getHoconfirmationAcBanlaceData = async (
-  { MSG_FLOW, ENTRY_TYPE, BASE_BRANCH_CD, COMP_CD, ENT_BRANCH_CD, MSG_TYPE }
-) => {
-
+const getHoconfirmationAcBanlaceData = async ({
+  MSG_FLOW,
+  ENTRY_TYPE,
+  BASE_BRANCH_CD,
+  COMP_CD,
+  ENT_BRANCH_CD,
+  MSG_TYPE,
+}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(
-      "GETRTGSTRANTYPEDDW",
-      {
-        MSG_FLOW: MSG_FLOW,
-        ENTRY_TYPE: ENTRY_TYPE,
-        BASE_BRANCH_CD: BASE_BRANCH_CD,
-        COMP_CD: COMP_CD,
-        ENT_BRANCH_CD: ENT_BRANCH_CD,
-        MSG_TYPE: MSG_TYPE,
-      }
-    );
+    await AuthSDK.internalFetcher("GETRTGSTRANTYPEDDW", {
+      MSG_FLOW: MSG_FLOW,
+      ENTRY_TYPE: ENTRY_TYPE,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      COMP_CD: COMP_CD,
+      ENT_BRANCH_CD: ENT_BRANCH_CD,
+      MSG_TYPE: MSG_TYPE,
+    });
   if (status === "0") {
     let responseData = data;
     responseData.map((item) => {
-      item.HO_TRAN_TYPE = [item.MSG_TYPE, item.DESCRIPTION].filter(Boolean).join("-");
+      item.HO_TRAN_TYPE = [item.MSG_TYPE, item.DESCRIPTION]
+        .filter(Boolean)
+        .join("-");
       item.HO_ACCT_CD = [
         item.DEF_BRANCH_CD,
         item.DEF_COMP_CD,

@@ -1,7 +1,7 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getPassBookTemplate } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "./api";
 import { format } from "date-fns";
 import { t } from "i18next";
@@ -963,7 +963,6 @@ export const AccountInquiry = {
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value = Number(dependentFieldsValues?.REPRINT?.value);
         return value === 1 ? "Y" : "N";
-
       },
     },
 

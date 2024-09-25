@@ -1,19 +1,22 @@
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { ActionTypes } from "components/dataTable";
 import { siasExecutedGridMetadata } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
 import { CircularProgress, Dialog } from "@mui/material";
 import { siasExecute } from "./metaData/metaData";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
-import { queryClient } from "cache";
-import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
+import {
+  GridWrapper,
+  ActionTypes,
+  usePopupContext,
+  GradientButton,
+  queryClient,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [];
 
@@ -22,9 +25,9 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const formRef = useRef<any>(null);
   const [apiData, setApiData] = useState<any>(null);
-  const [oldData, setOldData] = useState(null)
+  const [oldData, setOldData] = useState(null);
   const isErrorFuncRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState("add")
+  const [formMode, setFormMode] = useState("add");
 
   const showData = async () => {
     const formdata = await formRef?.current?.getFieldData();
@@ -34,30 +37,28 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
         branchCode: authController?.authState?.user?.branchCode,
         acct_type: formdata.ACCT_TYPE,
         acct_cd: formdata.ACCT_CD,
-      })
+      });
     }
   };
 
-  const showMutation = useMutation(API.getSIAsExcutedData,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        setApiData(data);
-        setOldData(data);
-        setFormMode("add");
-        CloseMessageBox();
-      },
-    }
-  );
+  const showMutation = useMutation(API.getSIAsExcutedData, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      setApiData(data);
+      setOldData(data);
+      setFormMode("add");
+      CloseMessageBox();
+    },
+  });
 
   const handleAllExecutedClick = async () => {
     if (apiData) {
@@ -67,13 +68,11 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
         buttonNames: ["Yes", "No"],
       });
       if (btnName === "Yes") {
-
         const updatedData = apiData.map((item) => ({
           ...item,
           SI_EXECUTE_FLG: "C",
         }));
         setApiData(updatedData);
-
       }
     }
   };
@@ -97,31 +96,47 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
     },
   });
 
-
   const saveData = async () => {
     if (apiData) {
       const olddata = oldData;
       const newData: any = apiData;
       const UpdatedNewData = newData.map((rowData) => {
         const {
-          COMP_CD, DR_ACCT_CD, CR_COMP_CD, SI_AMOUNT, CR_BRANCH_CD,
-          CR_ACCT_CD, LAST_MODIFIED_DATE, EXECUTE_DT, DR_ACCT_TYPE, LAST_ENTERED_BY,
-          BRANCH_CD, ENTERED_DATE, LAST_MACHINE_NM, CR_ACCT_TYPE,
-          _displaySequence, _error, _isTouchedCol, _oldData, _touched, ...others } = rowData;
+          COMP_CD,
+          DR_ACCT_CD,
+          CR_COMP_CD,
+          SI_AMOUNT,
+          CR_BRANCH_CD,
+          CR_ACCT_CD,
+          LAST_MODIFIED_DATE,
+          EXECUTE_DT,
+          DR_ACCT_TYPE,
+          LAST_ENTERED_BY,
+          BRANCH_CD,
+          ENTERED_DATE,
+          LAST_MACHINE_NM,
+          CR_ACCT_TYPE,
+          _displaySequence,
+          _error,
+          _isTouchedCol,
+          _oldData,
+          _touched,
+          ...others
+        } = rowData;
         return { ...others };
       });
 
       const updatedNewData = UpdatedNewData
-        ? UpdatedNewData.map(item => {
-          if (item.SI_EXECUTE_FLG === "C") {
-            return {
-              ...item,
-              PROCESS_DT: authController?.authState?.workingDate
-            };
-          } else {
-            return item;
-          }
-        })
+        ? UpdatedNewData.map((item) => {
+            if (item.SI_EXECUTE_FLG === "C") {
+              return {
+                ...item,
+                PROCESS_DT: authController?.authState?.workingDate,
+              };
+            } else {
+              return item;
+            }
+          })
         : [];
       let updPara: any = utilFunction.transformDetailDataForDML(
         olddata ? olddata : [],
@@ -135,7 +150,7 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
           DETAILS_DATA: {
             ...updPara,
           },
-        }
+        },
       };
 
       const btnName = await MessageBox({
@@ -146,14 +161,12 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
       });
 
       if (btnName === "Yes") {
-
         mutation.mutate({
-          data: { ...isErrorFuncRef.current?.data }
+          data: { ...isErrorFuncRef.current?.data },
         });
       }
     }
   };
-
 
   useEffect(() => {
     return () => {
@@ -163,18 +176,28 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
 
   return (
     <Fragment>
-      <Dialog open={open} PaperProps={{ style: { width: "100%", overflow: "auto" } }} maxWidth="lg">
-
+      <Dialog
+        open={open}
+        PaperProps={{ style: { width: "100%", overflow: "auto" } }}
+        maxWidth="lg"
+      >
         <FormWrapper
           key={"siasExecute"}
           metaData={siasExecute as MetaDataType}
           onSubmitHandler={(data) => showData()}
-          formMode={formMode}
+          displayMode={formMode}
           formStyle={{ background: "white" }}
           ref={formRef}
           formState={{ MessageBox: MessageBox, docCd: "TRN/394" }}
         />
-        <GradientButton endIcon={showMutation.isLoading ? <CircularProgress size={20} /> : null} onClick={showData}>Submit</GradientButton>
+        <GradientButton
+          endIcon={
+            showMutation.isLoading ? <CircularProgress size={20} /> : null
+          }
+          onClick={showData}
+        >
+          Submit
+        </GradientButton>
         <GridWrapper
           key={"standingInsructionViewGridMetaData"}
           finalMetaData={siasExecutedGridMetadata as GridMetaDataType}
@@ -184,9 +207,23 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
           actions={actions}
         />
 
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "end", margin: "0 20px 10px 0" }}>
-          <GradientButton onClick={handleAllExecutedClick}>All SI as Executed</GradientButton>
-          <GradientButton onClick={saveData} endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}>Save</GradientButton>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "end",
+            margin: "0 20px 10px 0",
+          }}
+        >
+          <GradientButton onClick={handleAllExecutedClick}>
+            All SI as Executed
+          </GradientButton>
+          <GradientButton
+            onClick={saveData}
+            endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
+          >
+            Save
+          </GradientButton>
           <GradientButton onClick={onClose}>Close</GradientButton>
         </div>
       </Dialog>

@@ -19,18 +19,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { cloneDeep } from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
-import {
-  ColorlibConnector,
-  ColorlibStepIconRoot,
-} from "components/dyanmicForm/stepperForm/style";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { FDContext } from "../context/fdContext";
@@ -38,7 +29,14 @@ import { FDDetailForm } from "./fdDetailForm";
 import { TransferAcctDetailForm } from "./trnsAcctDtlForm";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@mui/styles";
-
+import {
+  ColorlibConnector,
+  ColorlibStepIconRoot,
+  GradientButton,
+  usePopupContext,
+  utilFunction,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
