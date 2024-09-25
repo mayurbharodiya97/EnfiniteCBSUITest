@@ -2,8 +2,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
-import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { IconButton } from "@mui/material";
 
@@ -13,7 +11,6 @@ import { useQuery } from "react-query";
 // import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
 import { AccDetailContext } from "pages_audit/auth";
-import { Transition } from "@acuteinfo/common-base";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -31,6 +28,9 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 export const JointDetails = ({ reqData }) => {
   const actions: ActionTypes[] = [
@@ -158,7 +158,6 @@ export const JointDetails = ({ reqData }) => {
           setAction={setCurrentAction}
           ref={myGridRef}
           refetchData={() => refetch()}
-          variant={"outlined"}
           loading={isLoading || isFetching}
         />
       </div>
@@ -185,6 +184,7 @@ export const JointDetails = ({ reqData }) => {
             initialValues={{ ...(data?.[currentIndex] ?? {}) }}
             onSubmitHandler={() => {}}
             displayMode={"view"}
+            onSubmitHandler={() => {}}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>

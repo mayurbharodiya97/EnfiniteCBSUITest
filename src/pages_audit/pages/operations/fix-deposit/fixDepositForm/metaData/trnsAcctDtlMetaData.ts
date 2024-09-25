@@ -1,5 +1,4 @@
 import { utilFunction } from "@acuteinfo/common-base";
-// import { validateAccountAndGetDetail } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
 
@@ -47,64 +46,6 @@ export const TransferAcctDetailFormMetadata = {
     },
   },
   fields: [
-    // {
-    //   render: {
-    //     componentType: "spacer",
-    //   },
-    //   GridProps: { xs: 0, md: 4, sm: 4, lg: 4, xl: 4 },
-    // },
-    // {
-    //   render: {
-    //     componentType: "amountField",
-    //   },
-    //   name: "TOTAL_FD_AMOUNT",
-    //   label: "Total FD Amount",
-    //   placeholder: "",
-    //   isReadOnly: true,
-    //   type: "text",
-    //   GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
-    // },
-    // {
-    //   render: {
-    //     componentType: "amountField",
-    //   },
-    //   name: "TOTAL_DR_AMOUNT",
-    //   label: "Total Debit Amount",
-    //   placeholder: "",
-    //   isReadOnly: true,
-    //   type: "text",
-    //   GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
-    //   dependentFields: ["TRNDTLS"],
-    //   setValueOnDependentFieldsChange: (dependentFieldState) => {
-    //     let accumulatedTakeoverLoanAmount = (
-    //       Array.isArray(dependentFieldState?.["TRNDTLS"])
-    //         ? dependentFieldState?.["TRNDTLS"]
-    //         : []
-    //     ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
-
-    //     return accumulatedTakeoverLoanAmount;
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "amountField",
-    //   },
-    //   name: "TOTAL_AMOUNT",
-    //   label: "Difference Amount",
-    //   placeholder: "",
-    //   isReadOnly: true,
-    //   type: "text",
-    //   dependentFields: ["TOTAL_FD_AMOUNT", "TOTAL_DR_AMOUNT"],
-    //   setValueOnDependentFieldsChange: (dependentFields) => {
-    //     let value =
-    //       Number(dependentFields?.TOTAL_FD_AMOUNT?.value) -
-    //       Number(dependentFields?.TOTAL_DR_AMOUNT?.value);
-
-    //     return value ?? "0";
-    //   },
-    //   GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
-    // },
-
     {
       render: {
         componentType: "spacer",
@@ -113,9 +54,9 @@ export const TransferAcctDetailFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 4.8,
-        lg: 6.3,
-        xl: 7.2,
+        md: 3.0,
+        lg: 5.3,
+        xl: 6.2,
       },
     },
     {
@@ -153,7 +94,7 @@ export const TransferAcctDetailFormMetadata = {
         },
       },
       __VIEW__: { render: { componentType: "hidden" } },
-      GridProps: { xs: 6, sm: 4, md: 2.4, lg: 1.9, xl: 1.6 },
+      GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
       render: {
@@ -188,7 +129,7 @@ export const TransferAcctDetailFormMetadata = {
         },
       },
       __VIEW__: { render: { componentType: "hidden" } },
-      GridProps: { xs: 6, sm: 4, md: 2.4, lg: 1.9, xl: 1.6 },
+      GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
       render: {
@@ -200,15 +141,6 @@ export const TransferAcctDetailFormMetadata = {
       isReadOnly: true,
       fullWidth: true,
       type: "text",
-      dependentFields: ["FDACCTS"],
-      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
-        let amount = (
-          Array.isArray(dependentFieldsValues?.["FDACCTS"])
-            ? dependentFieldsValues?.["FDACCTS"]
-            : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
-        return amount ?? "0";
-      },
       textFieldStyle: {
         "& .MuiInputBase-root": {
           background: "var(--theme-color5)",
@@ -224,7 +156,20 @@ export const TransferAcctDetailFormMetadata = {
         },
       },
       __VIEW__: { render: { componentType: "hidden" } },
-      GridProps: { xs: 6, sm: 4, md: 2.4, lg: 1.9, xl: 1.6 },
+      GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "ADDNEWROW",
+      label: "AddRow",
+      placeholder: "",
+      // tabIndex: "-1",
+      iconStyle: {
+        fontSize: "25px !important",
+      },
+      GridProps: { xs: 6, sm: 6, md: 1.8, lg: 1, xl: 1 },
     },
 
     {
@@ -232,7 +177,10 @@ export const TransferAcctDetailFormMetadata = {
         componentType: "arrayField",
       },
       name: "TRNDTLS",
-      enableGrid: true,
+      isDisplayCount: true,
+      isRemoveButton: true,
+      isScreenStyle: true,
+      fixedRows: true,
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
@@ -241,7 +189,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "_accountNumber",
           },
           branchCodeMetadata: {
-            name: "DC_BRANCH_CD",
+            name: "BRANCH_CD",
             isFieldFocus: true,
             fullWidth: true,
             runPostValidationHookAlways: true,
@@ -254,35 +202,17 @@ export const TransferAcctDetailFormMetadata = {
             ) => {
               if (formState?.isSubmitting) return {};
               return {
-                DC_ACCT_TYPE: { value: "" },
-                DC_ACCT_CD: { value: "" },
-                DC_ACCT_NM: { value: "" },
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
               };
             },
 
-            GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
+            GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 },
           },
           accountTypeMetadata: {
-            name: "DC_ACCT_TYPE",
-            dependentFields: ["DC_BRANCH_CD"],
-            disableCaching: true,
-            options: (...arg) => {
-              if (
-                Boolean(arg?.[3]?.companyID) &&
-                Boolean(arg?.[2]?.["TRNDTLS.DC_BRANCH_CD"]?.value) &&
-                Boolean(arg?.[3]?.user?.id)
-              ) {
-                return GeneralAPI.get_Account_Type({
-                  COMP_CD: arg?.[3]?.companyID ?? "",
-                  BRANCH_CD: arg?.[2]?.["TRNDTLS.DC_BRANCH_CD"]?.value ?? "",
-                  USER_NAME: arg?.[3]?.user?.id ?? "",
-                  DOC_CD: "FDINSTRCRTYPE",
-                });
-              } else {
-                return [];
-              }
-            },
-            _optionsKey: "getCreditAccountType",
+            name: "ACCT_TYPE",
+            dependentFields: ["BRANCH_CD"],
             runPostValidationHookAlways: true,
             validationRun: "onChange",
             postValidationSetCrossFieldValues: async (
@@ -292,17 +222,44 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["TRNDTLS.BRANCH_CD"]?.value?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
-                DC_ACCT_CD: { value: "" },
-                DC_ACCT_NM: { value: "" },
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
               };
             },
             fullWidth: true,
-            GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
+            GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 },
           },
           accountCodeMetadata: {
-            name: "DC_ACCT_CD",
-            dependentFields: ["DC_BRANCH_CD", "DC_ACCT_TYPE"],
+            name: "ACCT_CD",
+            dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+            runPostValidationHookAlways: true,
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -310,21 +267,46 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
-
               if (
+                currentField.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value?.length ===
+                  0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value &&
-                dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value
+                dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value
               ) {
                 const reqParameters = {
                   BRANCH_CD:
-                    dependentFieldsValues?.["TRNDTLS.DC_BRANCH_CD"]?.value,
+                    dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value,
                   COMP_CD: authState?.companyID,
                   ACCT_TYPE:
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.value,
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value,
                   ACCT_CD: utilFunction.getPadAccountNumber(
                     currentField?.value,
-                    dependentFieldsValues?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.optionData
                   ),
                   SCREEN_REF: "FD_DR_ACT",
                 };
@@ -337,25 +319,27 @@ export const TransferAcctDetailFormMetadata = {
                   let btnName = await formState.MessageBox(obj);
                   return { btnName, obj };
                 };
-                for (let i = 0; i < postData?.MSG?.length; i++) {
-                  if (postData?.MSG?.[i]?.O_STATUS === "999") {
+                for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
+                  if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "ValidationFailed",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                      icon: "ERROR",
                     });
                     returnVal = "";
-                  } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
+                  } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
                         messageTitle: "Alert",
-                        message: postData?.MSG?.[i]?.O_MESSAGE,
+                        message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                        icon: "WARNING",
                       });
                     }
-                    returnVal = postData;
-                  } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+                    returnVal = postData?.[0];
+                  } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Confirmation",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
 
@@ -363,9 +347,9 @@ export const TransferAcctDetailFormMetadata = {
                     if (btnName === "No") {
                       returnVal = "";
                     }
-                  } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+                  } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "0") {
                     if (btn99 !== "No") {
-                      returnVal = postData;
+                      returnVal = postData?.[0];
                     } else {
                       returnVal = "";
                     }
@@ -373,12 +357,12 @@ export const TransferAcctDetailFormMetadata = {
                 }
                 btn99 = 0;
                 return {
-                  DC_ACCT_CD:
+                  ACCT_CD:
                     returnVal !== ""
                       ? {
                           value: utilFunction.getPadAccountNumber(
                             currentField?.value,
-                            dependentFieldsValues?.DC_ACCT_TYPE?.optionData
+                            dependentFieldsValues?.ACCT_TYPE?.optionData
                           ),
                           isFieldFocused: false,
                           ignoreUpdate: true,
@@ -388,87 +372,47 @@ export const TransferAcctDetailFormMetadata = {
                           isFieldFocused: true,
                           ignoreUpdate: true,
                         },
-                  DC_ACCT_NM: {
+                  ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
+                  },
+                  TRAN_BAL: {
+                    value: returnVal?.TRAN_BAL ?? "",
+                  },
+                  TYPE_CD: {
+                    value: returnVal?.TYPE_CD ?? "",
+                  },
+                  CHEQUE_NO: {
+                    value: returnVal?.CHEQUE_NO ?? "",
+                  },
+                  STATUS: {
+                    value: returnVal?.STATUS ?? "",
                   },
                 };
               } else if (!currentField?.value) {
                 return {
-                  DC_ACCT_NM: { value: "" },
+                  ACCT_NM: { value: "" },
+                  TRAN_BAL: { value: "" },
+                  TYPE_CD: { value: "" },
+                  CHEQUE_NO: { value: "" },
+                  STATUS: { value: "" },
                 };
               }
               return {};
-
-              // const branchCode =
-              //   arg?.[3]?.["TRNDTLS.DC_BRANCH_CD"]?.value ?? "";
-              // const accountType =
-              //   arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.value ?? "";
-              // let accountCode = arg?.[0]?.value ?? "";
-
-              // if (Boolean(branchCode) && Boolean(accountType) && accountCode) {
-              //   accountCode = utilFunction.getPadAccountNumber(
-              //     accountCode,
-              //     arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
-              //   );
-              //   const apiResponse = await validateAccountAndGetDetail(
-              //     arg?.[2]?.companyID,
-              //     branchCode,
-              //     accountType,
-              //     accountCode,
-              //     "FD_DR_ACT"
-              //   );
-              //   if (apiResponse?.status === "0") {
-              //     if (Boolean(apiResponse?.message)) {
-              //       arg?.[1]?.MessageBox({
-              //         messageTitle: "Information",
-              //         message: apiResponse?.message.startsWith("\n")
-              //           ? apiResponse?.message?.slice(1)
-              //           : apiResponse?.message,
-              //       });
-              //     }
-              //     return {
-              //       DC_ACCT_CD: {
-              //         value: accountCode,
-              //         error: "",
-              //         ignoreUpdate: true,
-              //       },
-              //       DC_ACCT_NM: {
-              //         value: apiResponse?.data?.[0]?.ACCT_NM ?? "",
-              //       },
-              //       TRAN_BAL: {
-              //         value: apiResponse?.data?.[0]?.WIDTH_BAL ?? "",
-              //       },
-              //       DC_COMP_CD: {
-              //         value: arg?.[2]?.companyID ?? "",
-              //       },
-              //     };
-              //   } else {
-              //     return {
-              //       DC_ACCT_CD: {
-              //         value: "",
-              //         error: apiResponse?.message ?? "",
-              //         ignoreUpdate: true,
-              //         isFieldFocused: true,
-              //       },
-              //       DC_ACCT_NM: { value: "" },
-              //     };
-              //   }
-              // }
             },
-            GridProps: { xs: 12, sm: 2, md: 2, lg: 3, xl: 1.5 },
+            GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 },
           },
         },
         {
           render: {
             componentType: "textField",
           },
-          name: "DC_ACCT_NM",
-          label: "AC Name",
+          name: "ACCT_NM",
+          label: "Account Name",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 4, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 2.6 },
         },
         {
           render: {
@@ -479,7 +423,7 @@ export const TransferAcctDetailFormMetadata = {
           placeholder: "",
           type: "text",
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 1.5, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
         },
         {
           render: {
@@ -491,6 +435,118 @@ export const TransferAcctDetailFormMetadata = {
           type: "text",
           autoComplete: "off",
           required: true,
+          dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD", "TYPE_CD"],
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: true,
+          },
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            if (formState?.isSubmitting) return {};
+
+            if (
+              currentField.value &&
+              dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value.length === 0
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: "Enter Account Information.",
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+              if (buttonName === "Ok") {
+                return {
+                  CHEQUE_NO: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            } else if (
+              currentField.value &&
+              dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value.length
+            ) {
+              if (formState?.isSubmitting) return {};
+              let postData = await GeneralAPI.getChequeNoValidation({
+                BRANCH_CD: dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value,
+                ACCT_TYPE: dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value,
+                ACCT_CD: utilFunction.getPadAccountNumber(
+                  dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value,
+                  dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.optionData
+                ),
+                CHEQUE_NO: currentField.value,
+                TYPE_CD: dependentFieldsValues?.["TRNDTLS.TYPE_CD"]?.value,
+                SCREEN_REF: "RPT/401",
+              });
+              let btn99;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.ERR_CODE === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Validation Failed",
+                    message: postData[i]?.ERR_MSG,
+                    icon: "ERROR",
+                  });
+                  if (btnName === "Ok") {
+                    return {
+                      CHEQUE_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (postData[i]?.ERR_CODE === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: "Alert",
+                      message: postData[i]?.ERR_MSG,
+                      icon: "WARNING",
+                    });
+                  }
+                } else if (postData[i]?.ERR_CODE === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: "Confirmation",
+                    message: postData[i]?.ERR_MSG,
+                    buttonNames: ["Yes", "No"],
+                  });
+
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    return {
+                      CHEQUE_NO: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (postData[i]?.ERR_CODE === "0") {
+                  return {
+                    CHEQUE_NO: {
+                      value: currentField?.value,
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+            }
+          },
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -501,13 +557,20 @@ export const TransferAcctDetailFormMetadata = {
               return true;
             },
           },
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (formState?.screenFlag === "paymentTransfer") {
+              return true;
+            } else {
+              return false;
+            }
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value.trim())) {
               return "Cheque No. is Required.";
             }
             return "";
           },
-          GridProps: { xs: 6, sm: 2, md: 1.5, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.2 },
         },
         {
           render: {
@@ -521,37 +584,120 @@ export const TransferAcctDetailFormMetadata = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 2, xl: 1.5 },
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (formState?.screenFlag === "paymentTransfer") {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.3 },
         },
         {
           render: {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Debit Amount",
+          label: "",
           placeholder: "",
-          // isFieldFocused: true,
-          // autoComplete: false,
           type: "text",
-          FormatProps: {
-            allowNegative: false,
-          },
-          // validationRun: "all",
+          dependentFields: [
+            "TRAN_BAL",
+            "STATUS",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+          ],
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: true,
-            touchAndValidate: false,
+            touchAndValidate: true,
           },
-          postValidationSetCrossFieldValues: async (...arr) => {
-            if (arr[0].value) {
-              arr?.[1].setDataOnFieldChange("AMOUNT", "");
-              // return {
-              //   TOTAL_DR_AMOUNT: { value: arr[0].value ?? "0" },
-              // };
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            if (formState?.isSubmitting) return {};
+
+            if (
+              Number(currentField?.value) >
+              Number(dependentFieldsValues?.["TRNDTLS.TRAN_BAL"]?.value)
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "ValidationFailed",
+                message:
+                  "You can not enter amount more than Withdrawable Balance.",
+                buttonNames: ["Ok"],
+                icon: "ERROR",
+              });
+              if (buttonName === "Ok") {
+                return {
+                  AMOUNT: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
             } else {
-              // return {
-              //   TOTAL_DR_AMOUNT: { value: "" },
-              // };
+              if (
+                dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value &&
+                dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value
+              ) {
+                const reqParameters = {
+                  A_COMP_CD: authState?.companyID ?? "",
+                  A_BRANCH_CD:
+                    dependentFieldsValues?.["TRNDTLS.BRANCH_CD"]?.value ?? "",
+                  A_ACCT_TYPE:
+                    dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value ?? "",
+                  A_ACCT_CD:
+                    dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value ?? "",
+                  A_TYPE_CD: "6",
+                  A_AMOUNT: currentField?.value ?? "",
+                  A_TYPE: "C",
+                  WORKING_DATE: authState?.workingDate ?? "",
+                  A_STATUS:
+                    dependentFieldsValues?.["TRNDTLS.STATUS"]?.value ?? "",
+                  USERNAME: authState?.user?.id ?? "",
+                  USERROLE: authState?.role ?? "",
+                  A_SCREEN_REF: "RPT/401",
+                };
+                const postData = await API.checkLienAcct(reqParameters);
+
+                if (postData?.[0]?.STATUS === "999") {
+                  let buttonName = await formState?.MessageBox({
+                    messageTitle: "ValidationFailed",
+                    message: postData?.[0]?.MSG ?? "",
+                    buttonNames: ["Ok"],
+                    icon: "ERROR",
+                  });
+                  if (buttonName === "Ok") {
+                    return {
+                      AMOUNT: {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
+                    };
+                  }
+                } else if (postData?.[0]?.STATUS === "0") {
+                  return {
+                    AMOUNT: {
+                      value: currentField?.value,
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+              return {};
             }
+            return {};
+          },
+          FormatProps: {
+            allowNegative: false,
           },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
@@ -561,14 +707,20 @@ export const TransferAcctDetailFormMetadata = {
             }
             return "";
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
         },
 
         {
           render: {
             componentType: "hidden",
           },
-          name: "DC_COMP_CD",
+          name: "TYPE_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "STATUS",
         },
       ],
     },

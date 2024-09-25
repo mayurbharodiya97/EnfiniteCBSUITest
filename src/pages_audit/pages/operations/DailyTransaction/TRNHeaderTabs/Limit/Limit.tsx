@@ -1,10 +1,13 @@
+import {
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
 import { limitEntryTabMetaData, LimitGridMetaData } from "./gridMetadata";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog } from "@mui/material";
-import { FormWrapper, MetaDataType, Transition } from "@acuteinfo/common-base";
-import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import { limitconfirmFormMetaData } from "pages_audit/pages/operations/limit-entry/confirm/confirmFormMetadata";
@@ -122,6 +125,7 @@ export const Limit = ({ reqData }) => {
             initialValues={rows ?? {}}
             onSubmitHandler={() => {}}
             displayMode={"view"}
+            onSubmitHandler={() => {}}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>

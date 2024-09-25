@@ -1,14 +1,20 @@
-import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
-import * as API from "./api";
+import {
+  getAccountTypeList,
+  getBankDtlList,
+  getIfscBankDetail,
+  getIfscBenDetail,
+  getPMISCData,
+} from "../FDInterestPayment/viewDetails/api";
+import { utilFunction } from "@acuteinfo/common-base";
 
 let bankflag = false;
 let neftflag = false;
 
-export const FdInterestPaymentFormMetaData = {
+export const recAccountFindmetaData = {
   form: {
-    name: "FdInterestPaymentFormUpdate",
-    label: "",
+    name: "accountNumber",
+    label: "EnterParameters",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -16,14 +22,7 @@ export const FdInterestPaymentFormMetaData = {
       ordering: "auto",
       renderType: "simple",
       gridConfig: {
-        item: {
-          xs: 12,
-          sm: 12,
-          md: 12,
-          lg: 12,
-          xl: 12,
-        },
-
+        item: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
         container: {
           direction: "row",
           spacing: 1,
@@ -34,87 +33,268 @@ export const FdInterestPaymentFormMetaData = {
       textField: {
         fullWidth: true,
       },
-      select: {
-        fullWidth: true,
-      },
-      numberFormat: {
-        fullWidth: true,
-      },
-      checkbox: {
+      _accountNumber: {
         fullWidth: true,
       },
     },
   },
   fields: [
     {
-      render: {
-        componentType: "hidden",
+      render: { componentType: "_accountNumber" },
+      branchCodeMetadata: {
+        name: "BRANCH_CD",
+        isFieldFocused: true,
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
       },
-      name: "CR_COMP_CD",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
+      accountTypeMetadata: {
+        name: "ACCT_TYPE",
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
+        isFieldFocused: true,
       },
-      name: "CR_BRANCH_CD_1",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
+      accountCodeMetadata: {
+        name: "ACCT_CD",
+        autoComplete: "off",
+        dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          formState?.handleButtonDisable(true);
+          const reqParameters = {
+            BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
+            ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
+            ACCT_CD: utilFunction.getPadAccountNumber(
+              currentField?.value ?? "",
+              dependentFieldValues?.ACCT_TYPE?.optionData
+            ),
+            SCREEN_REF: "MST/894",
+          };
+
+          if (
+            Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
+            Boolean(dependentFieldValues?.ACCT_TYPE?.value)
+          ) {
+            const postData = await GeneralAPI.getAccNoValidation(reqParameters);
+            let btn99, returnVal;
+            for (let i = 0; i < postData?.MSG.length; i++) {
+              if (postData?.MSG[i]?.O_STATUS === "999") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "ERROR",
+                });
+                returnVal = "";
+              } else if (postData?.MSG[i]?.O_STATUS === "99") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "Confirmation",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData?.MSG[i]?.O_STATUS === "9") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "Alert",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "WARNING",
+                });
+              } else if (postData?.MSG[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData;
+                } else {
+                  returnVal = "";
+                }
+              }
+            }
+            formState.setDataOnFieldChange("fdPaymentInstrudtl", {
+              COMP_CD: authState?.companyID ?? "",
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                currentField?.value ?? "",
+                dependentFieldValues?.ACCT_TYPE?.optionData ?? ""
+              ),
+              ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
+              BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
+            });
+            formState?.handleButtonDisable(false);
+
+            return {
+              ACCT_CD:
+                returnVal !== ""
+                  ? {
+                      value: utilFunction.getPadAccountNumber(
+                        currentField?.value ?? "",
+                        dependentFieldValues?.TRN_ACCT_TYPE?.optionData ?? ""
+                      ),
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    }
+                  : {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+
+              ACCT_NM: {
+                value: returnVal?.ACCT_NM ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+              TRAN_BAL: {
+                value: returnVal?.TRAN_BAL ?? "",
+                ignoreUpdate: true,
+                isFieldFocused: false,
+              },
+            };
+          }
+        },
+        fullWidth: true,
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
       },
-      name: "CR_ACCT_TYPE_1",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "CR_ACCT_CD_1",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "CR_ACCT_NM_1",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HOLDER_ACCT_NM",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HOLDER_ADD1",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HOLDER_CONTACT_INFO",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "TO_ACCT_TYPE_DIS",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "FD_NO",
     },
 
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "AccountName",
+      placeholder: "AccountName",
+      type: "text",
+      isReadOnly: true,
+      GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Balance",
+      placeholder: "Balance",
+      type: "text",
+      isReadOnly: true,
+      textInputFromRight: true,
+      fullWidth: true,
+      GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
+    },
+  ],
+};
+export const RecInterestPaymentMetaData = {
+  form: {
+    name: "RecInterestPayment",
+    label: "",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      amountField: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+    },
+  },
+
+  fields: [
+    // Account details
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "BRANCH_CD",
+      label: "branchCode",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_TYPE",
+      label: "accountType",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "AccountNum",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NAME",
+      label: "AccountName",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Balance",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (!Boolean(formState?.accountDetail)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    // FD/RD etail
+    {
+      render: {
+        componentType: "divider",
+      },
+      label: "FDRDDetail",
+      name: "FDRDDtl",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
     {
       render: {
         componentType: "select",
@@ -122,9 +302,10 @@ export const FdInterestPaymentFormMetaData = {
       name: "PAYMENT_MODE",
       label: "PaymentMode",
       defaultOptionLabel: "Select Option",
-      options: API.getPMISCData,
+      options: getPMISCData,
       _optionsKey: "getPMISCData",
       required: true,
+      validationRun: "onChange",
       dependentFields: [
         "CR_BRANCH_CD_1",
         "CR_BRANCH_CD",
@@ -135,20 +316,19 @@ export const FdInterestPaymentFormMetaData = {
         "CR_ACCT_NM_1",
         "CR_ACCT_NM",
         "HOLDER_ACCT_NM",
-        "ADD1",
+        "ACCT_NM",
         "HOLDER_ADD1",
-        "CONTACT_INFO",
+        "ADD1",
         "HOLDER_CONTACT_INFO",
+        "CONTACT_INFO",
         "TO_IFSCCODE",
         "BANK",
         "TO_ACCT_NO",
         "TO_ACCT_TYPE",
-        "TO_ACCT_TYPE_DIS",
         "TO_ACCT_NM",
         "TO_CONTACT_NO",
         "TO_ADD1",
       ],
-      validationRun: "onChange",
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -156,17 +336,15 @@ export const FdInterestPaymentFormMetaData = {
         dependentFieldValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (!Boolean(formState?.rowData?.PAYMENT_MODE)) {
+        if (!Boolean(formState?.accountDetail?.PAYMENT_MODE)) {
           neftflag = true;
           bankflag = true;
         }
         if (currentField?.value === "NEFT") {
           if (
-            (formState?.fdDetails?.PAYMENT_MODE === "BANKACCT" ||
-              formState?.rowsData?.[0]?.data?.PAYMENT_MODE === "BANKACCT") &&
-            (dependentFieldValues?.CR_BRANCH_CD?.value ||
-              dependentFieldValues?.CR_ACCT_TYPE?.value ||
-              dependentFieldValues?.CR_ACCT_CD?.value)
+            dependentFieldValues?.CR_BRANCH_CD?.value ||
+            dependentFieldValues?.CR_ACCT_TYPE?.value ||
+            dependentFieldValues?.CR_ACCT_CD?.value
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "Confirmation",
@@ -181,19 +359,13 @@ export const FdInterestPaymentFormMetaData = {
                 CR_ACCT_CD: { value: "" },
                 CR_ACCT_NM: { value: "" },
                 ACCT_NM: {
-                  value: dependentFieldValues?.HOLDER_ACCT_NM?.value
-                    ? dependentFieldValues?.HOLDER_ACCT_NM?.value
-                    : dependentFieldValues?.ACCT_NM?.value,
+                  value: dependentFieldValues?.HOLDER_ACCT_NM?.value ?? "",
                 },
                 ADD1: {
-                  value: dependentFieldValues?.HOLDER_ADD1?.value
-                    ? dependentFieldValues?.HOLDER_ADD1?.value
-                    : dependentFieldValues?.ADD1?.value,
+                  value: dependentFieldValues?.HOLDER_ADD1?.value ?? "",
                 },
                 CONTACT_INFO: {
-                  value: dependentFieldValues?.HOLDER_CONTACT_INFO?.value
-                    ? dependentFieldValues?.HOLDER_CONTACT_INFO?.value
-                    : dependentFieldValues?.CONTACT_INFO?.value,
+                  value: dependentFieldValues?.HOLDER_CONTACT_INFO?.value ?? "",
                 },
               };
             }
@@ -229,18 +401,16 @@ export const FdInterestPaymentFormMetaData = {
         }
         if (currentField?.value === "BANKACCT") {
           if (
-            (formState?.fdDetails?.PAYMENT_MODE === "NEFT" ||
-              formState?.rowsData?.[0]?.data?.PAYMENT_MODE === "NEFT") &&
-            (Boolean(dependentFieldValues?.ACCT_NM?.value) ||
-              Boolean(dependentFieldValues?.ADD1?.value) ||
-              Boolean(dependentFieldValues?.CONTACT_INFO?.value) ||
-              Boolean(dependentFieldValues?.TO_IFSCCODE?.value) ||
-              Boolean(dependentFieldValues?.BANK?.value) ||
-              Boolean(dependentFieldValues?.TO_ACCT_NO?.value) ||
-              Boolean(dependentFieldValues?.TO_ACCT_TYPE?.value) ||
-              Boolean(dependentFieldValues?.TO_ACCT_NM?.value) ||
-              Boolean(dependentFieldValues?.TO_CONTACT_NO?.value) ||
-              Boolean(dependentFieldValues?.TO_ADD1?.value))
+            Boolean(dependentFieldValues?.ACCT_NM?.value) ||
+            Boolean(dependentFieldValues?.ADD1?.value) ||
+            Boolean(dependentFieldValues?.CONTACT_INFO?.value) ||
+            Boolean(dependentFieldValues?.TO_IFSCCODE?.value) ||
+            Boolean(dependentFieldValues?.BANK?.value) ||
+            Boolean(dependentFieldValues?.TO_ACCT_NO?.value) ||
+            Boolean(dependentFieldValues?.TO_ACCT_TYPE?.value) ||
+            Boolean(dependentFieldValues?.TO_ACCT_NM?.value) ||
+            Boolean(dependentFieldValues?.TO_CONTACT_NO?.value) ||
+            Boolean(dependentFieldValues?.TO_ADD1?.value)
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "Confirmation",
@@ -257,7 +427,6 @@ export const FdInterestPaymentFormMetaData = {
                 BANK: { value: "" },
                 TO_ACCT_NO: { value: "" },
                 TO_ACCT_TYPE: { value: "" },
-                TO_ACCT_TYPE_DIS: { value: "" },
                 TO_ACCT_NM: { value: "" },
                 TO_CONTACT_NO: { value: "" },
                 TO_ADD1: { value: "" },
@@ -331,14 +500,130 @@ export const FdInterestPaymentFormMetaData = {
         xl: 3,
       },
     },
-
     {
       render: {
-        componentType: "spacer",
+        componentType: "datePicker",
       },
-      name: "PAYMENT_MODE_SPACER",
-      GridProps: { xs: 0, sm: 6, md: 9, lg: 9, xl: 9 },
+      name: "TRAN_DT",
+      label: "DepositDate",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
     },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOT_AMT",
+      label: "DepositAmount",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      textInputFromRight: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "MATURITY_DT",
+      label: "MaturityDate",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "MATURITY_AMT",
+      label: "MaturityAmount",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      textInputFromRight: true,
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MATURE_INST",
+      label: "MatureInstruction",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    // Hidden Fields
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_COMP_CD",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_BRANCH_CD_1",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_ACCT_TYPE_1",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_ACCT_CD_1",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_ACCT_NM_1",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HOLDER_ACCT_NM",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HOLDER_ADD1",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HOLDER_CONTACT_INFO",
+      ignoreInSubmit: true,
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FD_NO",
+      ignoreInSubmit: true,
+    },
+
     {
       render: {
         componentType: "divider",
@@ -360,9 +645,8 @@ export const FdInterestPaymentFormMetaData = {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "CR_BRANCH_CD",
+        validationRun: onchange,
         dependentFields: ["PAYMENT_MODE"],
-        validationRun: "onChange",
-        runPostValidationHookAlways: true,
         isReadOnly: (fieldValue, dependentFields, formState) => {
           return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
         },
@@ -388,8 +672,7 @@ export const FdInterestPaymentFormMetaData = {
       accountTypeMetadata: {
         name: "CR_ACCT_TYPE",
         dependentFields: ["PAYMENT_MODE"],
-        validationRun: "onChange",
-        runPostValidationHookAlways: true,
+        validationRun: onchange,
         isReadOnly: (fieldValue, dependentFields, formState) => {
           return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
         },
@@ -416,7 +699,6 @@ export const FdInterestPaymentFormMetaData = {
       accountCodeMetadata: {
         name: "CR_ACCT_CD",
         dependentFields: ["CR_ACCT_TYPE", "CR_BRANCH_CD", "PAYMENT_MODE"],
-        runPostValidationHookAlways: true,
         isReadOnly: (fieldValue, dependentFields, formState) => {
           return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
         },
@@ -448,10 +730,10 @@ export const FdInterestPaymentFormMetaData = {
             BRANCH_CD: dependentFieldValues?.CR_BRANCH_CD?.value ?? "",
             ACCT_TYPE: dependentFieldValues?.CR_ACCT_TYPE?.value ?? "",
             ACCT_CD: utilFunction.getPadAccountNumber(
-              currentField?.value,
-              dependentFieldValues?.CR_ACCT_TYPE?.optionData
+              currentField?.value ?? "",
+              dependentFieldValues?.CR_ACCT_TYPE?.optionData ?? ""
             ),
-            SCREEN_REF: "TRN/584",
+            SCREEN_REF: "MST/894",
           };
 
           if (
@@ -463,17 +745,17 @@ export const FdInterestPaymentFormMetaData = {
             formState.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             let btn99, returnVal;
-            for (let i = 0; i < postData?.MSG.length; i++) {
+            for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: postData?.MSG[i]?.O_MESSAGE,
+                  message: postData?.MSG[i]?.O_MESSAGE ?? "",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
                   messageTitle: "Confirmation",
-                  message: postData?.MSG[i]?.O_MESSAGE,
+                  message: postData?.MSG[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                 });
                 btn99 = btnName;
@@ -483,7 +765,7 @@ export const FdInterestPaymentFormMetaData = {
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
                   messageTitle: "Alert",
-                  message: postData?.MSG[i]?.O_MESSAGE,
+                  message: postData?.MSG[i]?.O_MESSAGE ?? "",
                 });
               } else if (postData?.MSG[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
@@ -499,8 +781,8 @@ export const FdInterestPaymentFormMetaData = {
                 returnVal !== ""
                   ? {
                       value: utilFunction.getPadAccountNumber(
-                        currentField?.value,
-                        dependentFieldValues?.CR_ACCT_TYPE?.optionData
+                        currentField?.value ?? "",
+                        dependentFieldValues?.CR_ACCT_TYPE?.optionData ?? ""
                       ),
                       isFieldFocused: false,
                       ignoreUpdate: true,
@@ -547,7 +829,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       GridProps: { xs: 12, sm: 6, md: 4, lg: 4, xl: 4 },
     },
-
+    // FD Interest/Payment Credit NEFT Details
     {
       render: {
         componentType: "divider",
@@ -570,7 +852,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "ACCT_NM",
       label: "OrderingAcName",
-      placeholder: "EnterOrderingAcName",
+      placeholder: "OrderingName",
       required: true,
       maxLength: 100,
       type: "text",
@@ -587,6 +869,7 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
+
       validate: (currentField, dependentFields) => {
         if (
           !Boolean(currentField?.value) &&
@@ -604,7 +887,6 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "ADD1",
       label: "OrderingAcAddress",
-      placeholder: "EnterOrderingAcAddress",
       required: true,
       maxLength: 100,
       type: "text",
@@ -638,7 +920,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "CONTACT_INFO",
       label: "OrderingAcContact",
-      placeholder: "EnterOrderingAcContact",
+      placeholder: "",
       required: true,
       maxLength: 35,
       type: "text",
@@ -671,7 +953,6 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_IFSCCODE",
       label: "IFSCCode",
-      placeholder: "EnterIFSCCode",
       required: true,
       maxLength: 11,
       type: "text",
@@ -705,7 +986,7 @@ export const FdInterestPaymentFormMetaData = {
         if (formState?.isSubmitting) return {};
 
         if (currentField?.value && !Boolean(currentField?.error)) {
-          let validateIFSC = await API.getIfscBenDetail({
+          let validateIFSC = await getIfscBenDetail({
             IFSC_CODE: currentField?.value ?? "",
             ENTRY_TYPE: "NEFT",
           });
@@ -713,7 +994,7 @@ export const FdInterestPaymentFormMetaData = {
           if (validateIFSC?.[0]?.O_STATUS === "999") {
             let buttonName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: validateIFSC?.[0]?.O_MESSAGE,
+              message: validateIFSC?.[0]?.O_MESSAGE ?? "",
               buttonNames: ["Ok"],
             });
             if (buttonName === "Ok") {
@@ -724,7 +1005,7 @@ export const FdInterestPaymentFormMetaData = {
               };
             }
           } else if (validateIFSC?.[0]?.O_STATUS === "0") {
-            let postData = await API.getIfscBankDetail({
+            let postData = await getIfscBankDetail({
               AS_VALUE: currentField?.value ?? "",
               FLAG: "I",
             });
@@ -771,6 +1052,7 @@ export const FdInterestPaymentFormMetaData = {
         }
         return "";
       },
+
       GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
     },
     {
@@ -786,7 +1068,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_ACCT_NO",
       label: "BeneficiaryAccountNumber",
-      placeholder: "EnterBeneficiaryAccountNumber",
+      placeholder: "",
       type: "text",
       required: true,
       disableCaching: true,
@@ -797,7 +1079,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       options: (dependentValue, formState, _, authState) => {
         if (Boolean(dependentValue?.TO_IFSCCODE_HIDDEN?.value)) {
-          return API.getBankDtlList({
+          return getBankDtlList({
             TO_IFSCCODE: dependentValue?.TO_IFSCCODE_HIDDEN?.value,
           });
         } else {
@@ -812,7 +1094,6 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -871,9 +1152,8 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_ACCT_TYPE",
       label: "BeneficiaryAccountType",
-      placeholder: "EnterBeneficiaryAccountType",
       type: "text",
-      options: API.getAccountTypeList,
+      options: getAccountTypeList,
       _optionsKey: "getAccountTypeList",
       required: true,
       validationRun: "onChange",
@@ -905,7 +1185,6 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_ACCT_NM",
       label: "BeneficiaryAccountName",
-      placeholder: "EnterBeneficiaryAccountName",
       type: "text",
       maxLength: 100,
       required: true,
@@ -941,7 +1220,6 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_CONTACT_NO",
       label: "BeneficiaryContact",
-      placeholder: "EnterBeneficiaryContact",
       type: "text",
       maxLength: 50,
       txtTransform: "uppercase",
@@ -976,7 +1254,6 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_ADD1",
       label: "BeneficiaryAddress",
-      placeholder: "EnterBeneficiaryAddress",
       type: "text",
       required: true,
       txtTransform: "uppercase",
