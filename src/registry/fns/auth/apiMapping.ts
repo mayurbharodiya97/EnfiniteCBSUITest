@@ -2605,6 +2605,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
   GETLOGINPAGEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
