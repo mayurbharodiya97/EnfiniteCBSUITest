@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import DualPartTable from "./dualPartTable";
-import { useStyles } from "./style";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 
 const DualTableCalc = ({

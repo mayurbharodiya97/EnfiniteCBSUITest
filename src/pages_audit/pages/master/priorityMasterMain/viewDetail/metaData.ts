@@ -1,5 +1,4 @@
-
-import * as API from '../api'
+import * as API from "../api";
 export const Viewformmetadata = {
   form: {
     name: "Priority main master",
@@ -16,13 +15,13 @@ export const Viewformmetadata = {
           sm: 12,
           md: 12,
           lg: 12,
-          xl: 12
+          xl: 12,
         },
         container: {
           direction: "row",
           // spacing: 2,
           width: 200,
-          maxwidth: 300
+          maxwidth: 300,
         },
       },
     },
@@ -35,7 +34,7 @@ export const Viewformmetadata = {
       },
       devider: {
         fullWidth: true,
-      }
+      },
     },
   },
   fields: [
@@ -54,20 +53,19 @@ export const Viewformmetadata = {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
       },
-      preventSpecialCharInput:true,
+      preventSpecialCharInput: true,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
-      __EDIT__: { isReadOnly: true }
+      __EDIT__: { isReadOnly: true },
     },
     {
       render: { componentType: "autocomplete" },
       name: "PARENT_GROUP",
       label: "ParentGroup",
-      placeholder:"ParentGroup",
+      placeholder: "ParentGroup",
       options: API.getParentPriority,
       _optionsKey: "getParentPriority",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __VIEW__: { isReadOnly: true },
- 
     },
 
     {
@@ -77,10 +75,9 @@ export const Viewformmetadata = {
       label: "SubPriority",
       options: API.getSubPriority,
       _optionsKey: "getSubPriority",
-      placeholder:"SubPriority",
+      placeholder: "SubPriority",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __VIEW__: { isReadOnly: true },
-
     },
     {
       render: { componentType: "textField" },
@@ -89,7 +86,7 @@ export const Viewformmetadata = {
       type: "text",
       required: true,
       placeholder: "Description",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       maxLength: 50,
       multiline: true,
       txtTransform: "uppercase",
@@ -114,7 +111,7 @@ export const Viewformmetadata = {
       },
       name: "FROM_LIMIT",
       label: "FromLimit",
-      placeholder:"FromLimit",
+      placeholder: "FromLimit",
       maxLength: 12,
       type: "text",
       fullWidth: true,
@@ -133,7 +130,7 @@ export const Viewformmetadata = {
       },
       name: "TO_LIMIT",
       label: "ToLimit",
-      placeholder:"ToLimit",
+      placeholder: "ToLimit",
       type: "text",
       maxLength: 12,
       fullWidth: true,
@@ -147,8 +144,12 @@ export const Viewformmetadata = {
       dependentFields: ["FROM_LIMIT"],
       runValidationOnDependentFieldsChange: true,
       validate: (fieldValue, dependentFields) => {
-        if (fieldValue && fieldValue.value !== null &&
-          dependentFields["FROM_LIMIT"] && dependentFields["FROM_LIMIT"].value !== null) {
+        if (
+          fieldValue &&
+          fieldValue.value !== null &&
+          dependentFields["FROM_LIMIT"] &&
+          dependentFields["FROM_LIMIT"].value !== null
+        ) {
           const toLimit = parseFloat(fieldValue.value);
           const fromLimit = parseFloat(dependentFields["FROM_LIMIT"].value);
 
@@ -158,7 +159,7 @@ export const Viewformmetadata = {
             }
           }
         }
-      }
+      },
     },
     {
       render: {
@@ -174,7 +175,7 @@ export const Viewformmetadata = {
       },
       name: "SECURE_PROV_PERC",
       label: "Secured",
-      placeholder:"Secured",
+      placeholder: "Secured",
       type: "text",
       fullWidth: true,
       thousandsGroupStyle: "lakh",
@@ -192,7 +193,7 @@ export const Viewformmetadata = {
       },
       name: "UNSECURE_PROV_PERC",
       label: "UnSecured",
-      placeholder:"UnSecured",
+      placeholder: "UnSecured",
       type: "text",
       fullWidth: true,
       thousandsGroupStyle: "lakh",
@@ -203,7 +204,6 @@ export const Viewformmetadata = {
       enableNumWords: false,
       isFieldFocused: false,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
-
     },
     {
       render: {
