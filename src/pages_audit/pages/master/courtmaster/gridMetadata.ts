@@ -31,7 +31,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr_No",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 70,
       minWidth: 50,

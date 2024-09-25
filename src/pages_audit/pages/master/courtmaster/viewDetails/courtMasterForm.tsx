@@ -66,13 +66,7 @@ const CourtMasterForm = ({
     let oldData = {
       ...rows?.[0]?.data,
     };
-    let upd = utilFunction.transformDetailsData(newData, {
-      ...oldData,
-      COUNTRY_CD: oldData?.COUNTRY_CD?.trim(),
-      STATE_CD: oldData?.STATE_CD?.trim(),
-      DIST_CD: oldData?.DIST_CD?.trim(),
-      CITY_CD: oldData?.CITY_CD?.trim(),
-    });
+    let upd = utilFunction.transformDetailsData(newData, oldData);
     isErrorFuncRef.current = {
       data: {
         ...newData,
