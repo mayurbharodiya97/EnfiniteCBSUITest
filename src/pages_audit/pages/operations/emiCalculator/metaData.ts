@@ -2,6 +2,7 @@ import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { t } from "i18next";
 import { DefaultValue } from "recoil";
+import { PostValidationSetCrossFieldValuesFnType } from "packages/form";
 let a = 1;
 
 export const EMICalculateMetaData = {
@@ -90,7 +91,7 @@ export const EMICalculateMetaData = {
     },
     {
       render: {
-        componentType: "amountField",
+        componentType: "rateOfIntWithoutValidation",
       },
       name: "INT_RATE",
       label: "IntRate",
@@ -187,63 +188,81 @@ export const EMICalculateMetaData = {
       render: {
         componentType: "spacer",
       },
-      GridProps: { xs: 0, sm: 0, md: 4, lg: 4, xl: 4 },
+      GridProps: { xs: 0, sm: 0, md: 6, lg: 6, xl: 6 },
+    },
+    // {
+    //   render: {
+    //     componentType: "amountField",
+    //   },
+    //   name: "DISBURSE_TOTAL",
+    //   label: "Total Loan Amount",
+    //   placeholder: "",
+    //   isReadOnly: true,
+    //   type: "text",
+    //   dependentFields: ["PAYSLIP_MST_DTL", "PAYSLIP_DRAFT_DTL"],
+    //   textFieldStyle: {
+    //     "& .MuiInputBase-root": {
+    //       background: "var(--theme-color5)",
+    //       color: "var(--theme-color2) !important",
+    //     },
+    //     "& .MuiInputBase-input": {
+    //       background: "var(--theme-color5)",
+    //       color: "var(--theme-color2) !important",
+    //       "&.Mui-disabled": {
+    //         color: "var(--theme-color2) !important",
+    //         "-webkit-text-fill-color": "var(--theme-color2) !important",
+    //       },
+    //     },
+    //   },
+    //   GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1.5 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "numberFormat",
+    //   },
+    //   name: "REM_INST",
+    //   label: "Remaining Installment",
+    //   className: "textInputFromRight",
+    //   type: "text",
+    //   fullWidth: true,
+    //   FormatProps: {
+    //     allowNegative: false,
+    //     allowLeadingZeros: false,
+    //   },
+    //   isReadOnly: true,
+    //   textFieldStyle: {
+    //     "& .MuiInputBase-root": {
+    //       background: "var(--theme-color5)",
+    //       color: "var(--theme-color2) !important",
+    //     },
+    //     "& .MuiInputBase-input": {
+    //       background: "var(--theme-color5)",
+    //       color: "var(--theme-color2) !important",
+    //       "&.Mui-disabled": {
+    //         color: "var(--theme-color2) !important",
+    //         "-webkit-text-fill-color": "var(--theme-color2) !important",
+    //       },
+    //     },
+    //   },
+    //   GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1.5 },
+    // },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "calculate",
+      label: "Calculate",
+      type: "text",
+      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
       render: {
-        componentType: "amountField",
+        componentType: "formbutton",
       },
-      name: "DISBURSE_TOTAL",
-      label: "Total Loan Amount",
-      placeholder: "",
-      isReadOnly: true,
+      name: "clear",
+      label: "Clear",
       type: "text",
-      dependentFields: ["PAYSLIP_MST_DTL", "PAYSLIP_DRAFT_DTL"],
-      textFieldStyle: {
-        "& .MuiInputBase-root": {
-          background: "var(--theme-color5)",
-          color: "var(--theme-color2) !important",
-        },
-        "& .MuiInputBase-input": {
-          background: "var(--theme-color5)",
-          color: "var(--theme-color2) !important",
-          "&.Mui-disabled": {
-            color: "var(--theme-color2) !important",
-            "-webkit-text-fill-color": "var(--theme-color2) !important",
-          },
-        },
-      },
-      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "REM_INST",
-      label: "Remaining Installment",
-      className: "textInputFromRight",
-      type: "text",
-      fullWidth: true,
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: false,
-      },
-      isReadOnly: true,
-      textFieldStyle: {
-        "& .MuiInputBase-root": {
-          background: "var(--theme-color5)",
-          color: "var(--theme-color2) !important",
-        },
-        "& .MuiInputBase-input": {
-          background: "var(--theme-color5)",
-          color: "var(--theme-color2) !important",
-          "&.Mui-disabled": {
-            color: "var(--theme-color2) !important",
-            "-webkit-text-fill-color": "var(--theme-color2) !important",
-          },
-        },
-      },
-      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1.5 },
+      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -263,7 +282,7 @@ export const EMICalculateMetaData = {
           type: "text",
           className: "textInputFromRight",
           fullWidth: true,
-          GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
+          GridProps: { xs: 1, sm: 1, md: 0.5, lg: 0.5, xl: 0.5 },
         },
         {
           render: {
@@ -273,7 +292,7 @@ export const EMICalculateMetaData = {
           label: "DisburseDate",
           fullWidth: true,
           defaultValue: new Date(),
-          GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
+          GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
           runValidationOnDependentFieldsChange: false,
           dependentFields: [
             "INST_NO",
@@ -283,7 +302,6 @@ export const EMICalculateMetaData = {
             "DATA_VAL",
             "DISBURSE_TOTAL",
             "DISBURSE_AMT",
-            "",
             "SR_NO",
             "INST_START_DT",
           ],
@@ -294,20 +312,34 @@ export const EMICalculateMetaData = {
             dependentFieldValues
           ) => {
             // if (formState?.isSubmitting) return {};
-            // formState.setDataOnFieldChange("EMI_SCHEDULE", {});
+            formState.setDataOnFieldChange("EMI_SCHEDULE", {});
+            const refIDCurrent = formState.refID?.current;
+            // console.log("refIDCurrent.DISBURSE_DATE",formState)
+
             const date = new Date(currentField?.value);
-            const formattedDate = format(date, "dd/MMM/yyyy").toUpperCase();
-            const dependentFieldValuesDate = new Date(
+            const disburseDate = format(date, "dd/MMM/yyyy").toUpperCase();
+            const inst_dt = new Date(
               dependentFieldValues?.["DISBURS_DTL.INST_START_DT"]?.value
             );
-            const formDate = format(
-              dependentFieldValuesDate,
-              "dd/MMM/yyyy"
-            ).toUpperCase();
-            // const prev_date = formState.refID.current.DISBURSE_DATE ? new Date(formState.refID.current.DISBURSE_DATE) : null;
-            // const prev_dis_dt = prev_date ? format(prev_date, 'dd/MMM/yyyy').toUpperCase() : null;
+            const inst_start_dt = format(inst_dt, "dd/MMM/yyyy").toUpperCase();
 
-            //  if(currentField?.value) {
+            const prev_disburseDate =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : refIDCurrent.DISBURSE_DATE;
+            const prev_date =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_disburseDate
+                ? new Date(prev_disburseDate)
+                : null;
+            const prev_disburse_dt =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_date
+                ? format(prev_date, "dd/MMM/yyyy").toUpperCase()
+                : null;
+
             const reqParameters = {
               A_FLAG: "DISBURSEMENT_DT",
               A_INST_NO: dependentFieldValues?.INST_NO?.value,
@@ -316,9 +348,9 @@ export const EMICalculateMetaData = {
               A_INST_PERIOD: dependentFieldValues?.INST_PERIOD?.value,
               A_INT_SKIP_FLAG: dependentFieldValues?.DATA_VAL?.value,
               A_SR_CD: dependentFieldValues?.["DISBURS_DTL.SR_NO"]?.value,
-              A_PREV_DISBUR_DT: formattedDate,
-              A_DISBURSEMENT_DT: formattedDate,
-              A_INST_START_DT: formDate,
+              A_PREV_DISBUR_DT: prev_disburse_dt,
+              A_DISBURSEMENT_DT: disburseDate,
+              A_INST_START_DT: inst_start_dt,
               A_DISBURS_AMT:
                 dependentFieldValues?.["DISBURS_DTL.DISBURSE_AMT"]?.value,
               A_TOT_LOAN_AMT: dependentFieldValues?.DISBURSE_TOTAL?.value,
@@ -328,10 +360,9 @@ export const EMICalculateMetaData = {
               A_USER: authState?.user?.id,
               A_USER_LEVEL: authState?.role,
             };
-
-            // console.log("EMI_SCHEDULE",formState.refID.current.DISBURSE_DATE)
             const postData = await API.validateDisburseDetail(reqParameters);
             let btn99, returnVal;
+
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
               return { btnName, obj };
@@ -343,7 +374,7 @@ export const EMICalculateMetaData = {
                   messageTitle: t("ValidationFailed"),
                   message: postData[i]?.O_MESSAGE,
                 });
-                returnVal = "";
+                return {};
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: t("Confirmation"),
@@ -352,7 +383,7 @@ export const EMICalculateMetaData = {
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
-                  returnVal = "";
+                  return {};
                 }
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
@@ -361,7 +392,7 @@ export const EMICalculateMetaData = {
                     message: postData[i]?.O_MESSAGE,
                   });
                 }
-                returnVal = "";
+                return {};
               } else if (postData[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
                   returnVal = postData[i];
@@ -371,28 +402,27 @@ export const EMICalculateMetaData = {
               }
             }
             return {
-              "EMI_DETAIL2[0].FROM_INST": {
-                value: postData[0].FROM_INST,
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-              "EMI_DETAIL2[0].TO_INST": {
-                value: postData[0].TO_INST,
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-              "EMI_DETAIL2[0].EMI_RS": {
-                value: postData[0].EMI_RS,
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-              REM_INST: {
-                value: postData[0].REM_INST,
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
+              // "EMI_DETAIL2[0].FROM_INST": {
+              //   value: postData[0].FROM_INST,
+              //   isFieldFocused: true,
+              //   ignoreUpdate: true,
+              // },
+              // "EMI_DETAIL2[0].TO_INST": {
+              //   value: postData[0].TO_INST,
+              //   isFieldFocused: true,
+              //   ignoreUpdate: true,
+              // },
+              // "EMI_DETAIL2[0].EMI_RS": {
+              //   value: postData[0].EMI_RS,
+              //   isFieldFocused: true,
+              //   ignoreUpdate: true,
+              // },
+              // REM_INST: {
+              //   value: postData[0].REM_INST,
+              //   isFieldFocused: true,
+              //   ignoreUpdate: true,
+              // },
             };
-            // }
           },
         },
 
@@ -404,7 +434,7 @@ export const EMICalculateMetaData = {
           label: "InstStartDate",
           defaultValue: new Date(),
           type: "text",
-          GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
+          GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
           dependentFields: [
             "DISBURSE_DATE1",
             "INST_NO",
@@ -417,6 +447,127 @@ export const EMICalculateMetaData = {
             "SR_NO",
           ],
           runValidationOnDependentFieldsChange: false,
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            // formState.setDataOnFieldChange("EMI_SCHEDULE1", {});
+
+            const refIDCurrent = formState.refID?.current;
+            const date = new Date(currentField?.value);
+            const inst_dt = format(date, "dd/MMM/yyyy").toUpperCase();
+            const disburseDate = new Date(
+              dependentFieldValues?.DISBURSE_DATE1?.value
+            );
+            const disburse_dt = format(
+              disburseDate,
+              "dd/MMM/yyyy"
+            ).toUpperCase();
+            const prev_disburseDate =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : refIDCurrent.DISBURSE_DATE;
+            const prev_date =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_disburseDate
+                ? new Date(prev_disburseDate)
+                : null;
+            const prev_disburse_dt =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_date
+                ? format(prev_date, "dd/MMM/yyyy").toUpperCase()
+                : null;
+            if (currentField?.value) {
+              const reqParameters = {
+                A_FLAG: "INST_START_DT",
+                A_INST_NO: dependentFieldValues?.INST_NO?.value,
+                A_INST_TYPE: dependentFieldValues?.INST_TYPE?.value,
+                A_INT_RATE: dependentFieldValues?.INT_RATE?.value,
+                A_INST_PERIOD: dependentFieldValues?.INST_PERIOD?.value,
+                A_INT_SKIP_FLAG: dependentFieldValues?.DATA_VAL?.value,
+                A_SR_CD: dependentFieldValues?.["DISBURS_DTL.SR_NO"]?.value,
+                A_PREV_DISBUR_DT: prev_disburse_dt,
+                A_DISBURSEMENT_DT: disburse_dt,
+                A_INST_START_DT: inst_dt,
+                A_DISBURS_AMT:
+                  dependentFieldValues?.["DISBURS_DTL.DISBURSE_AMT"]?.value,
+                A_TOT_LOAN_AMT: dependentFieldValues?.DISBURSE_TOTAL?.value,
+                A_GD_DATE: authState?.workingDate,
+                A_SCREEN_REF: "RPT/1199",
+                A_LANG: "en",
+                A_USER: authState?.user?.id,
+                A_USER_LEVEL: authState?.role,
+              };
+
+              const postData = await API.validateDisburseDetail(reqParameters);
+              let btn99, returnVal;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("ValidationFailed"),
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  return {};
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("Confirmation"),
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    return {};
+                  }
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: t("Alert"),
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  return {};
+                } else if (postData[i]?.O_STATUS === "0") {
+                  if (btn99 !== "No") {
+                    returnVal = postData[i];
+                  } else {
+                    returnVal = "";
+                  }
+                }
+              }
+              return {
+                //   "EMI_DETAIL2[0].FROM_INST": {
+                //     value: postData[0].FROM_INST,
+                //     isFieldFocused: true,
+                //     ignoreUpdate: true,
+                //   },
+                //   "EMI_DETAIL2[0].TO_INST": {
+                //     value: postData[0].TO_INST,
+                //     isFieldFocused: true,
+                //     ignoreUpdate: true,
+                //   },
+                //   "EMI_DETAIL2[0].EMI_RS": {
+                //     value: postData[0].EMI_RS,
+                //     isFieldFocused: true,
+                //     ignoreUpdate: true,
+                //   },
+                //    REM_INST: {
+                //   value: postData[0].REM_INST,
+                //   isFieldFocused: true,
+                //   ignoreUpdate: true,
+                // },
+              };
+            }
+          },
         },
         {
           render: {
@@ -436,7 +587,7 @@ export const EMICalculateMetaData = {
               { name: "required", params: [t("DisburseAmountisrequired")] },
             ],
           },
-          GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
+          GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
           dependentFields: [
             "DISBURSE_DATE1",
             "INST_NO",
@@ -447,195 +598,210 @@ export const EMICalculateMetaData = {
             "DISBURSE_TOTAL",
             "SR_NO",
             "INST_START_DT1",
+            "LOAN_AMT",
           ],
+
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            let value = dependentFields?.LOAN_AMT?.value;
+            return value;
+          },
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            // formState.setDataOnFieldChange("EMI_SCHEDULE1", {});
+            const remaining_amt =
+              dependentFieldValues.LOAN_AMT?.value - currentField.value == 0
+                ? 0
+                : dependentFieldValues.LOAN_AMT?.value - currentField.value;
+            console.log(remaining_amt);
+            const refIDCurrent = formState.refID?.current;
+            const date = new Date(dependentFieldValues?.INST_START_DT1?.value);
+            const inst_dt = format(date, "dd/MMM/yyyy").toUpperCase();
+            const disburseDate = new Date(
+              dependentFieldValues?.DISBURSE_DATE1?.value
+            );
+            const disburse_dt = format(
+              disburseDate,
+              "dd/MMM/yyyy"
+            ).toUpperCase();
+            const prev_disburseDate =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : refIDCurrent.DISBURSE_DATE;
+            const prev_date =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_disburseDate
+                ? new Date(prev_disburseDate)
+                : null;
+            const prev_disburse_dt =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : prev_date
+                ? format(prev_date, "dd/MMM/yyyy").toUpperCase()
+                : null;
+            if (currentField?.value) {
+              const reqParameters = {
+                A_FLAG: "INST_START_DT",
+                A_INST_NO: dependentFieldValues?.INST_NO?.value,
+                A_INST_TYPE: dependentFieldValues?.INST_TYPE?.value,
+                A_INT_RATE: dependentFieldValues?.INT_RATE?.value,
+                A_INST_PERIOD: dependentFieldValues?.INST_PERIOD?.value,
+                A_INT_SKIP_FLAG: dependentFieldValues?.DATA_VAL?.value,
+                A_SR_CD: dependentFieldValues?.["DISBURS_DTL.SR_NO"]?.value,
+                A_PREV_DISBUR_DT: prev_disburse_dt,
+                A_DISBURSEMENT_DT: disburse_dt,
+                A_INST_START_DT: inst_dt,
+                A_DISBURS_AMT: currentField?.value,
+                A_TOT_LOAN_AMT: dependentFieldValues?.DISBURSE_TOTAL?.value,
+                A_GD_DATE: authState?.workingDate,
+                A_SCREEN_REF: "RPT/1199",
+                A_LANG: "en",
+                A_USER: authState?.user?.id,
+                A_USER_LEVEL: authState?.role,
+              };
+
+              const postData = await API.validateDisburseDetail(reqParameters);
+              let btn99, returnVal;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("ValidationFailed"),
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  return {};
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("Confirmation"),
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    return {};
+                  }
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: t("Alert"),
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  return {};
+                } else if (postData[i]?.O_STATUS === "0") {
+                  if (btn99 !== "No") {
+                    returnVal = postData[i];
+                  } else {
+                    returnVal = "";
+                  }
+                }
+              }
+              return {
+                "EMI_DETAIL2[0].FROM_INST": {
+                  value: postData[0].FROM_INST,
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                "EMI_DETAIL2[0].TO_INST": {
+                  value: postData[0].TO_INST,
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                "EMI_DETAIL2[0].EMI_RS": {
+                  value: postData[0].EMI_RS,
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                REM_INST: {
+                  value: postData[0].REM_INST,
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                REMAINING_AMOUNT: {
+                  value: remaining_amt,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          },
         },
         {
           render: {
-            componentType: "arrayField",
+            componentType: "amountField",
           },
-          name: "EMI_DETAIL2",
-          changeRowOrder: true,
-          GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-          _fields: [
-            {
-              render: {
-                componentType: "numberFormat",
-              },
-              name: "SR_NO",
-              label: "SrNo",
-              type: "text",
-              className: "textInputFromRight",
-              defaultValue: 1,
-              fullWidth: true,
-              GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
-            },
-            {
-              render: {
-                componentType: "numberFormat",
-              },
-              name: "FROM_INST",
-              label: "FromInst",
-              className: "textInputFromRight",
-              type: "text",
-              fullWidth: true,
-              FormatProps: {
-                allowNegative: false,
-                allowLeadingZeros: false,
-              },
-              dependentFields: ["INST_NO", "TO_INST", "EMI_RS"],
-              // runPostValidationHookAlways: true,
-              // AlwaysRunPostValidationSetCrossFieldValues: {
-              //   alwaysRun: false,
-              //   touchAndValidate: true,
-              // },
-              GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
-              postValidationSetCrossFieldValues: async (
-                currentField,
-                formState,
-                authState,
-                dependentFieldValues
-              ) => {
-                // if (formState?.isSubmitting) return {};
-                const reqParameters = {
-                  A_INST_NO:
-                    dependentFieldValues?.["DISBURS_DTL.EMI_DETAIL2.INST_NO"]
-                      ?.value,
-                  A_FROM_INST: currentField?.value,
-                  A_TO_INST:
-                    dependentFieldValues?.["DISBURS_DTL.EMI_DETAIL2.TO_INST"]
-                      ?.value,
-                  A_EMI_RS:
-                    dependentFieldValues?.["DISBURS_DTL.EMI_DETAIL2.EMI_RS"]
-                      ?.value,
-                  A_PREV_FROM_INST: "1",
-                  A_FLAG: "FROM_INST",
-                  A_GD_DATE: authState?.workingDate,
-                  A_SCREEN_REF: "RPT/1199",
-                  A_LANG: "en",
-                  A_USER: authState?.user?.id,
-                  A_USER_LEVEL: authState?.role,
-                };
-                console.log(reqParameters);
+          name: "REMAINING_AMOUNT",
+          label: "Remaning Amount",
+          type: "text",
+          className: "textInputFromRight",
+          fullWidth: true,
+          isReadOnly: true,
+          FormatProps: {
+            allowNegative: false,
+            allowLeadingZeros: true,
+          },
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TOTAL_AMOUNT",
+          label: "Total Amount",
+          type: "text",
+          className: "textInputFromRight",
+          fullWidth: true,
+          isReadOnly: true,
+          FormatProps: {
+            allowNegative: false,
+            allowLeadingZeros: true,
+          },
+          dependentFields: ["LOAN_AMT", "DISBURS_DTL"],
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            let totalAmount = 0;
 
-                const postData = await API.validateCheckEmiSchedule(
-                  reqParameters
-                );
-                let btn99, returnVal;
-
-                const getButtonName = async (obj) => {
-                  let btnName = await formState.MessageBox(obj);
-                  return { btnName, obj };
-                };
-
-                for (let i = 0; i < postData.length; i++) {
-                  if (postData[i]?.O_STATUS === "999") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: t("ValidationFailed"),
-                      message: postData[i]?.O_MESSAGE,
-                    });
-                    returnVal = "";
-                  } else if (postData[i]?.O_STATUS === "99") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: t("Confirmation"),
-                      message: postData[i]?.O_MESSAGE,
-                      buttonNames: ["Yes", "No"],
-                    });
-                    btn99 = btnName;
-                    if (btnName === "No") {
-                      returnVal = "";
-                    }
-                  } else if (postData[i]?.O_STATUS === "9") {
-                    if (btn99 !== "No") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: t("Alert"),
-                        message: postData[i]?.O_MESSAGE,
-                      });
-                    }
-                    returnVal = "";
-                  } else if (postData[i]?.O_STATUS === "0") {
-                    if (btn99 !== "No") {
-                      returnVal = postData[i];
-                    } else {
-                      returnVal = "";
-                    }
+            if (dependentFields && dependentFields.LOAN_AMT) {
+              dependentFields.LOAN_AMT.forEach((item) => {
+                if (item && item.LOAN_AMT && item.LOAN_AMT.value) {
+                  const loanAmount = parseFloat(item.LOAN_AMT.value);
+                  if (!isNaN(loanAmount)) {
+                    totalAmount += loanAmount;
                   }
                 }
-                btn99 = 0;
-                return {};
-              },
-            },
-            {
-              render: {
-                componentType: "numberFormat",
-              },
-              name: "TO_INST",
-              label: "ToInst",
-              type: "text",
-              className: "textInputFromRight",
-              FormatProps: {
-                allowNegative: false,
-                allowLeadingZeros: false,
-              },
-              fullWidth: true,
-              GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
-              // AlwaysRunPostValidationSetCrossFieldValues: {
-              //   alwaysRun: true,
-              //   touchAndValidate: false,
-              // },
-              // runPostValidationHookAlways: true,
-              dependentFields: ["FROM_INST", "EMI_RS", "INST_NO"],
-            },
-            {
-              render: {
-                componentType: "numberFormat",
-              },
-              name: "NO_OF_INST",
-              label: "NoofInstallment",
-              className: "textInputFromRight",
-              type: "text",
-              fullWidth: true,
-              FormatProps: {
-                allowNegative: false,
-                allowLeadingZeros: false,
-              },
-              GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-            },
-            {
-              render: {
-                componentType: "amountField",
-              },
-              name: "EMI_RS",
-              label: "InstallmentAmount",
-              type: "text",
-              FormatProps: {
-                allowNegative: false,
-                allowLeadingZeros: false,
-              },
-              fullWidth: true,
-              GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
-              dependentFields: ["FROM_INST", "TO_INST", "INST_NO"],
-
-              // runPostValidationHookAlways: true,
-            },
-            // {
-            //   render: {
-            //     componentType: "numberFormat",
-            //   },
-            //   name: "REM_INST",
-            //   label: "Remaining Installment",
-            //   className: "textInputFromRight",
-            //   type: "text",
-            //   fullWidth: true,
-            //   FormatProps: {
-            //     allowNegative: false,
-            //     allowLeadingZeros: false,
-            //   },
-            //   GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-            // },
-          ],
+                console.log(totalAmount);
+              });
+            }
+            return totalAmount;
+          },
+        },
+        {
+          render: {
+            componentType: "formbutton",
+          },
+          name: "UPDOWN",
+          label: "Step UP/DOWN",
+          endsIcon: "AddCircleOutlineRounded",
+          rotateIcon: "scale(2)",
+          placeholder: "",
+          type: "text",
+          tabIndex: "-1",
+          iconStyle: {
+            fontSize: "25px !important",
+          },
+          GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1.2, xl: 1.2 },
         },
       ],
     },
+
     {
       render: {
         componentType: "hidden",
@@ -736,6 +902,7 @@ export const EMICalculatorSecondPartMetaData = {
           label: "SrNo",
           type: "text",
           className: "textInputFromRight",
+          defaultValue: 1,
           fullWidth: true,
           GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
         },
@@ -752,39 +919,91 @@ export const EMICalculatorSecondPartMetaData = {
             allowNegative: false,
             allowLeadingZeros: false,
           },
+          dependentFields: ["INST_NO", "TO_INST", "EMI_RS"],
+          runPostValidationHookAlways: false,
+          // AlwaysRunPostValidationSetCrossFieldValues: {
+          //   alwaysRun: false,
+          //   touchAndValidate: true,
+          // },
           GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
-          //             postValidationSetCrossFieldValues: async (
-          //               currentField,
-          //               formState,
-          //               authState,
-          //               dependentFieldValues
-          //             ) => {
-          //               if (formState?.isSubmitting) return {};
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            // formState.setDataOnFieldChange("EMI_SCHEDULE", {});
+            let refIDCurrent = formState.fromRefId.current;
+            const prev_formInst =
+              refIDCurrent === null || refIDCurrent === undefined
+                ? ""
+                : refIDCurrent.FROM_INST;
+            // let PREV_FROM_INST =
+            //   refIDCurrent.FROM_INST ?? refIDCurrent.FROM_INST;
+            console.log("refIDCurrent", refIDCurrent);
+            console.log(prev_formInst);
+            if (currentField?.value) {
+              const reqParameters = {
+                A_INST_NO: dependentFieldValues?.INST_NO?.value,
+                A_FROM_INST: currentField?.value,
+                A_TO_INST: dependentFieldValues?.["EMI_DETAIL2.TO_INST"]?.value,
+                A_EMI_RS: dependentFieldValues?.["EMI_DETAIL2.EMI_RS"]?.value,
+                A_PREV_FROM_INST: prev_formInst,
+                A_FLAG: "FROM_INST",
+                A_GD_DATE: authState?.workingDate,
+                A_SCREEN_REF: "RPT/1199",
+                A_LANG: "en",
+                A_USER: authState?.user?.id,
+                A_USER_LEVEL: authState?.role,
+              };
 
-          //               const reqParameters = {
+              const postData = await API.validateCheckEmiSchedule(
+                reqParameters
+              );
+              let btn99, returnVal;
 
-          // A_INST_NO:"5",
-          // A_FROM_INST:"2",
-          // A_TO_INST:"5",
-          // A_EMI_RS:"10,000.00",
-          // A_PREV_FROM_INST:"5",
-          // A_GD_DATE:"02/SEP/2024"  ,
-          // A_SCREEN_REF:"RPT/1199" ,
-          // A_FLAG:"FROM_INST",
-          // A_LANG:"en"       ,
-          // A_USER:"kinjal"   ,
-          // A_USER_LEVEL:"4"  ,
-          //               };
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
 
-          //               const postData = await API.validateCheckEmiSchedule(reqParameters);
-          //               return {
-          //                 DUE_DATE: {
-          //                   value:postData[0].DUE_DATE,
-          //                   isFieldFocused: true,
-          //                   ignoreUpdate: true,
-          //                 },
-          //               };
-          //             },
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("ValidationFailed"),
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("Confirmation"),
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    returnVal = "";
+                  }
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: t("Alert"),
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "0") {
+                  if (btn99 !== "No") {
+                    returnVal = postData[i];
+                  } else {
+                    returnVal = "";
+                  }
+                }
+              }
+              btn99 = 0;
+              return { isFieldFocused: false };
+            }
+          },
         },
         {
           render: {
@@ -800,6 +1019,82 @@ export const EMICalculatorSecondPartMetaData = {
           },
           fullWidth: true,
           GridProps: { xs: 2, sm: 2, md: 1, lg: 1, xl: 1 },
+          // AlwaysRunPostValidationSetCrossFieldValues: {
+          //   alwaysRun: true,
+          //   touchAndValidate: false,
+          // },
+          runPostValidationHookAlways: false,
+          dependentFields: ["FROM_INST", "EMI_RS", "INST_NO"],
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            // if (formState?.isSubmitting) return {};
+            if (currentField?.value) {
+              const reqParameters = {
+                A_INST_NO: dependentFieldValues?.INST_NO?.value,
+                A_FROM_INST:
+                  dependentFieldValues?.["EMI_DETAIL2.FROM_INST"]?.value,
+                A_TO_INST: currentField?.value,
+                A_EMI_RS: dependentFieldValues?.["EMI_DETAIL2.EMI_RS"]?.value,
+                A_PREV_FROM_INST: "1",
+                A_FLAG: "TO_INST",
+                A_GD_DATE: authState?.workingDate,
+                A_SCREEN_REF: "RPT/1199",
+                A_LANG: "en",
+                A_USER: authState?.user?.id,
+                A_USER_LEVEL: authState?.role,
+              };
+
+              const postData = await API.validateCheckEmiSchedule(
+                reqParameters
+              );
+              let btn99, returnVal;
+
+              const getButtonName = async (obj) => {
+                let btnName = await formState.MessageBox(obj);
+                return { btnName, obj };
+              };
+
+              for (let i = 0; i < postData.length; i++) {
+                if (postData[i]?.O_STATUS === "999") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("ValidationFailed"),
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "99") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("Confirmation"),
+                    message: postData[i]?.O_MESSAGE,
+                    buttonNames: ["Yes", "No"],
+                  });
+                  btn99 = btnName;
+                  if (btnName === "No") {
+                    returnVal = "";
+                  }
+                } else if (postData[i]?.O_STATUS === "9") {
+                  if (btn99 !== "No") {
+                    const { btnName, obj } = await getButtonName({
+                      messageTitle: t("Alert"),
+                      message: postData[i]?.O_MESSAGE,
+                    });
+                  }
+                  returnVal = "";
+                } else if (postData[i]?.O_STATUS === "0") {
+                  if (btn99 !== "No") {
+                    returnVal = postData[i];
+                  } else {
+                    returnVal = "";
+                  }
+                }
+              }
+              btn99 = 0;
+              return {};
+            }
+          },
         },
         {
           render: {
@@ -820,7 +1115,7 @@ export const EMICalculatorSecondPartMetaData = {
           render: {
             componentType: "amountField",
           },
-          name: "INST_AMOUNT",
+          name: "EMI_RS",
           label: "InstallmentAmount",
           type: "text",
           FormatProps: {
@@ -828,7 +1123,89 @@ export const EMICalculatorSecondPartMetaData = {
             allowLeadingZeros: false,
           },
           fullWidth: true,
-          GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
+          GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
+          dependentFields: ["FROM_INST", "TO_INST", "INST_NO"],
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValues
+          ) => {
+            // if (formState?.isSubmitting) return {};
+            const reqParameters = {
+              A_INST_NO: dependentFieldValues?.INST_NO?.value,
+              A_FROM_INST:
+                dependentFieldValues?.["EMI_DETAIL2.FROM_INST"]?.value,
+              A_TO_INST: dependentFieldValues?.["EMI_DETAIL2.TO_INST"]?.value,
+              A_EMI_RS: currentField?.value,
+              A_PREV_FROM_INST: "1",
+              A_FLAG: "EMI_RS",
+              A_GD_DATE: authState?.workingDate,
+              A_SCREEN_REF: "RPT/1199",
+              A_LANG: "en",
+              A_USER: authState?.user?.id,
+              A_USER_LEVEL: authState?.role,
+            };
+
+            const postData = await API.validateCheckEmiSchedule(reqParameters);
+            let btn99, returnVal;
+
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+
+            for (let i = 0; i < postData.length; i++) {
+              if (postData[i]?.O_STATUS === "999") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: t("ValidationFailed"),
+                  message: postData[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "99") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: t("Confirmation"),
+                  message: postData[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData[i]?.O_STATUS === "9") {
+                if (btn99 !== "No") {
+                  const { btnName, obj } = await getButtonName({
+                    messageTitle: t("Alert"),
+                    message: postData[i]?.O_MESSAGE,
+                  });
+                }
+                returnVal = "";
+              } else if (postData[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData[i];
+                } else {
+                  returnVal = "";
+                }
+              }
+            }
+            btn99 = 0;
+            return {};
+          },
+        },
+        {
+          render: {
+            componentType: "numberFormat",
+          },
+          name: "REM_INST",
+          label: "Remaining Installment",
+          className: "textInputFromRight",
+          type: "text",
+          fullWidth: true,
+          FormatProps: {
+            allowNegative: false,
+            allowLeadingZeros: false,
+          },
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
         },
       ],
     },

@@ -11,32 +11,41 @@ import {
   EMICalculateMetaData,
   EMICalculatorSecondPartMetaData,
 } from "./metaData";
-import { SubmitFnType } from "packages/form";
 
 const EMICalculatorForm = () => {
   const myMasterRef = useRef<any>(null);
-  const myMasterSecRef = useRef<any>(null);
+  const myMasterDisburseRef = useRef<any>(null);
+  const myMasterFromInstRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [apiData, setApiData] = useState<any>(null);
-  const [open, setOpen] = useState(false);
   const [formMode, setFormMode] = useState("add");
   const isErrorFuncRef = useRef<any>(null);
+  const [open, setOpen] = useState(false);
+  // const [draftState, setDraftState] = useState<any>({
+  //   PAYSLIP_DRAFT_DTL: [{ TO_DT: authState?.workingDate ?? "" }],
+  // });
+
   const [emiDetail, setEmiDetail] = useState<any>({
     DISBURS_DTL: [
       {
         SR_NO: 1,
         INST_START_DT: authState.workingDate,
         DISBURSE_DATE: authState.workingDate,
+        EMI_DETAIL2: [
+          {
+            SR_NO: 1,
+          },
+        ],
       },
-      // EMI_DETAIL2: [
-      //   {
-      //     SR_NO:1,
-      //   }
-      // ],
+    ],
+    EMI_DETAIL2: [
+      {
+        SR_NO: 1,
+      },
     ],
   });
-
+  const [disburseAdd, setDisburseAdd] = useState<any>(emiDetail);
   let currentPath = useLocation().pathname;
   const label = utilFunction.getDynamicLabel(
     currentPath,
@@ -47,8 +56,8 @@ const EMICalculatorForm = () => {
 
   const resetData = async () => {
     let event: any = { preventDefault: () => {} };
-    // myMasterRef?.current?.handleFormReset(event, "Clear");
-    // setApiData(null);
+    myMasterRef?.current?.handleFormReset(event, "Clear");
+    setApiData(null);
   };
   const previousData = async () => {
     const formdata = await myMasterRef?.current?.getFieldData();
@@ -57,10 +66,21 @@ const EMICalculatorForm = () => {
       const selectedObject = formdata
         ? formdata.DISBURS_DTL[arrayIndex - 2]
         : [];
-      myMasterSecRef.current = selectedObject;
+      myMasterDisburseRef.current = selectedObject;
     }
   };
 
+  const previousData1 = async () => {
+    const formdata = await myMasterRef?.current?.getFieldData();
+    if (formdata?.EMI_DETAIL2 && Array.isArray(formdata.EMI_DETAIL2)) {
+      let arrayIndex = formdata.EMI_DETAIL2.length;
+      const selectedObject = formdata
+        ? formdata.EMI_DETAIL2[arrayIndex - 1]
+        : [];
+      myMasterFromInstRef.current = selectedObject;
+    }
+  };
+  previousData1();
   //   const calculate = async()=>{
   //     const data = await myMasterRef?.current.getFieldData()
   //     console.log(data);
@@ -94,11 +114,10 @@ const EMICalculatorForm = () => {
   //     "SCREEN_REF": "RPT/1199"
   // }
   //   }
-
   return (
     <Fragment>
       <FormWrapper
-        key={"EMICalculateMetaData" + formMode}
+        key={`EMICalculateMetaData${formMode}${disburseAdd?.DISBURS_DTL?.length}`}
         metaData={
           extractMetaData(EMICalculateMetaData, formMode) as MetaDataType
         }
@@ -111,43 +130,29 @@ const EMICalculatorForm = () => {
         formState={{
           MessageBox: MessageBox,
           docCd: "RPT/1199",
-          refID: myMasterSecRef,
+          refID: myMasterDisburseRef,
+          fromRefId: myMasterFromInstRef,
         }}
-        // setDataOnFieldChange={(action, payload) => {
-        //   if (action === "EMI_SCHEDULE") {
-        //     previousData();
-        //   }
-        // }}
-        onFormButtonClickHandel={() => {
-          setOpen(true);
+        setDataOnFieldChange={(action, payload) => {
+          if (action === "EMI_SCHEDULE") {
+            previousData();
+          }
+          // else if (action === "EMI_SCHEDULE1") {
+          //   previousData();
+          // }
         }}
-      >
-        <>
-          <GradientButton>Calculate </GradientButton>
-          <GradientButton onClick={resetData}> Clear </GradientButton>
-        </>
-      </FormWrapper>
-      {/* <FormWrapper
-      key={"EMICalculateMetaData" + formMode + isData}
-      hideHeader={true}
-      metaData={
-        extractMetaData(
-          EMICalculatorSecondPartMetaData,
-          formMode
-        ) as MetaDataType
-      }
-      formStyle={{
-        background: "white",
-      }}
-      // ref={myMasterRef}
-      onSubmitHandler={() => {}}
-      initialValues={emi}
-      formState={{
-        MessageBox: MessageBox,
-        docCd: "RPT/1199",
-      }}
-    ></FormWrapper> */}
-      {/* <Dialog
+        onFormButtonClickHandel={async (id) => {
+          console.log(id);
+          if (id === "clear") {
+            resetData();
+          }
+          if (id === "DISBURS_DTL[0].UPDOWN") {
+            setOpen(true);
+          }
+        }}
+      ></FormWrapper>
+
+      <Dialog
         open={open}
         PaperProps={{
           style: {
@@ -159,7 +164,6 @@ const EMICalculatorForm = () => {
       >
         <FormWrapper
           key={"EMICalculateMetaData" + formMode}
-          onSubmitHandler={() => { }}
           metaData={
             extractMetaData(
               EMICalculatorSecondPartMetaData,
@@ -170,14 +174,14 @@ const EMICalculatorForm = () => {
             background: "white",
           }}
           // ref={myMasterRef}
-          initialValues={isData}
+          onSubmitHandler={() => {}}
+          initialValues={""}
           formState={{
             MessageBox: MessageBox,
             docCd: "RPT/1199",
           }}
         >
-          {" "}
-          < GradientButton
+          <GradientButton
             onClick={() => {
               setOpen(false);
             }}
@@ -186,7 +190,7 @@ const EMICalculatorForm = () => {
             Close
           </GradientButton>
         </FormWrapper>
-      </Dialog> */}
+      </Dialog>
     </Fragment>
   );
 };
