@@ -13,7 +13,7 @@ import {
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { useQuery } from "react-query";
 import { getNotificationData } from "./api";
-import { queryClient } from "cache";
+import { queryClient } from "@acuteinfo/common-base";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -25,7 +25,7 @@ import { deepPurple } from "@mui/material/colors";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { SelectRenderOnly } from "components/common";
+import SelectRenderOnly from "@acuteinfo/common-base";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: "999px",
@@ -368,13 +368,13 @@ export const Notification_App = () => {
               </Link>
             </Box>
             <Box sx={{ p: 1 }}>
-              <SelectRenderOnly
+              {/* <SelectRenderOnly
                 fullWidth
                 touched={false}
                 value={notiFication}
                 handleChange={(e) => setNotiFication(e.target.value)}
                 options={options}
-              />
+              /> */}
             </Box>
           </Box>
           <Box sx={{ flex: "auto", overflowY: "auto", height: 500 }}>

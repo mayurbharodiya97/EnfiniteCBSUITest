@@ -89,7 +89,7 @@ export const AdvocateMstFormMetaData = {
       autoComplete: "off",
       required: true,
       maxLength: 100,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["AdvocateNameisrequired"] }],
@@ -146,7 +146,7 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterAddress",
       autoComplete: "off",
       type: "text",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },
     {
@@ -158,7 +158,7 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterEmailID",
       type: "text",
       autoComplete: "off",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "email", params: ["InvalidEmailID"] }],

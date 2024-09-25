@@ -1,6 +1,4 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   LoanScheduleDetailsGridMetadata,
@@ -11,9 +9,16 @@ import { LoanRescheduleFormWrapper } from "./form/loanReschedule";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
+import { t } from "i18next";
 import { RetrievalFormWrapper } from "./form/retrieveForm";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  queryClient,
+  GridWrapper,
+  extractGridMetaData,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { LoanReviseFormWrapper } from "./form/loanReviseForm";
 
 export const LoanScheduleGrid = () => {
@@ -292,11 +297,12 @@ export const LoanScheduleGrid = () => {
         loading={loanScheduleHeaderData?.isLoading}
         actions={actions}
         setAction={setCurrentAction}
-        onlySingleSelectionAllow={true}
+        // Temporary commented
+        // disableMultipleRowSelect={formMode === "edit" ? true : false}
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }
-        hideActionBar={true}
+        // hideActionBar={true}
       />
       {isError && (
         <Alert

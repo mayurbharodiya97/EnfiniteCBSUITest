@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExtractedHeader from "../c-kyc/formModal/ExtractedHeader";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import {
   Fragment,
@@ -55,7 +55,7 @@ import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDial
 import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
 import { useMutation } from "react-query";
 import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
-import { Alert } from "components/common/alert";
+import { Alert } from "@acuteinfo/common-base";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {

@@ -86,7 +86,7 @@ export const Viewformmetadata = {
       type: "text",
       required: true,
       placeholder: "Description",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       maxLength: 50,
       multiline: true,
       txtTransform: "uppercase",

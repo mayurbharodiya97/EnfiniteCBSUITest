@@ -1,11 +1,11 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { AcctMSTContext } from "../../AcctMSTContext";
-import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import TabNavigate from "../../TabNavigate";
 import _ from "lodash";
+import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
+import { AcctMSTContext } from "./AcctMSTContext";
 
 const JointTab = () => {
   const {

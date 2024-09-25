@@ -1,17 +1,20 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { FdInterestPaymentFormMetaData } from "./metaData";
-
+import {
+  LoaderPaperComponent,
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  GradientButton,
+  Transition,
+  usePopupContext,
+  utilFunction,
+  extractMetaData,
+} from "@acuteinfo/common-base";
 const FdInterestPaymentForm = ({
   closeDialog,
   gridData,

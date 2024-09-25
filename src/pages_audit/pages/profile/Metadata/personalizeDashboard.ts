@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getdashboxData } from "../api";
 import { t } from "i18next";
 

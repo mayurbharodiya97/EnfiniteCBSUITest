@@ -1,24 +1,27 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import {
   standingConfirmationViewGridMetaData,
   standingInsructionGridMetaData,
 } from "./metaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
-import { ClearCacheProvider, queryClient } from "cache";
 import SearchGrid from "../searchGrid";
 import { t } from "i18next";
 import { enqueueSnackbar } from "notistack";
 import SiExecuteDetailView from "../siExecuteDetailView";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-
+import {
+  usePopupContext,
+  GridWrapper,
+  Alert,
+  ActionTypes,
+  GridMetaDataType,
+  ClearCacheProvider,
+  queryClient,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",

@@ -1,19 +1,14 @@
 import { useRef, useCallback, useContext, useState, useEffect } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
-import { useMutation, useQuery } from "react-query";
-import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
-import { ClearCacheProvider, queryClient } from "cache";
-import { strBranchLevelEntryGridMetaData } from "./girdMetadata";
-import { enqueueSnackbar, useSnackbar } from "notistack";
-import { t } from "i18next";
-import { useTranslation } from "react-i18next";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { StrBranchLevelFormWrapper } from "./strAcLevelBranchForm/strBranchLevelForm";
-import { format } from "date-fns";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  Alert,
+  GridWrapper,
+  ActionTypes,
+  ClearCacheProvider,
+  queryClient,
+  GradientButton,
+  LoaderPaperComponent,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import {
   AppBar,
   Dialog,
@@ -24,10 +19,19 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { makeStyles, styled } from "@mui/styles";
 import { StrAcLevelBranchHistoryGridWrapper } from "./strHistoryGrid";
 import { StrMarkAsPerSuspiciousGrid } from "./strAcLevelBranchForm/suspiciousTransactionGrid";
+import { useMutation, useQuery } from "react-query";
+import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
+import { strBranchLevelEntryGridMetaData } from "./girdMetadata";
+import { enqueueSnackbar, useSnackbar } from "notistack";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { StrBranchLevelFormWrapper } from "./strAcLevelBranchForm/strBranchLevelForm";
+import { format } from "date-fns";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,21 +1,23 @@
 import { retrievePayslip } from "./retrieveMetadata";
-import { SubmitFnType } from "packages/form";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { t } from "i18next";
 import { useCallback, useContext, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { RetrieveGridMetadata } from "./retrieveGridMetadata";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { format } from "date-fns";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import PlaySlipDraftPrintingNew from "./ddPrinting/playslipDraftPrinting";
-import { usePopupContext } from "components/custom/popupContext";
 import i18n from "components/multiLanguage/languagesConfiguration";
-
+import {
+  usePopupContext,
+  GridWrapper,
+  FormWrapper,
+  MetaDataType,
+  ActionTypes,
+  SubmitFnType,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "print",

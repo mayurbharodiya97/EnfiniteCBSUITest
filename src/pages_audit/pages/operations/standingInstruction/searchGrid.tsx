@@ -1,16 +1,18 @@
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { searchButttonGridMetaData } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
 import { Dialog } from "@mui/material";
-import { ActionTypes } from "components/dataTable";
-import { queryClient } from "cache";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
-
+import {
+  ActionTypes,
+  GridWrapper,
+  queryClient,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-all",

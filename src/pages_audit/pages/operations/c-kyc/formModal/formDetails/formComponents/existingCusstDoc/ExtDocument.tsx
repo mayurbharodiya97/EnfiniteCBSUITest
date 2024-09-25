@@ -11,11 +11,9 @@ import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation, useQuery } from "react-query";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetadata } from "./documentGridMetadata";
 import { useLocation, useNavigate } from "react-router-dom";
 import ExtDocumentForm from "./ExtDocumentForm";
-import { utilFunction } from "components/utils";
 import {
   Button,
   Dialog,
@@ -25,8 +23,14 @@ import {
   Typography,
 } from "@mui/material";
 import { t } from "i18next";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { addMonths, format } from "date-fns";
+import {
+  utilFunction,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 import _ from "lodash";
 const ExtDocument = ({
   // isCustomerData,

@@ -1,19 +1,23 @@
 import { FC, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
-import { GradientButton } from "components/styledComponent/button";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { strLevelBranchEditFormMetaData } from "./metadata";
-import { utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { StrMarkAsPerSuspiciousGrid } from "./suspiciousTransactionGrid";
-
+import {
+  usePopupContext,
+  SubmitFnType,
+  utilFunction,
+  MetaDataType,
+  ActionTypes,
+  FormWrapper,
+  GridMetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 export const StrBranchLevelForm: FC<{
   onClose?: any;
   rowsData?: any;

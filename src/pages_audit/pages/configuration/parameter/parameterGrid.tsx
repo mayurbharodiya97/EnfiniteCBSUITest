@@ -1,4 +1,11 @@
-import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import {
+  ClearCacheContext,
+  ClearCacheProvider,
+  queryClient,
+  GridMetaDataType,
+  ActionTypes,
+  GridWrapper,
+} from "@acuteinfo/common-base";
 import {
   Fragment,
   useCallback,
@@ -7,14 +14,12 @@ import {
   useRef,
   useState,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
 import * as API from "./api";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ParametersGridMetaData } from "./gridMetadata";
 import { useNavigate } from "react-router-dom";
 import EditDetail from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
-import { Alert } from "components/common/alert";
+import { Alert } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { Dialog, Typography } from "@mui/material";
 import AuditDetail from "./AuditDetail";
@@ -128,7 +133,7 @@ const Parameters = () => {
         key={"parametersGrid" + paraType}
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
-        ReportExportButton={true}
+        enableExport={true}
         actions={validation()}
         setAction={setCurrentAction}
         setData={() => null}
@@ -150,7 +155,7 @@ const Parameters = () => {
         sx={{
           fontWeight: "bold",
           color: "rgb(152 59 70 / 61%)",
-          marginLeft: "460px",
+          marginLeft: "900px",
           marginTop: "-36.2px",
         }}
         variant="subtitle1"

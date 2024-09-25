@@ -48,7 +48,7 @@ export const AreaMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],

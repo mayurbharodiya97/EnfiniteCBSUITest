@@ -7,13 +7,17 @@ import {
   StrictMode,
   useState,
 } from "react";
-import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+  usePopupContext,
+  ClearCacheProvider,
+  ClearCacheContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -25,7 +29,7 @@ import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadat
 import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { tempODConfirmGridMetaData } from "./MetaData/temporaryODGridMetadata";
 import { RetrieveData } from "../operations/chequeBookTab/confirm/retrieveData";
-import { ChequebookCfmForm } from "../operations/chequeBookTab/entryForm/entryForm";
+import { ChequebookCfmForm } from "../operations/chequeBookTab/confirm/confirmationForm";
 import { LimitConfirmationForm } from "../operations/limit-entry/confirm/confirmationForm";
 import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirmationForm";
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";

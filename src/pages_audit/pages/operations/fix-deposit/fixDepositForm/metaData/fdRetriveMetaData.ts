@@ -1,5 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../../api";
 
 export const FDRetriveMetadata = {

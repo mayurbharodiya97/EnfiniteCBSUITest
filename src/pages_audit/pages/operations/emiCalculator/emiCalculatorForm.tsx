@@ -1,7 +1,7 @@
-import { ClearCacheProvider } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { ClearCacheProvider } from "@acuteinfo/common-base";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { Fragment, useContext, useRef, useState } from "react";
-import { extractMetaData, utilFunction } from "components/utils";
+import { extractMetaData, utilFunction } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
@@ -38,6 +38,24 @@ import { MasterDetailsForm } from "components/formcomponent";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
 
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  EMICalculateMetaData,
+  EMICalculatorSecondPartMetaData,
+} from "./metaData";
 const EMICalculatorForm = () => {
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -93,6 +111,7 @@ const EMICalculatorForm = () => {
         formStyle={{
           background: "white",
         }}
+        onSubmitHandler={() => {}}
         ref={myMasterRef}
         initialValues={apiData || emiDetail}
         formState={{
@@ -132,6 +151,7 @@ const EMICalculatorForm = () => {
           background: "white",
         }}
         // ref={myMasterRef}
+        onSubmitHandler={() => {}}
         initialValues={emi}
         formState={{
           MessageBox: MessageBox,
@@ -150,6 +170,7 @@ const EMICalculatorForm = () => {
       >
         <FormWrapper
           key={"EMICalculateMetaData" + formMode}
+          onSubmitHandler={() => {}}
           metaData={
             extractMetaData(
               EMICalculatorSecondPartMetaData,

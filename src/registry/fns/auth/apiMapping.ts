@@ -2621,6 +2621,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  GETLOGINPAGEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

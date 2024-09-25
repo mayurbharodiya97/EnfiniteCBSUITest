@@ -1,19 +1,22 @@
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { ActionTypes } from "components/dataTable";
 import { siasExecutedGridMetadata } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
 import { CircularProgress, Dialog } from "@mui/material";
 import { siasExecute } from "./metaData/metaData";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
-import { queryClient } from "cache";
-import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
+import {
+  GridWrapper,
+  ActionTypes,
+  usePopupContext,
+  GradientButton,
+  queryClient,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [];
 
@@ -182,7 +185,7 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
           key={"siasExecute"}
           metaData={siasExecute as MetaDataType}
           onSubmitHandler={(data) => showData()}
-          formMode={formMode}
+          displayMode={formMode}
           formStyle={{ background: "white" }}
           ref={formRef}
           formState={{ MessageBox: MessageBox, docCd: "TRN/394" }}

@@ -3,8 +3,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import FdPrintDynamicRetrieve from "./fdPrintRetrieve/retrieveFdPrint";
 import { Box } from "@mui/system";
 import { Grid, Typography } from "@mui/material";
-import { utilFunction } from "components/utils";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 
 const FdPrintDynamicNew = ({ SelectedRowData, handleClose, navigate }) => {
   return (

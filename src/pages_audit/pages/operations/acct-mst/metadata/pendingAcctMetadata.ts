@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const pendingAcctMetadata: GridMetaDataType = {
   gridConfig: {
@@ -79,7 +79,7 @@ export const pendingAcctMetadata: GridMetaDataType = {
       maxWidth: 100,
     },
     {
-      accessor: "ACCT_CD",
+      accessor: "ACCOUNT_NUMBER",
       columnName: "Account Number",
       sequence: 6,
       alignment: "left",
@@ -160,50 +160,5 @@ export const pendingAcctMetadata: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
-
-    //   {
-    //     accessor: "ENTRY_TYPE",
-    //     columnName: "Req. Type", // value for fresh/existing
-    //     sequence: 8,
-    //     alignment: "left",
-    //     componentType: "default",
-    //     width: 140,
-    //     minWidth: 140,
-    //     maxWidth: 180,
-    //   },
-
-    //   {
-    //     accessor: "CUSTOMER_ID",
-    //     columnName: "CustomerId",
-    //     sequence: 6,
-    //     alignment: "left",
-    //     componentType: "default",
-    //     width: 140,
-    //     minWidth: 140,
-    //     maxWidth: 180,
-    //   },
-
-    //   {
-    //     accessor: "CUSTOMER_TYPE_FLAG",
-    //     columnName: "CustomerType",
-    //     sequence: 7,
-    //     alignment: "left",
-    //     componentType: "default",
-    //     width: 140,
-    //     minWidth: 140,
-    //     maxWidth: 180,
-    //   },
-
-    //   {
-    //     accessor: "CHECKER",
-    //     columnName: "Checker",
-    //     sequence: 11,
-    //     alignment: "center",
-    //     componentType: "default",
-    //     isReadOnly: true,
-    //     width: 140,
-    //     minWidth: 140,
-    //     maxWidth: 140,
-    //   },
   ],
 };
