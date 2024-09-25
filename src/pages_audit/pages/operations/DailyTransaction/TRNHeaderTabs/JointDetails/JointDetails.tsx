@@ -182,7 +182,6 @@ export const JointDetails = ({ reqData }) => {
             key={`JointDetailDisplayForm_${currentIndex}_${metaData?.form?.label}`}
             metaData={metaData as MetaDataType}
             initialValues={{ ...(data?.[currentIndex] ?? {}) }}
-            onSubmitHandler={() => {}}
             displayMode={"view"}
             onSubmitHandler={() => {}}
           >

@@ -125,7 +125,6 @@ export const Limit = ({ reqData }) => {
             initialValues={rows ?? {}}
             onSubmitHandler={() => {}}
             displayMode={"view"}
-            onSubmitHandler={() => {}}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
