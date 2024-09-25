@@ -187,6 +187,7 @@ export const EMICalculateMetaData = {
       render: {
         componentType: "spacer",
       },
+      name: "spacer",
       GridProps: { xs: 0, sm: 0, md: 6, lg: 6, xl: 6 },
     },
     // {
@@ -787,7 +788,7 @@ export const EMICalculateMetaData = {
             componentType: "formbutton",
           },
           name: "UPDOWN",
-          label: "Step UP/DOWN",
+          label: "Step up/down",
           endsIcon: "AddCircleOutlineRounded",
           rotateIcon: "scale(2)",
           placeholder: "",
