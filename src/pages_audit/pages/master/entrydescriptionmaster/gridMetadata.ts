@@ -30,7 +30,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr.No.",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 80,
       minWidth: 100,

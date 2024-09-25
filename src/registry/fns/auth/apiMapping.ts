@@ -2641,6 +2641,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
     packageName: "",
   },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
   GETLOGINPAGEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",

@@ -61,7 +61,15 @@ export const NpaCategoryMasterForm = ({
     // @ts-ignore
     endSubmit(true);
 
-    let newData = { ...data };
+    let newData = {
+      ...data,
+      SECURE_PROV_PERC: Boolean(data?.SECURE_PROV_PERC?.trim())
+        ? data?.SECURE_PROV_PERC
+        : "0",
+      UNSECURE_PROV_PERC: Boolean(data?.UNSECURE_PROV_PERC?.trim())
+        ? data?.UNSECURE_PROV_PERC
+        : "0",
+    };
     let oldData = { ...rows?.[0]?.data };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
@@ -194,11 +202,11 @@ export const NpaCategoryMasterWrapper = ({
       TransitionComponent={Transition}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      maxWidth="md"
     >
       {gridData ? (
         <NpaCategoryMasterForm
