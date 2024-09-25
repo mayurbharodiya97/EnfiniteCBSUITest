@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const PhotoHistoryMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -69,7 +69,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
     //   maxWidth: 150,
     // },
     {
-    //   accessor: "IMAGE_PATH",
+      //   accessor: "IMAGE_PATH",
       accessor: "CUST_PHOTO",
       columnName: "Photo Image",
       sequence: 5,
@@ -78,7 +78,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 200,
-    //   isImageURL: true,
+      //   isImageURL: true,
     },
     {
       accessor: "CUST_SIGN",
@@ -89,7 +89,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 200,
-    //   isImageURL: true,
+      //   isImageURL: true,
     },
     {
       accessor: "ENTERED_BY",
@@ -100,7 +100,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 200,
-    //   isImageURL: true,
+      //   isImageURL: true,
     },
     {
       accessor: "ENTERED_DATE",
@@ -111,7 +111,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       width: 150,
       minWidth: 100,
       maxWidth: 200,
-    //   isImageURL: true,
+      //   isImageURL: true,
     },
     {
       accessor: "VERIFIED_BY",
@@ -123,7 +123,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 200,
       //   isImageURL: true,
-    },  
+    },
     {
       accessor: "VERIFIED_DATE",
       columnName: "Verified Date",
@@ -133,9 +133,9 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
       width: 150,
       minWidth: 100,
       maxWidth: 200,
-    //   isImageURL: true,
+      //   isImageURL: true,
     },
-      // {
+    // {
     //   accessor: "ACTIVE_STATUS",
     //   columnName: "Active Status",
     //   sequence: 6,

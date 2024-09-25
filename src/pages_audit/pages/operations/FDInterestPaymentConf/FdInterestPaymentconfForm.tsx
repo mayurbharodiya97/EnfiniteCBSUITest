@@ -1,19 +1,21 @@
 import { Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { updateFDInterestPayment } from "../FDInterestPayment/api";
 import * as API from "./api";
 import { FdInterestPaymentconfFormMetaData } from "./FdInterestPaymentConfmMetaData";
-
+import {
+  LoaderPaperComponent,
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  GradientButton,
+  Transition,
+  usePopupContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 const FdInterestPaymentconfForm = ({
   closeDialog,
   fdDetails,

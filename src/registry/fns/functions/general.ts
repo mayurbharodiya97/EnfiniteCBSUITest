@@ -1,7 +1,6 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { AuthSDK } from "../auth";
 import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { useEffect } from "react";
 
 const GeneralAPISDK = () => {
@@ -203,14 +202,16 @@ const GeneralAPISDK = () => {
             },
             STMT_FROM_DATE: {
               value: format(
-                isValidDate(LST_STATEMENT_DT)
+                utilFunction.isValidDate(LST_STATEMENT_DT)
                   ? originalDate.setDate(originalDate.getDate() + 1)
                   : new Date(),
                 "dd/MMM/yyyy"
               ),
             },
             WK_STMT_TO_DATE: {
-              value: isValidDate(new Date()) ? new Date() : new Date(),
+              value: utilFunction.isValidDate(new Date())
+                ? new Date()
+                : new Date(),
             },
             ACCT_CD: {
               value: data?.[0]?.ACCT_CD,
@@ -769,7 +770,14 @@ const GeneralAPISDK = () => {
     }
   };
 
-  const getCustAccountLatestDtl = async ({ COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_CD, AMOUNT, SCREEN_REF }) => {
+  const getCustAccountLatestDtl = async ({
+    COMP_CD,
+    BRANCH_CD,
+    ACCT_TYPE,
+    ACCT_CD,
+    AMOUNT,
+    SCREEN_REF,
+  }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
         COMP_CD: COMP_CD,
@@ -797,7 +805,7 @@ const GeneralAPISDK = () => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
-  }
+  };
   const getCalGstAmountData = async (apiReq) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETCALCGSTAMT", {
@@ -843,7 +851,7 @@ const GeneralAPISDK = () => {
     getCommTypeList,
     getPhotoSignHistory,
     getCustAccountLatestDtl,
-    getCalGstAmountData
+    getCalGstAmountData,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

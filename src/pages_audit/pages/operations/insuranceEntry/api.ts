@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getInsuranceTypeData = async (reqData: any) => {
@@ -7,13 +7,15 @@ export const getInsuranceTypeData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, INSURANCE_TYPE_CD, ...other }) => {
-        return {
-          value: INSURANCE_TYPE_CD,
-          label: DESCRIPTION,
-          ...other,
-        };
-      });
+      responseData = responseData.map(
+        ({ DESCRIPTION, INSURANCE_TYPE_CD, ...other }) => {
+          return {
+            value: INSURANCE_TYPE_CD,
+            label: DESCRIPTION,
+            ...other,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -26,13 +28,15 @@ export const getInsuranceCompanyData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, INSURANCE_COMP_CD, ...other }) => {
-        return {
-          value: INSURANCE_COMP_CD,
-          label: DESCRIPTION,
-          ...other,
-        };
-      });
+      responseData = responseData.map(
+        ({ DESCRIPTION, INSURANCE_COMP_CD, ...other }) => {
+          return {
+            value: INSURANCE_COMP_CD,
+            label: DESCRIPTION,
+            ...other,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -63,13 +67,15 @@ export const getSecurityData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DISPLAY_NM, SECURITY_CD, ...other }) => {
-        return {
-          value: SECURITY_CD,
-          label: DISPLAY_NM,
-          ...other,
-        };
-      });
+      responseData = responseData.map(
+        ({ DISPLAY_NM, SECURITY_CD, ...other }) => {
+          return {
+            value: SECURITY_CD,
+            label: DISPLAY_NM,
+            ...other,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -131,29 +137,28 @@ export const getInsuranceEntryDetail = async (apiReq) => {
       BRANCH_CD: data?.[0]?.BRANCH_CD,
       COMP_CD: data?.[0]?.COMP_CD,
       TRAN_CD: data?.[0]?.TRAN_CD,
-    })
+    });
     return {
       ...data.map((item) => {
-        return { ...item, RENEWED_FLAG: item.RENEWED_FLAG === "Y" ? true : false }
-      }), detailData
+        return {
+          ...item,
+          RENEWED_FLAG: item.RENEWED_FLAG === "Y" ? true : false,
+        };
+      }),
+      detailData,
     };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
 
-const getInsuranceEntryDetailData = async (
-  { TRAN_CD, BRANCH_CD, COMP_CD, }
-) => {
+const getInsuranceEntryDetailData = async ({ TRAN_CD, BRANCH_CD, COMP_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(
-      "GETINSUENTRYSECDTL",
-      {
-        TRAN_CD: TRAN_CD,
-        BRANCH_CD: BRANCH_CD,
-        COMP_CD: COMP_CD,
-      }
-    );
+    await AuthSDK.internalFetcher("GETINSUENTRYSECDTL", {
+      TRAN_CD: TRAN_CD,
+      BRANCH_CD: BRANCH_CD,
+      COMP_CD: COMP_CD,
+    });
   if (status === "0") {
     return data;
   } else {

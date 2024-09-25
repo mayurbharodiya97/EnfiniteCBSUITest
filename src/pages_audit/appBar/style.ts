@@ -204,14 +204,6 @@ export const useStyles = makeStyles((theme: any) => ({
     "0%": { transform: "translateX(100%)" },
     "100%": { transform: "translateX(-100%)" },
   },
-  blinkHard: {
-    animation: "$blinker 1s step-end infinite",
-  },
-  "@keyframes blinker": {
-    "50%": {
-      opacity: 0,
-    },
-  },
   popover: {
     popover: {
       maxWidth: "100%",

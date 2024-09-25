@@ -1,15 +1,21 @@
 import { useRef, useEffect, useContext, useState, useMemo } from "react";
 import { Button, Dialog } from "@mui/material";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import {
+  InitialValuesType,
+  SubmitFnType,
+  LoaderPaperComponent,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import * as API from "../../api";
 import { TipsListMetadata } from "./metadata";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { utilFunction } from "components/utils";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  utilFunction,
+  PopupMessageAPIWrapper,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 export const TipsWrapper = ({
   open,
@@ -116,7 +122,7 @@ export const TipsWrapper = ({
         >
           <FormWrapper
             key={`TipsListMetadata`}
-            metaData={TipsListMetadata}
+            metaData={TipsListMetadata as MetaDataType}
             onSubmitHandler={onSubmitHandler}
             initialValues={
               {

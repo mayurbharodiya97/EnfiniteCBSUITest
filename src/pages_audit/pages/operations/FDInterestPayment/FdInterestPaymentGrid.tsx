@@ -1,11 +1,4 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { cloneDeep } from "lodash";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import {
   Fragment,
@@ -15,6 +8,18 @@ import {
   useRef,
   useState,
 } from "react";
+
+import {
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  GradientButton,
+  ActionTypes,
+  usePopupContext,
+  GridWrapper,
+  extractMetaData,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -25,6 +30,7 @@ import {
 } from "./FdInterestPaymentGridMetaData";
 import { FdInterestPaymentDetail } from "./viewDetails";
 import { useTranslation } from "react-i18next";
+import { cloneDeepWith } from "lodash";
 const baseActions: ActionTypes[] = [
   {
     actionName: "retrieve",
@@ -113,7 +119,8 @@ export const FdInterestPaymentGrid = () => {
           }));
 
           setFdPaymentInstructions(updatedData);
-          formDataRef.current = cloneDeep(updatedData);
+          //@ts-ignore
+          formDataRef.current = utilFunction.cloneDeep(updatedData);
           setFormOpen(false);
           CloseMessageBox();
         }
@@ -502,7 +509,7 @@ export const FdInterestPaymentGrid = () => {
         finalMetaData={FdInterestPaymentGridMetaData}
         data={formDataRef.current ?? []}
         setData={() => null}
-        ReportExportButton={true}
+        enableExport={true}
         actions={actions}
         setAction={setCurrentAction}
       />
