@@ -1,19 +1,13 @@
-import { AppBar, Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
-import { useLocation } from "react-router-dom";
-import { LoanRescheduleFormMetaData, LoanReviseMetaData } from "./metadata";
+import { LoanReviseMetaData } from "./metadata";
 import { t } from "i18next";
 import { MasterDetailsForm } from "components/formcomponent";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { saveUpdatedInterestRate, updateInterestRate } from "../api";
-import { useContext, useEffect, useRef, useState } from "react";
-import { format } from "date-fns";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
+import { saveUpdatedInterestRate } from "../api";
+import { useContext, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "components/custom/popupContext";
 

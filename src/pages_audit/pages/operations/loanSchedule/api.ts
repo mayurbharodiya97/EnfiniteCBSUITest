@@ -333,11 +333,23 @@ export const proceedData = async (apiReq) => {
   }
 };
 
-export const deleteProceedData = async (apiReq) => {
+interface reqObjTypes {
+  apiReq: any;
+  controllerFinal?: any;
+}
+
+export const deleteProceedData = async (reqObj: reqObjTypes) => {
+  const { apiReq, controllerFinal } = reqObj;
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DODELETELOANDISBURSEDATA", {
-      ...apiReq,
-    });
+    await AuthSDK.internalFetcher(
+      "DODELETELOANDISBURSEDATA",
+      {
+        ...apiReq,
+      },
+      {},
+      null,
+      controllerFinal
+    );
   if (status === "0") {
     return message;
   } else {
@@ -372,6 +384,32 @@ export const updateInterestRate = async (apiReq) => {
 export const saveUpdatedInterestRate = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOUPDATERATEAMOUNT", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getRescheduleConfData = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLOANRESCHEDULECNF", {
+      BRANCH_CD: BRANCH_CD,
+      COMP_CD: COMP_CD,
+      ACTIVE: "N",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const ConfRejectLoanRescheduleData = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCONFIRMLOANRESCHEDULE", {
       ...apiReq,
     });
   if (status === "0") {

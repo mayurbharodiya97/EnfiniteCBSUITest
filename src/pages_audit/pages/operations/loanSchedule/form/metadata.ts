@@ -51,7 +51,7 @@ export const LoanRegenerateFormMetaData = {
       type: "text",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 12, sm: 4, md: 3.5, lg: 3.5, xl: 3.5 },
+      GridProps: { xs: 12, sm: 3.25, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: {
@@ -99,6 +99,7 @@ export const LoanRegenerateFormMetaData = {
             messageTitle: "ValidationFailed",
             message: "DisburseAmounTValidationMsg",
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
           if (buttonName === "Ok") {
             return {
@@ -153,27 +154,22 @@ export const LoanRegenerateFormMetaData = {
       FormatProps: {
         allowNegative: false,
       },
-      GridProps: { xs: 12, sm: 4, md: 3.5, lg: 3.5, xl: 3.5 },
+      GridProps: { xs: 12, sm: 3.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: { componentType: "datePicker" },
       name: "INS_START_DT",
       label: "InstallmentStartDate",
       placeholder: "",
-      validate: (currentField, dependentFields, formState) => {
-        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
-          return "Mustbeavaliddate";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Installment Start Date is Required."] },
+        ],
       },
-      ///////////////////////////////////////////////// confirm this
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Installment Start Date is Required."] }],
-      // },
-      // isRequired: true,
+      isRequired: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 3, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 3.25, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: {
@@ -260,10 +256,13 @@ export const LoanRegenerateFormMetaData = {
           if (values.floatValue > 99.99) {
             return false;
           }
+          if (values.value.length > 5) {
+            return false;
+          }
           return true;
         },
       },
-      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
     {
       render: { componentType: "datePicker" },
@@ -271,7 +270,7 @@ export const LoanRegenerateFormMetaData = {
       label: "DueDate",
       placeholder: "",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 3.25, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: { componentType: "datePicker" },
@@ -279,7 +278,7 @@ export const LoanRegenerateFormMetaData = {
       label: "W.E.F.",
       placeholder: "",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 3.25, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: { componentType: "numberFormat" },
@@ -288,11 +287,20 @@ export const LoanRegenerateFormMetaData = {
       placeholder: "",
       fullWidth: true,
       autoComplete: "off",
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          textAlign: "right",
+        },
+      },
       maxLength: 5,
       FormatProps: {
         allowNegative: false,
+        decimalScale: 0,
         isAllowed: (values) => {
           if (values?.value?.length > 5) {
+            return false;
+          }
+          if (values.floatValue === 0) {
             return false;
           }
           return true;
@@ -364,7 +372,7 @@ export const LoanRegenerateFormMetaData = {
           };
         }
       },
-      GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
     {
       render: { componentType: "amountField" },
@@ -397,6 +405,7 @@ export const LoanRegenerateFormMetaData = {
             messageTitle: "ValidationFailed",
             message: "InstallmentAmountValidation",
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
           if (buttonName === "Ok") {
             return {
@@ -409,11 +418,14 @@ export const LoanRegenerateFormMetaData = {
           }
         }
       },
+      FormatProps: {
+        allowNegative: false,
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["InstallmentAmountIsRequired"] }],
       },
-      GridProps: { xs: 12, sm: 6, md: 3.5, lg: 3.5, xl: 3.5 },
+      GridProps: { xs: 12, sm: 3.5, md: 2.5, lg: 2.5, xl: 2.5 },
     },
     {
       render: {
@@ -445,7 +457,7 @@ export const LoanRegenerateFormMetaData = {
 export const LoanRescheduleFormMetaData = {
   form: {
     name: "loanRescheduleForm",
-    label: "Account Loan Schedule Rate Change",
+    label: "AccountLoanScheduleRateChange",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -479,7 +491,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "datePicker",
       },
       name: "INST_START_DT",
-      label: "Installment Start Date",
+      label: "InstallmentStartDate",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
@@ -488,7 +500,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "datePicker",
       },
       name: "RATE_WEF",
-      label: "Effective Date",
+      label: "EffectiveDate",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
@@ -497,7 +509,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "datePicker",
       },
       name: "INST_DUE_DT",
-      label: "Due Date",
+      label: "DueDate",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.5 },
     },
@@ -506,7 +518,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "amountField",
       },
       name: "OVERDUE_AMT",
-      label: "Over Due",
+      label: "OverDue",
       fullWidth: true,
       isReadOnly: true,
       GridProps: { xs: 12, sm: 4, md: 3, lg: 1.8, xl: 1.5 },
@@ -526,7 +538,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "amountField",
       },
       name: "IDEAL_BALANCE",
-      label: "Ideal Balance",
+      label: "IdealBalance",
       fullWidth: true,
       isReadOnly: true,
       FormatProps: {
@@ -538,7 +550,7 @@ export const LoanRescheduleFormMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "VALIDATE",
+      name: "DUPLICATE_INST_AMT",
       label: "",
       placeholder: "",
     },
@@ -547,7 +559,7 @@ export const LoanRescheduleFormMetaData = {
         componentType: "checkbox",
       },
       name: "EMI_AMT_CHANGE",
-      label: "Change Tenure",
+      label: "ChangeTenure",
       defaultValue: false,
       fullWidth: true,
       isFieldFocused: true,
@@ -567,13 +579,13 @@ export const LoanRescheduleFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "INT_RATE",
-      label: "Interest Rate",
+      label: "InterestRate",
       fullWidth: true,
       required: true,
       autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Interest Rate is Required"] }],
+        rules: [{ name: "required", params: ["InterestRateIsRequired"] }],
       },
       isFieldFocused: true,
       dependentFields: [
@@ -623,7 +635,6 @@ export const LoanRescheduleFormMetaData = {
             INST_RS: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
-              // isFieldFocused: false,
             },
             VALIDATE_INT_AMT: {
               value: getApiData?.[0]?.INST_RS ?? "",
@@ -633,7 +644,7 @@ export const LoanRescheduleFormMetaData = {
               isFieldFocused: true,
               ignoreUpdate: true,
             },
-            VALIDATE: {
+            DUPLICATE_INST_AMT: {
               value: getApiData?.[0]?.INST_RS ?? "",
               ignoreUpdate: true,
             },
@@ -651,7 +662,7 @@ export const LoanRescheduleFormMetaData = {
               isFieldFocused: true,
               ignoreUpdate: true,
             },
-            VALIDATE: {
+            DUPLICATE_INST_AMT: {
               value: "",
               ignoreUpdate: true,
             },
@@ -660,12 +671,11 @@ export const LoanRescheduleFormMetaData = {
       },
       maxLength: 5,
       FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        decimalScale: 2,
-        fixedDecimalScale: true,
         isAllowed: (values) => {
           //@ts-ignore
+          if (values.value.length > 5) {
+            return false;
+          }
           if (values.floatValue > 99.99) {
             return false;
           }
@@ -678,11 +688,11 @@ export const LoanRescheduleFormMetaData = {
       render: {
         componentType: "select",
       },
-      options: () => getRescheduleDropDown(),
+      options: getRescheduleDropDown,
       _optionsKey: "getRescheduleDropDown",
       defaultValue: "O",
       name: "IDEAL_ACTUAL",
-      label: "Reschedule With",
+      label: "RescheduleWith",
       fullWidth: true,
       dependentFields: [
         "IDEAL_BALANCE",
@@ -699,6 +709,7 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
         if (currentField?.displayValue.trim() === "") {
           return {};
         }
@@ -731,7 +742,7 @@ export const LoanRescheduleFormMetaData = {
             value: getApiData?.[0]?.INST_RS ?? "",
             ignoreUpdate: true,
           },
-          VALIDATE: {
+          DUPLICATE_INST_AMT: {
             value: getApiData?.[0]?.INST_RS ?? "",
             ignoreUpdate: true,
           },
@@ -742,23 +753,24 @@ export const LoanRescheduleFormMetaData = {
     {
       render: { componentType: "amountField" },
       name: "INST_RS",
-      label: "Installment Amount",
+      label: "InstallmentAmount",
       placeholder: "",
       fullWidth: true,
       autoComplete: "off",
       required: true,
+      FormatProps: {
+        allowNegative: false,
+      },
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Installment Amount is Required"] },
-        ],
+        rules: [{ name: "required", params: ["InstallmentAmountIsRequired"] }],
       },
       dependentFields: [
         "EMI_AMT_CHANGE",
         "VALIDATE_INT_AMT",
         "OUTSTANDING_BAL",
         "INT_RATE",
-        "VALIDATE",
+        "DUPLICATE_INST_AMT",
       ],
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -767,12 +779,15 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
-        // if (
-        //   currentField?.value ===
-        //   parseFloat(dependentFieldsValues?.["VALIDATE"]?.value).toFixed(2)
-        // ) {
-        //   return {};
-        // }
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
+        if (
+          currentField?.value ===
+          parseFloat(
+            dependentFieldsValues?.["DUPLICATE_INST_AMT"]?.value
+          ).toFixed(2)
+        ) {
+          return {};
+        }
         const formattedValue = parseFloat(
           formState?.headerData?.[0]?.INST_RS || 0
         ).toFixed(2);
@@ -785,9 +800,10 @@ export const LoanRescheduleFormMetaData = {
           !Boolean(dependentFieldsValues?.["EMI_AMT_CHANGE"]?.value)
         ) {
           const buttonName = await formState.MessageBox({
-            messageTitle: "Validation Failed",
-            message: "Installment Amount can not be reduced.",
+            messageTitle: "ValidationFailed",
+            message: "InstallmentAmountValidation",
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
           formState.instAmtFlag = true;
           if (buttonName === "Ok") {
@@ -795,8 +811,8 @@ export const LoanRescheduleFormMetaData = {
               INST_RS: {
                 value: dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value,
               },
-              VALIDATE: {
-                value: currentField?.value,
+              DUPLICATE_INST_AMT: {
+                value: dependentFieldsValues?.["VALIDATE_INT_AMT"]?.value,
               },
             };
           }
@@ -820,7 +836,7 @@ export const LoanRescheduleFormMetaData = {
             VALIDATE_INT_AMT: {
               value: currentField?.value,
             },
-            VALIDATE: {
+            DUPLICATE_INST_AMT: {
               value: currentField?.value,
             },
             VALIDATE_INST_NO: {
@@ -833,7 +849,7 @@ export const LoanRescheduleFormMetaData = {
             VALIDATE_INT_AMT: {
               value: currentField?.value ?? "",
             },
-            VALIDATE: {
+            DUPLICATE_INST_AMT: {
               value: currentField?.value ?? "",
             },
             VALIDATE_INST_NO: {
@@ -862,14 +878,20 @@ export const LoanRescheduleFormMetaData = {
         componentType: "numberFormat",
       },
       name: "INST_NO",
-      label: "No. of Installment",
+      label: "NoofInstallment",
       // maxLength: 5,
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values) => {
           if (values?.value?.length > 5) {
             return false;
           }
           return true;
+        },
+      },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          textAlign: "right",
         },
       },
       placeholder: "",
@@ -879,9 +901,7 @@ export const LoanRescheduleFormMetaData = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["No. of Installment is Required"] },
-        ],
+        rules: [{ name: "required", params: ["NoOfInstallmentIsRequired"] }],
       },
       dependentFields: [
         "REMAINING_INST_NO",
@@ -902,6 +922,7 @@ export const LoanRescheduleFormMetaData = {
         authState,
         dependentFieldsValues
       ) => {
+        formState.setDataOnFieldChange("DELETE_DATA", { DELETE_DATA: true });
         if (
           currentField?.value ===
             dependentFieldsValues?.["VALIDATE_INST_NO"]?.value &&
@@ -975,7 +996,7 @@ export const LoanRescheduleFormMetaData = {
           VALIDATE_INT_AMT: {
             value: getInstallmentAmtData?.[0]?.INST_RS ?? "",
           },
-          VALIDATE: {
+          DUPLICATE_INST_AMT: {
             value: getInstallmentAmtData?.[0]?.INST_RS ?? "",
             ignoreUpdate: true,
           },
@@ -993,15 +1014,16 @@ export const LoanRescheduleFormMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Enter Remarks",
+      placeholder: "EnterRemarks",
       type: "text",
       required: true,
       txtTransform: "uppercase",
       maxLength: 32,
       autoComplete: "off",
+      // preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Remarks is Required"] }],
+        rules: [{ name: "required", params: ["RemarksIsRequired"] }],
       },
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -1017,10 +1039,15 @@ export const LoanRescheduleFormMetaData = {
     {
       render: { componentType: "numberFormat" },
       name: "FINAL_INST_NO",
-      label: "Final Installment",
+      label: "FinalInstallment",
       placeholder: "",
       fullWidth: true,
       isReadOnly: true,
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          textAlign: "right",
+        },
+      },
       GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 1 },
     },
     {
@@ -1028,12 +1055,13 @@ export const LoanRescheduleFormMetaData = {
         componentType: "textField",
       },
       name: "RESOLUTION_NO",
-      label: "Resolution No.",
+      label: "ResolutionNo",
       type: "text",
       fullWidth: true,
       txtTransform: "uppercase",
       maxLength: 50,
       autoComplete: "off",
+      // preventSpecialCharInput: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1241,10 +1269,22 @@ export const LoanReviseMetaData = {
         name: "INT_RATE",
         label: "InterestRate",
         type: "text",
-        isFieldFocused: true,
+        maxLength: 5,
+        FormatProps: {
+          isAllowed: (values) => {
+            //@ts-ignore
+            if (values.value.length > 5) {
+              return false;
+            }
+            if (values.floatValue > 99.99) {
+              return false;
+            }
+            return true;
+          },
+        },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["Interest Rate is Required"] }],
+          rules: [{ name: "required", params: ["InterestRateIsRequired"] }],
         },
         dependentFields: [
           "INS_START_DT",
@@ -1400,9 +1440,20 @@ export const LoanReviseMetaData = {
         schemaValidation: {
           type: "string",
           rules: [
-            { name: "required", params: ["Installment Amount is Required"] },
+            { name: "required", params: ["InstallmentAmountIsRequired"] },
           ],
         },
+        FormatProps: {
+          allowNegative: false,
+          isAllowed: (values) => {
+            //@ts-ignore
+            if (values.value.length > 11) {
+              return false;
+            }
+            return true;
+          },
+        },
+        maxLength: 10,
         dependentFields: [
           "INS_START_DT",
           "BEGIN_BAL",

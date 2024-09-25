@@ -1,4 +1,4 @@
-import { AppBar, Dialog } from "@mui/material";
+import { AppBar, Dialog, LinearProgress } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
@@ -25,10 +25,10 @@ import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { queryClient } from "cache";
 import { usePopupContext } from "components/custom/popupContext";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { enqueueSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const LoanRescheduleForm = ({
   isDataChangedRef,
@@ -44,8 +44,9 @@ export const LoanRescheduleForm = ({
   const [detailsGridData, setDetailsGridData] = useState<any>([]);
   const [gridData, setGridData] = useState<any>([]);
   const [fetchData, setFetchData] = useState<any>(false);
-  const gridRef = useRef<any>(null);
   const [shouldFetchDetails, setShouldFetchDetails] = useState(false);
+  const gridRef = useRef<any>(null);
+  const controllerRef = useRef<AbortController>();
 
   const {
     data: headerData,
@@ -145,17 +146,7 @@ export const LoanRescheduleForm = ({
   );
 
   const deleteMutation = useMutation(deleteProceedData, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-      closeDialog();
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
 
@@ -380,23 +371,33 @@ export const LoanRescheduleForm = ({
     }
   };
 
-  LoanScheduleGridMetaData.gridConfig.hideHeader = true;
-  LoanScheduleGridMetaData.gridConfig.containerHeight = {
-    min: "15vh",
-    max: "15vh",
-  };
-  LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
-    min: "25vh",
-    max: "25vh",
-  };
+  useEffect(() => {
+    LoanScheduleGridMetaData.gridConfig.hideHeader = true;
+    LoanScheduleGridMetaData.gridConfig.containerHeight = {
+      min: "15vh",
+      max: "15vh",
+    };
+    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
+      min: "25vh",
+      max: "25vh",
+    };
+    LoanScheduleDetailsGridMetadata.columns[8].isVisible = false;
+    return () => {
+      LoanScheduleGridMetaData.gridConfig.hideHeader = false;
+      LoanScheduleGridMetaData.gridConfig.containerHeight = {
+        min: "28vh",
+        max: "28vh",
+      };
+      LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
+        min: "45vh",
+        max: "45vh",
+      };
+      LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
+    };
+  }, []);
 
   const handleDeleteData = async () => {
-    if (
-      Array.isArray(gridData) &&
-      gridData.length > 0 &&
-      Array.isArray(detailsGridData) &&
-      detailsGridData.length > 0
-    ) {
+    if (Array.isArray(gridData) && gridData.length > 0) {
       const confirmation = await MessageBox({
         messageTitle: "Confirmation",
         message: "DeleteProceedMessage",
@@ -409,15 +410,29 @@ export const LoanRescheduleForm = ({
             isDeleteRow: gridData,
           },
         };
-        deleteMutation.mutate(deletePara, {
-          onSuccess: (data) => {
-            enqueueSnackbar(data, {
-              variant: "success",
-            });
-            CloseMessageBox();
-            closeDialog();
-          },
-        });
+        deleteMutation.mutate(
+          { apiReq: deletePara, controllerFinal: controllerRef.current },
+          {
+            onSuccess: (data) => {
+              enqueueSnackbar(data, {
+                variant: "success",
+              });
+              CloseMessageBox();
+              closeDialog();
+            },
+            onError: (error: any) => {
+              let errorMsg = t("Unknownerroroccured");
+              if (typeof error === "object") {
+                errorMsg = error?.error_msg ?? errorMsg;
+              }
+              enqueueSnackbar(errorMsg, {
+                variant: "error",
+              });
+              CloseMessageBox();
+              closeDialog();
+            },
+          }
+        );
       }
     } else {
       closeDialog();
@@ -431,15 +446,25 @@ export const LoanRescheduleForm = ({
           isDeleteRow: gridRef?.current,
         },
       };
-      deleteMutation.mutate(deletePara, {
-        onSuccess: (data) => {
-          enqueueSnackbar(data, {
-            variant: "success",
-          });
-          setFetchData(true);
-          gridRef.current = null;
-        },
-      });
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = new AbortController();
+      deleteMutation.mutate(
+        { apiReq: deletePara, controllerFinal: controllerRef.current },
+        {
+          onSuccess: (data) => {
+            enqueueSnackbar(data, {
+              variant: "success",
+            });
+            setFetchData(true);
+            gridRef.current = null;
+          },
+          onError: (error: any) => {
+            setFetchData(false);
+          },
+        }
+      );
     }
   };
 
@@ -451,15 +476,34 @@ export const LoanRescheduleForm = ({
         </div>
       ) : (
         <>
-          {isError && (
+          {(isError ||
+            proceedDataMutation?.isError ||
+            deleteMutation?.isError) && (
             <AppBar position="relative" color="secondary">
               <Alert
-                severity={error?.severity ?? "error"}
-                errorMsg={error?.error_msg ?? "Something went to wrong.."}
-                errorDetail={error?.error_detail ?? ""}
+                severity="error"
+                errorMsg={
+                  //@ts-ignore
+                  (error?.error_msg ||
+                    proceedDataMutation.error?.error_msg ||
+                    deleteMutation.error?.error_msg) ??
+                  "Something went to wrong.."
+                }
+                errorDetail={
+                  //@ts-ignore
+                  (error?.error_detail ||
+                    proceedDataMutation.error?.error_detail ||
+                    deleteMutation.error?.error_detail) ??
+                  ""
+                }
                 color="error"
               />
             </AppBar>
+          )}
+          {proceedDataMutation?.isLoading || deleteMutation?.isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : (
+            <LinearProgressBarSpacer />
           )}
           <FormWrapper
             key={"loanRescheduleForm"}
@@ -493,8 +537,7 @@ export const LoanRescheduleForm = ({
                 detaiIsFetching ||
                 gridlsLoading ||
                 deleteMutation.isLoading ||
-                gridData.length > 0 ||
-                detailsGridData.length > 0,
+                gridData.length > 0,
             }}
             ref={formRef}
             setDataOnFieldChange={(action, payload) => {

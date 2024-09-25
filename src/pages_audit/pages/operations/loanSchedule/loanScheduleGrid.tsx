@@ -19,10 +19,8 @@ import { LoanReviseFormWrapper } from "./form/loanReviseForm";
 export const LoanScheduleGrid = () => {
   const isDataChangedRef = useRef(false);
   const retrievalParaRef = useRef<any>(null);
-  const initialRender = useRef(true);
   const headerDataRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [srCd, setSrCd] = useState<any>(null);
   const [headerGridData, setHeaderGridData] = useState<any>([]);
@@ -30,7 +28,6 @@ export const LoanScheduleGrid = () => {
   const [reviseData, setReviseData] = useState<any>(null);
   const [previousRowData, setPreviousRowData] = useState<any>(null);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
-  const location = useLocation();
   const navigate = useNavigate();
   const [actions, setActions] = useState<ActionTypes[]>([
     {
@@ -189,7 +186,9 @@ export const LoanScheduleGrid = () => {
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "retrieve") {
-        setOpen(true);
+        navigate(data?.name, {
+          state: [],
+        });
         setHeaderGridData([]);
         setDetailsGridData([]);
         setSrCd(null);
@@ -216,16 +215,11 @@ export const LoanScheduleGrid = () => {
   );
 
   useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      if (location.pathname === "/cbsenfinity/operation/loanschedule") {
-        setOpen(true);
-      }
-    }
-  }, [location.pathname, navigate]);
+    navigate("retrieve");
+  }, []);
 
   const selectedDatas = (dataObj) => {
-    setOpen(false);
+    navigate(".");
     if (dataObj) retrievalParaRef.current = dataObj;
     const retrieveData: any = {
       COMP_CD: authState?.companyID ?? "",
@@ -240,7 +234,7 @@ export const LoanScheduleGrid = () => {
   };
 
   const handleRetrieveFormClose = () => {
-    setOpen(false);
+    navigate(".");
   };
 
   const handleDialogClose = useCallback(() => {
@@ -253,13 +247,14 @@ export const LoanScheduleGrid = () => {
       min: "45vh",
       max: "45vh",
     };
+    LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
     navigate(".");
   }, [navigate]);
 
   const handleFormClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      setOpen(true);
+      navigate("retrieve");
       setHeaderGridData([]);
       setDetailsGridData([]);
       setSrCd(null);
@@ -301,7 +296,7 @@ export const LoanScheduleGrid = () => {
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }
-        // hideActions={true}
+        hideActionBar={true}
       />
       {isError && (
         <Alert
@@ -351,14 +346,16 @@ export const LoanScheduleGrid = () => {
             />
           }
         />
-      </Routes>
-
-      {open && (
-        <RetrievalFormWrapper
-          closeDialog={handleRetrieveFormClose}
-          retrievalParaValues={selectedDatas}
+        <Route
+          path="retrieve/*"
+          element={
+            <RetrievalFormWrapper
+              closeDialog={handleRetrieveFormClose}
+              retrievalParaValues={selectedDatas}
+            />
+          }
         />
-      )}
+      </Routes>
 
       {editOpen && (
         <LoanReviseFormWrapper

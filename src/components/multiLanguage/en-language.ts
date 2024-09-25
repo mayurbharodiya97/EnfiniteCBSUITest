@@ -1923,4 +1923,13 @@ export const en_language_data = {
   SanctionedAmount: "Sanctioned Amount",
   DisbursedAmount: "Disbursed Amount",
   LoanSchedule: "Loan Schedule",
+  AccountLoanScheduleRateChange: "Account Loan Schedule Rate Change",
+  OverDue: "Over Due",
+  Outstanding: "Outstanding",
+  ChangeTenure: "Change Tenure",
+  RescheduleWith: "Reschedule With",
+  RemarksIsRequired: "Remarks is Required.",
+  FinalInstallment: "Final Installment",
+  ResolutionNo: "Resolution No.",
+  Subsidy: "Subsidy",
 };

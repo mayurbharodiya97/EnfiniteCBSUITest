@@ -295,7 +295,7 @@ export const LoanRegenerateFormWrapper = ({
           overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      maxWidth="md"
     >
       <LoanRegenerateForm
         isDataChangedRef={isDataChangedRef}

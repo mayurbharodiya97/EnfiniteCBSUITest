@@ -61,12 +61,39 @@ export const RetrievalFormMetaData = {
       },
       accountTypeMetadata: {
         runPostValidationHookAlways: true,
+        dependentFields: ["BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
           dependentFieldValues
         ) => {
+          if (
+            currentField?.value &&
+            dependentFieldValues?.["BRANCH_CD"]?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -86,6 +113,31 @@ export const RetrievalFormMetaData = {
           dependentFieldValues
         ) => {
           if (
+            currentField.value &&
+            dependentFieldValues?.["ACCT_TYPE"]?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldValues?.BRANCH_CD?.value &&
             dependentFieldValues?.ACCT_TYPE?.value
@@ -170,6 +222,15 @@ export const RetrievalFormMetaData = {
                     });
                     if (btnName === "Ok") {
                       formState.CloseMessageBox();
+                      return {
+                        ACCT_CD: {
+                          value: "",
+                          ignoreUpdate: true,
+                          isFieldFocused: true,
+                        },
+                        ACCT_NM: { value: "" },
+                        BALANCE: { value: "" },
+                      };
                     }
                   } else if (getApiData?.status === "0") {
                     formState.CloseMessageBox();
@@ -225,6 +286,10 @@ export const RetrievalFormMetaData = {
             };
           }
           return {};
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
