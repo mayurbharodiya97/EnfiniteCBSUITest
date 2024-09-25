@@ -70,9 +70,7 @@ export const DeleteDialog = ({
               CR_ACCT_CD: rows?.CR_ACCT_CD,
               TRAN_DT: authState.workingDate,
               ENTERED_BY: rows?.ENTERED_BY,
-              USER_DEF_REMARKS: val
-                ? val
-                : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
+              USER_DEF_REMARKS: val,
               ACTIVITY_TYPE: "SI_ENTRY",
             });
           }
