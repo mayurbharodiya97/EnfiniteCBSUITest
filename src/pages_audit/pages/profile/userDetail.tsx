@@ -1,11 +1,13 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { UserLoginDtlGridMetaData } from "./Metadata/userLoginDetail";
 
 export const UserDetail = () => {

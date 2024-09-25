@@ -1,18 +1,21 @@
 import { Fragment, useCallback, useContext, useEffect, useRef } from "react";
 import { ActionTakenMasterGridMetaData } from "./gridMetadata";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { ActionTakenMasterFormWrapper } from "./actionTakenMasterForm";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { ClearCacheContext, queryClient } from "cache";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -145,7 +148,7 @@ export const ActionTakenMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
-        ReportExportButton={true}
+        enableExport={true}
       />
       <Routes>
         <Route

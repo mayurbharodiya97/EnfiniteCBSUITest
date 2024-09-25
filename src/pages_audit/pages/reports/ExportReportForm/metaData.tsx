@@ -1,4 +1,4 @@
-import { MetaDataType } from "components/dyanmicForm";
+import { MetaDataType } from "@acuteinfo/common-base";
 
 // if using FormWrapper
 
