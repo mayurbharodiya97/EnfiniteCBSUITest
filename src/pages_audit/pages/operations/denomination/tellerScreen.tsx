@@ -29,7 +29,6 @@ import DualTableCalc from "./dualTableCalc";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import {
   usePopupContext,
@@ -41,6 +40,7 @@ import {
   MetaDataType,
   usePropertiesConfigContext,
   ReportGrid,
+  utilFunction,
 } from "@acuteinfo/common-base";
 
 const TellerScreen = () => {

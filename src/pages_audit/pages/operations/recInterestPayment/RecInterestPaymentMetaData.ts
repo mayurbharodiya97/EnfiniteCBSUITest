@@ -6,7 +6,7 @@ import {
   getIfscBenDetail,
   getPMISCData,
 } from "../FDInterestPayment/viewDetails/api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 
 let bankflag = false;
 let neftflag = false;

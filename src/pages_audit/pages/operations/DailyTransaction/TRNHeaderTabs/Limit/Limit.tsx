@@ -1,13 +1,19 @@
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
 import { limitEntryTabMetaData, LimitGridMetaData } from "./gridMetadata";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { limitconfirmFormMetaData } from "pages_audit/pages/operations/limit-entry/confirm/confirmFormMetadata";
 import * as API from "./api";
 import { getLimitDTL } from "pages_audit/pages/operations/limit-entry/api";
@@ -23,12 +29,6 @@ interface LimitRowType {
 }
 // import GridWrapper from "components/dataTableStatic";
 
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -122,6 +122,7 @@ export const Limit = ({ reqData }) => {
             metaData={limitEntryTabMetaData as MetaDataType}
             initialValues={rows ?? {}}
             displayMode={"view"}
+            onSubmitHandler={() => {}}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>

@@ -1,7 +1,6 @@
 import { Chip, CircularProgress, Dialog, Grid } from "@mui/material";
-import { cloneDeep } from "lodash";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
+import { Transition } from "@acuteinfo/common-base";
 import {
   Fragment,
   useCallback,
@@ -22,6 +21,7 @@ import {
   GridWrapper,
   extractMetaData,
   utilFunction,
+  queryClient,
 } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -32,8 +32,7 @@ import {
   PaidFDGridMetaData,
 } from "./FdInterestPaymentGridMetaData";
 import { FdInterestPaymentDetail } from "./viewDetails";
-import { queryClient } from "cache";
-import { cloneDeepWith } from "lodash";
+import { cloneDeep } from "lodash";
 const baseActions: ActionTypes[] = [
   {
     actionName: "retrieve",
@@ -123,7 +122,7 @@ export const FdInterestPaymentGrid = () => {
 
           setFdPaymentInstructions(updatedData);
           //@ts-ignore
-          formDataRef.current = utilFunction.cloneDeep(updatedData);
+          formDataRef.current = cloneDeep(updatedData);
           setFormOpen(false);
           CloseMessageBox();
         }

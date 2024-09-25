@@ -1,6 +1,5 @@
 import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import {
   usePopupContext,
   queryClient,
   GridMetaDataType,
+  Transition,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {

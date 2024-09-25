@@ -1,12 +1,4 @@
 import { Box, CircularProgress, Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { utilFunction } from "components/utils";
-import { SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -16,6 +8,16 @@ import {
   recAccountFindmetaData,
   RecInterestPaymentMetaData,
 } from "./RecInterestPaymentMetaData";
+import { AuthContext } from "pages_audit/auth";
+import {
+  FormWrapper,
+  GradientButton,
+  MetaDataType,
+  queryClient,
+  SubmitFnType,
+  usePopupContext,
+  utilFunction,
+} from "@acuteinfo/common-base";
 
 export const RecInterestPaymentForm = () => {
   const [isFormOpen, setFormOpen] = useState(true);

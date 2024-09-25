@@ -1,25 +1,27 @@
 import { Box, Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { fetchFDPaymentConfAcct } from "../FDInterestPaymentConf/api";
-import { FdInterestPaymentConfmMetaData } from "../FDInterestPaymentConf/FdInterestPaymentConfmMetaData";
 import { updateRecInterestPaymentEntry } from "../recInterestPayment/api";
 import { RecInterestPaymentMetaData } from "../recInterestPayment/RecInterestPaymentMetaData";
 import * as API from "./api";
+import {
+  ActionTypes,
+  Alert,
+  FormWrapper,
+  GradientButton,
+  GridMetaDataType,
+  GridWrapper,
+  LoaderPaperComponent,
+  MetaDataType,
+  queryClient,
+  SubmitFnType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+import { AuthContext } from "pages_audit/auth";
+import { FdInterestPaymentConfmGridMetaData } from "../FDInterestPaymentConf/FdInterestPaymentConfmMetaData";
 
 const actions: ActionTypes[] = [
   {
@@ -222,11 +224,11 @@ export const RecInterestPaymentConf = () => {
       )}
       <GridWrapper
         key={"RecInterestPaymentConfm"}
-        finalMetaData={FdInterestPaymentConfmMetaData as GridMetaDataType}
+        finalMetaData={FdInterestPaymentConfmGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        ReportExportButton={data?.length > 0 ? true : false}
+        enableExport={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
