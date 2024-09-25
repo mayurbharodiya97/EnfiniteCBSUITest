@@ -1,14 +1,17 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext, useEffect, useState } from "react";
 import { TransferAcctDetailFormMetadata } from "./metaData/trnsAcctDtlMetaData";
-import { InitialValuesType } from "packages/form";
-import { usePopupContext } from "components/custom/popupContext";
+import {
+  usePopupContext,
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { FDContext } from "../context/fdContext";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { GradientButton } from "components/styledComponent/button";
 import { CircularProgress } from "@mui/material";
 
 export const TransferAcctDetailForm = forwardRef<any, any>(
@@ -139,9 +142,12 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
             padding: "5px",
             border: "1px solid var(--theme-color4)",
             borderRadius: "10px",
+          }}
+          formState={{
+            MessageBox: MessageBox,
+            screenFlag: screenFlag,
             docCD: "FDINSTRCRTYPE",
           }}
-          formState={{ MessageBox: MessageBox, screenFlag: screenFlag }}
           ref={ref}
         >
           {({ isSubmitting, handleSubmit }) => (

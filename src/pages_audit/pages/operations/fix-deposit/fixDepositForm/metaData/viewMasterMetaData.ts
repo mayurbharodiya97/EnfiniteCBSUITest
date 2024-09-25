@@ -1,6 +1,3 @@
-import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
-
 export const ViewMasterMetadata = {
   form: {
     name: "viewmaster",

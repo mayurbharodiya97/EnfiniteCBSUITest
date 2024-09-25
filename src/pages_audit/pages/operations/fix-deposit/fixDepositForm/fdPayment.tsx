@@ -1,9 +1,6 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
 import { FDContext } from "../context/fdContext";
 import {
   FDPaymentMetadata,
@@ -11,12 +8,19 @@ import {
 } from "./metaData/fdPaymentMetadata";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
 import { TransferAcctDetailForm } from "./trnsAcctDtlForm";
+import {
+  FormWrapper,
+  GradientButton,
+  InitialValuesType,
+  LoaderPaperComponent,
+  MetaDataType,
+  SubmitFnType,
+  usePopupContext,
+  utilFunction,
+} from "@acuteinfo/common-base";
 
 export const FDPayment = ({ handleDialogClose, screenFlag }) => {
   const {
@@ -178,28 +182,28 @@ export const FDPayment = ({ handleDialogClose, screenFlag }) => {
             A_BRANCH_CD: authState?.user?.branchCode ?? "",
             A_DATA: {
               ...data,
-              CM_TDS_FROM: isValidDate(data.CM_TDS_FROM)
+              CM_TDS_FROM: utilFunction.isValidDate(data.CM_TDS_FROM)
                 ? format(new Date(data.CM_TDS_FROM), "dd/MMM/yyyy")
                 : "",
-              FROM_DT: isValidDate(data.FROM_DT)
+              FROM_DT: utilFunction.isValidDate(data.FROM_DT)
                 ? format(new Date(data.FROM_DT), "dd/MMM/yyyy")
                 : "",
-              INT_PAID_DT: isValidDate(data.INT_PAID_DT)
+              INT_PAID_DT: utilFunction.isValidDate(data.INT_PAID_DT)
                 ? format(new Date(data.INT_PAID_DT), "dd/MMM/yyyy")
                 : "",
-              PAID_DT: isValidDate(data.PAID_DT)
+              PAID_DT: utilFunction.isValidDate(data.PAID_DT)
                 ? format(new Date(data.PAID_DT), "dd/MMM/yyyy")
                 : "",
-              PROV_DT: isValidDate(data.PROV_DT)
+              PROV_DT: utilFunction.isValidDate(data.PROV_DT)
                 ? format(new Date(data.PROV_DT), "dd/MMM/yyyy")
                 : "",
-              TDS_DT: isValidDate(data.TDS_DT)
+              TDS_DT: utilFunction.isValidDate(data.TDS_DT)
                 ? format(new Date(data.TDS_DT), "dd/MMM/yyyy")
                 : "",
-              TRAN_DT: isValidDate(data.TRAN_DT)
+              TRAN_DT: utilFunction.isValidDate(data.TRAN_DT)
                 ? format(new Date(data.TRAN_DT), "dd/MMM/yyyy")
                 : "",
-              MATURITY_DT: isValidDate(data.MATURITY_DT)
+              MATURITY_DT: utilFunction.isValidDate(data.MATURITY_DT)
                 ? format(new Date(data.MATURITY_DT), "dd/MMM/yyyy")
                 : "",
               RTGS_NEFT: Boolean(data?.RTGS_NEFT) ? "Y" : "N",
@@ -281,6 +285,7 @@ export const FDPayment = ({ handleDialogClose, screenFlag }) => {
           <FormWrapper
             key={"paymentrenewbtns"}
             metaData={PaymentRenewBtnsMetadata as MetaDataType}
+            onSubmitHandler={() => {}}
             formStyle={{
               background: "white",
             }}

@@ -14,21 +14,22 @@ import {
 } from "@mui/material";
 import { makeStyles, createStyles } from "@mui/styles";
 import PrintIcon from "@mui/icons-material/Print";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType } from "components/dataTable/types";
 import { ClosingAdviceGridMetaData } from "./closingAdviceGridMetaData";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
 import { RecurringContext } from "./context/recurringPaymentContext";
 import { format, parse } from "date-fns";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { PDFViewer } from "components/fileUpload/preView";
-import { utilFunction } from "components/utils";
 import { useTranslation } from "react-i18next";
-
+import {
+  LoaderPaperComponent,
+  GridWrapper,
+  GradientButton,
+  PDFViewer,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {

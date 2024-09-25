@@ -12,17 +12,18 @@
 //   makeStyles,
 // } from "@material-ui";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDialogStyles } from "components/detailPopupGridData";
 import * as API from "../../../api";
 import "./styles.css";
 import logo from "assets/images/logo.jpg";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
-import { PrintButton } from "components/common/printButton";
-import { Tooltip } from "components/styledComponent/tooltip";
+import {
+  Tooltip,
+  useDialogStyles,
+  PrintButton,
+  LoaderPaperComponent,
+} from "@acuteinfo/common-base";
 
-import Report from "components/report";
 import { schedulePaymentDetailMetaData } from "../metadata/scheduledetail";
 import { clone, merge } from "lodash";
 import {
@@ -38,6 +39,7 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { ReportGrid } from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme) => ({
   root: {
     // paddingLeft: theme.spacing(1.5),
@@ -254,7 +256,7 @@ export const ScheduleDetailReports = ({
                 </TableContainer>
 
                 <div style={{ padding: "8px 0px 0px 0px" }}>
-                  <Report
+                  <ReportGrid
                     key={"reportID" + reportID + screenFlag}
                     reportID={"reportServiceAPI/" + reportID}
                     reportName={screenFlag}
@@ -268,7 +270,6 @@ export const ScheduleDetailReports = ({
                     hideFooter={metaData?.hideFooter ?? ""}
                     hideAmountIn={metaData?.hideAmountIn ?? ""}
                     otherAPIRequestPara={otherAPIRequestPara}
-                    screenFlag={reportID}
                   />
                 </div>
               </div>

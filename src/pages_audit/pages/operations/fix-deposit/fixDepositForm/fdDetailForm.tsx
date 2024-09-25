@@ -1,28 +1,23 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import {
-  Fragment,
-  forwardRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { usePopupContext } from "components/custom/popupContext";
 import { FDContext } from "../context/fdContext";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
-import { AuthContext } from "pages_audit/auth";
-import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
 import * as API from "../api";
-import { enqueueSnackbar } from "notistack";
+import {
+  extractMetaData,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  utilFunction,
+  SubmitFnType,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 import { CircularProgress } from "@mui/material";
-import { isValidDate } from "components/utils/utilFunctions/function";
-import { format } from "date-fns";
-
+import { useMutation } from "react-query";
+import { useTranslation } from "react-i18next";
+import { enqueueSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
 export const FDDetailForm = forwardRef<any, any>(
   (
     {

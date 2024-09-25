@@ -1,5 +1,3 @@
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { FDDetailGridMetaData } from "./fdDetailgridMetaData";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FDRetriveForm } from "./fixDepositForm/fdRetriveForm";
@@ -8,23 +6,26 @@ import { FixDepositForm } from "./fixDepositForm/fdStepperForm";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { PaidFDGrid } from "./paidFDGrid";
 import { Dialog, Paper } from "@mui/material";
 import { ViewMasterForm } from "./fixDepositForm/viewMasterForm";
 import { FDContext } from "./context/fdContext";
 import { FDDetailForm } from "./fixDepositForm/fdDetailForm";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { utilFunction } from "components/utils";
 import { IntPaidDtlGrid } from "./intPaidDtlGrid";
 import Draggable from "react-draggable";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Document from "../DailyTransaction/TRNHeaderTabs/Document";
-import { isValidDate } from "components/utils/utilFunctions/function";
+import {
+  LoaderPaperComponent,
+  GridWrapper,
+  usePopupContext,
+  ActionTypes,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { FDPayment } from "./fixDepositForm/fdPayment";
-
 export const FDDetailGrid = () => {
   const {
     FDState,
@@ -229,10 +230,12 @@ export const FDDetailGrid = () => {
         A_ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
         A_FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
         A_LEAN_FLAG: data?.rows?.[0]?.data?.LEAN_FLAG ?? "",
-        A_MATURITY_DT: isValidDate(data?.rows?.[0]?.data?.MATURITY_DT)
+        A_MATURITY_DT: utilFunction.isValidDate(
+          data?.rows?.[0]?.data?.MATURITY_DT
+        )
           ? format(new Date(data?.rows?.[0]?.data?.MATURITY_DT), "dd/MMM/yyyy")
           : "",
-        A_TRAN_DT: isValidDate(data?.rows?.[0]?.data?.TRAN_DT)
+        A_TRAN_DT: utilFunction.isValidDate(data?.rows?.[0]?.data?.TRAN_DT)
           ? format(new Date(data?.rows?.[0]?.data?.TRAN_DT), "dd/MMM/yyyy")
           : "",
         A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",

@@ -12,7 +12,6 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { DocumentGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -21,16 +20,20 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import { ActionTypes } from "components/dataTable/types";
-import { GridMetaDataType } from "components/dataTableStatic/types";
-import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
+
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  utilFunction,
+  usePopupContext,
+  queryClient,
+  LoaderPaperComponent,
+} from "@acuteinfo/common-base";
 
 import { useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 const actions: ActionTypes[] = [
   {
@@ -194,6 +197,8 @@ export const Document: React.FC<DocumentProps> = ({
         setAction={setCurrentAction}
         // onlySingleSelectionAllow={true}
         // isNewRowStyle={true}
+        disableMultipleRowSelect={true}
+        variant={"standard"}
         // defaultSelectedRowId={1}
         //  controlsAtBottom={true}
       />

@@ -1,20 +1,24 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
+import { Transition } from "@acuteinfo/common-base";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { EntryDescMasterFormMetadata } from "./metaData";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 const EntryDescriptionMasterForm = ({
   isDataChangedRef,
   closeDialog,

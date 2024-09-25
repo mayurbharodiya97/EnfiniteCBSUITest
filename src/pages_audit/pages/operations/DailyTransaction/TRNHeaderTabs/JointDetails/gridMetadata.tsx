@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const JointDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,

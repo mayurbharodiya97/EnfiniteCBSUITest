@@ -2,16 +2,13 @@ import { Fragment, useRef, useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { CheckBookGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { Alert } from "components/common/alert";
 // import { GridMetaDataType } from "components/dataTable/types";
-import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { Button, Grid, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-
+import { GridMetaDataType, Alert, GridWrapper } from "@acuteinfo/common-base";
 export const CheckBook = ({ reqData }) => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);

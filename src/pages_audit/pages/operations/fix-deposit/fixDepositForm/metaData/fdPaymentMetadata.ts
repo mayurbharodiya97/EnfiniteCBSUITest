@@ -1,7 +1,7 @@
 import * as API from "../../api";
 import { checkTokenValidate } from "pages_audit/pages/operations/recurringPaymentEntry/api";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
+import { utilFunction } from "@acuteinfo/common-base";
 
 //FD Payment/Renew buttons form metadata
 export const PaymentRenewBtnsMetadata = {
@@ -981,11 +981,13 @@ export const FDPaymentMetadata = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        const formattedCurField = isValidDate(currentField?.value)
+        const formattedCurField = utilFunction.isValidDate(currentField?.value)
           ? format(new Date(currentField?.value), "dd/MMM/yyyy")
           : "";
 
-        const formattedFormStVal = isValidDate(formState.paidDateIniValue)
+        const formattedFormStVal = utilFunction.isValidDate(
+          formState.paidDateIniValue
+        )
           ? format(new Date(formState.paidDateIniValue), "dd/MMM/yyyy")
           : "";
 
@@ -1018,7 +1020,7 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: dependentFieldValues?.INT_RATE_REST?.value ?? "",
-            A_PAID_DT: isValidDate(currentField?.value)
+            A_PAID_DT: utilFunction.isValidDate(currentField?.value)
               ? format(new Date(currentField?.value), "dd/MMM/yyyy")
               : "",
           };
@@ -1152,7 +1154,9 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: currentField?.value ?? "",
-            A_PAID_DT: isValidDate(dependentFieldValues?.PAID_DT?.value)
+            A_PAID_DT: utilFunction.isValidDate(
+              dependentFieldValues?.PAID_DT?.value
+            )
               ? format(
                   new Date(dependentFieldValues?.PAID_DT?.value),
                   "dd/MMM/yyyy"

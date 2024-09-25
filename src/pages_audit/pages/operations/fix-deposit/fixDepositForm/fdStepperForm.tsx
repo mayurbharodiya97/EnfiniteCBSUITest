@@ -19,18 +19,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { cloneDeep } from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
-import {
-  ColorlibConnector,
-  ColorlibStepIconRoot,
-} from "components/dyanmicForm/stepperForm/style";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { FDContext } from "../context/fdContext";
@@ -38,9 +29,15 @@ import { FDDetailForm } from "./fdDetailForm";
 import { TransferAcctDetailForm } from "./trnsAcctDtlForm";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@mui/styles";
-import { isValidDate } from "components/utils/utilFunctions/function";
+import {
+  ColorlibConnector,
+  ColorlibStepIconRoot,
+  GradientButton,
+  usePopupContext,
+  utilFunction,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
-
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -229,10 +226,10 @@ export const FixDepositForm = ({
 
     const newData = data?.FDDTL?.map((obj) => ({
       ...obj,
-      TRAN_DT: isValidDate(obj.TRAN_DT)
+      TRAN_DT: utilFunction.isValidDate(obj.TRAN_DT)
         ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy")
         : "",
-      MATURITY_DT: isValidDate(obj.MATURITY_DT)
+      MATURITY_DT: utilFunction.isValidDate(obj.MATURITY_DT)
         ? format(new Date(obj.MATURITY_DT), "dd/MMM/yyyy")
         : "",
     }));
@@ -284,7 +281,7 @@ export const FixDepositForm = ({
 
     const newData = data?.TRNDTLS?.map((obj) => ({
       ...obj,
-      CHEQUE_DT: isValidDate(obj.CHEQUE_DATE)
+      CHEQUE_DT: utilFunction.isValidDate(obj.CHEQUE_DATE)
         ? format(new Date(obj.CHEQUE_DATE), "dd/MMM/yyyy")
         : "",
     }));
