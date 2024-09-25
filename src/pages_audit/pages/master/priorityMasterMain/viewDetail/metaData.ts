@@ -47,7 +47,7 @@ export const Viewformmetadata = {
       placeholder: "Code",
       type: "text",
       isReadOnly: false,
-      maxLength: 5,
+      maxLength: 7,
       required: true,
       schemaValidation: {
         type: "string",
@@ -87,7 +87,7 @@ export const Viewformmetadata = {
       required: true,
       placeholder: "Description",
       preventSpecialChars: localStorage.getItem("specialChar") || "",
-      maxLength: 50,
+      maxLength: 100,
       multiline: true,
       txtTransform: "uppercase",
       isFieldFocused: false,
@@ -171,37 +171,47 @@ export const Viewformmetadata = {
     },
     {
       render: {
-        componentType: "currency",
+        componentType: "rateOfInt",
       },
       name: "SECURE_PROV_PERC",
       label: "Secured",
       placeholder: "Secured",
       type: "text",
       fullWidth: true,
-      thousandsGroupStyle: "lakh",
-      allowNegative: false,
-      allowLeadingZeros: false,
       decimalScale: 2,
-      fixedDecimalScale: true,
-      enableNumWords: false,
+      FormatProps: {
+        allowLeadingZeros: false,
+        allowNegative: true,
+        isAllowed: (values) => {
+          if (values?.value?.length > 6) {
+            return false;
+          }
+          return true;
+        },
+      },
       isFieldFocused: false,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
     {
       render: {
-        componentType: "currency",
+        componentType: "rateOfInt",
       },
       name: "UNSECURE_PROV_PERC",
       label: "UnSecured",
       placeholder: "UnSecured",
       type: "text",
       fullWidth: true,
-      thousandsGroupStyle: "lakh",
-      allowNegative: false,
-      allowLeadingZeros: false,
       decimalScale: 2,
-      fixedDecimalScale: true,
-      enableNumWords: false,
+      FormatProps: {
+        allowLeadingZeros: false,
+        allowNegative: true,
+        isAllowed: (values) => {
+          if (values?.value?.length > 6) {
+            return false;
+          }
+          return true;
+        },
+      },
       isFieldFocused: false,
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },

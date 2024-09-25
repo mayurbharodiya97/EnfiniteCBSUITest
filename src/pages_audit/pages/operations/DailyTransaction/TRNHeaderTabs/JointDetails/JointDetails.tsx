@@ -11,6 +11,7 @@ import { useQuery } from "react-query";
 // import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
 import { AccDetailContext } from "pages_audit/auth";
+import { Transition } from "@acuteinfo/common-base";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -158,6 +159,7 @@ export const JointDetails = ({ reqData }) => {
           setAction={setCurrentAction}
           ref={myGridRef}
           refetchData={() => refetch()}
+          variant={"outlined"}
           loading={isLoading || isFetching}
         />
       </div>
@@ -182,8 +184,8 @@ export const JointDetails = ({ reqData }) => {
             key={`JointDetailDisplayForm_${currentIndex}_${metaData?.form?.label}`}
             metaData={metaData as MetaDataType}
             initialValues={{ ...(data?.[currentIndex] ?? {}) }}
-            displayMode={"view"}
             onSubmitHandler={() => {}}
+            displayMode={"view"}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>

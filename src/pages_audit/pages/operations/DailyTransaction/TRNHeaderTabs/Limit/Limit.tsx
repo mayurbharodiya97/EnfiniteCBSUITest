@@ -9,6 +9,7 @@ import { limitEntryTabMetaData, LimitGridMetaData } from "./gridMetadata";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog } from "@mui/material";
 import { t } from "i18next";
+import { Transition } from "@acuteinfo/common-base";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import { limitconfirmFormMetaData } from "pages_audit/pages/operations/limit-entry/confirm/confirmFormMetadata";
 import * as API from "./api";
