@@ -2605,6 +2605,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  FDMATURITYCOMPAREJASPER: {
+    url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  RECCURRINGTOFDCALCULATORJASPER: {
+    url: "/enfinityReportServiceAPI/RECCURRINGTOFDCALCULATORJASPER",
+    packageName: "",
+  },
   GETSESSIONDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
     packageName: "",
