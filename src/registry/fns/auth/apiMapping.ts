@@ -2605,6 +2605,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  GETSESSIONDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
+    packageName: "",
+  },
+  UPDEODRUNNINGSTATUS: {
+    url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
+    packageName: "",
+  },
+  DOEOD: {
+    url: "/enfinityBankProcessingServiceAPI/DOEOD",
+    packageName: "",
+  },
   VALIDATEFDDEPAMT: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDEPAMT",
     packageName: "",

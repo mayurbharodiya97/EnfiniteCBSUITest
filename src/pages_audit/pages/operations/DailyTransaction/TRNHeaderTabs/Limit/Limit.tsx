@@ -1,8 +1,4 @@
 import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
   FormWrapper,
   MetaDataType,
   GradientButton,
@@ -19,6 +15,12 @@ import * as API from "./api";
 import { getLimitDTL } from "pages_audit/pages/operations/limit-entry/api";
 import LimitEntry from "pages_audit/pages/operations/limit-entry";
 import ConfirmationGridWrapper from "pages_audit/pages/confirmations";
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 interface LimitRowType {
   COMP_CD: string;
@@ -121,8 +123,8 @@ export const Limit = ({ reqData }) => {
             // metaData={limitconfirmFormMetaData as MetaDataType}
             metaData={limitEntryTabMetaData as MetaDataType}
             initialValues={rows ?? {}}
-            displayMode={"view"}
             onSubmitHandler={() => {}}
+            displayMode={"view"}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
