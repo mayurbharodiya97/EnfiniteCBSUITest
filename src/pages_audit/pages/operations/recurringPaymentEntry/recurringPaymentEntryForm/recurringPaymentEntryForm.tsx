@@ -159,6 +159,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
                 entryScreenFlagDataForm: entryScreenFlagData?.[0],
                 handleDisableButton: handleDisableButton,
                 screenFlag: screenFlag,
+                docCD: "RECDRTYPE",
               }}
               displayMode={formMode}
               setDataOnFieldChange={(action, payload) => {
@@ -223,6 +224,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
             }}
             formState={{
               screenFlag: screenFlag,
+              docCD: "RECDRTYPE",
             }}
             displayMode={formMode}
             hideHeader={screenFlag === "recurringPmtConf" ? true : false}
