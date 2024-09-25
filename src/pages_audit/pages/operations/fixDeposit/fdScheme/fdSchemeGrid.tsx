@@ -1,11 +1,14 @@
 import { Dialog } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Transition } from "pages_audit/common";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { FDSchemeGridMetaData } from "./gridMetaData";
 import * as API from "../api";
 import { useQuery } from "react-query";
-import { ActionTypes } from "components/dataTable";
+import {
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+  Transition,
+} from "@acuteinfo/common-base";
 import { useCallback } from "react";
 
 export const useDialogStyles = makeStyles({
