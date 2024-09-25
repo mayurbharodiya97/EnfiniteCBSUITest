@@ -194,6 +194,7 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
           endIcon={
             showMutation.isLoading ? <CircularProgress size={20} /> : null
           }
+          sx={{ width: "50px", marginLeft: "10px" }}
           onClick={showData}
         >
           Submit
@@ -224,7 +225,7 @@ const SIAsExcutedGrid = ({ open, onClose }) => {
           >
             Save
           </GradientButton>
-          <GradientButton onClick={onClose}>Close</GradientButton>
+          <GradientButton onClick={onClose}> Close </GradientButton>
         </div>
       </Dialog>
     </Fragment>
