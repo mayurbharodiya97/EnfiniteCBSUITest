@@ -44,7 +44,7 @@ export const en_language_data = {
   AgentMaster: "Agent Master (MST/041)",
   AgentMasterForm: "Agent Master",
   SecurityAmtPerValidation:
-    "Security Amount or Percentage(%) should be Zero. Both can not exists at same time",
+    "Security Amount or Percentage(%) should be Zero. Both can not exists at same time.",
   SelectGroup: "Select Group",
   SecurityAmount: "Security Amount",
   "Security%": "Security %",
