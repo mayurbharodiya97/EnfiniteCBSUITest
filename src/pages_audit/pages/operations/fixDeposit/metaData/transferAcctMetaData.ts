@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { validateAccountAndGetDetail } from "../api";
 
 export const TransferAcctDetailFormMetadata = {
@@ -49,6 +49,7 @@ export const TransferAcctDetailFormMetadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: { xs: 0, md: 4, sm: 4, lg: 4, xl: 4 },
     },
     {

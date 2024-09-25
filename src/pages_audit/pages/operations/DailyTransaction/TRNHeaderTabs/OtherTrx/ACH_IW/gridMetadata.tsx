@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ACH_IWGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
