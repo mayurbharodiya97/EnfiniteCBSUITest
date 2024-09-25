@@ -1,6 +1,6 @@
-import { ClearCacheProvider } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData } from "components/utils";
+import { ClearCacheProvider } from "@acuteinfo/common-base";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { extractMetaData } from "@acuteinfo/common-base";
 import { useContext, useRef, useState, useEffect } from "react";
 import { metaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
@@ -32,11 +32,7 @@ const FdInterestCalculator = () => {
         ref={formRef}
         metaData={extractMetaData(metaData, formMode) as MetaDataType}
         displayMode={formMode}
-        onSubmitHandler={(data) => {
-          console.log(data);
-          if (data?.CALCSWITCH === "S") {
-          }
-        }}
+        onSubmitHandler={() => {}}
         initialValues={{
           COMP_CD: authState.companyID,
           BRANCH_CD: authState.user.branchCode,

@@ -1,6 +1,4 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import * as API from "../../api";
-import { Placeholder } from "reactstrap";
 
 // export const DocMasterDTLMetadata: MasterDetailsMetaData = {
 export const DocMasterDTLMetadata: any = {
@@ -65,11 +63,11 @@ export const DocMasterDTLMetadata: any = {
         label: "",
         dependentFields: ["TEMPLATE_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-            const optionData = dependentFields?.TEMPLATE_CD?.optionData
-            // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
-            if(Array.isArray(optionData) && optionData.length>0) {
-                return optionData[0]?.DESCRIPTION;
-            } else return "";
+          const optionData = dependentFields?.TEMPLATE_CD?.optionData;
+          // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
+          if (Array.isArray(optionData) && optionData.length > 0) {
+            return optionData[0]?.DESCRIPTION;
+          } else return "";
         },
       },
       {
@@ -118,7 +116,7 @@ export const DocMasterDTLMetadata: any = {
           decimalScale: 2,
           fixedDecimalScale: true,
           isAllowed: (values) => {
-            console.log(values, "wiuefhdwuehfiuwehfiwhef")
+            console.log(values, "wiuefhdwuehfiuwehfiwhef");
             if (values?.value?.length > 15) {
               return false;
             }
@@ -142,7 +140,7 @@ export const DocMasterDTLMetadata: any = {
           // allowLeadingZeros: false,
           // fixedDecimalScale: true,
           isAllowed: (values) => {
-            console.log(values, "wiuefhdwuehfiuwehfiwhef")
+            console.log(values, "wiuefhdwuehfiuwehfiwhef");
             if (values?.value?.length > 3) {
               return false;
             }
@@ -250,7 +248,7 @@ export const DocMasterDTLMetadata: any = {
           ],
         },
         isReadOnly: true,
-        __EDIT__: {isReadOnly: false}
+        __EDIT__: { isReadOnly: false },
       },
       // {
       //   accessor: "SEQ_NO",

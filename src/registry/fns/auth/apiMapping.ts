@@ -2586,7 +2586,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
+    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
@@ -2611,6 +2611,54 @@ export const ActionWiseAPIConfiguration = {
   },
   RECCURRINGTOFDCALCULATORJASPER: {
     url: "/enfinityReportServiceAPI/RECCURRINGTOFDCALCULATORJASPER",
+    packageName: "",
+  },
+  VALIDATEFDDEPAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDEPAMT",
+    packageName: "",
+  },
+  CHECKLIEN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKLIEN",
+    packageName: "",
+  },
+  VALIDATEUPDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEUPDATEFDDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDDETAILS",
+    packageName: "",
+  },
+  SAVEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDDETAILS",
+    packageName: "",
+  },
+  CHECKALLOWFDPAY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWFDPAY",
+    packageName: "",
+  },
+  GETPREMATRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREMATRATE",
+    packageName: "",
+  },
+  GETFDPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
+    packageName: "",
+  },
+  VALIDATEFDPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
+    packageName: "",
+  },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
+  GETLOGINPAGEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
 };
