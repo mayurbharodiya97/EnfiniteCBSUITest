@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { NotificationItems } from "./notificationItems";
 import { useStyles } from "./style";
 import * as API from "./api";
-import { useAutoRefresh } from "components/utils/autoRefresh";
+import { useAutoRefresh } from "@acuteinfo/common-base";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import { List, Popover } from "@mui/material";

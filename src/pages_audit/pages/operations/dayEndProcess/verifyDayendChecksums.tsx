@@ -1,15 +1,12 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import * as API from "./api";
-import { ClearCacheProvider, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   verifyDayendChecksumsMetaData,
   executeChecksumsReportMetaData,
 } from "./gridMetadata";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
-import { usePopupContext } from "components/custom/popupContext";
 import {
   Chip,
   CircularProgress,
@@ -18,12 +15,18 @@ import {
   Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent, usePopupContext } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import LoaderImg from "./Loader.gif";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { LoadingTextAnimation } from "components/common/loader";
+import {
+  ClearCacheProvider,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 interface Item {
   CHKSM_TYPE?: string;
@@ -531,12 +534,54 @@ export const VerifyDayendChecksums = ({
       onError: (error) => {},
     }
   );
-
   useEffect(() => {
     if (validatedData) {
       setReqData(validatedData);
     }
   }, [validatedData]);
+  // Process array of items and add CLR from API response
+  const processArray = async (data: Item[]): Promise<void> => {
+    const results: (Item & { CLR?: string })[] = [...gridData]; // Initialize with existing gridData
+
+    for (const item of data) {
+      const reqPara = {
+        FLAG: "C",
+        SCREEN_REF: "TRN/399",
+        FOR_BRANCH: reqData[0]?.BRANCH_LIST,
+        EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
+        CHKSM_TYPE: item?.CHKSM_TYPE,
+        SR_CD: item?.SR_CD,
+        MENDETORY: item?.MENDETORY,
+        EOD_VER_ID: item?.EOD_VER_ID,
+      };
+
+      try {
+        const response: any = await API.executeChecksums(reqPara);
+        if (response && response[0]?.MESSAGE !== "") {
+          // Show the message box with the response message
+          const buttonName = await MessageBox({
+            messageTitle: "Validation Failed",
+            message: response[0]?.MESSAGE,
+            buttonNames: ["Ok"],
+          });
+
+          if (buttonName !== "Ok") {
+            // If the user did not click "Ok", break the loop or handle accordingly
+            break; // or continue; depending on your requirement
+          }
+        }
+
+        // Continue with the item processing
+        const updatedItem = { ...item, CLR: response[0]?.CLR };
+        results.push(updatedItem);
+        setGridData([...results]); // Update state immediately
+      } catch (error) {
+        console.error("Mutation failed:", error);
+        results.push(item);
+        setGridData([...results]); // Update state immediately
+      }
+    }
+  };
 
   const reportMutation = useMutation(API.getDayEnderrLog, {
     onError: async (error: any) => {
@@ -602,7 +647,6 @@ export const VerifyDayendChecksums = ({
               data={updateData(gridData)}
               setData={() => null}
               actions={[]}
-              hideActionBar={true}
               onClickActionEvent={(index, id, currentData) => {
                 if (id === "REPORT") {
                   setCurrentData(currentData);
@@ -617,8 +661,8 @@ export const VerifyDayendChecksums = ({
                 }
               }}
               setAction={handleAction}
-              onlySingleSelectionAllow={false}
-              defaultSelectedRowId={currentSRCD ?? null}
+              // onlySingleSelectionAllow={false}
+              // defaultSelectedRowId={currentSRCD}
             />
             <Paper
               style={{

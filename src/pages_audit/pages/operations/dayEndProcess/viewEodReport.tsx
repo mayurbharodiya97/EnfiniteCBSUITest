@@ -1,15 +1,15 @@
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
-import * as API from "./api";
-import { queryClient } from "cache";
-import { useQuery } from "react-query";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  queryClient,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { Dialog } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -76,7 +76,7 @@ export const ViewEodReport = ({
             finalMetaData={metaData as GridMetaDataType}
             setData={() => null}
             actions={actions}
-            ReportExportButton={true}
+            enableExport={true}
             data={uniqueReportData ?? []}
             loading={loading}
             setAction={setCurrentAction}

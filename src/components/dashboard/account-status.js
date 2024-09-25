@@ -27,7 +27,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { wrap } from "lodash";
 import { useTranslation } from "react-i18next";

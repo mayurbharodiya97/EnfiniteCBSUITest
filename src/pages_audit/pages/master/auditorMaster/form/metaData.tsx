@@ -49,7 +49,7 @@ export const AuditorMstFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["AuditorNameisrequired"] }],
@@ -67,7 +67,7 @@ export const AuditorMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {
@@ -80,7 +80,7 @@ export const AuditorMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {
@@ -93,7 +93,7 @@ export const AuditorMstFormMetaData = {
       maxLength: 15,
       type: "text",
       autoComplete: "off",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {
@@ -106,7 +106,7 @@ export const AuditorMstFormMetaData = {
       maxLength: 15,
       type: "text",
       autoComplete: "off",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {
