@@ -10,6 +10,8 @@ export interface FDStateType {
   viewDtlGridData: object;
   fdPaymentData: object;
   checkAllowFDPayApiData: object;
+  prematureRateData: object;
+  fdSavedPaymentData: object;
 }
 
 export interface ActionType {

@@ -107,12 +107,15 @@ export const getPeriodDDWData = async (reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ DESCR, PERIOD_CD }) => {
-        return {
-          value: PERIOD_CD,
-          label: DESCR,
-        };
-      });
+      responseData = responseData?.map(
+        ({ DESCR, PERIOD_CD, DEFAULT_VALUE }) => {
+          return {
+            value: PERIOD_CD,
+            label: DESCR,
+            defaultVal: DEFAULT_VALUE,
+          };
+        }
+      );
     }
     return responseData;
   } else {
@@ -175,21 +178,27 @@ export const getFDIntRate = async (currField, dependentFields, auth) => {
       return {
         INT_RATE: {
           value: data?.[0]?.INT_RATE ?? "",
+          ignoreUpdate: true,
         },
         MATURITY_DT: {
           value: data?.[0]?.MATURITY_DT ?? "",
+          ignoreUpdate: true,
         },
         MIN_AMT: {
           value: data?.[0]?.MIN_AMT ?? "",
+          ignoreUpdate: true,
         },
         MAX_AMT: {
           value: data?.[0]?.MAX_AMT ?? "",
+          ignoreUpdate: true,
         },
         MIN_DAYS: {
           value: data?.[0]?.MIN_DAYS ?? "",
+          ignoreUpdate: true,
         },
         MAX_DAYS: {
           value: data?.[0]?.MAX_DAYS ?? "",
+          ignoreUpdate: true,
         },
       };
     } else {
@@ -201,9 +210,11 @@ export const getFDIntRate = async (currField, dependentFields, auth) => {
         },
         INT_RATE: {
           value: "",
+          ignoreUpdate: true,
         },
         MATURITY_DT: {
           value: "",
+          ignoreUpdate: true,
         },
       };
     }
@@ -268,9 +279,11 @@ export const getFDMaturityAmt = async (currField, dependentFields, auth) => {
       return {
         MATURITY_AMT: {
           value: data?.[0]?.MATURITY_AMT ?? "",
+          ignoreUpdate: true,
         },
         MONTHLY_INT: {
           value: data?.[0]?.MONTHLY_INT ?? "",
+          ignoreUpdate: true,
         },
       };
     } else {
@@ -282,9 +295,11 @@ export const getFDMaturityAmt = async (currField, dependentFields, auth) => {
         },
         MATURITY_AMT: {
           value: "",
+          ignoreUpdate: true,
         },
         MONTHLY_INT: {
           value: "",
+          ignoreUpdate: true,
         },
       };
     }
@@ -293,7 +308,7 @@ export const getFDMaturityAmt = async (currField, dependentFields, auth) => {
   }
 };
 
-export const validateFDPmt = async (reqData) => {
+export const validateFDDepAmt = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATEFDDEPAMT", reqData);
   if (status === "0") {
@@ -367,6 +382,16 @@ export const getPrematureRate = async (reqData) => {
 export const getFDPaymentDtl = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDPAYMENTDTL", { ...reqData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validatePaymetEntry = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEFDPAYMENT", reqData);
   if (status === "0") {
     return data;
   } else {

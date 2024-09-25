@@ -34,9 +34,10 @@ export const FDDetailGrid = () => {
     updateViewDtlGridData,
     setActiveStep,
     updateCheckAllowFDPayApiData,
+    updatePrematureRateData,
   } = useContext(FDContext);
-  const [openRetriveForm, setOpenRetriveForm] = useState(false);
   const [openFDPmtBtns, setOpenFDPmtBtns] = useState(false);
+  const [openIntPayment, setOpenIntPayment] = useState(false);
   const [openDetailForm, setOpenDetailForm] = useState(false);
   const [displayAllActions, setDisplayAllActions] = useState(false);
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export const FDDetailGrid = () => {
   const isDataChangedRef = useRef(false);
   const initialRender = useRef(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const acctNoDataRef: any = useRef({});
+  const paramDataRef: any = useRef({});
   const { authState } = useContext(AuthContext);
   let currentPath = useLocation().pathname;
 
@@ -112,15 +113,20 @@ export const FDDetailGrid = () => {
           multiple: false,
           rowDoubleClick: false,
         },
+        {
+          actionName: "int-payment",
+          actionLabel: "Int. Payment",
+          multiple: false,
+          rowDoubleClick: false,
+        },
       ];
 
-  console.log("FDState grid", FDState);
-
   useEffect(() => {
-    if (initialRender.current) {
-      acctNoDataRef.current = FDState?.acctNoData;
-    }
-  }, [Object.keys(FDState?.acctNoData).length]);
+    paramDataRef.current = {
+      ...FDState?.acctNoData,
+      ...FDState?.fdParaDetailData,
+    };
+  }, [FDState?.acctNoData?.AC_STATUS, FDState?.fdParaDetailData?.SPL_AMT]);
 
   //Mutation for get View Detail grid data
   const getFDViewDtlMutation: any = useMutation(
@@ -143,7 +149,6 @@ export const FDDetailGrid = () => {
         setDisplayAllActions(true);
         updateViewDtlGridData(data);
         CloseMessageBox();
-        // setOpenRetriveForm(false);
       },
     }
   );
@@ -190,7 +195,7 @@ export const FDDetailGrid = () => {
     }
   );
 
-  //Mutation for allow FD payment
+  //Mutation for premature rate
   const getPrematureRateMutation: any = useMutation(
     "getPrematureRate",
     API.getPrematureRate,
@@ -207,7 +212,10 @@ export const FDDetailGrid = () => {
         });
         CloseMessageBox();
       },
-      onSuccess: () => {},
+      onSuccess: (data) => {
+        updatePrematureRateData(data?.[0]);
+        setOpenFDPmtBtns(true);
+      },
     }
   );
 
@@ -229,13 +237,12 @@ export const FDDetailGrid = () => {
           : "",
         A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",
         A_SCREEN_REF: "RPT/401",
-        A_FLAG: "P",
         WORKING_DATE: authState?.workingDate ?? "",
         USERROLE: authState?.role ?? "",
         USERNAME: authState?.user?.id ?? "",
-        A_PRIN_AMT: actionData?.rows?.[0]?.data?.TOT_AMT ?? "",
-        A_INT_RATE: actionData?.rows?.[0]?.data?.INT_RATE ?? "",
-        A_SPL_AMT: FDState?.fdParaDetailData?.SPL_AMT ?? "",
+        A_PRIN_AMT: data?.rows?.[0]?.data?.TOT_AMT ?? "",
+        A_INT_RATE: data?.rows?.[0]?.data?.INT_RATE ?? "",
+        A_SPL_AMT: paramDataRef?.current?.SPL_AMT ?? "",
         COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
         LOGIN_COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
@@ -249,15 +256,13 @@ export const FDDetailGrid = () => {
         CONFIRMED: data?.rows?.[0]?.data?.CONFIRMED ?? "",
         LAST_ENT_BY: data?.rows?.[0]?.data?.LAST_ENTERED_BY ?? "",
         DOC_CD: "RPT/401",
-        STATUS: acctNoDataRef?.current?.AC_STATUS ?? "",
+        STATUS: paramDataRef?.current?.AC_STATUS ?? "",
       };
-
-      console.log("actionData", actionData);
 
       if (data.name === "retrieve") {
         resetAllData();
         setDisplayAllActions(false);
-        setOpenRetriveForm(true);
+        navigate("retrieve");
       } else if (data.name === "paid-fd") {
         navigate("paid-fd");
       } else if (data.name === "int-paid-dtl") {
@@ -295,12 +300,12 @@ export const FDDetailGrid = () => {
         checkAllowFDPayMutation.mutate(
           {
             ...reqParam,
+            A_FLAG: "P",
           },
           {
             onSuccess: async (data) => {
               const checkAllowFDPayData = data;
               updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
-              console.log("checkAllowFDPayData", checkAllowFDPayData);
 
               for (const obj of checkAllowFDPayData) {
                 if (obj?.O_STATUS === "999") {
@@ -329,6 +334,9 @@ export const FDDetailGrid = () => {
                     getPrematureRateMutation.mutate({
                       ...reqParam,
                     });
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
                   } else {
                     navigate(actionData?.name, {
                       state: actionData?.rows,
@@ -337,19 +345,59 @@ export const FDDetailGrid = () => {
                   }
                 }
               }
+              CloseMessageBox();
+            },
+          }
+        );
+      } else if (data?.name === "int-payment") {
+        checkAllowFDPayMutation.mutate(
+          {
+            ...reqParam,
+            A_FLAG: "I",
+          },
+          {
+            onSuccess: async (data) => {
+              const checkAllowFDPayData = data;
+              updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
 
-              // if (checkAllowFDPayData?.O_STATUS === "999") {
-              //   await MessageBox({
-              //     messageTitle: "Validation Failed",
-              //     message: checkAllowFDPayData?.O_MESSAGE ?? "",
-              //     icon: "ERROR",
-              //   });
-              // } else {
-              //   // updateFDDetailsFormData([actionData?.rows?.[0]?.data]);
-              //   navigate(actionData?.name, {
-              //     state: actionData?.rows,
-              //   });
-              // }
+              for (const obj of checkAllowFDPayData) {
+                if (obj?.O_STATUS === "999") {
+                  await MessageBox({
+                    messageTitle: "ValidationFailed",
+                    message: obj?.O_MESSAGE,
+                    icon: "ERROR",
+                  });
+                } else if (obj?.O_STATUS === "9") {
+                  await MessageBox({
+                    messageTitle: "validationAlert",
+                    message: obj?.O_MESSAGE ?? "",
+                    icon: "WARNING",
+                  });
+                } else if (obj?.O_STATUS === "99") {
+                  const buttonName = await MessageBox({
+                    messageTitle: "Confirmation",
+                    message: obj?.O_MESSAGE ?? "",
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (buttonName === "No") {
+                    break;
+                  }
+                } else if (obj?.O_STATUS === "0") {
+                  if (obj?.IS_PREMATURE === "Y") {
+                    getPrematureRateMutation.mutate({
+                      ...reqParam,
+                    });
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                  } else {
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                    setOpenIntPayment(true);
+                  }
+                }
+              }
               CloseMessageBox();
             },
           }
@@ -376,7 +424,7 @@ export const FDDetailGrid = () => {
     setActiveStep(0);
     setOpenDetailForm(false);
     setOpenFDPmtBtns(false);
-    setOpenRetriveForm(false);
+    setOpenIntPayment(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
       const reqParam = {
@@ -395,18 +443,9 @@ export const FDDetailGrid = () => {
     }
   }, [navigate]);
 
-  // const handleCloseRetriveForm = () => {
-  //   setOpenRetriveForm(false);
-  // };
-
   useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      if (location.pathname === "/cbsenfinity/operation/fix-deposit") {
-        setOpenRetriveForm(true);
-      }
-    }
-  }, [location.pathname, navigate]);
+    navigate("retrieve");
+  }, []);
 
   //Grid Header title
   const label = utilFunction?.getDynamicLabel(
@@ -547,6 +586,15 @@ export const FDDetailGrid = () => {
           element={<IntPaidDtlGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
+          path="retrieve/*"
+          element={
+            <FDRetriveForm
+              handleDialogClose={handleDialogClose}
+              getFDViewDtlMutation={getFDViewDtlMutation}
+            />
+          }
+        />
+        <Route
           path="docs/*"
           element={
             <Dialog
@@ -604,15 +652,15 @@ export const FDDetailGrid = () => {
         </Dialog>
       ) : null}
 
-      {openRetriveForm ? (
-        <FDRetriveForm
-          handleDialogClose={handleDialogClose}
-          getFDViewDtlMutation={getFDViewDtlMutation}
-        />
+      {openFDPmtBtns ? (
+        <FDPayment handleDialogClose={handleDialogClose} screenFlag="" />
       ) : null}
 
-      {openFDPmtBtns ? (
-        <FDPayment handleDialogClose={handleDialogClose} />
+      {openIntPayment ? (
+        <FDPayment
+          handleDialogClose={handleDialogClose}
+          screenFlag="intPayment"
+        />
       ) : null}
     </>
   );

@@ -50,12 +50,15 @@ const actions: ActionTypes[] = [
 
 type DocumentProps = {
   reqData: any;
-  closeDialog?: any;
+  handleDialogClose?: any;
 };
 
 let imgBase = "";
 //=========
-export const Document: React.FC<DocumentProps> = ({ reqData, closeDialog }) => {
+export const Document: React.FC<DocumentProps> = ({
+  reqData,
+  handleDialogClose,
+}) => {
   const [dataRow, setDataRow] = useState<any>({});
   const imgUrl = useRef<any | null>(null);
   const myGridRef = useRef<any>(null);
@@ -121,7 +124,7 @@ export const Document: React.FC<DocumentProps> = ({ reqData, closeDialog }) => {
       console.log("heloooo");
     }
     if (data?.name === "close") {
-      closeDialog();
+      handleDialogClose();
     }
   }, []);
 

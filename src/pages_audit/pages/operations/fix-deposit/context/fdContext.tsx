@@ -23,6 +23,8 @@ const inititalState: FDStateType = {
   fdParaDetailData: {},
   acctNoData: {},
   fdPaymentData: {},
+  fdSavedPaymentData: {},
+  prematureRateData: {},
   viewDtlGridData: [],
   checkAllowFDPayApiData: {},
 };
@@ -140,6 +142,22 @@ export const FDContextWrapper = ({ children }) => {
       },
     });
   };
+  const updatePrematureRateData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        prematureRateData: data,
+      },
+    });
+  };
+  const updateFdSavedPaymentData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        fdSavedPaymentData: data,
+      },
+    });
+  };
 
   const resetAllData = (data) => {
     dispatch({
@@ -164,6 +182,8 @@ export const FDContextWrapper = ({ children }) => {
         updateViewDtlGridData,
         updateFDPaymentData,
         updateCheckAllowFDPayApiData,
+        updatePrematureRateData,
+        updateFdSavedPaymentData,
       }}
     >
       {children}

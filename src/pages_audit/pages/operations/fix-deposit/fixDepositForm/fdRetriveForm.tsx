@@ -87,16 +87,7 @@ export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
           <>
             <GradientButton
               onClick={handleSubmit}
-              // endIcon={
-              //   getFDViewDtlMutation?.isLoading ? (
-              //     <CircularProgress size={20} />
-              //   ) : null
-              // }
-              disabled={
-                isSubmitting ||
-                // getFDViewDtlMutation?.isFetching ||
-                FDState?.disableButton
-              }
+              disabled={isSubmitting || FDState?.disableButton}
               color={"primary"}
             >
               Ok

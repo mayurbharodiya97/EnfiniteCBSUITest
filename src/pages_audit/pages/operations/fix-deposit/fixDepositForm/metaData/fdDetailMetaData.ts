@@ -231,6 +231,8 @@ export const FixDepositDetailFormMetadata = {
                     SCREEN_REF: "RPT/401",
                   };
                   const postData = await API.getFDParaDetail(reqParameters);
+                  const tenorData = await API.getPeriodDDWData(reqParameters);
+
                   return {
                     FD_NO_DISABLED: {
                       value: postData?.[0]?.FD_NO_DISABLED ?? "",
@@ -261,6 +263,10 @@ export const FixDepositDetailFormMetadata = {
                     },
                     COMP_CD: {
                       value: authState?.companyID ?? "",
+                    },
+                    PERIOD_CD: {
+                      value: tenorData?.[0]?.defaultVal ?? "",
+                      ignoreUpdate: true,
                     },
                   };
                 }
@@ -573,7 +579,7 @@ export const FixDepositDetailFormMetadata = {
                     "",
                   WORKING_DATE: authState?.workingDate,
                 };
-                const postData = await API.validateFDPmt(reqParameters);
+                const postData = await API.validateFDDepAmt(reqParameters);
                 if (postData?.[0]?.O_STATUS === "999") {
                   return {
                     INT_RATE: { value: "" },
@@ -683,7 +689,7 @@ export const FixDepositDetailFormMetadata = {
                     "",
                   WORKING_DATE: authState?.workingDate,
                 };
-                const postData = await API.validateFDPmt(reqParameters);
+                const postData = await API.validateFDDepAmt(reqParameters);
                 if (postData?.[0]?.O_STATUS === "999") {
                   return {
                     INT_RATE: { value: "" },
@@ -697,6 +703,7 @@ export const FixDepositDetailFormMetadata = {
                   return {
                     INT_RATE: {
                       value: postData?.[0]?.INT_RATE ?? "",
+                      ignoreUpdate: true,
                     },
                     TRSF_AMT: {
                       value: currentField?.value,
@@ -819,12 +826,12 @@ export const FixDepositDetailFormMetadata = {
           options: (...arg) => {
             if (
               Boolean(arg?.[3]?.companyID) &&
-              Boolean(arg?.[2]?.["FDDTL.BRANCH_CD"]?.value) &&
+              Boolean(arg?.[3]?.user?.baseBranchCode) &&
               Boolean(arg?.[2]?.["FDDTL.ACCT_TYPE"]?.value)
             ) {
               return API.getPeriodDDWData({
                 COMP_CD: arg?.[3]?.companyID ?? "",
-                BRANCH_CD: arg?.[2]?.["FDDTL.BRANCH_CD"]?.value ?? "",
+                BRANCH_CD: arg?.[3]?.user?.baseBranchCode ?? "",
                 ACCT_TYPE: arg?.[2]?.["FDDTL.ACCT_TYPE"]?.value ?? "",
               });
             } else {

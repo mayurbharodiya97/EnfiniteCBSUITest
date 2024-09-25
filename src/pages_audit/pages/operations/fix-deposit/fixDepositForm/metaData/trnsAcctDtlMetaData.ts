@@ -557,13 +557,20 @@ export const TransferAcctDetailFormMetadata = {
               return true;
             },
           },
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (formState?.screenFlag === "paymentTransfer") {
+              return true;
+            } else {
+              return false;
+            }
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value.trim())) {
               return "Cheque No. is Required.";
             }
             return "";
           },
-          GridProps: { xs: 6, sm: 3, md: 3, lg: 3, xl: 1.2 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.2 },
         },
         {
           render: {
@@ -577,6 +584,13 @@ export const TransferAcctDetailFormMetadata = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (formState?.screenFlag === "paymentTransfer") {
+              return true;
+            } else {
+              return false;
+            }
+          },
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.3 },
         },
         {
@@ -584,7 +598,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Debit Amount",
+          label: "",
           placeholder: "",
           type: "text",
           dependentFields: [

@@ -2637,6 +2637,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
     packageName: "",
   },
+  VALIDATEFDPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

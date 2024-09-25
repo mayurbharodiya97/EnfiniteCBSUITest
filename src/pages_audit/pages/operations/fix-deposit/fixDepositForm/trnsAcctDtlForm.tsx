@@ -1,5 +1,5 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { Fragment, forwardRef, useContext, useState } from "react";
+import { Fragment, forwardRef, useContext, useEffect, useState } from "react";
 import { TransferAcctDetailFormMetadata } from "./metaData/trnsAcctDtlMetaData";
 import { InitialValuesType } from "packages/form";
 import { usePopupContext } from "components/custom/popupContext";
@@ -8,27 +8,71 @@ import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
+import { GradientButton } from "components/styledComponent/button";
+import { CircularProgress } from "@mui/material";
 
 export const TransferAcctDetailForm = forwardRef<any, any>(
-  ({ onSubmitHandler }, ref: any) => {
+  ({ onSubmitHandler, screenFlag, handleTrnsferFormClose }, ref: any) => {
     const { FDState, updateSourceAcctFormData } = useContext(FDContext);
     const { MessageBox, CloseMessageBox } = usePopupContext();
     const [trnsDtlRefresh, setTrnsDtlRefresh] = useState(0);
     const { t } = useTranslation();
 
-    console.log("FDState", FDState);
+    let totalFDAmt =
+      screenFlag === "paymentTransfer"
+        ? FDState?.fdSavedPaymentData?.TOT_AMT -
+          FDState?.fdSavedPaymentData?.TDS_UPTO_TOTAL
+        : (Array.isArray(FDState?.fdDetailFormData?.FDDTL)
+            ? FDState?.fdDetailFormData?.FDDTL
+            : []
+          ).reduce(
+            (accum, obj) =>
+              accum + Number(obj?.CASH_AMT ?? 0) + Number(obj?.TRSF_AMT ?? 0),
+            0
+          );
 
-    let totalFDAmt = (
-      Array.isArray(FDState?.fdDetailFormData?.FDDTL)
-        ? FDState?.fdDetailFormData?.FDDTL
-        : []
-    ).reduce(
-      (accum, obj) =>
-        accum + Number(obj?.CASH_AMT ?? 0) + Number(obj?.TRSF_AMT ?? 0),
-      0
-    );
-
-    console.log("totalFDAmt", totalFDAmt);
+    useEffect(() => {
+      if (screenFlag === "paymentTransfer") {
+        if (
+          TransferAcctDetailFormMetadata.fields[5]._fields &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[5] &&
+          TransferAcctDetailFormMetadata.fields[1] &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[0] &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[0]
+            .accountCodeMetadata
+        ) {
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
+            "Credit Amount";
+          TransferAcctDetailFormMetadata.fields[1].label =
+            "Total Credit Amount";
+        }
+      } else {
+        if (
+          TransferAcctDetailFormMetadata.fields[5]._fields &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[5] &&
+          TransferAcctDetailFormMetadata.fields[1] &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[0] &&
+          TransferAcctDetailFormMetadata.fields[5]._fields[0]
+            .accountCodeMetadata
+        ) {
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+            { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
+            "Debit Amount";
+          TransferAcctDetailFormMetadata.fields[1].label = "Total Debit Amount";
+        }
+      }
+    }, [screenFlag]);
 
     return (
       <Fragment>
@@ -46,20 +90,16 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
             } as InitialValuesType
           }
           onSubmitHandler={onSubmitHandler}
-          hideHeader={true}
+          hideHeader={screenFlag === "paymentTransfer" ? false : true}
           onFormButtonClickHandel={async (id) => {
             if (id === "ADDNEWROW") {
               const data = await ref?.current?.getFieldData();
               // let event: any = { preventDefault: () => {} };
               // ref?.current?.handleSubmit(event);
 
-              console.log("dataaaa", data);
-
               const dataArray = Array.isArray(data?.TRNDTLS)
                 ? data?.TRNDTLS
                 : [];
-
-              console.log("dataArray", dataArray);
 
               if (dataArray?.length === 0) {
                 updateSourceAcctFormData([
@@ -74,8 +114,6 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
               ) {
                 for (let i = 0; i < dataArray?.length; i++) {
                   const item = dataArray[0];
-
-                  console.log("dataArray item", item);
 
                   if (
                     !Boolean(item.BRANCH_CD.trim()) ||
@@ -103,9 +141,31 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
             borderRadius: "10px",
             docCD: "FDINSTRCRTYPE",
           }}
-          formState={{ MessageBox: MessageBox }}
+          formState={{ MessageBox: MessageBox, screenFlag: screenFlag }}
           ref={ref}
-        />
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                // disabled={isSubmitting || disableButton}
+                endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                color={"primary"}
+              >
+                {t("Save")}
+              </GradientButton>
+
+              <GradientButton
+                onClick={handleTrnsferFormClose}
+                color={"primary"}
+              >
+                {t("Close")}
+              </GradientButton>
+            </>
+          )}
+        </FormWrapper>
       </Fragment>
     );
   }
