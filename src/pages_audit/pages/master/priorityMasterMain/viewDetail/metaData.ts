@@ -1,5 +1,4 @@
-
-import * as API from '../api'
+import * as API from "../api";
 export const Viewformmetadata = {
   form: {
     name: "Priority main master",

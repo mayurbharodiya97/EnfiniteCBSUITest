@@ -31,7 +31,7 @@ export const ResetPassword = async (
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLOGINIMGDATA", {
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
       APP_TRAN_CD: APP_TRAN_CD,
     });
   if (status === "0") {
@@ -295,9 +295,13 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
-    idealTimer :data?.IDLE_TIMER,
-    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
-    access: {},  
+    idealTimer: data?.IDLE_TIMER,
+    hoLogin:
+      data?.BRANCHCODE === data?.BASEBRANCHCODE &&
+      data?.COMPANYID === data?.BASECOMPANYID
+        ? "Y"
+        : "N",
+    access: {},
   };
 };
 

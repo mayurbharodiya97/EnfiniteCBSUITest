@@ -1,7 +1,4 @@
-import {
-  DefaultErrorObject,
-  utilFunction,
-} from "@acuteinfo/common-base";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -23,9 +20,8 @@ export const getStrSuspiciousTransactionData = async (Apireq) => {
         ...item,
         SUSPICIOUS_FLAG: item?.SUSPICIOUS_FLAG === "Y" ? true : false,
         _isNewRow: item["NEW_INSERT"] === "N" ? false : true,
-      }
-
-    })
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -43,7 +39,7 @@ export const updateBranhcDetailData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`UPDATESTRBRANCHDTL`, { ...Apireq });
   if (status === "0") {
-    return message
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -52,7 +48,7 @@ export const susTransactionDetailDML = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`DOSTRTRANDML`, { ...Apireq });
   if (status === "0") {
-    return message
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

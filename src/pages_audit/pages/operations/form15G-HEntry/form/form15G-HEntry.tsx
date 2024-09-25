@@ -829,10 +829,10 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              // thirdButton={{
-              //   callback: handleAnnexureFormData,
-              //   label: "Annexure",
-              // }}
+              optionalActionButton={{
+                callback: handleAnnexureFormData,
+                label: "Annexure",
+              }}
             />
           </Dialog>
         )
@@ -878,17 +878,17 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              // thirdButton={{
-              //   callback: () => {
-              //     setState((old) => ({
-              //       ...old,
-              //       openPrint: true,
-              //       openAnnexureForm: false,
-              //     }));
-              //     handlePrintMutation();
-              //   },
-              //   label: "Form",
-              // }}
+              optionalActionButton={{
+                callback: () => {
+                  setState((old) => ({
+                    ...old,
+                    openPrint: true,
+                    openAnnexureForm: false,
+                  }));
+                  handlePrintMutation();
+                },
+                label: "Form",
+              }}
             />
           </Dialog>
         )

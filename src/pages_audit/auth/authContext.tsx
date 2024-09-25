@@ -44,7 +44,7 @@ const inititalState: AuthStateType = {
     employeeID: "",
   },
   hoLogin: "",
-  idealTimer:""
+  idealTimer: "",
 };
 
 const authReducer = (

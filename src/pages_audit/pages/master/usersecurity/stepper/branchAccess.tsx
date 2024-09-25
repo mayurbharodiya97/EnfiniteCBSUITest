@@ -46,16 +46,13 @@ const BranchAccessRights = forwardRef<any, any>(
       isError: newisError,
       error: newerror,
       refetch: newRefetch,
-    }: any = useQuery<any, any>(
-      ["getNewUserBranchAccess", Username],
-      () => {
-        if (defaultView === "new") {
-          return API.getNewUserBranchAccess({
-            comp_cd: authState?.companyID,
-          });
-        }
+    }: any = useQuery<any, any>(["getNewUserBranchAccess", Username], () => {
+      if (defaultView === "new") {
+        return API.getNewUserBranchAccess({
+          comp_cd: authState?.companyID,
+        });
       }
-    );
+    });
     const {
       data: branchData,
       isLoading: editloading,

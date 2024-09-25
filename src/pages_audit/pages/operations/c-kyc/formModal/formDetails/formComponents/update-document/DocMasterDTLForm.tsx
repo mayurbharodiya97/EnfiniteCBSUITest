@@ -37,7 +37,7 @@ export const DocMasterDTLForm = ({
   isDataChangedRef,
   defaultmode = "view",
   girdData,
-  preventModify=false,
+  preventModify = false,
 }) => {
   const navigate = useNavigate();
   // const ClosedEventCall = () => {
@@ -74,10 +74,10 @@ export const DocMasterDTLForm = ({
       : null
   } `;
   useEffect(() => {
-    if(Boolean(preventModify)) {
-      setFormMode("edit")
+    if (Boolean(preventModify)) {
+      setFormMode("edit");
     }
-  },[])
+  }, []);
   // get sub grid data
   const mutationRet: any = useMutation(
     updateExtDocumentDetailsDataWrapperFn(API.getDocumentImagesList)
@@ -145,7 +145,7 @@ export const DocMasterDTLForm = ({
   // }, [mutationRet.isLoading, mutationRet.data])
 
   const AddNewRow = async () => {
-    if(!Boolean(preventModify)) {
+    if (!Boolean(preventModify)) {
       myRef.current?.addNewRow(true);
     }
   };
@@ -170,7 +170,7 @@ export const DocMasterDTLForm = ({
     setFieldError,
   }) => {
     endSubmit(true);
-    if(Boolean(preventModify)) {
+    if (Boolean(preventModify)) {
     } else {
       // console.log(data, formMode, "wefqwdqwdqwdqwdq onsubkmkimtttt"
       // ,data?.DETAILS_DATA, mysubdtlRef.current
@@ -184,9 +184,9 @@ export const DocMasterDTLForm = ({
       ) {
         setFormMode("view");
       } else {
-        let newData:any = data;
-        if(Boolean(newData._isNewRow)) {
-          newData = _.omit(newData, ["SR_CD", "TRAN_CD"])
+        let newData: any = data;
+        if (Boolean(newData._isNewRow)) {
+          newData = _.omit(newData, ["SR_CD", "TRAN_CD"]);
         }
         // newData["_isNewRow"] = data._isNewRow;
         // newData["_UPDATEDCOLUMNS"] = data._UPDATEDCOLUMNS;
@@ -216,8 +216,8 @@ export const DocMasterDTLForm = ({
         //   });
         // }
         // newData["DETAILS_DATA"] = data?.DETAILS_DATA;
-        if(typeof data.SUBMIT === "boolean") {
-          if(Boolean(data.SUBMIT)) {
+        if (typeof data.SUBMIT === "boolean") {
+          if (Boolean(data.SUBMIT)) {
             newData["SUBMIT"] = "Y";
           } else {
             newData["SUBMIT"] = "N";
@@ -225,8 +225,13 @@ export const DocMasterDTLForm = ({
         } else {
           newData["SUBMIT"] = data.SUBMIT;
         }
-        if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
-          newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
+        if (
+          Object.hasOwn(data._OLDROWVALUE, "SUBMIT") &&
+          typeof data._OLDROWVALUE?.SUBMIT !== "undefined"
+        ) {
+          newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT)
+            ? "Y"
+            : "N";
         }
         newData["REQ_CD"] = reqCD ?? "";
         // if (Boolean(data._isNewRow)) {
@@ -237,7 +242,7 @@ export const DocMasterDTLForm = ({
         // } else {
         //   newData["SUBMIT"] = false;
         // }
-        
+
         // if (Boolean(newData["VALID_UPTO"])) {
         //   newData["VALID_UPTO"] = format(
         //     new Date(newData["VALID_UPTO"]),
@@ -260,14 +265,16 @@ export const DocMasterDTLForm = ({
         // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
         // }
         // console.log(data, "dtaa on sibmitg", newData)
-  
+
         const payload = {
-          DOC_MST: [{
-             ...newData,
-             NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
-             IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,   
-            //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",   
-          }],
+          DOC_MST: [
+            {
+              ...newData,
+              NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
+              IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,
+              //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",
+            },
+          ],
           REQ_CD: reqCD,
           CUSTOMER_ID: custID,
           COMP_CD: authState?.companyID ?? "",
@@ -279,7 +286,7 @@ export const DocMasterDTLForm = ({
         };
         reqPayloadRef.current = payload;
         // console.log("weiuifhoiuewhf", newData, girdData)
-  
+
         isErrorFuncRef.current = {
           data: payload,
           endSubmit,
@@ -288,7 +295,7 @@ export const DocMasterDTLForm = ({
         };
         setopenAccept(true);
       }
-  
+
       // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
       // setopenAccept(true);
       // mutation.mutate({ data, endSubmit, setLoading });
@@ -411,7 +418,7 @@ export const DocMasterDTLForm = ({
             formName={"fromSourceDetail"}
             formNameMaster={"fromSourceMaster"}
             onClickActionEvent={(index, id, data) => {
-              if(Boolean(preventModify)) {
+              if (Boolean(preventModify)) {
                 fileRowRef.current = {
                   ...data,
                 };
@@ -425,7 +432,7 @@ export const DocMasterDTLForm = ({
                   <Button
                     onClick={() => {
                       // if(!Boolean(preventModify)) {
-                        setFormMode("edit");
+                      setFormMode("edit");
                       // }
                     }}
                     // disabled={isSubmitting}
@@ -492,27 +499,31 @@ export const DocMasterDTLForm = ({
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    {!Boolean(preventModify) && <Button
-                      onClick={AddNewRow}
-                      // disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Add Row
-                    </Button>}
-                    {!Boolean(preventModify) && <Button
-                      onClick={handleSubmit}
-                      // disabled={isSubmitting}
-                      // endIcon={
-                      //   isSubmitting ? <CircularProgress size={20} /> : null
-                      // }
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>}
+                    {!Boolean(preventModify) && (
+                      <Button
+                        onClick={AddNewRow}
+                        // disabled={isSubmitting}
+                        //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                        color={"primary"}
+                      >
+                        Add Row
+                      </Button>
+                    )}
+                    {!Boolean(preventModify) && (
+                      <Button
+                        onClick={handleSubmit}
+                        // disabled={isSubmitting}
+                        // endIcon={
+                        //   isSubmitting ? <CircularProgress size={20} /> : null
+                        // }
+                        color={"primary"}
+                      >
+                        Save
+                      </Button>
+                    )}
                     <Button
                       onClick={() => {
-                        if(Boolean(preventModify)) {
+                        if (Boolean(preventModify)) {
                           ClosedEventCall();
                         } else {
                           setFormMode("view");

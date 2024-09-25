@@ -57,7 +57,7 @@ const PriorityMasterMainGrid = () => {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
           message: t("DeleteData"),
-          messageTitle:t("Confirmation"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });

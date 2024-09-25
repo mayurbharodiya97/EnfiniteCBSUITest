@@ -15,7 +15,7 @@ export const ProtectedRoutes = ({ children }) => {
     message,
     closeMessageBox,
   } = useContext(AuthContext);
-  
+
   const isTimeoutData = useMemo(() => {
     let timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
     if (isNaN(timeout) || timeout <= 0) {

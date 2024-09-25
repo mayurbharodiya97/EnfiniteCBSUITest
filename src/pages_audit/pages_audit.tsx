@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, lazy, useContext } from "react";
+import { useState, Fragment, useEffect, lazy, useContext, memo } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Content } from "./content";
 import { useStyles } from "./style";
@@ -14,6 +14,7 @@ import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN3
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import TRN001Provider from "./pages/operations/DailyTransaction/TRN001/Trn001Reducer";
 // import { AccDetailContext } from "./auth";
 import { AuthContext } from "./auth";
@@ -24,8 +25,14 @@ import { AppbarWrapper, SidebarWrapper } from "@acuteinfo/common-screens";
 import Logo from "assets/images/easy_bankcore_Logo.png";
 import useLogoPics from "components/logoPics/logoPics";
 import { LogoutModal } from "./appBar/logoutModal";
+import { AppBar } from "./appBar";
+import { Quick_View } from "./appBar/quickView";
+import { Notification_App } from "./appBar/notification";
+import { IconButton, Tooltip } from "@mui/material";
+import { Accountinquiry } from "./acct_Inquiry/acct_inquiry";
 
 export const PagesAudit = (props, { columns }) => {
+  const [acctInq, setAcctInq] = useState(false);
   const { authState } = useContext(AuthContext);
   const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
@@ -82,9 +89,22 @@ export const PagesAudit = (props, { columns }) => {
                 ? authController?.getProfileImage
                 : logos?.profile
             }
-            menuIconPosition="left"
+            optionalComponents={[
+              {
+                Component: AcctEnqwrapper,
+                props: { open: acctInq, setAcctInq },
+              },
+              { Component: Quick_View },
+              { Component: Notification_App },
+            ]}
             hideGreetings={false}
           />
+          {/* <AppBar
+            handleDrawerOpen={handleDrawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            open={drawerOpen}
+            columns={undefined}
+          /> */}
           <SidebarWrapper
             authState={authController?.authState ?? {}}
             handleDrawerOpen={handleDrawerOpen}
@@ -101,29 +121,29 @@ export const PagesAudit = (props, { columns }) => {
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
                 /> */}
-                <Route path="profile" element={<Profile />} />
-                <Route path="dashboard/*" element={<Dashboard />} />
-                <Route path="master/*" element={<Master />} />
-                <Route path="operation/*" element={<OperationsMenu />} />
-                <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="configuration/*" element={<Configuration />} />
-                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                <Route
-                  path="operation/daily_tran_F1"
-                  element={
-                    <TRN001Provider>
-                      <Trn001 />
-                    </TRN001Provider>
-                  }
-                />
-                <Route
-                  path="operation/cnf_daily_tran_F2"
-                  element={
-                    <TRN001Provider>
-                      <Trn002 />
-                    </TRN001Provider>
-                  }
-                />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="dashboard/*" element={<Dashboard />} />
+                  <Route path="master/*" element={<Master />} />
+                  <Route path="operation/*" element={<OperationsMenu />} />
+                  <Route path="view-statement/*" element={<AccountDetails />} />
+                  <Route path="configuration/*" element={<Configuration />} />
+                  <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                  <Route
+                    path="operation/daily_tran_F1"
+                    element={
+                      <TRN001Provider>
+                        <Trn001 />
+                      </TRN001Provider>
+                    }
+                  />
+                  <Route
+                    path="operation/cnf_daily_tran_F2"
+                    element={
+                      <TRN001Provider>
+                        <Trn002 />
+                      </TRN001Provider>
+                    }
+                  />
 
                   {/* <Route
                   path="branch-selection/*"
@@ -176,3 +196,45 @@ const RedirectComponent = ({ isValidURL }) => {
   }, [navigate, location.pathname]);
   return null;
 };
+const AcctEnqwrapper = memo<any>(({ open, setAcctInq }) => {
+  return (
+    <>
+      <Tooltip title="Account Inquiry" placement="bottom" arrow>
+        <IconButton
+          // renderIcon="PersonSearchOutlined"
+          onClick={() => setAcctInq(true)}
+          sx={{
+            backgroundColor: open
+              ? "var(--theme-color3)"
+              : "rgba(235, 237, 238, 0.45)",
+            color: open ? "var(--theme-color2)" : "var(--theme-color3)",
+            borderRadius: "10px",
+            height: "30px",
+            width: "30px",
+            "&:hover": {
+              background: "var(--theme-color2)",
+              borderRadius: "10px",
+              transition: "all 0.2s ease 0s",
+              boxShadow:
+                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              "& .MuiSvgIcon-root": {
+                height: "32px",
+                width: "32px",
+                transition: "all 0.2s ease 0s",
+                padding: "4px",
+              },
+            },
+          }}
+        >
+          <PersonSearchOutlinedIcon
+            fontSize="small"
+            sx={{
+              color: open ? "var(--theme-color2)" : "var(--theme-color3)",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
+      {open && <Accountinquiry open={open} onClose={() => setAcctInq(false)} />}
+    </>
+  );
+});

@@ -42,7 +42,6 @@ export const Prorityform = ({
       CloseMessageBox();
     },
     onSuccess: () => {
-
       enqueueSnackbar(t("insertSuccessfully"), {
         variant: "success",
       });

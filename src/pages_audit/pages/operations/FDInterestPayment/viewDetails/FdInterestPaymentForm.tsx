@@ -1,4 +1,4 @@
-import { CircularProgress, Dialog } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -32,22 +32,14 @@ const FdInterestPaymentForm = ({
   const iscarryForwardErrorFuncRef = useRef<any>(null);
   const { t } = useTranslation();
   let currentPath = useLocation().pathname;
-  const [formKey, setFormKey] = useState(0);
 
   const updateAndCheck = (newData, oldData) => {
     // Update oldData with newData
-    Object.keys(newData).forEach((key) => {
-      if (
-        typeof newData[key] !== "boolean" &&
-        Boolean(newData[key]?.trim()) &&
-        key !== "FD_NO"
-      ) {
+    for (const key in newData) {
+      if (newData.hasOwnProperty(key) && key !== "FD_NO") {
         oldData[key] = newData[key];
       }
-      if (!(key in oldData)) {
-        oldData[key] = newData[key];
-      }
-    });
+    }
     // Call the updateGrid function with the updated oldData
     updateGrid(oldData);
   };
@@ -62,7 +54,8 @@ const FdInterestPaymentForm = ({
     data: any,
     displayData: any,
     endSubmit,
-    setFieldError
+    setFieldError,
+    actionFlag
   ) => {
     // @ts-ignore
     endSubmit(true);
@@ -70,77 +63,68 @@ const FdInterestPaymentForm = ({
       (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
     );
     let currentOldData = { ...rows?.[0]?.data };
-
-    const currentfdNo = rows?.[0]?.data?.FD_NO;
+    const currentfdNo = currentOldData?.FD_NO;
     let flagCheckData =
       fdDetails.find((item) => item.FD_NO === currentfdNo) || {};
+
     let currentNewData = {
       ...data,
+      isNewRow: flagCheckData?.PAYMENT_MODE === "" ? true : false,
     };
-
     let currentUpd = utilFunction.transformDetailsData(
       currentNewData,
-      currentOldData
+      flagCheckData
     );
-
-    isCurrentErrorFuncRef.current = {
-      data: {
-        ...currentNewData,
-        ...currentUpd,
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: currentOldData?.BRANCH_CD ?? "",
-        ACCT_TYPE: currentOldData?.ACCT_TYPE ?? "",
-        ACCT_CD: currentOldData?.ACCT_CD ?? "",
-        isNewRow: flagCheckData?.PAYMENT_MODE === "" ? true : false,
-      },
-      displayData,
-      endSubmit,
-      setFieldError,
-    };
-
-    if (formMode !== "view") {
-      if (isCurrentErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
-        setFormMode("view");
-      } else {
-        const btnName = await MessageBox({
-          message: "SaveData",
-          messageTitle: "Confirmation",
-          buttonNames: ["Yes", "No"],
-        });
-        if (btnName === "Yes") {
-          updateAndCheck(currentNewData, currentOldData);
-          updateRow(isCurrentErrorFuncRef.current?.data);
-          CloseMessageBox();
-          closeDialog();
-        }
+    if (actionFlag === "Save") {
+      isCurrentErrorFuncRef.current = {
+        data: {
+          ...currentNewData,
+          ...currentUpd,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: currentOldData?.BRANCH_CD ?? "",
+          ACCT_TYPE: currentOldData?.ACCT_TYPE ?? "",
+          ACCT_CD: currentOldData?.ACCT_CD ?? "",
+        },
+        displayData,
+        endSubmit,
+        setFieldError,
+      };
+      const btnName = await MessageBox({
+        message: "SaveData",
+        messageTitle: "Confirmation",
+        buttonNames: ["Yes", "No"],
+      });
+      if (btnName === "Yes") {
+        updateAndCheck(currentNewData, currentOldData);
+        updateRow(isCurrentErrorFuncRef.current?.data);
+        CloseMessageBox();
+        closeDialog();
       }
     }
-    if (formMode === "view" && !isLastRow()) {
-      let carryForwardNewData = { ...data };
-      let carryForwardData = gridData[index + 1];
-      carryForwardNewData.FD_NO = carryForwardData?.FD_NO;
-      const carryfdNo = carryForwardData?.FD_NO;
+    if (actionFlag === "CarryForward") {
+      let carryForwardData = { ...data };
+      let nextRowData = gridData[index + 1];
+      carryForwardData.FD_NO = nextRowData?.FD_NO;
       let carryForwardflagCheckData =
-        fdDetails.find((item) => item.FD_NO === carryfdNo) || {};
-      carryForwardNewData = {
-        ...carryForwardNewData,
+        fdDetails.find((item) => item.FD_NO === nextRowData?.FD_NO) || {};
+
+      carryForwardData = {
+        ...carryForwardData,
         isNewRow: carryForwardflagCheckData?.PAYMENT_MODE === "" ? true : false,
       };
       let carryForwardUpd = utilFunction.transformDetailsData(
-        carryForwardNewData,
+        carryForwardData,
         carryForwardflagCheckData
       );
 
       iscarryForwardErrorFuncRef.current = {
         data: {
-          ...carryForwardNewData,
+          ...carryForwardData,
           ...carryForwardUpd,
           COMP_CD: authState?.companyID ?? "",
           BRANCH_CD: carryForwardData?.BRANCH_CD ?? "",
           ACCT_TYPE: carryForwardData?.ACCT_TYPE ?? "",
           ACCT_CD: carryForwardData?.ACCT_CD ?? "",
-          isNewRow:
-            carryForwardflagCheckData.PAYMENT_MODE === "" ? true : false,
         },
         displayData,
         endSubmit,
@@ -156,38 +140,14 @@ const FdInterestPaymentForm = ({
         buttonNames: ["Yes", "No"],
       });
       if (btnName === "Yes") {
-        if (currentNewData.PAYMENT_MODE === "NEFT") {
-          carryForwardData.CR_ACCT_TYPE = "";
-          carryForwardData.CR_ACCT_CD = "";
-          carryForwardData.CR_BRANCH_CD = "";
-          carryForwardData.CR_ACCT_NM = "";
-          updateAndCheck(carryForwardNewData, carryForwardData);
-          updateRow(iscarryForwardErrorFuncRef.current?.data);
-          closeDialog();
-        } else if (currentNewData.PAYMENT_MODE === "BANKACCT") {
-          carryForwardData.ACCT_NM = "";
-          carryForwardData.ADD1 = "";
-          carryForwardData.CONTACT_INFO = "";
-          carryForwardData.TO_IFSCCODE = "";
-          carryForwardData.BANK = "";
-          carryForwardData.TO_ACCT_NO = "";
-          carryForwardData.TO_ACCT_TYPE = "";
-          carryForwardData.TO_ACCT_NM = "";
-          carryForwardData.TO_CONTACT_NO = "";
-          carryForwardData.TO_ADD1 = "";
-          updateAndCheck(carryForwardNewData, carryForwardData);
-          updateRow(iscarryForwardErrorFuncRef.current?.data);
-          closeDialog();
-        }
+        updateAndCheck(carryForwardData, nextRowData);
+        updateRow(iscarryForwardErrorFuncRef.current?.data);
+        closeDialog();
       }
     }
   };
   const handleButtonDisable = (disable) => {
     setDisableButton(disable);
-  };
-  const handleCancel = () => {
-    setFormMode("view");
-    setFormKey((prevKey) => prevKey + 1);
   };
 
   FdInterestPaymentFormMetaData.form.label =
@@ -198,7 +158,7 @@ const FdInterestPaymentForm = ({
   return (
     <>
       <FormWrapper
-        key={"FdInterestPaymentFormDetails" + formMode + formKey}
+        key={"FdInterestPaymentFormDetails" + formMode}
         metaData={
           extractMetaData(
             FdInterestPaymentFormMetaData,
@@ -218,15 +178,27 @@ const FdInterestPaymentForm = ({
           MessageBox: MessageBox,
           handleButtonDisable: handleButtonDisable,
           docCD: "FDINSTRCRTYPE",
-          rowData:
+          fdDetails:
             fdDetails.find((item) => item.FD_NO === rows?.[0]?.data?.FD_NO) ||
             {},
+          rowsData: rows,
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
             {formMode === "edit" ? (
               <>
+                {!isLastRow() && (
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "CarryForward");
+                    }}
+                    disabled={isSubmitting || disableButton}
+                    color={"primary"}
+                  >
+                    {t("Carry Forward")}
+                  </GradientButton>
+                )}
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
@@ -238,19 +210,12 @@ const FdInterestPaymentForm = ({
                   {t("Save")}
                 </GradientButton>
                 <GradientButton
-                  onClick={handleCancel}
-                  disabled={isSubmitting || disableButton}
-                  color={"primary"}
-                >
-                  {t("Cancel")}
-                </GradientButton>
-                {/* <GradientButton
                   onClick={closeDialog}
                   disabled={isSubmitting || disableButton}
                   color={"primary"}
                 >
                   {t("Close")}
-                </GradientButton> */}
+                </GradientButton>
               </>
             ) : formMode === "new" ? (
               <>
@@ -264,7 +229,6 @@ const FdInterestPaymentForm = ({
                 >
                   {t("Save")}
                 </GradientButton>
-
                 <GradientButton
                   onClick={closeDialog}
                   disabled={isSubmitting || disableButton}
@@ -278,7 +242,7 @@ const FdInterestPaymentForm = ({
                 {!isLastRow() && (
                   <GradientButton
                     onClick={(event) => {
-                      handleSubmit(event, "Save");
+                      handleSubmit(event, "CarryForward");
                     }}
                     color={"primary"}
                   >
@@ -315,18 +279,7 @@ export const FdInterestPaymentDetail = ({
   fdDetails,
 }) => {
   return (
-    <Dialog
-      open={true}
-      // @ts-ignore
-      TransitionComponent={Transition}
-      PaperProps={{
-        style: {
-          width: "100%",
-          overflow: "auto",
-        },
-      }}
-      maxWidth="lg"
-    >
+    <>
       {gridData ? (
         <FdInterestPaymentForm
           closeDialog={closeDialog}
@@ -340,6 +293,6 @@ export const FdInterestPaymentDetail = ({
       ) : (
         <LoaderPaperComponent />
       )}
-    </Dialog>
+    </>
   );
 };

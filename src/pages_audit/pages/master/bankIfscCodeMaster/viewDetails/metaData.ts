@@ -66,7 +66,7 @@ export const metaData = {
         console.log(columnValue.value.length);
 
         if (columnValue.value.length < 11 || columnValue.value.length > 11) {
-          return "IfscValidate"
+          return "IfscValidate";
         }
       },
       GridProps: { xs: 12, sm: 6, md: 6, lg: 3, xl: 3 },

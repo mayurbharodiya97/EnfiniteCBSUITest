@@ -38,8 +38,8 @@ let actions: ActionTypes[] = [
 ];
 
 const AreaMaster = () => {
-  const {authState} = useContext(AuthContext);
-  const [label,setLabel] = useState("Area Master (MST/046)")
+  const { authState } = useContext(AuthContext);
+  const [label, setLabel] = useState("Area Master (MST/046)");
   const isDataChangedRef = useRef(false);
   const isDeleteDataRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -84,23 +84,21 @@ const AreaMaster = () => {
     miscdata.forEach((item) => {
       userLevel = item.USER_LEVEL;
     });
-    
   }
 
   // const LoginuserLevel = authController?.;
   const LoginuserLevel = authState?.role;
-  useEffect(()=>{
-
-    if (userLevel?.length > 0){
+  useEffect(() => {
+    if (userLevel?.length > 0) {
       if (LoginuserLevel < userLevel) {
-        setLabel("Area Master (MST/046) (View-Only)")
+        setLabel("Area Master (MST/046) (View-Only)");
         actions = [];
-      }else {
-        setLabel("Area Master (MST/046)")
+      } else {
+        setLabel("Area Master (MST/046)");
       }
     }
-  },[userLevel,label])
-    AreaMasterGridMetaData.gridConfig.gridLabel =label;
+  }, [userLevel, label]);
+  AreaMasterGridMetaData.gridConfig.gridLabel = label;
 
   const deleteMutation = useMutation(API.deleteAreaMasterData, {
     onError: (error: any) => {

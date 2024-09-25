@@ -52,6 +52,7 @@ export const AuthLoginController = () => {
             loginFn={login}
             OTPResendRequest={API.OTPResendRequest}
             ResetPassword={API.ResetPassword}
+            validatePasswordFn={API.validatePasswords}
             LanguageComponent={MultiLanguages}
             forgotPasswordEndpoint="forgotpassword"
           />

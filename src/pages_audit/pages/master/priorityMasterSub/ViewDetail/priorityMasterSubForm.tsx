@@ -31,28 +31,26 @@ export const Proritysubform = ({
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { state: rows } = useLocation();
 
-  const mutation = useMutation((API.updatePriorityMasterSubData),
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar(t("insertSuccessfully"), {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        CloseMessageBox();
-        closeDialog();
-      },
-    }
-  );
+  const mutation = useMutation(API.updatePriorityMasterSubData, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,

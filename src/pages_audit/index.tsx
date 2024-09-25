@@ -137,7 +137,10 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
 const EntryPoint = () => (
   <Fragment>
     <CustomPropertiesConfigurationProvider
-      config={{ customExtendedTypes: meta }}
+      config={{
+        customExtendedTypes: meta,
+        defaultGridConfig: { variant: "contained" },
+      }}
     >
       <AuthProvider>
         <Routes>

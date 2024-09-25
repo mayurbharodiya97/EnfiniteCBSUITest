@@ -1,7 +1,14 @@
 import { AppBar, Dialog, Grid, IconButton } from "@mui/material";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation } from "react-query";
 import * as API from "../../../../api";
@@ -109,8 +116,6 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
     },
   ];
 
-
-
   const action2 = useMemo(() => {
     let actionArray = [
       {
@@ -135,7 +140,7 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
       },
     ];
 
-    if(Boolean(from && from === "ckyc-confirm")) {
+    if (Boolean(from && from === "ckyc-confirm")) {
       actionArray = [
         {
           actionName: "edit-details",
@@ -163,23 +168,23 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
           multiple: undefined,
           rowDoubleClick: false,
           alwaysAvailable: true,
-        }
+        },
       ];
     }
     return actionArray;
-  }, [viewMode])
+  }, [viewMode]);
 
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "close") {
         handleFormModalClosectx();
         onClose();
-      } else if(data.name === "confirm") {
-        setConfirmAction("confirm")
-      } else if(data.name === "reject") {
-        setConfirmAction("reject")
+      } else if (data.name === "confirm") {
+        setConfirmAction("confirm");
+      } else if (data.name === "reject") {
+        setConfirmAction("reject");
       } else {
-        setConfirmAction("")
+        setConfirmAction("");
         // console.log("qwefhweufhiuwheiufhwef", data?.rows)
         navigate(data?.name, {
           state: {
@@ -257,7 +262,11 @@ const UpdateDocument = ({ open, onClose, viewMode, from }) => {
           finalMetaData={DocumentGridMetadata as GridMetaDataType}
           data={girdData ?? []}
           setData={setGridData}
-          loading={custDTLMutation.isLoading || custDTLMutation.isFetching || mutation.isLoading}
+          loading={
+            custDTLMutation.isLoading ||
+            custDTLMutation.isFetching ||
+            mutation.isLoading
+          }
           actions={action2}
           setAction={setCurrentAction}
           // refetchData={() => refetch()}
