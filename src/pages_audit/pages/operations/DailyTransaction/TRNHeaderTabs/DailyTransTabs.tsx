@@ -115,6 +115,7 @@ export const DailyTransTabs = ({
 }: DailyTransTabsProps) => {
   const [tabValue, setTabValue] = React.useState(0);
   const navArray = tabsData ? tabsData : [];
+  const [detail, setDetail] = useState<any>({});
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -123,6 +124,41 @@ export const DailyTransTabs = ({
   useEffect(() => {
     setTabValue(0);
   }, [navArray]);
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "ACCT_NM",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardsData?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    setDetail(cardValues);
+    return cardValues;
+  };
+  useEffect(() => {
+    if (reqData) {
+      getCardColumnValue();
+    }
+  }, [reqData]);
 
   return (
     <div style={{ padding: "8px 8px 0px 8px" }}>
@@ -198,7 +234,9 @@ export const DailyTransTabs = ({
                   />
                 )}
                 {a.TAB_NAME.includes("JOINT") && (
-                  <JointDetailsForm reqData={reqData} />
+                  <JointDetailsForm
+                    reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }}
+                  />
                 )}
                 {a.TAB_NAME.includes("TODAYS") && (
                   <TodayTransactionForm reqData={reqData} />
@@ -220,7 +258,9 @@ export const DailyTransTabs = ({
                   <Subsidyy reqData={reqData} />
                 )}
                 {/* {a.TAB_NAME.includes("Search") && <Search reqData={reqData} />} */}
-                {a.TAB_NAME.includes("LIMIT") && <Limit reqData={reqData} />}
+                {a.TAB_NAME.includes("LIMIT") && (
+                  <Limit reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }} />
+                )}
                 {a.TAB_NAME.includes("STOCK") && <Stock reqData={reqData} />}
               </>
             </TabPanel>

@@ -14,7 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-export const LimitConfirmationForm = ({ closeDialog, result }) => {
+export const LimitConfirmationForm = ({ closeDialog, result, screenFlag }) => {
   const { state: rows }: any = useLocation();
   const [deletePopup, setDeletePopup] = useState<any>(false);
   const { authState } = useContext(AuthContext);
@@ -132,37 +132,41 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
-                  color="primary"
-                  onClick={async () => {
-                    let buttonName = await MessageBox({
-                      messageTitle: "confirmation",
-                      message: `AreYouSureToConfirm`,
-                      buttonNames: ["No", "Yes"],
-                      defFocusBtnName: "Yes",
-                      loadingBtnName: ["Yes"],
-                    });
-                    if (buttonName === "Yes") {
-                      limitCfm.mutate({
-                        IS_CONFIMED: true,
-                        COMP_CD: authState?.companyID,
-                        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-                        TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
+                {screenFlag !== "limitForTrn" && (
+                  <Button
+                    color="primary"
+                    onClick={async () => {
+                      let buttonName = await MessageBox({
+                        messageTitle: "confirmation",
+                        message: `AreYouSureToConfirm`,
+                        buttonNames: ["No", "Yes"],
+                        defFocusBtnName: "Yes",
+                        loadingBtnName: ["Yes"],
                       });
-                    }
-                  }}
-                >
-                  {t("Confirm")}
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setDeletePopup(true);
-                  }}
-                >
-                  {t("Reject")}
-                </Button>
+                      if (buttonName === "Yes") {
+                        limitCfm.mutate({
+                          IS_CONFIMED: true,
+                          COMP_CD: authState?.companyID,
+                          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                          TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+                          STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
+                        });
+                      }
+                    }}
+                  >
+                    {t("Confirm")}
+                  </Button>
+                )}
+                {screenFlag !== "limitForTrn" && (
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setDeletePopup(true);
+                    }}
+                  >
+                    {t("Reject")}
+                  </Button>
+                )}
                 <Button color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
                 </Button>

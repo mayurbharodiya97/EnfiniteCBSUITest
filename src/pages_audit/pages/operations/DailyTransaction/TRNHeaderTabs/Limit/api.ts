@@ -18,6 +18,11 @@ export const getLimitList = async (reqData) => {
     responseData.map((a, i) => {
       a.index = i;
       a.sr = i + 1;
+      a.INT_RATE = a.INT_RATE ? parseFloat(a.INT_RATE).toFixed(2) : "0.00";
+      a.MARGIN = a.MARGIN ? parseFloat(a.MARGIN).toFixed(2) : "0.00";
+      a.PENAL_RATE = a.PENAL_RATE
+        ? parseFloat(a.PENAL_RATE).toFixed(2)
+        : "0.00";
     });
     return responseData;
   } else {
