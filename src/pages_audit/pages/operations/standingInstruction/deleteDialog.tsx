@@ -48,7 +48,7 @@ export const DeleteDialog = ({
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: t("DoYouWantDeleteRow"),
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
             loadingBtnName: ["Yes"],
           });
