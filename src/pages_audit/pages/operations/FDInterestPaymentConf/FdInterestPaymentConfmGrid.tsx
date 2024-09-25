@@ -1,12 +1,12 @@
 import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
+import { Transition } from "pages_audit/common";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { FdInterestPaymentConfDetail } from "./FdInterestPaymentconfForm";
-import { FdInterestPaymentConfmMetaData } from "./FdInterestPaymentConfmMetaData";
+import { FdInterestPaymentConfmGridMetaData } from "./FdInterestPaymentConfmMetaData";
 import {
   ActionTypes,
   GridWrapper,
@@ -25,7 +25,6 @@ const actions: ActionTypes[] = [
 ];
 
 export const FDInterestPaymentConfm = () => {
-  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -90,7 +89,7 @@ export const FDInterestPaymentConfm = () => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getFDPaymentInstruConfAcctDtl"]);
-      queryClient.removeQueries(["getFDPaymentInstrudtl"]);
+      queryClient.removeQueries(["fetchFDPaymentConfAcct"]);
     };
   }, []);
 
@@ -106,7 +105,7 @@ export const FDInterestPaymentConfm = () => {
       )}
       <GridWrapper
         key={"FdInterestPaymentConfm"}
-        finalMetaData={FdInterestPaymentConfmMetaData as GridMetaDataType}
+        finalMetaData={FdInterestPaymentConfmGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
@@ -118,12 +117,15 @@ export const FDInterestPaymentConfm = () => {
 
       <Dialog
         open={isFDDetailOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
         <FdInterestPaymentConfDetail
           closeDialog={handleFDDetailClose}
