@@ -2605,6 +2605,70 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  FDMATURITYCOMPAREJASPER: {
+    url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  RECCURRINGTOFDCALCULATORJASPER: {
+    url: "/enfinityReportServiceAPI/RECCURRINGTOFDCALCULATORJASPER",
+    packageName: "",
+  },
+  GETSESSIONDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
+    packageName: "",
+  },
+  UPDEODRUNNINGSTATUS: {
+    url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
+    packageName: "",
+  },
+  DOEOD: {
+    url: "/enfinityBankProcessingServiceAPI/DOEOD",
+    packageName: "",
+  },
+  VALIDATEFDDEPAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDEPAMT",
+    packageName: "",
+  },
+  CHECKLIEN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKLIEN",
+    packageName: "",
+  },
+  VALIDATEUPDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEUPDATEFDDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDDETAILS",
+    packageName: "",
+  },
+  SAVEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDDETAILS",
+    packageName: "",
+  },
+  CHECKALLOWFDPAY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWFDPAY",
+    packageName: "",
+  },
+  GETPREMATRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREMATRATE",
+    packageName: "",
+  },
+  GETFDPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
+    packageName: "",
+  },
+  VALIDATEFDPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
+    packageName: "",
+  },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
   GETLOGINPAGEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",

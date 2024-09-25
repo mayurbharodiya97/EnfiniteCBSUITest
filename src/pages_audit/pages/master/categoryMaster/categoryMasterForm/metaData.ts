@@ -251,19 +251,9 @@ export const CategoryMasterFormMetaData = {
       },
       accountTypeMetadata: {
         name: "TDS_ACCT_TYPE",
-        _optionsKey: "getDDDWAcctType",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
         dependentFields: ["TDS_BRANCH_CD"],
-        disableCaching: true,
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.TDS_BRANCH_CD?.value,
-            DOC_CD: "MST/050",
-            USER_NAME: authState?.user?.id,
-          });
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -271,6 +261,32 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.TDS_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TDS_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TDS_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             TDS_ACCT_CD: { value: "" },
             TDS_ACCT_NM: { value: "" },
@@ -283,6 +299,10 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -292,13 +312,47 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              TDS_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          } else if (
+            currentField.value &&
+            dependentFieldsValues?.TDS_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TDS_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TDS_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.TDS_BRANCH_CD?.value &&
             dependentFieldsValues?.TDS_ACCT_TYPE?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.TDS_BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.TDS_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -320,6 +374,7 @@ export const CategoryMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -328,6 +383,7 @@ export const CategoryMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -444,18 +500,17 @@ export const CategoryMasterFormMetaData = {
       label: "AccountType",
       placeholder: "AccountTypePlaceHolder",
       validationRun: "onChange",
-      dependentFields: ["BRANCH_CD"],
+      runPostValidationHookAlways: true,
       disableCaching: true,
       options: (dependentValue, formState, _, authState) => {
         return GeneralAPI.get_Account_Type({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
           DOC_CD: "MST/050",
-          USER_NAME: authState?.user?.id,
+          USER_NAME: authState?.user?.id ?? "",
         });
       },
       _optionsKey: "getDDDWAcctType",
-      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -486,7 +541,10 @@ export const CategoryMasterFormMetaData = {
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
-
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: true,
+      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -494,14 +552,41 @@ export const CategoryMasterFormMetaData = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
+        if (!Boolean(currentField?.displayValue)) {
+          return {};
+        } else if (
+          currentField.value &&
+          dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "Enter Account Type.",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+
+          if (buttonName === "Ok") {
+            return {
+              TDS_SUR_ACCT_CD: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+              TDS_SUR_ACCT_TYPE: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
           currentField?.value &&
           dependentFieldsValues?.BRANCH_CD?.value &&
           dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value
         ) {
           const reqParameters = {
             BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-            COMP_CD: authState?.companyID,
+            COMP_CD: authState?.companyID ?? "",
             ACCT_TYPE: dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value,
             ACCT_CD: utilFunction.getPadAccountNumber(
               currentField?.value,
@@ -523,6 +608,7 @@ export const CategoryMasterFormMetaData = {
               const { btnName, obj } = await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData?.MSG?.[i]?.O_MESSAGE,
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -531,6 +617,7 @@ export const CategoryMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               }
               returnVal = postData;
@@ -630,17 +717,7 @@ export const CategoryMasterFormMetaData = {
       },
       accountTypeMetadata: {
         name: "TDS_REC_ACCT_TYPE",
-        disableCaching: true,
         dependentFields: ["TDS_REC_BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.TDS_REC_BRANCH_CD?.value,
-            DOC_CD: "MST/050",
-            USER_NAME: authState?.user?.id,
-          });
-        },
-        _optionsKey: "getDDDWAcctType",
         validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
@@ -650,6 +727,32 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.TDS_REC_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TDS_REC_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TDS_REC_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             TDS_REC_ACCT_CD: { value: "" },
             TDS_REC_ACCT_NM: { value: "" },
@@ -662,6 +765,10 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -671,13 +778,47 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
 
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              TDS_REC_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          } else if (
+            currentField.value &&
+            dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TDS_REC_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TDS_REC_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.TDS_REC_BRANCH_CD?.value &&
             dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.TDS_REC_BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -699,6 +840,7 @@ export const CategoryMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -707,6 +849,7 @@ export const CategoryMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;

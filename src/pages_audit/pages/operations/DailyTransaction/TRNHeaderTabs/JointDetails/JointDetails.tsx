@@ -2,8 +2,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
-import { GradientButton } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { IconButton } from "@mui/material";
 
@@ -31,6 +29,9 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 export const JointDetails = ({ reqData }) => {
   const actions: ActionTypes[] = [

@@ -37,7 +37,10 @@ const FdInterestPaymentconfForm = ({
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
-        queryClient.invalidateQueries(["getFDPaymentInstruConfAcctDtl"]);
+        queryClient.invalidateQueries([
+          "getFDPaymentInstruConfAcctDtl",
+          authState?.user?.branchCode ?? "",
+        ]);
         CloseMessageBox();
         closeDialog();
       },
@@ -62,6 +65,10 @@ const FdInterestPaymentconfForm = ({
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
+        queryClient.invalidateQueries([
+          "getFDPaymentInstruConfAcctDtl",
+          authState?.user?.branchCode ?? "",
+        ]);
         CloseMessageBox();
         closeDialog();
       },
@@ -99,7 +106,7 @@ const FdInterestPaymentconfForm = ({
         });
         if (btnName === "Yes") {
           doFDPaymentInstruEntryConfm.mutate({
-            DETAILS_DATA: {
+            DETAIL_DATA: {
               isNewRow: [],
               isDeleteRow: [],
               isUpdateRow: fdDetails,
@@ -124,16 +131,15 @@ const FdInterestPaymentconfForm = ({
         });
       }
     }
-    endSubmit(true);
   };
 
   return (
     <>
       {loader ? (
         <LoaderPaperComponent />
-      ) : Array.isArray(fdDetails) && fdDetails.length > 0 ? (
+      ) : Array.isArray(fdDetails) && fdDetails?.length > 0 ? (
         <FormWrapper
-          key={"FdInterestPaymentConfmMetaData"}
+          key={"FdInterestPaymentConfmMetaData" + fdDetails?.length}
           metaData={FdInterestPaymentconfFormMetaData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
           initialValues={{
@@ -190,18 +196,7 @@ export const FdInterestPaymentConfDetail = ({
   rowsData,
 }) => {
   return (
-    <Dialog
-      open={true}
-      // @ts-ignore
-      TransitionComponent={Transition}
-      PaperProps={{
-        style: {
-          width: "100%",
-          overflow: "auto",
-        },
-      }}
-      maxWidth="lg"
-    >
+    <>
       {fdDetails ? (
         <FdInterestPaymentconfForm
           closeDialog={closeDialog}
@@ -212,6 +207,6 @@ export const FdInterestPaymentConfDetail = ({
       ) : (
         <LoaderPaperComponent />
       )}
-    </Dialog>
+    </>
   );
 };

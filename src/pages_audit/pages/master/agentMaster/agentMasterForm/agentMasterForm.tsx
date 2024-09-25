@@ -34,13 +34,15 @@ const AgentMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.agentMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -82,9 +84,10 @@ const AgentMasterForm = ({
       Number(newData?.SECURITY_PER) !== 0
     ) {
       await MessageBox({
+        messageTitle: "ValidationFailed",
         message: "SecurityAmtPerValidation",
-        messageTitle: "Alert",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
       return;
     } else {
@@ -102,8 +105,8 @@ const AgentMasterForm = ({
           data: {
             ...newData,
             ...upd,
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
             _isNewRow: defaultView === "new" ? true : false,
           },
           displayData,
@@ -159,6 +162,7 @@ const AgentMasterForm = ({
             gridData: gridData,
             rows: rows?.[0]?.data,
             handleButtonDisable: handleButtonDisable,
+            docCD: "MST/041",
           }}
           formStyle={{
             background: "white",
