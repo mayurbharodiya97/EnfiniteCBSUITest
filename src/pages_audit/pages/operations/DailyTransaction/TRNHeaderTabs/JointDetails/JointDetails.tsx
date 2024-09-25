@@ -2,25 +2,19 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable/types";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic/types";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
+import { IconButton } from "@mui/material";
+
+//logic
+import { Fragment, useCallback, useRef, useState, useContext } from "react";
+import { useQuery } from "react-query";
+// import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
 import { AccDetailContext } from "pages_audit/auth";
 import { Transition } from "pages_audit/common";
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useQuery } from "react-query";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { JointDetailGridMetaData } from "./gridMetadata";
@@ -32,6 +26,12 @@ import { MortgagejointFormMetaData } from "./metaData/MortgagejointFormMetaData"
 import { NomineejointFormMetaData } from "./metaData/NomineejointFormMetaData";
 import { SignatoryjointFormMetadata } from "./metaData/SignatoryjointFormMetadata";
 
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 export const JointDetails = ({ reqData }) => {
   const actions: ActionTypes[] = [
     {

@@ -1,6 +1,24 @@
 import { Grid, Typography } from "@mui/material";
-import { FormatCurrency } from "components/custom/currencySymbol";
-
+// import { FormatCurrency } from "@acuteinfo/common-base";
+const formatCurrency = (
+  amount,
+  symbol,
+  currencyFormat = "en-IN",
+  decimalCount = 0,
+  symbolPosi = "start"
+) => {
+  const formattedAmount = new Intl.NumberFormat(currencyFormat, {
+    minimumFractionDigits: decimalCount,
+    // currency: "ZAR",
+  }).format(amount);
+  if (symbolPosi === "start") {
+    return `${symbol} ${formattedAmount}`;
+  } else if (symbolPosi === "end") {
+    return `${formattedAmount} ${symbol}`;
+  } else {
+    return `${symbol} ${formattedAmount}`;
+  }
+};
 const SimpleGridType = ({ data }) => {
   const typographyStyle = {
     padding: "06px",
@@ -57,7 +75,7 @@ const SimpleGridType = ({ data }) => {
                 }}
               >
                 {item?.CURRENCY ? (
-                  <>{FormatCurrency(convertedInNumber, item.CURRENCY)}</>
+                  <>{formatCurrency(convertedInNumber, item.CURRENCY)}</>
                 ) : (
                   item?.VALUE
                 )}

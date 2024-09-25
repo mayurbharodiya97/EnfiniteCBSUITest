@@ -1,14 +1,18 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext, useEffect } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { usePopupContext } from "components/custom/popupContext";
 import { FDContext } from "../context/fdContext";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
-
+import {
+  extractMetaData,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  utilFunction,
+  SubmitFnType,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 export const FDDetailForm = forwardRef<any, any>(
   ({ doFixDepositMutation, defaultView, closeDialog, screenFlag }, ref) => {
     const { FDState, updateFDDetailsFormData, setActiveStep } =

@@ -1,48 +1,61 @@
 import { gstOutwardEntryGrid } from "./gridMetaData";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { Fragment, useCallback, useContext, useEffect, useRef, useState} from "react";
-import GridWrapper from "components/dataTableStatic";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useQuery } from "react-query";
-import * as API from "./api"
+import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "reactstrap";
-import {GstOutwardMasterDetailForm} from "./gstOutwardMasterForm/gstOutwardMasterDetailForm";
-import { ClearCacheContext, queryClient } from "cache";
+import { GstOutwardMasterDetailForm } from "./gstOutwardMasterForm/gstOutwardMasterDetailForm";
+import {
+  ClearCacheContext,
+  queryClient,
+  ActionTypes,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
-    {
-      actionName: "view-details",
-      actionLabel: "ViewDetails",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "add",
-      actionLabel: "Add",
-      multiple: undefined,
-      rowDoubleClick: true,
-      alwaysAvailable: true,
-    },
-  ];
-export const GstOutwardGrid = ({screenFlag}) => {
-  const {authState} = useContext(AuthContext);
+  {
+    actionName: "view-details",
+    actionLabel: "ViewDetails",
+    multiple: false,
+    rowDoubleClick: true,
+  },
+  {
+    actionName: "add",
+    actionLabel: "Add",
+    multiple: undefined,
+    rowDoubleClick: true,
+    alwaysAvailable: true,
+  },
+];
+export const GstOutwardGrid = ({ screenFlag }) => {
+  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const location = useLocation();
   const initialRender = useRef(true);
   const isDataChangedRef = useRef(false);
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
-    ["getGstOutwardHeaderRetrive"],
-    () => API.getGstOutwardHeaderRetrive({
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getGstOutwardHeaderRetrive"], () =>
+    API.getGstOutwardHeaderRetrive({
       comp_cd: authState?.companyID,
       branch_cd: authState?.user?.branchCode,
       flag: "A",
       gd_date: authState?.workingDate,
       user_level: authState?.role,
-      user_name: authState?.user?.name
-      })
+      user_name: authState?.user?.name,
+    })
   );
   useEffect(() => {
     if (initialRender.current) {
@@ -125,4 +138,4 @@ export const GstOutwardGrid = ({screenFlag}) => {
     </Fragment>
   );
 };
-export default GstOutwardGrid
+export default GstOutwardGrid;

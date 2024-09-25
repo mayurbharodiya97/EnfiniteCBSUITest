@@ -13,15 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
@@ -30,6 +22,17 @@ import { useLocation } from "react-router-dom";
 import { BeneficiaryAcctDetailsForm } from "../recurringPaymentEntry/payslipAndNEFT/beneficiaryAcctDetailsForm";
 import { PayslipAndDDForm } from "../recurringPaymentEntry/payslipAndNEFT/payslipAndDDForm";
 import * as API from "./api";
+import {
+  FormWrapper,
+  GridWrapper,
+  GradientButton,
+  SubmitFnType,
+  utilFunction,
+  GridMetaDataType,
+  MetaDataType,
+  usePopupContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 import {
   AccountCloseForm,
   accountFindmetaData,
@@ -905,7 +908,7 @@ export const AccountCloseProcess = () => {
       {accountDetails && accountDetails.length > 0 ? (
         <FormWrapper
           key={`AccountCloseForm`}
-          metaData={AccountCloseForm}
+          metaData={AccountCloseForm as MetaDataType}
           initialValues={{
             AMOUNT: parameterRef.current?.AMOUNT ?? 0,
           }}
@@ -918,7 +921,7 @@ export const AccountCloseProcess = () => {
             accountRef: accountCloseRef.current ?? "",
           }}
           formStyle={{ background: "white", height: "auto" }}
-          hideHeader="true"
+          hideHeader={true}
           controlsAtBottom={true}
         >
           {({ isSubmitting, handleSubmit }) => (

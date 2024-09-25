@@ -1,19 +1,14 @@
-import { Fragment, useCallback, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
 import { limitEntryTabMetaData, LimitGridMetaData } from "./gridMetadata";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dialog } from "@mui/material";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable/types";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic/types";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import { Transition } from "pages_audit/common";
 import { limitconfirmFormMetaData } from "pages_audit/pages/operations/limit-entry/confirm/confirmFormMetadata";
-import { useContext } from "react";
 import * as API from "./api";
 import { getLimitDTL } from "pages_audit/pages/operations/limit-entry/api";
 import LimitEntry from "pages_audit/pages/operations/limit-entry";
@@ -26,6 +21,14 @@ interface LimitRowType {
   ACCT_CD: string;
   ACCT_NM: string;
 }
+// import GridWrapper from "components/dataTableStatic";
+
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
