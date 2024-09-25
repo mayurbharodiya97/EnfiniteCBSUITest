@@ -2613,6 +2613,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
     packageName: "",
   },
+  GETLOGINPAGEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
