@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getDayendprocessFlag = async ({
@@ -116,15 +116,15 @@ export const getDayEnderrLog = async ({
   BRANCH_CD,
   TRAN_DT,
   VERSION,
-  SR_CD
+  SR_CD,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAYENDERRLOG", {
-      COMP_CD:COMP_CD,
-      BRANCH_CD:BRANCH_CD,
-      TRAN_DT:TRAN_DT,
-      VERSION:VERSION,
-      SR_CD:SR_CD
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      TRAN_DT: TRAN_DT,
+      VERSION: VERSION,
+      SR_CD: SR_CD,
     });
 
   if (status === "0") {

@@ -47,8 +47,8 @@ export const TradeMasterMetaData = {
       placeholder: "Code",
       type: "text",
       required: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       maxLength: 4,
-      preventSpecialCharInput: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
@@ -71,7 +71,7 @@ export const TradeMasterMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();

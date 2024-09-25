@@ -1,20 +1,38 @@
-import { Fragment, useCallback, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
-import { LimitGridMetaData } from "./gridMetadata";
-// import GridWrapper from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable/types";
-import { GridMetaDataType } from "components/dataTableStatic/types";
+import { limitEntryTabMetaData, LimitGridMetaData } from "./gridMetadata";
+import CloseIcon from "@mui/icons-material/Close";
+import { Dialog } from "@mui/material";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { GradientButton } from "@acuteinfo/common-base";
+import { t } from "i18next";
+import { AccDetailContext, AuthContext } from "pages_audit/auth";
+import { Transition } from "@acuteinfo/common-base";
+import { limitconfirmFormMetaData } from "pages_audit/pages/operations/limit-entry/confirm/confirmFormMetadata";
 import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
+import { getLimitDTL } from "pages_audit/pages/operations/limit-entry/api";
+import LimitEntry from "pages_audit/pages/operations/limit-entry";
+import ConfirmationGridWrapper from "pages_audit/pages/confirmations";
 
+interface LimitRowType {
+  COMP_CD: string;
+  BRANCH_CD: string;
+  ACCT_TYPE: string;
+  ACCT_CD: string;
+  ACCT_NM: string;
+}
+// import GridWrapper from "components/dataTableStatic";
+
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "Force Expire",
+    actionLabel: "view-detail",
     multiple: false,
     rowDoubleClick: true,
     // alwaysAvailable: true,
@@ -23,40 +41,41 @@ const actions: ActionTypes[] = [
 
 export const Limit = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
+  const [rows, setRows] = useState<LimitRowType | null>(null);
+  const [open, setOpen] = useState(false);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-  const [dataRow, setDataRow] = useState<any>({});
 
-  // const getLimitList = useMutation(API.getLimitList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getLimitList");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getLimitList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
+  const handleClose = () => setOpen(false);
 
   const setCurrentAction = useCallback((data) => {
-    let row = data.rows[0]?.data;
-    console.log(row, "rowwww");
-    setDataRow(row);
-
-    if (data.name === "view-detail") {
-      console.log("heloooo");
+    if (data?.name === "view-detail") {
+      setRows(data?.rows[0]?.data);
+      setOpen(true);
     }
   }, []);
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getLimitList", { reqData }], () => API.getLimitList(reqData));
+  >(["getLimitList", { reqData }], () =>
+    getLimitDTL({
+      ...reqData,
+      GD_TODAY_DT: authState?.workingDate,
+      USER_LEVEL: authState?.role,
+    })
+  );
+
+  if (limitconfirmFormMetaData.form) {
+    limitconfirmFormMetaData.form.label = `${t(
+      "Limit details"
+    )}:${reqData?.COMP_CD?.trim()}${reqData?.BRANCH_CD?.trim()}${reqData?.ACCT_TYPE?.trim()}${reqData?.ACCT_CD?.trim()}-${reqData?.ACCT_NM?.trim()}`;
+  } else {
+    return null;
+  }
+
   return (
     <>
-      {isError ? (
+      {/* {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
             <Alert
@@ -66,20 +85,55 @@ export const Limit = ({ reqData }) => {
             />
           </div>
         </Fragment>
-      ) : null}
-      <GridWrapper
+      ) : null} */}
+      {/* <GridWrapper
         key={`LimitGridMetaData`}
         finalMetaData={LimitGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
-        loading={isLoading || isFetching}
-        // refetchData={() => {}}
-        ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        onlySingleSelectionAllow={true}
+        ref={myGridRef}
+        loading={isLoading || isFetching}
+        refetchData={() => refetch()}
         isNewRowStyle={true}
-      />
+      /> */}
+
+      {/* <LimitEntry screenFlag="limitForTrn" reqData={reqData} /> */}
+      <ConfirmationGridWrapper screenFlag="limitForTrn" reqData={data} />
+
+      {open ? (
+        <Dialog
+          open={open}
+          // @ts-ignore
+          TransitionComponent={Transition}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+          scroll="body"
+        >
+          <FormWrapper
+            key={`LimitDisplayForm`}
+            // metaData={limitconfirmFormMetaData as MetaDataType}
+            metaData={limitEntryTabMetaData as MetaDataType}
+            initialValues={rows ?? {}}
+            onSubmitHandler={() => {}}
+            displayMode={"view"}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton onClick={handleClose} color={"primary"}>
+                  <CloseIcon />
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
+        </Dialog>
+      ) : null}
     </>
   );
 };

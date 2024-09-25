@@ -1,7 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { utilFunction } from "components/utils";
-import * as API from "../api";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+
 import { GeneralAPI } from "registry/fns/functions";
 
 export const standingInsructionGridMetaData: GridMetaDataType = {

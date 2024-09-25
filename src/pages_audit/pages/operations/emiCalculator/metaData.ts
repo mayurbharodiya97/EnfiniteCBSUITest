@@ -2,7 +2,6 @@ import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { t } from "i18next";
 import { DefaultValue } from "recoil";
-import { PostValidationSetCrossFieldValuesFnType } from "packages/form";
 let a = 1;
 
 export const EMICalculateMetaData = {

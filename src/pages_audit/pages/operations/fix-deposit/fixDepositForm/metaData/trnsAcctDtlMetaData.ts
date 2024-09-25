@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 // import { validateAccountAndGetDetail } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";

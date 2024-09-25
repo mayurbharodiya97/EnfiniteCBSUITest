@@ -1,4 +1,4 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { MasterDetailsMetaData } from "@acuteinfo/common-base";
 
 export const commonMSTGridMetaData: MasterDetailsMetaData = {
   masterForm: {

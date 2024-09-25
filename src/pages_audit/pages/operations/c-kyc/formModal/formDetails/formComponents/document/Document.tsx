@@ -1,18 +1,28 @@
-import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation, useQuery } from "react-query";
-import { GridMetaDataType } from "components/dataTableStatic";
-import {DocumentGridMetadata} from "./documentGridMetadata"
+import { DocumentGridMetadata } from "./documentGridMetadata";
 import { useNavigate } from "react-router-dom";
 import KYCDocumentMasterDetails from "./KYCDocumentMasterDetails";
-import { utilFunction } from "components/utils";
 import { Button, Grid } from "@mui/material";
 import { t } from "i18next";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { addMonths, format } from "date-fns";
 import _ from "lodash";
+import {
+  utilFunction,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import TabNavigate from "../TabNavigate";
 const Document = () => {
   const { authState } = useContext(AuthContext);
@@ -43,8 +53,8 @@ const Document = () => {
   const myGridRef = useRef<any>(null);
 
   useEffect(() => {
-    dataRef.current = data
-  }, [data,setData])
+    dataRef.current = data;
+  }, [data, setData]);
 
   // useEffect(() => {
   //   console.log('rowsData change', rowsData)
@@ -71,27 +81,33 @@ const Document = () => {
   });
 
   useEffect(() => {
-    let refs = state?.formmodectx !== "new" ? [onUpdate] : [onSave]
+    let refs = state?.formmodectx !== "new" ? [onUpdate] : [onSave];
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: state?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
-  }, [])
+    });
+  }, []);
 
   useEffect(() => {
     // console.log(state?.formDatactx["DOC_MST"], "wadqwdwq. doc", state?.retrieveFormDataApiRes["DOC_MST"])
-    if(state?.isFreshEntryctx && !(Boolean(state?.formDatactx["DOC_MST"]) || Boolean(state?.retrieveFormDataApiRes["DOC_MST"]))) {
+    if (
+      state?.isFreshEntryctx &&
+      !(
+        Boolean(state?.formDatactx["DOC_MST"]) ||
+        Boolean(state?.retrieveFormDataApiRes["DOC_MST"])
+      )
+    ) {
       let payload = {
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
         CUST_TYPE: state?.entityTypectx,
-        CONSTITUTION_TYPE: state?.constitutionValuectx ?? "",  
-      }
-      mutation.mutate(payload)
+        CONSTITUTION_TYPE: state?.constitutionValuectx ?? "",
+      };
+      mutation.mutate(payload);
     }
-  }, [])
+  }, []);
 
   const afterFormSubmit = (formData, submitFormMode) => {
     // console.log(formData, "wadqwdwq. doc afterFormSubmit", submitFormMode)
@@ -103,7 +119,7 @@ const Document = () => {
             {
               ...formData,
               SR_CD: 1,
-              IsNewRow: true
+              IsNewRow: true,
             },
           ];
         } else {
@@ -179,50 +195,137 @@ const Document = () => {
     [navigate]
   );
 
-    const onSave = () => {
-      // console.log("on save doc data", data, dataRef.current)
-      // console.log("wadqwdwq. doc save", data)
-      if(dataRef.current && dataRef.current.length>0) {
-        let newDocData: any[] = [];
+  const onSave = () => {
+    // console.log("on save doc data", data, dataRef.current)
+    // console.log("wadqwdwq. doc save", data)
+    if (dataRef.current && dataRef.current.length > 0) {
+      let newDocData: any[] = [];
 
-        newDocData = dataRef.current.map((doc) => {
-          // console.log("wadqwdwq. doc save newdoc", doc);
-          const { TEMPLATE_CD, SUBMIT, VALID_UPTO, DOC_NO, DOC_IMAGE, DOC_DESCRIPTION, SR_CD, DOC_WEIGHTAGE } = doc;
-          let newObj = {
-            _isNewRow: true,
-            TEMPLATE_CD: TEMPLATE_CD,
-            // SUBMIT: Boolean(SUBMIT) ? "Y" : "N",
-            SUBMIT: SUBMIT === true ? "Y" : "N",
-            VALID_UPTO: VALID_UPTO ?? "",
-            // VALID_UPTO: VALID_UPTO
-            //   ? format(new Date(doc?.VALID_UPTO ?? ""), "dd-MMM-yyyy")
-            //   : format(new Date(addMonths(new Date(), 9999)), "dd-MMM-yyyy"),
-            DOC_NO: DOC_NO ?? "",
-            DOC_DESCRIPTION: DOC_DESCRIPTION,
-            DOC_IMAGE: DOC_IMAGE ?? "",
-            DOC_TYPE: "KYC",
-            DOC_AMOUNT: "",
-            DOC_WEIGHTAGE: DOC_WEIGHTAGE ?? "",
-            SR_CD: SR_CD ?? ""
-            // ACTIVE : "Y",
+      newDocData = dataRef.current.map((doc) => {
+        // console.log("wadqwdwq. doc save newdoc", doc);
+        const {
+          TEMPLATE_CD,
+          SUBMIT,
+          VALID_UPTO,
+          DOC_NO,
+          DOC_IMAGE,
+          DOC_DESCRIPTION,
+          SR_CD,
+          DOC_WEIGHTAGE,
+        } = doc;
+        let newObj = {
+          _isNewRow: true,
+          TEMPLATE_CD: TEMPLATE_CD,
+          // SUBMIT: Boolean(SUBMIT) ? "Y" : "N",
+          SUBMIT: SUBMIT === true ? "Y" : "N",
+          VALID_UPTO: VALID_UPTO ?? "",
+          // VALID_UPTO: VALID_UPTO
+          //   ? format(new Date(doc?.VALID_UPTO ?? ""), "dd-MMM-yyyy")
+          //   : format(new Date(addMonths(new Date(), 9999)), "dd-MMM-yyyy"),
+          DOC_NO: DOC_NO ?? "",
+          DOC_DESCRIPTION: DOC_DESCRIPTION,
+          DOC_IMAGE: DOC_IMAGE ?? "",
+          DOC_TYPE: "KYC",
+          DOC_AMOUNT: "",
+          DOC_WEIGHTAGE: DOC_WEIGHTAGE ?? "",
+          SR_CD: SR_CD ?? "",
+          // ACTIVE : "Y",
+        };
+        // console.log("wadqwdwq. doc save newdoc --after", newObj);
+        return newObj;
+      });
+
+      let newData = state?.formDatactx;
+      newData["DOC_MST"] = [...newDocData];
+      handleFormDataonSavectx(newData);
+      // handleStepStatusctx({
+      //   status: "completed",
+      //   coltabvalue: state?.colTabValuectx,
+      // });
+      // handleColTabChangectx(state?.colTabValuectx + 1);
+    } else {
+      let newData = state?.formDatactx;
+      newData["DOC_MST"] = [];
+      handleFormDataonSavectx(newData);
+    }
+    handleStepStatusctx({
+      status: "completed",
+      coltabvalue: state?.colTabValuectx,
+    });
+    handleCurrFormctx({
+      currentFormSubmitted: true,
+      isLoading: false,
+    });
+    // handleColTabChangectx(state?.colTabValuectx + 1);
+  };
+
+  const onUpdate = () => {
+    // console.log("on update doc data", data, dataRef.current)
+
+    setIsNextLoading(true);
+    // console.log("qweqweqweo", data, data.OTHER_ADDRESS)
+    if (dataRef.current) {
+      // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+      // console.log("wadqwdwq. doc update data", data);
+      let newData = state?.formDatactx;
+      const commonData = {
+        IsNewRow: true,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        REQ_FLAG: "F",
+        // REQ_CD: state?.req_cd_ctx,
+        // SR_CD: "3",
+        CONFIRMED: "N",
+        ENT_COMP_CD: authState?.companyID ?? "",
+        ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+      };
+      if (dataRef.current && dataRef.current.length > 0) {
+        let filteredCols: any[] = [
+          "VALID_UPTO",
+          "DOC_IMAGE",
+          "SUBMIT",
+          "TEMPLATE_CD",
+          "DOC_NO",
+          "DOC_DESCRIPTION",
+          "SR_CD",
+          "TRAN_CD",
+        ];
+
+        let newFormatOtherAdd = dataRef.current.map((formRow, i) => {
+          // console.log("wadqwdwq. doc update formRow", formRow)
+          return {
+            ...dataRef.current[i],
+            ...commonData,
+            SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N",
           };
-          // console.log("wadqwdwq. doc save newdoc --after", newObj);
-          return newObj;
         });
-  
-        let newData = state?.formDatactx;
-        newData["DOC_MST"] = [...newDocData];
+        // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
+
+        newData["DOC_MST"] = [...newFormatOtherAdd];
         handleFormDataonSavectx(newData);
-        // handleStepStatusctx({
-        //   status: "completed",
-        //   coltabvalue: state?.colTabValuectx,
-        // });
-        // handleColTabChangectx(state?.colTabValuectx + 1);
+
+        if (!state?.isFreshEntryctx) {
+          let tabModifiedCols: any = state?.modifiedFormCols;
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            DOC_MST: [...filteredCols],
+          };
+          handleModifiedColsctx(tabModifiedCols);
+        }
       } else {
-        let newData = state?.formDatactx;
         newData["DOC_MST"] = [];
         handleFormDataonSavectx(newData);
+        if (!state?.isFreshEntryctx) {
+          let tabModifiedCols: any = state?.modifiedFormCols;
+          tabModifiedCols = {
+            ...tabModifiedCols,
+            DOC_MST: [],
+          };
+          handleModifiedColsctx(tabModifiedCols);
+        }
       }
+
+      // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
       handleStepStatusctx({
         status: "completed",
         coltabvalue: state?.colTabValuectx,
@@ -230,80 +333,14 @@ const Document = () => {
       handleCurrFormctx({
         currentFormSubmitted: true,
         isLoading: false,
-      })
-      // handleColTabChangectx(state?.colTabValuectx + 1);
+      });
+      // handleColTabChangectx(state?.colTabValuectx+1)
     }
-
-
-    const onUpdate = () => {
-      // console.log("on update doc data", data, dataRef.current)
-      
-      setIsNextLoading(true)
-      // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
-      if(dataRef.current) {
-          // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-          // console.log("wadqwdwq. doc update data", data);
-          let newData = state?.formDatactx
-          const commonData = {
-              IsNewRow: true,
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: authState?.user?.branchCode ?? "",
-              REQ_FLAG: "F",
-              // REQ_CD: state?.req_cd_ctx,
-              // SR_CD: "3",
-              CONFIRMED: "N",
-              ENT_COMP_CD: authState?.companyID ?? "",
-              ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
-          }
-          if(dataRef.current && dataRef.current.length>0) {
-              let filteredCols:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"]
-
-              let newFormatOtherAdd = dataRef.current.map((formRow, i) => {
-                // console.log("wadqwdwq. doc update formRow", formRow)
-                return {...dataRef.current[i], ...commonData, SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N"};
-              })
-              // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
-  
-              newData["DOC_MST"] = [...newFormatOtherAdd]
-              handleFormDataonSavectx(newData)
-  
-  
-  
-              if(!state?.isFreshEntryctx) {
-                  let tabModifiedCols:any = state?.modifiedFormCols
-                  tabModifiedCols = {
-                      ...tabModifiedCols,
-                      DOC_MST: [...filteredCols]
-                  }
-                  handleModifiedColsctx(tabModifiedCols)
-              }
-          } else {
-              newData["DOC_MST"] = []
-              handleFormDataonSavectx(newData)
-              if(!state?.isFreshEntryctx) {
-                  let tabModifiedCols:any = state?.modifiedFormCols
-                  tabModifiedCols = {
-                    ...tabModifiedCols,
-                    DOC_MST: []
-                  }
-                  handleModifiedColsctx(tabModifiedCols)
-              }
-          }
-
-          // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
-          handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-          handleCurrFormctx({
-            currentFormSubmitted: true,
-            isLoading: false,
-          })
-          // handleColTabChangectx(state?.colTabValuectx+1)
-      }
-      //  else {
-      //     handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
-      // }
-      setIsNextLoading(false)  
-    }
-
+    //  else {
+    //     handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    // }
+    setIsNextLoading(false);
+  };
 
   const SaveUpdateBTNs = useMemo(() => {
     if (state?.formmodectx) {
@@ -374,14 +411,20 @@ const Document = () => {
         setAction={setCurrentAction}
         // refetchData={() => refetch()}
         ref={myGridRef}
-        onClickActionEvent= {(index, id, currentData) => {
+        onClickActionEvent={(index, id, currentData) => {
           // console.log(data, "qjwkdjbiqwudqd", index, id, currentData)
-          let newData:any[] = []
-          newData = data.length>0 && data.filter(row => row.SR_CD !== currentData.SR_CD)
-          setData([...newData])
+          let newData: any[] = [];
+          newData =
+            data.length > 0 &&
+            data.filter((row) => row.SR_CD !== currentData.SR_CD);
+          setData([...newData]);
         }}
       />
-      <TabNavigate handleSave={state?.formmodectx !== "new" ? onUpdate : onSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={state?.formmodectx !== "new" ? onUpdate : onSave}
+        displayMode={state?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
 
       {open ? (
         <KYCDocumentMasterDetails

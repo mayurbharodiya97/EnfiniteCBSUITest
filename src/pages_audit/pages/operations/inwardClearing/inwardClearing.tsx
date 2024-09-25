@@ -14,32 +14,35 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton, LoaderPaperComponent } from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
-import { TextField } from "components/styledComponent";
-import { queryClient } from "cache";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { TextField } from "@acuteinfo/common-base";
 import {
   InwardCleaingGridMetaData,
   InwardClearingRetrievalMetadata,
 } from "./gridMetadata";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { ChequeSignForm } from "./inwardClearingForm/chequeSignForm";
 import { format } from "date-fns";
 import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPostForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+
+import {
+  usePopupContext,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -127,7 +130,6 @@ export const InwardClearing = () => {
       API.BranchSelectionGridData()
     );
 
-
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["BranchSelectionGridData", isOpenRetrieve]);
@@ -144,7 +146,7 @@ export const InwardClearing = () => {
       });
     },
 
-    onSuccess: (data) => { },
+    onSuccess: (data) => {},
   });
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
@@ -210,9 +212,9 @@ export const InwardClearing = () => {
               ...commonReqData,
               CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
                 ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                    new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                    "dd/MMM/yyyy"
+                  )
                 : "",
               DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
               _UPDATEDCOLUMNS: [],
@@ -237,9 +239,9 @@ export const InwardClearing = () => {
               ...commonReqData,
               CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
                 ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                    new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                    "dd/MMM/yyyy"
+                  )
                 : "",
               DRAFT_DIV: mysubdtlRef.current?.DRAFT_DIV,
               _UPDATEDCOLUMNS: [],
@@ -283,9 +285,9 @@ export const InwardClearing = () => {
               ...commonReqData,
               CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
                 ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                    new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                    "dd/MMM/yyyy"
+                  )
                 : "",
               SCREEN_REF: "TRN/650",
               AMOUNT: mysubdtlRef.current?.AMOUNT,
@@ -309,9 +311,9 @@ export const InwardClearing = () => {
               ...commonReqData,
               CHEQUE_DT: mysubdtlRef.current?.CHEQUE_DT
                 ? format(
-                  new Date(mysubdtlRef.current["CHEQUE_DT"]),
-                  "dd/MMM/yyyy"
-                )
+                    new Date(mysubdtlRef.current["CHEQUE_DT"]),
+                    "dd/MMM/yyyy"
+                  )
                 : "",
               ENTERED_BY: mysubdtlRef.current?.ENTERED_BY,
               SCREEN_REF: "TRN/650",
@@ -406,8 +408,6 @@ export const InwardClearing = () => {
       }));
     }
   }, [isLoading, isFetching]);
-
-
 
   const handleRowClick = (event: any, name: string, label: string) => {
     setState((prevState) => ({
@@ -528,7 +528,7 @@ export const InwardClearing = () => {
                   </InputAdornment>
                 ),
               }}
-            //@ts-ignore
+              //@ts-ignore
             />
             <>
               {/* {isLoading || isFetching ? (
@@ -590,7 +590,9 @@ export const InwardClearing = () => {
                           <div>{t("Bank")}</div>
                           <div>{t("Branch")}</div>
                           <div>{t("BranchName")}</div>
-                          <div style={{ marginLeft: "24px" }}>{t("status")}</div>
+                          <div style={{ marginLeft: "24px" }}>
+                            {t("status")}
+                          </div>
                         </>
                       </Box>
                       <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
@@ -688,7 +690,7 @@ export const InwardClearing = () => {
                       selectedRows?.length === 0 ||
                       selectedRowsData?.length === 0
                     ) {
-                      enqueueSnackbar( t("PleaseSelectAtLeastOneRow"), {
+                      enqueueSnackbar(t("PleaseSelectAtLeastOneRow"), {
                         variant: "error",
                       });
                     } else {
@@ -703,7 +705,6 @@ export const InwardClearing = () => {
                   ref={inputButtonRef}
                 >
                   {t("Ok")}
-
                 </GradientButton>
 
                 <GradientButton
@@ -733,7 +734,7 @@ export const InwardClearing = () => {
           loading={getInwardClearingData.isLoading || isFetching}
           actions={actions}
           setAction={setCurrentAction}
-          ReportExportButton={true}
+          enableExport={true}
           refetchData={() =>
             getInwardClearingData.mutate({
               data: {
@@ -819,8 +820,7 @@ export const InwardClearing = () => {
                       ERROR_STATUS: data?.ERR_STATUS ?? "",
                       SCREEN_REF: "TRN/650",
                       ENTERED_BY: data?.ENTERED_BY ?? "",
-                      ENTERED_BRANCH_CD:
-                        data?.ENTERED_BRANCH_CD ?? "",
+                      ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD ?? "",
                       REMARKS: data?.REMARKS ?? "",
                       CHEQUE_DT: data?.CHEQUE_DT ?? "",
                       AMOUNT: data?.AMOUNT ?? "",

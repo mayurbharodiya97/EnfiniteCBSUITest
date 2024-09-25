@@ -6,32 +6,32 @@ import {
   useContext,
   useCallback,
 } from "react";
+import {
+  SubmitFnType,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  GradientButton,
+  usePopupContext,
+  extractMetaData,
+  utilFunction,
+  LoaderPaperComponent,
+  queryClient,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
-import {
-  Theme,
-  Dialog,
-} from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+import { Theme, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import {
   AddNewBenfiDetailGridMetadata,
   AuditBenfiDetailFormMetadata,
 } from "./metaData";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { ActionTypes, GridMetaDataType } from "components/dataTable";
-import { GradientButton } from "components/styledComponent/button";
-import { usePopupContext } from "components/custom/popupContext";
-import { extractMetaData, utilFunction } from "components/utils";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { queryClient } from "cache";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-
-
 
 const actions: ActionTypes[] = [
   {
@@ -59,7 +59,7 @@ export const AddNewBeneficiaryDetail: FC<{
   isOpen?: any;
   onClose?: any;
   isBenAuditTrailData?: any;
-  isRefresh?: any
+  isRefresh?: any;
 }> = ({ isOpen, onClose, isBenAuditTrailData, isRefresh }) => {
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -124,9 +124,9 @@ export const AddNewBeneficiaryDetail: FC<{
     },
 
     onSuccess: (data) => {
-      isRefresh()
+      isRefresh();
       setisAddOpen(false);
-      refetch()
+      refetch();
       enqueueSnackbar(data, {
         variant: "success",
       });
@@ -136,15 +136,15 @@ export const AddNewBeneficiaryDetail: FC<{
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "add") {
-      setisAddOpen(true)
-      setFormMode("new")
+      setisAddOpen(true);
+      setFormMode("new");
     } else if (data?.name === "view-detail") {
       if (controllerRef.current) {
         controllerRef.current.abort();
       }
       controllerRef.current = new AbortController();
-      let rowsData = data?.rows?.[0]?.data
-      setGridData(rowsData)
+      let rowsData = data?.rows?.[0]?.data;
+      setGridData(rowsData);
       if (
         Boolean(rowsData) &&
         JSON.stringify(rowsData) !== JSON.stringify(previousRowData?.current)
@@ -156,10 +156,9 @@ export const AddNewBeneficiaryDetail: FC<{
         });
       }
       setFormMode("edit");
-      setisAddOpen(true)
-
+      setisAddOpen(true);
     } else if (data?.name === "Close") {
-      onClose()
+      onClose();
     }
   }, []);
 
@@ -173,23 +172,31 @@ export const AddNewBeneficiaryDetail: FC<{
     // @ts-ignore
     endSubmit(true);
     if (formMode === "new") {
-      delete data["ACTIVE_FLAG"]
-      delete data["INACTIVE"]
+      delete data["ACTIVE_FLAG"];
+      delete data["INACTIVE"];
     } else {
-      data["ACTIVE_FLAG"] = Boolean(data["ACTIVE_FLAG"]) ? "Y" : "N"
+      data["ACTIVE_FLAG"] = Boolean(data["ACTIVE_FLAG"]) ? "Y" : "N";
     }
     isErrorFuncRef.current = {
       data: {
         _isNewRow: formMode === "new" ? true : false,
         COMP_CD: formMode === "new" ? authState?.companyID : gridData?.COMP_CD,
-        BRANCH_CD: formMode === "new" ? isBenAuditTrailData?.BRANCH_CD : gridData?.BRANCH_CD,
+        BRANCH_CD:
+          formMode === "new"
+            ? isBenAuditTrailData?.BRANCH_CD
+            : gridData?.BRANCH_CD,
         TRAN_CD: formMode === "new " ? "" : gridData?.TRAN_CD,
-        ACCT_TYPE: formMode === "new" ? isBenAuditTrailData?.ACCT_TYPE ?? "" : gridData?.ACCT_TYPE,
+        ACCT_TYPE:
+          formMode === "new"
+            ? isBenAuditTrailData?.ACCT_TYPE ?? ""
+            : gridData?.ACCT_TYPE,
         ACCT_CD:
-          formMode === "new" ? isBenAuditTrailData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? "" : gridData?.ACCT_CD,
+          formMode === "new"
+            ? isBenAuditTrailData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ??
+              ""
+            : gridData?.ACCT_CD,
         ...data,
         FLAG: Boolean(data["FLAG"]) ? "Y" : "N",
-
       },
       displayData,
       endSubmit,
@@ -197,17 +204,28 @@ export const AddNewBeneficiaryDetail: FC<{
     };
     const buttonName = await MessageBox({
       messageTitle: t("Confirmation"),
-      message: formMode === "new" ? t("AreYouSaveThisRecord") : t("AreYouSureInactiveThisRecord"),
+      message:
+        formMode === "new"
+          ? t("AreYouSaveThisRecord")
+          : t("AreYouSureInactiveThisRecord"),
       buttonNames: ["No", "Yes"],
       loadingBtnName: ["Yes"],
     });
     if (buttonName === "Yes") {
       getAuditDml.mutate(isErrorFuncRef?.current?.data);
     }
-
   };
 
-  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel = t("ListOfBeneficiaryAcOrdering") + t("ACNo") + ".: " + authState?.companyID + isBenAuditTrailData?.BRANCH_CD + " / " + isBenAuditTrailData?.ACCT_TYPE + " / " + isBenAuditTrailData?.ACCT_CD
+  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel =
+    t("ListOfBeneficiaryAcOrdering") +
+    t("ACNo") +
+    ".: " +
+    authState?.companyID +
+    isBenAuditTrailData?.BRANCH_CD +
+    " / " +
+    isBenAuditTrailData?.ACCT_TYPE +
+    " / " +
+    isBenAuditTrailData?.ACCT_CD;
   return (
     <>
       <Dialog
@@ -231,8 +249,7 @@ export const AddNewBeneficiaryDetail: FC<{
           refetchData={() => refetch()}
           ref={myGridRef}
         />
-
-      </Dialog >
+      </Dialog>
       <>
         {isAddOpen ? (
           <Dialog
@@ -243,7 +260,6 @@ export const AddNewBeneficiaryDetail: FC<{
               },
             }}
             maxWidth="md"
-
           >
             {getIfscBenAcDetail?.isLoading ? (
               <LoaderPaperComponent />
@@ -261,11 +277,12 @@ export const AddNewBeneficiaryDetail: FC<{
                 initialValues={
                   formMode === "edit"
                     ? {
-                      ...getIfscBenAcDetail?.data?.[0],
-                      ...gridData,
-                      INACTIVE: gridData?.ACTIVE_FLAG,
-                      ACTIVE_FLAG: gridData?.ACTIVE_FLAG === "Y" ? true : false
-                    }
+                        ...getIfscBenAcDetail?.data?.[0],
+                        ...gridData,
+                        INACTIVE: gridData?.ACTIVE_FLAG,
+                        ACTIVE_FLAG:
+                          gridData?.ACTIVE_FLAG === "Y" ? true : false,
+                      }
                     : {}
                 }
                 formStyle={{
@@ -277,25 +294,23 @@ export const AddNewBeneficiaryDetail: FC<{
               >
                 {({ isSubmitting, handleSubmit }) => (
                   <>
-                    {
-                      formMode === "new" ?
-                        <GradientButton
-                          onClick={(event) => {
-                            handleSubmit(event, "Save");
-                          }}
-                        >
-                          {t("Save")}
-                        </GradientButton>
-                        :
-                        gridData?.ACTIVE_FLAG === "Y" ?
-                          <GradientButton
-                            onClick={(event) => {
-                              handleSubmit(event, "Save");
-                            }}
-                          >
-                            {t("Save")}
-                          </GradientButton> : null
-                    }
+                    {formMode === "new" ? (
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+                    ) : gridData?.ACTIVE_FLAG === "Y" ? (
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+                    ) : null}
                     <GradientButton
                       onClick={() => {
                         setisAddOpen(false);

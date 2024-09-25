@@ -1,20 +1,23 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { limitconfirmFormMetaData } from "./confirmFormMetadata";
 import { useMutation } from "react-query";
 import { crudLimitEntryData, limitConfirm } from "../api";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { usePopupContext } from "components/custom/popupContext";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  MetaDataType,
+  FormWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 
-export const LimitConfirmationForm = ({ closeDialog, result }) => {
+export const LimitConfirmationForm = ({ closeDialog, result, screenFlag }) => {
   const { state: rows }: any = useLocation();
   const [deletePopup, setDeletePopup] = useState<any>(false);
   const { authState } = useContext(AuthContext);
@@ -118,9 +121,10 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
         ) : null}
         <FormWrapper
           key={"limit-confirmation-Form"}
-          metaData={limitconfirmFormMetaData}
-          initialValues={rows?.[0]?.data ?? []}
+          metaData={limitconfirmFormMetaData as MetaDataType}
+          initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
+          onSubmitHandler={() => {}}
           hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
@@ -132,37 +136,41 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
-                  color="primary"
-                  onClick={async () => {
-                    let buttonName = await MessageBox({
-                      messageTitle: "confirmation",
-                      message: `AreYouSureToConfirm`,
-                      buttonNames: ["No", "Yes"],
-                      defFocusBtnName: "Yes",
-                      loadingBtnName: ["Yes"],
-                    });
-                    if (buttonName === "Yes") {
-                      limitCfm.mutate({
-                        IS_CONFIMED: true,
-                        COMP_CD: authState?.companyID,
-                        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-                        TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
+                {screenFlag !== "limitForTrn" && (
+                  <Button
+                    color="primary"
+                    onClick={async () => {
+                      let buttonName = await MessageBox({
+                        messageTitle: "confirmation",
+                        message: `AreYouSureToConfirm`,
+                        buttonNames: ["No", "Yes"],
+                        defFocusBtnName: "Yes",
+                        loadingBtnName: ["Yes"],
                       });
-                    }
-                  }}
-                >
-                  {t("Confirm")}
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setDeletePopup(true);
-                  }}
-                >
-                  {t("Reject")}
-                </Button>
+                      if (buttonName === "Yes") {
+                        limitCfm.mutate({
+                          IS_CONFIMED: true,
+                          COMP_CD: authState?.companyID,
+                          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                          TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+                          STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
+                        });
+                      }
+                    }}
+                  >
+                    {t("Confirm")}
+                  </Button>
+                )}
+                {screenFlag !== "limitForTrn" && (
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setDeletePopup(true);
+                    }}
+                  >
+                    {t("Reject")}
+                  </Button>
+                )}
                 <Button color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
                 </Button>
