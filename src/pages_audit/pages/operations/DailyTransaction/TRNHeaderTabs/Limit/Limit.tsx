@@ -12,6 +12,12 @@ import * as API from "./api";
 import { getLimitDTL } from "pages_audit/pages/operations/limit-entry/api";
 import LimitEntry from "pages_audit/pages/operations/limit-entry";
 import ConfirmationGridWrapper from "pages_audit/pages/confirmations";
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 interface LimitRowType {
   COMP_CD: string;
@@ -22,12 +28,6 @@ interface LimitRowType {
 }
 // import GridWrapper from "components/dataTableStatic";
 
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
