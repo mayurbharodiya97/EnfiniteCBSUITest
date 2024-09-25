@@ -1,18 +1,26 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+// import GridWrapper from "components/dataTableStatic";
+// import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
+// import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
+// import { queryClient } from "cache";
+// import { usePopupContext } from "components/custom/popupContext";
 import { LoanScheduleDetailsGridMetadata } from "../gridMetadata";
 import { Dialog } from "@mui/material";
 import { ConfRejectLoanRescheduleData, getLoanRescheduleDetails } from "../api";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
 import { format } from "date-fns";
+import {
+  ActionTypes,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {

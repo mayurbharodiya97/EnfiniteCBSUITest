@@ -166,6 +166,7 @@ export const RetrievalFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.[i]?.O_STATUS === "9") {
@@ -174,6 +175,7 @@ export const RetrievalFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData?.[i];

@@ -17,7 +17,7 @@ import {
   MetaDataType,
 } from "@acuteinfo/common-base";
 
-export const ViewMasterForm = ({ closeDialog }) => {
+export const ViewMasterForm = ({ handleDialogClose }) => {
   const { authState } = useContext(AuthContext);
   const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
@@ -46,14 +46,12 @@ export const ViewMasterForm = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `View Master of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    ViewMasterMetadata.form.label = label2;
-  }, []);
+  //Form Header title
+  ViewMasterMetadata.form.label = `View Master of A/c No.: ${
+    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog
@@ -111,7 +109,9 @@ export const ViewMasterForm = ({ closeDialog }) => {
               background: "white",
             }}
           >
-            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+            <GradientButton onClick={() => handleDialogClose()}>
+              Close
+            </GradientButton>
           </FormWrapper>
         )}
       </div>

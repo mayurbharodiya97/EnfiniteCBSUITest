@@ -165,3 +165,77 @@ export const getFdRateDefination = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getCompareSheetReport = async ({
+  COMP_CD,
+  BRANCH_CD,
+  HANDBOOK_FLG,
+  TRAN_CD,
+  PERIOD_CD,
+  PERIOD_NO,
+  AMOUNT,
+  FR_DT,
+  GD_TODAY,
+  SPL_AMT_FLG,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("FDMATURITYCOMPAREJASPER", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      HANDBOOK_FLG: HANDBOOK_FLG,
+      TRAN_CD: TRAN_CD,
+      PERIOD_CD: PERIOD_CD,
+      PERIOD_NO: PERIOD_NO,
+      AMOUNT: AMOUNT,
+      FR_DT: FR_DT,
+      GD_TODAY: GD_TODAY,
+      SPL_AMT_FLG: SPL_AMT_FLG,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...others }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+          ...others,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getRecurringFdReport = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ASON_DT,
+  TRAN_CD,
+  CATEG_CD,
+  PROPOSED,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("RECCURRINGTOFDCALCULATORJASPER", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ASON_DT: ASON_DT,
+      TRAN_CD: TRAN_CD,
+      CATEG_CD: CATEG_CD,
+      PROPOSED: PROPOSED,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...others }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+          ...others,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

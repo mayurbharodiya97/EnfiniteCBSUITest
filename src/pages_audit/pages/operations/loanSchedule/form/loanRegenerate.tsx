@@ -145,6 +145,7 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
             const btnName = await MessageBox({
               messageTitle: "Alert",
               message: data?.[0]?.O_MESSAGE,
+              icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
@@ -183,6 +184,7 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
                       messageTitle: "ValidationFailed",
                       message: data?.message,
                       buttonNames: ["Ok"],
+                      icon: "ERROR",
                     });
                     if (btnName === "Ok") {
                       endSubmit(true);

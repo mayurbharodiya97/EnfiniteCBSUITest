@@ -205,7 +205,7 @@ export const LoanScheduleGrid = () => {
         });
       } else if (data?.name === "reschedule") {
         navigate(data?.name, {
-          state: data?.rows?.[0]?.original,
+          state: data?.rows?.[0]?.data,
         });
       } else if (data?.name === "_rowChanged") {
         setSelectedRowData(data?.rows?.[0]);
@@ -276,6 +276,13 @@ export const LoanScheduleGrid = () => {
     }
   };
 
+  console.log(
+    "LoanSchedt",
+    LoanScheduleGridMetaData.gridConfig.containerHeight,
+    "hjhkjhkjhk",
+    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight
+  );
+
   return (
     <>
       {loanScheduleHeaderData.isError && (
@@ -297,8 +304,7 @@ export const LoanScheduleGrid = () => {
         loading={loanScheduleHeaderData?.isLoading}
         actions={actions}
         setAction={setCurrentAction}
-        // Temporary commented
-        // disableMultipleRowSelect={formMode === "edit" ? true : false}
+        disableMultipleRowSelect={true}
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }

@@ -191,11 +191,11 @@ export const EntryDescMasterWrapper = ({
       TransitionComponent={Transition}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      maxWidth="md"
     >
       {gridData ? (
         <EntryDescriptionMasterForm

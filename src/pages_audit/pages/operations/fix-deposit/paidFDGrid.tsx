@@ -24,13 +24,13 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const PaidFDGrid = ({ closeDialog }) => {
+export const PaidFDGrid = ({ handleDialogClose }) => {
   const { t } = useTranslation();
   const { FDState } = useContext(FDContext);
   const { authState } = useContext(AuthContext);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "close") {
-      closeDialog();
+      handleDialogClose();
     }
   }, []);
 
@@ -57,14 +57,12 @@ export const PaidFDGrid = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `Paid FD Detail of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    PaidFDGridMetaData.gridConfig.gridLabel = label2;
-  }, []);
+  //Grid Header title
+  PaidFDGridMetaData.gridConfig.gridLabel = `Paid FD Detail of A/c No.: ${
+    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog

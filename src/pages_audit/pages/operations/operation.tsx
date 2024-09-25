@@ -101,6 +101,8 @@ const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
 const FdInterestPaymentGrid = lazy(() => import("./FDInterestPayment"));
 const FDInterestPaymentConfm = lazy(() => import("./FDInterestPaymentConf"));
+const RecInterestPaymentForm = lazy(() => import("./recInterestPayment"));
+const RecInterestPaymentConf = lazy(() => import("./recInterestPaymentConf"));
 
 export const OperationsMenu = () => (
   <Routes>
@@ -122,31 +124,35 @@ export const OperationsMenu = () => (
 
     <Route
       path="chequebook-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
+      element={
+        <ConfirmationGridWrapper screenFlag="chequebookCFM" reqData="" />
+      }
     />
     <Route
       path="limit-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" reqData="" />}
     />
     <Route
       path="stock-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" reqData="" />}
     />
     <Route
       path="stop-pay-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
+      element={
+        <ConfirmationGridWrapper screenFlag="stopPaymentCFM" reqData="" />
+      }
     />
     <Route
       path="lien-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" reqData="" />}
     />
     <Route
       path="tempOd-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" reqData="" />}
     />
     <Route
       path="insurance-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" reqData="" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
@@ -325,5 +331,13 @@ export const OperationsMenu = () => (
       element={<RecurringCalculatorFormWrapper />}
     />
     <Route path="emi-calculator/*" element={<EMICalculatorFormWrapper />} />
+    <Route
+      path="recpayint-master-entry/*"
+      element={<RecInterestPaymentForm />}
+    />
+    <Route
+      path="recpayint-master-confirmation/*"
+      element={<RecInterestPaymentConf />}
+    />
   </Routes>
 );

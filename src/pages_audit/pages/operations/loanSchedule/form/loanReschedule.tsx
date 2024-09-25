@@ -1,4 +1,4 @@
-import { AppBar, Dialog } from "@mui/material";
+import { AppBar, Dialog, LinearProgress } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { LoanRescheduleFormMetaData } from "./metadata";
@@ -34,6 +34,7 @@ import {
   utilFunction,
   usePopupContext,
 } from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const LoanRescheduleForm = ({
   isDataChangedRef,
@@ -264,6 +265,7 @@ export const LoanRescheduleForm = ({
                   messageTitle: "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok") {
                   endSubmit(true);
@@ -272,6 +274,7 @@ export const LoanRescheduleForm = ({
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
                   message: data?.[0]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
@@ -331,6 +334,7 @@ export const LoanRescheduleForm = ({
                   messageTitle: "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok") {
                   endSubmit(true);
@@ -339,6 +343,7 @@ export const LoanRescheduleForm = ({
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
                   message: data?.[0]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({

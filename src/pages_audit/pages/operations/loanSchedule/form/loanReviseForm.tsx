@@ -1,15 +1,21 @@
 import { Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+// import { GradientButton } from "components/styledComponent/button";
 import { LoanReviseMetaData } from "./metadata";
 import { t } from "i18next";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+// import { MasterDetailsForm } from "components/formcomponent";
+// import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { saveUpdatedInterestRate } from "../api";
 import { useContext, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
+import {
+  GradientButton,
+  MasterDetailsForm,
+  MasterDetailsMetaData,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+// import { usePopupContext } from "components/custom/popupContext";
 
 export const LoanReviseForm = ({
   isDataChangedRef,

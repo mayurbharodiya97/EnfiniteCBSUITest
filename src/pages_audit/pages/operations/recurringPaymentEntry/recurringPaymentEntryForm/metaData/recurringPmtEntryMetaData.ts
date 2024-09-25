@@ -225,7 +225,6 @@ export const RecurringPaymentEntryFormMetaData = {
           name: "ACCT_TYPE",
           validationRun: "onChange",
           dependentFields: ["BRANCH_CD"],
-          disableCaching: true,
           runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             currentField,
@@ -241,15 +240,6 @@ export const RecurringPaymentEntryFormMetaData = {
               },
             };
           },
-          options: (dependentValue, formState, _, authState) => {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-              USER_NAME: authState?.user?.id,
-              DOC_CD: "RECDRTYPE",
-            });
-          },
-          _optionsKey: "getDebitAccountType",
           GridProps: { xs: 12, sm: 4, md: 2.2, lg: 2, xl: 2 },
         },
         accountCodeMetadata: {
@@ -609,15 +599,6 @@ export const RecurringPaymentEntryFormMetaData = {
           name: "ACCT_TYPE",
           validationRun: "onChange",
           postValidationSetCrossFieldValues: () => {},
-          options: (dependentValue, formState, _, authState) => {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
-              USER_NAME: authState?.user?.id ?? "",
-              DOC_CD: "RECDRTYPE",
-            });
-          },
-          _optionsKey: "getDebitAccountType",
           GridProps: { xs: 12, sm: 4, md: 2.2, lg: 2, xl: 2 },
         },
         accountCodeMetadata: {
