@@ -29,6 +29,8 @@ import DualTableCalc from "./dualTableCalc";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
+import { utilFunction } from "components/utils";
+import { useLocation } from "react-router-dom";
 import {
   usePopupContext,
   GradientButton,
@@ -45,6 +47,7 @@ const TellerScreen = () => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
+  const cardDtlRef = useRef<any>(null);
   const textFieldRef: any = useRef(null);
   const popupReqWrapperRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -55,6 +58,7 @@ const TellerScreen = () => {
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const { authState }: any = useContext(AuthContext);
+  let currentPath = useLocation().pathname;
   const customParameter = usePropertiesConfigContext();
   const { denoTableType } = customParameter;
   // const { cardStore, setCardStore } = useContext(AccDetailContext);
@@ -576,10 +580,50 @@ const TellerScreen = () => {
   //   console.log(cardTabsReq, "cardTabsReq");
   // }, [cardTabsReq]);
 
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardDtlRef?.current?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  useEffect(() => {
+    if (cardDetails?.length) {
+      cardDtlRef.current = cardDetails;
+    }
+  }, [cardDetails]);
+
   return (
     <>
       <DailyTransTabs
-        heading="Teller Transaction (Maker) (ETRN/039)"
+        heading={utilFunction.getDynamicLabel(
+          currentPath,
+          authState?.menulistdata,
+          false
+        )}
         tabsData={tabsDetails}
         cardsData={cardDetails}
         reqData={cardTabsReq}
@@ -602,7 +646,12 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox, setCardDetails, docCd: "TRN/039" }}
+        formState={{
+          MessageBox: MessageBox,
+          setCardDetails,
+          docCd: "TRN/039",
+          getCardColumnValue,
+        }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
             let event: any = { preventDefault: () => {} };
@@ -637,6 +686,10 @@ const TellerScreen = () => {
               });
             }
           } else if (action === "TRN") {
+            TellerScreenMetadata.form.label =
+              payload?.value === "1"
+                ? "Cash Receipt Entry - TRN/039"
+                : "Cash Payment Entry - TRN/040";
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({
                   type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
@@ -824,7 +877,7 @@ const TellerScreen = () => {
           initRemainExcess={
             Boolean(state?.fieldsData?.TRN === "1")
               ? state?.fieldsData?.RECEIPT
-              : Boolean(state?.fieldsData?.TRN === "P")
+              : Boolean(state?.fieldsData?.TRN === "4")
               ? state?.fieldsData?.PAYMENT
               : "0"
           }
