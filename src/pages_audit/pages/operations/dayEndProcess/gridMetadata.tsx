@@ -188,7 +188,7 @@ export const verifyDayendChecksumsMetaData = {
     defaultPageSize: 10,
     containerHeight: {
       min: "70vh",
-      max: "73vh",
+      max: "80vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -225,7 +225,7 @@ export const verifyDayendChecksumsMetaData = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 750,
+      width: 850,
       minWidth: 500,
       maxWidth: 800,
     },

@@ -269,6 +269,7 @@ export const VerifyDayendChecksums = ({
 
     return "continue";
   };
+  console.log(warningsObjRef);
 
   const processRecords = async (records: Item[]) => {
     for (let i = 0; i < records.length; i++) {
