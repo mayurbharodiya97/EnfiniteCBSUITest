@@ -1,18 +1,23 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import { CategoryMasterFormMetaData } from "./metaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useTranslation } from "react-i18next";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 const CategoryMasterForm = ({
   isDataChangedRef,
@@ -29,13 +34,15 @@ const CategoryMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.categoryMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -76,8 +83,8 @@ const CategoryMasterForm = ({
         data: {
           ...newData,
           ...upd,
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
           _isNewRow: defaultView === "new" ? true : false,
         },
         displayData,
@@ -126,7 +133,7 @@ const CategoryMasterForm = ({
             formMode === "new"
               ? {
                   ...rows?.[0]?.data,
-                  BRANCH_CD: authState?.user?.branchCode,
+                  BRANCH_CD: authState?.user?.branchCode ?? "",
                 }
               : { ...(rows?.[0]?.data as InitialValuesType) }
           }
@@ -138,6 +145,7 @@ const CategoryMasterForm = ({
             gridData: gridData,
             rows: rows?.[0]?.data,
             handleButtonDisable: handleButtonDisable,
+            docCD: "MST/050",
           }}
         >
           {({ isSubmitting, handleSubmit }) => (

@@ -20,13 +20,15 @@ import {
   // TextField,
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
-import { TextField } from "components/styledComponent";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import { GradientButton } from "components/styledComponent/button";
-import { AccDetailContext } from "pages_audit/auth";
 
+import { AccDetailContext } from "pages_audit/auth";
+import {
+  GradientButton,
+  formatCurrency,
+  TextField,
+  usePropertiesConfigContext,
+  getCurrencySymbol,
+} from "@acuteinfo/common-base";
 const TellerDenoTable = ({
   displayTable,
   data,
@@ -53,7 +55,7 @@ const TellerDenoTable = ({
   const classes = useStyles();
   const inputRefs = useRef<any>({});
   const [refsReady, setRefsReady] = useState(false);
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const customParameter = usePropertiesConfigContext();
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
   // useEffect(() => {

@@ -59,7 +59,9 @@ const PositivePayConfirmationGrid = lazy(
 const RecurringPaymentEntryGrid = lazy(() => import("./recurringPaymentEntry"));
 const PassbookPrint = lazy(() => import("./passbookPrint"));
 const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
-// const LoanScheduleGrid = lazy(() => import("./loanSchedule"));
+const LoanRescheduleConfirmationGrid = lazy(
+  () => import("./loanSchedule/loanRescheduleconfirmation")
+);
 const StandingInstructionGridWrapper = lazy(
   () => import("./standingInstruction")
 );
@@ -102,6 +104,9 @@ const FDInterestPaymentConfm = lazy(() => import("./FDInterestPaymentConf"));
 const CustomerExchangeEntry = lazy(
   () => import("./customerExchangeEntry/customerEntry")
 );
+const RecInterestPaymentForm = lazy(() => import("./recInterestPayment"));
+const RecInterestPaymentConf = lazy(() => import("./recInterestPaymentConf"));
+
 export const OperationsMenu = () => (
   <Routes>
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
@@ -122,31 +127,35 @@ export const OperationsMenu = () => (
 
     <Route
       path="chequebook-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
+      element={
+        <ConfirmationGridWrapper screenFlag="chequebookCFM" reqData="" />
+      }
     />
     <Route
       path="limit-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" reqData="" />}
     />
     <Route
       path="stock-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" reqData="" />}
     />
     <Route
       path="stop-pay-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
+      element={
+        <ConfirmationGridWrapper screenFlag="stopPaymentCFM" reqData="" />
+      }
     />
     <Route
       path="lien-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" reqData="" />}
     />
     <Route
       path="tempOd-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" reqData="" />}
     />
     <Route
       path="insurance-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
+      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" reqData="" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
@@ -286,6 +295,10 @@ export const OperationsMenu = () => (
     <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
     {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
     <Route
+      path="loanschedule-confirmation/*"
+      element={<LoanRescheduleConfirmationGrid />}
+    />
+    <Route
       path="gst-outward-entry/*"
       element={<GstOutwardEntryGrid screenFlag="gstEntry" />}
     />
@@ -325,6 +338,14 @@ export const OperationsMenu = () => (
     <Route
       path="cash-exchange-customer/*"
       element={<CustomerExchangeEntry />}
+    />
+    <Route
+      path="recpayint-master-entry/*"
+      element={<RecInterestPaymentForm />}
+    />
+    <Route
+      path="recpayint-master-confirmation/*"
+      element={<RecInterestPaymentConf />}
     />
   </Routes>
 );

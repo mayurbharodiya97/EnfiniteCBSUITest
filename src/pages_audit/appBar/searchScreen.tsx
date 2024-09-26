@@ -1,11 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { SearchBar } from "components/derived";
-import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "./style";
 import { useTranslation } from "react-i18next";
+import { utilFunction, SearchBar } from "@acuteinfo/common-base";
 
 const getStoredScreens = (defaultData) => {
   const store = localStorage.getItem("routeHistory");

@@ -1,48 +1,64 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { Fragment, useCallback, useContext, useEffect, useRef, useState} from "react";
-import GridWrapper from "components/dataTableStatic";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { gstOutwardEntryConfirmationGrid } from "./gstConfirmationGridMetaData";
-import * as API from "./api"
+import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { GstOutwardMasterDetailForm } from "../gstOutwardMasterForm/gstOutwardMasterDetailForm";
-import { Alert } from "components/common/alert";
-import { ClearCacheContext, queryClient } from "cache";
+import {
+  queryClient,
+  GridWrapper,
+  Alert,
+  ActionTypes,
+  ClearCacheContext,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
-    {
-      actionName: "view-details",
-      actionLabel: "ViewDetails",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "view-all",
-      actionLabel: "View All",
-      multiple: false,
-      alwaysAvailable:true,
-      rowDoubleClick: false,
-    },
-  ];
-export const GstOutwardConfirmationGrid = ({screenFlag}) => {
-  const {authState} = useContext(AuthContext);
+  {
+    actionName: "view-details",
+    actionLabel: "ViewDetails",
+    multiple: false,
+    rowDoubleClick: true,
+  },
+  {
+    actionName: "view-all",
+    actionLabel: "View All",
+    multiple: false,
+    alwaysAvailable: true,
+    rowDoubleClick: false,
+  },
+];
+export const GstOutwardConfirmationGrid = ({ screenFlag }) => {
+  const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
   const navigate = useNavigate();
   const myGridRef = useRef<any>(null);
-  const [gridData,setGridData] = useState([])
-  const [mutateData,setMutateData] = useState([])
+  const [gridData, setGridData] = useState([]);
+  const [mutateData, setMutateData] = useState([]);
   const isDataChangedRef = useRef(false);
-  const { data:mainData, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
-    ["getGstOutwardConfirmationRetrive"],
-    () => API.getGstOutwardConfirmationRetrive({
+  const {
+    data: mainData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getGstOutwardConfirmationRetrive"], () =>
+    API.getGstOutwardConfirmationRetrive({
       comp_cd: authState?.companyID,
       branch_cd: authState?.user?.branchCode,
       flag: "",
       gd_date: authState?.workingDate,
       user_level: authState?.role,
-      user_name: authState?.user?.id
-      })
+      user_name: authState?.user?.id,
+    })
   );
   const mutation = useMutation(API.getGstOutwardHeaderRetrive, {
     onError: async (error: any) => {
@@ -53,20 +69,20 @@ export const GstOutwardConfirmationGrid = ({screenFlag}) => {
     },
     onSuccess: (data) => {
       const mutateData = data;
-      setMutateData(mutateData)
+      setMutateData(mutateData);
     },
   });
   const setCurrentAction = useCallback(
     (data) => {
-      if (data?.name === "view-all"){
+      if (data?.name === "view-all") {
         mutation.mutate({
           comp_cd: authState?.companyID,
           branch_cd: authState?.user?.branchCode,
           flag: "A",
           gd_date: authState?.workingDate,
           user_level: authState?.role,
-          user_name: authState?.user?.name
-        })
+          user_name: authState?.user?.name,
+        });
       }
       navigate(data?.name, {
         state: data?.rows,
@@ -74,13 +90,13 @@ export const GstOutwardConfirmationGrid = ({screenFlag}) => {
     },
     [navigate]
   );
-  useEffect(()=>{
-    if(mutateData?.length > 0){
-      setGridData(mutateData)
-    }else{
-      setGridData(mainData)
+  useEffect(() => {
+    if (mutateData?.length > 0) {
+      setGridData(mutateData);
+    } else {
+      setGridData(mainData);
     }
-  },[gridData,mutateData,mainData])
+  }, [gridData, mutateData, mainData]);
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
@@ -105,7 +121,11 @@ export const GstOutwardConfirmationGrid = ({screenFlag}) => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? mutation?.error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={
+            error?.error_msg ??
+            mutation?.error?.error_msg ??
+            "Something went to wrong.."
+          }
           errorDetail={error?.error_detail ?? mutation?.error?.error_detail}
           color="error"
         />
@@ -136,4 +156,4 @@ export const GstOutwardConfirmationGrid = ({screenFlag}) => {
     </Fragment>
   );
 };
-export default GstOutwardConfirmationGrid
+export default GstOutwardConfirmationGrid;
