@@ -266,7 +266,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
                 <Alert
                   severity="error"
                   errorMsg={errorObj?.error_msg ?? "Unknow Error"}
-                  errorDetail={errorObj?.error_detail ?? ""}
+                  errorDetail={errorObj?.error_msg ?? ""}
                   color="error"
                 />
               </AppBar>

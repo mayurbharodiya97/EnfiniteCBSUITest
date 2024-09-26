@@ -127,7 +127,7 @@ export const getCurrentDateinLong = () => {
 export const ValidatePassword = (pwd) => {
   if (!Boolean(pwd)) {
     return "Password is Required";
-  } 
+  }
   // else if (pwd.length < 8 || pwd.length > 16) {
   //   return "Password must be between 8 and 16 characters long.";
   // }
@@ -180,18 +180,19 @@ export const transformBlobData = (data) => {
       newItem["fileExt"] === "pdf"
         ? "pdf"
         : newItem["fileExt"] === "jpg"
-          ? "image"
-          : newItem["fileExt"] === "png"
-            ? "image"
-            : newItem["fileExt"] === "jpeg"
-              ? "image"
-              : "other";
+        ? "image"
+        : newItem["fileExt"] === "png"
+        ? "image"
+        : newItem["fileExt"] === "jpeg"
+        ? "image"
+        : "other";
     newItem["sizeStr"] = newItem["blob"]?.size ?? 1000;
     return newItem;
   });
 };
 
 export const transformDetailsData = (newData, oldData) => {
+  console.log("<<<tran", newData, oldData);
   let allKey = Object.keys(newData);
   let _UPDATEDCOLUMNS: any = [];
   let _OLDROWVALUE = {};
@@ -204,7 +205,7 @@ export const transformDetailsData = (newData, oldData) => {
       isValidDate(newData[item]) &&
       isValidDate(oldData[item]) &&
       format(new Date(newData[item]), "dd/MM/yyyy HH:mm:ss") ===
-      format(new Date(oldData[item]), "dd/MM/yyyy HH:mm:ss")
+        format(new Date(oldData[item]), "dd/MM/yyyy HH:mm:ss")
     ) {
     } else {
       _UPDATEDCOLUMNS.push(item);
@@ -274,7 +275,7 @@ const getChangedColumns = (obj1, obj2, keys) => {
         isValidDate(obj2[key]) &&
         isValidDate(obj1[key]) &&
         format(new Date(obj2[key]), "dd/MM/yyyy HH:mm:ss") ===
-        format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
+          format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
       ) {
       } else {
         return key;
@@ -286,7 +287,7 @@ const getChangedColumns = (obj1, obj2, keys) => {
 const groupItemsById = (items, id) => {
   const groupedItems = {};
 
-  items.forEach(item => {
+  items.forEach((item) => {
     const key = item[id];
     if (!groupedItems[key]) {
       groupedItems[key] = [];
@@ -315,22 +316,24 @@ export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
   //     return [getKey(item, keysToCompare), item]
   //   })
   // );
-  input1.forEach(oldRow => {
-    let isExistingRow = input2.filter(newRows => newRows[keysToCompare] === oldRow[keysToCompare])
+  input1.forEach((oldRow) => {
+    let isExistingRow = input2.filter(
+      (newRows) => newRows[keysToCompare] === oldRow[keysToCompare]
+    );
     if (isExistingRow.length === 0) {
       output.isDeleteRow.push(oldRow);
     }
   });
 
-  const grouped = (groupItemsById(input2, keysToCompare));
+  const grouped = groupItemsById(input2, keysToCompare);
   const uniqueKeys = Object.keys(grouped);
-  uniqueKeys.forEach(key => {
+  uniqueKeys.forEach((key) => {
     if (Array.isArray(grouped[key])) {
       const item1 = idMapInput1.get(key);
       if (!item1) {
         output.isNewRow.push(...grouped[key]);
       } else {
-        grouped[key].forEach(row => {
+        grouped[key].forEach((row) => {
           if (areObjectsEqual(item1, row, keysToCompare)) {
             const changedColumns = getChangedColumns(
               item1,
