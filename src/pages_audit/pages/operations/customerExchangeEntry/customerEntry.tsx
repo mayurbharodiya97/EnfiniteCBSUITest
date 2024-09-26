@@ -9,9 +9,10 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { GradientButton } from "components/styledComponent/button";
 import CashierExchangeTable from "../cashierExchangeEntry/tableComponent/tableComponent";
-import { LinearProgress } from "@mui/material";
+import { AppBar, LinearProgress } from "@mui/material";
 import { usePopupContext } from "components/custom/popupContext";
 import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 const CustomerEntry = () => {
   const { authState } = useContext(AuthContext);
   const TableRef = useRef<any>([]);
@@ -61,6 +62,19 @@ const CustomerEntry = () => {
     submitEventRef.current = e;
     const FormRefData = await FormRef?.current?.getFieldData();
     const TableData = TableRef?.current?.saveData();
+    if (
+      !TableData ||
+      !TableData.tableData ||
+      TableData.tableData.length === 0
+    ) {
+      await MessageBox({
+        message:
+          "Please enter data in the Cashier Exchange Table before saving.",
+        messageTitle: "Data Required",
+        buttonNames: ["Ok"],
+      });
+      return;
+    }
     const TableDataMap = TableData?.tableData?.map((row) => ({
       DENO_TRAN_CD: row?.TRAN_CD,
       DENO_QTY: row?.DENO_QTY,
@@ -83,9 +97,20 @@ const CustomerEntry = () => {
       insertCashierEntry.mutate(Request);
     }
   };
-  useEffect(() => {}, []);
   return (
     <Fragment>
+      {isError ? (
+        <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={error?.error_msg ?? "Unknow Error"}
+              errorDetail={error?.error_detail ?? ""}
+              color="error"
+            />
+          </AppBar>
+        </div>
+      ) : null}
       <FormWrapper
         key={"CustomerEntryForm"}
         metaData={CustomerFormMetadata as MetaDataType}
