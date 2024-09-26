@@ -101,6 +101,9 @@ const AccountCloseProcess = lazy(() => import("./ACCloseProcess"));
 const AccountCloseConfirm = lazy(() => import("./ACCCloseConfirm"));
 const FdInterestPaymentGrid = lazy(() => import("./FDInterestPayment"));
 const FDInterestPaymentConfm = lazy(() => import("./FDInterestPaymentConf"));
+const CustomerExchangeEntry = lazy(
+  () => import("./customerExchangeEntry/customerEntry")
+);
 const RecInterestPaymentForm = lazy(() => import("./recInterestPayment"));
 const RecInterestPaymentConf = lazy(() => import("./recInterestPaymentConf"));
 
@@ -290,6 +293,7 @@ export const OperationsMenu = () => (
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
+    {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
     <Route
       path="loanschedule-confirmation/*"
       element={<LoanRescheduleConfirmationGrid />}
@@ -331,6 +335,10 @@ export const OperationsMenu = () => (
       element={<RecurringCalculatorFormWrapper />}
     />
     <Route path="emi-calculator/*" element={<EMICalculatorFormWrapper />} />
+    <Route
+      path="cash-exchange-customer/*"
+      element={<CustomerExchangeEntry />}
+    />
     <Route
       path="recpayint-master-entry/*"
       element={<RecInterestPaymentForm />}

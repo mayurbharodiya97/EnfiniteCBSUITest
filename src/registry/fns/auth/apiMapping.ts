@@ -2689,6 +2689,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
