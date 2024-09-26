@@ -1712,6 +1712,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOSAVELOANRECHEDULE",
     packageName: "",
   },
+  GETUPDATERATE: {
+    url: "/loanServiceAPI/GETUPDATERATE",
+    packageName: "",
+  },
+  DOUPDATERATEAMOUNT: {
+    url: "/loanServiceAPI/DOUPDATERATEAMOUNT",
+    packageName: "",
+  },
+  GETLOANRESCHEDULECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULECNF",
+    packageName: "",
+  },
+  DOCONFIRMLOANRESCHEDULE: {
+    url: "/loanServiceAPI/DOCONFIRMLOANRESCHEDULE",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",

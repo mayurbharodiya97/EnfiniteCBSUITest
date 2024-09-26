@@ -147,20 +147,20 @@ export const CkycConfirm = () => {
         refetchData={() => PendingRefetch()}
         // ref={myGridRef}
       />
-      {/* as per old base code */}
+      {/* Commented Temporary */}
       {/* <MessageBoxWrapper
-          MessageTitle={"ALERT"}
-          Message={"You can not confirm your own posted transaction"}
-          onClickButton={() => {
-            setPreventConfirmDialog(false)
-            // setConfirmAction(null)
-            // setConfirmMsgDialog(false)
-            // closeForm()
-          }}
-          rows={[]}
-          buttonNames={["OK"]}
-          open={preventConfirmDialog}
-        /> */}
+        MessageTitle={"ALERT"}
+        Message={"You can not confirm your own posted transaction"}
+        onClickButton={() => {
+          setPreventConfirmDialog(false);
+          // setConfirmAction(null)
+          // setConfirmMsgDialog(false)
+          // closeForm()
+        }}
+        rows={[]}
+        buttonNames={["OK"]}
+        open={preventConfirmDialog}
+      /> */}
 
       <Routes>
         <Route

@@ -1,8 +1,5 @@
 import { Dialog } from "@mui/material";
-import GridWrapper, {
-  GridMetaDataType,
-  GridWrapperStatic,
-} from "@acuteinfo/common-base";
+import { GridMetaDataType, GridWrapper } from "@acuteinfo/common-base";
 import { AuditMetadata } from "./gridMetadata";
 import { useQuery } from "react-query";
 import * as API from "./api";
@@ -70,7 +67,7 @@ const AuditDetail = ({ open, onClose, rowsData }) => {
           },
         }}
       >
-        <GridWrapperStatic
+        <GridWrapper
           key={"parametersGridAudit"}
           finalMetaData={AuditMetadata as GridMetaDataType}
           data={data ?? []}

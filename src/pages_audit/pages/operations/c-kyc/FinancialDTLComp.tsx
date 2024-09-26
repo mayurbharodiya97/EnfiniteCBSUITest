@@ -13,6 +13,7 @@ import {
   GridMetaDataType,
   ActionTypes,
 } from "@acuteinfo/common-base";
+
 const FinancialDTLComp = ({ open, onClose }) => {
   const { authState } = useContext(AuthContext);
   const { state: data }: any = useLocation();

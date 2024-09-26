@@ -9,6 +9,7 @@ import {
   GradientButton,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   const { t } = useTranslation();
@@ -25,12 +26,20 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   ) => {
     endSubmit(true);
     if (Boolean(data)) {
+      if (Boolean(data["ACCT_CD"])) {
+        data["ACCT_CD"] = utilFunction.getPadAccountNumber(
+          data["ACCT_CD"],
+          data["ACCT_TYPE"]
+        );
+      }
       retrieveDataRef.current = data;
       retrievalParaValues({
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: retrieveDataRef?.current?.BRANCH_CD ?? "",
         ACCT_TYPE: retrieveDataRef?.current?.ACCT_TYPE ?? "",
         ACCT_CD: retrieveDataRef?.current?.ACCT_CD ?? "",
+        ALLOW_REGERATE: retrieveDataRef?.current?.ALLOW_REGERATE ?? "",
+        ALLOW_RESCHEDULE: retrieveDataRef?.current?.ALLOW_RESCHEDULE ?? "",
       });
     }
   };
@@ -52,7 +61,9 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         }}
         formState={{
           MessageBox: MessageBox,
+          CloseMessageBox: CloseMessageBox,
           handleButtonDisable: handleButtonDisable,
+          docCD: "MST/006",
         }}
         controlsAtBottom={true}
         containerstyle={{ padding: "10px" }}

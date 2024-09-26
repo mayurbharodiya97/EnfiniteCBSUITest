@@ -152,8 +152,8 @@ export const ConfirmUpdateDialog = ({
       }}
       buttonNames={shouldUpdate && !mutation.isLoading ? ["Ok"] : ["Yes", "No"]}
       rows={[]}
-      // loading={{Yes: mutation.isLoading}}
-      loading={mutation.isLoading}
+      //Commented Temporary
+      // loading={{ Yes: mutation.isLoading }}
       // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />

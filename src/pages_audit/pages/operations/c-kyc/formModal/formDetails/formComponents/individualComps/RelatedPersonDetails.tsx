@@ -275,28 +275,18 @@ const RelatedPersonDetails = () => {
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
       />
-      {/* as per old base of cbs */}
-      {/* 
-            <MessageBoxWrapper
-                MessageTitle={"Data Validation Failed"}
-                Message={`In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'` ?? "No Message"}
-                onClickButton={() => setOpen(false)}
-                rows={[]}
-                buttonNames={["OK"]}
-                open={open}
-            /> */}
-      {/* as per npm common base package */}
-
-      <MessageBoxWrapper
-        validMessage={
+      {/* // Commented Temporary */}
+      {/* <MessageBoxWrapper
+        MessageTitle={"Data Validation Failed"}
+        Message={
           `In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'` ??
           "No Message"
         }
-        onActionYes={() => setOpen(false)}
+        onClickButton={() => setOpen(false)}
         rows={[]}
-        onActionNo={() => {}}
-        isOpen={open}
-      />
+        buttonNames={["OK"]}
+        open={open}
+      /> */}
     </Grid>
   );
 };

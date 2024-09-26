@@ -577,7 +577,9 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
           }}
           buttonNames={["Yes", "No"]}
           rows={[]}
-          loading={mutation.isLoading}
+          // Commented Temporary
+          // loading={{ Yes: mutation.isLoading }}
+          // loading={{ Yes: getData?.isLoading, No: false }}
           open={docValidateDialog}
         />
       )}

@@ -1058,10 +1058,11 @@ export default function FormModal({
         // isRequired={false}
       />
 
-      <MessageBoxWrapper
-        // MessageTitle={"SUCCESS"}
+      {/* Commented Temporary */}
+      {/* <MessageBoxWrapper
+        MessageTitle={"SUCCESS"}
         // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
-        validMessage={
+        Message={
           state?.customerIDctx
             ? `Customer ID : ${state?.customerIDctx} ${
                 confirmAction === "Y"
@@ -1083,16 +1084,15 @@ export default function FormModal({
             : "No Message"
         }
         // onClickButton={() => setConfirmMsgDialog(false)}
-        onActionYes={() => {
+        onClickButton={() => {
           setConfirmAction(null);
           setConfirmMsgDialog(false);
           closeForm();
         }}
         rows={[]}
-        // buttonNames={["OK"]}
-        isOpen={confirmMsgDialog}
-        onActionNo={() => {}}
-      />
+        buttonNames={["OK"]}
+        open={confirmMsgDialog}
+      /> */}
 
       {/* {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 

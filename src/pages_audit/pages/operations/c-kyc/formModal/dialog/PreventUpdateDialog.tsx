@@ -41,7 +41,8 @@ export const PreventUpdateDialog = ({ open, onClose }) => {
       }}
       buttonNames={["Close"]}
       rows={[]}
-      loading={undefined}
+      // Commented Temporary
+      // loading={{}}
       // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />

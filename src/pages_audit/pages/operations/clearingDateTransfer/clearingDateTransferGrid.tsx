@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 
-import { Alert, MetaDataType } from "@acuteinfo/common-base";
+import { Alert, MetaDataType, utilFunction } from "@acuteinfo/common-base";
 import { ActionTypes } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import * as API from "./api";
@@ -272,7 +272,11 @@ const ClearingDateTransferGrid = () => {
               variant={"h6"}
               component="div"
             >
-              {getDynamicLabel(currentPath, authState?.menulistdata, true)}
+              {utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
             </Typography>
             <>
               {isFlag === "N" ? (
