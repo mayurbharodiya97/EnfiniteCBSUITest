@@ -9,7 +9,7 @@ import React, {
   useMemo,
   Fragment,
 } from "react";
-import { queryClient } from "cache";
+import { queryClient } from "@acuteinfo/common-base";
 import {
   Box,
   Button,

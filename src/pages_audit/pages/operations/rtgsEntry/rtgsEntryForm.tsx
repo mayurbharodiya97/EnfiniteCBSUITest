@@ -61,6 +61,7 @@ import {
   MetaDataType,
 } from "@acuteinfo/common-base";
 import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { Theme } from "@mui/system";
 
 const actions: ActionTypes[] = [
   {
@@ -71,7 +72,7 @@ const actions: ActionTypes[] = [
     alwaysAvailable: true,
   },
 ];
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

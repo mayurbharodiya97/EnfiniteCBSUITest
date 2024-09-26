@@ -31,8 +31,9 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { StrBranchLevelFormWrapper } from "./strAcLevelBranchForm/strBranchLevelForm";
 import { format } from "date-fns";
+import { Theme } from "@mui/system";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

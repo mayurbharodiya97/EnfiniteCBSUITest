@@ -34,7 +34,8 @@ import {
   GradientButton,
 } from "@acuteinfo/common-base";
 import getDynamicLabel from "components/common/custom/getDynamicLabel";
-const useTypeStyles = makeStyles((theme) => ({
+import { Theme } from "@mui/system";
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

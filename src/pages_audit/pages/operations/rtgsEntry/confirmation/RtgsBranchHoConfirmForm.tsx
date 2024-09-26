@@ -28,7 +28,7 @@ import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
-import { Box } from "@mui/system";
+import { Box, Theme } from "@mui/system";
 import { OTPModel } from "pages_audit/auth/otpPopup";
 import { useStyles } from "pages_audit/auth/style";
 import { rtgsVerifyOTP } from "./api";
@@ -49,7 +49,7 @@ import {
   ClearCacheProvider,
   queryClient,
 } from "@acuteinfo/common-base";
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

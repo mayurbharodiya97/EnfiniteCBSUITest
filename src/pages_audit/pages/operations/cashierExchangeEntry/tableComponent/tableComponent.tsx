@@ -21,11 +21,13 @@ import {
   Box,
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
-import { TextField } from "components/styledComponent";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import { CashierExchangeTableProps, Field } from "./type";
+import {
+  formatCurrency,
+  getCurrencySymbol,
+  TextField,
+  usePropertiesConfigContext,
+} from "@acuteinfo/common-base";
 const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
   (
     {
@@ -40,7 +42,7 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
     },
     ref
   ) => {
-    const customParameter = useContext(CustomPropertiesConfigurationContext);
+    const customParameter = usePropertiesConfigContext();
     const [apiData, setApiData] = useState(data || []);
     const [inputData, setInputData] = useState({});
     const { dynamicAmountSymbol, currencyFormat, decimalCount } =
