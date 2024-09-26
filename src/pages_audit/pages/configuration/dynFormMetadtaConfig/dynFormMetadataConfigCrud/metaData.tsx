@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getSourceListData } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import { getProMiscData } from "../../dynamicGridConfig/api";

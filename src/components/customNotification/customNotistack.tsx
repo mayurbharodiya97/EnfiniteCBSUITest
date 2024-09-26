@@ -1,3 +1,5 @@
+import { useWorkerContext, EXPORT_WORKER_STATUS } from "@acuteinfo/common-base";
+
 import { useState, forwardRef, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@mui/styles";
@@ -13,8 +15,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import { LinearProgress, Stack } from "@mui/material";
-import { useWorkerContext } from "pages_audit/pages/reports/context/exportWorkerContext";
-import { WORKER_STATUS } from "@koale/useworker";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const useStyles = makeStyles(() => ({
@@ -124,12 +124,12 @@ export const CustomSnackbarContent = forwardRef<
             </IconButton>
           </div>
         </CardActions>
-        {status.excelStatus === WORKER_STATUS.RUNNING ||
-        status.pdfStatus === WORKER_STATUS.RUNNING ||
-        status.csvStatus === WORKER_STATUS.RUNNING ||
-        status.textStatus === WORKER_STATUS.RUNNING ||
-        status.xmlStatus === WORKER_STATUS.RUNNING ||
-        status.htmlStatus === WORKER_STATUS.RUNNING ? (
+        {status.excelStatus === EXPORT_WORKER_STATUS.RUNNING ||
+        status.pdfStatus === EXPORT_WORKER_STATUS.RUNNING ||
+        status.csvStatus === EXPORT_WORKER_STATUS.RUNNING ||
+        status.textStatus === EXPORT_WORKER_STATUS.RUNNING ||
+        status.xmlStatus === EXPORT_WORKER_STATUS.RUNNING ||
+        status.htmlStatus === EXPORT_WORKER_STATUS.RUNNING ? (
           <LinearProgress color="secondary" />
         ) : null}
         <Collapse
