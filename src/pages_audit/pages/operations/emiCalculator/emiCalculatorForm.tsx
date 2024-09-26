@@ -4,39 +4,7 @@ import { Fragment, useContext, useRef, useState } from "react";
 import { extractMetaData, utilFunction } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import * as API from "./api";
-import { useMutation } from "react-query";
-import { enqueueSnackbar } from "notistack";
-import { t } from "i18next";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { format } from "date-fns";
-import { PrintButton } from "components/common/printButton";
-import { GradientButton } from "components/styledComponent/button";
-import { makeStyles } from "@mui/styles";
-import logo from "assets/images/logo.jpg";
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { useDialogStyles } from "components/detailPopupGridData";
-import {
-  EMICalculateMetaData,
-  EMICalculatorSecondPartMetaData,
-} from "./metaData";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { cloneDeep } from "lodash";
+import { GradientButton, usePopupContext } from "@acuteinfo/common-base";
 
 import {
   Button,
