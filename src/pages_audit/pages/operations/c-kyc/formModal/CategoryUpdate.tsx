@@ -12,6 +12,7 @@ import {
   MetaDataType,
   LoaderPaperComponent,
 } from "@acuteinfo/common-base";
+
 const CategoryUpdate = ({ open, setChangeCategDialog }) => {
   const { authState } = useContext(AuthContext);
   const { state } = useContext(CkycContext);

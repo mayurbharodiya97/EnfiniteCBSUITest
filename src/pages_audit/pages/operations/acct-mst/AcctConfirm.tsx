@@ -123,33 +123,21 @@ const AcctConfirm = () => {
         refetchData={() => PendingRefetch()}
         // ref={myGridRef}
       />
-      {/* old cbs base code according */}
+
+      {/* Commented Temporary */}
       {/* <MessageBoxWrapper
-          MessageTitle={"ALERT"}
-          Message={"You can not confirm your own posted transaction"}
-          onClickButton={() => {
-            setPreventConfirmDialog(false)
-            // setConfirmAction(null)
-            // setConfirmMsgDialog(false)
-            // closeForm()
-          }}
-          rows={[]}
-          buttonNames={["OK"]}
-          open={preventConfirmDialog}
-        /> */}
-      {/* acutecommonbase package cbs base code according */}
-      <MessageBoxWrapper
-        isOpen={preventConfirmDialog}
-        validMessage={"You can not confirm your own posted transactionn"}
-        onActionYes={() => {
+        // MessageTitle={"ALERT"}
+        Message={"You can not confirm your own posted transaction"}
+        onClickButton={() => {
           setPreventConfirmDialog(false);
           // setConfirmAction(null)
           // setConfirmMsgDialog(false)
           // closeForm()
         }}
-        onActionNo={() => {}}
         rows={[]}
-      />
+        buttonNames={["OK"]}
+        open={preventConfirmDialog}
+      /> */}
 
       <Routes>
         <Route

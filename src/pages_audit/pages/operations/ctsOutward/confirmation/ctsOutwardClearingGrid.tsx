@@ -312,7 +312,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
-              formLabel={getDynamicLabel(
+              formLabel={utilFunction.getDynamicLabel(
                 currentPath,
                 authState?.menulistdata,
                 true

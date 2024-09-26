@@ -567,18 +567,19 @@ const KYCDetails = () => {
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
       />
-      {/* //as cbs old base  */}
+
+      {/* // Commented Temporary */}
       {/* <MessageBoxWrapper
         MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
         Message={errMsg ?? "No Message"}
         onClickButton={() => {
-          setOpenDialog(false)
-          setErrMsg("")
+          setOpenDialog(false);
+          setErrMsg("");
         }}
         rows={[]}
         buttonNames={["OK"]}
         open={openDialog}
-      /> */}
+      />  */}
       {/* as per common base package */}
       <MessageBoxWrapper
         validMessage={errMsg ?? "No Message"}

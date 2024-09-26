@@ -52,3 +52,14 @@ export const getCashDeno = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const insertCashierEntry = async (request) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCASHEXCHANGENTRY", {
+      ...request,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

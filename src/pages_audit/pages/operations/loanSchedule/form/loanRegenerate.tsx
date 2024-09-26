@@ -21,12 +21,10 @@ import {
 } from "@acuteinfo/common-base";
 
 export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
-  const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [flag, setFlag] = useState(false);
 
   const {
     data: detailsData,
@@ -55,6 +53,11 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
   }, []);
 
   const regenerateValidation = useMutation(API.validateRegenerateData, {
+    onError: (error: any) => {},
+    onSuccess: (data, variables) => {},
+  });
+
+  const regenerateDataMutation = useMutation(API.regenerateData, {
     onError: (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
@@ -63,33 +66,10 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
-      // CloseMessageBox();
+      CloseMessageBox();
     },
-    onSuccess: (data, variables) => {},
+    onSuccess: async (data) => {},
   });
-  const regenerateConfirmValidation = useMutation(
-    API.regenerateDataConfirmation,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        // CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar("Success", {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        // CloseMessageBox();
-        closeDialog();
-      },
-    }
-  );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -98,16 +78,12 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
     setFieldError,
     actionFlag
   ) => {
-    //@ts-ignore
-    // endSubmit(true);
-
     let newData = {
       ...data,
     };
     let oldData = {
       ...detailsData?.[0],
     };
-    let upd = utilFunction.transformDetailsData(newData, oldData);
 
     if (Boolean(oldData["INST_DUE_DT"])) {
       oldData["INST_DUE_DT"] = format(
@@ -169,20 +145,21 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
             const btnName = await MessageBox({
               messageTitle: "Alert",
               message: data?.[0]?.O_MESSAGE,
+              icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
               message: data?.[0]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              loadingBtnName: ["Yes"],
             });
             if (btnName === "No") {
               endSubmit(true);
               break;
             } else if (
-              // Check this functionality in form while click on yes button
               btnName === "Yes" &&
-              data?.[0]?.O_COLUMN_NM === "REGERATE"
+              data?.[0]?.O_COLUMN_NM === "REGENERATE"
             ) {
               const confirmData = {
                 COMP_CD: authState?.companyID ?? "",
@@ -199,34 +176,47 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
                 TYPE_CD: newData?.TYPE_CD ?? "",
                 INST_DUE_DT: newData?.INST_DUE_DT ?? "",
               };
-              regenerateConfirmValidation.mutate(confirmData);
+              regenerateDataMutation.mutate(confirmData, {
+                onSuccess: async (data) => {
+                  endSubmit(true);
+                  if (data?.status === "999") {
+                    const btnName = await MessageBox({
+                      messageTitle: "ValidationFailed",
+                      message: data?.message,
+                      buttonNames: ["Ok"],
+                      icon: "ERROR",
+                    });
+                    if (btnName === "Ok") {
+                      endSubmit(true);
+                      CloseMessageBox();
+                    }
+                  } else {
+                    enqueueSnackbar(data, {
+                      variant: "success",
+                    });
+                    isDataChangedRef.current = true;
+                    CloseMessageBox();
+                    closeDialog();
+                  }
+                },
+              });
+              break;
             }
           } else if (data[i]?.O_STATUS === "0") {
-            // Remain to add
-            const confirmData = {
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: authState?.user?.branchCode ?? "",
-              ACCT_TYPE: oldData?.ACCT_TYPE ?? "",
-              ACCT_CD: oldData?.ACCT_CD ?? "",
-              INT_RATE: newData?.INT_RATE ?? "",
-              INST_RS: newData?.INST_RS ?? "",
-              INST_NO: newData?.INST_NO ?? "",
-              LIMIT_AMOUNT: newData?.LIMIT_AMOUNT ?? "",
-              DISBURSEMENT_DT: oldData?.DISBURSEMENT_DT ?? "",
-              INSTALLMENT_TYPE: newData?.INSTALLMENT_TYPE ?? "",
-              INS_START_DT: newData?.INS_START_DT ?? "",
-              TYPE_CD: newData?.TYPE_CD ?? "",
-              INST_DUE_DT: newData?.INST_DUE_DT ?? "",
-            };
-            regenerateConfirmValidation.mutate(confirmData);
           }
         }
       },
+      onError: (error: any) => {
+        let errorMsg = t("Unknownerroroccured");
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        endSubmit(true);
+      },
     });
-  };
-
-  const handleInterestAmountFlag = (intAmtFlag) => {
-    setFlag(intAmtFlag);
   };
 
   const dtlData = detailsData?.[0];
@@ -253,15 +243,23 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
             key={"loanRegenerateForm"}
             metaData={LoanRegenerateFormMetaData as MetaDataType}
             onSubmitHandler={onSubmitHandler}
-            initialValues={detailsData?.[0] as InitialValuesType}
+            initialValues={
+              {
+                ...detailsData?.[0],
+                VALIDATE_LIMIT_AMT: detailsData?.[0]?.LIMIT_AMOUNT,
+                VALIDATE_INT_RS: detailsData?.[0]?.INST_RS,
+              } as InitialValuesType
+            }
             formStyle={{
               background: "white",
             }}
             formState={{
+              MessageBox: MessageBox,
               rows: rows,
-              handleInterestAmountFlag: handleInterestAmountFlag,
               dtlData: dtlData,
-              flag: flag,
+              flag: false,
+              intRateFlag: false,
+              noOfInstFlag: false,
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -275,7 +273,11 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
                 >
                   {t("Regenerate")}
                 </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
+                <GradientButton
+                  onClick={closeDialog}
+                  color={"primary"}
+                  disabled={isSubmitting}
+                >
                   {t("Close")}
                 </GradientButton>
               </>
@@ -300,7 +302,7 @@ export const LoanRegenerateFormWrapper = ({
           overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      maxWidth="md"
     >
       <LoanRegenerateForm
         isDataChangedRef={isDataChangedRef}

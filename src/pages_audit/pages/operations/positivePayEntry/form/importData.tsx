@@ -134,7 +134,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               result
             ) => {
               const btnName = await MessageBox({
-                message: "AreYouSureToInsertTheFileData",
+                message: t("AreYouSureToInsertTheFileData"),
                 messageTitle: "Confirmation",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],

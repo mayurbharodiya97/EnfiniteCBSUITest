@@ -21,7 +21,9 @@ export const CloseFormDialog = ({ open, onClose, closeForm }) => {
       }}
       buttonNames={["Ok", "Cancel"]}
       rows={[]}
-      loading={state?.isLoading}
+      // Commented Temporary
+      // loading={{ Yes: true }}
+      // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />
   );

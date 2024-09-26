@@ -128,7 +128,6 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
     Object.entries(selectedTheme).forEach(([property, value]) => {
       document.documentElement.style.setProperty(property, value);
     });
-
     setThemeColor(getCssVariable("--theme-color1"));
   }, [themed]);
 

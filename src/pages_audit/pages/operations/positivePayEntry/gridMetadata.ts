@@ -23,7 +23,6 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
-    allowColumnHiding: true,
   },
   columns: [
     {

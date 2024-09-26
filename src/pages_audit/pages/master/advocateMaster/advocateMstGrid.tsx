@@ -29,12 +29,30 @@ const actions: ActionTypes[] = [
     actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
+    shouldExclude: (data, authDetails) => {
+      if (Array.isArray(data) && data.length > 0) {
+        if (Boolean(data[0]?.data?.STATUS)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
   },
   {
     actionName: "delete",
     actionLabel: "Delete",
     multiple: false,
     rowDoubleClick: false,
+    shouldExclude: (data, authDetails) => {
+      if (Array.isArray(data) && data.length > 0) {
+        if (Boolean(data[0]?.data?.STATUS)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
   },
 ];
 

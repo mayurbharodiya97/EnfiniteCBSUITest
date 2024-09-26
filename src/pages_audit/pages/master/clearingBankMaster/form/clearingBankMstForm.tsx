@@ -199,8 +199,8 @@ export const ClearingBankMstFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
           overflow: "auto",
+          maxWidth: "750px",
         },
       }}
       maxWidth="lg"

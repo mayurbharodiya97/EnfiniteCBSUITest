@@ -372,7 +372,7 @@ export const Notification_App = () => {
                 fullWidth
                 touched={false}
                 value={notiFication}
-                handleChange={(e)=>setNotiFication(e.target.value)}
+                handleChange={(e) => setNotiFication(e.target.value)}
                 options={options}
               /> */}
             </Box>

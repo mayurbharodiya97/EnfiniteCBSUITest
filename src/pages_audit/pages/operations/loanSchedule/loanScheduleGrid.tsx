@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
-  LoanScheduleBalanceGridMetadata,
+  LoanScheduleDetailsGridMetadata,
   LoanScheduleGridMetaData,
 } from "./gridMetadata";
 import { LoanRegenerateFormWrapper } from "./form/loanRegenerate";
@@ -19,20 +19,21 @@ import {
   ActionTypes,
   GridMetaDataType,
 } from "@acuteinfo/common-base";
+import { LoanReviseFormWrapper } from "./form/loanReviseForm";
 
 export const LoanScheduleGrid = () => {
   const isDataChangedRef = useRef(false);
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const retrievalParaRef = useRef<any>(null);
-  const location = useLocation();
-  const initialRender = useRef(true);
+  const headerDataRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const [editOpen, setEditOpen] = useState(false);
   const [srCd, setSrCd] = useState<any>(null);
   const [headerGridData, setHeaderGridData] = useState<any>([]);
   const [detailsGridData, setDetailsGridData] = useState<any>([]);
-  const headerDataRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState("view");
+  const [reviseData, setReviseData] = useState<any>(null);
+  const [previousRowData, setPreviousRowData] = useState<any>(null);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
+  const navigate = useNavigate();
   const [actions, setActions] = useState<ActionTypes[]>([
     {
       actionName: "retrieve",
@@ -54,22 +55,42 @@ export const LoanScheduleGrid = () => {
           alwaysAvailable: true,
         },
       ]);
-    } else {
+    } else if (retrievalParaRef.current?.ALLOW_REGERATE === "N") {
       setActions([
         {
-          actionName: "edit",
-          actionLabel: "Edit",
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
           multiple: undefined,
           rowDoubleClick: false,
           alwaysAvailable: true,
         },
         {
-          actionName: "save",
-          actionLabel: "Save",
+          actionName: "reschedule",
+          actionLabel: "Reschedule",
           multiple: undefined,
           rowDoubleClick: false,
           alwaysAvailable: true,
         },
+      ]);
+    } else if (retrievalParaRef.current?.ALLOW_RESCHEDULE === "N") {
+      setActions([
+        {
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "regenerate",
+          actionLabel: "Regenerate",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+      ]);
+    } else {
+      setActions([
         {
           actionName: "retrieve",
           actionLabel: "Retrieve",
@@ -121,7 +142,10 @@ export const LoanScheduleGrid = () => {
     onError: (error: any) => {},
   });
 
-  const { data, isLoading, isError, error, isFetching } = useQuery<any, any>(
+  const { data, isLoading, isError, error, isFetching, refetch } = useQuery<
+    any,
+    any
+  >(
     ["getLoanScheduleDetails", authState?.user?.branchCode, srCd],
     () =>
       API.getLoanScheduleDetails({
@@ -167,52 +191,24 @@ export const LoanScheduleGrid = () => {
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "retrieve") {
-        setOpen(true);
+        navigate(data?.name, {
+          state: [],
+        });
         setHeaderGridData([]);
         setDetailsGridData([]);
-        setFormMode("view");
         setSrCd(null);
         headerDataRef.current = null;
         LoanScheduleGridMetaData.gridConfig.gridLabel = "";
       } else if (data?.name === "regenerate") {
-        if (
-          Boolean(headerDataRef.current) &&
-          Array.isArray(headerDataRef.current) &&
-          headerDataRef.current?.[0]?.ALLOW_REGERATE === "Y"
-        ) {
-          navigate(data?.name, {
-            state: headerDataRef.current,
-          });
-        }
+        navigate(data?.name, {
+          state: headerDataRef.current,
+        });
       } else if (data?.name === "reschedule") {
-        if (
-          Boolean(headerDataRef.current) &&
-          Array.isArray(headerDataRef.current) &&
-          headerDataRef.current?.[0]?.ALLOW_RESCHEDULE === "Y"
-        ) {
-          navigate(data?.name, {
-            state: data?.rows?.[0]?.original,
-          });
-        }
-      } else if (data?.name === "edit") {
-        setActions((prevActions) =>
-          prevActions.map((item) =>
-            item.actionName === "edit"
-              ? { ...item, actionName: "view", actionLabel: t("View") }
-              : item
-          )
-        );
-        setFormMode("edit");
-      } else if (data?.name === "view") {
-        setActions((prevActions) =>
-          prevActions.map((item) =>
-            item.actionName === "view"
-              ? { ...item, actionName: "edit", actionLabel: t("Edit") }
-              : item
-          )
-        );
-        setFormMode("view");
+        navigate(data?.name, {
+          state: data?.rows?.[0]?.data,
+        });
       } else if (data?.name === "_rowChanged") {
+        setSelectedRowData(data?.rows?.[0]);
         setSrCd(data?.rows?.[0]?.data?.SR_CD);
       } else {
         navigate(data?.name, {
@@ -224,16 +220,11 @@ export const LoanScheduleGrid = () => {
   );
 
   useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      if (location.pathname === "/cbsenfinity/operation/loanschedule") {
-        setOpen(true);
-      }
-    }
-  }, [location.pathname, navigate]);
+    navigate("retrieve");
+  }, []);
 
   const selectedDatas = (dataObj) => {
-    setOpen(false);
+    navigate(".");
     if (dataObj) retrievalParaRef.current = dataObj;
     const retrieveData: any = {
       COMP_CD: authState?.companyID ?? "",
@@ -247,31 +238,50 @@ export const LoanScheduleGrid = () => {
     loanScheduleHeaderData.mutate(retrieveData);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleRetrieveFormClose = () => {
+    navigate(".");
   };
+
   const handleDialogClose = useCallback(() => {
     LoanScheduleGridMetaData.gridConfig.hideHeader = false;
     LoanScheduleGridMetaData.gridConfig.containerHeight = {
-      min: "25vh",
-      max: "25vh",
+      min: "28vh",
+      max: "28vh",
     };
+    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
+      min: "45vh",
+      max: "45vh",
+    };
+    LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
     navigate(".");
   }, [navigate]);
 
   const handleFormClose = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      // refetch();
-      setOpen(true);
+      navigate("retrieve");
       setHeaderGridData([]);
       setDetailsGridData([]);
-      setFormMode("view");
       setSrCd(null);
       headerDataRef.current = null;
       isDataChangedRef.current = false;
     }
   }, [navigate]);
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    if (isDataChangedRef.current === true) {
+      refetch();
+      isDataChangedRef.current = false;
+    }
+  };
+
+  console.log(
+    "LoanSchedt",
+    LoanScheduleGridMetaData.gridConfig.containerHeight,
+    "hjhkjhkjhk",
+    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight
+  );
 
   return (
     <>
@@ -287,17 +297,18 @@ export const LoanScheduleGrid = () => {
         />
       )}
       <GridWrapper
-        key={`loanScheduleGrid` + formMode + headerGridData.length + actions}
+        key={`loanScheduleGrid` + headerGridData.length + actions}
         finalMetaData={LoanScheduleGridMetaData as GridMetaDataType}
-        data={headerGridData ?? []}
+        data={headerGridData}
         setData={setHeaderGridData}
         loading={loanScheduleHeaderData?.isLoading}
         actions={actions}
         setAction={setCurrentAction}
-        disableMultipleRowSelect={formMode === "edit" ? true : false}
+        disableMultipleRowSelect={true}
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }
+        // hideActionBar={true}
       />
       {isError && (
         <Alert
@@ -308,16 +319,24 @@ export const LoanScheduleGrid = () => {
         />
       )}
       <GridWrapper
-        key={`loanScheduleBalanceGrid` + formMode + data + detailsGridData}
-        finalMetaData={
-          extractGridMetaData(
-            LoanScheduleBalanceGridMetadata,
-            formMode
-          ) as GridMetaDataType
-        }
-        data={detailsGridData ?? []}
+        key={`LoanScheduleDetails` + data}
+        finalMetaData={LoanScheduleDetailsGridMetadata as GridMetaDataType}
+        data={detailsGridData}
         setData={setDetailsGridData}
         loading={isLoading || isFetching}
+        onClickActionEvent={async (index, id, data) => {
+          if (id === "EDIT_BTN") {
+            setReviseData({
+              ...data,
+              TOTAL_RECORDS: String(detailsGridData.length),
+            });
+            setEditOpen(true);
+            if (index > 0 && Boolean(data.SR_CD)) {
+              const previousRowData = detailsGridData[index - 1];
+              setPreviousRowData(previousRowData);
+            }
+          }
+        }}
       />
       <Routes>
         <Route
@@ -339,12 +358,24 @@ export const LoanScheduleGrid = () => {
             />
           }
         />
+        <Route
+          path="retrieve/*"
+          element={
+            <RetrievalFormWrapper
+              closeDialog={handleRetrieveFormClose}
+              retrievalParaValues={selectedDatas}
+            />
+          }
+        />
       </Routes>
 
-      {open && (
-        <RetrievalFormWrapper
-          closeDialog={handleClose}
-          retrievalParaValues={selectedDatas}
+      {editOpen && (
+        <LoanReviseFormWrapper
+          isDataChangedRef={isDataChangedRef}
+          closeDialog={handleEditClose}
+          reviseData={reviseData}
+          previousRowData={previousRowData}
+          selectedRowData={selectedRowData}
         />
       )}
     </>
