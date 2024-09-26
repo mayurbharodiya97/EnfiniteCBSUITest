@@ -6,9 +6,6 @@ import {
   useState,
   useEffect,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
@@ -18,17 +15,23 @@ import {
   RetrieveFormConfigMetaData,
 } from "./ConfirmationMetadata";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
-import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { t } from "i18next";
-import { utilFunction } from "components/utils";
-
-
-
+import {
+  utilFunction,
+  ClearCacheContext,
+  ClearCacheProvider,
+  queryClient,
+  LoaderPaperComponent,
+  MetaDataType,
+  FormWrapper,
+  SubmitFnType,
+  ActionTypes,
+  Alert,
+  GridWrapper,
+} from "@acuteinfo/common-base";
+import getDynamicLabel from "components/common/custom/getDynamicLabel";
 
 const actions: ActionTypes[] = [
   {
@@ -55,24 +58,29 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     {
       onSuccess: (data) => {
         mutation.mutate({
-          FROM_TRAN_DT: zoneTranType === "S" ? (format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")) : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
-          TO_TRAN_DT: zoneTranType === "S" ? format(
-            new Date(data?.[0]?.TRAN_DATE),
-            "dd/MMM/yyyy"
-          ) : format(
-            new Date(authState?.workingDate),
-            "dd/MMM/yyyy"
-          ),
+          FROM_TRAN_DT:
+            zoneTranType === "S"
+              ? format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")
+              : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+          TO_TRAN_DT:
+            zoneTranType === "S"
+              ? format(new Date(data?.[0]?.TRAN_DATE), "dd/MMM/yyyy")
+              : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
           COMP_CD: authState.companyID,
           BRANCH_CD: authState.user.branchCode,
           TRAN_TYPE: zoneTranType,
           CONFIRMED: "0",
           BANK_CD: "",
-          ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+          ZONE:
+            zoneTranType === "S"
+              ? "0   "
+              : zoneTranType === "R"
+              ? "10  "
+              : "18  ",
           SLIP_CD: "",
           CHEQUE_NO: "",
-          CHEQUE_AMOUNT: ""
-        })
+          CHEQUE_AMOUNT: "",
+        });
       },
     }
   );
@@ -80,8 +88,8 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => { },
-      onError: (error: any) => { },
+      onSuccess: (data) => {},
+      onError: (error: any) => {},
     }
   );
   useEffect(() => {
@@ -137,7 +145,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
       CONFIRMED: actionFlag === "RETRIEVE" ? "N" : "0",
     };
     mutation.mutate(data);
-    endSubmit(true)
+    endSubmit(true);
     setFormData(data);
   };
 
@@ -250,7 +258,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => { } };
+              let event: any = { preventDefault: () => {} };
               // if (mutation?.isLoading) {
               if (id === "RETRIEVE") {
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -304,13 +312,11 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
-              formLabel={
-                utilFunction.getDynamicLabel(
-                  currentPath,
-                  authState?.menulistdata,
-                  true
-                )
-              }
+              formLabel={utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
             />
           }
         />

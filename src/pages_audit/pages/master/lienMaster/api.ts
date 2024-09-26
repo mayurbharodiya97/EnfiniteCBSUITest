@@ -1,4 +1,4 @@
-  import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getLienMasterData = async ({ companyID, branchCode }) => {
@@ -7,17 +7,15 @@ export const getLienMasterData = async ({ companyID, branchCode }) => {
       COMP_CD: companyID,
       BRANCH_CD: branchCode,
     });
-    
+
   if (status === "0") {
-    return data
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 
 export const deleteLienMasterData = async (data) => {
-  
   const { status, message } = await AuthSDK.internalFetcher(
     "DOLEANMSTDM",
     data
@@ -43,4 +41,3 @@ export const updateLienData = async ({ data: reqdata }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
