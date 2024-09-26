@@ -1,15 +1,9 @@
 import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { dayLimitData } from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { ClearCacheProvider } from "cache";
 import { useEffect } from "react";
 
 const DayLimitCustom = ({ navigate }) => {

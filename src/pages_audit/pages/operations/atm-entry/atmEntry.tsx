@@ -2,10 +2,7 @@ import { AppBar } from "@mui/material";
 import React, { useContext } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { getParameter } from "./api";
-import { ClearCacheProvider } from "cache";
 import { t } from "i18next";
 import CommonForm from "./commonForm/commonForm";
 

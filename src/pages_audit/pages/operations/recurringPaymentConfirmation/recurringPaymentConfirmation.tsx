@@ -1,6 +1,4 @@
 import { useContext, useState } from "react";
-import { usePopupContext } from "components/custom/popupContext";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import {
@@ -13,7 +11,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
 import { RecurringPaymentEntryForm } from "../recurringPaymentEntry/recurringPaymentEntryForm/recurringPaymentEntryForm";
 import { VouchersDetailsGrid } from "./vouchersDetailsGrid";
@@ -21,7 +18,11 @@ import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { recurringPmtConfirmation } from "./api";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-
+import {
+  usePopupContext,
+  GradientButton,
+  utilFunction,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",

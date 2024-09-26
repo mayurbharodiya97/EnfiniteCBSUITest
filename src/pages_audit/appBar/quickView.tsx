@@ -18,8 +18,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
+import { Alert, queryClient } from "@acuteinfo/common-base";
 
 export const Quick_View = () => {
   const authController = useContext(AuthContext);

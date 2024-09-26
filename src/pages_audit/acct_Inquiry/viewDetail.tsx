@@ -1,9 +1,11 @@
 import { Button, Dialog } from "@mui/material";
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ViewDetailMetadata } from "./metaData";
 // import { useLocation } from "react-router-dom";
-import { InitialValuesType } from "packages/form";
+import {
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 export const ViewDetail = ({ open, onClose, rowsData }) => {
   // const { state: rows }: any = useLocation();
@@ -22,8 +24,8 @@ export const ViewDetail = ({ open, onClose, rowsData }) => {
         key={`ViewStatement`}
         metaData={ViewDetailMetadata as MetaDataType}
         // initialValues={rows?.[0]?.data as InitialValuesType}
-        initialValues={rowsData?.[0]?.data as InitialValuesType}
-        //   onSubmitHandler={onSubmitHandler}
+        initialValues={rowsData?.[0]?.data ?? ({} as InitialValuesType)}
+        onSubmitHandler={() => {}}
         //   displayMode={formMode}
         formStyle={{
           background: "white",
