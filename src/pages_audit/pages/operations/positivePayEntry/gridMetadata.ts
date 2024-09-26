@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const PositivePayEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -23,7 +23,6 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
-    allowColumnHiding: true,
   },
   columns: [
     {

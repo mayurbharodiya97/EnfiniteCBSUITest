@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const AddBranchGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "Add in Branch(es)",
     rowIdColumn: "BRANCH_CD",
     defaultColumnConfig: {
       width: 440,
@@ -20,6 +20,7 @@ export const AddBranchGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    hideFooter: true,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -39,8 +40,8 @@ export const AddBranchGridMetaData: GridMetaDataType = {
       alignment: "left",
       dependentOptionField: "VISIBLE_YN",
       componentType: "editableCheckbox",
-      SelectAllColumn: true,
-      width: 100,
+      enableColumnSelection: true,
+      width: 120,
       minWidth: 80,
       maxWidth: 140,
       defaultValue: false,

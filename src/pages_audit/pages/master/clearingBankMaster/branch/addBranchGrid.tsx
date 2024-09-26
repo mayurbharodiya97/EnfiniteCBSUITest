@@ -1,18 +1,21 @@
 import { AddBranchGridMetaData } from "./gridMetaData";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { Dialog } from "@mui/material";
-import { Alert } from "components/common/alert";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import * as API from "./api";
-import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-
+import {
+  Alert,
+  usePopupContext,
+  ClearCacheContext,
+  queryClient,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "ok",
@@ -81,7 +84,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         return (
           row?._isTouchedCol?.CHECK_BOX === true &&
           row?._oldData?.CHECK_BOX === false &&
-          row?.CHECK_BOX === true
+          (row?.CHECK_BOX === true || row?.CHECK_BOX === "Y")
         );
       });
       if (gridData?.length > 0) {
@@ -141,7 +144,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         open={true}
         PaperProps={{
           style: {
-            width: "auto",
+            width: "70%",
             overflow: "auto",
             padding: "10px",
           },

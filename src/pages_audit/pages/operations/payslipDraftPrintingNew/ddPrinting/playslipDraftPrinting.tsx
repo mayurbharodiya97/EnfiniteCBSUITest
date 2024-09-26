@@ -1,11 +1,16 @@
 import { Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 
-const PlaySlipDraftPrintingNew = ({SelectedRowData,handleClose,navigate})=>{
-  console.log("SelectedRowData",SelectedRowData);
-    return(
-        <>
-        <Dialog open={true}
+const PlaySlipDraftPrintingNew = ({
+  SelectedRowData,
+  handleClose,
+  navigate,
+}) => {
+  console.log("SelectedRowData", SelectedRowData);
+  return (
+    <>
+      <Dialog
+        open={true}
         PaperProps={{
           style: {
             width: "100%",
@@ -14,12 +19,12 @@ const PlaySlipDraftPrintingNew = ({SelectedRowData,handleClose,navigate})=>{
             height: "100%",
           },
         }}
-        maxWidth="xl">
+        maxWidth="xl"
+      >
         <GradientButton onClick={handleClose}>Retrieve</GradientButton>
         <p>Printind Data</p>
-        </Dialog>
-        </>
-        
-    )
-}
-export default PlaySlipDraftPrintingNew
+      </Dialog>
+    </>
+  );
+};
+export default PlaySlipDraftPrintingNew;

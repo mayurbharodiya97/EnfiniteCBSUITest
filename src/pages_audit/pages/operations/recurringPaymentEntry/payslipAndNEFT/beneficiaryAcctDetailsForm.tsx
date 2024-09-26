@@ -1,18 +1,21 @@
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { AddNewBeneficiaryDetail } from "../../rtgsEntry/addNewBeneficiaryAcDetail";
 import * as API from "./api";
-import { queryClient } from "cache";
-import { extractMetaData } from "components/utils";
 import { BeneficiaryAcctDetailsFormMetaData } from "./metaData/beneficiaryAcctDetailsMetada";
 import { useTranslation } from "react-i18next";
 
+import {
+  LoaderPaperComponent,
+  extractMetaData,
+  queryClient,
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+  Alert,
+} from "@acuteinfo/common-base";
 export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
   ({ accountDetailsForBen, onSubmitHandler, defaultView }, ref: any) => {
     const { MessageBox } = usePopupContext();

@@ -1,16 +1,19 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { lienconfirmFormMetaData } from "./confirmFormMetadata";
 import { lienConfirmation } from "../api";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -78,6 +81,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
           key={"lien-confirmation-Form"}
           metaData={lienconfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? []}
+          onSubmitHandler={() => {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{

@@ -1,18 +1,23 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { extractMetaData, utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { ClearingBankMstFormMetaData } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  InitialValuesType,
+} from "@acuteinfo/common-base";
 
 export const ClearingBankMstForm = ({
   isDataChangedRef,
@@ -194,8 +199,8 @@ export const ClearingBankMstFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
           overflow: "auto",
+          maxWidth: "750px",
         },
       }}
       maxWidth="lg"
