@@ -84,7 +84,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         return (
           row?._isTouchedCol?.CHECK_BOX === true &&
           row?._oldData?.CHECK_BOX === false &&
-          row?.CHECK_BOX === true
+          (row?.CHECK_BOX === true || row?.CHECK_BOX === "Y")
         );
       });
       if (gridData?.length > 0) {
@@ -144,7 +144,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         open={true}
         PaperProps={{
           style: {
-            width: "auto",
+            width: "70%",
             overflow: "auto",
             padding: "10px",
           },
