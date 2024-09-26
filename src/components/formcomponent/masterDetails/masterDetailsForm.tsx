@@ -7,18 +7,20 @@ import {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsMetaData } from "./types";
-import { Alert } from "components/common/alert";
-import {
-  utilFunction,
-  extractMetaData,
-  extractGridMetaData,
-} from "components/utils";
-import { CreateDetailsRequestData } from "components/utils";
 import { CSSProperties } from "@mui/styles";
 import { AppBar } from "@mui/material";
+import {
+  Alert,
+  CreateDetailsRequestData,
+  extractGridMetaData,
+  extractMetaData,
+  FormWrapper,
+  GridMetaDataType,
+  GridWrapper,
+  MasterDetailsMetaData,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 export interface MasterDetailsArgumentType {
   metaData: MasterDetailsMetaData;
   children?: any;
@@ -297,7 +299,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
             ref={myMasterRef}
             formState={formState}
             setDataOnFieldChange={setDataOnFieldChange}
-            subHeaderLable={subHeaderLable}
+            // subHeaderLable={subHeaderLable}
           >
             {children}
           </FormWrapper>
