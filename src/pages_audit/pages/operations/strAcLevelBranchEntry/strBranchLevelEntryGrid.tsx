@@ -15,7 +15,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Theme,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -32,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { StrBranchLevelFormWrapper } from "./strAcLevelBranchForm/strBranchLevelForm";
 import { format } from "date-fns";
+import { Theme } from "@mui/system";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {

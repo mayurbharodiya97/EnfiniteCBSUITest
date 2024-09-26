@@ -22,7 +22,6 @@ import {
   Grid,
   Stack,
   Step,
-  StepIconProps,
   StepLabel,
   Stepper,
   Toolbar,
@@ -38,7 +37,6 @@ import { useSnackbar } from "notistack";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { AddNewBeneficiaryDetail } from "./addNewBeneficiaryAcDetail";
-import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import { RetrieveClearingForm } from "./retrieveClearing";
 import { format } from "date-fns";
@@ -63,6 +61,7 @@ import {
   MetaDataType,
 } from "@acuteinfo/common-base";
 import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { Theme } from "@mui/system";
 
 const actions: ActionTypes[] = [
   {
@@ -289,7 +288,7 @@ const RtgsEntryForm: FC<{}> = () => {
     document.addEventListener("keydown", handleKeyDown);
   }, [formMode]);
 
-  function ColorlibStepIcon(props: StepIconProps) {
+  function ColorlibStepIcon(props) {
     const { active, completed, className } = props;
     const icons: { [index: string]: React.ReactElement } = {
       1: <SettingsIcon />,

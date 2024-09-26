@@ -2,6 +2,7 @@ import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
 import { GridMetaDataType } from "@acuteinfo/common-base";
+import { getDailyTransactionImportData } from "./api";
 
 export const DailyTransactionImportMetadata = {
   form: {

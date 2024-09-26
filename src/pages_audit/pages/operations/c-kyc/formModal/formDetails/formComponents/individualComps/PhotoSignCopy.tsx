@@ -23,7 +23,6 @@ import {
   Slider,
   Tooltip,
   Typography,
-  makeStyles,
 } from "@mui/material";
 import { transformFileObject, utilFunction } from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";

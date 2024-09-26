@@ -15,7 +15,7 @@ import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { ClearCacheProvider, queryClient } from "@acuteinfo/common-base";
-import { AppBar, Theme, Toolbar, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import {
   RetrieveFormConfigMetaData,
   branchClearingDateTransferGridMetaData,
@@ -34,6 +34,7 @@ import {
   GradientButton,
 } from "@acuteinfo/common-base";
 import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { Theme } from "@mui/system";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),

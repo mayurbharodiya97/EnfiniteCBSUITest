@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   CustomerEntryTableMetdata,
   CustomerFormMetadata,
@@ -7,12 +6,17 @@ import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { GradientButton } from "components/styledComponent/button";
 import CashierExchangeTable from "../cashierExchangeEntry/tableComponent/tableComponent";
 import { AppBar, LinearProgress } from "@mui/material";
-import { usePopupContext } from "components/custom/popupContext";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  FormWrapper,
+  GradientButton,
+  MetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+
 const CustomerEntry = () => {
   const { authState } = useContext(AuthContext);
   const TableRef = useRef<any>([]);
@@ -119,6 +123,7 @@ const CustomerEntry = () => {
           height: "auto",
         }}
         initialValues={{}}
+        onSubmitHandler={() => {}}
       >
         {isButtonEnabled ? (
           <GradientButton onClick={handleSaves}>Save</GradientButton>

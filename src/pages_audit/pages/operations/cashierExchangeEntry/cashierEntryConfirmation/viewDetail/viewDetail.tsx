@@ -7,18 +7,21 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useEffect, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { FromUserMetadata, ToUserMetadata } from "./viewDetailMetadata";
-import { InitialValuesType } from "packages/form";
-import { usePopupContext } from "components/custom/popupContext";
 import CashierExchangeTable from "../../tableComponent/tableComponent";
 import { CashierConfirmationMetaData } from "./viewTableMetadata";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
+import {
+  FormWrapper,
+  GradientButton,
+  InitialValuesType,
+  MetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 
 const CashierEntryViewDetail = ({
   open,
@@ -149,6 +152,7 @@ const CashierEntryViewDetail = ({
             hideHeader
             formStyle={{ height: "auto" }}
             initialValues={isData.fromUserData as InitialValuesType}
+            onSubmitHandler={() => {}}
           />
           <CashierExchangeTable
             data={stateData?.fromData}
@@ -169,6 +173,7 @@ const CashierEntryViewDetail = ({
             hideHeader
             formStyle={{ height: "auto" }}
             initialValues={isData.toUserData as InitialValuesType}
+            onSubmitHandler={() => {}}
           />
           <CashierExchangeTable
             data={stateData?.toData}
