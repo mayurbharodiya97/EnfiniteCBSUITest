@@ -2621,6 +2621,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DOCASHEXCHANGENTRY: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
+    packageName: "",
+  },
+  GETCASHEXCHANGECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGECNF",
+    packageName: "",
+  },
+  GETCASHEXCHANGEDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGEDTLCNF",
+    packageName: "",
+  },
+  DOCASHEXCHANGECONFIRMATION: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGECONFIRMATION",
+    packageName: "",
+  },
   FDMATURITYCOMPAREJASPER: {
     url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
     packageName: "",
