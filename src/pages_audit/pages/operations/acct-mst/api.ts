@@ -930,3 +930,17 @@ export const accountSave = async (reqData) => {
     }
   }
 };
+
+export const confirmAccount = async ({ REQUEST_CD, REMARKS, CONFIRMED }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CONFIRMACCTDATA", {
+      REQUEST_CD: REQUEST_CD,
+      REMARKS: REMARKS,
+      CONFIRMED: CONFIRMED,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
