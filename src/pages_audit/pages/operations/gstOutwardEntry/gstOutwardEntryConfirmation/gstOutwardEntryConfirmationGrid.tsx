@@ -149,6 +149,7 @@ export const GstOutwardConfirmationGrid = ({ screenFlag }) => {
               ClosedEventCall={handleDialogClose}
               defaultView={"view"}
               screenFlag={screenFlag}
+              refetchData={refetch}
             />
           }
         />
