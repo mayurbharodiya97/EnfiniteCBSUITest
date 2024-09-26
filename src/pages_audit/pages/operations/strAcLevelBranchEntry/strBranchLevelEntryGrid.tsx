@@ -1,10 +1,4 @@
-import {
-  useRef,
-  useCallback,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
+import { useRef, useCallback, useContext, useState, useEffect } from "react";
 import {
   Alert,
   GridWrapper,
@@ -13,7 +7,7 @@ import {
   queryClient,
   GradientButton,
   LoaderPaperComponent,
-  GridMetaDataType
+  GridMetaDataType,
 } from "@acuteinfo/common-base";
 import {
   AppBar,
@@ -53,7 +47,6 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
     color: "var(--white)",
     letterSpacing: "1px",
     fontSize: "1.2rem",
-
   },
   refreshiconhover: {},
   printHidden: {
@@ -75,7 +68,6 @@ const actions: ActionTypes[] = [
     multiple: false,
     rowDoubleClick: true,
   },
-
 ];
 
 const StrBranchLevelEntryGrid = () => {
@@ -83,18 +75,18 @@ const StrBranchLevelEntryGrid = () => {
   const gridRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isPrint, setIsPrint] = useState<any>(false)
-  const [isRowsData, setIsRowsData] = useState<any>([])
-  const [rowData, setRowData] = useState<any>([])
+  const [isPrint, setIsPrint] = useState<any>(false);
+  const [isRowsData, setIsRowsData] = useState<any>([]);
+  const [rowData, setRowData] = useState<any>([]);
   const headerClasses = useTypeStyles();
   const [actionMenu, setActionMenu] = useState(actions);
   const [paraType, setParaType] = useState("S");
   const isDataChangedRef = useRef(false);
-  const [suspiciousTran, IsSuspiciousTran] = useState<any>(false)
+  const [suspiciousTran, IsSuspiciousTran] = useState<any>(false);
 
   useEffect(() => {
     if (authState?.hoLogin === "Y") {
-      setActionMenu(prevActions => {
+      setActionMenu((prevActions) => {
         const newAction = {
           actionName: "suspicious",
           actionLabel: t("SuspiciousStatus"),
@@ -106,7 +98,9 @@ const StrBranchLevelEntryGrid = () => {
           },
         };
         // Check if the action already exists
-        const actionExists = prevActions.some(action => action.actionName === "suspicious");
+        const actionExists = prevActions.some(
+          (action) => action.actionName === "suspicious"
+        );
         if (!actionExists) {
           // Add the new action if it does not exist
           return [...prevActions, newAction];
@@ -116,8 +110,8 @@ const StrBranchLevelEntryGrid = () => {
       });
     } else {
       // Remove the action if authState.hoLogin is not "Y" or isLoading is false
-      setActionMenu(prevActions =>
-        prevActions.filter(action => action.actionName !== "suspicious")
+      setActionMenu((prevActions) =>
+        prevActions.filter((action) => action.actionName !== "suspicious")
       );
     }
   }, [authState?.hoLogin]);
@@ -126,16 +120,20 @@ const StrBranchLevelEntryGrid = () => {
     if (data?.name === "view-detail") {
       navigate(data?.name, {
         state: data?.rows,
-      })
+      });
     } else if (data?.name === "str-history") {
       navigate(data?.name, {
         state: data?.rows,
-      })
+      });
     } else if (data.name === "suspicious") {
       setActionMenu((values: any) => {
         return values.map((item) => {
           if (item.actionName === "suspicious") {
-            return { ...item, actionName: "extraction", actionLabel: t("AsperExtraction") };
+            return {
+              ...item,
+              actionName: "extraction",
+              actionLabel: t("AsperExtraction"),
+            };
           } else {
             return item;
           }
@@ -189,10 +187,8 @@ const StrBranchLevelEntryGrid = () => {
       });
     },
 
-    onSuccess: (data) => {
-    },
+    onSuccess: (data) => {},
   });
-
 
   const handleDialogClose = () => {
     navigate(".");
@@ -201,7 +197,6 @@ const StrBranchLevelEntryGrid = () => {
       isDataChangedRef.current = false;
     }
   };
-
 
   return (
     <>
@@ -230,26 +225,25 @@ const StrBranchLevelEntryGrid = () => {
               ACCT_BRANCH_CD: data?.ACCT_BRANCH_CD,
               ACCT_TYPE: data?.ACCT_TYPE,
               ACCT_CD: data?.ACCT_CD,
-              ENTERED_DATE: format(
-                new Date(data?.ENTERED_DATE),
-                "dd-MMM-yyyy"
-              ),
-              GD_TODAY: authState?.workingDate
-            })
-            setIsPrint(true)
-            setRowData(data)
+              ENTERED_DATE: format(new Date(data?.ENTERED_DATE), "dd-MMM-yyyy"),
+              GD_TODAY: authState?.workingDate,
+            });
+            setIsPrint(true);
+            setRowData(data);
           } else if (id === "TRANSACTION_DETAIL") {
-            IsSuspiciousTran(true)
-            setIsRowsData(data)
+            IsSuspiciousTran(true);
+            setIsRowsData(data);
           }
-        }
-        }
+        }}
       />
-      < Routes >
+      <Routes>
         <Route
           path="view-detail/*"
           element={
-            <StrBranchLevelFormWrapper onClose={handleDialogClose} isDataChangedRef={isDataChangedRef} />
+            <StrBranchLevelFormWrapper
+              onClose={handleDialogClose}
+              isDataChangedRef={isDataChangedRef}
+            />
           }
         />
         <Route
@@ -258,81 +252,90 @@ const StrBranchLevelEntryGrid = () => {
             <StrAcLevelBranchHistoryGridWrapper onClose={handleDialogClose} />
           }
         />
-      </Routes >
+      </Routes>
       <>
-        {
-          suspiciousTran ?
-            <>
-              <StrMarkAsPerSuspiciousGrid
-                onClose={() => {
-                  IsSuspiciousTran(false)
-                }}
-                rowsData={isRowsData}
-              />
-            </> : null
-        }
+        {suspiciousTran ? (
+          <>
+            <StrMarkAsPerSuspiciousGrid
+              onClose={() => {
+                IsSuspiciousTran(false);
+              }}
+              rowsData={isRowsData}
+            />
+          </>
+        ) : null}
       </>
 
-      {
-        isPrint ?
-          <>
-
-            <Dialog
-              open={true}
-              PaperProps={{
-                style: {
-                  width: "100%",
-
-                },
-              }}
-              maxWidth="md"
-            >
-              {getGroundSuspicionData?.isLoading ? (
-                <LoaderPaperComponent />
-
-              ) : (
-                <>
-                  <AppBar position="relative" color="secondary">
-                    <Toolbar
-                      className={headerClasses.root}
-                      variant={"dense"}
+      {isPrint ? (
+        <>
+          <Dialog
+            open={true}
+            PaperProps={{
+              style: {
+                width: "100%",
+              },
+            }}
+            maxWidth="md"
+          >
+            {getGroundSuspicionData?.isLoading ? (
+              <LoaderPaperComponent />
+            ) : (
+              <>
+                <AppBar position="relative" color="secondary">
+                  <Toolbar className={headerClasses.root} variant={"dense"}>
+                    <Typography
+                      className={headerClasses.title}
+                      color="inherit"
+                      variant={"h4"}
+                      component="div"
                     >
-                      <Typography
-                        className={headerClasses.title}
-                        color="inherit"
-                        variant={"h4"}
-                        component="div"
+                      {"GOS Detail" +
+                        "" +
+                        "for" +
+                        "-" +
+                        rowData?.ACCT_CD_NEW +
+                        "" +
+                        rowData?.ACCT_NM}
+                    </Typography>
+                    <GradientButton
+                      onClick={() => {
+                        window.print();
+                      }}
+                      className={headerClasses.printHidden}
+                    >
+                      {t("Print")}
+                    </GradientButton>
+                    <GradientButton
+                      className={headerClasses.printHidden}
+                      onClick={() => {
+                        setIsPrint(false);
+                      }}
+                    >
+                      {t("Close")}
+                    </GradientButton>
+                  </Toolbar>
+                </AppBar>
+                <DialogContent dividers>
+                  <pre
+                    style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+                  >
+                    {getGroundSuspicionData?.data?.[0]?.GOS_DTL.split(
+                      "\r\n"
+                    )?.map((line, index) => (
+                      <div
+                        style={{ fontSize: "15px", fontWeight: "500" }}
+                        key={index}
                       >
-                        {"GOS Detail" + "" + "for" + "-" + rowData?.ACCT_CD_NEW + "" + rowData?.ACCT_NM}
-                      </Typography>
-                      <GradientButton
-                        onClick={() => {
-                          window.print();
-                        }}
-                        className={headerClasses.printHidden}
-                      >
-                        {t("Print")}
-
-                      </GradientButton>
-                      <GradientButton className={headerClasses.printHidden}
-                        onClick={() => {
-                          setIsPrint(false)
-                        }}>{t("Close")}</GradientButton>
-                    </Toolbar>
-                  </AppBar>
-                  <DialogContent dividers>
-                    <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-                      {getGroundSuspicionData?.data?.[0]?.GOS_DTL.split('\r\n')?.map((line, index) => (
-                        <div style={{ fontSize: "15px", fontWeight: "500" }} key={index}>{line}</div>
-                      ))}
-                    </pre>
-                  </DialogContent>
-                </>
-              )}
-            </Dialog>
-          </>
-          : null
-      }
+                        {line}
+                      </div>
+                    ))}
+                  </pre>
+                </DialogContent>
+              </>
+            )}
+          </Dialog>
+        </>
+      ) : null}
     </>
   );
 };

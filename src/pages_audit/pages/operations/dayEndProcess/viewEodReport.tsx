@@ -1,7 +1,5 @@
 import { AuthContext } from "pages_audit/auth";
-import { useCallback, useContext, useEffect } from "react";
-import * as API from "./api";
-import { useQuery } from "react-query";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Alert,
@@ -11,6 +9,7 @@ import {
   GridMetaDataType,
 } from "@acuteinfo/common-base";
 import { Dialog } from "@mui/material";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -27,9 +26,11 @@ export const ViewEodReport = ({
   metaData,
   reportData,
   reportLabel,
+  loading,
 }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [uniqueReportData, setUniqueReportData] = useState([]);
 
   const setCurrentAction = useCallback(
     async (data) => {
@@ -40,63 +41,47 @@ export const ViewEodReport = ({
         state: data?.rows,
       });
     },
-    [navigate]
-  );
-
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch: slipdataRefetch,
-  } = useQuery<any, any>(["getDayendprocessFlag"], () =>
-    API.getDayendprocessFlag({
-      ENT_COMP_CD: authState?.companyID,
-      ENT_BRANCH_CD: authState?.user?.branchCode,
-      BASE_COMP_CD: authState?.baseCompanyID,
-      BASE_BRANCH_CD: authState?.user?.baseBranchCode,
-      A_GD_DATE: authState?.workingDate,
-    })
+    [navigate, close]
   );
 
   useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["pendingtrns"]);
-    };
-  }, []);
+    if (Array.isArray(reportData)) {
+      const updatedReportData: any = reportData.map((item, index) => ({
+        ...item,
+        INDEX: `${index}`, // Unique key can be any string, here we're using index
+      }));
+      setUniqueReportData(updatedReportData);
+    }
+  }, [reportData]);
+
   metaData.gridConfig.gridLabel = reportLabel;
 
   return (
     <>
-      {isError && (
-        <Alert
-          severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
-          errorDetail={error?.error_detail}
-          color="error"
-        />
-      )}
       <Dialog
         open={open}
         PaperProps={{
           style: {
-            width: "60%",
+            width: "70%",
             overflow: "auto",
           },
         }}
         maxWidth="lg"
       >
-        <GridWrapper
-          key={"ViewEodReport"}
-          finalMetaData={metaData as GridMetaDataType}
-          data={reportData ?? []}
-          setData={() => null}
-          actions={actions}
-          loading={isLoading || isFetching}
-          enableExport={true}
-          setAction={setCurrentAction}
-        />
+        {loading ? (
+          <LoaderPaperComponent />
+        ) : (
+          <GridWrapper
+            key={"ViewEodReport"}
+            finalMetaData={metaData as GridMetaDataType}
+            setData={() => null}
+            actions={actions}
+            enableExport={true}
+            data={uniqueReportData ?? []}
+            loading={loading}
+            setAction={setCurrentAction}
+          />
+        )}
       </Dialog>
     </>
   );

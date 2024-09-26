@@ -303,8 +303,7 @@ export const getRtgsBenDetailData = async (ApiReq) => {
 };
 export const getAcctTypeData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
-    });
+    await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {});
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {

@@ -28,7 +28,12 @@ import {
   GridMetaDataType,
   ActionTypes,
   utilFunction,
+  usePopupContext,
+  queryClient,
+  LoaderPaperComponent,
 } from "@acuteinfo/common-base";
+
+import { useNavigate } from "react-router-dom";
 
 const actions: ActionTypes[] = [
   {
@@ -38,11 +43,25 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
+  {
+    actionName: "close",
+    actionLabel: "Close",
+    multiple: undefined,
+    alwaysAvailable: true,
+  },
 ];
+
+type DocumentProps = {
+  reqData: any;
+  handleDialogClose?: any;
+};
 
 let imgBase = "";
 //=========
-export const Document = ({ reqData }) => {
+export const Document: React.FC<DocumentProps> = ({
+  reqData,
+  handleDialogClose,
+}) => {
   const [dataRow, setDataRow] = useState<any>({});
   const imgUrl = useRef<any | null>(null);
   const myGridRef = useRef<any>(null);
@@ -50,6 +69,8 @@ export const Document = ({ reqData }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [detailViewDialog, setDetailViewDialog] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   //api define=====================
   const getDocTemplateList = useMutation(API.getDocTemplateList, {
@@ -57,22 +78,42 @@ export const Document = ({ reqData }) => {
       console.log(data, " getDocTemplateList");
       setRows(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
   });
   const getDocView = useMutation(API.getDocView, {
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       console.log(res, " getDocView");
 
       if (res?.ERROR_MSG) {
-        enqueueSnackbar(res?.ERROR_MSG, {
-          variant: "error",
+        await MessageBox({
+          messageTitle: "Validation Failed",
+          message: res?.ERROR_MSG ?? "",
+          icon: "ERROR",
         });
       } else {
         imgBase = res?.DOC_IMAGE;
         handleImgProcess();
       }
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      let errorMsg = "Unknownerroroccured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
   });
 
   // fns====================
@@ -84,6 +125,9 @@ export const Document = ({ reqData }) => {
     if (data.name === "view-detail") {
       getDocView.mutate(row);
       console.log("heloooo");
+    }
+    if (data?.name === "close") {
+      handleDialogClose();
     }
   }, []);
 
@@ -114,8 +158,22 @@ export const Document = ({ reqData }) => {
     any
   >(["getDocTemplateList", { reqData }], () => API.getDocTemplateList(reqData));
 
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries([
+        "getDocTemplateList",
+        authState?.user?.branchCode,
+      ]);
+    };
+  }, []);
+
   return (
     <>
+      {getDocView.isLoading && (
+        <Dialog open={true} fullWidth={true}>
+          <LoaderPaperComponent size={30} />
+        </Dialog>
+      )}
       {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -133,10 +191,12 @@ export const Document = ({ reqData }) => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        refetchData={() => {}}
+        refetchData={() => refetch()}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
+        // onlySingleSelectionAllow={true}
+        // isNewRowStyle={true}
         disableMultipleRowSelect={true}
         variant={"standard"}
         // defaultSelectedRowId={1}
@@ -187,7 +247,7 @@ export const Document = ({ reqData }) => {
         </DialogActions>
       </Dialog>
 
-      <Grid
+      {/* <Grid
         item
         xs={12}
         sm={12}
@@ -206,7 +266,7 @@ export const Document = ({ reqData }) => {
         <Grid item sx={{ display: "flex", gap: "1rem" }}>
           *Double click on records for detailed view
         </Grid>
-      </Grid>
+      </Grid> */}
     </>
   );
 };

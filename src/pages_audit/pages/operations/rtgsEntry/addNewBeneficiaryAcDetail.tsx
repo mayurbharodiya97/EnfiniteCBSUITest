@@ -59,7 +59,7 @@ export const AddNewBeneficiaryDetail: FC<{
   isOpen?: any;
   onClose?: any;
   isBenAuditTrailData?: any;
-  isRefresh?: any
+  isRefresh?: any;
 }> = ({ isOpen, onClose, isBenAuditTrailData, isRefresh }) => {
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -124,7 +124,7 @@ export const AddNewBeneficiaryDetail: FC<{
     },
 
     onSuccess: (data) => {
-      isRefresh()
+      isRefresh();
       setisAddOpen(false);
       refetch();
       enqueueSnackbar(data, {

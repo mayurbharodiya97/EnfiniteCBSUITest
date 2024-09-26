@@ -33,6 +33,8 @@ import SimpleGridType from "./simpleGridType";
 import Title from "./title";
 // import ExportToPDF from "components/report/export/statementPdf";
 import { format } from "date-fns";
+import exportToPDF from "components/report/export/statementPdf";
+import { ExcelForStatementExport } from "components/report/export/statementExcel";
 
 const AccountDetails = () => {
   const [open, setOpen] = useState(false);
@@ -323,30 +325,28 @@ const AccountDetails = () => {
                   }}
                 >
                   <GradientButton
-                    onClick={
-                      () => {}
-                      // ExportToPDF(
-                      //   data,
-                      //   // companyName,
-                      //   generatedBy,
-                      //   RequestingBranchCode,
-                      //   barnchDtl
-                      // )
+                    onClick={() =>
+                      exportToPDF(
+                        data,
+                        // companyName,
+                        generatedBy,
+                        RequestingBranchCode,
+                        barnchDtl
+                      )
                     }
                     endIcon={<PictureAsPdfIcon />}
                   >
                     PDF
                   </GradientButton>
                   <GradientButton
-                    onClick={
-                      () => {}
-                      // ExcelForStatementExport({
-                      //   data,
-                      //   // companyName,
-                      //   generatedBy,
-                      //   RequestingBranchCode,
-                      //   barnchDtl,
-                      // })
+                    onClick={() =>
+                      ExcelForStatementExport({
+                        data,
+                        // companyName,
+                        generatedBy,
+                        RequestingBranchCode,
+                        barnchDtl,
+                      })
                     }
                     endIcon={<BackupTableIcon />}
                   >

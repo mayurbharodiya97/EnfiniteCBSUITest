@@ -21,13 +21,13 @@ export const getConfirmationGridData = async (apiReqPara) => {
     APIURL = "GETLIENCNFDATADISP";
   } else if (apiReqPara?.screenFlag === "tempOdCFM") {
     APIURL = "GETTEMPODAGCNFDATAGRID";
-  }else if (apiReqPara?.screenFlag === "insuranceCFM") {
-    APIURL ="GETINSURANCECNFDATADISP"
+  } else if (apiReqPara?.screenFlag === "insuranceCFM") {
+    APIURL = "GETINSURANCECNFDATADISP";
     parameters = {
       ENT_COMP_CD: apiReqPara?.COMP_CD,
       ENT_BRANCH_CD: apiReqPara?.BRANCH_CD,
-      GD_DATE:apiReqPara?.workingDate
-    }
+      GD_DATE: apiReqPara?.workingDate,
+    };
   }
 
   const { data, status, message, messageDetails } =

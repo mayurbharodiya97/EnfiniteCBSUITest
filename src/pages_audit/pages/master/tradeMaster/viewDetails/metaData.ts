@@ -48,6 +48,7 @@ export const TradeMasterMetaData = {
       type: "text",
       required: true,
       preventSpecialChars: localStorage.getItem("specialChar") || "",
+      maxLength: 4,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],

@@ -169,21 +169,15 @@ const RtgsConfirmationGrid = ({ flag }) => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
       const initialData = {
-        FROM_DT: format(
-          new Date(authState?.workingDate),
-          "dd/MMM/yyyy"
-        ),
-        TO_DT: format(
-          new Date(authState?.workingDate),
-          "dd/MMM/yyyy"
-        ),
+        FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+        TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
         COMP_CD: authState.companyID,
         BRANCH_CD: authState.user.branchCode,
         FLAG: flag === "BO" ? "P" : "RTGSHO",
-        FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO"
-      }
+        FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO",
+      };
       mutation.mutate({
-        ...formData || initialData,
+        ...(formData || initialData),
       });
       isDataChangedRef.current = false;
     }

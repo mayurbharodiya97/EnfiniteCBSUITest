@@ -81,19 +81,17 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               const TRAN_CD = base64Object[0].DESCRIPTION[1];
               const FILEBLOB = base64Object;
               mutation.mutate({
-                 FILE_FORMAT,
-                  TRAN_CD,
-                   FILEBLOB,
-                   ACCT_CD:"XX",
-                   ACCT_TYPE:"XX",
-                   SCROLL_NO:"",
-                   CHEQUE_NO:"",
-                   REMARKS:"",
-                  TABLE_NM:"RTGS_IFSCCODE_MST"
-
-                 });
-            }
-            else if (btnName === "No") {
+                FILE_FORMAT,
+                TRAN_CD,
+                FILEBLOB,
+                ACCT_CD: "XX",
+                ACCT_TYPE: "XX",
+                SCROLL_NO: "",
+                CHEQUE_NO: "",
+                REMARKS: "",
+                TABLE_NM: "RTGS_IFSCCODE_MST",
+              });
+            } else if (btnName === "No") {
               CloseFileUpload();
             }
           }}

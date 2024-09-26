@@ -9,7 +9,15 @@ import {
   utilFunction,
 } from "@acuteinfo/common-base";
 
-const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow, preventModify }) => {
+const FilePreviewUpload = ({
+  myRef,
+  open,
+  setOpen,
+  detailsDataRef,
+  filesGridData,
+  mainDocRow,
+  preventModify,
+}) => {
   const [files, setFiles] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
@@ -18,13 +26,13 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
     return transformFileObject({})(currentObj);
   };
   useEffect(() => {
-    if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
-      if(detailsDataRef.NEW_FLAG === "N" && !Boolean(preventModify)) {
-        setAllowUpdate(true)
+    if (Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
+      if (detailsDataRef.NEW_FLAG === "N" && !Boolean(preventModify)) {
+        setAllowUpdate(true);
       }
     } else {
-      if(!Boolean(preventModify)) {
-        setAllowUpdate(true)
+      if (!Boolean(preventModify)) {
+        setAllowUpdate(true);
       }
     }
   }, []);

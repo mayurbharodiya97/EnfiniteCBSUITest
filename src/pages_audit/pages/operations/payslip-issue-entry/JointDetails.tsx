@@ -34,8 +34,10 @@ function JointDetails({ data, onClose, loading }) {
           loading={loading}
           setAction={setCurrentAction}
           actions={actions}
-        />) : <LoaderPaperComponent />
-      }
+        />
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </div>
   );
 }

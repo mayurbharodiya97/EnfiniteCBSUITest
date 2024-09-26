@@ -22,7 +22,7 @@ export const TradeMasterGridMetaData: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },

@@ -19,25 +19,25 @@ export const getRetrievalPaySlipEntryData = async ({
       USER_LEVEL: USER_LEVEL,
     });
 
-    if (status === "0") {
-      let responseData = data;
-  
-      if (Array.isArray(responseData)) {
-        const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
-          const amount = parseFloat(obj.AMOUNT || "0");
-          acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
-          return acc;
-        }, {} as Record<string, number>);
-  
-        responseData = responseData.map((items) => ({
-          ...items,
-          PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
-          TOTAL_AMT: `${totals[items.TRAN_CD]}`
-        }));
-      }
-  
-      return responseData;
-    } else {
+  if (status === "0") {
+    let responseData = data;
+
+    if (Array.isArray(responseData)) {
+      const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
+        const amount = parseFloat(obj.AMOUNT || "0");
+        acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
+        return acc;
+      }, {} as Record<string, number>);
+
+      responseData = responseData.map((items) => ({
+        ...items,
+        PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+        TOTAL_AMT: `${totals[items.TRAN_CD]}`,
+      }));
+    }
+
+    return responseData;
+  } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
@@ -71,7 +71,7 @@ export const getRetrievalDateWise = async ({
   TO_DT,
   TRAN_CD,
   GD_DATE,
-  USER_LEVEL
+  USER_LEVEL,
 }: {
   COMP_CD: string;
   BRANCH_CD: string;
@@ -82,18 +82,16 @@ export const getRetrievalDateWise = async ({
   USER_LEVEL: string;
 }) => {
   // Fetch data from the API
-  const { data, status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "GETPAYSLIPRETRIVEGRID",
-    {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPAYSLIPRETRIVEGRID", {
       COMP_CD,
       BRANCH_CD,
       FROM_DT,
       TO_DT,
       DEF_TRAN_CD: TRAN_CD,
       GD_DATE,
-      USER_LEVEL
-    }
-  );
+      USER_LEVEL,
+    });
 
   if (status === "0") {
     let responseData = data;
@@ -108,7 +106,7 @@ export const getRetrievalDateWise = async ({
       responseData = responseData.map((items) => ({
         ...items,
         PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
-        TOTAL_AMT: `${totals[items.TRAN_CD]}`
+        TOTAL_AMT: `${totals[items.TRAN_CD]}`,
       }));
     }
 
@@ -118,12 +116,7 @@ export const getRetrievalDateWise = async ({
   }
 };
 
-export const headerDataRetrive = async ({
-  COMP_CD,
-  BRANCH_CD,
-  TRAN_CD
-}) => {
-
+export const headerDataRetrive = async ({ COMP_CD, BRANCH_CD, TRAN_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPAYSLIPACCTDTLDISP", {
       COMP_CD: COMP_CD,
