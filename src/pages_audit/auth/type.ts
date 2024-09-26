@@ -23,8 +23,8 @@ export interface AuthStateType {
     id: string;
     employeeID: any;
   };
-  hoLogin: string
-  idealTimer :string
+  hoLogin: string;
+  idealTimer: string;
 }
 
 export interface BranchSelectData {

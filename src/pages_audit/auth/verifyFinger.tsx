@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import FingerprintSharpIcon from "@mui/icons-material/FingerprintSharp";
 import * as API from "./api";
 import { CircularProgress, Container, Typography } from "@mui/material";
@@ -166,7 +166,7 @@ export const VerifyFinger = ({
               className={classes.otpButtons}
               starticon={"West"}
               rotateIcon="scale(1.4) rotateX(360deg)"
-              color={"var(--theme-color3) !important"}
+              textColor={"var(--theme-color3) !important"}
               style={{
                 border: "var(--theme-color3)1px solid",
                 color: "var(--theme-color3)",

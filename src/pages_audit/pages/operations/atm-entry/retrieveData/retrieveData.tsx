@@ -1,17 +1,19 @@
 import { useRef, useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { ClearCacheProvider } from "cache";
 import { AppBar, Dialog, LinearProgress } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import {
+  usePopupContext,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",

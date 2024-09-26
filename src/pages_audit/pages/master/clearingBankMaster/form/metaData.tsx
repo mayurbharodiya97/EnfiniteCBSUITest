@@ -44,7 +44,7 @@ export const ClearingBankMstFormMetaData = {
       autoComplete: "off",
       type: "text",
       isFieldFocused: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       __EDIT__: { isReadOnly: true },
       schemaValidation: {
         type: "string",
@@ -71,7 +71,7 @@ export const ClearingBankMstFormMetaData = {
           return dependentFields?.RBI_CD?.value ?? "";
         },
       },
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -113,7 +113,7 @@ export const ClearingBankMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["BankNameIsRequired"] }],

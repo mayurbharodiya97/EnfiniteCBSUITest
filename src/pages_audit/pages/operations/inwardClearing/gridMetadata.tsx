@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const InwardClearingRetrievalMetadata = {
   form: {
@@ -210,7 +210,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-      isColumnName: (initialValue) => {
+      setButtonName: (initialValue) => {
         if (initialValue) {
           return initialValue === "C" ? "Confirm" : "Post";
         }

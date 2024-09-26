@@ -1,15 +1,20 @@
 import { Fragment, useRef, useContext } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { PasswordChangeMetaData } from "./metaData";
 import * as API from "../api";
 import { Box, CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+import {
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+
 interface UpdatePasswordFnType {
   data: object;
   displayData?: object;

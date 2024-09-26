@@ -1,31 +1,33 @@
-import { ClearCacheProvider } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useRef, useState } from "react";
 import { RetrievalParameterFormMetaData } from "./formMetaData";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
 import * as API from "./api";
 import { useMutation } from "react-query";
-import { Alert } from "components/common/alert";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { RetrieveGridMetaData } from "./gridMetaData";
-import GridWrapper from "components/dataTableStatic/";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import { ReturnChequeForm } from "./returnChequeForm";
-import {t} from "i18next";
+import { t } from "i18next";
 import { enqueueSnackbar } from "notistack";
+import {
+  usePopupContext,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  Alert,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
-{
+  {
     actionName: "view-details",
     actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
   },
-
 ];
 
 const ChequeSearchMain = () => {
@@ -33,31 +35,32 @@ const ChequeSearchMain = () => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
-const[returnChequeForm,setReturnChequeForm]=useState(false);
+  const [returnChequeForm, setReturnChequeForm] = useState(false);
 
   const setCurrentAction = useCallback(
     async (data) => {
       console.log(data);
-      
+
       if (data?.name === "view-details") {
         console.log(data?.rows[0]?.data?.ALLOW_RETURN);
-        
-        if(data?.rows[0]?.data?.ALLOW_RETURN==="Y")
-        {
-          checkDuplicateMutation.mutate({  
-        A_COMP_CD:authState?.companyID,
-        A_BRANCH_CD:authState?.user?.branchCode,
-        A_ACCT_TYPE:data?.rows[0]?.data?.ACCT_TYPE,
-        A_ACCT_CD:data?.rows[0]?.data?.ACCT_CD,
-        A_TRAN_TYPE:data?.rows[0]?.data?.TRAN_TYPE,
-        A_TRAN_DT: format(new Date(data?.rows[0]?.data?.TRAN_DT), "dd/MMM/yyyy"),
-        A_BANK_CD:data?.rows[0]?.data?.BANK_CD,
-        A_CHEQUE_NO:data?.rows[0]?.data?.CHEQUE_NO,
-        A_AMOUNT:data?.rows[0]?.data?.AMOUNT,
-        A_LANG:"en"
-          })
+
+        if (data?.rows[0]?.data?.ALLOW_RETURN === "Y") {
+          checkDuplicateMutation.mutate({
+            A_COMP_CD: authState?.companyID,
+            A_BRANCH_CD: authState?.user?.branchCode,
+            A_ACCT_TYPE: data?.rows[0]?.data?.ACCT_TYPE,
+            A_ACCT_CD: data?.rows[0]?.data?.ACCT_CD,
+            A_TRAN_TYPE: data?.rows[0]?.data?.TRAN_TYPE,
+            A_TRAN_DT: format(
+              new Date(data?.rows[0]?.data?.TRAN_DT),
+              "dd/MMM/yyyy"
+            ),
+            A_BANK_CD: data?.rows[0]?.data?.BANK_CD,
+            A_CHEQUE_NO: data?.rows[0]?.data?.CHEQUE_NO,
+            A_AMOUNT: data?.rows[0]?.data?.AMOUNT,
+            A_LANG: "en",
+          });
         }
-       
       }
       navigate(data?.name, {
         state: data?.rows,
@@ -68,35 +71,28 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
 
   const checkDuplicateMutation = useMutation(API.getCheckDuplicate, {
     onSuccess: async (response) => {
-  
-        if(response[0]?.O_MESSAGE==="SUCCESS")
-        {
-          const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
-            message:t("GenerateOutwardReturnEntry"),
-            buttonNames: ["Yes", "No"],
-          });
-          if (buttonName === "Yes") {
+      if (response[0]?.O_MESSAGE === "SUCCESS") {
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: t("GenerateOutwardReturnEntry"),
+          buttonNames: ["Yes", "No"],
+        });
+        if (buttonName === "Yes") {
           setReturnChequeForm(true);
-          } 
-       
         }
-        else{
-          const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
-            message: response[0]?.O_MESSAGE ?? "",
-            buttonNames: ["Ok"],
-          });
-        }
+      } else {
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: response[0]?.O_MESSAGE ?? "",
+          buttonNames: ["Ok"],
+        });
+      }
     },
     onError: (error: any) => {},
   });
 
-
   const retrieveMutation = useMutation(API.getChequeSearchData, {
-    onSuccess: (data) => {
-   
-    },
+    onSuccess: (data) => {},
     onError: (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
@@ -127,10 +123,10 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
     }
 
     data = {
-      FROM_DATE:data?.FROM_DT,
-      TO_DATE:data?.TO_DT,
-      TRAN_TYPE:data?.TRAN_TYPE,
-      CHEQUE_NO:data?.CHEQUE_NO,
+      FROM_DATE: data?.FROM_DT,
+      TO_DATE: data?.TO_DT,
+      TRAN_TYPE: data?.TRAN_TYPE,
+      CHEQUE_NO: data?.CHEQUE_NO,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
     };
@@ -160,35 +156,33 @@ const[returnChequeForm,setReturnChequeForm]=useState(false);
         }}
         ref={formRef}
       />
-        {retrieveMutation.isError && (
-              <Alert
-                severity="error"
-                errorMsg={
-                    retrieveMutation.error?.error_msg ?? "Something went to wrong.."
-                }
-                errorDetail={retrieveMutation.error?.error_detail}
-                color="error"
-              />
-            )}
-              <GridWrapper
-              key={"chequesearchGrid"}
-              finalMetaData={RetrieveGridMetaData as GridMetaDataType}
-              data={retrieveMutation?.data ?? []}
-              setData={() => null}
-              loading={retrieveMutation.isLoading}
-              actions={actions}
-              setAction={setCurrentAction}
-            />
-         {
-          returnChequeForm? (
-            <ReturnChequeForm
-            open={returnChequeForm}
-            onclose={()=>setReturnChequeForm(false)}
-            />
-          ):""
-         }     
-  
-     
+      {retrieveMutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={
+            retrieveMutation.error?.error_msg ?? "Something went to wrong.."
+          }
+          errorDetail={retrieveMutation.error?.error_detail}
+          color="error"
+        />
+      )}
+      <GridWrapper
+        key={"chequesearchGrid"}
+        finalMetaData={RetrieveGridMetaData as GridMetaDataType}
+        data={retrieveMutation?.data ?? []}
+        setData={() => null}
+        loading={retrieveMutation.isLoading}
+        actions={actions}
+        setAction={setCurrentAction}
+      />
+      {returnChequeForm ? (
+        <ReturnChequeForm
+          open={returnChequeForm}
+          onclose={() => setReturnChequeForm(false)}
+        />
+      ) : (
+        ""
+      )}
     </Fragment>
   );
 };

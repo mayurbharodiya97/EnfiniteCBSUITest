@@ -1,15 +1,18 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getLimitNSCdetail } from "../api";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { AppBar, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { nscDetailGridData } from "./nscDetailsGridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { NSCFormDetail } from "./nscFormDetail/nscFormDetail";
+
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 export const NscDetails = ({ navigate, myMasterRef }) => {
   const nscAction: ActionTypes[] = [

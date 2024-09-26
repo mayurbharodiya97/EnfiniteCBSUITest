@@ -1,6 +1,6 @@
-import { ClearCacheProvider } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData } from "components/utils";
+import { ClearCacheProvider } from "@acuteinfo/common-base";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { extractMetaData } from "@acuteinfo/common-base";
 import { useContext, useRef, useState, useEffect } from "react";
 import { metaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
@@ -10,7 +10,7 @@ const FdInterestCalculator = () => {
   const [calcSwitch, setCalcSwitch] = useState("P");
   const { authState } = useContext(AuthContext);
   const [formKey, setFormKey] = useState(Date.now());
-
+  const formRef = useRef<any>();
   const handleButtonClick = async (id: string) => {
     let event: any = { preventDefault: () => {} };
     if (id === "NEW_DATE_BTN") {
@@ -19,6 +19,9 @@ const FdInterestCalculator = () => {
     } else if (id === "NEW_PERIOD_BTN") {
       setCalcSwitch("P");
       setFormKey(Date.now());
+    } else if (id === "CAL_COMPARE_SHEET_BTN") {
+      let event: any = { preventDefault: () => {} };
+      formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
     }
   };
 
@@ -26,6 +29,7 @@ const FdInterestCalculator = () => {
     <>
       <FormWrapper
         key={formKey}
+        ref={formRef}
         metaData={extractMetaData(metaData, formMode) as MetaDataType}
         displayMode={formMode}
         onSubmitHandler={() => {}}
