@@ -1,7 +1,5 @@
 import { Button, CircularProgress, Dialog, Paper } from "@mui/material";
-import { MasterDetailsForm } from "components/formcomponent";
 import React, { useContext, useEffect, useState } from "react";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { atmConfirmMetaData } from "./confirmMetadata";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -12,11 +10,17 @@ import Draggable from "react-draggable";
 import JointDetails from "../../DailyTransaction/TRNHeaderTabs/JointDetails";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
 import { CardPrinting } from "../cardPrinting";
-import { ClearCacheProvider } from "cache";
 import * as API from "../api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-
+import {
+  ClearCacheProvider,
+  MasterDetailsMetaData,
+  MasterDetailsForm,
+  PDFViewer,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const ConfirmationCustom = () => {
   const [isData, setIsData] = useState<any>({
     gridData: [],

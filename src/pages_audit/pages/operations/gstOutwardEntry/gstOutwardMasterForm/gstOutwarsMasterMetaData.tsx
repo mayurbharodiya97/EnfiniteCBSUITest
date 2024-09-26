@@ -1,5 +1,5 @@
 import * as API from "../api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 export const GstOutwardForm = {
   masterForm: {
     form: {
@@ -60,7 +60,7 @@ export const GstOutwardForm = {
         },
         name: "ENTERED_DATE",
         label: "EntryDate",
-        __NEW__:{
+        __NEW__: {
           isWorkingDate: true,
         },
         fullWidth: true,
@@ -90,10 +90,9 @@ export const GstOutwardForm = {
             }
           },
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if(formState?.defaultView === "edit"){
-              return true
+            if (formState?.defaultView === "edit") {
+              return true;
             }
-            
           },
           runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: (
@@ -126,8 +125,8 @@ export const GstOutwardForm = {
           dependentFields: ["BRANCH_CD", "MODE"],
           fullWidth: true,
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if(formState?.defaultView === "edit"){
-              return true
+            if (formState?.defaultView === "edit") {
+              return true;
             }
           },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -166,10 +165,9 @@ export const GstOutwardForm = {
           dependentFields: ["BRANCH_CD", "ACCT_TYPE", "MODE"],
           fullWidth: true,
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if(formState?.defaultView === "edit"){
-              return true
+            if (formState?.defaultView === "edit") {
+              return true;
             }
-            
           },
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (dependentFieldsValues?.["MODE"]?.value === "C") {
@@ -386,7 +384,7 @@ export const GstOutwardForm = {
         width: 70,
         minWidth: 60,
         maxWidth: 100,
-        __EDIT__:{
+        __EDIT__: {
           isAutoSequence: true,
         },
       },
@@ -459,11 +457,11 @@ export const GstOutwardForm = {
         sequence: 8,
         alignment: "center",
         componentType: "buttonRowCell",
-        __VIEW__:{
-          isVisible:false
+        __VIEW__: {
+          isVisible: false,
         },
-        __NEW__:{
-          isVisible:false
+        __NEW__: {
+          isVisible: false,
         },
         width: 200,
         minWidth: 200,
@@ -476,11 +474,11 @@ export const GstOutwardForm = {
         alignment: "center",
         componentType: "deleteRowCell",
         isVisibleInNew: true,
-        __VIEW__:{
-          isVisible:false
+        __VIEW__: {
+          isVisible: false,
         },
-        __EDIT__:{
-          isVisible:false
+        __EDIT__: {
+          isVisible: false,
         },
         width: 200,
         minWidth: 200,
