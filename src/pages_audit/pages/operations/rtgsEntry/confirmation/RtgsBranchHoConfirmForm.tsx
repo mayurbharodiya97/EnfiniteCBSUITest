@@ -1,7 +1,3 @@
-import { ClearCacheProvider, queryClient } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
 import {
   FC,
   Fragment,
@@ -18,36 +14,42 @@ import {
   rtgBenDetailConfirmFormMetaData,
 } from "./ConfirmationMetadata";
 import * as API from "./api";
-import { ActionTypes } from "components/dataTable";
 import { useMutation, useQueries, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
 import {
   AppBar,
   Dialog,
   DialogContent,
   Paper,
-  Theme,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Box } from "@mui/system";
 import { OTPModel } from "pages_audit/auth/otpPopup";
 import { useStyles } from "pages_audit/auth/style";
 import { rtgsVerifyOTP } from "./api";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
 import Draggable from "react-draggable";
 import { t } from "i18next";
-
-const useTypeStyles = makeStyles((theme: Theme) => ({
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import {
+  RemarksAPIWrapper,
+  usePopupContext,
+  GridWrapper,
+  Alert,
+  LoaderPaperComponent,
+  ActionTypes,
+  GradientButton,
+  extractMetaData,
+  MetaDataType,
+  FormWrapper,
+  ClearCacheProvider,
+  queryClient,
+} from "@acuteinfo/common-base";
+const useTypeStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -810,7 +812,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                         "Br.Confirmed by " +
                         result[0]?.data?.hdrData?.VERIFIED_BY,
                     }}
-                    onSubmitHandler={{}}
+                    onSubmitHandler={() => {}}
                     //@ts-ignore
                     displayMode={formMode}
                     hideHeader={true}
@@ -830,7 +832,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                       ) as MetaDataType
                     }
                     displayMode={formMode}
-                    onSubmitHandler={{}}
+                    onSubmitHandler={() => {}}
                     initialValues={{
                       beneficiaryAcDetails: result?.[1]?.data,
                     }}

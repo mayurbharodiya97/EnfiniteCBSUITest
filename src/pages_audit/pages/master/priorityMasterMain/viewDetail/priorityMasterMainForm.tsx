@@ -1,18 +1,22 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
-import FormWrapper from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { Viewformmetadata } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
 import * as API from "../api";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
 
+import {
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 export const Prorityform = ({
   isDataChangedRef,
   closeDialog,
@@ -107,9 +111,7 @@ export const Prorityform = ({
     <>
       <FormWrapper
         key={"Prorityform" + formMode}
-        metaData={extractMetaData(Viewformmetadata, formMode)}
-        as
-        MetaDataType
+        metaData={extractMetaData(Viewformmetadata, formMode) as MetaDataType}
         displayMode={formMode}
         formStyle={{
           overflowX: "auto",

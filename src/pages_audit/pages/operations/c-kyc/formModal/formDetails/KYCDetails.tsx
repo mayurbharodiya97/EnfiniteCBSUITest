@@ -19,7 +19,6 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   kyc_legal_proof_of_add_meta_data,
   kyc_proof_of_address_meta_data,
@@ -28,17 +27,21 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 // import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetaData } from "./metadata/individual/personaldetails";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../CkycContext";
 import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
 import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
-import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
-import { MessageBoxWrapper } from "components/custom/messageBox";
-import { usePopupContext } from "components/custom/popupContext";
+import {
+  usePopupContext,
+  MetaDataType,
+  GridWrapper,
+  GridMetaDataType,
+  MessageBoxWrapper,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -565,7 +568,8 @@ const KYCDetails = () => {
         isNextLoading={isNextLoading}
       />
 
-      <MessageBoxWrapper
+      {/* // Commented Temporary */}
+      {/* <MessageBoxWrapper
         MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
         Message={errMsg ?? "No Message"}
         onClickButton={() => {
@@ -575,6 +579,17 @@ const KYCDetails = () => {
         rows={[]}
         buttonNames={["OK"]}
         open={openDialog}
+      />  */}
+      {/* as per common base package */}
+      <MessageBoxWrapper
+        validMessage={errMsg ?? "No Message"}
+        onActionYes={() => {
+          setOpenDialog(false);
+          setErrMsg("");
+        }}
+        rows={[]}
+        isOpen={openDialog}
+        onActionNo={() => {}}
       />
       {/* <Dialog
         open={openDialog}

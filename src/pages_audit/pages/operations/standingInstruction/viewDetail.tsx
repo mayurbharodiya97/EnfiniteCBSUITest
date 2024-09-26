@@ -1,18 +1,20 @@
 import { Fragment, useContext, useState } from "react";
 import { useCallback } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { standingInsructionViewGridMetaData } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { usePopupContext } from "components/custom/popupContext";
 import AddSubData from "./addSubdata";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-
+import {
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "subadd",

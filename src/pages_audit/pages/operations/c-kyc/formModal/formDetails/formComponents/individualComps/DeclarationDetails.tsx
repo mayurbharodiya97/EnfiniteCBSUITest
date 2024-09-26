@@ -15,7 +15,6 @@ import {
   Collapse,
   Button,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { declaration_meta_data } from "../../metadata/individual/declarationdetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -25,11 +24,14 @@ import * as API from "../../../../api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import _ from "lodash";
-import { Alert } from "components/common/alert";
 import TabNavigate from "../TabNavigate";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 // import { format } from 'date-fns';
-
+import {
+  PopupRequestWrapper,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
@@ -428,7 +430,8 @@ const DeclarationDetails = () => {
         }}
         buttonNames={["Yes", "No"]}
         rows={[]}
-        loading={{ Yes: mutation.isLoading }}
+        // Commented Temporary
+        // loading={{ Yes: mutation.isLoading }}
         // loading={{ Yes: getData?.isLoading, No: false }}
         open={shouldDraftSaveDialog}
       />

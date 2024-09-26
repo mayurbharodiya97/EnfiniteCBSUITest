@@ -10,34 +10,37 @@ import {
   Tabs,
 } from "@mui/material";
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
 import {
   DetailInsuranceGridMetaData,
   insuranceAccountRetrievemetaData,
   InsuranceEntryFormMetaData,
   ViewInsuranceMetaData,
 } from "./insuranceEntryMetadata";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { InsuranceDetailForm } from "./insuranceDetail/insuranceDetailForm";
 import { format } from "date-fns";
-import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
+import {
+  LoaderPaperComponent,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+  ActionTypes,
+  GridWrapper,
+  GradientButton,
+  MasterDetailsForm,
+  MasterDetailsMetaData,
+  GridMetaDataType,
+  ClearCacheProvider,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 const actions: ActionTypes[] = [
   {
@@ -474,7 +477,7 @@ const InsuranceEntry = () => {
               key={"Insurance-View" + getInsuranceViewData?.isSuccess}
               metaData={(ViewInsuranceMetaData as MetaDataType) ?? {}}
               initialValues={getInsuranceViewData?.data?.[0] ?? {}}
-              onSubmitHandler={{}}
+              onSubmitHandler={() => {}}
               displayMode={"view"}
             ></FormWrapper>
           </div>

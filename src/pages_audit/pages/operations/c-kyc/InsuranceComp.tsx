@@ -5,14 +5,17 @@ import React, {
   useContext,
   useEffect,
 } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { Dialog } from "@mui/material";
 import { insurance_grid_meta_data } from "./metadata";
-import { ActionTypes } from "components/dataTable";
 import { useLocation } from "react-router-dom";
+import {
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 const InsuranceComp = ({ open, onClose }) => {
   const { authState } = useContext(AuthContext);

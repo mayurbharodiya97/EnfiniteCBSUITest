@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   Fragment,
   forwardRef,
@@ -9,22 +8,27 @@ import {
   useState,
 } from "react";
 import { LoginBiometricForm } from "./metaData/metaDataForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { SecurityContext } from "../context/SecuityForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
-import { ActionTypes } from "components/dataTable";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { useNavigate } from "react-router-dom";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { loginBiometric } from "./metaData/metaDataGrid";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import CryptoJS from "crypto-js";
-import { extractGridMetaData } from "components/utils";
+import {
+  InitialValuesType,
+  usePopupContext,
+  GradientButton,
+  extractGridMetaData,
+  SubmitFnType,
+  GridWrapper,
+  GridMetaDataType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",

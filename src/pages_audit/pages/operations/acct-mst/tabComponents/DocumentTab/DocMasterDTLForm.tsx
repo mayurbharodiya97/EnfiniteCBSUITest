@@ -1,20 +1,19 @@
 import { AppBar, Button, Dialog, IconButton } from "@mui/material";
-import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { useDialogStyles } from "pages_audit/common/dialogStyles";
-import { MasterDetailsForm } from "components/formcomponent";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AcctMSTContext } from "../../AcctMSTContext";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { DocMasterDTLMetadata } from "./docMasterDTLMetadata";
-import { Transition } from "pages_audit/common";
-import { useMutation } from "react-query";
-import * as API from "../../api";
+
 import _ from "lodash";
-import { GetMaxCdForDetails } from "components/utils/utilFunctions/function";
-import { utilFunction } from "components/utils";
+
 import FilePreviewUpload from "./FilePreviewUpload";
-import { Alert } from "components/common/alert";
+import {
+  MasterDetailsMetaData,
+  Transition,
+  useDialogStyles,
+  MasterDetailsForm,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 export const DocMasterDTLForm = ({
   ClosedEventCall,

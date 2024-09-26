@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   Fragment,
   forwardRef,
@@ -11,10 +10,14 @@ import {
   FixDepositParaFormMetadata,
   FixDepositAccountsFormMetadata,
 } from "./metaData/fdParaMetaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
-import { usePopupContext } from "components/custom/popupContext";
-
+import {
+  usePopupContext,
+  InitialValuesType,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 export const DetailForm = forwardRef<any, any>(
   ({ onSubmitHandler, setDataOnFieldChange, submitEventRef }, ref) => {
     const {

@@ -3,16 +3,18 @@ import { useMutation } from "react-query";
 import { Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { utilFunction } from "components/utils";
 import * as API from "../../api";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { CkycContext } from "../../CkycContext";
 import TabNavigate from "../formDetails/formComponents/TabNavigate";
 import { DocMasterDTLForm } from "./DocMasterDTLForm";
+import {
+  utilFunction,
+  PopupMessageAPIWrapper,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const Document = () => {
   const navigate = useNavigate();

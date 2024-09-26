@@ -1,19 +1,12 @@
-import { ClearCacheProvider } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, useContext, useRef, useState } from "react";
 import { RecurringCalculatotMetaData, RecurringGridMetaData } from "./metaData";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import * as API from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { t } from "i18next";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { format } from "date-fns";
-import { PrintButton } from "components/common/printButton";
-import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
 import logo from "assets/images/logo.jpg";
 import {
@@ -28,7 +21,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useDialogStyles } from "components/detailPopupGridData";
+import {
+  ClearCacheProvider,
+  GridWrapper,
+  GradientButton,
+  useDialogStyles,
+  PrintButton,
+  MetaDataType,
+  utilFunction,
+  FormWrapper,
+  usePopupContext,
+  extractMetaData,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles(() => ({
   tableCell: {
     overflow: "hidden",
@@ -184,7 +189,7 @@ const RecurringCalculatorForm = () => {
         finalMetaData={RecurringGridMetaData as GridMetaDataType}
         loading={mutation.isLoading}
         data={apiData ?? []}
-        ReportExportButton={true}
+        enableExport={true}
         setData={setApiData}
       />
       <Dialog

@@ -1,19 +1,24 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { AdvocateMstFormMetaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useTranslation } from "react-i18next";
-
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+import { format } from "date-fns";
 export const AdvocateMstForm = ({
   isDataChangedRef,
   closeDialog,
@@ -57,11 +62,19 @@ export const AdvocateMstForm = ({
   ) => {
     //@ts-ignore
     endSubmit(true);
+    if (Boolean(data["INACTIVE_DATE"])) {
+      data["INACTIVE_DATE"] = format(
+        new Date(data["INACTIVE_DATE"]),
+        "dd/MMM/yyyy"
+      );
+    }
     let newData = {
       ...data,
+      STATUS: Boolean(data?.STATUS) ? "I" : "A",
     };
     let oldData = {
       ...rows?.[0]?.data,
+      STATUS: Boolean(rows?.[0]?.data?.STATUS) ? "I" : "A",
     };
     let upd = utilFunction.transformDetailsData(newData, oldData);
     isErrorFuncRef.current = {
@@ -197,8 +210,8 @@ export const AdvocateMstFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
           overflow: "auto",
+          width: "70%",
         },
       }}
       maxWidth="lg"
