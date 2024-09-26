@@ -22,6 +22,7 @@ export const AuditorMstGridMetaData: GridMetaDataType = {
       max: "77vh",
     },
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {
