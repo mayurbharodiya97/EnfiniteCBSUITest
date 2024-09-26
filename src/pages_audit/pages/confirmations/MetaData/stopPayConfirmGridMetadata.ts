@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const stopPayConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "StopPaymentConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

@@ -36,12 +36,7 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
   },
 ];
-export const RetrieveCfmDataCustom = ({
-  onClose,
-  navigate,
-  setRetrieveData,
-  setFormMode,
-}) => {
+export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -49,12 +44,11 @@ export const RetrieveCfmDataCustom = ({
   const [filterRetData, setFilterRetData] = useState<any>();
   const [flag, setFlag] = useState<any>("");
 
-  const setCurrentAction = useCallback((data: any) => {
+  const setCurrentAction = useCallback((data) => {
+    console.log("<<<setcurr", data);
     // onClose();
-    let newData = data?.rows?.map((item) => item?.data);
-    setFormMode("view");
-    navigate(".", { state: newData });
-    setRetrieveData(newData);
+    navigate(".", { state: data?.rows });
+    setRowsData(data?.rows);
   }, []);
 
   const mutation: any = useMutation("cfmRetrieveData", getCfmRetrieveData, {
@@ -120,7 +114,7 @@ export const RetrieveCfmDataCustom = ({
           maxWidth="xl"
         >
           <FormWrapper
-            key={`AtmCfmretrieveForm`}
+            key={`retrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
             onSubmitHandler={onSubmitHandler}
@@ -182,19 +176,13 @@ export const RetrieveCfmDataCustom = ({
   );
 };
 
-export const RetrieveCfmData = ({
-  onClose,
-  navigate,
-  setRetrieveData,
-  setFormMode,
-}) => {
+export const RetrieveCfmData = ({ onClose, navigate, setRowsData }) => {
   return (
     <ClearCacheProvider>
       <RetrieveCfmDataCustom
         onClose={onClose}
         navigate={navigate}
-        setRetrieveData={setRetrieveData}
-        setFormMode={setFormMode}
+        setRowsData={setRowsData}
       />
     </ClearCacheProvider>
   );

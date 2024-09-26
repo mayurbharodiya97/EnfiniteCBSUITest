@@ -5,7 +5,7 @@ import { utilFunction } from "components/utils";
 
 export const retrieveFormMetaData = {
   form: {
-    name: "atm-retrieve-metadata",
+    name: "retrieve-metadata",
     label: "Retrieve Information",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",

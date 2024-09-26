@@ -17,9 +17,6 @@ const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
 const ATMconfirmation = lazy(() => import("./atm-entry/confirm/confirmation"));
-const IMPSconfirmation = lazy(
-  () => import("./imps-entry/confirm/confirmation")
-);
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 // const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -119,7 +116,6 @@ export const OperationsMenu = () => (
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
     <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
-    <Route path="imps-reg-confirmation/*" element={<IMPSconfirmation />} />
     <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route

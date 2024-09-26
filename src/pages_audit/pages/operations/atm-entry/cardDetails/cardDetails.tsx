@@ -5,17 +5,14 @@ import React, { useState } from "react";
 import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { useLocation } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
-import { format } from "date-fns";
 
-export const CardDetails = ({ navigate, setIsData, parameter, myRef }) => {
+export const CardDetails = ({ navigate, setIsData, parameter }) => {
   const {
     state: { rows, retrieveData },
   }: any = useLocation();
+  const [idNumber, setIdNumber] = useState(1);
   const { MessageBox } = usePopupContext();
-
-  console.log("<<<rrrrrr", rows);
-  const formatDate = (date) =>
-    date ? format(new Date(date), "dd/MMM/yyyy") : "";
+  console.log("<<<rrr", rows, retrieveData);
 
   return (
     <Dialog
@@ -40,7 +37,6 @@ export const CardDetails = ({ navigate, setIsData, parameter, myRef }) => {
             PARA_946: parameter?.PARA_946,
             PARA_200: parameter?.PARA_200,
             PARA_320: parameter?.PARA_320,
-            PARA_604: parameter?.PARA_604,
             OLD_STATUS: rows?.[0]?.data?.OLD_STATUS,
             CONFIRMED: rows?.[0]?.data?.CONFIRMED,
             ENTERED_BRANCH_CD: retrieveData?.ENTERED_BRANCH_CD,
@@ -53,65 +49,23 @@ export const CardDetails = ({ navigate, setIsData, parameter, myRef }) => {
         onSubmitHandler={(data: any, displayData, endSubmit) => {
           // @ts-ignore
           endSubmit(true);
-          data = {
-            ...data,
-            REQ_DT: formatDate(data?.REQ_DT),
-            ISSUE_DT: formatDate(data?.ISSUE_DT),
-            EXPIRE_DT: formatDate(data?.EXPIRE_DT),
-            DEACTIVE_DT: formatDate(data?.DEACTIVE_DT),
-          };
-          myRef.current?.setGridData((old) => {
-            let oldRowData = old.map((item) => {
-              return {
-                ...item,
-                REQ_DT: formatDate(item?.REQ_DT),
-                ISSUE_DT: formatDate(item?.ISSUE_DT),
-                EXPIRE_DT: formatDate(item?.EXPIRE_DT),
-                DEACTIVE_DT: formatDate(item?.DEACTIVE_DT),
-              };
-            });
+          setIdNumber((old) => old + 1);
+          setIsData((old) => {
             const updatedGridData =
-              rows?.[0]?.data?.SR_CD || rows?.[0]?.data?.ID_NO
-                ? oldRowData?.map((item) => {
-                    if (
-                      item.SR_CD === rows?.[0]?.data?.SR_CD ||
-                      (item.ID_NO && item.ID_NO === rows?.[0]?.data?.ID_NO)
-                    ) {
-                      const changedValues = {};
-                      const changedDataValues = {};
-
-                      // Iterate through keys of new data
-                      Object.keys(data).forEach((key) => {
-                        // Compare each key's value with old object
-                        if (item[key] !== data[key]) {
-                          changedDataValues[key] = data[key];
-                          changedValues[key] = true;
-                        }
-                      });
-
-                      return {
-                        ...item,
-                        ...data,
-                        _oldData: {
-                          ...changedDataValues,
-                        },
-                        _isTouchedCol: {
-                          ...changedValues,
-                        },
-                      };
-                    }
-                    return item;
-                  })
-                : [
-                    ...oldRowData,
-                    {
-                      ...data,
-                      ID_NO: Date.now(),
-                      _isNewRow: true,
-                    },
-                  ];
-            return updatedGridData;
+              rows?.[0]?.data?.TRAN_CD || rows?.[0]?.data?.ID_NO
+                ? old?.gridData.map((item) =>
+                    item.TRAN_CD === rows?.[0]?.data?.TRAN_CD ||
+                    item.ID_NO === rows?.[0]?.data?.ID_NO
+                      ? { ...item, ...data }
+                      : item
+                  )
+                : [...old.gridData, { ...data, ID_NO: idNumber }];
+            return {
+              ...old,
+              gridData: updatedGridData,
+            };
           });
+
           navigate(".");
         }}
         formStyle={{

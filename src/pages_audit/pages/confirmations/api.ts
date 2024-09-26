@@ -112,6 +112,13 @@ export const getConfirmationGridData = async (apiReqPara) => {
 
       // temporary OD against
 
+      item.CODE_DISPLAY =
+        item.CODE === "ODA "
+          ? "O.D. Applicable"
+          : item.CODE === "AGC "
+          ? "Agaist Clearing Applicable"
+          : null;
+
       return item;
     });
   } else {

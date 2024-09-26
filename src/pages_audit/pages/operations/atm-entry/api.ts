@@ -139,16 +139,7 @@ export const retrieveData = async (apiReqPara) => {
       ...apiReqPara,
     });
   if (status === "0") {
-    // return data;
-    let newData;
-    if (Array.isArray(data) && data?.length > 0) {
-      newData = data.map((item) => ({
-        ...item,
-        ACCT_NM: item?.ORGINAL_NM,
-        ACCOUNT_NAME: item?.ACCT_NM,
-      }));
-    }
-    return newData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -228,28 +219,6 @@ export const validateCardStatus = async (apiReqPara) => {
 export const validateInsertData = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATEATMREGSAVEDATA", {
-      ...apiReqPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const crudData = async (apiReqPara) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOATMREGISTRATIONDML", {
-      ...apiReqPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const confirmData = async (apiReqPara) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOATMREGCONFRIMATION", {
       ...apiReqPara,
     });
   if (status === "0") {

@@ -24,125 +24,40 @@ import i18n from "components/multiLanguage/languagesConfiguration";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { DayLimit } from "./dayLimit/dayLimit";
 import { extractMetaData } from "components/utils";
-import { format } from "date-fns";
 
 export const ImpsEntryCustom = () => {
+  const [isData, setIsData] = useState({
+    isVisible: false,
+    closeAlert: true,
+  });
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
   const [formMode, setFormMode] = useState<any>("add");
   const [retrieveData, setRetrieveData] = useState<any>();
   const [rowData, setRowData] = useState<any>();
-  const [currentIndex, setCurrentIndex] = useState<any>(0);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { isError, error, isLoading, isFetching } = useQuery<any, any>(
-    ["getImpsDetails"],
-    () =>
-      API.getImpsDetails({
-        ENT_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
-        ENT_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
-        TRAN_CD: retrieveData?.[0]?.TRAN_CD,
-      }),
-    {
-      enabled: !!retrieveData?.[0]?.TRAN_CD,
-      onSuccess(data) {
-        if (Array.isArray(data) && data?.length > 0) {
-          setRowData(data);
-        }
-      },
-    }
-  );
-
   const accountList: any = useMutation("getRtgsRetrieveData", API.getAcctList, {
     onSuccess: (data) => {
-      if (rowData?.length > 0) {
-        console.log("<<<rowData", rowData);
-        function isMatch(item1, item2) {
-          return (
-            item1.COMP_CD.trim() === item2.COMP_CD.trim() &&
-            item1.BRANCH_CD.trim() === item2.BRANCH_CD.trim() &&
-            item1.ACCT_TYPE.trim() === item2.ACCT_TYPE.trim() &&
-            item1.ACCT_CD.trim() === item2.ACCT_CD.trim()
-          );
-        }
-        let filteredData = data.filter((d2Item) => {
-          return !rowData.some((d1Item) => isMatch(d1Item, d2Item));
-        });
+      function isMatch(item1, item2) {
+        return (
+          item1.COMP_CD.trim() === item2.COMP_CD.trim() &&
+          item1.BRANCH_CD.trim() === item2.BRANCH_CD.trim() &&
+          item1.ACCT_TYPE.trim() === item2.ACCT_TYPE.trim() &&
+          item1.ACCT_CD.trim() === item2.ACCT_CD.trim()
+        );
+      }
+      let filteredData = data.filter((d2Item) => {
+        return !rowData.some((d1Item) => isMatch(d1Item, d2Item));
+      });
 
-        if (filteredData?.length > 0) {
-          messagebox(filteredData);
-        }
-      } else {
-        setRowData(data);
+      if (filteredData?.length > 0) {
+        messagebox(filteredData);
       }
     },
   });
-
-  const validateDelete: any = useMutation(
-    "getRtgsRetrieveData",
-    API.validateDeleteData,
-    {
-      onSuccess: (data, variables) => {
-        if (data?.[0]?.O_STATUS !== "0") {
-          MessageBox({
-            messageTitle: "ValidationAlert",
-            message: data?.[0]?.O_MESSAGE,
-          });
-        } else {
-          if (variables?.FLAG === "S") {
-          } else if (rowData?.length !== currentIndex) {
-            setCurrentIndex((old) => old + 1);
-            setTimeout(() => {
-              deleteData({ flag: "A" });
-            }, 1000);
-          }
-        }
-      },
-    }
-  );
-
-  const deleteData: any = ({ flag, reqData }) => {
-    console.log("<<<rowdatasssss", flag, reqData);
-    let apiReq = {
-      A_ENTERED_BY: retrieveData?.[0]?.ENTERED_BY ?? "",
-      A_CONFIRMED: retrieveData?.[0]?.CONFIRMED ?? "",
-      A_LOGIN_COMP: authState?.companyID,
-      A_LOGIN_BRANCH: authState?.user?.branchCode,
-      WORKING_DATE: authState?.workingDate,
-      USERNAME: authState?.user?.id,
-      USERROLE: authState?.role,
-      A_BRANCH_CD:
-        flag === "S"
-          ? reqData?.BRANCH_CD
-          : flag === "A"
-          ? rowData[currentIndex]?.BRANCH_CD
-          : "",
-      A_ACCT_TYPE:
-        flag === "S"
-          ? reqData?.ACCT_TYPE
-          : flag === "A"
-          ? rowData[currentIndex]?.ACCT_TYPE
-          : "",
-      A_ACCT_CD:
-        flag === "S"
-          ? reqData?.ACCT_CD
-          : flag === "A"
-          ? rowData[currentIndex]?.ACCT_CD
-          : "",
-      A_REG_DT:
-        flag === "S"
-          ? reqData?.REG_DATE
-          : flag === "A"
-          ? rowData[currentIndex]?.REG_DT
-            ? format(new Date(rowData[currentIndex]?.REG_DT), "dd/MMM/yyyy")
-            : ""
-          : "",
-      FLAG: flag,
-    };
-    validateDelete.mutate(apiReq);
-  };
 
   const messagebox = async (filterData) => {
     let insertData: any = [];
@@ -163,6 +78,24 @@ export const ImpsEntryCustom = () => {
       });
     }
   };
+
+  const { isError, error, isLoading } = useQuery<any, any>(
+    ["getImpsDetails"],
+    () =>
+      API.getImpsDetails({
+        ENT_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+        ENT_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+        TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+      }),
+    {
+      enabled: !!retrieveData?.[0]?.TRAN_CD,
+      onSuccess(data) {
+        if (Array.isArray(data) && data?.length > 0) {
+          setRowData(data);
+        }
+      },
+    }
+  );
 
   // const onSubmitHandler = ({ data, displayData, endSubmit }) => {
   //   //@ts-ignore
@@ -202,26 +135,19 @@ export const ImpsEntryCustom = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {accountList?.isLoading ||
-          validateDelete?.isLoading ||
-          isLoading ||
-          isFetching ? (
+          {accountList?.isLoading || isLoading ? (
             <LinearProgress color="inherit" />
-          ) : accountList?.isError || validateDelete?.isError || isError ? (
+          ) : accountList?.isError || isError ? (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
                 errorMsg={
                   accountList?.error?.error_msg ??
-                  validateDelete?.error?.error_msg ??
                   error?.error_msg ??
                   "Unknow Error"
                 }
                 errorDetail={
-                  accountList?.error?.error_detail ??
-                  validateDelete?.error?.error_detail ??
-                  error?.error_detail ??
-                  ""
+                  accountList?.error?.error_detail ?? error?.error_detail ?? ""
                 }
                 color="error"
               />
@@ -245,7 +171,7 @@ export const ImpsEntryCustom = () => {
               endSubmit(true);
             }}
             formStyle={{
-              height: "calc(100vh - 576px)",
+              height: "calc(100vh - 562px)",
             }}
             displayMode={formMode}
             ref={formRef}
@@ -271,9 +197,6 @@ export const ImpsEntryCustom = () => {
                         setFormMode(formMode === "edit" ? "view" : "edit")
                       }
                       color={"primary"}
-                      disabled={
-                        accountList?.isLoading || validateDelete?.isLoading
-                      }
                     >
                       {formMode === "edit" ? t("View") : t("Edit")}
                     </Button>
@@ -283,34 +206,20 @@ export const ImpsEntryCustom = () => {
                         setRetrieveData(null);
                         setRowData(null);
                       }}
-                      disabled={
-                        accountList?.isLoading || validateDelete?.isLoading
-                      }
                       color={"primary"}
                     >
                       {t("New")}
-                    </Button>
-                    <Button
-                      onClick={() => deleteData({ flag: "M" })}
-                      disabled={
-                        accountList?.isLoading || validateDelete?.isLoading
-                      }
-                      color={"primary"}
-                    >
-                      {t("Delete")}
                     </Button>
                   </>
                 )}
                 <Button
                   onClick={() => navigate("retrieve-form")}
                   color={"primary"}
-                  disabled={accountList?.isLoading || validateDelete?.isLoading}
                 >
                   {t("Retrieve")}
                 </Button>
                 <Button
                   color={"primary"}
-                  disabled={accountList?.isLoading || validateDelete?.isLoading}
                   // onClick={(event) =>
                   //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
                   // }
@@ -346,32 +255,6 @@ export const ImpsEntryCustom = () => {
             onSubmitHandler={(data: any, displayData, endSubmit) => {
               // @ts-ignore
               endSubmit(true);
-            }}
-            onFormButtonClickHandel={(id, dependent) => {
-              console.log(
-                "<<<id, data, dependent",
-                id,
-                dependent,
-                dependent["accMapping.ACCT_CD"].value,
-                dependent?.accMapping?.BRANCH_CD?.value
-              );
-
-              if (id === "accMapping[0].ALLLOW_DELETE") {
-                deleteData({
-                  flag: "S",
-                  reqData: {
-                    REG_DATE: dependent?.["accMapping.REG_DATE"]?.value
-                      ? format(
-                          new Date(dependent?.["accMapping.REG_DATE"]?.value),
-                          "dd/MMM/yyyy"
-                        )
-                      : "",
-                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
-                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
-                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
-                  },
-                });
-              }
             }}
             formStyle={{
               height: "calc(100vh - 368px)",
