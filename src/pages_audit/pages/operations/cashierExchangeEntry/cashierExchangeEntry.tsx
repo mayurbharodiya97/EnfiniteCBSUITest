@@ -1,12 +1,16 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, useContext, useRef, useState } from "react";
 import {
   cashierEntryMetaData,
   cashierEntryMetaData2,
 } from "./cashierEntryMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
+import {
+  SubmitFnType,
+  usePopupContext,
+  GradientButton,
+  MetaDataType,
+  FormWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
@@ -105,6 +109,7 @@ const CashierExchangeEntry = () => {
           }
         }}
         initialValues={{}}
+        onSubmitHandler={() => {}}
       >
         <GradientButton onClick={handleSaves}>Save</GradientButton>
       </FormWrapper>

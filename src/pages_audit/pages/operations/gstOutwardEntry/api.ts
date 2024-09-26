@@ -1,14 +1,21 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
-export const getGstOutwardHeaderRetrive = async ({comp_cd, branch_cd, flag,gd_date,user_level,user_name}) => {
+export const getGstOutwardHeaderRetrive = async ({
+  comp_cd,
+  branch_cd,
+  flag,
+  gd_date,
+  user_level,
+  user_name,
+}) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETGSTOUTENTHDRGRID", {
       ENT_COMP_CD: comp_cd,
       ENT_BRANCH_CD: branch_cd,
       FLAG: flag,
-      GD_DATE:gd_date,
-      USER_LEVEL:user_level,
-      A_USER: user_name
+      GD_DATE: gd_date,
+      USER_LEVEL: user_level,
+      A_USER: user_name,
     });
   if (status === "0") {
     const dataStatus = data;
@@ -22,7 +29,11 @@ export const getGstOutwardHeaderRetrive = async ({comp_cd, branch_cd, flag,gd_da
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getGstOutwardGridRetrive = async ({comp_cd, branch_cd, ref_tran_cd}) => {
+export const getGstOutwardGridRetrive = async ({
+  comp_cd,
+  branch_cd,
+  ref_tran_cd,
+}) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETGSTOUTENTDTLGRID", {
       ENT_COMP_CD: comp_cd,
@@ -37,74 +48,86 @@ export const getGstOutwardGridRetrive = async ({comp_cd, branch_cd, ref_tran_cd}
 };
 export const getAccountDetail = async (reqParameters) => {
   const { status, data, message, messageDetails } =
-  await AuthSDK.internalFetcher("GETGSTOUTWARDACCTDETAILS", reqParameters);
+    await AuthSDK.internalFetcher("GETGSTOUTWARDACCTDETAILS", reqParameters);
   if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-  export const getGstOtwardModeDdw = async ({ BASE_COMP_CD, BASE_BRANCH_CD,TEMPLATE_TYPE }) => {
-    const { status, data, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETGSTOUTENTMODEDDW", {
-        COMP_CD: BASE_COMP_CD,
-        BRANCH_CD: BASE_BRANCH_CD,
-        TEMPLATE_TYPE : TEMPLATE_TYPE
-      });
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE, ...rest }) => {
+export const getGstOtwardModeDdw = async ({
+  BASE_COMP_CD,
+  BASE_BRANCH_CD,
+  TEMPLATE_TYPE,
+}) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETGSTOUTENTMODEDDW", {
+      COMP_CD: BASE_COMP_CD,
+      BRANCH_CD: BASE_BRANCH_CD,
+      TEMPLATE_TYPE: TEMPLATE_TYPE,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DATA_VALUE, DISPLAY_VALUE, ...rest }) => {
           return { rest, value: DATA_VALUE, label: DISPLAY_VALUE };
-        });
-      }
-      return responseData;
-      
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
+        }
+      );
     }
-  };
-  export const getGstOtwardTemplateDdw = async ({ BASE_COMP_CD, BASE_BRANCH_CD,TEMPLATE_TYPE }) => {
-    const { status, data, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETGSTTEMPLATEDDW", {
-        BASE_COMP_CD: BASE_COMP_CD,
-        BASE_BRANCH_CD: BASE_BRANCH_CD,
-        TEMPLATE_TYPE : "OUT"
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getGstOtwardTemplateDdw = async ({
+  BASE_COMP_CD,
+  BASE_BRANCH_CD,
+  TEMPLATE_TYPE,
+}) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETGSTTEMPLATEDDW", {
+      BASE_COMP_CD: BASE_COMP_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      TEMPLATE_TYPE: "OUT",
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, CONFI_NAME, ...rest }) => {
+        return { ...rest, value: TRAN_CD, label: CONFI_NAME };
       });
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ TRAN_CD, CONFI_NAME, ...rest }) => {
-          return { ...rest, value: TRAN_CD, label: CONFI_NAME };
-        });
-      }
-      return responseData;
-      
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
     }
-  };
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
-  export const getGstOutwardENtryDML = async (insertReq) => {
-    const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOGSTOUTWARDENTRYDML", {...insertReq});
-    if (status === "0") {
-      return data;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
+export const getGstOutwardENtryDML = async (insertReq) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOGSTOUTWARDENTRYDML", { ...insertReq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
-  export const gstOutwardEntryConfirmation = async ({ENTERED_COMP_CD,ENTERED_BRANCH_CD,REF_TRAN_CD}) => {
-    const { status, data, message, messageDetails } =
-      await AuthSDK.internalFetcher("DOGSTOUTWARDCONFIRMATION", {
-        ENTERED_COMP_CD : ENTERED_COMP_CD,
-        ENTERED_BRANCH_CD : ENTERED_BRANCH_CD,
-        REF_TRAN_CD: REF_TRAN_CD,
-      });
-    if (status === "0") {
-      return message;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
+export const gstOutwardEntryConfirmation = async ({
+  ENTERED_COMP_CD,
+  ENTERED_BRANCH_CD,
+  REF_TRAN_CD,
+}) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOGSTOUTWARDCONFIRMATION", {
+      ENTERED_COMP_CD: ENTERED_COMP_CD,
+      ENTERED_BRANCH_CD: ENTERED_BRANCH_CD,
+      REF_TRAN_CD: REF_TRAN_CD,
+    });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

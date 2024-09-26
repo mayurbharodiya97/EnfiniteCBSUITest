@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 
 export const ScrollDetailData = async (
   reportID,

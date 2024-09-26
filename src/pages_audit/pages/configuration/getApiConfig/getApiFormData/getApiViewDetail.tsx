@@ -1,10 +1,13 @@
 import React from "react";
+import {
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { getApiViewDetailMetadata } from "./getApiiFormMetadata";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "@mui/material";
-import { SubmitFnType } from "packages/form";
 export const GetApiViewDetail = () => {
   const { state: data }: any = useLocation();
   const navigate = useNavigate();
