@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getConfirmationGridData = async (apiReqPara) => {
@@ -111,13 +111,6 @@ export const getConfirmationGridData = async (apiReqPara) => {
           : null;
 
       // temporary OD against
-
-      item.CODE_DISPLAY =
-        item.CODE === "ODA "
-          ? "O.D. Applicable"
-          : item.CODE === "AGC "
-          ? "Agaist Clearing Applicable"
-          : null;
 
       return item;
     });

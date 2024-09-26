@@ -1,4 +1,4 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { MasterDetailsMetaData } from "@acuteinfo/common-base";
 import * as API from "../../api";
 
 export const DocMasterDTLMetadata: MasterDetailsMetaData = {
@@ -63,11 +63,11 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
         label: "",
         dependentFields: ["TEMPLATE_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-            const optionData = dependentFields?.TEMPLATE_CD?.optionData
-            // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
-            if(Array.isArray(optionData) && optionData.length>0) {
-                return optionData[0]?.DESCRIPTION;
-            } else return "";
+          const optionData = dependentFields?.TEMPLATE_CD?.optionData;
+          // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
+          if (Array.isArray(optionData) && optionData.length > 0) {
+            return optionData[0]?.DESCRIPTION;
+          } else return "";
         },
       },
       {
@@ -179,7 +179,7 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
             // },
           ],
         },
-        __EDIT__: {isReadOnly: true}
+        __EDIT__: { isReadOnly: true },
       },
       // {
       //   accessor: "DB_COLUMN",

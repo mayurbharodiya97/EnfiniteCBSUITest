@@ -1,18 +1,21 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { stopPayconfirmFormMetaData } from "./confirmFormMetadata";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
-import { queryClient } from "cache";
 import { crudStopPayment, stopPaymentConfirm } from "../api";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  FormWrapper,
+  queryClient,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 export const StopPayConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -107,6 +110,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
           metaData={stopPayconfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
+          onSubmitHandler={() => {}}
           hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",

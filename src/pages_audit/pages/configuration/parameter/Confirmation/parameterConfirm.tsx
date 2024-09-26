@@ -1,16 +1,26 @@
-import { useRef, Fragment, useState, useContext, useCallback, useEffect, } from "react";
+import {
+  useRef,
+  Fragment,
+  useState,
+  useContext,
+  useCallback,
+  useEffect,
+} from "react";
 import { ParameterConfirmGridMetaData } from "./gridMetadata";
-import * as API from "./api"
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { Alert } from "components/common/alert";
-import { ClearCacheContext, queryClient } from "cache";
-
+import {
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  Alert,
+  ClearCacheContext,
+  queryClient,
+  PopupMessageAPIWrapper,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "accept",
@@ -31,7 +41,7 @@ const ParameterConfirmGridWrapper = () => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const navigate = useNavigate();
-  const [rowData, setRowData] = useState([])
+  const [rowData, setRowData] = useState([]);
   const [isOpenAccept, setIsOpenAccept] = useState(false);
   const [isOpenReject, setIsOpenReject] = useState(false);
   const { authState } = useContext(AuthContext);
@@ -76,7 +86,12 @@ const ParameterConfirmGridWrapper = () => {
     if (authState?.role < "4") {
       return null;
     } else {
-      return API.getParameterConfirm({ comp_cd: authState.companyID, branch_cd: authState?.user?.branchCode })}});
+      return API.getParameterConfirm({
+        comp_cd: authState.companyID,
+        branch_cd: authState?.user?.branchCode,
+      });
+    }
+  });
   const result = useMutation(API.confirmStatus, {
     onSuccess: (response: any) => {
       enqueueSnackbar(response, { variant: "success" });
@@ -84,7 +99,7 @@ const ParameterConfirmGridWrapper = () => {
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg ?? "error", { variant: "error" });
-      console.log(">>>", error?.error_msg)
+      console.log(">>>", error?.error_msg);
     },
     onSettled: () => {
       onActionCancel();
@@ -139,7 +154,7 @@ const ParameterConfirmGridWrapper = () => {
         data={data ?? []}
         actions={actions}
         setData={() => null}
-        ReportExportButton={true}
+        enableExport={true}
         setAction={setCurrentAction}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
@@ -171,4 +186,4 @@ const ParameterConfirmGridWrapper = () => {
   );
 };
 
-export default ParameterConfirmGridWrapper
+export default ParameterConfirmGridWrapper;

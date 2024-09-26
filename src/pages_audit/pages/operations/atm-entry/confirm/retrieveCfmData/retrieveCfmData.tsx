@@ -7,15 +7,18 @@ import {
   useState,
 } from "react";
 import { useMutation } from "react-query";
-import { ClearCacheProvider } from "cache";
 import { Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import GridWrapper from "components/dataTableStatic";
-import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
+import {
+  Alert,
+  GridWrapper,
+  GradientButton,
+  ActionTypes,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+} from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { RetrieveGridMetaData } from "./retrieveCfmGridMetadata";
@@ -36,7 +39,12 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
   },
 ];
-export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
+export const RetrieveCfmDataCustom = ({
+  onClose,
+  navigate,
+  setRetrieveData,
+  setFormMode,
+}) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -44,11 +52,12 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   const [filterRetData, setFilterRetData] = useState<any>();
   const [flag, setFlag] = useState<any>("");
 
-  const setCurrentAction = useCallback((data) => {
-    console.log("<<<setcurr", data);
+  const setCurrentAction = useCallback((data: any) => {
     // onClose();
-    navigate(".", { state: data?.rows });
-    setRowsData(data?.rows);
+    let newData = data?.rows?.map((item) => item?.data);
+    setFormMode("view");
+    navigate(".", { state: newData });
+    setRetrieveData(newData);
   }, []);
 
   const mutation: any = useMutation("cfmRetrieveData", getCfmRetrieveData, {
@@ -114,7 +123,7 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
           maxWidth="xl"
         >
           <FormWrapper
-            key={`retrieveForm`}
+            key={`AtmCfmretrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
             onSubmitHandler={onSubmitHandler}
@@ -176,13 +185,19 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   );
 };
 
-export const RetrieveCfmData = ({ onClose, navigate, setRowsData }) => {
+export const RetrieveCfmData = ({
+  onClose,
+  navigate,
+  setRetrieveData,
+  setFormMode,
+}) => {
   return (
     <ClearCacheProvider>
       <RetrieveCfmDataCustom
         onClose={onClose}
         navigate={navigate}
-        setRowsData={setRowsData}
+        setRetrieveData={setRetrieveData}
+        setFormMode={setFormMode}
       />
     </ClearCacheProvider>
   );

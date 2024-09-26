@@ -1,7 +1,3 @@
-import { ClearCacheProvider, queryClient } from "cache";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData } from "components/utils";
 import {
   FC,
   Fragment,
@@ -18,11 +14,8 @@ import {
   rtgBenDetailConfirmFormMetaData,
 } from "./ConfirmationMetadata";
 import * as API from "./api";
-import { ActionTypes } from "components/dataTable";
 import { useMutation, useQueries, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
 import {
   AppBar,
   Dialog,
@@ -33,20 +26,30 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Box } from "@mui/system";
 import { OTPModel } from "pages_audit/auth/otpPopup";
 import { useStyles } from "pages_audit/auth/style";
 import { rtgsVerifyOTP } from "./api";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory"
 import Draggable from "react-draggable";
 import { t } from "i18next";
-
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import {
+  RemarksAPIWrapper,
+  usePopupContext,
+  GridWrapper,
+  Alert,
+  LoaderPaperComponent,
+  ActionTypes,
+  GradientButton,
+  extractMetaData,
+  MetaDataType,
+  FormWrapper,
+  ClearCacheProvider,
+  queryClient,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -84,7 +87,7 @@ const initialState = {
   otpValidFor: 60,
   recieveOtp: "",
   sentDate: "dd/mm/yyyy",
-  contactUser: ""
+  contactUser: "",
   // Add other initial state properties
 };
 const reducer = (state, action) => {
@@ -148,7 +151,7 @@ const RtgsBranchHoConfirmationForm: FC<{
   handleNext?: any;
   currentIndex?: number;
   totalData?: number;
-  formLabel?: any
+  formLabel?: any;
 }> = ({
   flag,
   formMode,
@@ -159,148 +162,130 @@ const RtgsBranchHoConfirmationForm: FC<{
   handleNext,
   currentIndex,
   totalData,
-  formLabel
+  formLabel,
 }) => {
-    const { authState } = useContext(AuthContext);
-    const headerClasses = useTypeStyles();
-    const { enqueueSnackbar } = useSnackbar();
-    const { MessageBox, CloseMessageBox } = usePopupContext();
-    const [isDeleteRemark, SetDeleteRemark] = useState(false);
-    const [isConfHistory, setIsConfHistory] = useState(false);
-    const [isPhotoSign, setIsPhotoSign] = useState(false);
-    const [loginState, dispatch] = useReducer(reducer, initialState);
-    const [isOTP, setIsOTP] = useState(false);
-    const classes = useStyles();
+  const { authState } = useContext(AuthContext);
+  const headerClasses = useTypeStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [isDeleteRemark, SetDeleteRemark] = useState(false);
+  const [isConfHistory, setIsConfHistory] = useState(false);
+  const [isPhotoSign, setIsPhotoSign] = useState(false);
+  const [loginState, dispatch] = useReducer(reducer, initialState);
+  const [isOTP, setIsOTP] = useState(false);
+  const classes = useStyles();
 
-    const setCurrentAction = useCallback((data) => {
-      if (data.name === "close") {
-        setIsConfHistory(false);
-      }
-    }, []);
-    const result: any = useQueries([
-      {
-        queryKey: ["getRtgsBranchConfirmOrderingData", rowsData?.BRANCH_TRAN_CD],
-        queryFn: () =>
-          API.getRtgsBranchConfirmOrderingData({
-            ENT_BRANCH_CD: authState?.user?.branchCode,
-            COMP_CD: rowsData?.COMP_CD ?? "",
-            BRANCH_CD: rowsData?.BRANCH_CD ?? "",
-            BRANCH_TRAN_CD: rowsData?.BRANCH_TRAN_CD ?? "",
-            FLAG_RTGSC: ""
-          }),
-      },
-      {
-        queryKey: ["getRtgsBenDetailBranchConfirmData", rowsData?.TRAN_CD],
-        queryFn: () => API.getRtgsBenDetailBranchConfirmData({
+  const setCurrentAction = useCallback((data) => {
+    if (data.name === "close") {
+      setIsConfHistory(false);
+    }
+  }, []);
+  const result: any = useQueries([
+    {
+      queryKey: ["getRtgsBranchConfirmOrderingData", rowsData?.BRANCH_TRAN_CD],
+      queryFn: () =>
+        API.getRtgsBranchConfirmOrderingData({
+          ENT_BRANCH_CD: authState?.user?.branchCode,
           COMP_CD: rowsData?.COMP_CD ?? "",
           BRANCH_CD: rowsData?.BRANCH_CD ?? "",
-          TRAN_CD: rowsData?.TRAN_CD
+          BRANCH_TRAN_CD: rowsData?.BRANCH_TRAN_CD ?? "",
+          FLAG_RTGSC: "",
         }),
-      },
-    ]);
-    let errorMsg = `${result[1].error?.error_msg}` || `${result[0].error?.error_msg}`;
-    errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
-    //@ts-ignore
-    let error_detail = `${result[1]?.error?.error_detail}` || `${result[0]?.error?.error_detail}`;
+    },
+    {
+      queryKey: ["getRtgsBenDetailBranchConfirmData", rowsData?.TRAN_CD],
+      queryFn: () =>
+        API.getRtgsBenDetailBranchConfirmData({
+          COMP_CD: rowsData?.COMP_CD ?? "",
+          BRANCH_CD: rowsData?.BRANCH_CD ?? "",
+          TRAN_CD: rowsData?.TRAN_CD,
+        }),
+    },
+  ]);
+  let errorMsg =
+    `${result[1].error?.error_msg}` || `${result[0].error?.error_msg}`;
+  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+  //@ts-ignore
+  let error_detail =
+    `${result[1]?.error?.error_detail}` || `${result[0]?.error?.error_detail}`;
 
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getRtgsBranchConfirmOrderingData"]);
+      queryClient.removeQueries(["getRtgsBenDetailBranchConfirmData"]);
+    };
+  }, []);
 
-    useEffect(() => {
-      return () => {
-        queryClient.removeQueries(["getRtgsBranchConfirmOrderingData"]);
-        queryClient.removeQueries(["getRtgsBenDetailBranchConfirmData"]);
-      };
-    }, []);
-
-    const confHistory: any = useMutation(
-      "getConfirmHistoryData",
-      API.getConfirmHistoryData,
-      {
-        onSuccess: (data) => { },
-        onError: (error: any) => { },
-      }
-    );
-    const getGenerateOtp: any = useMutation(
-      "getGenerateOtp",
-      API.getGenerateOtp,
-      {
-        onSuccess: (data) => {
-          dispatch({
-            type: "getNewOtpSuccessful",
-            payload: {
-              comapanyCD: authState?.companyID,
-              branchCD: authState?.user?.branchCode,
-              transactionID: data?.[0]?.TRAN_CD,
-              username: authState?.user?.name,
-              otpValidFor: result[0]?.data?.acBalanceData?.OTP_VALID_SEC,
-              recieveOtp: data?.[0]?.OTP,
-              sentDate: data?.[0]?.SENT_DATE,
-              contactUser: result[0]?.data?.hdrData?.CONTACT_INFO,
-            },
-          })
-          setIsOTP(true)
-        },
-        onError: (error: any) => { },
-      }
-    );
-
-    const boConfirmation: any = useMutation(
-      "getRtgsBranchConfirmtion",
-      API.getRtgsBranchConfirmtion,
-      {
-        onSuccess: (data) => {
-          enqueueSnackbar(data, {
-            variant: "success",
-          });
-          isDataChangedRef.current = true;
-          onClose();
-          CloseMessageBox();
-        },
-        onError: (error: any) => {
-          CloseMessageBox();
-        },
-      }
-    );
-    const hoConfirmation: any = useMutation(
-      "rtgsHoConfirmtionAndDelete",
-      API.rtgsHoConfirmtionAndDelete,
-      {
-        onSuccess: (data) => {
-          enqueueSnackbar(data, {
-            variant: "success",
-          });
-          isDataChangedRef.current = true;
-          onClose();
-          CloseMessageBox();
-        },
-        onError: (error: any) => {
-          CloseMessageBox();
-        },
-      }
-    );
-    const deleteBrMutation = useMutation("delteRtgsBranchConfirm", API.delteRtgsBranchConfirm, {
-      onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-        SetDeleteRemark(false);
-      },
+  const confHistory: any = useMutation(
+    "getConfirmHistoryData",
+    API.getConfirmHistoryData,
+    {
+      onSuccess: (data) => {},
+      onError: (error: any) => {},
+    }
+  );
+  const getGenerateOtp: any = useMutation(
+    "getGenerateOtp",
+    API.getGenerateOtp,
+    {
       onSuccess: (data) => {
-        // isDataChangedRef.current = true;
-        enqueueSnackbar((t("RecordSuccessfullyDeleted")), {
+        dispatch({
+          type: "getNewOtpSuccessful",
+          payload: {
+            comapanyCD: authState?.companyID,
+            branchCD: authState?.user?.branchCode,
+            transactionID: data?.[0]?.TRAN_CD,
+            username: authState?.user?.name,
+            otpValidFor: result[0]?.data?.acBalanceData?.OTP_VALID_SEC,
+            recieveOtp: data?.[0]?.OTP,
+            sentDate: data?.[0]?.SENT_DATE,
+            contactUser: result[0]?.data?.hdrData?.CONTACT_INFO,
+          },
+        });
+        setIsOTP(true);
+      },
+      onError: (error: any) => {},
+    }
+  );
+
+  const boConfirmation: any = useMutation(
+    "getRtgsBranchConfirmtion",
+    API.getRtgsBranchConfirmtion,
+    {
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
           variant: "success",
         });
         isDataChangedRef.current = true;
         onClose();
         CloseMessageBox();
-        SetDeleteRemark(false);
       },
-    });
-    const deleteHoMutation = useMutation("rtgsHoConfirmtionAndDelete", API.rtgsHoConfirmtionAndDelete, {
+      onError: (error: any) => {
+        CloseMessageBox();
+      },
+    }
+  );
+  const hoConfirmation: any = useMutation(
+    "rtgsHoConfirmtionAndDelete",
+    API.rtgsHoConfirmtionAndDelete,
+    {
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        onClose();
+        CloseMessageBox();
+      },
+      onError: (error: any) => {
+        CloseMessageBox();
+      },
+    }
+  );
+  const deleteBrMutation = useMutation(
+    "delteRtgsBranchConfirm",
+    API.delteRtgsBranchConfirm,
+    {
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
         if (typeof error === "object") {
@@ -322,294 +307,222 @@ const RtgsBranchHoConfirmationForm: FC<{
         CloseMessageBox();
         SetDeleteRemark(false);
       },
-    });
-    const VerifyOTP = async (OTPNumber) => {
-      if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
-        dispatch({ type: "inititateOTPVerification" });
-        const { status, data, message } = await rtgsVerifyOTP(
-          loginState?.transactionID,
-          loginState?.recieveOtp,
-          OTPNumber,
-          loginState?.otpValidFor,
-          loginState?.sentDate
-        );
-        if (status === "0") {
-          // Check the A_STATUS value and take action accordingly
-
-          switch (data?.A_STATUS.trim()) {
-            case "E":
-              dispatch({
-                type: "OTPVerificationFailed",
-                payload: { error: data?.A_REMARKS, otpmodelclose: false },
-              });
-              break;
-            case "T":
-              dispatch({
-                type: "OTPVerificationFailed",
-                payload: { error: data?.A_REMARKS, otpmodelclose: false },
-              });
-              break;
-            case "S":
-              dispatch({ type: "OTPVerificationComplete" });
-              // Call the other API or perform the necessary action
-              hoConfirmation.mutate({
-                _isDeleteRow: false,
-                ENTERED_COMP_CD: data?.hdrData?.ENTERED_COMP_CD,
-                ENTERED_BRANCH_CD: data?.hdrData?.ENTERED_BRANCH_CD,
-                TRAN_CD: data?.hdrData?.TRAN_CD,
-              });
-              break;
-
-            case "F":
-              dispatch({
-                type: "OTPVerificationFailed",
-                payload: { error: data?.A_REMARKS, otpmodelclose: false },
-              });
-              break;
-          }
-        } else if (status === "999") {
-          dispatch({
-            type: "OTPVerificationFailed",
-            payload: { error: message, otpmodelclose: true },
-          });
-          CloseMessageBox()
-        } else {
-          dispatch({
-            type: "OTPVerificationFailed",
-            payload: { error: message, otpmodelclose: false },
-          });
+    }
+  );
+  const deleteHoMutation = useMutation(
+    "rtgsHoConfirmtionAndDelete",
+    API.rtgsHoConfirmtionAndDelete,
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
         }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+        CloseMessageBox();
+        SetDeleteRemark(false);
+      },
+      onSuccess: (data) => {
+        // isDataChangedRef.current = true;
+        enqueueSnackbar(t("RecordSuccessfullyDeleted"), {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        onClose();
+        CloseMessageBox();
+        SetDeleteRemark(false);
+      },
+    }
+  );
+  const VerifyOTP = async (OTPNumber) => {
+    if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
+      dispatch({ type: "inititateOTPVerification" });
+      const { status, data, message } = await rtgsVerifyOTP(
+        loginState?.transactionID,
+        loginState?.recieveOtp,
+        OTPNumber,
+        loginState?.otpValidFor,
+        loginState?.sentDate
+      );
+      if (status === "0") {
+        // Check the A_STATUS value and take action accordingly
+
+        switch (data?.A_STATUS.trim()) {
+          case "E":
+            dispatch({
+              type: "OTPVerificationFailed",
+              payload: { error: data?.A_REMARKS, otpmodelclose: false },
+            });
+            break;
+          case "T":
+            dispatch({
+              type: "OTPVerificationFailed",
+              payload: { error: data?.A_REMARKS, otpmodelclose: false },
+            });
+            break;
+          case "S":
+            dispatch({ type: "OTPVerificationComplete" });
+            // Call the other API or perform the necessary action
+            hoConfirmation.mutate({
+              _isDeleteRow: false,
+              ENTERED_COMP_CD: data?.hdrData?.ENTERED_COMP_CD,
+              ENTERED_BRANCH_CD: data?.hdrData?.ENTERED_BRANCH_CD,
+              TRAN_CD: data?.hdrData?.TRAN_CD,
+            });
+            break;
+
+          case "F":
+            dispatch({
+              type: "OTPVerificationFailed",
+              payload: { error: data?.A_REMARKS, otpmodelclose: false },
+            });
+            break;
+        }
+      } else if (status === "999") {
+        dispatch({
+          type: "OTPVerificationFailed",
+          payload: { error: message, otpmodelclose: true },
+        });
+        CloseMessageBox();
       } else {
         dispatch({
           type: "OTPVerificationFailed",
-          payload: { error: t("EnterOTPDigit") },
+          payload: { error: message, otpmodelclose: false },
         });
       }
-    };
+    } else {
+      dispatch({
+        type: "OTPVerificationFailed",
+        payload: { error: t("EnterOTPDigit") },
+      });
+    }
+  };
 
-    useEffect(() => {
-      if (loginState.otpmodelClose) {
-        setIsOTP(false);
-      }
-    }, [loginState.otpmodelClose]);
-    useEffect(() => {
-      const handleKeyDown = async (event) => {
-        if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
-          event.preventDefault();
-          if (rowsData?.CONFIRMED === "Y" && authState?.role < "2") {
-            await MessageBox({
-              messageTitle: t("ValidationFailed"),
-              message: t("CannotDeleteConfirmedTransaction"),
-              buttonNames: ["Ok"],
-            });
-          } else if (
-            !(
-              format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-              format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-            )
-          ) {
-            await MessageBox({
-              messageTitle: t("ValidationFailed"),
-              message: t("CannotDeleteBackDatedEntry"),
-              buttonNames: ["Ok"],
-            });
-          } else {
-            SetDeleteRemark(true);
-          }
+  useEffect(() => {
+    if (loginState.otpmodelClose) {
+      setIsOTP(false);
+    }
+  }, [loginState.otpmodelClose]);
+  useEffect(() => {
+    const handleKeyDown = async (event) => {
+      if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
+        event.preventDefault();
+        if (rowsData?.CONFIRMED === "Y" && authState?.role < "2") {
+          await MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: t("CannotDeleteConfirmedTransaction"),
+            buttonNames: ["Ok"],
+          });
+        } else if (
+          !(
+            format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
+            format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+          )
+        ) {
+          await MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: t("CannotDeleteBackDatedEntry"),
+            buttonNames: ["Ok"],
+          });
+        } else {
+          SetDeleteRemark(true);
         }
-      };
-      document.addEventListener("keydown", handleKeyDown);
-    }, []);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+  }, []);
 
-
-    const shouldHideButton =
-      flag === "BO" ? rowsData?.BR_CONFIRMED === "Y" ||
-        rowsData?.BR_CONFIRMED === "T" :
-        rowsData?.HO_CONFIRMED === "Y" ||
+  const shouldHideButton =
+    flag === "BO"
+      ? rowsData?.BR_CONFIRMED === "Y" || rowsData?.BR_CONFIRMED === "T"
+      : rowsData?.HO_CONFIRMED === "Y" ||
         rowsData?.HO_CONFIRMED === "T" ||
-        result[0]?.data?.hdrData?.PI_ACKN_INDICATOR === "Y"
+        result[0]?.data?.hdrData?.PI_ACKN_INDICATOR === "Y";
 
-
-    return (
-      <Fragment>
-        <>
-          <Dialog
-            open={true}
-            PaperProps={{
-              style: {
-                width: "100%",
-              },
-            }}
-            PaperComponent={(props) => (
-              <Draggable
-                handle="#draggable-dialog-title"
-                cancel={'[class*="MuiDialogContent-root"]'}
-              >
-                <Paper {...props} />
-              </Draggable>
-            )}
-            aria-labelledby="draggable-dialog-title"
-            maxWidth="xl"
-          >
-            <div id="draggable-dialog-title" style={{ cursor: 'move' }}>
-              <AppBar
-                position="static"
-                sx={{
-                  height: "auto",
-                  background: "var(--theme-color5)",
-                  margin: "10px",
-                  width: "auto",
-                }}
-              >
-                <Toolbar>
-                  <Typography
-                    variant="h6"
-                    style={{ flexGrow: 1 }}
-                    sx={{
-                      fontWeight: 700,
-                      color: "var(--theme-color2)",
-                      fontSize: "1.2rem",
-                    }}
-                  >
-                    {flag === "BO"
-                      ? formLabel
-                      : flag === "HO"
-                        ? formLabel
-                        : null}
-                  </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: "wrap" }}>
-                    <>
-                      {!shouldHideButton && (
-                        <GradientButton
-                          onClick={async () => {
-                            if (rowsData?.BR_CONFIRMED === "T") {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("BranchRejectedTransactionNotAllowConfirmed"),
-                                buttonNames: ["Ok"],
-                              });
-                            } else if (rowsData?.BR_CONFIRMED !== "Y" && flag === "HO") {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("BranchConfirmationPendingTransactionNotAllowedToConfirm"),
-                                buttonNames: ["Ok"],
-                              })
-                            }
-                            else if (rowsData?.HO_CONFIRMED === "Y") {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("TransationAlreadyConfirmed"),
-                                buttonNames: ["Ok"],
-                              })
-                            } else if (rowsData?.HO_CONFIRMED === "T") {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("RejectedTransactionNotAllowToConfirm"),
-                                buttonNames: ["Ok"],
-                              })
-                            } else if (
-                              !(
-                                format(
-                                  new Date(rowsData?.TRAN_DT),
-                                  "dd/MMM/yyyy"
-                                ) ===
-                                format(
-                                  new Date(authState?.workingDate),
-                                  "dd/MMM/yyyy"
-                                )
-                              )
-                            ) {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("CannotConfirmBackDatedEntry"),
-                                buttonNames: ["Ok"],
-                              });
-                            } else if (authState?.user?.id === rowsData?.ENTERED_BY) {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("ConfirmRestrictMsg"),
-                                buttonNames: ["Ok"],
-                              });
-                            } else if (rowsData?.VERIFIED_BY === authState?.user?.id) {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("YouCantConfirmYourOwnBranchConfirmation"),
-                                buttonNames: ["Ok"],
-                              });
-                            } else {
-                              const buttonName = await MessageBox({
-                                messageTitle: t("Confirmation"),
-                                message: t("DoYouWantToAllowTheTransaction"),
-                                buttonNames: ["No", "Yes"],
-                                loadingBtnName: ["Yes"],
-                              });
-                              if (buttonName === "Yes") {
-                                if (flag === "BO") {
-                                  boConfirmation.mutate({
-                                    ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                                    ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                                    TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                                    ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
-                                    ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
-                                    AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
-                                    TRAN_BAL: result[0]?.data?.hdrData?.TRAN_BAL,
-                                    COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
-                                    BRANCH_CD: result[0]?.data?.hdrData?.BRANCH_CD,
-                                    TRN_DT: result[0]?.data?.hdrData?.TRAN_DT,
-                                    SCREEN_REF: "MST/553",
-                                  });
-                                } else if (result[0]?.data?.acBalanceData?.RTGS_HO_CONFIRM_OTP === "Y" && flag === "HO") {
-                                  getGenerateOtp.mutate({
-                                    TRN_TYPE: "RN_HO_CONF",
-                                    CONTACT2: result[0]?.data?.hdrData?.CONTACT_INFO,
-                                    VALID_UPTO: result[0]?.data?.acBalanceData?.OTP_VALID_SEC,
-                                    COMP_CD: authState?.companyID,
-                                    BRANCH_CD: authState?.user?.branchCode,
-                                    USER_ID: authState?.user?.name
-                                  })
-
-                                } else {
-                                  hoConfirmation.mutate({
-                                    _isDeleteRow: false,
-                                    ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                                    ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                                    TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                                  })
-                                }
-                              }
-                            }
-                          }
-                          }
-                        >
-                          {t("Confirm")}
-                        </GradientButton>
-                      )}
-                    </>
+  return (
+    <Fragment>
+      <>
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+            },
+          }}
+          PaperComponent={(props) => (
+            <Draggable
+              handle="#draggable-dialog-title"
+              cancel={'[class*="MuiDialogContent-root"]'}
+            >
+              <Paper {...props} />
+            </Draggable>
+          )}
+          aria-labelledby="draggable-dialog-title"
+          maxWidth="xl"
+        >
+          <div id="draggable-dialog-title" style={{ cursor: "move" }}>
+            <AppBar
+              position="static"
+              sx={{
+                height: "auto",
+                background: "var(--theme-color5)",
+                margin: "10px",
+                width: "auto",
+              }}
+            >
+              <Toolbar>
+                <Typography
+                  variant="h6"
+                  style={{ flexGrow: 1 }}
+                  sx={{
+                    fontWeight: 700,
+                    color: "var(--theme-color2)",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  {flag === "BO" ? formLabel : flag === "HO" ? formLabel : null}
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  <>
                     {!shouldHideButton && (
                       <GradientButton
                         onClick={async () => {
-                          if (
-                            rowsData?.HO_CONFIRMED === "Y"
+                          if (rowsData?.BR_CONFIRMED === "T") {
+                            await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t(
+                                "BranchRejectedTransactionNotAllowConfirmed"
+                              ),
+                              buttonNames: ["Ok"],
+                            });
+                          } else if (
+                            rowsData?.BR_CONFIRMED !== "Y" &&
+                            flag === "HO"
                           ) {
                             await MessageBox({
                               messageTitle: t("ValidationFailed"),
-                              message: t("YouCantDeleteRejectHOConfirmedTransaction"),
+                              message: t(
+                                "BranchConfirmationPendingTransactionNotAllowedToConfirm"
+                              ),
                               buttonNames: ["Ok"],
                             });
-                          } else if (rowsData?.HO_CONFIRMED === "T" || rowsData?.BR_CONFIRMED === "T") {
+                          } else if (rowsData?.HO_CONFIRMED === "Y") {
                             await MessageBox({
                               messageTitle: t("ValidationFailed"),
-                              message: t("TransactionAlreadyRejected"),
+                              message: t("TransationAlreadyConfirmed"),
                               buttonNames: ["Ok"],
                             });
-                          } else if (flag === "BO" ? rowsData?.BR_CONFIRMED === "Y" : rowsData?.HO_CONFIRMED === "Y") {
+                          } else if (rowsData?.HO_CONFIRMED === "T") {
                             await MessageBox({
                               messageTitle: t("ValidationFailed"),
-                              message: flag === "BO" ? t("YouCantDeleteConfirmedTransaction") : t("YouCantRejectEntryAlreadyConfirmedByHO"),
+                              message: t(
+                                "RejectedTransactionNotAllowToConfirm"
+                              ),
                               buttonNames: ["Ok"],
                             });
-                          }
-                          else if (
+                          } else if (
                             !(
                               format(
                                 new Date(rowsData?.TRAN_DT),
@@ -623,234 +536,377 @@ const RtgsBranchHoConfirmationForm: FC<{
                           ) {
                             await MessageBox({
                               messageTitle: t("ValidationFailed"),
-                              message: t("CannotDeleteBackDatedEntry"),
+                              message: t("CannotConfirmBackDatedEntry"),
                               buttonNames: ["Ok"],
                             });
-                          } else if (flag === "BO") {
-                            SetDeleteRemark(true);
-                          } else if (flag === "HO") {
+                          } else if (
+                            authState?.user?.id === rowsData?.ENTERED_BY
+                          ) {
+                            await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t("ConfirmRestrictMsg"),
+                              buttonNames: ["Ok"],
+                            });
+                          } else if (
+                            rowsData?.VERIFIED_BY === authState?.user?.id
+                          ) {
+                            await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t(
+                                "YouCantConfirmYourOwnBranchConfirmation"
+                              ),
+                              buttonNames: ["Ok"],
+                            });
+                          } else {
                             const buttonName = await MessageBox({
                               messageTitle: t("Confirmation"),
-                              message: t("DoYouWantToRejectThisTransaction"),
+                              message: t("DoYouWantToAllowTheTransaction"),
                               buttonNames: ["No", "Yes"],
-                              defFocusBtnName: "Yes",
                               loadingBtnName: ["Yes"],
                             });
                             if (buttonName === "Yes") {
-                              deleteHoMutation.mutate({
-                                _isDeleteRow: true,
-                                ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                                ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                                TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                              });
+                              if (flag === "BO") {
+                                boConfirmation.mutate({
+                                  ENTERED_COMP_CD:
+                                    result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                                  ENTERED_BRANCH_CD:
+                                    result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                                  TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                                  ACCT_TYPE:
+                                    result[0]?.data?.hdrData?.ACCT_TYPE,
+                                  ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
+                                  AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
+                                  TRAN_BAL: result[0]?.data?.hdrData?.TRAN_BAL,
+                                  COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
+                                  BRANCH_CD:
+                                    result[0]?.data?.hdrData?.BRANCH_CD,
+                                  TRN_DT: result[0]?.data?.hdrData?.TRAN_DT,
+                                  SCREEN_REF: "MST/553",
+                                });
+                              } else if (
+                                result[0]?.data?.acBalanceData
+                                  ?.RTGS_HO_CONFIRM_OTP === "Y" &&
+                                flag === "HO"
+                              ) {
+                                getGenerateOtp.mutate({
+                                  TRN_TYPE: "RN_HO_CONF",
+                                  CONTACT2:
+                                    result[0]?.data?.hdrData?.CONTACT_INFO,
+                                  VALID_UPTO:
+                                    result[0]?.data?.acBalanceData
+                                      ?.OTP_VALID_SEC,
+                                  COMP_CD: authState?.companyID,
+                                  BRANCH_CD: authState?.user?.branchCode,
+                                  USER_ID: authState?.user?.name,
+                                });
+                              } else {
+                                hoConfirmation.mutate({
+                                  _isDeleteRow: false,
+                                  ENTERED_COMP_CD:
+                                    result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                                  ENTERED_BRANCH_CD:
+                                    result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                                  TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                                });
+                              }
                             }
                           }
                         }}
                       >
-                        {t("Remove")}
+                        {t("Confirm")}
                       </GradientButton>
                     )}
+                  </>
+                  {!shouldHideButton && (
                     <GradientButton
-                      onClick={() => {
-                        if (currentIndex && currentIndex !== totalData)
-                          handleNext();
+                      onClick={async () => {
+                        if (rowsData?.HO_CONFIRMED === "Y") {
+                          await MessageBox({
+                            messageTitle: t("ValidationFailed"),
+                            message: t(
+                              "YouCantDeleteRejectHOConfirmedTransaction"
+                            ),
+                            buttonNames: ["Ok"],
+                          });
+                        } else if (
+                          rowsData?.HO_CONFIRMED === "T" ||
+                          rowsData?.BR_CONFIRMED === "T"
+                        ) {
+                          await MessageBox({
+                            messageTitle: t("ValidationFailed"),
+                            message: t("TransactionAlreadyRejected"),
+                            buttonNames: ["Ok"],
+                          });
+                        } else if (
+                          flag === "BO"
+                            ? rowsData?.BR_CONFIRMED === "Y"
+                            : rowsData?.HO_CONFIRMED === "Y"
+                        ) {
+                          await MessageBox({
+                            messageTitle: t("ValidationFailed"),
+                            message:
+                              flag === "BO"
+                                ? t("YouCantDeleteConfirmedTransaction")
+                                : t("YouCantRejectEntryAlreadyConfirmedByHO"),
+                            buttonNames: ["Ok"],
+                          });
+                        } else if (
+                          !(
+                            format(
+                              new Date(rowsData?.TRAN_DT),
+                              "dd/MMM/yyyy"
+                            ) ===
+                            format(
+                              new Date(authState?.workingDate),
+                              "dd/MMM/yyyy"
+                            )
+                          )
+                        ) {
+                          await MessageBox({
+                            messageTitle: t("ValidationFailed"),
+                            message: t("CannotDeleteBackDatedEntry"),
+                            buttonNames: ["Ok"],
+                          });
+                        } else if (flag === "BO") {
+                          SetDeleteRemark(true);
+                        } else if (flag === "HO") {
+                          const buttonName = await MessageBox({
+                            messageTitle: t("Confirmation"),
+                            message: t("DoYouWantToRejectThisTransaction"),
+                            buttonNames: ["No", "Yes"],
+                            defFocusBtnName: "Yes",
+                            loadingBtnName: ["Yes"],
+                          });
+                          if (buttonName === "Yes") {
+                            deleteHoMutation.mutate({
+                              _isDeleteRow: true,
+                              ENTERED_COMP_CD:
+                                result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                              ENTERED_BRANCH_CD:
+                                result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                              TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                            });
+                          }
+                        }
                       }}
                     >
-                      {t("MoveForward")}
+                      {t("Remove")}
                     </GradientButton>
-                    <GradientButton
-                      onClick={() => {
-                        if (currentIndex && currentIndex !== totalData)
-                          handlePrev();
-                      }}
-                    >
-                      {t("Previous")}
-                    </GradientButton>
-                    {/* {flag === "R" &&
+                  )}
+                  <GradientButton
+                    onClick={() => {
+                      if (currentIndex && currentIndex !== totalData)
+                        handleNext();
+                    }}
+                  >
+                    {t("MoveForward")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      if (currentIndex && currentIndex !== totalData)
+                        handlePrev();
+                    }}
+                  >
+                    {t("Previous")}
+                  </GradientButton>
+                  {/* {flag === "R" &&
                     data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD ===
                     undefined && ( */}
-                    <>
-                      <GradientButton
-                        onClick={() => {
-                          setIsPhotoSign(true)
-
-                        }}
-                      >
-                        {t("SignView")}
-                      </GradientButton>
-                    </>
-                    {flag === "BO" && result[0]?.data?.hdrData?.TRAN_CONF === "Y" ?
-                      <GradientButton
-                        onClick={() => {
-                          confHistory.mutate({
-                            ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                            ENTERED_BRANCH_CD: result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                            TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
-                            TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                            SCREEN_REF: "RTGS_NEFT",
-                          });
-                          setIsConfHistory(true);
-                        }}
-                      >
-                        {t("ConfHistory")}
-                      </GradientButton>
-                      : null
-                    }
-                    {
-                      result[0]?.data?.hdrData?.VIEW_MEMO === "Y" ?
-                        <GradientButton
-                          onClick={() => {
-                            // confHistory.mutate({
-                            //   ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
-                            //   ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
-                            //   TRAN_DT: data?.[0]?.TRAN_DT,
-                            //   TRAN_CD: data?.[0]?.TRAN_CD,
-                            //   SCREEN_REF: "OW_CLG",
-                            // });
-                          }}
-                        > {t("ViewMemo")}
-                        </GradientButton> : null
-                    }
+                  <>
                     <GradientButton
                       onClick={() => {
-                        onClose();
+                        setIsPhotoSign(true);
                       }}
                     >
-                      {t("Close")}
+                      {t("SignView")}
                     </GradientButton>
-                  </Box>
-                </Toolbar>
-              </AppBar>
-              <DialogContent sx={{ padding: "0px" }}>
-                {result?.[0]?.isLoading || result?.[1]?.isLoading ? (
-                  <LoaderPaperComponent />
-                ) : result[1].isError || result[0]?.isError ? (
-                  <>
-                    <div
-                      style={{
-                        paddingRight: "10px",
-                        paddingLeft: "10px",
-                        height: 100,
-                        paddingTop: 10,
+                  </>
+                  {flag === "BO" &&
+                  result[0]?.data?.hdrData?.TRAN_CONF === "Y" ? (
+                    <GradientButton
+                      onClick={() => {
+                        confHistory.mutate({
+                          ENTERED_COMP_CD:
+                            result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                          ENTERED_BRANCH_CD:
+                            result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                          TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
+                          TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                          SCREEN_REF: "RTGS_NEFT",
+                        });
+                        setIsConfHistory(true);
                       }}
                     >
-                      <AppBar position="relative" color="primary">
-                        <Alert
-                          severity="error"
-                          errorMsg={errorMsg}
-                          errorDetail={error_detail ?? ""}
-                        />
-                      </AppBar>
-                    </div>
-                  </>
-                ) : (
+                      {t("ConfHistory")}
+                    </GradientButton>
+                  ) : null}
+                  {result[0]?.data?.hdrData?.VIEW_MEMO === "Y" ? (
+                    <GradientButton
+                      onClick={() => {
+                        // confHistory.mutate({
+                        //   ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
+                        //   ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
+                        //   TRAN_DT: data?.[0]?.TRAN_DT,
+                        //   TRAN_CD: data?.[0]?.TRAN_CD,
+                        //   SCREEN_REF: "OW_CLG",
+                        // });
+                      }}
+                    >
+                      {" "}
+                      {t("ViewMemo")}
+                    </GradientButton>
+                  ) : null}
+                  <GradientButton
+                    onClick={() => {
+                      onClose();
+                    }}
+                  >
+                    {t("Close")}
+                  </GradientButton>
+                </Box>
+              </Toolbar>
+            </AppBar>
+            <DialogContent sx={{ padding: "0px" }}>
+              {result?.[0]?.isLoading || result?.[1]?.isLoading ? (
+                <LoaderPaperComponent />
+              ) : result[1].isError || result[0]?.isError ? (
+                <>
+                  <div
+                    style={{
+                      paddingRight: "10px",
+                      paddingLeft: "10px",
+                      height: 100,
+                      paddingTop: 10,
+                    }}
+                  >
+                    <AppBar position="relative" color="primary">
+                      <Alert
+                        severity="error"
+                        errorMsg={errorMsg}
+                        errorDetail={error_detail ?? ""}
+                      />
+                    </AppBar>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <FormWrapper
+                    key={"rtgsOrderingConfirm"}
+                    metaData={
+                      extractMetaData(
+                        flag === "BO"
+                          ? RtgsOrderingBranchConfirmFormMetaData
+                          : RtgsOrderingHOConfirmFormMetaData,
+                        formMode
+                      ) as MetaDataType
+                    }
+                    initialValues={{
+                      ...(flag === "BO"
+                        ? { ...result[0]?.data?.hdrData }
+                        : {
+                            ...result[0]?.data?.hdrData,
+                            ...result[0]?.data?.acBalanceData,
+                          }),
+                      ENTERED_BY:
+                        "Enter by " + result[0]?.data?.hdrData?.ENTERED_BY,
+                      VERIFIED_BY:
+                        "Br.Confirmed by " +
+                        result[0]?.data?.hdrData?.VERIFIED_BY,
+                    }}
+                    onSubmitHandler={() => {}}
+                    //@ts-ignore
+                    displayMode={formMode}
+                    hideHeader={true}
+                    formStyle={{
+                      background: "white",
+                      width: "100%",
+                    }}
+                  />
+                  <FormWrapper
+                    key={`rtgBenDetailConfirm` + formMode}
+                    metaData={
+                      extractMetaData(
+                        flag === "BO"
+                          ? rtgBenDetailConfirmFormMetaData
+                          : rtgBenDetailConfirmFormMetaData,
+                        formMode
+                      ) as MetaDataType
+                    }
+                    displayMode={formMode}
+                    onSubmitHandler={() => {}}
+                    initialValues={{
+                      beneficiaryAcDetails: result?.[1]?.data,
+                    }}
+                    hideHeader={true}
+                    containerstyle={{ padding: "0px !important" }}
+                    formStyle={{
+                      height: "65%",
+                    }}
+                  />
                   <>
-                    <FormWrapper
-                      key={"rtgsOrderingConfirm"}
-                      metaData={
-                        extractMetaData(
-                          flag === "BO" ?
-                            RtgsOrderingBranchConfirmFormMetaData
-                            : RtgsOrderingHOConfirmFormMetaData,
-                          formMode
-                        ) as MetaDataType
-                      }
-                      initialValues={{
-                        ...(flag === "BO" ?
-                          { ...result[0]?.data?.hdrData } :
-                          { ...result[0]?.data?.hdrData, ...result[0]?.data?.acBalanceData }
-                        ),
-                        ENTERED_BY: "Enter by " + result[0]?.data?.hdrData?.ENTERED_BY,
-                        VERIFIED_BY: "Br.Confirmed by " + result[0]?.data?.hdrData?.VERIFIED_BY
-                      }}
-                      onSubmitHandler={{}}
-                      //@ts-ignore
-                      displayMode={formMode}
-                      hideHeader={true}
-                      formStyle={{
-                        background: "white",
-                        width: "100%",
-                      }}
-                    />
-                    <FormWrapper
-                      key={`rtgBenDetailConfirm` + formMode}
-                      metaData={
-                        extractMetaData(
-                          flag === "BO"
-                            ? rtgBenDetailConfirmFormMetaData
-                            : rtgBenDetailConfirmFormMetaData,
-                          formMode
-                        ) as MetaDataType
-                      }
-                      displayMode={formMode}
-                      onSubmitHandler={{}}
-                      initialValues={{
-                        beneficiaryAcDetails: result?.[1]?.data,
-                      }}
-                      hideHeader={true}
-                      containerstyle={{ padding: "0px !important" }}
-                      formStyle={{
-                        height: "65%",
-                      }}
-                    />
-                    <>
-                      {isPhotoSign ? (
-                        <>
-                          <div style={{ paddingTop: 10 }}>
-                            <PhotoSignWithHistory data={result[0]?.data?.hdrData}
-                              onClose={() => {
-                                setIsPhotoSign(false)
-                              }}
-                              screenRef={"MST/552"}
-                            />
-                          </div>
-                        </>
-                      ) : null}
-                    </>
-                    <>
-                      {isOTP ? (
-                        <>
-                          <Dialog
-                            fullWidth
-                            maxWidth="sm"
-                            open={true} // Assuming this is controlled by a state
-                            onKeyUp={(event) => {
-                              if (event.key === "Escape") {
-                                onClose();
-                              }
+                    {isPhotoSign ? (
+                      <>
+                        <div style={{ paddingTop: 10 }}>
+                          <PhotoSignWithHistory
+                            data={result[0]?.data?.hdrData}
+                            onClose={() => {
+                              setIsPhotoSign(false);
                             }}
-                            key="rtgsConfirmDialog"
-                            PaperProps={{
-                              style: {
-                                width: "36%",
-                              },
+                            screenRef={"MST/552"}
+                          />
+                        </div>
+                      </>
+                    ) : null}
+                  </>
+                  <>
+                    {isOTP ? (
+                      <>
+                        <Dialog
+                          fullWidth
+                          maxWidth="sm"
+                          open={true} // Assuming this is controlled by a state
+                          onKeyUp={(event) => {
+                            if (event.key === "Escape") {
+                              onClose();
+                            }
+                          }}
+                          key="rtgsConfirmDialog"
+                          PaperProps={{
+                            style: {
+                              width: "36%",
+                            },
+                          }}
+                        >
+                          <AppBar
+                            position="static"
+                            sx={{
+                              height: "auto",
+                              background: "var(--theme-color5)",
+                              margin: "10px",
+                              width: "auto",
                             }}
                           >
-                            <AppBar
-                              position="static"
-                              sx={{
-                                height: "auto",
-                                background: "var(--theme-color5)",
-                                margin: "10px",
-                                width: "auto",
-                              }}
-                            >
-                              <Toolbar>
-                                <Typography
-                                  variant="h6"
-                                  style={{ flexGrow: 1 }}
-                                  sx={{
-                                    fontWeight: 700,
-                                    color: "var(--theme-color2)",
-                                    fontSize: "1.2rem",
-                                  }}
-                                >
-                                  {t("RTGSHOConfirmation")}
-                                </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, flexWrap: "wrap" }}>
-                                  <>
-
-                                    {/* <GradientButton
+                            <Toolbar>
+                              <Typography
+                                variant="h6"
+                                style={{ flexGrow: 1 }}
+                                sx={{
+                                  fontWeight: 700,
+                                  color: "var(--theme-color2)",
+                                  fontSize: "1.2rem",
+                                }}
+                              >
+                                {t("RTGSHOConfirmation")}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: 1,
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <>
+                                  {/* <GradientButton
                                     onClick={() => {
                                       setIsOTP(false)
                                       CloseMessageBox();
@@ -858,139 +914,132 @@ const RtgsBranchHoConfirmationForm: FC<{
                                   >
                                     Close
                                   </GradientButton> */}
-                                  </>
-                                </Box>
-                              </Toolbar>
-                            </AppBar>
-                            <OTPModel
-                              classes={classes} // Pass actual classes if needed
-                              open={isOTP}
-                              handleClose={() => {
-                                setIsOTP(false)
-                              }}
-                              loginState={loginState}
-                              VerifyOTP={VerifyOTP}
-                              OTPError={loginState.OtpuserMessage}
-                              setOTPError={(error) => {
-                                dispatch({
-                                  type: "OTPVerificationFailed",
-                                  payload: { error: error, otpmodelclose: false },
-                                });
-                              }}
-                              previousStep={() => {
-                                setIsOTP(false)
-                                CloseMessageBox()
-                              }}
-                              resendFlag="RN_HO_CONF"
-                              marginCondition={"0"}
-                            />
-                          </Dialog>
-                        </>
-                      ) : null}
-                    </>
-                    <>
-                      {isConfHistory ? (
-                        <>
-                          <Dialog
-                            fullWidth
-                            maxWidth="md"
-                            open={true} // Assuming this is controlled by a state
-                            onKeyUp={(event) => {
-                              if (event.key === "Escape") {
-                                onClose();
-                              }
+                                </>
+                              </Box>
+                            </Toolbar>
+                          </AppBar>
+                          <OTPModel
+                            classes={classes} // Pass actual classes if needed
+                            open={isOTP}
+                            handleClose={() => {
+                              setIsOTP(false);
                             }}
-                            key="rtgsConfirmDialog"
-                            PaperProps={{
-                              style: {
-                                width: "100%",
-                                // height: "78%",
-                                // height: "70%",
-                              },
+                            loginState={loginState}
+                            VerifyOTP={VerifyOTP}
+                            OTPError={loginState.OtpuserMessage}
+                            setOTPError={(error) => {
+                              dispatch({
+                                type: "OTPVerificationFailed",
+                                payload: { error: error, otpmodelclose: false },
+                              });
                             }}
-                          >
-                            <GridWrapper
-                              key={"rtgsBrOrHoConfirmGrid"}
-                              finalMetaData={DualConfHistoryGridMetaData}
-                              data={confHistory?.data ?? []}
-                              setData={() => null}
-                              loading={
-                                confHistory.isLoading || confHistory.isFetching
-                              }
-                              actions={actions}
-                              setAction={setCurrentAction}
-                            />
-                          </Dialog>
-                        </>
-                      ) : null}
-                    </>
+                            previousStep={() => {
+                              setIsOTP(false);
+                              CloseMessageBox();
+                            }}
+                            resendFlag="RN_HO_CONF"
+                            marginCondition={"0"}
+                          />
+                        </Dialog>
+                      </>
+                    ) : null}
                   </>
-                )}
-              </DialogContent>
-            </div>
-          </Dialog>
-          {isDeleteRemark && (
-            <RemarksAPIWrapper
-              TitleText={
-                t("EnterRemovalRemarksForRTGSBRANCHCONFIRMATION")
-              }
-              onActionNo={() => SetDeleteRemark(false)}
-              onActionYes={async (val, rows) => {
-                const buttonName = await MessageBox({
-                  messageTitle: t("Confirmation"),
-                  message: t("DoYouWantDeleteRow"),
-                  buttonNames: ["No", "Yes"],
-                  defFocusBtnName: "Yes",
-                  loadingBtnName: ["Yes"],
+                  <>
+                    {isConfHistory ? (
+                      <>
+                        <Dialog
+                          fullWidth
+                          maxWidth="md"
+                          open={true} // Assuming this is controlled by a state
+                          onKeyUp={(event) => {
+                            if (event.key === "Escape") {
+                              onClose();
+                            }
+                          }}
+                          key="rtgsConfirmDialog"
+                          PaperProps={{
+                            style: {
+                              width: "100%",
+                              // height: "78%",
+                              // height: "70%",
+                            },
+                          }}
+                        >
+                          <GridWrapper
+                            key={"rtgsBrOrHoConfirmGrid"}
+                            finalMetaData={DualConfHistoryGridMetaData}
+                            data={confHistory?.data ?? []}
+                            setData={() => null}
+                            loading={
+                              confHistory.isLoading || confHistory.isFetching
+                            }
+                            actions={actions}
+                            setAction={setCurrentAction}
+                          />
+                        </Dialog>
+                      </>
+                    ) : null}
+                  </>
+                </>
+              )}
+            </DialogContent>
+          </div>
+        </Dialog>
+        {isDeleteRemark && (
+          <RemarksAPIWrapper
+            TitleText={t("EnterRemovalRemarksForRTGSBRANCHCONFIRMATION")}
+            onActionNo={() => SetDeleteRemark(false)}
+            onActionYes={async (val, rows) => {
+              const buttonName = await MessageBox({
+                messageTitle: t("Confirmation"),
+                message: t("DoYouWantDeleteRow"),
+                buttonNames: ["No", "Yes"],
+                defFocusBtnName: "Yes",
+                loadingBtnName: ["Yes"],
+              });
+              if (buttonName === "Yes") {
+                deleteBrMutation.mutate({
+                  COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
+                  ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
+                  ENTERED_BRANCH_CD:
+                    result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
+                  TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
+                  ENTERED_BY: result[0]?.data?.hdrData?.ENTERED_BY,
+                  BRANCH_CD: result[0]?.data?.hdrData?.BRANCH_CD,
+                  ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
+                  ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
+                  AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
+                  TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
+                  SLIP_NO: result[0]?.data?.hdrData?.SLIP_NO,
+                  HO_CONFIRMED: result[0]?.data?.hdrData?.HO_CONFIRMED,
+                  BR_CONFIRMED: result[0]?.data?.hdrData?.BR_CONFIRMED,
+                  USER_DEF_REMARKS: val
+                    ? val
+                    : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
+
+                  ACTIVITY_TYPE: "RTGS/NEFT Outward Confirmation",
+                  DETAILS_DATA: {
+                    isNewRow: [],
+                    isDeleteRow: [...result?.[1]?.data],
+                    isUpdatedRow: [],
+                  },
+                  _isDeleteRow: true,
                 });
-                if (buttonName === "Yes") {
-                  deleteBrMutation.mutate({
-                    COMP_CD: result[0]?.data?.hdrData?.COMP_CD,
-                    ENTERED_COMP_CD: result[0]?.data?.hdrData?.ENTERED_COMP_CD,
-                    ENTERED_BRANCH_CD:
-                      result[0]?.data?.hdrData?.ENTERED_BRANCH_CD,
-                    TRAN_CD: result[0]?.data?.hdrData?.TRAN_CD,
-                    ENTERED_BY: result[0]?.data?.hdrData?.ENTERED_BY,
-                    BRANCH_CD:
-                      result[0]?.data?.hdrData?.BRANCH_CD,
-                    ACCT_TYPE: result[0]?.data?.hdrData?.ACCT_TYPE,
-                    ACCT_CD: result[0]?.data?.hdrData?.ACCT_CD,
-                    AMOUNT: result[0]?.data?.hdrData?.AMOUNT,
-                    TRAN_DT: result[0]?.data?.hdrData?.TRAN_DT,
-                    SLIP_NO: result[0]?.data?.hdrData?.SLIP_NO,
-                    HO_CONFIRMED: result[0]?.data?.hdrData?.HO_CONFIRMED,
-                    BR_CONFIRMED: result[0]?.data?.hdrData?.BR_CONFIRMED,
-                    USER_DEF_REMARKS: val
-                      ? val
-                      : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
-
-                    ACTIVITY_TYPE: "RTGS/NEFT Outward Confirmation",
-                    DETAILS_DATA: {
-                      isNewRow: [],
-                      isDeleteRow: [
-                        ...result?.[1]?.data
-                      ],
-                      isUpdatedRow: [],
-                    },
-                    _isDeleteRow: true,
-                  });
-                }
-              }}
-              isEntertoSubmit={true}
-              AcceptbuttonLabelText="Ok"
-              CanceltbuttonLabelText="Cancel"
-              open={isDeleteRemark}
-              defaultValue={"WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)"
               }
-              rows={undefined}
-            />
-          )}
-
-        </>
-        {/* )} */}
-      </Fragment >
-    );
-  };
+            }}
+            isEntertoSubmit={true}
+            AcceptbuttonLabelText="Ok"
+            CanceltbuttonLabelText="Cancel"
+            open={isDeleteRemark}
+            defaultValue={"WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)"}
+            rows={undefined}
+          />
+        )}
+      </>
+      {/* )} */}
+    </Fragment>
+  );
+};
 
 export const RTGSBranchHoConfirmFormWrapper = ({
   flag,
@@ -1000,7 +1049,7 @@ export const RTGSBranchHoConfirmFormWrapper = ({
   handleNext,
   currentIndexRef,
   totalData,
-  formLabel
+  formLabel,
 }) => {
   const { state: rows } = useLocation();
   currentIndexRef.current = rows?.index;

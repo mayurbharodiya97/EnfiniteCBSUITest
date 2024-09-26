@@ -2605,6 +2605,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DOATMREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/DOATMREGISTRATIONDML",
+    packageName: "",
+  },
+  GETIMPSREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSREGCONFGRID",
+    packageName: "",
+  },
+  VALIDATEDELETEIMPSENTRY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEDELETEIMPSENTRY",
+    packageName: "",
+  },
+  DOATMREGCONFRIMATION: {
+    url: "/commonMasterServiceAPI/DOATMREGCONFRIMATION",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

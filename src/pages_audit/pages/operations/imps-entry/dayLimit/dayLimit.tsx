@@ -1,23 +1,19 @@
 import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { dayLimitData } from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { useEffect } from "react";
 
-export const DayLimit = ({ navigate }) => {
+const DayLimitCustom = ({ navigate }) => {
   const { state: rows }: any = useLocation();
   const { MessageBox } = usePopupContext();
 
-  const { data, isError, isSuccess, error, isLoading } = useQuery<any, any>(
-    ["daylimit"],
-    () =>
-      dayLimitData({
+  const dailyLimitData: any = useMutation("validateDeleteData", dayLimitData);
+  useEffect(() => {
+    return () => {
+      dailyLimitData.mutate({
         DTL_ROW: [
           {
             REG_DATE: rows?.REG_DATE,
@@ -46,12 +42,9 @@ export const DayLimit = ({ navigate }) => {
           },
         ],
         SCREEN_REF: "MST/843",
-      }),
-    {
-      enabled: !!rows?.TRAN_CD,
-      onSuccess(data) {},
-    }
-  );
+      });
+    };
+  }, []);
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -74,15 +67,15 @@ export const DayLimit = ({ navigate }) => {
             },
           }}
         >
-          {isLoading ? (
+          {dailyLimitData?.isLoading ? (
             <LinearProgress color="secondary" />
-          ) : isError ? (
+          ) : dailyLimitData?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={error?.error_msg ?? "Unknow Error"}
-                  errorDetail={error?.error_detail ?? ""}
+                  errorMsg={dailyLimitData?.error?.error_msg ?? "Unknow Error"}
+                  errorDetail={dailyLimitData?.error?.error_detail ?? ""}
                   color="error"
                 />
               </AppBar>
@@ -92,10 +85,16 @@ export const DayLimit = ({ navigate }) => {
           )}
 
           <FormWrapper
-            key={`day-limit-Form` + isSuccess}
+            key={`day-limit-Form` + dailyLimitData?.isSuccess}
             metaData={dayLimitFormMetaData as MetaDataType}
-            initialValues={data?.[0] ?? {}}
-            displayMode={data?.[0]?.READ_ONLY === "Y" ? "view" : null}
+            initialValues={dailyLimitData?.data?.[0] ?? {}}
+            displayMode={
+              dailyLimitData?.data?.[0]?.READ_ONLY === "Y" ||
+              rows?.FLAG === "C" ||
+              dailyLimitData?.isLoading
+                ? "view"
+                : null
+            }
             onSubmitHandler={onSubmitHandler}
             formState={{ MessageBox: MessageBox }}
             formStyle={{
@@ -104,7 +103,8 @@ export const DayLimit = ({ navigate }) => {
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                {data?.[0]?.READ_ONLY !== "Y" && (
+                {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
+                rows?.FLAG === "C" ? (
                   <Button
                     color={"primary"}
                     // onClick={(event) =>
@@ -116,7 +116,7 @@ export const DayLimit = ({ navigate }) => {
                   >
                     {t("Save")}
                   </Button>
-                )}
+                ) : null}
 
                 <Button onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
@@ -127,5 +127,13 @@ export const DayLimit = ({ navigate }) => {
         </Dialog>
       </>
     </>
+  );
+};
+
+export const DayLimit = ({ navigate }) => {
+  return (
+    <ClearCacheProvider>
+      <DayLimitCustom navigate={navigate} />
+    </ClearCacheProvider>
   );
 };
