@@ -1,18 +1,16 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useEffect } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { tempODConfirmFormMetaData } from "./confirmFormMetadata";
+import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 import { tempODConfirmation } from "../api";
-import {
-  Alert,
-  usePopupContext,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+
 export const TempODConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -112,10 +110,9 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
         <FormWrapper
           key={"tempOD-confirmation-Form"}
           metaData={tempODConfirmFormMetaData as MetaDataType}
-          initialValues={rows?.[0]?.data ?? {}}
+          initialValues={rows?.[0]?.data ?? []}
           displayMode="view"
           hideDisplayModeInTitle={true}
-          onSubmitHandler={() => {}}
           formStyle={{
             background: "white",
             height: "calc(100vh - 552px)",

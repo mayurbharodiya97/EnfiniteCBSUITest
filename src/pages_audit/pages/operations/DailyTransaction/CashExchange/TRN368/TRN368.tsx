@@ -1,11 +1,11 @@
+import GridWrapper from "components/dataTableStatic";
+import React from "react";
+import FormWrapper from "components/dyanmicForm";
 import { gridMetaData368 } from "./gridMetadata";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Card } from "@mui/material";
-import {
-  ActionTypes,
-  GridMetaDataType,
-  GridWrapper,
-} from "@acuteinfo/common-base";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 
 const actions: ActionTypes[] = [
   {
@@ -57,8 +57,9 @@ const TRN368 = () => {
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        disableMultipleRowSelect={true}
-        variant={"outlined"}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
+        // defaultSelectedRowId={0}
       />
     </Card>
   );

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -19,8 +19,8 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "79vh",
-      max: "79vh",
+      min: "80vh",
+      max: "80vh",
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,
@@ -31,7 +31,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr.No.",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "left",
       componentType: "default",
       width: 80,
       minWidth: 100,
@@ -73,7 +73,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "SECURE_PROV_PERC",
       columnName: "ProvisionSecureRate",
       sequence: 5,
-      alignment: "right",
+      alignment: "left",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -83,7 +83,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "UNSECURE_PROV_PERC",
       columnName: "ProvisionUnSecureRate",
       sequence: 6,
-      alignment: "right",
+      alignment: "left",
       componentType: "default",
       width: 180,
       minWidth: 150,

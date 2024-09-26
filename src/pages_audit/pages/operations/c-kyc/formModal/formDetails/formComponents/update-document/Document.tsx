@@ -1,4 +1,5 @@
 import { AppBar, Dialog, Grid, IconButton } from "@mui/material";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -9,18 +10,18 @@ import {
   useRef,
   useState,
 } from "react";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation } from "react-query";
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { DocMasterDTLForm } from "./DocMasterDTLForm";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { CreateDetailsRequestData } from "components/utils";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { enqueueSnackbar } from "notistack";
-import {
-  PopupMessageAPIWrapper,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
 
 const UpdateDocument = ({ open, onClose, viewMode, from }) => {
   const navigate = useNavigate();

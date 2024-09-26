@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "@acuteinfo/common-base";
+} from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getInsuranceList = async (reqData) => {

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 
 export const AreaMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -22,7 +22,7 @@ export const AreaMasterGridMetaData: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: false,
+    allowColumnHiding: true,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const FDDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -65,9 +65,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 90,
+      maxWidth: 110,
       isDisplayTotal: true,
     },
     {
@@ -76,9 +76,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 5,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 90,
+      maxWidth: 110,
       isDisplayTotal: true,
     },
     {
@@ -137,9 +137,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 11,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 90,
+      maxWidth: 110,
       isDisplayTotal: true,
     },
     {
@@ -179,9 +179,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 15,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 130,
+      minWidth: 120,
+      maxWidth: 140,
       isDisplayTotal: true,
     },
     {
@@ -200,9 +200,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 17,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 140,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 90,
+      maxWidth: 110,
       isDisplayTotal: true,
     },
     {
@@ -211,9 +211,9 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       sequence: 18,
       alignment: "right",
       componentType: "default",
-      width: 100,
-      minWidth: 90,
-      maxWidth: 140,
+      width: 90,
+      minWidth: 80,
+      maxWidth: 100,
       isDisplayTotal: true,
     },
     {
@@ -224,7 +224,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 160,
       minWidth: 150,
-      maxWidth: 200,
+      maxWidth: 170,
       isDisplayTotal: true,
     },
     {

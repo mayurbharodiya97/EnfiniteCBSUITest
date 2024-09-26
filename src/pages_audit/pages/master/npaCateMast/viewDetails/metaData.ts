@@ -49,7 +49,7 @@ export const NpaCategoryMasterFormMetadata = {
       required: true,
       maxLength: 4,
       placeholder: "EnterCode",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       __EDIT__: { isReadOnly: true },
       __NEW__: { isFieldFocused: true },
 
@@ -132,7 +132,7 @@ export const NpaCategoryMasterFormMetadata = {
       maxLength: 100,
       placeholder: "EnterName",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialCharInput: true,
       __EDIT__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
         // Duplication validation
@@ -223,7 +223,7 @@ export const NpaCategoryMasterFormMetadata = {
     },
     {
       render: {
-        componentType: "rateOfInt",
+        componentType: "rateOfIntWithoutValidation",
       },
       name: "SECURE_PROV_PERC",
       label: "ProvisionSecureRate",
@@ -232,34 +232,12 @@ export const NpaCategoryMasterFormMetadata = {
       fullWidth: true,
       FormatProps: {
         allowNegative: false,
-        isAllowed: (values) => {
-          const { formattedValue, floatValue } = values;
-          if (
-            formattedValue.startsWith("0") &&
-            !formattedValue.startsWith("0.")
-          ) {
-            return false;
-          }
-          if (floatValue > 999.99) {
-            return false;
-          }
-          if (floatValue === 0 && formattedValue !== "0.") {
-            return false;
-          }
-          return true;
-        },
-        onBlur: (event) => {
-          const { value } = event.target;
-          if (value === "") {
-            event.target.value = ".00";
-          }
-        },
       },
       GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
-        componentType: "rateOfInt",
+        componentType: "rateOfIntWithoutValidation",
       },
       name: "UNSECURE_PROV_PERC",
       label: "ProvisionUnSecureRate",
@@ -268,28 +246,6 @@ export const NpaCategoryMasterFormMetadata = {
       fullWidth: true,
       FormatProps: {
         allowNegative: false,
-        isAllowed: (values) => {
-          const { formattedValue, floatValue } = values;
-          if (
-            formattedValue.startsWith("0") &&
-            !formattedValue.startsWith("0.")
-          ) {
-            return false;
-          }
-          if (floatValue > 999.99) {
-            return false;
-          }
-          if (floatValue === 0 && formattedValue !== "0.") {
-            return false;
-          }
-          return true;
-        },
-        onBlur: (event) => {
-          const { value } = event.target;
-          if (value === "") {
-            event.target.value = ".00";
-          }
-        },
       },
       GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },

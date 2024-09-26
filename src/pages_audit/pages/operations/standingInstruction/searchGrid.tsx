@@ -1,19 +1,16 @@
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import { searchButttonGridMetaData } from "./metaData/gridMetaData";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
 import { Dialog } from "@mui/material";
+import { ActionTypes } from "components/dataTable";
+import { queryClient } from "cache";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
-import {
-  ActionTypes,
-  GridWrapper,
-  queryClient,
-  GridMetaDataType,
-  LoaderPaperComponent,
-} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-all",
@@ -44,7 +41,6 @@ const SearchGrid = ({ open, onClose, mainRefetch }) => {
   const [deleteopen, setDeleteOpen] = useState(false);
   const [currentRowData, setCurrentRowData] = useState<any>({});
   const [opens, setOpens] = useState(false);
-  const [uniqueData, setUniqueData] = useState({});
   const isDeleteDataRef = useRef<any>(null);
 
   const Line_id = currentRowData?.data?.LINE_ID;
@@ -100,15 +96,7 @@ const SearchGrid = ({ open, onClose, mainRefetch }) => {
       queryClient.removeQueries(["getSearchActiveSi"]);
     };
   }, []);
-  useEffect(() => {
-    if (apidata) {
-      const updatedGridData = apidata.map((item, index) => ({
-        ...item,
-        INDEX: `${index}`,
-      }));
-      setUniqueData(updatedGridData);
-    }
-  }, [apidata]);
+
   return (
     <Fragment>
       <Dialog
@@ -116,26 +104,22 @@ const SearchGrid = ({ open, onClose, mainRefetch }) => {
         PaperProps={{ style: { width: "100%", overflow: "auto" } }}
         maxWidth="lg"
       >
-        {apidata ? (
-          <GridWrapper
-            key={"searchButttonGridMetaData"}
-            finalMetaData={searchButttonGridMetaData as GridMetaDataType}
-            loading={isLoading || isFetching}
-            data={uniqueData ?? []}
-            setData={() => null}
-            actions={actions}
-            setAction={setCurrentAction}
-            refetchData={() => sirefetch()}
-            onClickActionEvent={(index, id, currentData) => {
-              if (id === "delete") {
-                setDeleteOpen(true);
-                setCurrentRowData(currentData);
-              }
-            }}
-          />
-        ) : (
-          <LoaderPaperComponent />
-        )}
+        <GridWrapper
+          key={"searchButttonGridMetaData"}
+          finalMetaData={searchButttonGridMetaData as GridMetaDataType}
+          loading={isLoading || isFetching}
+          data={apidata ?? []}
+          setData={() => null}
+          actions={actions}
+          setAction={setCurrentAction}
+          refetchData={() => sirefetch()}
+          onClickActionEvent={(index, id, currentData) => {
+            if (id === "delete") {
+              setDeleteOpen(true);
+              setCurrentRowData(currentData);
+            }
+          }}
+        />
       </Dialog>
       <DeleteDialog
         open={deleteopen}

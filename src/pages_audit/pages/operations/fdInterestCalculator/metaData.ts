@@ -1026,7 +1026,7 @@ export const metaData = {
     },
     {
       render: { componentType: "autocomplete" },
-      name: "PERIOD_NO_DISP_S",
+      name: "PERIOD_CD_S",
       label: "Period",
       options: [
         { label: "Day(s)", value: "D" },
@@ -1105,71 +1105,72 @@ export const metaData = {
     },
     {
       render: {
-        componentType: "datePicker",
+        componentType: "textField",
       },
       name: "MATURITY_DT_S",
       label: "maturityDate",
-      isReadOnly: true,
       defaultValue: new Date(),
       fullWidth: true,
+      format: "dd/MM/yyyy",
+      isReadOnly: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "TRAN_DT_S",
-        "PERIOD_CD_S",
-        "PERIOD_NO_S",
-      ],
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        let duration = dependentFields.PERIOD_CD_S?.value;
-        let periodNumber = parseInt(dependentFields.PERIOD_NO_S?.value, 10);
-        let tranDateValue = dependentFields?.TRAN_DT_S?.value;
+      // dependentFields: [
+      //   "CALCSWITCH",
+      //   "TRAN_DT_S",
+      //   "PERIOD_NO_S",
+      //   "PERIOD_CD_S",
+      // ],
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   let duration = dependentFields.PERIOD_CD_S?.value;
+      //   let periodNumber = parseInt(dependentFields.PERIOD_NO_S?.value, 10);
+      //   let tranDateValue = dependentFields?.TRAN_DT_S?.value;
 
-        let newDate = "";
+      //   let newDate = "";
 
-        try {
-          if (tranDateValue) {
-            // Convert tranDateValue to a Date object
-            const tranDate = new Date(tranDateValue);
+      //   try {
+      //     if (tranDateValue) {
+      //       const tranDate = new Date(tranDateValue);
 
-            // Check if tranDate is a valid date
-            if (!isNaN(tranDate.getTime())) {
-              // Adjust the date based on the duration
-              switch (duration) {
-                case "D":
-                  newDate = format(
-                    addDays(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "M":
-                  newDate = format(
-                    addMonths(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "Y":
-                  newDate = format(
-                    addYears(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                default:
-                  console.error("Invalid duration");
-                  break;
-              }
-            } else {
-              console.error("Invalid date value");
-            }
-          } else {
-            console.error("Transaction date value is missing");
-          }
-        } catch (error) {
-          console.error("Error processing date:", error);
-        }
+      //       // Check if tranDate is a valid date
+      //       if (!isNaN(tranDate.getTime())) {
+      //         // Adjust the date based on the duration
+      //         switch (duration) {
+      //           case "D":
+      //             newDate = format(
+      //               addDays(tranDate, periodNumber),
+      //               "dd/MM/yyyy"
+      //             );
+      //             break;
+      //           case "M":
+      //             newDate = format(
+      //               addMonths(tranDate, periodNumber),
+      //               "dd-MMM-yy"
+      //             );
+      //             break;
+      //           case "Y":
+      //             newDate = format(
+      //               addYears(tranDate, periodNumber),
+      //               "dd-MMM-yy"
+      //             );
+      //             break;
+      //           default:
+      //             console.error("Invalid duration");
+      //             break;
+      //         }
+      //       } else {
+      //         console.error("Invalid date value");
+      //       }
+      //     } else {
+      //       console.error("Transaction date value is missing");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error processing date:", error);
+      //   }
 
-        return newDate;
-      },
+      //   console.log(newDate);
 
+      //   return newDate;
+      // },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
           return false;
@@ -1177,7 +1178,6 @@ export const metaData = {
         return true;
       },
     },
-
     {
       render: {
         componentType: "autocomplete",
@@ -1193,22 +1193,6 @@ export const metaData = {
         });
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: ["CALCSWITCH"],
-      shouldExclude: (val1, dependent) => {
-        if (dependent?.CALCSWITCH?.value === "S") {
-          return false;
-        }
-        return true;
-      },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "CAL_COMPARE_SHEET_BTN",
-      label: "Calculate",
-      type: "text",
-      GridProps: { lg: 1, xl: 1 },
       dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {

@@ -1,11 +1,15 @@
 import { Fragment, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { PMBYGridMetaData } from "./gridMetadata";
+// import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { Alert } from "components/common/alert";
+// import { GridMetaDataType } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { Alert, GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
 
 export const PMBY = ({ reqData }) => {
   const myGridRef = useRef<any>(null);

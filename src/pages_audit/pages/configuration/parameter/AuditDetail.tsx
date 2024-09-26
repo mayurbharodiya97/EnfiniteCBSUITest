@@ -1,19 +1,13 @@
 import { Dialog } from "@mui/material";
-import GridWrapper, {
-  GridMetaDataType,
-  GridWrapperStatic,
-} from "@acuteinfo/common-base";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuditMetadata } from "./gridMetadata";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "pages_audit/auth";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
-import {
-  ClearCacheContext,
-  queryClient,
-  ActionTypes,
-} from "@acuteinfo/common-base";
+import { ClearCacheContext, queryClient } from "cache";
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -70,11 +64,11 @@ const AuditDetail = ({ open, onClose, rowsData }) => {
           },
         }}
       >
-        <GridWrapperStatic
+        <GridWrapper
           key={"parametersGridAudit"}
           finalMetaData={AuditMetadata as GridMetaDataType}
           data={data ?? []}
-          enableExport={true}
+          ReportExportButton={true}
           actions={actions}
           setAction={setCurrentAction}
           setData={() => null}

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const EntryDescMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -30,7 +30,7 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr.No.",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "left",
       componentType: "default",
       width: 80,
       minWidth: 100,

@@ -1,5 +1,5 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { DefaultErrorObject } from "components/utils";
 
 export const getSourceListData = async (_, __, dependent) => {
   if (dependent["propsDetails.PROPS_ID"]?.value === "options") {

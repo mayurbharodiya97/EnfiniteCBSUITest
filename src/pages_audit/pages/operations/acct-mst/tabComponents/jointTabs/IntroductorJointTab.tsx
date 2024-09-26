@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { AcctMSTContext } from "../../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
 import { introductorjoint_tab_metadata } from "../../tabMetadata/introductorJointMetadata";

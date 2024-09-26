@@ -19,9 +19,18 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { GradientButton } from "components/styledComponent/button";
+import { SubmitFnType } from "packages/form";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
+import { cloneDeep } from "lodash";
+import { usePopupContext } from "components/custom/popupContext";
+import {
+  ColorlibConnector,
+  ColorlibStepIconRoot,
+} from "components/dyanmicForm/stepperForm/style";
+import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { FDContext } from "../context/fdContext";
@@ -29,15 +38,7 @@ import { FDDetailForm } from "./fdDetailForm";
 import { TransferAcctDetailForm } from "./trnsAcctDtlForm";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@mui/styles";
-import {
-  ColorlibConnector,
-  ColorlibStepIconRoot,
-  GradientButton,
-  usePopupContext,
-  utilFunction,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
-import { format } from "date-fns";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -58,11 +59,7 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const FixDepositForm = ({
-  defaultView,
-  handleDialogClose,
-  isDataChangedRef,
-}) => {
+export const FixDepositForm = ({ defaultView, closeDialog }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
   const {
@@ -74,7 +71,7 @@ export const FixDepositForm = ({
     resetAllData,
     setIsBackButton,
   } = useContext(FDContext);
-  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { MessageBox } = usePopupContext();
   let currentPath = useLocation().pathname;
   const [steps, setSteps] = useState([
     "Fixed Deposit Detail(s)",
@@ -85,6 +82,20 @@ export const FixDepositForm = ({
   const { authState } = useContext(AuthContext);
   const headerClasses = useTypeStyles();
   const { state: rows }: any = useLocation();
+
+  const doFixDepositMutation = useMutation(API.doFixDepositCreation, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      MessageBox({ messageTitle: "Error", message: errorMsg, icon: "ERROR" });
+    },
+    onSuccess: (data) => {
+      //   MessageBox({ messageTitle: "Success", message: data, icon: "SUCCESS" });
+      resetAllData();
+    },
+  });
 
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
@@ -105,166 +116,11 @@ export const FixDepositForm = ({
     );
   }
 
-  //Mutation for Save new FD details
-  const saveFDDetailsMutation = useMutation(API.saveFDDetails, {
-    onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: async (data) => {
-      console.log("data", data);
-
-      for (const response of data ?? []) {
-        if (response?.O_STATUS === "999") {
-          await MessageBox({
-            messageTitle: "ValidationFailed",
-            message: response?.O_MESSAGE ?? "",
-            icon: "ERROR",
-          });
-        } else if (response?.O_STATUS === "9") {
-          await MessageBox({
-            messageTitle: "Alert",
-            message: response?.O_MESSAGE ?? "",
-            icon: "WARNING",
-          });
-        } else if (response?.O_STATUS === "99") {
-          const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
-            message: response?.O_MESSAGE ?? "",
-            buttonNames: ["Yes", "No"],
-            defFocusBtnName: "Yes",
-          });
-          if (buttonName === "No") {
-            break;
-          }
-        } else if (response?.O_STATUS === "0") {
-          const buttonName = await MessageBox({
-            messageTitle: "Voucher(s) Confirmation",
-            message: response?.VOUCHER_MSG ?? "",
-            buttonNames: ["Ok"],
-          });
-          if (buttonName === "Ok") {
-            isDataChangedRef.current = true;
-            CloseMessageBox();
-            handleDialogClose();
-          }
-        }
-      }
-    },
-  });
-
-  //Mutation for Validate new FD details
-  const validateFDDetailsMutation = useMutation(API.validateFDDetails, {
-    onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: async (data) => {
-      for (const response of data ?? []) {
-        if (response?.O_STATUS === "999") {
-          await MessageBox({
-            messageTitle: "ValidationFailed",
-            message: response?.O_MESSAGE ?? "",
-            icon: "ERROR",
-          });
-        } else if (response?.O_STATUS === "9") {
-          await MessageBox({
-            messageTitle: "Alert",
-            message: response?.O_MESSAGE ?? "",
-            icon: "WARNING",
-          });
-        } else if (response?.O_STATUS === "99") {
-          const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
-            message: response?.O_MESSAGE ?? "",
-            buttonNames: ["Yes", "No"],
-            defFocusBtnName: "Yes",
-          });
-          if (buttonName === "No") {
-            break;
-          }
-        } else if (response?.O_STATUS === "0") {
-          setActiveStep(FDState.activeStep + 1);
-        }
-      }
-    },
-  });
-
   const handleComplete = (e) => {
     if (FDState.activeStep === 0) {
       fdDetailsformRef.current?.handleSubmit(e);
     } else if (FDState.activeStep === 1) {
       sourceAcctformRef.current?.handleSubmit(e);
-    }
-  };
-
-  // Detail form validate handler
-  const detailsFormSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    endSubmit(true);
-
-    const newData = data?.FDDTL?.map((obj) => ({
-      ...obj,
-      TRAN_DT: utilFunction.isValidDate(obj.TRAN_DT)
-        ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy")
-        : "",
-      MATURITY_DT: utilFunction.isValidDate(obj.MATURITY_DT)
-        ? format(new Date(obj.MATURITY_DT), "dd/MMM/yyyy")
-        : "",
-    }));
-
-    if (Boolean(data?.FDDTL?.length)) {
-      updateFDDetailsFormData([...newData]);
-      updateSourceAcctFormData([
-        {
-          ACCT_NAME: "",
-        },
-      ]);
-      const dataArray = Array.isArray(data?.FDDTL) ? data?.FDDTL : [];
-      if (dataArray?.length > 0) {
-        if (
-          !Boolean(data?.TOTAL_FD_AMOUNT) ||
-          parseFloat(data?.TOTAL_FD_AMOUNT ?? 0) <= 0
-        ) {
-          MessageBox({
-            messageTitle: t("ValidationFailed"),
-            message: "Total amount can't be Zero/Negative.",
-            icon: "ERROR",
-          });
-        } else {
-          await validateFDDetailsMutation.mutate({
-            FD_DETAIL_DATA: [...newData],
-            SCREEN_REF: "RPT/401",
-          });
-        }
-      }
-    } else {
-      MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "At least one row is required.",
-        icon: "ERROR",
-      });
     }
   };
 
@@ -276,44 +132,37 @@ export const FixDepositForm = ({
     actionFlag
   ) => {
     endSubmit(true);
-
-    console.log("data", data);
-
-    const newData = data?.TRNDTLS?.map((obj) => ({
-      ...obj,
-      CHEQUE_DT: utilFunction.isValidDate(obj.CHEQUE_DATE)
-        ? format(new Date(obj.CHEQUE_DATE), "dd/MMM/yyyy")
-        : "",
-    }));
-
-    if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
+    if (parseFloat(data?.DIFF_AMOUNT) < 0) {
       MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total debit amount can't be Zero/Negative.",
+        messageTitle: "Validation Failed",
+        message: "Total Debit amount can not be greater than Total FD Amount.",
         icon: "ERROR",
       });
-    } else if (
-      parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
-    ) {
-      MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total debit amount should be equal to total FD amount.",
-        icon: "ERROR",
+    } else if (parseFloat(data?.DIFF_AMOUNT) > 0) {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message:
+          "Debit Amount less than Total FD Amount.\nAre you sure to add new row?",
+        buttonNames: ["No", "Yes"],
+        defFocusBtnName: "Yes",
       });
+      if (buttonName === "Yes") {
+        // const lastRow = data?.TRNDTLS[data?.TRNDTLS?.length - 1];
+        updateSourceAcctFormData([...data?.TRNDTLS, { ACCT_NAME: "" }]);
+      }
     } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {
       const buttonName = await MessageBox({
         messageTitle: "Confirmation",
-        message: "Proceed?",
-        buttonNames: ["Yes", "No"],
+        message: "Are you sure create FD?",
+        buttonNames: ["No", "Yes"],
         defFocusBtnName: "Yes",
-        loadingBtnName: ["Yes"],
       });
       if (buttonName === "Yes") {
-        saveFDDetailsMutation.mutate({
-          TRANSACTION_DTL: [...newData],
-          FD_DETAIL_DATA: [...FDState?.fdDetailFormData?.FDDTL],
-          SCREEN_REF: "RPT/401",
-        });
+        // doFixDepositMutation.mutate({
+        //   ...FDState?.fdParaFormData,
+        //   FD_ACCOUNTS: FDState?.fdDetailFormData?.FDDTL ?? [],
+        //   DR_ACCOUNTS: data?.TRNDTLS ?? [],
+        // });
       }
     }
   };
@@ -349,9 +198,7 @@ export const FixDepositForm = ({
                 FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
               } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`}
             </Typography>
-            <GradientButton onClick={handleDialogClose}>
-              {t("Close")}
-            </GradientButton>
+            <GradientButton onClick={closeDialog}>{t("Close")}</GradientButton>
           </Toolbar>
         </AppBar>
         <Stack sx={{ width: "100%", position: "relative" }} spacing={4}>
@@ -378,9 +225,9 @@ export const FixDepositForm = ({
           <div style={{ marginTop: "0px" }}>
             {FDState.activeStep === 0 ? (
               <FDDetailForm
+                doFixDepositMutation={doFixDepositMutation}
                 ref={fdDetailsformRef}
                 defaultView={defaultView}
-                detailsFormSubmitHandler={detailsFormSubmitHandler}
               />
             ) : FDState.activeStep === 1 ? (
               <TransferAcctDetailForm
@@ -403,18 +250,23 @@ export const FixDepositForm = ({
                 {FDState?.activeStep !== steps.length - 1 ? (
                   <GradientButton
                     onClick={handleComplete}
-                    endIcon={
-                      validateFDDetailsMutation?.isLoading ? (
-                        <CircularProgress size={20} />
-                      ) : null
-                    }
-                    disabled={validateFDDetailsMutation?.isLoading}
-                    color={"primary"}
+                    // endIcon={
+                    //   onSaveValidationMutation?.isLoading ? (
+                    //     <CircularProgress size={20} />
+                    //   ) : null
+                    // }
+                    // disabled={
+                    //   onSaveValidationMutation?.isLoading ||
+                    //   FDState?.disableButton
+                    // }
                   >
                     {t("Next")}
                   </GradientButton>
                 ) : (
-                  <GradientButton onClick={handleComplete}>
+                  <GradientButton
+                    disabled={FDState?.disableButton}
+                    onClick={handleComplete}
+                  >
                     {t("Finish")}
                   </GradientButton>
                 )}

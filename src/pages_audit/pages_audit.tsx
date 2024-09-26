@@ -1,6 +1,10 @@
-import { useState, Fragment, useEffect, lazy, useContext, memo } from "react";
+import { useState, Fragment, useEffect, lazy, useContext } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { AppBar } from "./appBar";
+import { Drawer } from "./drawer";
+import { MySideBar } from "./sideBar";
 import { Content } from "./content";
+// import "react-perfect-scrollbar/dist/css/styles.css";
 import { useStyles } from "./style";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
@@ -10,36 +14,18 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
 import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
 import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
-import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import TRN001Provider from "./pages/operations/DailyTransaction/TRN001/Trn001Reducer";
 // import { AccDetailContext } from "./auth";
-import { AuthContext } from "./auth";
-import { AuthContextProvider } from "@acuteinfo/common-base";
-import { MultiLanguages } from "./auth/multiLanguages";
-import SearchScreen from "./appBar/searchScreen";
-import { AppbarWrapper, SidebarWrapper } from "@acuteinfo/common-screens";
-import Logo from "assets/images/easy_bankcore_Logo.png";
-import useLogoPics from "components/logoPics/logoPics";
-import { LogoutModal } from "./appBar/logoutModal";
-import { AppBar } from "./appBar";
-import { Quick_View } from "./appBar/quickView";
-import { Notification_App } from "./appBar/notification";
-import { IconButton, Tooltip } from "@mui/material";
-import { Accountinquiry } from "./acct_Inquiry/acct_inquiry";
 
 export const PagesAudit = (props, { columns }) => {
-  const [acctInq, setAcctInq] = useState(false);
-  const { authState } = useContext(AuthContext);
   const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
-  const authController = useContext(AuthContext);
-  const navigate = useNavigate();
-  const logos = useLogoPics();
-  const [logoutOpen, setLogoutOpen] = useState(false);
+  // const { cardStore, setCardStore } = useContext(AccDetailContext);
   const classes = useStyles();
   const isValidURL = props?.isValidURL ?? true;
 
@@ -69,97 +55,68 @@ export const PagesAudit = (props, { columns }) => {
 
   return (
     <Fragment>
-      <AuthContextProvider authState={authState}>
-        <div className={classes.root}>
-          <AppbarWrapper
-            authState={authController?.authState}
-            handleDrawerClose={handleDrawerClose}
-            handleDrawerOpen={handleDrawerOpen}
-            navigate={navigate}
-            open={drawerOpen}
-            dashboardUrl="./dashboard"
-            LanguageComponent={MultiLanguages}
-            SearchComponent={SearchScreen}
-            bankLogo={Logo}
-            handleLogout={() => setLogoutOpen(true)}
-            handleProfile={() => navigate("./profile")}
-            logos={logos}
-            profilePic={
-              Boolean(authController?.getProfileImage)
-                ? authController?.getProfileImage
-                : logos?.profile
-            }
-            optionalComponents={[
-              {
-                Component: AcctEnqwrapper,
-                props: { open: acctInq, setAcctInq },
-              },
-              { Component: Quick_View },
-              { Component: Notification_App },
-            ]}
-            hideGreetings={false}
-          />
-          {/* <AppBar
-            handleDrawerOpen={handleDrawerOpen}
-            handleDrawerClose={handleDrawerClose}
-            open={drawerOpen}
-            columns={undefined}
-          /> */}
-          <SidebarWrapper
-            authState={authController?.authState ?? {}}
-            handleDrawerOpen={handleDrawerOpen}
-            open={drawerOpen}
-            navigate={navigate}
-            rootUrl="cbsenfinity"
-            dashboardUrl="dashboard"
-          />
-          <Content>
-            <Routes>
-              {isValidURL ? (
-                <>
-                  {/* <Route
+      <div className={classes.root}>
+        {/* {alert("Test")} */}
+        <AppBar
+          open={drawerOpen}
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          columns={columns}
+        />
+        <Drawer
+          open={drawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          handleDrawerOpen={handleDrawerOpen}
+        >
+          <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
+        </Drawer>
+        <Content>
+          <Routes>
+            {isValidURL ? (
+              <>
+                {/* <Route
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
                 /> */}
-                  <Route path="profile" element={<Profile />} />
-                  <Route path="dashboard/*" element={<Dashboard />} />
-                  <Route path="master/*" element={<Master />} />
-                  <Route path="operation/*" element={<OperationsMenu />} />
-                  <Route path="view-statement/*" element={<AccountDetails />} />
-                  <Route path="configuration/*" element={<Configuration />} />
-                  <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                  <Route
-                    path="operation/daily_tran_F1"
-                    element={
-                      <TRN001Provider>
-                        <Trn001 />
-                      </TRN001Provider>
-                    }
-                  />
-                  <Route
-                    path="operation/cnf_daily_tran_F2"
-                    element={
-                      <TRN001Provider>
-                        <Trn002 />
-                      </TRN001Provider>
-                    }
-                  />
+                <Route path="profile" element={<Profile />} />
+                <Route path="dashboard/*" element={<Dashboard />} />
+                <Route path="master/*" element={<Master />} />
+                <Route path="operation/*" element={<OperationsMenu />} />
+                <Route path="view-statement/*" element={<AccountDetails />} />
+                <Route path="configuration/*" element={<Configuration />} />
+                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                <Route
+                  path="operation/daily_tran_F1"
+                  element={
+                    <TRN001Provider>
+                      <Trn001 />
+                    </TRN001Provider>
+                  }
+                />
+                <Route
+                  path="operation/cnf_daily_tran_F2"
+                  element={
+                    <TRN001Provider>
+                      <Trn002 />
+                    </TRN001Provider>
+                  }
+                />
 
-                  {/* <Route
+                {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}
                 /> */}
-                </>
-              ) : null}
-              <Route
-                path="*"
-                element={<RedirectComponent isValidURL={isValidURL} />}
-              />
-              <Route path="cash/368" element={<TRN368 />} />
-              <Route path="cash/043" element={<TRN043 />} />
-              <Route path="cash/044" element={<TRN044 />} />
-            </Routes>
-            {/* <div
+              </>
+            ) : null}
+            <Route
+              path="*"
+              element={<RedirectComponent isValidURL={isValidURL} />}
+            />
+            <Route path="cash/368" element={<TRN368 />} />
+            <Route path="cash/043" element={<TRN043 />} />
+            <Route path="cash/044" element={<TRN044 />} />
+          </Routes>
+          {/* <div
             style={{
               position: "absolute",
               right: "0px",
@@ -169,15 +126,8 @@ export const PagesAudit = (props, { columns }) => {
           >
             <ChatMessageBox />Switch 
           </div> */}
-            {logoutOpen ? (
-              <LogoutModal
-                logoutOpen={logoutOpen}
-                setLogoutOpen={setLogoutOpen}
-              />
-            ) : null}
-          </Content>
-        </div>
-      </AuthContextProvider>
+        </Content>
+      </div>
     </Fragment>
   );
 };
@@ -196,45 +146,3 @@ const RedirectComponent = ({ isValidURL }) => {
   }, [navigate, location.pathname]);
   return null;
 };
-const AcctEnqwrapper = memo<any>(({ open, setAcctInq }) => {
-  return (
-    <>
-      <Tooltip title="Account Inquiry" placement="bottom" arrow>
-        <IconButton
-          // renderIcon="PersonSearchOutlined"
-          onClick={() => setAcctInq(true)}
-          sx={{
-            backgroundColor: open
-              ? "var(--theme-color3)"
-              : "rgba(235, 237, 238, 0.45)",
-            color: open ? "var(--theme-color2)" : "var(--theme-color3)",
-            borderRadius: "10px",
-            height: "30px",
-            width: "30px",
-            "&:hover": {
-              background: "var(--theme-color2)",
-              borderRadius: "10px",
-              transition: "all 0.2s ease 0s",
-              boxShadow:
-                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-              "& .MuiSvgIcon-root": {
-                height: "32px",
-                width: "32px",
-                transition: "all 0.2s ease 0s",
-                padding: "4px",
-              },
-            },
-          }}
-        >
-          <PersonSearchOutlinedIcon
-            fontSize="small"
-            sx={{
-              color: open ? "var(--theme-color2)" : "var(--theme-color3)",
-            }}
-          />
-        </IconButton>
-      </Tooltip>
-      {open && <Accountinquiry open={open} onClose={() => setAcctInq(false)} />}
-    </>
-  );
-});

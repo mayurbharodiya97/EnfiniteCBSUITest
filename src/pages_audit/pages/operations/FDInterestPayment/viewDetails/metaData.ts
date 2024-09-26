@@ -1,4 +1,4 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 
@@ -86,27 +86,18 @@ export const FdInterestPaymentFormMetaData = {
         componentType: "hidden",
       },
       name: "HOLDER_ACCT_NM",
-      ignoreInSubmit: true,
     },
     {
       render: {
         componentType: "hidden",
       },
       name: "HOLDER_ADD1",
-      ignoreInSubmit: true,
     },
     {
       render: {
         componentType: "hidden",
       },
       name: "HOLDER_CONTACT_INFO",
-      ignoreInSubmit: true,
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "TO_ACCT_TYPE_DIS",
     },
     {
       render: {
@@ -143,7 +134,6 @@ export const FdInterestPaymentFormMetaData = {
         "BANK",
         "TO_ACCT_NO",
         "TO_ACCT_TYPE",
-        "TO_ACCT_TYPE_DIS",
         "TO_ACCT_NM",
         "TO_CONTACT_NO",
         "TO_ADD1",
@@ -155,17 +145,14 @@ export const FdInterestPaymentFormMetaData = {
         authState,
         dependentFieldValues
       ) => {
-        if (formState?.isSubmitting) return {};
         if (!Boolean(formState?.rowData?.PAYMENT_MODE)) {
           neftflag = true;
           bankflag = true;
         }
         if (currentField?.value === "NEFT") {
           if (
-            (formState?.fdDetails?.PAYMENT_MODE === "BANKACCT" ||
-              formState?.rowsData?.[0]?.data?.PAYMENT_MODE === "BANKACCT") &&
-            (dependentFieldValues?.CR_BRANCH_CD?.value ||
-              dependentFieldValues?.CR_ACCT_TYPE?.value ||
+            Boolean(formState?.rowData?.PAYMENT_MODE) &&
+            (dependentFieldValues?.CR_ACCT_TYPE?.value ||
               dependentFieldValues?.CR_ACCT_CD?.value)
           ) {
             let btnName = await formState.MessageBox({
@@ -181,19 +168,13 @@ export const FdInterestPaymentFormMetaData = {
                 CR_ACCT_CD: { value: "" },
                 CR_ACCT_NM: { value: "" },
                 ACCT_NM: {
-                  value: dependentFieldValues?.HOLDER_ACCT_NM?.value
-                    ? dependentFieldValues?.HOLDER_ACCT_NM?.value
-                    : dependentFieldValues?.ACCT_NM?.value,
+                  value: dependentFieldValues?.HOLDER_ACCT_NM?.value ?? "",
                 },
                 ADD1: {
-                  value: dependentFieldValues?.HOLDER_ADD1?.value
-                    ? dependentFieldValues?.HOLDER_ADD1?.value
-                    : dependentFieldValues?.ADD1?.value,
+                  value: dependentFieldValues?.HOLDER_ADD1?.value ?? "",
                 },
                 CONTACT_INFO: {
-                  value: dependentFieldValues?.HOLDER_CONTACT_INFO?.value
-                    ? dependentFieldValues?.HOLDER_CONTACT_INFO?.value
-                    : dependentFieldValues?.CONTACT_INFO?.value,
+                  value: dependentFieldValues?.HOLDER_CONTACT_INFO?.value ?? "",
                 },
               };
             }
@@ -212,25 +193,22 @@ export const FdInterestPaymentFormMetaData = {
               ACCT_NM: {
                 value: bankflag
                   ? dependentFieldValues?.HOLDER_ACCT_NM?.value
-                  : dependentFieldValues?.ACCT_NM?.value ?? "",
+                  : "",
               },
               ADD1: {
-                value: bankflag
-                  ? dependentFieldValues?.HOLDER_ADD1?.value
-                  : dependentFieldValues?.ADD1?.value ?? "",
+                value: bankflag ? dependentFieldValues?.HOLDER_ADD1?.value : "",
               },
               CONTACT_INFO: {
                 value: bankflag
                   ? dependentFieldValues?.HOLDER_CONTACT_INFO?.value
-                  : dependentFieldValues?.CONTACT_INFO?.value ?? "",
+                  : "",
               },
             };
           }
         }
         if (currentField?.value === "BANKACCT") {
           if (
-            (formState?.fdDetails?.PAYMENT_MODE === "NEFT" ||
-              formState?.rowsData?.[0]?.data?.PAYMENT_MODE === "NEFT") &&
+            Boolean(formState?.rowData?.PAYMENT_MODE) &&
             (Boolean(dependentFieldValues?.ACCT_NM?.value) ||
               Boolean(dependentFieldValues?.ADD1?.value) ||
               Boolean(dependentFieldValues?.CONTACT_INFO?.value) ||
@@ -257,29 +235,20 @@ export const FdInterestPaymentFormMetaData = {
                 BANK: { value: "" },
                 TO_ACCT_NO: { value: "" },
                 TO_ACCT_TYPE: { value: "" },
-                TO_ACCT_TYPE_DIS: { value: "" },
                 TO_ACCT_NM: { value: "" },
                 TO_CONTACT_NO: { value: "" },
                 TO_ADD1: { value: "" },
                 CR_BRANCH_CD: {
-                  value: dependentFieldValues?.CR_BRANCH_CD_1?.value
-                    ? dependentFieldValues?.CR_BRANCH_CD_1?.value
-                    : dependentFieldValues?.CR_BRANCH_CD?.value,
+                  value: dependentFieldValues?.CR_BRANCH_CD_1?.value,
                 },
                 CR_ACCT_TYPE: {
-                  value: dependentFieldValues?.CR_ACCT_TYPE_1?.value
-                    ? dependentFieldValues?.CR_ACCT_TYPE_1?.value
-                    : dependentFieldValues?.CR_ACCT_TYPE?.value,
+                  value: dependentFieldValues?.CR_ACCT_TYPE_1?.value ?? "",
                 },
                 CR_ACCT_CD: {
-                  value: dependentFieldValues?.CR_ACCT_CD_1?.value
-                    ? dependentFieldValues?.CR_ACCT_CD_1?.value
-                    : dependentFieldValues?.CR_ACCT_CD?.value,
+                  value: dependentFieldValues?.CR_ACCT_CD_1?.value ?? "",
                 },
                 CR_ACCT_NM: {
-                  value: dependentFieldValues?.CR_ACCT_NM_1?.value
-                    ? dependentFieldValues?.CR_ACCT_NM_1?.value
-                    : dependentFieldValues?.CR_ACCT_NM?.value,
+                  value: dependentFieldValues?.CR_ACCT_NM_1?.value ?? "",
                 },
               };
             }
@@ -297,22 +266,22 @@ export const FdInterestPaymentFormMetaData = {
               CR_BRANCH_CD: {
                 value: neftflag
                   ? dependentFieldValues?.CR_BRANCH_CD_1?.value
-                  : dependentFieldValues?.CR_BRANCH_CD?.value ?? "",
+                  : "",
               },
               CR_ACCT_TYPE: {
                 value: neftflag
                   ? dependentFieldValues?.CR_ACCT_TYPE_1?.value
-                  : dependentFieldValues?.CR_ACCT_TYPE?.value ?? "",
+                  : "",
               },
               CR_ACCT_CD: {
                 value: neftflag
                   ? dependentFieldValues?.CR_ACCT_CD_1?.value
-                  : dependentFieldValues?.CR_ACCT_CD?.value ?? "",
+                  : "",
               },
               CR_ACCT_NM: {
                 value: neftflag
                   ? dependentFieldValues?.CR_ACCT_NM_1?.value
-                  : dependentFieldValues?.CR_ACCT_NM?.value ?? "",
+                  : "",
               },
             };
           }
@@ -361,7 +330,6 @@ export const FdInterestPaymentFormMetaData = {
       branchCodeMetadata: {
         name: "CR_BRANCH_CD",
         dependentFields: ["PAYMENT_MODE"],
-        validationRun: "onChange",
         runPostValidationHookAlways: true,
         isReadOnly: (fieldValue, dependentFields, formState) => {
           return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
@@ -373,22 +341,12 @@ export const FdInterestPaymentFormMetaData = {
             return false;
           }
         },
-        validate: (currentField, dependentFields) => {
-          if (
-            !Boolean(currentField?.value) &&
-            dependentFields?.PAYMENT_MODE?.value !== "NEFT"
-          ) {
-            return "BranchCodeReqired";
-          }
-          return "";
-        },
-        schemaValidation: {},
-        GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+
+        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
         name: "CR_ACCT_TYPE",
         dependentFields: ["PAYMENT_MODE"],
-        validationRun: "onChange",
         runPostValidationHookAlways: true,
         isReadOnly: (fieldValue, dependentFields, formState) => {
           return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
@@ -400,17 +358,7 @@ export const FdInterestPaymentFormMetaData = {
             return false;
           }
         },
-        validate: (currentField, dependentFields) => {
-          if (
-            !Boolean(currentField?.value) &&
-            dependentFields?.PAYMENT_MODE?.value !== "NEFT"
-          ) {
-            return "AccountTypeReqired";
-          }
-          return "";
-        },
-        schemaValidation: {},
-        GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
         isFieldFocused: true,
       },
       accountCodeMetadata: {
@@ -427,16 +375,7 @@ export const FdInterestPaymentFormMetaData = {
             return false;
           }
         },
-        validate: (currentField, dependentFields) => {
-          if (
-            !Boolean(currentField?.value) &&
-            dependentFields?.PAYMENT_MODE?.value !== "NEFT"
-          ) {
-            return "AccountNumberReqired";
-          }
-          return "";
-        },
-        schemaValidation: {},
+
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -517,14 +456,10 @@ export const FdInterestPaymentFormMetaData = {
                 isFieldFocused: false,
               },
             };
-          } else if (!currentField?.value) {
-            return {
-              CR_ACCT_NM: { value: "" },
-            };
           }
         },
         fullWidth: true,
-        GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
       },
     },
 
@@ -545,14 +480,14 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      GridProps: { xs: 12, sm: 6, md: 4, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
 
     {
       render: {
         componentType: "divider",
       },
-      label: "FDNEFTDetail",
+      label: "FD Interest/Payment Credit NEFT Details",
       name: "NEFT",
       dependentFields: ["PAYMENT_MODE"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -569,14 +504,15 @@ export const FdInterestPaymentFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      label: "OrderingAcName",
-      placeholder: "EnterOrderingAcName",
+      label: "Ordering A/c Name",
+      placeholder: "AccountName",
       required: true,
       maxLength: 100,
       type: "text",
       txtTransform: "uppercase",
-      dependentFields: ["PAYMENT_MODE"],
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+      dependentFields: ["PAYMENT_MODE", "HIDDEN_ACCT_NM"],
+      validationRun: "onChange",
+      isAllowSpecialChar: false,
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
@@ -587,14 +523,10 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "OrderingNameRequired";
-        }
-        return "";
+
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Account Name is required"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
@@ -603,14 +535,13 @@ export const FdInterestPaymentFormMetaData = {
         componentType: "textField",
       },
       name: "ADD1",
-      label: "OrderingAcAddress",
-      placeholder: "EnterOrderingAcAddress",
+      label: "Ordering A/c Address",
       required: true,
       maxLength: 100,
       type: "text",
       txtTransform: "uppercase",
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-      dependentFields: ["PAYMENT_MODE"],
+      isAllowSpecialChar: false,
+      dependentFields: ["PAYMENT_MODE", "HIDDEN_ADD1"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
@@ -621,14 +552,10 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "OrderingAddressRequired";
-        }
-        return "";
+
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Account Address is required"] }],
       },
       GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
@@ -637,13 +564,13 @@ export const FdInterestPaymentFormMetaData = {
         componentType: "textField",
       },
       name: "CONTACT_INFO",
-      label: "OrderingAcContact",
-      placeholder: "EnterOrderingAcContact",
+      label: "Ordering A/c Contact",
+      placeholder: "",
       required: true,
       maxLength: 35,
       type: "text",
-      dependentFields: ["PAYMENT_MODE"],
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+      dependentFields: ["PAYMENT_MODE", "HIDDEN_CONTACT_INFO"],
+      isAllowSpecialChar: false,
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
@@ -654,29 +581,24 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "OrderingContactRequired";
-        }
-        return "";
+
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Account contact is required"] }],
       },
-      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "TO_IFSCCODE",
-      label: "IFSCCode",
-      placeholder: "EnterIFSCCode",
+      label: "IFSC Code",
       required: true,
       maxLength: 11,
       type: "text",
       dependentFields: ["PAYMENT_MODE"],
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+      isAllowSpecialChar: false,
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
@@ -687,15 +609,14 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "IFSCCodeisRequired";
+      validate: (values) => {
+        let regex = /^[^~`!@#$%^&*()\-+_=\\"';:?/<>,.{}[\]|]+$/;
+        if (values.value && !regex.test(values.value)) {
+          return "Not allowed";
         }
         return "";
       },
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -742,8 +663,11 @@ export const FdInterestPaymentFormMetaData = {
           };
         }
       },
-
-      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["IFSC Code is required"] }],
+      },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
@@ -762,16 +686,11 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BankRequired";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Bank is required"] }],
       },
-      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
@@ -785,11 +704,12 @@ export const FdInterestPaymentFormMetaData = {
         componentType: "autocomplete",
       },
       name: "TO_ACCT_NO",
-      label: "BeneficiaryAccountNumber",
-      placeholder: "EnterBeneficiaryAccountNumber",
+      label: "Beneficiary Account Number",
+      placeholder: "",
       type: "text",
       required: true,
       disableCaching: true,
+      runPostValidationHookAlways: true,
       runValidationOnDependentFieldsChange: true,
       dependentFields: ["PAYMENT_MODE", "TO_IFSCCODE_HIDDEN"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -854,64 +774,28 @@ export const FdInterestPaymentFormMetaData = {
         }
       },
 
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BeneficiaryAcctNumRequired";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["Beneficiary Account Number is required"],
+          },
+        ],
       },
-      GridProps: { xs: 12, sm: 6, md: 2.4, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "select",
       },
       name: "TO_ACCT_TYPE",
-      label: "BeneficiaryAccountType",
-      placeholder: "EnterBeneficiaryAccountType",
+      label: "Beneficiary Account Type",
+      placeholder: "",
       type: "text",
       options: API.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
       required: true,
-      validationRun: "onChange",
-      dependentFields: ["PAYMENT_MODE", "TO_ACCT_NO"],
-      isReadOnly: (fieldValue, dependentFields, formState) => {
-        return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
-      },
-      shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PAYMENT_MODE?.value === "BANKACCT") {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BeneficiaryAcctTypeRequired";
-        }
-        return "";
-      },
-      GridProps: { xs: 12, sm: 6, md: 2.4, lg: 2.4, xl: 2.4 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "TO_ACCT_NM",
-      label: "BeneficiaryAccountName",
-      placeholder: "EnterBeneficiaryAccountName",
-      type: "text",
-      maxLength: 100,
-      required: true,
-      txtTransform: "uppercase",
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-      validationRun: "onChange",
       dependentFields: ["PAYMENT_MODE", "TO_ACCT_NO"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
@@ -924,34 +808,62 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BeneficiaryAcctNameRequired";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["Beneficiary Account Type is required"],
+          },
+        ],
       },
-      GridProps: { xs: 12, sm: 6, md: 2.4, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_ACCT_NM",
+      label: "Beneficiary Account Name",
+      type: "text",
+      maxLength: 100,
+      required: true,
+      txtTransform: "uppercase",
+      dependentFields: ["PAYMENT_MODE", "TO_ACCT_NO"],
+      isAllowSpecialChar: false,
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
+      },
+
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PAYMENT_MODE?.value === "BANKACCT") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Beneficiary Name is required"] }],
+      },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "TO_CONTACT_NO",
-      label: "BeneficiaryContact",
-      placeholder: "EnterBeneficiaryContact",
+      label: "Beneficiary Contact",
       type: "text",
       maxLength: 50,
       txtTransform: "uppercase",
       required: true,
-      dependentFields: ["PAYMENT_MODE"],
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-      validationRun: "onChange",
+      dependentFields: ["PAYMENT_MODE", "TO_ACCT_NO"],
+      isAllowSpecialChar: false,
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
+
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PAYMENT_MODE?.value === "BANKACCT") {
           return true;
@@ -959,34 +871,31 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BeneficiaryContactRequired";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Beneficiary Contact is required"] },
+        ],
       },
-      GridProps: { xs: 12, sm: 6, md: 2.4, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "TO_ADD1",
-      label: "BeneficiaryAddress",
-      placeholder: "EnterBeneficiaryAddress",
+      label: "Beneficiary Address",
       type: "text",
       required: true,
       txtTransform: "uppercase",
       maxLength: 200,
-      dependentFields: ["PAYMENT_MODE"],
-      preventSpecialChars: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-      validationRun: "onChange",
+      dependentFields: ["PAYMENT_MODE", "TO_ACCT_NO"],
+      isAllowSpecialChar: false,
+      runValidationOnDependentFieldsChange: true,
       isReadOnly: (fieldValue, dependentFields, formState) => {
         return dependentFields?.PAYMENT_MODE?.value === "" ? true : false;
       },
+
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PAYMENT_MODE?.value === "BANKACCT") {
           return true;
@@ -994,16 +903,13 @@ export const FdInterestPaymentFormMetaData = {
           return false;
         }
       },
-      validate: (currentField, dependentFields) => {
-        if (
-          !Boolean(currentField?.value) &&
-          dependentFields?.PAYMENT_MODE?.value !== "BANKACCT"
-        ) {
-          return "BeneficiaryAddressRequired";
-        }
-        return "";
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Beneficiary Address is required"] },
+        ],
       },
-      GridProps: { xs: 12, sm: 6, md: 2.4, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
     },
   ],
 };

@@ -15,12 +15,10 @@ import "./accDetails.css";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
-import {
-  GradientButton,
-  formatCurrency,
-  getCurrencySymbol,
-  usePropertiesConfigContext,
-} from "@acuteinfo/common-base";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+import { GradientButton } from "components/styledComponent/button";
 import { DailyTransTabsWithDialog } from "../DailyTransTabs";
 
 const useStyles = makeStyles((theme) => ({
@@ -78,19 +76,19 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
   const [isOpenCust360, setIsOpenCust360] = useState<boolean>(false);
   const [rowsDatas, setRowsDatas] = useState<any>([]);
   const classes = useStyles();
-  const customParameter = usePropertiesConfigContext();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
   const { authState } = useContext(AuthContext);
   let cardsInfo = cardsData ?? [];
 
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
-    let arr3 = arr2 && arr2?.filter((a, i) => arr2?.indexOf(a) == i);
+    let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
     setCardName(arr3);
-    const customerIDObj = cardsData?.find(
-      (item) => item?.COL_LABEL === "Customer ID"
+    const customerIDObj = cardsData.find(
+      (item) => item.COL_LABEL === "Customer ID"
     );
-    const customerID = customerIDObj ? customerIDObj?.COL_VALUE : null;
+    const customerID = customerIDObj ? customerIDObj.COL_VALUE : null;
     setRowsDatas([
       {
         data: {
@@ -105,13 +103,13 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
     ]);
   }, [cardsData]);
 
-  const filteredCardsInfo1 = cardsInfo?.filter((card) => card.CARD_NO === "1");
-  const filteredCardsInfo2 = cardsInfo?.filter((card) => card.CARD_NO === "2");
-  const filteredCardsInfo3 = cardsInfo?.filter((card) => card.CARD_NO === "3");
+  const filteredCardsInfo1 = cardsInfo.filter((card) => card.CARD_NO === "1");
+  const filteredCardsInfo2 = cardsInfo.filter((card) => card.CARD_NO === "2");
+  const filteredCardsInfo3 = cardsInfo.filter((card) => card.CARD_NO === "3");
 
-  const isOddTotal1 = filteredCardsInfo1?.length % 2 === 1;
-  const isOddTotal2 = filteredCardsInfo2?.length % 2 === 1;
-  const isOddTotal3 = filteredCardsInfo3?.length % 2 === 1;
+  const isOddTotal1 = filteredCardsInfo1.length % 2 === 1;
+  const isOddTotal2 = filteredCardsInfo2.length % 2 === 1;
+  const isOddTotal3 = filteredCardsInfo3.length % 2 === 1;
   const handleClose = () => {
     setIsOpenCust360(false);
   };
@@ -158,7 +156,7 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
                   </div> */}
                   <CardContent>
                     <Grid container spacing={1}>
-                      {filteredCardsInfo?.map((b, i2) => {
+                      {filteredCardsInfo.map((b, i2) => {
                         return b?.COMPONENT_TYPE === "hidden" ? null : (
                           <Grid
                             item
@@ -171,7 +169,7 @@ export const AccDetails = ({ cardsData, hideCust360Btn = false }) => {
                             }}
                           >
                             <>
-                              <Typography className={classes?.cardLabel}>
+                              <Typography className={classes.cardLabel}>
                                 {b?.COL_LABEL}
                               </Typography>
                               <Typography>

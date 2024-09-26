@@ -1,20 +1,17 @@
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
-import { ActionTypes } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AcctModal from "./AcctModal";
 import { Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
-
-import {
-  MessageBoxWrapper,
-  Alert,
-  GridMetaDataType,
-  GridWrapper,
-} from "@acuteinfo/common-base";
+import { Alert } from "components/common/alert";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 
 const AcctConfirm = () => {
   const { authState } = useContext(AuthContext);
@@ -123,32 +120,19 @@ const AcctConfirm = () => {
         refetchData={() => PendingRefetch()}
         // ref={myGridRef}
       />
-      {/* old cbs base code according */}
-      {/* <MessageBoxWrapper
-          MessageTitle={"ALERT"}
-          Message={"You can not confirm your own posted transaction"}
-          onClickButton={() => {
-            setPreventConfirmDialog(false)
-            // setConfirmAction(null)
-            // setConfirmMsgDialog(false)
-            // closeForm()
-          }}
-          rows={[]}
-          buttonNames={["OK"]}
-          open={preventConfirmDialog}
-        /> */}
-      {/* acutecommonbase package cbs base code according */}
+
       <MessageBoxWrapper
-        isOpen={preventConfirmDialog}
-        validMessage={"You can not confirm your own posted transactionn"}
-        onActionYes={() => {
+        MessageTitle={"ALERT"}
+        Message={"You can not confirm your own posted transaction"}
+        onClickButton={() => {
           setPreventConfirmDialog(false);
           // setConfirmAction(null)
           // setConfirmMsgDialog(false)
           // closeForm()
         }}
-        onActionNo={() => {}}
         rows={[]}
+        buttonNames={["OK"]}
+        open={preventConfirmDialog}
       />
 
       <Routes>

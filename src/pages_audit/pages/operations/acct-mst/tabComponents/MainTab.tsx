@@ -1,16 +1,13 @@
-import {
-  FormWrapper,
-  MetaDataType,
-  usePopupContext,
-  extractMetaData,
-} from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { main_tab_metadata } from "../tabMetadata/mainTabMetadata";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import TabNavigate from "../TabNavigate";
 import _ from "lodash";
+import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
+import { extractMetaData } from "components/utils";
 
 const MainTab = () => {
   const {

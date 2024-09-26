@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const JointDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -37,7 +37,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Type",
-      accessor: "JOINT_DISC",
+      accessor: "J_TYPE",
       sequence: 2,
       componentType: "default",
       width: 100,
@@ -58,14 +58,14 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       width: 100,
     },
     {
-      columnName: "Mem. Type A/C No.",
+      columnName: "Mem Type A/C No.",
       accessor: "MEM_ACCT_CD",
       sequence: 5,
       componentType: "default",
       width: 150,
     },
     {
-      columnName: "Reference Account",
+      columnName: "Reference A/C",
       accessor: "REF_ACCT_CD",
       sequence: 6,
       componentType: "default",

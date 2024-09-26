@@ -1,7 +1,7 @@
 import { Button, Dialog } from "@mui/material";
 import React from "react";
 
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { nscDetailFormMetaData } from "./nscFormDetailMetaData";
 import { useTranslation } from "react-i18next";
@@ -22,9 +22,8 @@ export const NSCFormDetail = ({ navigate }) => {
       <>
         <FormWrapper
           key={"nscdetailForm"}
-          metaData={nscDetailFormMetaData as MetaDataType}
-          initialValues={rows?.[0]?.data ?? {}}
-          onSubmitHandler={() => {}}
+          metaData={nscDetailFormMetaData}
+          initialValues={rows?.[0]?.data ?? []}
           formStyle={{
             background: "white",
             height: "calc(100vh - 466px)",

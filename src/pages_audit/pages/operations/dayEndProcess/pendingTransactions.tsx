@@ -1,23 +1,19 @@
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import * as API from "./api";
+import { queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
+import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { ViewEodReport } from "./viewEodReport";
-import {
-  Alert,
-  GridWrapper,
-  usePopupContext,
-  ActionTypes,
-  queryClient,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+import { Alert } from "components/common/alert";
 import {
   pendingTrnsEodReportMetaData,
   pendingTrnsMetadata,
 } from "./gridMetadata";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
-import { Dialog } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -34,10 +30,7 @@ export const PendinGTrns = ({ open, close }) => {
   const [rowData, setRowData] = useState<any>([]);
   const [docData, setDocData] = useState<any>({});
   const [openedWindow, setOpenedWindow] = useState<Window | null>(null);
-  const [currentData, setCurrentData] = useState<any>({});
   const { MessageBox } = usePopupContext();
-  const [uniqueReportData, setUniqueReportData] = useState([]);
-
   const navigate = useNavigate();
 
   const setCurrentAction = useCallback(
@@ -84,6 +77,10 @@ export const PendinGTrns = ({ open, close }) => {
         setOpenedWindow(newWindow);
         newWindow.focus();
         queryClient.removeQueries(["getDocUrl"]);
+      } else {
+        console.error(
+          "Failed to open the window. It might be blocked by a pop-up blocker."
+        );
       }
     },
   });
@@ -91,24 +88,16 @@ export const PendinGTrns = ({ open, close }) => {
   const reportMutation = useMutation(API.getpendingtrnReport, {
     onError: async (error: any) => {
       await MessageBox({
-        message: error?.error_msg ?? "Error occurred",
-        messageTitle: "Error",
+        message: error?.error_msg,
+        messageTitle: "error",
         buttonNames: ["Ok"],
       });
     },
-    onSuccess: (data: any) => {
+    onSuccess: async (data) => {
+      console.log("Report data:", data);
       setRowData(data);
     },
   });
-  useEffect(() => {
-    if (Array.isArray(data)) {
-      const updatedReportData: any = data.map((item, index) => ({
-        ...item,
-        INDEX: `${index}`,
-      }));
-      setUniqueReportData(updatedReportData);
-    }
-  }, [data]);
 
   useEffect(() => {
     return () => {
@@ -129,12 +118,13 @@ export const PendinGTrns = ({ open, close }) => {
       <GridWrapper
         key={"pendingtrns"}
         finalMetaData={pendingTrnsMetadata as GridMetaDataType}
-        data={uniqueReportData ?? []}
+        data={data ?? []}
         setData={() => null}
         actions={actions}
         onClickActionEvent={(index, id, currentData) => {
           if (id === "REPORT") {
-            setCurrentData(currentData);
+            setRowData(currentData);
+            setOpenReport(true);
             reportMutation.mutate({
               COMP_CD: authState?.companyID,
               BRANCH_CD: authState?.user?.branchCode,
@@ -142,7 +132,6 @@ export const PendinGTrns = ({ open, close }) => {
               VERSION: currentData?.VERSION,
               DOCU_CD: currentData?.DOCU_CD,
             });
-            setOpenReport(true);
           }
           if (id === "OPEN") {
             console.log("Opening document:", currentData);
@@ -154,32 +143,20 @@ export const PendinGTrns = ({ open, close }) => {
           }
         }}
         loading={isLoading || isFetching}
-        enableExport={true}
+        ReportExportButton={true}
         setAction={setCurrentAction}
       />
-      {openReport && (
+
+      {openReport ? (
         <ViewEodReport
           open={openReport}
-          close={() => setOpenReport(false)}
+          close={() => {
+            setOpenReport(false);
+          }}
           metaData={pendingTrnsEodReportMetaData}
           reportData={rowData}
-          reportLabel={`Pending Transaction for: ${authState?.workingDate} , Version :${currentData?.VERSION} ${currentData?.SCREEN_NM} `}
-          loading={reportMutation.isLoading}
+          reportLabel={`Pending Transaction for ${authState?.workingDate}, Version: ${rowData?.VERSION}, KYC Review Due Date Report`}
         />
-      )}
-      {docurlMutation.isLoading ? (
-        <Dialog
-          open={open}
-          PaperProps={{
-            style: {
-              width: "60%",
-              overflow: "auto",
-            },
-          }}
-          maxWidth="lg"
-        >
-          <LoaderPaperComponent />
-        </Dialog>
       ) : (
         ""
       )}

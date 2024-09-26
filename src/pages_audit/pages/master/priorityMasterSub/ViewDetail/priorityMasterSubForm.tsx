@@ -1,23 +1,19 @@
 import { Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
+import FormWrapper from "components/dyanmicForm";
+import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { prioritymastersubformmetadata } from "./metaData";
+import { GradientButton } from "components/styledComponent/button";
 import { enqueueSnackbar } from "notistack";
+import { extractMetaData, utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 import { LoadingTextAnimation } from "components/common/loader";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { t } from "i18next";
-import {
-  LoaderPaperComponent,
-  usePopupContext,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
 
 export const Proritysubform = ({
   isDataChangedRef,
@@ -103,12 +99,9 @@ export const Proritysubform = ({
       {gridData ? (
         <FormWrapper
           key={"prioritymastersubformmetadata" + formMode}
-          metaData={
-            extractMetaData(
-              prioritymastersubformmetadata,
-              formMode
-            ) as MetaDataType
-          }
+          metaData={extractMetaData(prioritymastersubformmetadata, formMode)}
+          as
+          MetaDataType
           displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
           initialValues={{ ...rows?.[0]?.data }}

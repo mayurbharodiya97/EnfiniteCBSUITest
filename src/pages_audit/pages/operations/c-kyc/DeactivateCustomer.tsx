@@ -3,16 +3,14 @@ import { AppBar, Dialog, IconButton } from "@mui/material";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
+import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import {
-  usePopupContext,
-  Alert,
-  LoaderPaperComponent,
-  ActionTypes,
-  queryClient,
-} from "@acuteinfo/common-base";
+import { usePopupContext } from "components/custom/popupContext";
+
 export const DeactivateCustomer = ({ rowdata, onClose }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();

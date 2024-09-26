@@ -1,23 +1,21 @@
 import { Dialog, Paper } from "@mui/material";
 import { useContext, useEffect } from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { InitialValuesType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { FDContext } from "../context/fdContext";
 import { ViewMasterMetadata } from "./metaData/viewMasterMetaData";
+import { queryClient } from "cache";
 import { useQuery } from "react-query";
 import * as API from "../api";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import Draggable from "react-draggable";
-import {
-  LoaderPaperComponent,
-  Alert,
-  GradientButton,
-  queryClient,
-  InitialValuesType,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { useLocation } from "react-router-dom";
 
-export const ViewMasterForm = ({ handleDialogClose }) => {
+export const ViewMasterForm = ({ closeDialog }) => {
   const { authState } = useContext(AuthContext);
   const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
@@ -46,12 +44,14 @@ export const ViewMasterForm = ({ handleDialogClose }) => {
     };
   }, []);
 
-  //Form Header title
-  ViewMasterMetadata.form.label = `View Master of A/c No.: ${
-    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
+  useEffect(() => {
+    const label2 = `View Master of A/c No.: ${
+      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
+    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
+      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
+    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
+    ViewMasterMetadata.form.label = label2;
+  }, []);
 
   return (
     <Dialog
@@ -104,14 +104,11 @@ export const ViewMasterForm = ({ handleDialogClose }) => {
                 ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
               } as InitialValuesType
             }
-            onSubmitHandler={() => {}}
             formStyle={{
               background: "white",
             }}
           >
-            <GradientButton onClick={() => handleDialogClose()}>
-              Close
-            </GradientButton>
+            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
           </FormWrapper>
         )}
       </div>

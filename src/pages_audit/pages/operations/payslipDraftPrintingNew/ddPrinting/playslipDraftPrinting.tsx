@@ -1,5 +1,5 @@
 import { Dialog } from "@mui/material";
-import { GradientButton } from "@acuteinfo/common-base";
+import { GradientButton } from "components/styledComponent/button";
 
 const PlaySlipDraftPrintingNew = ({
   SelectedRowData,

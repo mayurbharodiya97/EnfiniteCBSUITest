@@ -2,8 +2,12 @@ import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { GeneralAPI } from "registry/fns/functions";
 import { validateAccountAndGetDetail } from "../api";
-import { greaterThanDate, lessThanInclusiveDate } from "@acuteinfo/common-base";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
+import {
+  greaterThanInclusiveDate,
+  lessThanInclusiveDate,
+} from "registry/rulesEngine";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
 const getReadOnlyValue = (dependentField, fieldName) => {
   const newDependentField =
@@ -61,7 +65,6 @@ export const FixDepositDetailFormMetadata = {
       render: {
         componentType: "spacer",
       },
-      name: "SPACER",
       GridProps: { xs: 0, md: 10, sm: 10, lg: 10, xl: 10 },
     },
     {
@@ -306,10 +309,13 @@ export const FixDepositDetailFormMetadata = {
             let fromTranDate = newDependentField?.FROM_TRAN_DT?.value;
             let toTranDate = newDependentField?.TO_TRAN_DT?.value;
 
-            if (utilFunction.isValidDate(fromTranDate)) {
+            if (isValidDate(fromTranDate)) {
               fromTranDate = format(new Date(fromTranDate), "yyyy/MM/dd");
               if (
-                !greaterThanDate(new Date(tranDate), new Date(fromTranDate))
+                !greaterThanInclusiveDate(
+                  new Date(tranDate),
+                  new Date(fromTranDate)
+                )
               ) {
                 // Calculate the difference in milliseconds
                 var diffms =
@@ -322,7 +328,7 @@ export const FixDepositDetailFormMetadata = {
                 );
               }
             }
-            if (utilFunction.isValidDate(toTranDate)) {
+            if (isValidDate(toTranDate)) {
               toTranDate = format(new Date(toTranDate), "yyyy/MM/dd");
               if (
                 toTranDate &&

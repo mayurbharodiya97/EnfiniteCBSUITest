@@ -1,23 +1,20 @@
 import { useRef, useCallback, useContext, useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import GridWrapper from "components/dataTableStatic";
+import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
+import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { RecurringPaymentEntryGridMetaData } from "./recurringPmtEntryGridMetadata";
+import { queryClient } from "cache";
+import { usePopupContext } from "components/custom/popupContext";
 import RecurringPaymentStepperForm from "./recurringPaymentEntryForm/recurringPaymentStepperForm";
 import { RecurringContext } from "./context/recurringPaymentContext";
 import { useTranslation } from "react-i18next";
 import { RecurringPaymentEntryForm } from "./recurringPaymentEntryForm/recurringPaymentEntryForm";
-import {
-  usePopupContext,
-  queryClient,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  Alert,
-  RemarksAPIWrapper,
-} from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Dialog } from "@mui/material";
 import { RecurringPaymentConfirmation } from "../recurringPaymentConfirmation/recurringPaymentConfirmation";
 
@@ -241,7 +238,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetchData()}
-        enableExport={true}
+        ReportExportButton={true}
       />
 
       <Routes>

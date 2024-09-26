@@ -1,4 +1,4 @@
-import { components, filters } from "@acuteinfo/common-base";
+import { components, filters } from "components/report";
 
 export const accountDeletionMetaData = {
   title: "Account Deletion Request Report",

@@ -1,36 +1,32 @@
 import { CircularProgress, Dialog } from "@mui/material";
+import { usePopupContext } from "components/custom/popupContext";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { GradientButton } from "components/styledComponent/button";
+import { extractMetaData, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
-import { Transition } from "@acuteinfo/common-base";
+import { SubmitFnType } from "packages/form";
+import { AuthContext } from "pages_audit/auth";
+import { Transition } from "pages_audit/common";
 import { useContext, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { NpaCategoryMasterFormMetadata } from "./metaData";
 import { useTranslation } from "react-i18next";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
-import {
-  LoaderPaperComponent,
-  usePopupContext,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
-import { AuthContext } from "pages_audit/auth";
 export const NpaCategoryMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
   gridData,
 }) => {
+  const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const [formMode, setFormMode] = useState(defaultView);
-  const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
 
   const mutation = useMutation(API.updateNpaCategoryMasterData, {
@@ -61,15 +57,7 @@ export const NpaCategoryMasterForm = ({
     // @ts-ignore
     endSubmit(true);
 
-    let newData = {
-      ...data,
-      SECURE_PROV_PERC: Boolean(data?.SECURE_PROV_PERC?.trim())
-        ? data?.SECURE_PROV_PERC
-        : "0",
-      UNSECURE_PROV_PERC: Boolean(data?.UNSECURE_PROV_PERC?.trim())
-        ? data?.UNSECURE_PROV_PERC
-        : "0",
-    };
+    let newData = { ...data };
     let oldData = { ...rows?.[0]?.data };
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
@@ -202,11 +190,11 @@ export const NpaCategoryMasterWrapper = ({
       TransitionComponent={Transition}
       PaperProps={{
         style: {
-          width: "100%",
+          width: "auto",
           overflow: "auto",
         },
       }}
-      maxWidth="md"
+      maxWidth="lg"
     >
       {gridData ? (
         <NpaCategoryMasterForm

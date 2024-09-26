@@ -12,6 +12,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { DocumentGridMetaData } from "./gridMetadata";
 // import GridWrapper from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -20,20 +21,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import { ActionTypes } from "components/dataTable/types";
+import { GridMetaDataType } from "components/dataTableStatic/types";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-
-import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  utilFunction,
-  usePopupContext,
-  queryClient,
-  LoaderPaperComponent,
-} from "@acuteinfo/common-base";
-
-import { useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
 
 const actions: ActionTypes[] = [
   {
@@ -43,25 +35,11 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
-  {
-    actionName: "close",
-    actionLabel: "Close",
-    multiple: undefined,
-    alwaysAvailable: true,
-  },
 ];
-
-type DocumentProps = {
-  reqData: any;
-  handleDialogClose?: any;
-};
 
 let imgBase = "";
 //=========
-export const Document: React.FC<DocumentProps> = ({
-  reqData,
-  handleDialogClose,
-}) => {
+export const Document = ({ reqData }) => {
   const [dataRow, setDataRow] = useState<any>({});
   const imgUrl = useRef<any | null>(null);
   const myGridRef = useRef<any>(null);
@@ -69,8 +47,6 @@ export const Document: React.FC<DocumentProps> = ({
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [detailViewDialog, setDetailViewDialog] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   //api define=====================
   const getDocTemplateList = useMutation(API.getDocTemplateList, {
@@ -78,42 +54,22 @@ export const Document: React.FC<DocumentProps> = ({
       console.log(data, " getDocTemplateList");
       setRows(data);
     },
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
+    onError: (error) => {},
   });
   const getDocView = useMutation(API.getDocView, {
-    onSuccess: async (res) => {
+    onSuccess: (res) => {
       console.log(res, " getDocView");
 
       if (res?.ERROR_MSG) {
-        await MessageBox({
-          messageTitle: "Validation Failed",
-          message: res?.ERROR_MSG ?? "",
-          icon: "ERROR",
+        enqueueSnackbar(res?.ERROR_MSG, {
+          variant: "error",
         });
       } else {
         imgBase = res?.DOC_IMAGE;
         handleImgProcess();
       }
     },
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
+    onError: (error) => {},
   });
 
   // fns====================
@@ -125,9 +81,6 @@ export const Document: React.FC<DocumentProps> = ({
     if (data.name === "view-detail") {
       getDocView.mutate(row);
       console.log("heloooo");
-    }
-    if (data?.name === "close") {
-      handleDialogClose();
     }
   }, []);
 
@@ -158,22 +111,8 @@ export const Document: React.FC<DocumentProps> = ({
     any
   >(["getDocTemplateList", { reqData }], () => API.getDocTemplateList(reqData));
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries([
-        "getDocTemplateList",
-        authState?.user?.branchCode,
-      ]);
-    };
-  }, []);
-
   return (
     <>
-      {getDocView.isLoading && (
-        <Dialog open={true} fullWidth={true}>
-          <LoaderPaperComponent size={30} />
-        </Dialog>
-      )}
       {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -191,14 +130,12 @@ export const Document: React.FC<DocumentProps> = ({
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        refetchData={() => refetch()}
+        refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        // onlySingleSelectionAllow={true}
-        // isNewRowStyle={true}
-        disableMultipleRowSelect={true}
-        variant={"standard"}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
         // defaultSelectedRowId={1}
         //  controlsAtBottom={true}
       />
@@ -247,7 +184,7 @@ export const Document: React.FC<DocumentProps> = ({
         </DialogActions>
       </Dialog>
 
-      {/* <Grid
+      <Grid
         item
         xs={12}
         sm={12}
@@ -266,7 +203,7 @@ export const Document: React.FC<DocumentProps> = ({
         <Grid item sx={{ display: "flex", gap: "1rem" }}>
           *Double click on records for detailed view
         </Grid>
-      </Grid> */}
+      </Grid>
     </>
   );
 };

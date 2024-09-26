@@ -1,4 +1,6 @@
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import * as API from "../../api";
+import { Placeholder } from "reactstrap";
 
 // export const DocMasterDTLMetadata: MasterDetailsMetaData = {
 export const DocMasterDTLMetadata: any = {

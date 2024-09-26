@@ -1,6 +1,6 @@
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { t } from "i18next";
 
@@ -11,7 +11,7 @@ export const StandingInstructionMainMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-
+    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1630,7 +1630,7 @@ export const siasExecute = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-
+    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1775,7 +1775,7 @@ export const siasExecute = {
           alwaysRun: true,
           touchAndValidate: false,
         },
-        // runPostValidationHookAlways: true,
+        runPostValidationHookAlways: true,
         FormatProps: {
           isAllowed: (values) => {
             //@ts-ignore
@@ -1816,7 +1816,7 @@ export const AddSubDataMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-
+    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -2420,6 +2420,7 @@ export const EditSubDataMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
+    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",

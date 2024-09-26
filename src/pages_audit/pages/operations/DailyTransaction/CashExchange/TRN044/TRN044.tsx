@@ -1,12 +1,9 @@
 import { Button, Card } from "@mui/material";
 import React from "react";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { cashEntryMetaData } from "./metadata";
-import { InitialValuesType, SubmitFnType } from "@acuteinfo/common-base";
-import {
-  GradientButton,
-  MetaDataType,
-  FormWrapper,
-} from "@acuteinfo/common-base";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { GradientButton } from "components/styledComponent/button";
 import { ArrFieldMetaData044 } from "./arrMetaData044";
 
 const TRN044 = () => {
@@ -34,10 +31,9 @@ const TRN044 = () => {
 
       <FormWrapper
         key={`cashEntryMetaData`}
-        metaData={cashEntryMetaData as MetaDataType}
+        metaData={cashEntryMetaData}
         onSubmitHandler={onSubmitHandler}
         // hideHeader={true}
-        initialValues={{}}
         formStyle={{
           background: "white",
         }}

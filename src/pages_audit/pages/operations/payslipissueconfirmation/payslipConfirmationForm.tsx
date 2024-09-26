@@ -1,3 +1,4 @@
+import { ClearCacheProvider } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -7,12 +8,17 @@ import {
   getJointDetailsList,
   headerDataRetrive,
 } from "../payslip-issue-entry/api";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { extractMetaData } from "components/utils";
 import {
   DraftdetailsFormMetaData,
   TotaldetailsFormMetaData,
 } from "../payslip-issue-entry/paySlipMetadata";
 import { Dialog, Paper } from "@mui/material";
 import JointDetails from "../payslip-issue-entry/JointDetails";
+import { usePopupContext } from "components/custom/popupContext";
+import { GradientButton } from "components/styledComponent/button";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import {
   AccdetailsFormMetaData,
   PayslipdetailsFormMetaData,
@@ -22,18 +28,8 @@ import { ConFirmedHistory } from "./conFirmedHistory";
 import { format } from "date-fns";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-import {
-  LoaderPaperComponent,
-  RemarksAPIWrapper,
-  GradientButton,
-  usePopupContext,
-  extractMetaData,
-  GridMetaDataType,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
 function PayslipConfirmationForm({
   defaultView,
   closeDialog,

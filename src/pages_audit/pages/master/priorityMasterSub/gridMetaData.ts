@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const Prioritymastersubmetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -21,7 +21,7 @@ export const Prioritymastersubmetadata: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: false,
+    allowColumnHiding: true,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const AgentMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: false,
@@ -19,8 +19,8 @@ export const AgentMasterGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
+    allowColumnHiding: true,
     isCusrsorFocused: true,
-    allowRowSelection: false,
   },
 
   columns: [

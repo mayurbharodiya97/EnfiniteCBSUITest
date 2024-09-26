@@ -1,7 +1,7 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
+import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { format } from "date-fns";
 import { t } from "i18next";

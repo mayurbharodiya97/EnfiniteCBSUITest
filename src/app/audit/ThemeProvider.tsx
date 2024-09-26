@@ -1,11 +1,9 @@
-import { createTheme } from "@mui/material";
 import React, {
   createContext,
   useContext,
   useEffect,
   useState,
   ReactNode,
-  useMemo,
 } from "react";
 
 type Theme = Record<string, string>;
@@ -13,7 +11,6 @@ type Theme = Record<string, string>;
 type ThemeContextType = {
   themed: string;
   setTheme: (themeName: string) => void;
-  themeObj: any;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -30,16 +27,10 @@ type ThemeProviderProps = {
   children: ReactNode;
 };
 
-const getCssVariable = (variableName: string) =>
-  getComputedStyle(document.documentElement)
-    .getPropertyValue(variableName)
-    .trim();
-
 export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themed, setTheme] = useState(
     () => localStorage.getItem("theme") || "theme1"
   );
-  const [themeColor, setThemeColor] = useState("#000");
 
   const themes: Record<string, Theme> = {
     theme1: {
@@ -48,8 +39,6 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color3": "#4263c7",
       "--theme-color4": "#eceff9",
       "--theme-color5":
-        "linear-gradient(71.66deg, #4285f4 -2.97%, #885df5 111.3%)",
-      "--primary-bg":
         "linear-gradient(71.66deg, #4285f4 -2.97%, #885df5 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
       "--theme-color7": "#e7e5e563",
@@ -61,8 +50,6 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color4": "#e8f5e9",
       "--theme-color5":
         "linear-gradient(71.66deg, #3b694d -2.97%, #98d19a 111.3%)",
-      "--primary-bg":
-        "linear-gradient(71.66deg, #3b694d -2.97%, #98d19a 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
     },
     theme3: {
@@ -71,8 +58,6 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color3": "#c91450",
       "--theme-color4": "#fce4ec",
       "--theme-color5":
-        "linear-gradient(71.66deg, #b12e44 -2.97%, #fce4ec 111.3%)",
-      "--primary-bg":
         "linear-gradient(71.66deg, #b12e44 -2.97%, #fce4ec 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
     },
@@ -83,8 +68,6 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color4": "#e3f2fd",
       "--theme-color5":
         "linear-gradient(71.66deg, #2196f3 -2.97%, #eceff1 111.3%)",
-      "--primary-bg":
-        "linear-gradient(71.66deg, #2196f3 -2.97%, #eceff1 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
     },
     theme5: {
@@ -94,33 +77,9 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--theme-color4": "#eceff1",
       "--theme-color5":
         "linear-gradient(71.66deg, #597380 -2.97%, #eceff1 111.3%)",
-      "--primary-bg":
-        "linear-gradient(71.66deg, #597380 -2.97%, #eceff1 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
     },
   };
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          primary: {
-            main: "#fff",
-          },
-          secondary: {
-            main: themeColor,
-          },
-        },
-        components: {
-          MuiTextField: {
-            defaultProps: {
-              variant: "standard",
-            },
-          },
-        },
-      }),
-    [themed, themeColor]
-  );
 
   useEffect(() => {
     localStorage.setItem("theme", themed);
@@ -128,12 +87,10 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
     Object.entries(selectedTheme).forEach(([property, value]) => {
       document.documentElement.style.setProperty(property, value);
     });
-
-    setThemeColor(getCssVariable("--theme-color1"));
-  }, [themed]);
+  }, [themed, themes]);
 
   return (
-    <ThemeContext.Provider value={{ themed, setTheme, themeObj: theme }}>
+    <ThemeContext.Provider value={{ themed, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

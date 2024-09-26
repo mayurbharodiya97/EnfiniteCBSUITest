@@ -1,13 +1,14 @@
+import { components } from "components/report";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { utilFunction, components } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 
 export const TellerScreenMetadata: any = {
   form: {
     name: "TellerOperation",
-    label: "Cash Receipt Entry - TRN/039",
+    label: "Teller Transaction(Maker) - (TRN/039)",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -80,19 +81,16 @@ export const TellerScreenMetadata: any = {
               ? "4   "
               : "";
           return {
-            BRANCH_CD: {
-              value: authState?.user?.branchCode ?? "",
-              ignoreUpdate: true,
-            },
-            ACCT_TYPE: { value: "", ignoreUpdate: true },
-            ACCT_CD: { value: "", ignoreUpdate: true },
-            FLAG: { value: "", ignoreUpdate: true },
-            TOKEN: { value: "", ignoreUpdate: true },
-            SDC: { value: sdc ?? "", ignoreUpdate: true },
-            CHEQUE_NO: { value: "", ignoreUpdate: true },
-            CHEQUE_DT: { value: "", ignoreUpdate: true },
-            RECEIPT: { value: "", ignoreUpdate: true },
-            PAYMENT: { value: "", ignoreUpdate: true },
+            BRANCH_CD: { value: authState?.user?.branchCode ?? "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "" },
+            FLAG: { value: "" },
+            TOKEN: { value: "" },
+            SDC: { value: sdc ?? "" },
+            CHEQUE_NO: { value: "" },
+            CHEQUE_DT: { value: "" },
+            RECEIPT: { value: "" },
+            PAYMENT: { value: "" },
           };
         }
       },
@@ -141,16 +139,13 @@ export const TellerScreenMetadata: any = {
         ) => {
           formState.setDataOnFieldChange("BRANCH_CD", currentField);
           return {
-            ACCT_TYPE: { value: "", ignoreUpdate: true },
-            ACCT_CD: { value: "", ignoreUpdate: true },
-            FLAG: { value: "", ignoreUpdate: true },
-            CHEQUE_NO: { value: "", ignoreUpdate: true },
-            CHEQUE_DT: {
-              value: authState?.workingDate ?? "",
-              ignoreUpdate: true,
-            },
-            RECEIPT: { value: "", ignoreUpdate: true },
-            PAYMENT: { value: "", ignoreUpdate: true },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "" },
+            FLAG: { value: "" },
+            CHEQUE_NO: { value: "" },
+            CHEQUE_DT: { value: "" },
+            RECEIPT: { value: "" },
+            PAYMENT: { value: "" },
           };
         },
         GridProps: {
@@ -179,15 +174,12 @@ export const TellerScreenMetadata: any = {
           const sdcValue =
             dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
           return {
-            ACCT_CD: { value: "", ignoreUpdate: true },
-            FLAG: { value: "", ignoreUpdate: true },
-            CHEQUE_NO: { value: "", ignoreUpdate: true },
-            CHEQUE_DT: {
-              value: authState?.workingDate ?? "",
-              ignoreUpdate: true,
-            },
-            RECEIPT: { value: "", ignoreUpdate: true },
-            PAYMENT: { value: "", ignoreUpdate: true },
+            ACCT_CD: { value: "" },
+            FLAG: { value: "" },
+            CHEQUE_NO: { value: "" },
+            CHEQUE_DT: { value: "" },
+            RECEIPT: { value: "" },
+            PAYMENT: { value: "" },
           };
         },
         GridProps: {
@@ -258,15 +250,12 @@ export const TellerScreenMetadata: any = {
                     });
                     if (btnNm === "Ok") {
                       return {
-                        ACCT_CD: { value: "", ignoreUpdate: true },
-                        FLAG: { value: "", ignoreUpdate: true },
-                        CHEQUE_NO: { value: "", ignoreUpdate: true },
-                        CHEQUE_DT: {
-                          value: authState?.workingDate ?? "",
-                          ignoreUpdate: true,
-                        },
-                        RECEIPT: { value: "", ignoreUpdate: true },
-                        PAYMENT: { value: "", ignoreUpdate: true },
+                        ACCT_CD: { value: "" },
+                        FLAG: { value: "" },
+                        CHEQUE_NO: { value: "" },
+                        CHEQUE_DT: { value: "" },
+                        RECEIPT: { value: "" },
+                        PAYMENT: { value: "" },
                       };
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
@@ -277,15 +266,12 @@ export const TellerScreenMetadata: any = {
                     });
                     if (btnNm === "No") {
                       return {
-                        ACCT_CD: { value: "", ignoreUpdate: true },
-                        FLAG: { value: "", ignoreUpdate: true },
-                        CHEQUE_NO: { value: "", ignoreUpdate: true },
-                        CHEQUE_DT: {
-                          value: authState?.workingDate ?? "",
-                          ignoreUpdate: true,
-                        },
-                        RECEIPT: { value: "", ignoreUpdate: true },
-                        PAYMENT: { value: "", ignoreUpdate: true },
+                        ACCT_CD: { value: "" },
+                        FLAG: { value: "" },
+                        CHEQUE_NO: { value: "" },
+                        CHEQUE_DT: { value: "" },
+                        RECEIPT: { value: "" },
+                        PAYMENT: { value: "" },
                       };
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "9") {
@@ -349,17 +335,14 @@ export const TellerScreenMetadata: any = {
                 dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
               return {
                 ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
-                FLAG: { value: "A", ignoreUpdate: true },
+                FLAG: { value: "A" },
                 CHEQUE_NO: {
                   value: postData?.CHEQUE_NO ?? "",
                   ignoreUpdate: true,
                 },
-                CHEQUE_DT: {
-                  value: authState?.workingDate ?? "",
-                  ignoreUpdate: true,
-                },
-                RECEIPT: { value: "", ignoreUpdate: true },
-                PAYMENT: { value: "", ignoreUpdate: true },
+                CHEQUE_DT: { value: "" },
+                RECEIPT: { value: "" },
+                PAYMENT: { value: "" },
               };
             }
           }
@@ -409,7 +392,7 @@ export const TellerScreenMetadata: any = {
         lg: 1,
         xl: 1,
       },
-      dependentFields: ["TRN", "FLAG", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["TRN", "FLAG"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.TRN?.value === "4") {
           return false;
@@ -422,86 +405,6 @@ export const TellerScreenMetadata: any = {
           return false;
         }
         return true;
-      },
-      postValidationSetCrossFieldValues: async (
-        currentField,
-        formState,
-        authState,
-        dependentFieldsValues
-      ) => {
-        if (formState?.isSubmitting) return {};
-        if (
-          Boolean(currentField?.value) &&
-          Boolean(dependentFieldsValues?.ACCT_TYPE) &&
-          Boolean(dependentFieldsValues?.BRANCH_CD) &&
-          Boolean(dependentFieldsValues?.ACCT_CD)
-        ) {
-          let reqParameters = {
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
-            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
-            ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
-            TOKEN_NO: currentField?.value ?? "",
-            SCREEN_REF: "TRN/040",
-          };
-
-          let postData = await API.checkTokenValidate(reqParameters);
-          postData = postData.sort(
-            (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
-          );
-          let btn99, returnVal;
-          const getButtonName = async (obj) => {
-            let btnName = await formState.MessageBox(obj);
-            return { btnName, obj };
-          };
-          for (let i = 0; i < postData.length; i++) {
-            if (postData[i]?.O_STATUS === "999") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
-                message: postData[i]?.O_MESSAGE ?? "",
-                icon: "ERROR",
-              });
-              returnVal = "";
-            } else if (postData[i]?.O_STATUS === "99") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
-                message: postData[i]?.O_MESSAGE ?? "",
-                buttonNames: ["Yes", "No"],
-              });
-              btn99 = btnName;
-              if (btnName === "No") {
-                returnVal = "";
-              }
-            } else if (postData[i]?.O_STATUS === "9") {
-              if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
-                  message: postData[i]?.O_MESSAGE ?? "",
-                  icon: "WARNING",
-                });
-              }
-              returnVal = "";
-            } else if (postData[i]?.O_STATUS === "0") {
-              if (btn99 !== "No") {
-                returnVal = currentField?.value;
-              } else {
-                returnVal = "";
-              }
-            }
-          }
-          btn99 = 0;
-          return {
-            TOKEN_NO: {
-              value: returnVal ?? "",
-              ignoreUpdate: true,
-            },
-          };
-        } else if (!currentField?.value) {
-          return {
-            TOKEN_NO: { value: "", ignoreUpdate: true },
-          };
-        }
-        return {};
       },
     },
     {
@@ -649,22 +552,27 @@ export const TellerScreenMetadata: any = {
 
         if (chequeNo && branchCd && acctyType && acctCd) {
           const reqParameters = {
-            COMP_CD: authState?.companyID ?? "",
+            // COMP_CD: authState?.companyID,
             BRANCH_CD: branchCd,
             ACCT_TYPE: acctyType,
             ACCT_CD: acctCd,
             CHEQUE_NO: chequeNo,
             TYPE_CD: dependentFieldValues?.TRN?.value,
-            SCREEN_REF: "TRN/040",
           };
 
           const apiResponse = await API?.getChqValidation(reqParameters);
           let button, returnValue;
+
           const getBtnName = async (msgObj) => {
             let btnNm = await formState?.MessageBox(msgObj);
             return { btnNm, msgObj };
           };
           for (let i = 0; i < apiResponse?.length; i++) {
+            // console.log(
+            //   apiResponse[i]?.ERR_CODE,
+            //   apiResponse[i]?.ERR_MSG,
+            //   "apiResponse[i]?.ERR_MSG btnNm"
+            // );
             if (apiResponse[i]?.ERR_CODE === "999") {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
@@ -678,7 +586,8 @@ export const TellerScreenMetadata: any = {
                     ignoreUpdate: true,
                   },
                   CHEQUE_DT: {
-                    value: authState?.workingDate ?? "",
+                    value: "",
+                    // isFieldFocused: true,
                     ignoreUpdate: true,
                   },
                   RECEIPT: {
@@ -707,7 +616,8 @@ export const TellerScreenMetadata: any = {
                     ignoreUpdate: true,
                   },
                   CHEQUE_DT: {
-                    value: authState?.workingDate ?? "",
+                    value: "",
+                    // isFieldFocused: true,
                     ignoreUpdate: true,
                   },
                   RECEIPT: {
@@ -794,78 +704,12 @@ export const TellerScreenMetadata: any = {
         lg: 1.5,
         xl: 1.5,
       },
-      dependentFields: ["TRN", "FLAG", "BRANCH_CD", "CHEQUE_NO"],
+      dependentFields: ["TRN", "FLAG"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.TRN?.value === "4") {
           return false;
         } else {
           return true;
-        }
-      },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentFieldsValues
-      ) => {
-        const branchCode = dependentFieldsValues?.BRANCH_CD?.value ?? "";
-        const chequeNo = dependentFieldsValues?.CHEQUE_NO?.value ?? "";
-        const typeCd = dependentFieldsValues?.TRN?.value ?? "";
-        if (
-          !dependentFieldsValues?.ACCT_CD?.error &&
-          Boolean(branchCode) &&
-          Boolean(field?.value)
-        ) {
-          const apiRequest = {
-            BRANCH_CD: branchCode ?? "",
-            TYPE_CD: typeCd ?? "",
-            CHEQUE_NO: chequeNo ?? "",
-            CHEQUE_DT: field?.value ?? "",
-          };
-          const chequeDateValidate: any = await API?.getChqDateValidation(
-            apiRequest
-          );
-          const getButtonName = async (obj) => {
-            let btnName = await formState.MessageBox(obj);
-            return { btnName, obj };
-          };
-          for (let i = 0; i < chequeDateValidate?.length; i++) {
-            const status: any = chequeDateValidate[i]?.STATUS;
-            const message = chequeDateValidate[i]?.MESSAGE1;
-            if (status === "999") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
-                message,
-              });
-              return {
-                TOKEN: {
-                  value: "",
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-              };
-            } else if (status === "99") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "RiskCategoryAlert",
-                message,
-                buttonNames: ["Yes", "No"],
-              });
-              if (btnName === "No") {
-                return {
-                  TOKEN: {
-                    value: "",
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
-                };
-              }
-            } else if (status === "9") {
-              const { btnName, obj } = await getButtonName({
-                messageTitle: "Alert",
-                message,
-              });
-            }
-          }
         }
       },
       isReadOnly: true,
@@ -897,14 +741,7 @@ export const TellerScreenMetadata: any = {
       label: "Receipt Amount",
       placeholder: "Enter Receipt",
       required: true,
-      dependentFields: [
-        "TRN",
-        "BRANCH_CD",
-        "ACCT_TYPE",
-        "ACCT_CD",
-        "FLAG",
-        "CHEQUE_NO",
-      ],
+      dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD", "FLAG"],
       validate: (currentField, dependentFields, formState) => {
         // console.log("<<<cff", currentField, dependentFields);
         if (!currentField.value && !dependentFields?.FLAG?.value) {
@@ -937,7 +774,6 @@ export const TellerScreenMetadata: any = {
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
         if (
           !dependentFieldsValues?.ACCT_CD?.error &&
           Boolean(dependentFieldsValues?.ACCT_CD?.value) &&
@@ -945,76 +781,10 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const cardData = await formState?.getCardColumnValue();
-          const reqPara = {
-            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
-            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
-            ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.TRN?.value ?? "",
-            COMP_CD: authState?.companyID ?? "",
-            CHEQUE_NO: "",
-            AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
-            SHADOW_CL: cardData?.TRAN_BAL,
-            HOLD_BAL: cardData?.HOLD_BAL,
-            LEAN_AMT: cardData?.LIEN_AMT,
-            AGAINST_CLEARING: cardData?.AGAINST_CLEARING,
-            MIN_BALANCE: cardData?.MIN_BALANCE,
-            CONF_BAL: cardData?.CONF_BAL,
-            TRAN_BAL: cardData?.TRAN_BAL,
-            UNCL_BAL: cardData?.UNCL_BAL,
-            LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
-            DRAWING_POWER: cardData?.DRAWING_POWER,
-            AMOUNT: field?.value,
-            OD_APPLICABLE: cardData?.OD_APPLICABLE,
-            OP_DATE: cardData?.OP_DATE,
-            INST_NO: cardData?.INST_NO,
-            INST_RS: cardData?.INST_RS,
-            PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
-            STATUS: cardData?.STATUS,
-            TYPE: "C",
-            SCREEN_REF: "TRN/039",
-            TRAN_CD: "",
-          };
-          const postData = await API?.getAmountValidation(reqPara);
-
-          let btn99, returnVal;
-          for (let i = 0; i < postData?.length; i++) {
-            if (postData?.[i]?.O_STATUS === "999") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.[i]?.O_MESSAGE,
-                icon: "ERROR",
-              });
-              returnVal = "";
-            } else if (postData?.[i]?.O_STATUS === "99") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "Confirmation",
-                message: postData?.[i]?.O_MESSAGE,
-                buttonNames: ["Yes", "No"],
-              });
-              btn99 = btnName;
-              if (btnName === "No") {
-                returnVal = "";
-                break;
-              }
-            } else if (postData?.[i]?.O_STATUS === "9") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "Alert",
-                message: postData?.[i]?.O_MESSAGE,
-                icon: "WARNING",
-              });
-            } else if (postData?.[i]?.O_STATUS === "0") {
-              if (btn99 !== "No") {
-                formState.setDataOnFieldChange("RECEIPT", {
-                  field,
-                  dependentFieldsValues,
-                });
-              } else {
-                returnVal = "";
-              }
-            }
-          }
-
+          formState.setDataOnFieldChange("RECEIPT", {
+            field,
+            dependentFieldsValues,
+          });
           // Remove focus from the currently active element
           // @ts-ignore
           document.activeElement.blur();
@@ -1089,7 +859,6 @@ export const TellerScreenMetadata: any = {
         authState,
         dependentFieldsValues
       ) => {
-        if (formState?.isSubmitting) return {};
         if (
           !dependentFieldsValues?.ACCT_CD?.error &&
           Boolean(dependentFieldsValues?.ACCT_CD?.value) &&
@@ -1097,75 +866,10 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const cardData = await formState?.getCardColumnValue();
-          const reqPara = {
-            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
-            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
-            ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.TRN?.value ?? "",
-            COMP_CD: authState?.companyID ?? "",
-            CHEQUE_NO: dependentFieldsValues?.CHEQUE_NO?.value ?? "",
-            AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
-            SHADOW_CL: cardData?.TRAN_BAL,
-            HOLD_BAL: cardData?.HOLD_BAL,
-            LEAN_AMT: cardData?.LIEN_AMT,
-            AGAINST_CLEARING: cardData?.AGAINST_CLEARING,
-            MIN_BALANCE: cardData?.MIN_BALANCE,
-            CONF_BAL: cardData?.CONF_BAL,
-            TRAN_BAL: cardData?.TRAN_BAL,
-            UNCL_BAL: cardData?.UNCL_BAL,
-            LIMIT_AMOUNT: cardData?.LIMIT_AMOUNT,
-            DRAWING_POWER: cardData?.DRAWING_POWER,
-            AMOUNT: field?.value,
-            OD_APPLICABLE: cardData?.OD_APPLICABLE,
-            OP_DATE: cardData?.OP_DATE,
-            INST_NO: cardData?.INST_NO,
-            INST_RS: cardData?.INST_RS,
-            PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
-            STATUS: cardData?.STATUS,
-            TYPE: "C",
-            SCREEN_REF: "TRN/040",
-            TRAN_CD: "",
-          };
-          const postData = await API?.getAmountValidation(reqPara);
-
-          let btn99, returnVal;
-          for (let i = 0; i < postData?.length; i++) {
-            if (postData?.[i]?.O_STATUS === "999") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "ValidationFailed",
-                message: postData?.[i]?.O_MESSAGE,
-                icon: "ERROR",
-              });
-              returnVal = "";
-            } else if (postData?.[i]?.O_STATUS === "99") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "Confirmation",
-                message: postData?.[i]?.O_MESSAGE,
-                buttonNames: ["Yes", "No"],
-              });
-              btn99 = btnName;
-              if (btnName === "No") {
-                returnVal = "";
-                break;
-              }
-            } else if (postData?.[i]?.O_STATUS === "9") {
-              const btnName = await formState.MessageBox({
-                messageTitle: "Alert",
-                message: postData?.[i]?.O_MESSAGE,
-                icon: "WARNING",
-              });
-            } else if (postData?.[i]?.O_STATUS === "0") {
-              if (btn99 !== "No") {
-                formState.setDataOnFieldChange("PAYMENT", {
-                  field,
-                  dependentFieldsValues,
-                });
-              } else {
-                returnVal = "";
-              }
-            }
-          }
+          formState.setDataOnFieldChange("PAYMENT", {
+            field,
+            dependentFieldsValues,
+          });
         }
       },
       AlwaysRunPostValidationSetCrossFieldValues: {

@@ -1,5 +1,6 @@
-import { TextField, GradientButton } from "@acuteinfo/common-base";
 import { Fragment, useState, useEffect, useRef } from "react";
+import { TextField } from "components/styledComponent/textfield";
+import { GradientButton } from "components/styledComponent/button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
@@ -264,7 +265,7 @@ export const UsernamePasswordField = ({
                     )
                   }
                   ref={inputButtonRef}
-                  endicon={loginState.loading ? undefined : "East"}
+                  endicon={loginState.loading ? null : "East"}
                   rotateIcon="scale(1.4) rotateX(360deg)"
                 >
                   {loginState.loading ? (

@@ -1,4 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
+import { utilFunction } from "components/utils";
 import * as API from "../../api";
 
 export const atmentrymetadata = {
@@ -299,7 +300,7 @@ export const atmentrymetadata = {
             DOC_CD: "SB",
           });
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "SBacctTypeList",
         postValidationSetCrossFieldValues: (field, formState) => {
           return {
             ACCT_CD: { value: "" },
@@ -513,7 +514,7 @@ export const atmentrymetadata = {
             DOC_CD: "CA",
           });
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "CAacctTypeList",
         postValidationSetCrossFieldValues: (field, formState) => {
           return {
             ACCT_CD: { value: "" },
@@ -722,7 +723,7 @@ export const atmentrymetadata = {
             DOC_CD: "OD",
           });
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "CCacctTypeList",
         postValidationSetCrossFieldValues: (field, formState) => {
           return {
             ACCT_CD: { value: "" },

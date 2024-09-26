@@ -1,10 +1,12 @@
 import { useContext, useRef } from "react";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import { RemarksAPIWrapper, usePopupContext } from "@acuteinfo/common-base";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 export const DeleteDialog = ({
   open,
@@ -48,7 +50,7 @@ export const DeleteDialog = ({
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: t("DoYouWantDeleteRow"),
-            buttonNames: ["Yes", "No"],
+            buttonNames: ["No", "Yes"],
             defFocusBtnName: "Yes",
             loadingBtnName: ["Yes"],
           });
@@ -70,7 +72,9 @@ export const DeleteDialog = ({
               CR_ACCT_CD: rows?.CR_ACCT_CD,
               TRAN_DT: authState.workingDate,
               ENTERED_BY: rows?.ENTERED_BY,
-              USER_DEF_REMARKS: val,
+              USER_DEF_REMARKS: val
+                ? val
+                : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
               ACTIVITY_TYPE: "SI_ENTRY",
             });
           }

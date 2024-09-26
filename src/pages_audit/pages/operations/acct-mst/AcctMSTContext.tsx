@@ -1,4 +1,4 @@
-import { utilFunction } from "@acuteinfo/common-base";
+import { utilFunction } from "components/utils";
 import _ from "lodash";
 import React, { useCallback, useReducer } from "react";
 

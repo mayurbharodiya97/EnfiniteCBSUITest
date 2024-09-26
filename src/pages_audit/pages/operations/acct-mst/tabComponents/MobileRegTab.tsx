@@ -1,4 +1,4 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";

@@ -11,6 +11,7 @@ import { useQuery } from "react-query";
 import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import {
   Button,
   CircularProgress,
@@ -25,11 +26,15 @@ import {
   Typography,
   makeStyles,
 } from "@mui/material";
-import { transformFileObject, utilFunction } from "@acuteinfo/common-base";
+import { transformFileObject } from "components/fileUpload/utils";
+import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { queryClient } from "cache";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
+import AvatarEditor from "react-avatar-editor";
+import { GradientButton } from "components/styledComponent/button";
 
 // const useTypeStyles = makeStyles((theme) => ({
 //     title: {

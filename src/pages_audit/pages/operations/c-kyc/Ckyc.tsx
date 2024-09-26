@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Box, Typography, Grid, Tab } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { Tabs } from "@acuteinfo/common-base";
+import StyledTabs from "components/styledComponent/tabs/tabs";
 import FormModal from "./formModal/formModal";
 // import {Tabs} from '../../../../components/styledComponent/tabs';
 // import {Tab} from '../../../../components/styledComponent/tab';
@@ -11,10 +11,12 @@ import PersonIcon from "@mui/icons-material/Person"; // individual-person-icon
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "./CkycContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { Alert } from "components/common/alert";
 import PendingCustomer from "./PendingCustomer";
 import RetrieveCustomer from "./RetrieveCustomer";
-import { GradientButton } from "@acuteinfo/common-base";
-export const CustomTabs: any = styled(Tabs)(({ orientation, theme }) => ({
+import { GradientButton } from "components/styledComponent/button";
+
+export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
   boxShadow: "unset !important",
   background: "unset !important",

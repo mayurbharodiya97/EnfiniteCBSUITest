@@ -5,27 +5,26 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { GridMetaDataType } from "components/dataTableStatic";
 import {
   DailyTransactionImportGridMetaData,
   DailyTransactionImportMetadata,
 } from "./dailyTransactionImportMetadata";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import {
-  SubmitFnType,
-  GridWrapper,
-  ClearCacheProvider,
-  ActionTypes,
-  usePopupContext,
-  GridMetaDataType,
-  FormWrapper,
-  MetaDataType,
-} from "@acuteinfo/common-base";
+import { SubmitFnType } from "packages/form";
+
 const actions: ActionTypes[] = [
   {
     actionName: "errors",
@@ -97,7 +96,7 @@ const DailyTransactionImport = () => {
     <>
       <FormWrapper
         key={"DailyTransactionImportForm"}
-        metaData={DailyTransactionImportMetadata as MetaDataType}
+        metaData={DailyTransactionImportMetadata}
         initialValues={{}}
         onSubmitHandler={onSubmitHandler}
         formStyle={{

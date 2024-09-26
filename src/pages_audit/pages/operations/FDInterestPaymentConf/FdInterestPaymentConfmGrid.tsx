@@ -1,20 +1,19 @@
 import { Dialog } from "@mui/material";
+import { queryClient } from "cache";
+import { Alert } from "components/common/alert";
+import { usePopupContext } from "components/custom/popupContext";
+import { ActionTypes } from "components/dataTable";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { FdInterestPaymentConfDetail } from "./FdInterestPaymentconfForm";
-import { FdInterestPaymentConfmGridMetaData } from "./FdInterestPaymentConfmMetaData";
-import {
-  ActionTypes,
-  GridWrapper,
-  Alert,
-  usePopupContext,
-  queryClient,
-  GridMetaDataType,
-  Transition,
-} from "@acuteinfo/common-base";
+import { FdInterestPaymentConfmMetaData } from "./FdInterestPaymentConfmMetaData";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -25,6 +24,7 @@ const actions: ActionTypes[] = [
 ];
 
 export const FDInterestPaymentConfm = () => {
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -89,7 +89,7 @@ export const FDInterestPaymentConfm = () => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getFDPaymentInstruConfAcctDtl"]);
-      queryClient.removeQueries(["fetchFDPaymentConfAcct"]);
+      queryClient.removeQueries(["getFDPaymentInstrudtl"]);
     };
   }, []);
 
@@ -105,11 +105,11 @@ export const FDInterestPaymentConfm = () => {
       )}
       <GridWrapper
         key={"FdInterestPaymentConfm"}
-        finalMetaData={FdInterestPaymentConfmGridMetaData as GridMetaDataType}
+        finalMetaData={FdInterestPaymentConfmMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        enableExport={data?.length > 0 ? true : false}
+        ReportExportButton={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
@@ -117,15 +117,12 @@ export const FDInterestPaymentConfm = () => {
 
       <Dialog
         open={isFDDetailOpen}
-        // @ts-ignore
-        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            width: "100%",
-            overflow: "auto",
+            minWidth: "95%",
+            maxWidth: "95%",
           },
         }}
-        maxWidth="lg"
       >
         <FdInterestPaymentConfDetail
           closeDialog={handleFDDetailClose}
