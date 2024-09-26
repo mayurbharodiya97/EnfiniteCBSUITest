@@ -84,7 +84,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         return (
           row?._isTouchedCol?.CHECK_BOX === true &&
           row?._oldData?.CHECK_BOX === false &&
-          row?.CHECK_BOX === true
+          (row?.CHECK_BOX === true || row?.CHECK_BOX === "Y")
         );
       });
       if (gridData?.length > 0) {

@@ -41,7 +41,7 @@ export const AddBranchGridMetaData: GridMetaDataType = {
       dependentOptionField: "VISIBLE_YN",
       componentType: "editableCheckbox",
       enableColumnSelection: true,
-      width: 100,
+      width: 120,
       minWidth: 80,
       maxWidth: 140,
       defaultValue: false,
