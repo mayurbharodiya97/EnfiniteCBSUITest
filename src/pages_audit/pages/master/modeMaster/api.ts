@@ -1,4 +1,4 @@
-  import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getModeMasterData = async ({ companyID, branchCode }) => {
@@ -7,18 +7,15 @@ export const getModeMasterData = async ({ companyID, branchCode }) => {
       COMP_CD: companyID,
       BRANCH_CD: branchCode,
     });
-    
-  if (status === "0") {
 
-    return data
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-
 };
 
 export const deleteModeMasterData = async (data) => {
-  
   const { status, message } = await AuthSDK.internalFetcher(
     "MODEMASTERDML",
     data
@@ -44,5 +41,3 @@ export const updateModeMasterData = async ({ data: reqdata }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-

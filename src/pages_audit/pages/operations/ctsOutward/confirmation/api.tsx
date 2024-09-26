@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -110,8 +110,7 @@ export const getCtsAndInwardConfirmtion = async (apiReq) => {
     });
   if (status === "0") {
     return message;
-  }
-  else {
+  } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };

@@ -1,90 +1,88 @@
 import { AuthContext } from "pages_audit/auth";
-import { useCallback, useContext, useEffect } from "react";
-import * as API from './api';
-import { queryClient } from "cache";
-import { useQuery } from "react-query";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { pendingAcctMetadata } from "../acct-mst/metadata/pendingAcctMetadata";
-import { ActionTypes } from "components/dataTable";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  queryClient,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { Dialog } from "@mui/material";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
-    {
-      actionName: "close",
-      actionLabel: "Close",
-      multiple: undefined,
-      alwaysAvailable: true,
-    },
+  {
+    actionName: "close",
+    actionLabel: "Close",
+    multiple: undefined,
+    alwaysAvailable: true,
+  },
 ];
 
-export const ViewEodReport = ({open,close,metaData,reportData,reportLabel})=>{
-    const { authState } = useContext(AuthContext);
-    const navigate = useNavigate();
+export const ViewEodReport = ({
+  open,
+  close,
+  metaData,
+  reportData,
+  reportLabel,
+  loading,
+}) => {
+  const { authState } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [uniqueReportData, setUniqueReportData] = useState([]);
 
-    const setCurrentAction = useCallback(
-        async (data) => {
-          if (data?.name === "close") {
-            close();
-          }
-          navigate(data?.name, {
-            state: data?.rows,
-          });
-        },
-        [navigate]
-      );
+  const setCurrentAction = useCallback(
+    async (data) => {
+      if (data?.name === "close") {
+        close();
+      }
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+    },
+    [navigate, close]
+  );
 
-    const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<any, any>(
-        ["getDayendprocessFlag"],
-        () =>
-          API.getDayendprocessFlag({
-            ENT_COMP_CD: authState?.companyID,
-            ENT_BRANCH_CD: authState?.user?.branchCode,
-            BASE_COMP_CD: authState?.baseCompanyID,
-            BASE_BRANCH_CD: authState?.user?.baseBranchCode,
-            A_GD_DATE: authState?.workingDate
-          })
-      );
+  useEffect(() => {
+    if (Array.isArray(reportData)) {
+      const updatedReportData: any = reportData.map((item, index) => ({
+        ...item,
+        INDEX: `${index}`, // Unique key can be any string, here we're using index
+      }));
+      setUniqueReportData(updatedReportData);
+    }
+  }, [reportData]);
 
-      useEffect(() => {
-        return () => {
-          queryClient.removeQueries(["pendingtrns"]);
-        };
-      }, []);
-      metaData.gridConfig.gridLabel = reportLabel;
+  metaData.gridConfig.gridLabel = reportLabel;
 
-    return(
-        <>
-           {isError && (
-        <Alert
-          severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
-          errorDetail={error?.error_detail}
-          color="error"
-        />
-      )}
-          <Dialog
-      open={open}
-      PaperProps={{
-        style: {
-          width: "60%",
-          overflow: "auto",
-        },
-      }}
-      maxWidth="lg"
-    >
-           <GridWrapper
+  return (
+    <>
+      <Dialog
+        open={open}
+        PaperProps={{
+          style: {
+            width: "70%",
+            overflow: "auto",
+          },
+        }}
+        maxWidth="lg"
+      >
+        {loading ? (
+          <LoaderPaperComponent />
+        ) : (
+          <GridWrapper
             key={"ViewEodReport"}
             finalMetaData={metaData as GridMetaDataType}
-            data={reportData ?? []}
             setData={() => null}
             actions={actions}
-            loading={isLoading || isFetching}
-            ReportExportButton={true}
+            enableExport={true}
+            data={uniqueReportData ?? []}
+            loading={loading}
             setAction={setCurrentAction}
-            />
-            </Dialog>
-       </>
-    )
-}
+          />
+        )}
+      </Dialog>
+    </>
+  );
+};

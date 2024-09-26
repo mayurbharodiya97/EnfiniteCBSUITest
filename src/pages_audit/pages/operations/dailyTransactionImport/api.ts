@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getDailyImportConfigData = async (reqData: any) => {
@@ -27,7 +27,6 @@ export const getDailyTransactionImportData = async (apiReq) => {
     });
   if (status === "0") {
     return data;
-
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -39,7 +38,6 @@ export const getValidateToSelectFile = async (apiReq) => {
     });
   if (status === "0") {
     return data;
-
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
