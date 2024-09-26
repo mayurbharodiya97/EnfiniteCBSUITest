@@ -1,4 +1,4 @@
-import { CustomTableMetadataType } from "../../tableComponent.tsx/type";
+import { CustomTableMetadataType } from "../../tableComponent/type";
 
 export const CashierConfirmationMetaData: CustomTableMetadataType = {
   key: "CashierEntryMetaDataArrayField",
@@ -9,6 +9,8 @@ export const CashierConfirmationMetaData: CustomTableMetadataType = {
       label: "Value",
       componentType: "numberFormat",
       isReadOnly: true,
+      isTotalWord: true,
+      isCalculation: true,
     },
     {
       name: "DENO_QTY",

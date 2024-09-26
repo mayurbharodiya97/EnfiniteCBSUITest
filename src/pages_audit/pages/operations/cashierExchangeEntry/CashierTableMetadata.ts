@@ -1,4 +1,4 @@
-import { CustomTableMetadataType } from "./tableComponent.tsx/type";
+import { CustomTableMetadataType } from "./tableComponent/type";
 export const CashierMetaData: CustomTableMetadataType = {
   key: "CashierEntryMetaDataArrayField",
   Mainlabel: "Cashier Exchange Entry",

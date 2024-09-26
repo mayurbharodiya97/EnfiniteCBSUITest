@@ -29,6 +29,7 @@ const CashierExchangeConfirmation = () => {
   const navigate = useNavigate();
   const [openDialog, setDialog] = useState(false);
   const [rowsData, setRowsData] = useState([]);
+  const [gridData, setGridData] = useState([]);
   const [isData, setIsData] = useState<any>({
     fromData: [],
     toData: [],
@@ -60,7 +61,9 @@ const CashierExchangeConfirmation = () => {
         variant: "error",
       });
     },
-    onSuccess: async (data) => {},
+    onSuccess: async (data) => {
+      setGridData(data);
+    },
   });
   const From = useMutation(API.getCashierViewDetail, {
     onError: async (error: any) => {
@@ -133,6 +136,20 @@ const CashierExchangeConfirmation = () => {
       setDialog(false);
     }
   }, [isData]);
+  const handleCloseDialog = () => {
+    setIsData({ fromData: [], toData: [] });
+    setDialog(false);
+  };
+  useEffect(() => {
+    if (MainData) {
+      setGridData(MainData); // Set initial gridData to MainData
+    }
+  }, [MainData]);
+  useEffect(() => {
+    if (isFetching) {
+      setGridData(MainData);
+    }
+  }, [isFetching, MainData]);
   return (
     <>
       <Fragment>
@@ -145,13 +162,9 @@ const CashierExchangeConfirmation = () => {
           />
         )}
         <GridWrapper
-          key={"retrieveGridMetaData"}
+          key={`retrieveGridMetaData${isLoading}${gridData}`}
           finalMetaData={CashierExchangeCnfMetaData as GridMetaDataType}
-          data={
-            viewAllGridData?.data?.length > 0
-              ? viewAllGridData?.data ?? []
-              : MainData ?? []
-          }
+          data={gridData ?? []}
           setData={() => null}
           actions={actions}
           loading={
@@ -166,9 +179,10 @@ const CashierExchangeConfirmation = () => {
       </Fragment>
       <CashierEntryViewDetail
         open={openDialog}
-        onClose={() => setDialog(false)}
+        onClose={handleCloseDialog}
         stateData={isData}
         rowsData={rowsData}
+        refetch={refetch}
       />
     </>
   );

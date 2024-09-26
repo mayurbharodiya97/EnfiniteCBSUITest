@@ -13,7 +13,7 @@ import * as API from "./api";
 import { LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { format, parse } from "date-fns";
-import CashierExchangeTable from "./tableComponent.tsx/tableComponent";
+import CashierExchangeTable from "./tableComponent/tableComponent";
 import { CashierMetaData } from "./CashierTableMetadata";
 const CashierExchangeEntry = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -23,7 +23,9 @@ const CashierExchangeEntry = () => {
   const { authState } = useContext(AuthContext);
   const [tableData, setTableData] = useState([]);
   const getData: any = useMutation(API.getCashDeno, {
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      setTableData(data);
+    },
     onError: (error: any, variables?: any) => {
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
@@ -41,9 +43,9 @@ const CashierExchangeEntry = () => {
       });
     },
     onSuccess: async (data) => {
-      CloseMessageBox();
       setTableData([]);
-      enqueueSnackbar(data, {
+      CloseMessageBox();
+      enqueueSnackbar(data?.[0]?.O_MESSAGE, {
         variant: "success",
       });
     },
@@ -66,7 +68,6 @@ const CashierExchangeEntry = () => {
       FROM_USER: FormRefData?.From_User,
       SCREEN_REF: "TRN/044",
     };
-    console.log("Request", Request);
     const Check = await MessageBox({
       message: "SaveData",
       messageTitle: "Confirmation",
@@ -110,7 +111,7 @@ const CashierExchangeEntry = () => {
       {getData?.isLoading && <LinearProgress color="secondary" />}
       {getData?.data?.length > 0 && (
         <CashierExchangeTable
-          data={getData?.data}
+          data={tableData}
           metadata={CashierMetaData}
           TableLabel={"Cashier Exchange Table"}
           hideHeader={true}
