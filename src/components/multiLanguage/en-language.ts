@@ -587,6 +587,8 @@ export const en_language_data = {
     "Customer ID should not be less than 12 digits",
 
   EnterAccountType: "Enter Account Type.",
+  EnterAccountBranch: "Enter Account Branch.",
+  EnterAccountNumber: "Please Enter Accont Number.",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
@@ -1636,6 +1638,8 @@ export const en_language_data = {
   AccCode: "A/c Code",
   AccType: "A/c Type",
   Uploaded: "Uploaded",
+  ConfirmMessage: "Do you want to confirm this transaction?",
+  RejectMessage: "Do you want to reject this transaction?",
 
   // Form 15GH entry and confirmation
   NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",

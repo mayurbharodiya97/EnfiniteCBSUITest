@@ -53,7 +53,7 @@ export const PositivePayEntryFormMetadata = {
         ) => {
           return {
             ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "" },
+            ACCT_TYPE: { value: "", isFieldFocused: true },
             ACCT_CD: { value: "" },
             CHEQUE_NO: { value: "" },
           };
@@ -61,6 +61,7 @@ export const PositivePayEntryFormMetadata = {
         GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
+        dependentFields: ["BRANCH_CD"],
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -70,11 +71,42 @@ export const PositivePayEntryFormMetadata = {
         ) => {
           if (currentField?.displayValue !== currentField?.value) {
             return {};
+          }
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountBranch",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                CHEQUE_NO: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+              };
+            }
           } else {
             return {
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              CHEQUE_NO: { value: "" },
+              ACCT_CD: { value: "", isFieldFocused: true },
+              ACCT_NM: { value: "", isFieldFocused: false },
+              CHEQUE_NO: { value: "", isFieldFocused: false },
             };
           }
         },
@@ -93,6 +125,30 @@ export const PositivePayEntryFormMetadata = {
           if (formState?.isSubmitting) return {};
           if (currentField?.displayValue === "") {
             return {};
+          } else if (
+            currentField.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountType",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
           } else if (
             currentField?.value &&
             dependentFieldValues?.BRANCH_CD?.value &&
@@ -120,6 +176,7 @@ export const PositivePayEntryFormMetadata = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -127,6 +184,7 @@ export const PositivePayEntryFormMetadata = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -176,11 +234,19 @@ export const PositivePayEntryFormMetadata = {
             };
           } else if (!currentField?.value) {
             return {
-              ACCT_NM: { value: "" },
-              CHEQUE_NO: { value: "" },
+              ACCT_NM: { value: "", isFieldFocused: false },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
             };
           }
           return {};
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 6, md: 4, lg: 2, xl: 2 },
@@ -230,7 +296,8 @@ export const PositivePayEntryFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["ChequeNumberIsRequired"] }],
       },
-      dependentFields: ["TYPE_CD", "ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["TYPE_CD", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -241,8 +308,84 @@ export const PositivePayEntryFormMetadata = {
         if (currentField?.displayValue === "") {
           return {};
         }
-
-        if (currentField?.value) {
+        if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.BRANCH_CD?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              ACCT_TYPE: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.ACCT_CD?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              ACCT_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          currentField?.value &&
+          dependentFieldValues?.ACCT_TYPE?.value &&
+          dependentFieldValues?.ACCT_CD?.value &&
+          dependentFieldValues?.BRANCH_CD?.value
+        ) {
           let postData = await await GeneralAPI.getChequeNoValidation({
             COMP_CD: authState?.companyID ?? "",
             BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -265,6 +408,7 @@ export const PositivePayEntryFormMetadata = {
               const { btnName, obj } = await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.ERR_MSG,
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.ERR_CODE === "9") {
@@ -272,6 +416,7 @@ export const PositivePayEntryFormMetadata = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.ERR_MSG,
+                  icon: "WARNING",
                 });
               }
               returnVal = postData;
@@ -314,6 +459,10 @@ export const PositivePayEntryFormMetadata = {
           };
         }
         return {};
+      },
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: true,
       },
       GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
     },
@@ -359,6 +508,7 @@ export const PositivePayEntryFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["AmountIsRequired"] }],
       },
+      autoComplete: "off",
       GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
     },
     {
@@ -645,10 +795,37 @@ export const ResponseParameterFormMetaData = {
           authState,
           dependentFieldValues
         ) => {
-          return {
-            ACCT_CD: { value: "" },
-            ACCT_NM: { value: "" },
-          };
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountBranch",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
       },
@@ -670,6 +847,30 @@ export const ResponseParameterFormMetaData = {
           dependentFieldValues
         ) => {
           if (
+            currentField.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountType",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldValues?.BRANCH_CD?.value &&
             dependentFieldValues?.ACCT_TYPE?.value
@@ -697,6 +898,7 @@ export const ResponseParameterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -705,6 +907,7 @@ export const ResponseParameterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
