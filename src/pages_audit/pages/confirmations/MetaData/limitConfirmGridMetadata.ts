@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const limitConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "LimitConfirmation",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

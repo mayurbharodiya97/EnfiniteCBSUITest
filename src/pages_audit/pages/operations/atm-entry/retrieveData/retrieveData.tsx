@@ -26,6 +26,8 @@ const RetrieveDataCustom = ({
   parameter,
   setFormMode,
   setRetrieveData,
+  setIsData,
+  myRef,
 }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -44,12 +46,14 @@ const RetrieveDataCustom = ({
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
+        myRef?.current?.handleFormReset({ preventDefault: () => {} });
         if (data?.length <= 0) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
-          setFormMode("view");
           navigate(".");
           setRetrieveData(data);
+          setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+          setFormMode("view");
         }
       },
       onError: (error: any, { endSubmit }) => {
@@ -120,7 +124,7 @@ const RetrieveDataCustom = ({
             <LinearProgressBarSpacer />
           )}
           <FormWrapper
-            key={`retrieve-Form`}
+            key={`retrieve-atm-Form`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{
               PARA_602: parameter?.PARA_602,
@@ -154,6 +158,8 @@ export const RetrieveData = ({
   parameter,
   setFormMode,
   setRetrieveData,
+  setIsData,
+  myRef,
 }) => {
   return (
     <ClearCacheProvider>
@@ -162,6 +168,8 @@ export const RetrieveData = ({
         navigate={navigate}
         setFormMode={setFormMode}
         setRetrieveData={setRetrieveData}
+        setIsData={setIsData}
+        myRef={myRef}
       />
     </ClearCacheProvider>
   );

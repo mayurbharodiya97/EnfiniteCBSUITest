@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const chequeBkConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ChequeBookConfirmation",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
