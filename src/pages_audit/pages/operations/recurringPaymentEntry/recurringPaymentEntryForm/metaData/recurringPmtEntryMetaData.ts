@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
 
 const resetFields = {
@@ -225,7 +225,6 @@ export const RecurringPaymentEntryFormMetaData = {
           name: "ACCT_TYPE",
           validationRun: "onChange",
           dependentFields: ["BRANCH_CD"],
-          disableCaching: true,
           runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             currentField,
@@ -241,15 +240,6 @@ export const RecurringPaymentEntryFormMetaData = {
               },
             };
           },
-          options: (dependentValue, formState, _, authState) => {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-              USER_NAME: authState?.user?.id,
-              DOC_CD: "RECDRTYPE",
-            });
-          },
-          _optionsKey: "getDebitAccountType",
           GridProps: { xs: 12, sm: 4, md: 2.2, lg: 2, xl: 2 },
         },
         accountCodeMetadata: {
@@ -1406,11 +1396,11 @@ export const RecurringPaymentEntryFormMetaData = {
           dependentFieldsValues?.CASH_AMT?.value
         ) {
           let reqParameters = {
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
-            ACCT_CD: dependentFieldsValues?.ACCT_CD?.value,
-            TOKEN_NO: currentField?.value,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
+            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
+            ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
+            TOKEN_NO: currentField?.value ?? "",
             SCREEN_REF: "TRN/053",
           };
           let postData = await API.checkTokenValidate(reqParameters);

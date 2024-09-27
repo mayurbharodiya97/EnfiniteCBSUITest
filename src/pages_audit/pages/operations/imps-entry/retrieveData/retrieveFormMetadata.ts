@@ -1,8 +1,3 @@
-import { isValid } from "date-fns";
-import * as API from "../api";
-import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
-
 export const retrieveFormMetaData = {
   form: {
     name: "retrieve-imps-metadata",
@@ -67,6 +62,7 @@ export const retrieveFormMetaData = {
       name: "CUSTOMER_ID",
       label: "CustomerId",
       placeholder: "Enter Customer Id",
+      isFieldFocused: true,
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 12) {

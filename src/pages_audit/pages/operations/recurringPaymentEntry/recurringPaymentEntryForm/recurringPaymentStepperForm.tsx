@@ -14,33 +14,34 @@ import {
   Chip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
 import { RecurringContext } from "../context/recurringPaymentContext";
 import { RecurringPaymentEntryForm } from "./recurringPaymentEntryForm";
 import { RecurringPaymentTransferForm } from "./recurringPaymentTransferForm";
 import { makeStyles } from "@mui/styles";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import {
   ColorlibConnector,
   ColorlibStepIconRoot,
-} from "components/dyanmicForm/stepperForm/style";
+} from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 import { PayslipAndDDForm } from "../payslipAndNEFT/payslipAndDDForm";
 import { BeneficiaryAcctDetailsForm } from "../payslipAndNEFT/beneficiaryAcctDetailsForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import ClosingAdvice from "../closingAdvice";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
-import { queryClient } from "cache";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
-
+import {
+  GradientButton,
+  usePopupContext,
+  queryClient,
+  utilFunction,
+  LoaderPaperComponent,
+  SubmitFnType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -190,13 +191,15 @@ const RecurringPaymentStepperForm = ({
           : "0",
       PAYSLIP: Boolean(rpState?.recurPmtEntryData?.PAYSLIP) ? "Y" : "N",
       RTGS_NEFT: Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT) ? "Y" : "N",
-      INT_FROM_DT: isValidDate(rpState?.recurPmtEntryData?.INT_FROM_DT)
+      INT_FROM_DT: utilFunction.isValidDate(
+        rpState?.recurPmtEntryData?.INT_FROM_DT
+      )
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_FROM_DT),
             "yyyy-MMM-dd"
           ) ?? ""
         : format(new Date(), "yyyy-MMM-dd") ?? "",
-      INT_TO_DT: isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
+      INT_TO_DT: utilFunction.isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_TO_DT),
             "yyyy-MMM-dd"
@@ -305,29 +308,35 @@ const RecurringPaymentStepperForm = ({
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                 });
-                if (buttonName === "No") {
+                if (buttonName === "Yes") {
+                  let reqParam = {
+                    COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
+                    ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
+                    ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
+                    INT_RATE: rpState?.recurPmtEntryData?.INT_RATE ?? "",
+                    INT_AMOUNT: rpState?.recurPmtEntryData?.INT_AMOUNT ?? "",
+                    REC_PENALTY_AMT:
+                      rpState?.recurPmtEntryData?.REC_PENALTY_AMT ?? "",
+                    PENAL_RATE: rpState?.recurPmtEntryData?.PENAL_RATE ?? "",
+                    PAYMENT_TYPE:
+                      rpState?.recurPmtEntryData?.PREMATURE_VAL ?? "",
+                    TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+                  };
+                  isDataChangedRef.current = true;
+                  updateDataForJasperParam(reqParam);
+                  setOpenClosingAdvice(true);
+                  closingAdviceDtlMutation.mutate(reqParam);
+                  break;
+                } else {
                   isDataChangedRef.current = true;
                   closeDialog();
                   break;
                 }
               } else if (voucherMsg.O_STATUS === "0") {
-                let reqParam = {
-                  COMP_CD: authState?.companyID ?? "",
-                  BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
-                  ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
-                  ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
-                  INT_RATE: rpState?.recurPmtEntryData?.INT_RATE ?? "",
-                  INT_AMOUNT: rpState?.recurPmtEntryData?.INT_AMOUNT ?? "",
-                  REC_PENALTY_AMT:
-                    rpState?.recurPmtEntryData?.REC_PENALTY_AMT ?? "",
-                  PENAL_RATE: rpState?.recurPmtEntryData?.PENAL_RATE ?? "",
-                  PAYMENT_TYPE: rpState?.recurPmtEntryData?.PREMATURE_VAL ?? "",
-                  TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
-                };
                 isDataChangedRef.current = true;
-                updateDataForJasperParam(reqParam);
-                setOpenClosingAdvice(true);
-                closingAdviceDtlMutation.mutate(reqParam);
+                closeDialog();
+                resetAllData();
               }
             }
           }
@@ -906,6 +915,7 @@ const RecurringPaymentStepperForm = ({
                         onSaveValidationMutation?.isLoading ||
                         rpState?.disableButton
                       }
+                      color={"primary"}
                     >
                       {t("Next")}
                     </GradientButton>
@@ -913,6 +923,7 @@ const RecurringPaymentStepperForm = ({
                     <GradientButton
                       disabled={rpState?.disableButton}
                       onClick={handleComplete}
+                      color={"primary"}
                     >
                       {t("Finish")}
                     </GradientButton>

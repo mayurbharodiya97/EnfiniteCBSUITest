@@ -6,22 +6,16 @@ import {
   useState,
   useEffect,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
+
+import { Alert, MetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
+import { SubmitFnType } from "@acuteinfo/common-base";
 import { format } from "date-fns";
-import FormWrapper from "components/dyanmicForm";
-import { ClearCacheProvider, queryClient } from "cache";
-import {
-  AppBar,
-  Theme,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { ClearCacheProvider, queryClient } from "@acuteinfo/common-base";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import {
   RetrieveFormConfigMetaData,
   branchClearingDateTransferGridMetaData,
@@ -29,14 +23,18 @@ import {
   slipClearingDateTransferGridMetaData,
 } from "./girdMetadata";
 import { makeStyles } from "@mui/styles";
-import { GradientButton } from "components/styledComponent/button";
-import { usePopupContext } from "components/custom/popupContext";
 import { useSnackbar } from "notistack";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
-
+import {
+  GridWrapper,
+  FormWrapper,
+  usePopupContext,
+  GradientButton,
+} from "@acuteinfo/common-base";
+import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { Theme } from "@mui/system";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -76,7 +74,7 @@ const ClearingDateTransferGrid = () => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const gridRef = useRef<any>(null);
-  const [formData, setFormData] = useState<any>({})
+  const [formData, setFormData] = useState<any>({});
   const [isFlag, setIsFlag] = useState<any>();
   const [isAmount, setIsAmount] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
@@ -88,7 +86,7 @@ const ClearingDateTransferGrid = () => {
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => { },
+      onSuccess: (data) => {},
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
         if (typeof error === "object") {
@@ -104,7 +102,7 @@ const ClearingDateTransferGrid = () => {
     "slipGetRetrievalClearingData",
     API.slipGetRetrievalClearingData,
     {
-      onSuccess: (data) => { },
+      onSuccess: (data) => {},
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
         if (typeof error === "object") {
@@ -132,7 +130,6 @@ const ClearingDateTransferGrid = () => {
               messageTitle: t("Confirmation"),
               message: data[i]?.O_MESSAGE,
             });
-
           } else if (data[i]?.O_STATUS === "9") {
             const buttonName = await MessageBox({
               messageTitle: t("Alert"),
@@ -142,7 +139,7 @@ const ClearingDateTransferGrid = () => {
             enqueueSnackbar(t("RecordSavedSuccessfully"), {
               variant: "success",
             });
-            CloseMessageBox()
+            CloseMessageBox();
             slipMutation.mutate(formData);
             mutation.mutate(formData);
           }
@@ -156,25 +153,38 @@ const ClearingDateTransferGrid = () => {
         enqueueSnackbar(errorMsg, {
           variant: "error",
         });
-        CloseMessageBox()
+        CloseMessageBox();
       },
-    },
+    }
   );
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "transfer") {
-      const DTL_CLOB = data?.rows?.map(item => {
+      const DTL_CLOB = data?.rows?.map((item) => {
         const bankCode = item.data?.BANK_CD?.trim();
         const tranCode = item.data?.TRAN_CD?.trim();
         return {
           BANK_CD: bankCode,
-          TRAN_CD: tranCode
+          TRAN_CD: tranCode,
         };
       });
-      const totalCount = data.rows.reduce((acc, row) => acc + parseInt(row.data.CNT), 0);
+      const totalCount = data.rows.reduce(
+        (acc, row) => acc + parseInt(row.data.CNT),
+        0
+      );
       formRef.current.getFieldData().then(async (res) => {
         const buttonName = await MessageBox({
           messageTitle: t("Confirmation"),
-          message: t("AreYouSuretransfer") + " " + format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") + " / " + res?.FR_ZONE + t("ClearingTodateZone") + " " + format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") + " / " + res?.TO_ZONE,
+          message:
+            t("AreYouSuretransfer") +
+            " " +
+            format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") +
+            " / " +
+            res?.FR_ZONE +
+            t("ClearingTodateZone") +
+            " " +
+            format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
+            " / " +
+            res?.TO_ZONE,
           buttonNames: ["No", "Yes"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
@@ -182,7 +192,12 @@ const ClearingDateTransferGrid = () => {
         if (buttonName === "Yes") {
           const button = await MessageBox({
             messageTitle: t("Confirmation"),
-            message: t("ThereAre") + " " + totalCount + " " + t("ChequeAvailableforClearingDateTransferAreYouSureContinue"),
+            message:
+              t("ThereAre") +
+              " " +
+              totalCount +
+              " " +
+              t("ChequeAvailableforClearingDateTransferAreYouSureContinue"),
             buttonNames: ["Cancel", "Ok"],
             defFocusBtnName: "Ok",
             loadingBtnName: ["Ok"],
@@ -196,11 +211,11 @@ const ClearingDateTransferGrid = () => {
               TO_ZONE: res?.TO_ZONE,
               TRAN_TYPE: "S",
               DTL_CLOB: DTL_CLOB,
-              SCREEN_REF: "RPT/1188"
-            })
+              SCREEN_REF: "RPT/1188",
+            });
           }
         }
-      })
+      });
     }
   }, []);
 
@@ -211,7 +226,6 @@ const ClearingDateTransferGrid = () => {
     setFieldError,
     actionFlag
   ) => {
-
     delete data["RETRIEVE"];
     if (data?.FLAG === "S") {
       data = {
@@ -234,7 +248,7 @@ const ClearingDateTransferGrid = () => {
       mutation.mutate(data);
       endSubmit(true);
     }
-    setFormData(data)
+    setFormData(data);
   };
   // if (clearingDateTransferGridMetaData) {
   //   if (isFlag === "B") {
@@ -259,66 +273,87 @@ const ClearingDateTransferGrid = () => {
               variant={"h6"}
               component="div"
             >
-              {
-                utilFunction.getDynamicLabel(
-                  currentPath,
-                  authState?.menulistdata,
-                  true
-                )
-              }
+              {utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
             </Typography>
             <>
-              {
-                isFlag === "N" ?
-                  <>
-                    <GradientButton
-                      onClick={async () => {
-                        const cleanedData = gridRef.current?.cleanData?.();
-                        const totalCount = cleanedData.reduce((acc, row) => acc + parseInt(row?.CNT), 0);
-                        formRef.current.getFieldData().then(async (res) => {
-                          const buttonName = await MessageBox({
+              {isFlag === "N" ? (
+                <>
+                  <GradientButton
+                    onClick={async () => {
+                      const cleanedData = gridRef.current?.cleanData?.();
+                      const totalCount = cleanedData.reduce(
+                        (acc, row) => acc + parseInt(row?.CNT),
+                        0
+                      );
+                      formRef.current.getFieldData().then(async (res) => {
+                        const buttonName = await MessageBox({
+                          messageTitle: t("Confirmation"),
+                          message:
+                            t("AreYouSuretransfer") +
+                            " " +
+                            format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") +
+                            " / " +
+                            res?.FR_ZONE +
+                            t("ClearingTodateZone") +
+                            " " +
+                            format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
+                            " / " +
+                            res?.TO_ZONE,
+                          buttonNames: ["No", "Yes"],
+                          defFocusBtnName: "Yes",
+                          loadingBtnName: ["Yes"],
+                        });
+                        if (buttonName === "Yes") {
+                          const button = await MessageBox({
                             messageTitle: t("Confirmation"),
-                            message: t("AreYouSuretransfer") + " " + format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") + " / " + res?.FR_ZONE + t("ClearingTodateZone") + " " + format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") + " / " + res?.TO_ZONE,
-                            buttonNames: ["No", "Yes"],
-                            defFocusBtnName: "Yes",
-                            loadingBtnName: ["Yes"],
+                            message:
+                              t("ThereAre") +
+                              " " +
+                              totalCount +
+                              " " +
+                              t(
+                                "ChequeAvailableforClearingDateTransferAreYouSureContinue"
+                              ),
+                            buttonNames: ["Cancel", "Ok"],
+                            defFocusBtnName: "Ok",
+                            loadingBtnName: ["Ok"],
                           });
-                          if (buttonName === "Yes") {
-                            const button = await MessageBox({
-                              messageTitle: t("Confirmation"),
-                              message: t("ThereAre") + " " + totalCount + " " + t("ChequeAvailableforClearingDateTransferAreYouSureContinue"),
-                              buttonNames: ["Cancel", "Ok"],
-                              defFocusBtnName: "Ok",
-                              loadingBtnName: ["Ok"],
+                          if (button === "Ok") {
+                            transferDateMutation.mutate({
+                              CLG_FLAG: res?.FLAG,
+                              FR_TRAN_DT: format(
+                                new Date(res?.FR_TRAN_DT),
+                                "dd/MMM/yyyy"
+                              ),
+                              TO_TRAN_DT: format(
+                                new Date(res?.TO_TRAN_DT),
+                                "dd/MMM/yyyy"
+                              ),
+                              FR_ZONE: res?.FR_ZONE,
+                              TO_ZONE: res?.TO_ZONE,
+                              TRAN_TYPE: "S",
+                              DTL_CLOB: [],
+                              SCREEN_REF: "RPT/1188",
                             });
-                            if (button === "Ok") {
-                              transferDateMutation.mutate({
-                                CLG_FLAG: res?.FLAG,
-                                FR_TRAN_DT: format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy"),
-                                TO_TRAN_DT: format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy"),
-                                FR_ZONE: res?.FR_ZONE,
-                                TO_ZONE: res?.TO_ZONE,
-                                TRAN_TYPE: "S",
-                                DTL_CLOB: [],
-                                SCREEN_REF: "RPT/1188"
-                              })
-                            }
                           }
-                        })
-                      }}
-                    >
-                      {t("Transfer")}
-                    </GradientButton>
-
-                  </>
-                  : null
-              }
+                        }
+                      });
+                    }}
+                  >
+                    {t("Transfer")}
+                  </GradientButton>
+                </>
+              ) : null}
             </>
           </Toolbar>
         </AppBar>
         <FormWrapper
           key={`retrieveForm`}
-          metaData={RetrieveFormConfigMetaData}
+          metaData={RetrieveFormConfigMetaData as MetaDataType}
           initialValues={{
             FR_TRAN_DT: authState?.workingDate,
             TO_TRAN_DT: authState?.workingDate,
@@ -328,7 +363,7 @@ const ClearingDateTransferGrid = () => {
             background: "white",
           }}
           onFormButtonClickHandel={(id) => {
-            let event: any = { preventDefault: () => { } };
+            let event: any = { preventDefault: () => {} };
             // if (mutation?.isLoading) {
             if (id === "RETRIEVE") {
               formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -358,7 +393,9 @@ const ClearingDateTransferGrid = () => {
             finalMetaData={
               isFlag === "S"
                 ? slipClearingDateTransferGridMetaData
-                : isFlag === "B" ? branchClearingDateTransferGridMetaData : clearingDateTransferGridMetaData
+                : isFlag === "B"
+                ? branchClearingDateTransferGridMetaData
+                : clearingDateTransferGridMetaData
             }
             data={
               isFlag === "S" ? slipMutation?.data ?? [] : mutation?.data ?? []
@@ -375,7 +412,7 @@ const ClearingDateTransferGrid = () => {
           />
         </Fragment>
       </>
-    </Fragment >
+    </Fragment>
   );
 };
 export const ClearingDateTransferGridWrapper = () => {

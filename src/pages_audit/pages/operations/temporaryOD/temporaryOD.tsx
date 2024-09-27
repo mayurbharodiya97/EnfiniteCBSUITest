@@ -15,17 +15,11 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
   tempODGridTodayMetaData,
   tempODGridHistoryMetaData,
 } from "./temporaryGridMetaData";
 import { temporaryODentryMetadata } from "./tempODentryMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsForm } from "components/formcomponent";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
@@ -33,9 +27,18 @@ import { useMutation } from "react-query";
 import { cloneDeep } from "lodash";
 import { format } from "date-fns";
 import * as API from "./api";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+
+import {
+  ActionTypes,
+  Alert,
+  MasterDetailsMetaData,
+  usePopupContext,
+  GridMetaDataType,
+  MasterDetailsForm,
+  GridWrapper,
+} from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
   const [isData, setIsData] = useState({
@@ -117,14 +120,30 @@ export const TemporaryOD = () => {
   const setCurrentAction = useCallback(
     async (data) => {
       if (data.name === "add") {
-        myRef.current?.addNewRow(true, { VALID_UPTO: authState?.workingDate });
+        let gridData = await myRef?.current?.GetGirdData?.();
+        const hasDuplicateTemplateCd = (data) => {
+          const templateCdSet = new Set();
+          for (const item of data) {
+            if (templateCdSet.has(item.TEMPLATE_CD)) {
+              return true;
+            }
+            templateCdSet.add(item.TEMPLATE_CD);
+          }
+          return false;
+        };
+        const duplicateExists = hasDuplicateTemplateCd(gridData);
+        if (!Boolean(duplicateExists)) {
+          myRef.current?.addNewRow(true, {
+            VALID_UPTO: authState?.workingDate,
+          });
+        }
       }
     },
     [navigate]
   );
 
-  let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
-  metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
+  // let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
+  let metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
 
   return (
     <>
@@ -239,7 +258,7 @@ export const TemporaryOD = () => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "27vh",
+                height: "23vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}

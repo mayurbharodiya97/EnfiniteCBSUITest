@@ -1,18 +1,27 @@
-import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { gridMetadata } from "./gridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import GridWrapper from "components/dataTableStatic/";
 import { enqueueSnackbar } from "notistack";
 import { AcPeriodMasterFormWrapper } from "./viewDetails/ACperiodMasterViewDetails";
 import { useMutation, useQuery } from "react-query";
-import * as API from './api';
+import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-
+import { t } from "i18next";
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -35,7 +44,6 @@ const actions: ActionTypes[] = [
 ];
 
 const ACperiodMasterGrid = () => {
-
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const isDeleteDataRef = useRef<any>(null);
@@ -77,7 +85,7 @@ const ACperiodMasterGrid = () => {
   );
   const deleteMutation = useMutation(API.deleteInstallmentPeriodData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -87,15 +95,13 @@ const ACperiodMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
       CloseMessageBox();
     },
   });
-
-
 
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
@@ -117,7 +123,7 @@ const ACperiodMasterGrid = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />
@@ -157,10 +163,8 @@ const ACperiodMasterGrid = () => {
           }
         />
       </Routes>
-
     </Fragment>
   );
 };
 
 export default ACperiodMasterGrid;
-

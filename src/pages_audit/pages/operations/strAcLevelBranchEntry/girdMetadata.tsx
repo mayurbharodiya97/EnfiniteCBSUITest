@@ -1,5 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { isValid } from "date-fns";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -28,25 +27,13 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
   },
-  filters: [
-    // {
-    //   accessor: "SUSP_DESC",
-    //   columnName: "Suspicious Status",
-    //   // columnName: "Show Not a Suspicious",
-    //   filterComponentType: "valueFilter",
-    //   gridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
-  ],
+  filters: [],
   columns: [
     {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "rigth",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 100,
@@ -86,7 +73,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "Account Name",
+      columnName: "AccountName",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -96,7 +83,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SUSP_DESC",
-      columnName: "Suspicious Status",
+      columnName: "SuspiciousStatus",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -106,7 +93,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REASON_DESC",
-      columnName: "Suspicious Reasons",
+      columnName: "SuspiciousReasons",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -119,7 +106,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "GROUND_OF_SUSPICION",
       sequence: 7,
-      buttonLabel: "Ground Of Suspicion",
+      buttonLabel: "GroundOfSuspicion",
       isVisible: true,
       width: 200,
       minWidth: 250,
@@ -130,7 +117,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "TRANSACTION_DETAIL",
       sequence: 7,
-      buttonLabel: "Transaction Detail",
+      buttonLabel: "TransactionDetail",
       isVisible: true,
       width: 200,
       minWidth: 250,
@@ -144,7 +131,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACT_FROM_DT",
-      columnName: "From Date",
+      columnName: "GeneralFromDate",
       sequence: 8,
       alignment: "center",
       componentType: "date",
@@ -154,7 +141,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACT_TO_DT",
-      columnName: "To Date",
+      columnName: "GeneralToDate",
       sequence: 9,
       alignment: "center",
       componentType: "date",
@@ -174,7 +161,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "Pan no.",
+      columnName: "PanNo",
       sequence: 11,
       alignment: "right",
       componentType: "default",
@@ -184,7 +171,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REMARKS2",
-      columnName: "Investigation Detail",
+      columnName: "InvestigationDetail",
       sequence: 12,
       alignment: "right",
       componentType: "default",
@@ -231,15 +218,13 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
   },
-  filters: [
-
-  ],
+  filters: [],
   columns: [
     {
       accessor: "id",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "rigth",
+      alignment: "right",
       componentType: "default",
       width: 60,
       minWidth: 60,
@@ -249,7 +234,7 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "SUSP_DESC",
-      columnName: "Suspicious Status",
+      columnName: "SuspiciousStatus",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -259,7 +244,7 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REASON_DESC",
-      columnName: "Suspicious Reasons",
+      columnName: "SuspiciousReasons",
       sequence: 2,
       alignment: "center",
       componentType: "default",
@@ -279,7 +264,7 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REMARKS",
-      columnName: "Investigation Detail",
+      columnName: "InvestigationDetail",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -289,7 +274,7 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACT_FROM_DT",
-      columnName: "From Date",
+      columnName: "GeneralFromDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -299,7 +284,7 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACT_TO_DT",
-      columnName: "To Date",
+      columnName: "GeneralToDate",
       sequence: 5,
       alignment: "center",
       componentType: "date",
@@ -307,7 +292,5 @@ export const strBranchLevelHistoryGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 250,
     },
-
-
   ],
 };

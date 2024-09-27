@@ -221,7 +221,6 @@ export const update_categ_meta_data = {
               TYPE_CD: currRow?.TYPE_CD ?? "",
             };
             return API.getCalculatedRate(reqObj);
-            return {};
           },
           GridProps: { xs: 12, sm: 4, md: 2, lg: 2.4, xl: 2 },
         },

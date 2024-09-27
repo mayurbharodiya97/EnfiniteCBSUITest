@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -11,6 +11,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       minWidth: 300,
     },
     allowColumnReordering: true,
+    allowRowSelection: false,
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
@@ -18,10 +19,9 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "80vh",
-      max: "80vh",
+      min: "79vh",
+      max: "79vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
@@ -31,7 +31,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr.No.",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 80,
       minWidth: 100,
@@ -73,7 +73,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "SECURE_PROV_PERC",
       columnName: "ProvisionSecureRate",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -83,7 +83,7 @@ export const NpaCategoryMasterGridMetaData: GridMetaDataType = {
       accessor: "UNSECURE_PROV_PERC",
       columnName: "ProvisionUnSecureRate",
       sequence: 6,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 180,
       minWidth: 150,

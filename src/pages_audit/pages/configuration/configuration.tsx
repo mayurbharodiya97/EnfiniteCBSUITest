@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider } from "@acuteinfo/common-base";
 import { StaticAdminUserReports } from "../reports/staticReports/staticReports";
 
 const DynamicGridConfig = lazy(() => import("./dynamicGridConfig"));
@@ -11,8 +11,10 @@ const LangWiseMessageConfig = lazy(
   () => import("./LangWiseMessageConfig/index")
 );
 const GetApiConfig = lazy(() => import("./getApiConfig"));
-const ParameterGrid= lazy(()=> import ("./parameter/parameterGrid"))
-const ParameterConfirmGrid = lazy(()=> import ("./parameter/Confirmation/parameterConfirm"))
+const ParameterGrid = lazy(() => import("./parameter/parameterGrid"));
+const ParameterConfirmGrid = lazy(
+  () => import("./parameter/Confirmation/parameterConfirm")
+);
 export const Configuration = () => (
   <Routes>
     <Route path="dynamic-grid-config/*" element={<DynamicGridConfig />} />
@@ -25,7 +27,10 @@ export const Configuration = () => (
     <Route path="misc-mst-config/*" element={<CommonMSTConfig />} />
     <Route path="get-api-config/*" element={<GetApiConfig />} />
     <Route path="parameter/*" element={<ParameterGrid />} />
-    <Route path="system-parameter-confirmation/*" element={<ParameterConfirmGrid />} />
+    <Route
+      path="system-parameter-confirmation/*"
+      element={<ParameterConfirmGrid />}
+    />
     {/* <Route
       path="misc-mst-config/*"
       element={<StaticAdminUserReports screenFlag="GETPROPMISCDATA" />}

@@ -7,18 +7,21 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { forceExpireStockMetaData } from "./forceExpiredMetadata";
 import { crudStockData } from "../api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import {
+  utilFunction,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   const { state: rows }: any = useLocation();
@@ -31,6 +34,15 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
       rows?.[0]?.data?.ASON_DT === ""
         ? authState?.workingDate
         : rows?.[0]?.data?.ASON_DT,
+    DRAWING_POWER:
+      rows?.[0]?.data?.DRAWING_POWER &&
+      parseFloat(rows?.[0]?.data?.DRAWING_POWER).toFixed(2),
+    NET_VALUE:
+      rows?.[0]?.data?.NET_VALUE &&
+      parseFloat(rows?.[0]?.data?.NET_VALUE).toFixed(2),
+    STOCK_VALUE:
+      rows?.[0]?.data?.STOCK_VALUE &&
+      parseFloat(rows?.[0]?.data?.STOCK_VALUE).toFixed(2),
   };
 
   const forceExpire: any = useMutation("crudStockData", crudStockData, {
@@ -71,7 +83,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "1150px",
+          maxWidth: "1250px",
         },
       }}
     >
@@ -130,7 +142,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           }}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 367px)",
+            height: "calc(100vh - 455px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}

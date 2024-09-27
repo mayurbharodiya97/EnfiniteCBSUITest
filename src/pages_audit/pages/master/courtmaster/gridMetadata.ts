@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const CourtMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -11,6 +11,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       minWidth: 300,
     },
     allowColumnReordering: true,
+    allowRowSelection: false,
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
@@ -21,7 +22,6 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       min: "79vh",
       max: "79vh",
     },
-    allowFilter: true,
     allowColumnHiding: true,
     isCusrsorFocused: true,
   },
@@ -31,7 +31,7 @@ export const CourtMasterGridMetaData: GridMetaDataType = {
       accessor: "Sr_No",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 70,
       minWidth: 50,

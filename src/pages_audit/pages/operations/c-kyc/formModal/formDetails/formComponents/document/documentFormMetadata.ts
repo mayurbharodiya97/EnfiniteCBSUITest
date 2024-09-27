@@ -74,7 +74,7 @@ export const DocumentFormMetadata = {
     },
       dependentFields: ["TRAN_CD", "SR_CD"],
       isReadOnly: false,
-      options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({ COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, formState }),
+      options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({ COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, formState: formState }),
       _optionsKey: "getKYCDocumentTypes",
       // options: () => [],
       // _optionsKey: "getDocumentOptionsDTL",

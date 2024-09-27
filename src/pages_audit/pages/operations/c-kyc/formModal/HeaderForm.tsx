@@ -1,136 +1,215 @@
-import { AppBar, Autocomplete, Checkbox, CircularProgress, FormControlLabel, Grid, LinearProgress, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Autocomplete,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  LinearProgress,
+  Toolbar,
+} from "@mui/material";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { TextField } from 'components/styledComponent';
 import { CkycContext } from "../CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import CategoryUpdate from "./CategoryUpdate";
+import { queryClient } from "@acuteinfo/common-base";
+import { TextField } from "@acuteinfo/common-base";
+import { GradientButton } from "@acuteinfo/common-base";
 
 const HeaderForm = () => {
-    const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
-    const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
-    const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
-    const [changeCategDialog, setChangeCategDialog] = useState<boolean>(false)
-    const {authState} = useContext(AuthContext);
-    const location: any = useLocation();
-    // state?.currentFormctx.isLoading && <LinearProgress color="secondary" />
-    const loader = useMemo(() => state?.currentFormctx.isLoading ? <LinearProgress color="secondary" /> : null, [state?.currentFormctx.isLoading])
-    const { 
-        data: custCategData, 
-        isError: isCustCategError, 
-        isLoading: isCustCategLoading, 
-        error: custCategError, 
-        refetch: custCategRefetch 
-      } = useQuery<any, any>(
-        [
-          "getCIFCategories",
-          state.entityTypectx,
-          // {
-          //   COMP_CD: authState?.companyID ?? "",
-          //   BRANCH_CD: authState?.user?.branchCode ?? "",
-          //   ENTITY_TYPE: state.entityTypectx
-          // }
-        ],
-        () =>
-          API.getCIFCategories({
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            ENTITY_TYPE: state?.entityTypectx,
-          })
-    );
+  const {
+    state,
+    handleFormModalOpenctx,
+    handleFormModalClosectx,
+    handleApiRes,
+    handleCategoryChangectx,
+    handleSidebarExpansionctx,
+    handleColTabChangectx,
+    handleAccTypeVal,
+    handleKycNoValctx,
+    handleFormDataonRetrievectx,
+    handleFormModalOpenOnEditctx,
+    handlecustomerIDctx,
+    onFinalUpdatectx,
+    handleCurrFormctx,
+  } = useContext(CkycContext);
+  const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<
+    any | null
+  >("");
+  const [acctTypeState, setAcctTypeState] = useState<any | null>(null);
+  const [changeCategDialog, setChangeCategDialog] = useState<boolean>(false);
+  const { authState } = useContext(AuthContext);
+  const location: any = useLocation();
+  // state?.currentFormctx.isLoading && <LinearProgress color="secondary" />
+  const loader = useMemo(
+    () =>
+      state?.currentFormctx.isLoading ? (
+        <LinearProgress color="secondary" />
+      ) : null,
+    [state?.currentFormctx.isLoading]
+  );
+  const {
+    data: custCategData,
+    isError: isCustCategError,
+    isLoading: isCustCategLoading,
+    error: custCategError,
+    refetch: custCategRefetch,
+  } = useQuery<any, any>(
+    [
+      "getCIFCategories",
+      state.entityTypectx,
+      // {
+      //   COMP_CD: authState?.companyID ?? "",
+      //   BRANCH_CD: authState?.user?.branchCode ?? "",
+      //   ENTITY_TYPE: state.entityTypectx
+      // }
+    ],
+    () =>
+      API.getCIFCategories({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        ENTITY_TYPE: state?.entityTypectx,
+      })
+  );
 
-    const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-        ["getPMISCData", {}],
-        () => API.getPMISCData("CKYC_ACCT_TYPE")
-    );
+  const {
+    data: AccTypeOptions,
+    isSuccess: isAccTypeSuccess,
+    isLoading: isAccTypeLoading,
+  } = useQuery(["getPMISCData"], () => API.getPMISCData("CKYC_ACCT_TYPE"));
 
-      // get tabs data
-    const {data:TabsData, isSuccess, isLoading, isFetching, error, refetch} = useQuery(
-        ["getTabsDetail", {
-        ENTITY_TYPE: state?.entityTypectx, 
-        CATEGORY_CD: state?.categoryValuectx, 
+  // get tabs data
+  const {
+    data: TabsData,
+    isSuccess,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useQuery(
+    [
+      "getTabsDetail",
+      {
+        ENTITY_TYPE: state?.entityTypectx,
+        CATEGORY_CD: state?.categoryValuectx,
         CONS_TYPE: state?.constitutionValuectx,
         CONFIRMFLAG: state?.confirmFlagctx,
-        }],
-        () =>
-        API.getTabsDetail(
-        {
-            COMP_CD: authState?.companyID ?? "",
-            ENTITY_TYPE: state?.entityTypectx,
-            CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
-            CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
-            isFreshEntry: state?.isFreshEntryctx,
-            CONFIRMFLAG: state?.confirmFlagctx,
-        }  
-        )
-    );
+      },
+    ],
+    () =>
+      API.getTabsDetail({
+        COMP_CD: authState?.companyID ?? "",
+        ENTITY_TYPE: state?.entityTypectx,
+        CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
+        CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
+        isFreshEntry: state?.isFreshEntryctx,
+        CONFIRMFLAG: state?.confirmFlagctx,
+      })
+  );
 
-    useEffect(() => {
-        if(!isLoading) {
-        // console.log("ResultResult", TabsData)
-        // setTabsApiRes(data)
-        let newData:any[] = []
-        if(TabsData && TabsData.length>0) {
-            TabsData.forEach((element:{[k: string]: any}) => {
-            let subtitleinfo = {
-                SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
-                SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
-                SUB_ICON : element?.SUB_ICON,
-            }
-                let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
-                if(index != -1) {
-                // duplicate tab element
-                let subtitles = newData[index].subtitles
-                subtitles.push(subtitleinfo)
-                } else {
-                // new tab element
-                newData.push({...element, subtitles: [subtitleinfo], isVisible: true})
-                }
-            // console.log("filled newdata -aft", element.TAB_NAME , newData)
+  useEffect(() => {
+    if (!isLoading) {
+      // console.log("ResultResult", TabsData)
+      // setTabsApiRes(data)
+      let newData: any[] = [];
+      if (TabsData && TabsData.length > 0) {
+        TabsData.forEach((element: { [k: string]: any }) => {
+          let subtitleinfo = {
+            SUB_TITLE_NAME: element?.SUB_TITLE_NAME,
+            SUB_TITLE_DESC: element?.SUB_TITLE_DESC,
+            SUB_ICON: element?.SUB_ICON,
+          };
+          let index = newData.findIndex(
+            (el: any) => el?.TAB_NAME == element?.TAB_NAME
+          );
+          if (index != -1) {
+            // duplicate tab element
+            let subtitles = newData[index].subtitles;
+            subtitles.push(subtitleinfo);
+          } else {
+            // new tab element
+            newData.push({
+              ...element,
+              subtitles: [subtitleinfo],
+              isVisible: true,
             });
-            // setTabsApiRes(newData)
-            handleApiRes(newData)
-        }
-        }
-    }, [TabsData, isLoading])
-    
-    useEffect(() => {
-      if((isLoading || isFetching) && state?.categoryValuectx && state?.constitutionValuectx) {
-        handleCurrFormctx({
-          isLoading: true,
-        })
-      }
-    }, [isLoading, isFetching, state?.entityTypectx,
-      state?.categoryValuectx,
-      state?.constitutionValuectx])
-
-    
-
-    useEffect(() => {
-        if(state?.accTypeValuectx) {
-          if(AccTypeOptions && !isAccTypeLoading) {
-            let acctTypevalue = state?.accTypeValuectx
-            let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-            setAcctTypeState(acctType[0])
           }
-        }
-    }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
+          // console.log("filled newdata -aft", element.TAB_NAME , newData)
+        });
+        // setTabsApiRes(newData)
+        handleApiRes(newData);
+      }
+    }
+  }, [TabsData, isLoading]);
 
-    return (
-      <>
-        <AppBar
+  useEffect(() => {
+    if (
+      (isLoading || isFetching) &&
+      state?.categoryValuectx &&
+      state?.constitutionValuectx
+    ) {
+      handleCurrFormctx({
+        isLoading: true,
+      });
+    }
+  }, [
+    isLoading,
+    isFetching,
+    state?.entityTypectx,
+    state?.categoryValuectx,
+    state?.constitutionValuectx,
+  ]);
+
+  useEffect(() => {
+    if (state?.accTypeValuectx) {
+      if (AccTypeOptions && !isAccTypeLoading) {
+        let acctTypevalue = state?.accTypeValuectx;
+        let acctType =
+          AccTypeOptions &&
+          AccTypeOptions.filter((op) => op.value == acctTypevalue);
+        setAcctTypeState(acctType[0]);
+      }
+    }
+  }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getCIFCategories", state.entityTypectx]);
+      queryClient.removeQueries("getPMISCData");
+      queryClient.removeQueries([
+        "getTabsDetail",
+        {
+          ENTITY_TYPE: state?.entityTypectx,
+          CATEGORY_CD: state?.categoryValuectx,
+          CONS_TYPE: state?.constitutionValuectx,
+          CONFIRMFLAG: state?.confirmFlagctx,
+        },
+      ]);
+    };
+  }, []);
+
+  return (
+    <>
+      <AppBar
         position="sticky"
         // color=""
         style={{ marginBottom: "10px", top: "113px" }}
       >
-        <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
+        <Toolbar variant="dense" sx={{ display: "flex", alignItems: "center" }}>
           {/* common customer fields */}
-          <Grid container columnGap={(theme) => theme.spacing(1)} rowGap={(theme) => theme.spacing(1)} my={1}>
+          <Grid
+            container
+            columnGap={(theme) => theme.spacing(1)}
+            rowGap={(theme) => theme.spacing(1)}
+            my={1}
+          >
             <Grid item xs={12} sm={6} md>
-              <TextField sx={{width: "100%"}} disabled
+              <TextField
+                sx={{ width: "100%" }}
+                disabled
                 id="customer-id"
                 label="Cust. ID"
                 // size="small"
@@ -143,7 +222,9 @@ const HeaderForm = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md>
-              <TextField sx={{width: "100%"}} disabled
+              <TextField
+                sx={{ width: "100%" }}
+                disabled
                 id="req-id"
                 label="Req. ID"
                 // size="small"
@@ -156,7 +237,8 @@ const HeaderForm = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md>
-              <Autocomplete sx={{width: "100%", minWidth: 350}} 
+              <Autocomplete
+                sx={{ width: "100%", minWidth: 350 }}
                 // disablePortal
                 disabled={!state?.isFreshEntryctx}
                 id="cust-categories"
@@ -164,18 +246,21 @@ const HeaderForm = () => {
                 inputValue={categConstitutionIPValue}
                 // options={state?.customerCategoriesctx ?? []}
                 options={custCategData ?? []}
-                onChange={(e,value:any,r,d) => {
-                  handleCategoryChangectx(e, value)
+                onChange={(e, value: any, r, d) => {
+                  handleCategoryChangectx(e, value);
                 }}
                 onInputChange={(e, newInputValue) => {
-                  setCategConstitutionIPValue(newInputValue)
+                  setCategConstitutionIPValue(newInputValue);
                 }}
-                getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
+                getOptionLabel={(option: any) =>
+                  `${option?.label} - ${option?.CONSTITUTION_NAME}`
+                }
                 isOptionEqualToValue={(option, value) => {
                   return option.value === value.value;
                 }}
-                renderInput={(params:any) => (
-                  <TextField {...params} 
+                renderInput={(params: any) => (
+                  <TextField
+                    {...params}
                     label="Category - Constitution"
                     autoComplete="disabled"
                     type="text"
@@ -218,32 +303,39 @@ const HeaderForm = () => {
               size="small"
             />} */}
 
-            {(!state?.isFreshEntryctx && !state?.isDraftSavedctx) &&
-            <Grid sx={{alignSelf: "flex-end"}}>
-              <GradientButton
-                onClick={() => setChangeCategDialog(true)}
-                disabled={false}
-                style={{width: "auto", maxWidth: "20px"}}
-              >...</GradientButton>
-            </Grid>}
+            {!state?.isFreshEntryctx &&
+              !state?.isDraftSavedctx &&
+              state?.customerIDctx && (
+                <Grid sx={{ alignSelf: "flex-end" }}>
+                  <GradientButton
+                    onClick={() => setChangeCategDialog(true)}
+                    disabled={false}
+                    style={{ width: "auto", maxWidth: "20px" }}
+                  >
+                    ...
+                  </GradientButton>
+                </Grid>
+              )}
 
             <Grid item xs={12} sm={6} md>
-              <Autocomplete sx={{width: "100%"}}
+              <Autocomplete
+                sx={{ width: "100%" }}
                 // disablePortal
                 disabled={!state?.isFreshEntryctx}
                 id="acc-types"
                 options={AccTypeOptions ?? []}
-                getOptionLabel={(option:any) => `${option?.label}`}
+                getOptionLabel={(option: any) => `${option?.label}`}
                 // value={state?.accTypeValuectx ?? null}
                 value={acctTypeState}
-                onChange={(e,v) => {
+                onChange={(e, v) => {
                   // setAccTypeValue(v?.value)
-                  setAcctTypeState(v)
-                  handleAccTypeVal(v?.value)
+                  setAcctTypeState(v);
+                  handleAccTypeVal(v?.value);
                 }}
                 // sx={{ width: 200 }}
-                renderInput={(params:any) => (
-                  <TextField {...params} 
+                renderInput={(params: any) => (
+                  <TextField
+                    {...params}
                     label="A/C Type"
                     autoComplete="disabled"
                     type="text"
@@ -278,14 +370,16 @@ const HeaderForm = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md>
-              <TextField disabled sx={{width: "100%"}}
+              <TextField
+                disabled
+                sx={{ width: "100%" }}
                 id="customer-ckyc-number"
                 name="KYC_NUMBER"
                 label="CKYC No."
                 value={state?.kycNoValuectx}
-                onChange={(e:any) => {
+                onChange={(e: any) => {
                   // console.log("e, vasd", e)
-                  handleKycNoValctx(e?.target?.value)
+                  handleKycNoValctx(e?.target?.value);
                 }}
                 // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
                 // value={accTypeValue}
@@ -298,13 +392,23 @@ const HeaderForm = () => {
               />
             </Grid>
             {!state?.isFreshEntryctx && (
-              <FormControlLabel 
-              control={
-                <Checkbox 
-                  checked={Boolean(state?.isCustActivectx && state?.isCustActivectx === "Y") ? true : false} 
-                  disabled color="secondary" />
-              } label="Active" />
-            )}            
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={
+                      Boolean(
+                        state?.isCustActivectx && state?.isCustActivectx === "Y"
+                      )
+                        ? true
+                        : false
+                    }
+                    disabled
+                    color="secondary"
+                  />
+                }
+                label="Active"
+              />
+            )}
             {/* <ButtonGroup size="small" variant="outlined" color="secondary">
               <Button color="secondary" onClick={() => {
                   setIsCustomerData(false)
@@ -319,21 +423,20 @@ const HeaderForm = () => {
                   // setIsLoading(true)
               }}>Edit</Button>
             </ButtonGroup> */}
-
           </Grid>
           {/* common customer fields */}
         </Toolbar>
         {loader}
         {/* {state?.currentFormctx.isLoading && <LinearProgress color="secondary" />} */}
-  </AppBar>
-        {changeCategDialog && 
-          <CategoryUpdate 
-            open={changeCategDialog} 
-            setChangeCategDialog={setChangeCategDialog} 
-          />
-        }
+      </AppBar>
+      {changeCategDialog && (
+        <CategoryUpdate
+          open={changeCategDialog}
+          setChangeCategDialog={setChangeCategDialog}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
 export default HeaderForm;

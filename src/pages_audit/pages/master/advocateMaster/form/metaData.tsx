@@ -1,3 +1,4 @@
+import { isValid } from "date-fns";
 import { t } from "i18next";
 
 export const AdvocateMstFormMetaData = {
@@ -76,7 +77,7 @@ export const AdvocateMstFormMetaData = {
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -89,14 +90,13 @@ export const AdvocateMstFormMetaData = {
       autoComplete: "off",
       required: true,
       maxLength: 100,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["AdvocateNameisrequired"] }],
       },
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
-        console.log("grid", rest);
         const accessor: any = columnValue.fieldKey.split("/").pop();
         const fieldValue = columnValue.value?.trim().toLowerCase();
         const rowColumnValue = rest[1]?.rows?.[accessor]?.trim().toLowerCase();
@@ -118,7 +118,7 @@ export const AdvocateMstFormMetaData = {
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -135,7 +135,13 @@ export const AdvocateMstFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["MobileNoisRequired"] }],
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 9) {
+          return "The length of your Mobile Number is less than 10 character.";
+        }
+        return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -146,7 +152,7 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterAddress",
       autoComplete: "off",
       type: "text",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
     },
     {
@@ -158,12 +164,65 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterEmailID",
       type: "text",
       autoComplete: "off",
-      preventSpecialCharInput: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "email", params: ["InvalidEmailID"] }],
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      maxLength: 200,
+      validate: (columnValue, allField, flag) => {
+        let emailRegex =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (columnValue.value && !emailRegex.test(columnValue.value)) {
+          return "Please enter valid Email ID";
+        }
+        return "";
       },
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 12, md: 7.5, lg: 8, xl: 8 },
+    },
+    {
+      render: {
+        componentType: "checkbox",
+      },
+      name: "STATUS",
+      label: "Inactive",
+      defaultValue: false,
+      dependentFields: ["INACTIVE_DATE"],
+      validationRun: "onChange",
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldValues
+      ) => {
+        if (Boolean(currentField?.value)) {
+          return {
+            INACTIVE_DATE: {
+              value: authState?.workingDate ?? "",
+            },
+          };
+        } else {
+          return {
+            INACTIVE_DATE: {
+              value: "",
+            },
+          };
+        }
+      },
+      GridProps: { xs: 3, sm: 2, md: 2, lg: 1.5, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "INACTIVE_DATE",
+      label: "Inactive Date",
+      __NEW__: {
+        validate: (currentField, dependentField) => {
+          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+            return t("Mustbeavaliddate");
+          }
+        },
+      },
+      __EDIT__: { isReadOnly: true },
+      __VIEW__: { isReadOnly: true },
+      GridProps: { xs: 12, sm: 6, md: 3, lg: 2.5, xl: 2 },
     },
   ],
 };

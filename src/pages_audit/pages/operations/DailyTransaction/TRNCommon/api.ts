@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
@@ -81,11 +81,6 @@ export const getCarousalCards = async (reqObj: reqObjTypes) => {
       controllerFinal
     );
   if (status === "0") {
-    data?.map((a) => {
-      if (a?.COMPONENT_TYPE == "amountField" && !a?.COL_VALUE.includes(".")) {
-        a.COL_VALUE = a.COL_VALUE + ".00";
-      }
-    });
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

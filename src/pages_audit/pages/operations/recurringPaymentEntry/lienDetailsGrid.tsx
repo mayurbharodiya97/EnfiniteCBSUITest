@@ -1,8 +1,11 @@
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { useCallback } from "react";
 import { LienGridMetaData } from "../lienEntry/lienEntryGridMetaData";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
@@ -10,7 +13,6 @@ const actions: ActionTypes[] = [
     actionName: "close",
     actionLabel: "Close",
     multiple: undefined,
-    rowDoubleClick: true,
     alwaysAvailable: true,
   },
 ];

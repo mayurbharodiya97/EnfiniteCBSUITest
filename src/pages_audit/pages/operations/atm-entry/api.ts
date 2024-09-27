@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getParameter = async (apiReqPara) => {
@@ -45,6 +45,7 @@ export const cardStatusList = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const cardTypeList = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETATMCARDTYPEDDDW", {});
@@ -67,6 +68,7 @@ export const cardTypeList = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const acctTypeList = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETATMACCTTYPEDDDW", { ...apiReq });
@@ -130,6 +132,7 @@ export const getATMcardDetails = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const retrieveData = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("RETRIVEATMREGISTRATIONDATA", {
@@ -145,6 +148,77 @@ export const retrieveData = async (apiReqPara) => {
 export const validateCitizenId = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATECITIZENID", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getCfmRetrieveData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETATMREGCONFGRID", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    // return data;
+    let newData;
+    if (Array.isArray(data) && data?.length > 0) {
+      newData = data.map((item) => ({
+        ...item,
+        ACCOUNT_NAME: item?.ACCT_NM,
+        DISPLAY_STATUS:
+          item?.STATUS === "B"
+            ? "Block"
+            : item?.STATUS === "D"
+            ? "Destroy"
+            : item?.STATUS === "A"
+            ? "Issued"
+            : item?.STATUS === "L"
+            ? "Lost"
+            : item?.STATUS === "N"
+            ? "OFF"
+            : item?.STATUS === "P"
+            ? "Pending Issue"
+            : item?.STATUS === "R"
+            ? "Reject (OFF)"
+            : item?.STATUS === "C"
+            ? "Replace"
+            : "",
+        DISPLAY_CONFIRMED:
+          item?.CONFIRMED === "Y"
+            ? "Confirmed"
+            : item?.CONFIRMED === "R"
+            ? "Rejected"
+            : item?.CONFIRMED === "N"
+            ? "Confirmation Pending"
+            : "",
+        _rowColor: item?.CONFIRMED === "Y" ? "rgb(9 132 3 / 51%)" : "",
+      }));
+    }
+    return newData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateCardStatus = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECARDSTATUS", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return { resp: data[0], status: status };
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateInsertData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEATMREGSAVEDATA", {
       ...apiReqPara,
     });
   if (status === "0") {

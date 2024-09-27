@@ -1,17 +1,19 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { ClearCacheProvider } from "cache";
 import { AppBar, Dialog, LinearProgress } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import {
+  usePopupContext,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -88,17 +90,19 @@ const RetrieveDataCustom = ({
     });
     endSubmit(true);
   };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //     FLAG: "P",
-  //     FLAG_RTGSC: "",
-  //   });
-  // }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <>

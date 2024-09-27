@@ -1,23 +1,29 @@
 import React, { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { AreaMasterMetaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-
+import { t } from "i18next";
+import {
+  InitialValuesType,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  LoaderPaperComponent,
+} from "@acuteinfo/common-base";
 
 const AreaMasterForm = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
@@ -25,28 +31,26 @@ const AreaMasterForm = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const mutation = useMutation(API.updateAreaMasterData,
-    {
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        CloseMessageBox();
-        closeDialog();
-      },
-    }
-  );
+  const mutation = useMutation(API.updateAreaMasterData, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      CloseMessageBox();
+      closeDialog();
+    },
+  });
 
   const codeArr = gridData?.map((ele: any) => ele?.AREA_CD);
   const filterNumbers = codeArr?.filter((ele) => !isNaN(ele));
@@ -54,7 +58,6 @@ const AreaMasterForm = ({
     filterNumbers?.length > 0 ? Math.max(...filterNumbers) + 1 : "";
   const codeIncreByOne =
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
-
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -79,8 +82,7 @@ const AreaMasterForm = ({
         return false;
       }
       return (
-        item.AREA_NM === newData.AREA_NM &&
-        item.PIN_CODE === newData.PIN_CODE
+        item.AREA_NM === newData.AREA_NM && item.PIN_CODE === newData.PIN_CODE
       );
     });
 
@@ -88,7 +90,10 @@ const AreaMasterForm = ({
       if (duplicateItem) {
         const duplicateIndex = gridData.indexOf(duplicateItem);
         //@ts-ignore
-        const errorMessage = `Area & Pin Code already entered at Sr No - ${duplicateIndex + 1} - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
+        const errorMessage = `Area & Pin Code already entered at Sr No - ${
+          duplicateIndex + 1
+          //@ts-ignore
+        } - CODE - ${duplicateItem.AREA_CD}. Please enter another value.`;
         await MessageBox({
           message: errorMessage,
           messageTitle: "Alert",
@@ -115,8 +120,8 @@ const AreaMasterForm = ({
       setFormMode("view");
     } else {
       const btnName = await MessageBox({
-        message: "SaveData",
-        messageTitle: "Confirmation",
+        message: t("SaveData"),
+        messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
@@ -128,90 +133,92 @@ const AreaMasterForm = ({
     }
   };
 
-
-
-
   return (
     <>
-      <FormWrapper
-        key={"areaMasterForm" + formMode}
-        metaData={
-          extractMetaData(
-            AreaMasterMetaData,
-            formMode
-          ) as MetaDataType
-        }
-        displayMode={formMode}
-        onSubmitHandler={onSubmitHandler}
-        initialValues={
-          formMode === "add"
-            ? {
-              ...rows?.[0]?.data,
-              AREA_CD: String(codeIncreByOne),
-            }
-            : { ...(rows?.[0]?.data as InitialValuesType) }
-        }
-        formStyle={{
-          background: "white",
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            {formMode === "edit" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("view");
-                  }}
-                  color={"primary"}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            ) : formMode === "add" ? (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            ) : (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    setFormMode("edit");
-                  }}
-                  color={"primary"}
-                >
-                  Edit
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
-                </GradientButton>
-              </>
-            )}
-          </>
-        )}
-      </FormWrapper>
+      {gridData ? (
+        <FormWrapper
+          key={"areaMasterForm" + formMode}
+          metaData={
+            extractMetaData(AreaMasterMetaData, formMode) as MetaDataType
+          }
+          displayMode={formMode}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={
+            formMode === "add"
+              ? {
+                  ...rows?.[0]?.data,
+                  AREA_CD: String(codeIncreByOne),
+                }
+              : { ...(rows?.[0]?.data as InitialValuesType) }
+          }
+          formStyle={{
+            background: "white",
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              ) : formMode === "add" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    Edit
+                  </GradientButton>
+                  <GradientButton onClick={closeDialog} color={"primary"}>
+                    Close
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
+        </FormWrapper>
+      ) : (
+        <LoaderPaperComponent />
+      )}
     </>
   );
 };
@@ -220,7 +227,7 @@ export const AreaMasterFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   defaultView,
-  gridData = [],
+  gridData,
 }) => {
   return (
     <Dialog

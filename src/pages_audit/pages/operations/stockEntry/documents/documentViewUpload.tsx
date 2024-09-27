@@ -13,17 +13,21 @@ import { stockViewEditMSTMetaData } from "./documentMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { uploadDocument, viewDocument } from "../api";
-import { queryClient } from "cache";
-import { MasterDetailsForm } from "components/formcomponent";
-import { transformFileObject } from "components/fileUpload/utils";
-import { utilFunction } from "components/utils";
-import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { cloneDeep } from "lodash";
+import {
+  MasterDetailsMetaData,
+  LoaderPaperComponent,
+  Alert,
+  MasterDetailsForm,
+  transformFileObject,
+  utilFunction,
+  queryClient,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const [isopenImgViewer, setOpenImgViewer] = useState<boolean>(false);
@@ -32,6 +36,19 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const myRef = useRef<any>(null);
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
+
+  let newInitialData = {
+    ...rows?.[0]?.data,
+    DRAWING_POWER:
+      rows?.[0]?.data?.DRAWING_POWER &&
+      parseFloat(rows?.[0]?.data?.DRAWING_POWER).toFixed(2),
+    NET_VALUE:
+      rows?.[0]?.data?.NET_VALUE &&
+      parseFloat(rows?.[0]?.data?.NET_VALUE).toFixed(2),
+    STOCK_VALUE:
+      rows?.[0]?.data?.STOCK_VALUE &&
+      parseFloat(rows?.[0]?.data?.STOCK_VALUE).toFixed(2),
+  };
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
     viewDocument({
@@ -173,6 +190,8 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     fileInput.click();
   };
 
+  let metadata = cloneDeep(stockViewEditMSTMetaData) as MasterDetailsMetaData;
+
   return (
     <>
       <Dialog
@@ -180,7 +199,7 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
         fullWidth={true}
         PaperProps={{
           style: {
-            maxWidth: "1150px",
+            maxWidth: "1250px",
           },
         }}
       >
@@ -213,12 +232,19 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
           ) : (
             <MasterDetailsForm
               key={"stockEntryUploadDOC" + viewDocuments.isSuccess}
-              metaData={stockViewEditMSTMetaData}
+              metaData={metadata}
               initialData={{
                 _isNewRow: false,
-                ...rows?.[0]?.data,
+                ...newInitialData,
                 DETAILS_DATA: viewDocuments?.data,
               }}
+              subHeaderLabel={`\u00A0\u00A0 
+          ${(
+            rows?.[0]?.data?.COMP_CD +
+            rows?.[0]?.data?.BRANCH_CD +
+            rows?.[0]?.data?.ACCT_TYPE +
+            rows?.[0]?.data?.ACCT_CD
+          ).replace(/\s/g, "")} -  ${rows?.[0]?.data?.ACCT_NM} `}
               onSubmitData={onSubmitHandler}
               isLoading={uploadDocuments?.isLoading}
               isNewRow={false}
@@ -239,7 +265,6 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "43vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}

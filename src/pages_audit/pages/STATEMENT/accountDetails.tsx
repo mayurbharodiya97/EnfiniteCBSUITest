@@ -7,7 +7,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  LoaderPaperComponent,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
@@ -16,10 +20,10 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import "jspdf-autotable";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import BackupTableIcon from "@mui/icons-material/BackupTable";
-import { ExcelForStatementExport } from "components/report/export/statementExcel";
+// import { ExcelForStatementExport } from "components/report/export/statementExcel";
 import { AuthContext } from "pages_audit/auth";
 import RetrieveIcon from "assets/icons/retrieveIcon";
 import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
@@ -27,10 +31,11 @@ import SimpleType from "./simpleType";
 import GridType from "./gridType";
 import SimpleGridType from "./simpleGridType";
 import Title from "./title";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import ExportToPDF from "components/report/export/statementPdf";
+// import ExportToPDF from "components/report/export/statementPdf";
 import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
+import exportToPDF from "components/report/export/statementPdf";
+import { ExcelForStatementExport } from "components/report/export/statementExcel";
+
 const AccountDetails = () => {
   const [open, setOpen] = useState(false);
   const [openViewStatement, setOpenViewStatement] = useState(false);
@@ -90,13 +95,13 @@ const AccountDetails = () => {
         FULL_ACCT_NO: rowsDataRef?.current?.FULL_ACCT_NO
           ? rowsDataRef?.current?.FULL_ACCT_NO
           : "",
-        FROM_DT: isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
+        FROM_DT: utilFunction.isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
           ? format(
               new Date(rowsDataRef.current?.STMT_FROM_DATE),
               "dd-MMM-yyyy"
             ) ?? ""
           : format(new Date(), "dd-MMM-yyyy"),
-        TO_DT: isValidDate(rowsDataRef.current?.WK_STMT_TO_DATE)
+        TO_DT: utilFunction.isValidDate(rowsDataRef.current?.WK_STMT_TO_DATE)
           ? format(
               new Date(rowsDataRef.current?.WK_STMT_TO_DATE),
               "dd-MMM-yyyy"
@@ -265,6 +270,7 @@ const AccountDetails = () => {
                     onClose={() => setOpenViewStatement(false)}
                     rowsData={null}
                     screenFlag={"STATEMENT"}
+                    close={() => {}}
                   />
                 )}
                 <Tooltip title="Download">
@@ -320,7 +326,7 @@ const AccountDetails = () => {
                 >
                   <GradientButton
                     onClick={() =>
-                      ExportToPDF(
+                      exportToPDF(
                         data,
                         // companyName,
                         generatedBy,

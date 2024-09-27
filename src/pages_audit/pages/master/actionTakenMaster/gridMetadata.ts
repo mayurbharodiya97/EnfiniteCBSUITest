@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const ActionTakenMasterGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -21,6 +21,7 @@ export const ActionTakenMasterGridMetaData: GridMetaDataType = {
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [

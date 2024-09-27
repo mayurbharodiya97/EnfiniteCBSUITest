@@ -1,20 +1,28 @@
-import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Prioritymastermainmetadata } from "./gridMetaData";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import GridWrapper from "components/dataTableStatic/";
 import { enqueueSnackbar } from "notistack";
 import { ProrityformWrapper } from "./viewDetail/priorityMasterMainForm";
 import { useMutation, useQuery } from "react-query";
-import * as API from './api';
+import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
 
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -24,7 +32,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -37,7 +45,6 @@ const actions: ActionTypes[] = [
 ];
 
 const PriorityMasterMainGrid = () => {
-
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const navigate = useNavigate();
@@ -49,8 +56,8 @@ const PriorityMasterMainGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -60,8 +67,7 @@ const PriorityMasterMainGrid = () => {
             _isDeleteRow: true,
           });
         }
-      }
-      else {
+      } else {
         navigate(data?.name, {
           state: data?.rows,
         });
@@ -81,7 +87,7 @@ const PriorityMasterMainGrid = () => {
   );
   const deleteMutation = useMutation(API.deletePriorityMasterMainData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -91,15 +97,13 @@ const PriorityMasterMainGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       CloseMessageBox();
       refetch();
     },
   });
-
-
 
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
@@ -163,4 +167,3 @@ const PriorityMasterMainGrid = () => {
 };
 
 export default PriorityMasterMainGrid;
-

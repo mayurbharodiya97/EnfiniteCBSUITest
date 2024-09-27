@@ -1,4 +1,4 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { MasterDetailsMetaData } from "@acuteinfo/common-base";
 import * as API from "../../../../api";
 
 export const DocMasterDTLMetadata: MasterDetailsMetaData = {
@@ -157,6 +157,7 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
             },
           ],
         },
+        isReadOnly: true,
       },
       // {
       //   accessor: "DB_COLUMN",

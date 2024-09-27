@@ -1,24 +1,25 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Dialog } from "@mui/material";
 import { AccountInquiryMetadata, AccountInquiryGridMetaData } from "./metaData";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { useMutation } from "react-query";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ViewStatement } from "./viewStatement";
 import * as API from "./api";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
-import { Alert } from "components/common/alert";
-import { GradientButton } from "components/styledComponent/button";
 import Dependencies from "./dependencies";
 import * as CommonApi from "../pages/operations/DailyTransaction/TRNCommon/api";
-import { enqueueSnackbar } from "notistack";
 import { DailyTransTabsWithDialog } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
-import { queryClient } from "cache";
 import { t } from "i18next";
+import {
+  GradientButton,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -366,8 +367,9 @@ export const Accountinquiry = ({ open, onClose }) => {
           <ViewStatement
             rowsData={rowsData}
             open={acctOpen}
-            onClose={onClose}
+            onClose={() => setAcctOpen(false)}
             screenFlag={"ACCT_INQ"}
+            close={onClose}
           />
         ) : //   componentToShow === "ViewInterest" ? (
         // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />

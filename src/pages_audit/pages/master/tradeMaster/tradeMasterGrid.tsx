@@ -1,18 +1,22 @@
 import { Fragment, useContext, useState } from "react";
 import { useRef, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { TradeMasterGridMetaData } from "./gridMetaData";
 import { TradeMasterFormWrapper } from "./viewDetails/tradeMasterForm";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
 
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -23,7 +27,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -33,7 +37,6 @@ const actions: ActionTypes[] = [
     multiple: false,
   },
 ];
-
 
 const TradeMaster = () => {
   const { authState } = useContext(AuthContext);
@@ -46,8 +49,8 @@ const TradeMaster = () => {
       if (data?.name === "delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
-          messageTitle: "Confirmation",
+          message: t("DeleteData"),
+          messageTitle: t("Confirmation"),
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -76,7 +79,7 @@ const TradeMaster = () => {
 
   const deleteMutation = useMutation(API.deleteTradeMasterData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -86,7 +89,7 @@ const TradeMaster = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
@@ -103,13 +106,12 @@ const TradeMaster = () => {
     navigate(".");
   };
 
-
   return (
     <Fragment>
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Somethingwenttowrong"}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail}
           color="error"
         />

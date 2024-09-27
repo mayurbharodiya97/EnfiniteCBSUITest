@@ -1,5 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../api";
 
 export const AtmEntryMetaData = {
@@ -105,10 +105,10 @@ export const AtmEntryMetaData = {
         },
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
 
         runPostValidationHookAlways: true,
@@ -116,10 +116,10 @@ export const AtmEntryMetaData = {
       accountTypeMetadata: {
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
         },
         validationRun: "onChange",
         isFieldFocused: true,
@@ -268,7 +268,9 @@ export const AtmEntryMetaData = {
                 MOBILE_NO: { value: postData?.[0]?.MOBILE_NO },
                 ORGINAL_NM: { value: postData?.[0]?.ORGINAL_NM },
                 ACCOUNT_NAME: { value: postData?.[0]?.ACCOUNT_NAME },
-                SMS_ALERT: { value: postData?.[0]?.SMS_ALERT },
+                SMS_ALERT: {
+                  value: postData?.[0]?.SMS_ALERT === "Y" ? true : false,
+                },
                 DISABLE_SMS_ALERT: { value: postData?.[0]?.DISABLE_SMS_ALERT },
               };
             }
@@ -300,10 +302,10 @@ export const AtmEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -443,6 +445,24 @@ export const AtmEntryMetaData = {
         componentType: "hidden",
       },
       name: "PARA_311",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SB_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CA_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CC_ACCT_CD",
     },
   ],
 };

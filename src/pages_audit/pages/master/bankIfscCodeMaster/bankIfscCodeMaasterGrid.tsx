@@ -1,20 +1,28 @@
-import  { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { gridMetadata } from "./gridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import GridWrapper from "components/dataTableStatic/";
 import { enqueueSnackbar } from "notistack";
 import { BankIfscCdMasterFormWrapper } from "./viewDetails/bankIfscCodeMasterViewDetails";
 import { useMutation, useQuery } from "react-query";
-import * as API from './api';
+import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-
+import { t } from "i18next";
 import ImportData from "./fileupload/importData";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -25,7 +33,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "View Detail",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -44,7 +52,6 @@ const actions: ActionTypes[] = [
 ];
 
 const BankIfscCodeMaasterGrid = () => {
-
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const isDeleteDataRef = useRef<any>(null);
@@ -55,7 +62,7 @@ const BankIfscCodeMaasterGrid = () => {
       if (data?.name === "Delete") {
         isDeleteDataRef.current = data?.rows?.[0];
         const btnName = await MessageBox({
-          message: "DeleteData",
+          message: t("DeleteData"),
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
@@ -85,7 +92,7 @@ const BankIfscCodeMaasterGrid = () => {
   );
   const deleteMutation = useMutation(API.deleteupdateBankIfscCodeData, {
     onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -95,15 +102,13 @@ const BankIfscCodeMaasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("deleteSuccessfully"), {
         variant: "success",
       });
       refetch();
       CloseMessageBox();
     },
   });
-
-
 
   const ClosedEventCall = () => {
     if (isDataChangedRef.current === true) {
@@ -173,10 +178,8 @@ const BankIfscCodeMaasterGrid = () => {
           }
         />
       </Routes>
-
     </Fragment>
   );
 };
 
 export default BankIfscCodeMaasterGrid;
-

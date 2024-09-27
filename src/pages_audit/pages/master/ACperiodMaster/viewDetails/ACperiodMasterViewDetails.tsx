@@ -1,18 +1,22 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData, utilFunction } from "components/utils";
-import { SubmitFnType } from "packages/form";
+import { useContext, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-
+import { t } from "i18next";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 const AcPeriodMasterForm = ({
   isDataChangedRef,
@@ -25,11 +29,12 @@ const AcPeriodMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const mutation = useMutation(API.updateInstallmentPeriodData,
+  const mutation = useMutation(
+    API.updateInstallmentPeriodData,
 
     {
       onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
+        let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
@@ -39,7 +44,7 @@ const AcPeriodMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar("insertSuccessfully", {
+        enqueueSnackbar(t("insertSuccessfully"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -48,8 +53,6 @@ const AcPeriodMasterForm = ({
       },
     }
   );
-
-
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -99,16 +102,12 @@ const AcPeriodMasterForm = ({
 
   return (
     <>
-      {!gridData ? (<LoaderPaperComponent />
+      {!gridData ? (
+        <LoaderPaperComponent />
       ) : (
         <FormWrapper
           key={"acperiodMasterForm" + formMode}
-          metaData={
-            extractMetaData(
-              metaData,
-              formMode
-            ) as MetaDataType
-          }
+          metaData={extractMetaData(metaData, formMode) as MetaDataType}
           initialValues={{
             ...(rows?.[0]?.data ?? {}),
           }}
@@ -131,7 +130,9 @@ const AcPeriodMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -152,7 +153,9 @@ const AcPeriodMasterForm = ({
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -180,7 +183,6 @@ const AcPeriodMasterForm = ({
           )}
         </FormWrapper>
       )}
-
     </>
   );
 };

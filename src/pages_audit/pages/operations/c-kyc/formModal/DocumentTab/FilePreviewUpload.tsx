@@ -1,23 +1,26 @@
 // import { Box, Button, Dialog, DialogTitle } from "@mui/material";
+import { ImageViewer, NoPreview, PDFViewer } from "@acuteinfo/common-base";
 import {
-  ImageViewer,
-  NoPreview,
-  PDFViewer,
-} from "components/fileUpload/preView";
-import { FileObjectType } from "components/fileUpload/type";
-import { UploadTarget } from "components/fileUpload/uploadTarget";
-import { transformFileObject } from "components/fileUpload/utils";
-import { utilFunction } from "components/utils";
+  utilFunction,
+  transformFileObject,
+  UploadTarget,
+  FileObjectType,
+} from "@acuteinfo/common-base";
 import { enqueueSnackbar } from "notistack";
-    // import { Fragment, useCallback, useEffect, useState } from "react";
+// import { Fragment, useCallback, useEffect, useState } from "react";
 
 import { Box, Button, Dialog, DialogTitle } from "@mui/material";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { CkycContext } from "../../CkycContext";
 
-const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, 
+const FilePreviewUpload = ({
+  myRef,
+  open,
+  setOpen,
+  detailsDataRef,
+  filesGridData,
   // mainDocRow
- }) => {
+}) => {
   const { state: ckycState } = useContext(CkycContext);
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
@@ -28,8 +31,8 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
 
   const onClose = () => {
     // setFiles(null)
-    setOpen(false)
-  }
+    setOpen(false);
+  };
   const validateFilesAndAddToListCB = useCallback(
     async (newFiles: File[], existingFiles: FileObjectType[] | undefined) => {
       // console.log("file change... new file ", newFiles)
@@ -69,135 +72,141 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
     let base64Data = "";
     let docImage = "";
     let imageType = "";
-    if(Boolean(files) && Boolean(files.blob)) {
+    if (Boolean(files) && Boolean(files.blob)) {
       base64Data = await utilFunction.convertBlobToBase64(files?.blob);
-      if(Array.isArray(base64Data) && base64Data.length>1) {
+      if (Array.isArray(base64Data) && base64Data.length > 1) {
         docImage = base64Data[1];
         imageType = files?.blob?.type;
       }
     }
-        myRef?.current.setGridData(old => {
-          let newGridArr = old;
-          if(!Boolean(detailsDataRef.NEW_FLAG)) {
-            newGridArr = old.map(gridRow => {
-              if(gridRow.LINE_ID === detailsDataRef.LINE_ID 
-                && gridRow.DOC_IMAGE !== docImage) {
-                return {
-                  ...gridRow,
-                  DOC_IMAGE: docImage,
-                  IMG_TYPE: imageType,
-                }
-              } else {
-                return gridRow;
-              }
-            })
+    myRef?.current.setGridData((old) => {
+      let newGridArr = old;
+      if (!Boolean(detailsDataRef.NEW_FLAG)) {
+        newGridArr = old.map((gridRow) => {
+          if (
+            gridRow.LINE_ID === detailsDataRef.LINE_ID &&
+            gridRow.DOC_IMAGE !== docImage
+          ) {
+            return {
+              ...gridRow,
+              DOC_IMAGE: docImage,
+              IMG_TYPE: imageType,
+            };
           } else {
-            newGridArr = old.map(gridRow => {
-              if(gridRow.LINE_ID === detailsDataRef.LINE_ID
-                && gridRow.DOC_IMAGE !== docImage
-              ) {
-                return {
-                  ...gridRow,
-                  DOC_IMAGE: docImage,
-                  IMG_TYPE: imageType,
-                  _isTouchedCol: {
-                    ...gridRow._isTouchedCol,
-                    DOC_IMAGE: true
-                  }
-                }
-              } else {
-                return gridRow;
-              }
-            })
+            return gridRow;
           }
-          return newGridArr;
-        })
-        setOpen(false)
-  }
+        });
+      } else {
+        newGridArr = old.map((gridRow) => {
+          if (
+            gridRow.LINE_ID === detailsDataRef.LINE_ID &&
+            gridRow.DOC_IMAGE !== docImage
+          ) {
+            return {
+              ...gridRow,
+              DOC_IMAGE: docImage,
+              IMG_TYPE: imageType,
+              _isTouchedCol: {
+                ...gridRow._isTouchedCol,
+                DOC_IMAGE: true,
+              },
+            };
+          } else {
+            return gridRow;
+          }
+        });
+      }
+      return newGridArr;
+    });
+    setOpen(false);
+  };
   const onSave2 = async () => {
     let base64Data = "";
     let docImage = "";
     let imageType = "";
-    if(Boolean(files) && Boolean(files.blob)) {
+    if (Boolean(files) && Boolean(files.blob)) {
       base64Data = await utilFunction.convertBlobToBase64(files?.blob);
-      if(Array.isArray(base64Data) && base64Data.length>1) {
+      if (Array.isArray(base64Data) && base64Data.length > 1) {
         docImage = base64Data[1];
         imageType = files?.blob?.type;
       }
     }
-        myRef?.current.setGridData(old => {
-          let newGridArr = old;
-          if(!Boolean(detailsDataRef.NEW_FLAG)) {
-            newGridArr = old.map(gridRow => {
-              if(gridRow.LINE_CD === detailsDataRef.LINE_CD 
-                && gridRow.DOC_IMAGE !== docImage) {
-                return {
-                  ...gridRow,
-                  DOC_IMAGE: docImage,
-                  IMG_TYPE: imageType,
-                }
-              } else {
-                return gridRow;
-              }
-            })
+    myRef?.current.setGridData((old) => {
+      let newGridArr = old;
+      if (!Boolean(detailsDataRef.NEW_FLAG)) {
+        newGridArr = old.map((gridRow) => {
+          if (
+            gridRow.LINE_CD === detailsDataRef.LINE_CD &&
+            gridRow.DOC_IMAGE !== docImage
+          ) {
+            return {
+              ...gridRow,
+              DOC_IMAGE: docImage,
+              IMG_TYPE: imageType,
+            };
           } else {
-            newGridArr = old.map(gridRow => {
-              if(gridRow.LINE_CD === detailsDataRef.LINE_CD
-                && gridRow.DOC_IMAGE !== docImage
-              ) {
-                return {
-                  ...gridRow,
-                  DOC_IMAGE: docImage,
-                  IMG_TYPE: imageType,
-                  _isTouchedCol: {
-                    ...gridRow._isTouchedCol,
-                    DOC_IMAGE: true
-                  }
-                }
-              } else {
-                return gridRow;
-              }
-            })
+            return gridRow;
           }
-          return newGridArr;
-        })
-        setOpen(false)
-  }
+        });
+      } else {
+        newGridArr = old.map((gridRow) => {
+          if (
+            gridRow.LINE_CD === detailsDataRef.LINE_CD &&
+            gridRow.DOC_IMAGE !== docImage
+          ) {
+            return {
+              ...gridRow,
+              DOC_IMAGE: docImage,
+              IMG_TYPE: imageType,
+              _isTouchedCol: {
+                ...gridRow._isTouchedCol,
+                DOC_IMAGE: true,
+              },
+            };
+          } else {
+            return gridRow;
+          }
+        });
+      }
+      return newGridArr;
+    });
+    setOpen(false);
+  };
 
   // check for allowing to update
   useEffect(() => {
-    console.log("wekiufhiwuehfhwiuefw", detailsDataRef)
-    if(ckycState?.isFreshEntryctx) {
-      setAllowUpdate(true)
+    console.log("wekiufhiwuehfhwiuefw", detailsDataRef);
+    if (ckycState?.isFreshEntryctx) {
+      setAllowUpdate(true);
     } else {
-      if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
-        if(detailsDataRef.NEW_FLAG === "N") {
-          setAllowUpdate(true)
+      if (Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
+        if (detailsDataRef.NEW_FLAG === "N") {
+          setAllowUpdate(true);
         }
       } else {
-        setAllowUpdate(true)
+        setAllowUpdate(true);
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     // console.log("wehfiuwqefhwiuefhweihfiuwehfu detailsDataRef", detailsDataRef)
-    if(detailsDataRef && Boolean(detailsDataRef?.DOC_IMAGE)) {
-        const fileBlob = utilFunction.blobToFile(
-            utilFunction.base64toBlob(
-                detailsDataRef?.DOC_IMAGE,
-                detailsDataRef?.IMG_TYPE?.includes("pdf")
-                ? "application/pdf"
-                : "image/" + detailsDataRef?.IMG_TYPE
-            )
-            // ,rows?.FILE_NAME
-            ,""
-        )
-        setFiles({blob: fileBlob});
+    if (detailsDataRef && Boolean(detailsDataRef?.DOC_IMAGE)) {
+      const fileBlob = utilFunction.blobToFile(
+        utilFunction.base64toBlob(
+          detailsDataRef?.DOC_IMAGE,
+          detailsDataRef?.IMG_TYPE?.includes("pdf")
+            ? "application/pdf"
+            : "image/" + detailsDataRef?.IMG_TYPE
+        ),
+        // ,rows?.FILE_NAME
+        ""
+      );
+      setFiles({ blob: fileBlob });
     } else {
-      setFiles(null)
+      setFiles(null);
     }
-  }, [])
+  }, []);
   return (
     <Fragment>
       <Dialog
@@ -231,34 +240,39 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
         >
           File
           <Box>
-          {allowUpdate && <Button onClick={onSave}>Save</Button>}
-          <Button onClick={onClose}>Close</Button>
+            {allowUpdate && <Button onClick={onSave}>Save</Button>}
+            <Button onClick={onClose}>Close</Button>
           </Box>
         </DialogTitle>
 
-        {allowUpdate && <UploadTarget
-          existingFiles={files}
-          onDrop={validateFilesAndAddToListCB}
-          disabled={false}
-        />}
-        {files && (files?._mimeType?.includes("pdf") || files?.blob?.type?.includes("pdf")) ? (
+        {allowUpdate && (
+          <UploadTarget
+            existingFiles={files}
+            onDrop={validateFilesAndAddToListCB}
+            disabled={false}
+          />
+        )}
+        {files &&
+        (files?._mimeType?.includes("pdf") ||
+          files?.blob?.type?.includes("pdf")) ? (
           <PDFViewer
             blob={files?.blob}
             fileName={files?.name}
             onClose={() => {
-              if(allowUpdate) {
+              if (allowUpdate) {
                 setFiles(null);
               }
             }}
             // onClose={() => setAction(null)}
           />
         ) : files &&
-          (files?._mimeType?.includes("image") || files?.blob?.type?.includes("image")) ? (
+          (files?._mimeType?.includes("image") ||
+            files?.blob?.type?.includes("image")) ? (
           <ImageViewer
             blob={files?.blob}
             fileName={files?.name}
             onClose={() => {
-              if(allowUpdate) {
+              if (allowUpdate) {
                 setFiles(null);
               }
             }}
@@ -268,7 +282,7 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
           <NoPreview
             fileName={files?.name}
             onClose={() => {
-              if(allowUpdate) {
+              if (allowUpdate) {
                 setFiles(null);
               }
             }}

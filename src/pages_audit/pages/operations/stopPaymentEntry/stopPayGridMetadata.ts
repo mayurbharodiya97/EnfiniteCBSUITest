@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const StopPayGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -56,9 +56,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 117,
+      width: 142,
       minWidth: 90,
-      maxWidth: 130,
+      maxWidth: 180,
     },
     {
       accessor: "CHEQUE_TO",
@@ -66,9 +66,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 115,
+      width: 129,
       minWidth: 90,
-      maxWidth: 120,
+      maxWidth: 170,
     },
     {
       accessor: "CHEQUE_DT",
@@ -98,9 +98,9 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "left",
       componentType: "default",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 250,
+      minWidth: 200,
+      maxWidth: 300,
     },
     {
       accessor: "FLAG",
@@ -156,22 +156,22 @@ export const StopPayGridMetaData: GridMetaDataType = {
     //   minWidth: 60,
     //   maxWidth: 130,
     // },
-    {
-      accessor: "PRINT",
-      columnName: "Print",
-      buttonLabel: "Print",
-      sequence: 8,
-      alignment: "center",
-      componentType: "buttonRowCell",
-      // shouldExclude: (initialValue, original, prevRows, nextRows) => {
-      //   if (initialValue === "Y") {
-      //     return false;
-      //   }
-      //   return true;
-      // },
-      width: 90,
-      minWidth: 60,
-      maxWidth: 130,
-    },
+    // {
+    //   accessor: "PRINT",
+    //   columnName: "Print",
+    //   buttonLabel: "Print",
+    //   sequence: 8,
+    //   alignment: "center",
+    //   componentType: "buttonRowCell",
+    //   // shouldExclude: (initialValue, original, prevRows, nextRows) => {
+    //   //   if (initialValue === "Y") {
+    //   //     return false;
+    //   //   }
+    //   //   return true;
+    //   // },
+    //   width: 90,
+    //   minWidth: 60,
+    //   maxWidth: 130,
+    // },
   ],
 };

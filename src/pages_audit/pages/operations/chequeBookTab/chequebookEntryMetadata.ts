@@ -1,9 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction, greaterThanDate } from "@acuteinfo/common-base";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
-import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -86,9 +85,23 @@ export const ChequeBookEntryMetaData = {
         },
 
         runPostValidationHookAlways: true,
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
       },
       accountTypeMetadata: {
         validationRun: "onChange",
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -121,6 +134,13 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        GridProps: {
+          xs: 12,
+          md: 2.5,
+          sm: 2.5,
+          lg: 2.5,
+          xl: 2.5,
+        },
         render: {
           componentType: "textField",
         },
@@ -131,6 +151,10 @@ export const ChequeBookEntryMetaData = {
             return "Special Characters (!, &) not Allowed";
           }
           return "";
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
         postValidationSetCrossFieldValues: async (
           field,
@@ -313,10 +337,10 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
     },
     {
@@ -788,7 +812,7 @@ export const ChequeBookEntryMetaData = {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
         } else if (
-          geaterThanDate(value?.value, value?._maxDt, {
+          greaterThanDate(value?.value, value?._maxDt, {
             ignoreTime: true,
           })
         ) {

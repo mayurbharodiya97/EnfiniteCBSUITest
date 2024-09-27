@@ -1,14 +1,16 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { ClearCacheProvider } from "cache";
 import { CircularProgress, Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  SubmitFnType,
+  ClearCacheProvider,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
   const { authState } = useContext(AuthContext);
@@ -17,9 +19,9 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
 
   const updateFnWrapper =
     (update) =>
-    async ({ data }) => {
+    async ({ reqdata }) => {
       return update({
-        ...data,
+        ...reqdata,
       });
     };
   const mutation: any = useMutation(
@@ -53,7 +55,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
   ) => {
     endSubmit(true);
     mutation.mutate({
-      data: {
+      reqdata: {
         CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
         COMP_CD: authState?.companyID,
         endSubmit,
@@ -61,6 +63,18 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
     });
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <>
@@ -90,6 +104,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
                 <GradientButton
                   color={"primary"}
                   onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
+                  disabled={isSubmitting || mutation?.isLoading}
                   endIcon={
                     mutation?.isLoading ? <CircularProgress size={20} /> : null
                   }

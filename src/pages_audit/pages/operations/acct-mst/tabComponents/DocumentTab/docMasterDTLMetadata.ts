@@ -1,7 +1,7 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import * as API from "../../api";
 
-export const DocMasterDTLMetadata: MasterDetailsMetaData = {
+// export const DocMasterDTLMetadata: MasterDetailsMetaData = {
+export const DocMasterDTLMetadata: any = {
   masterForm: {
     form: {
       name: "extdocumentmasterform",
@@ -63,11 +63,11 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
         label: "",
         dependentFields: ["TEMPLATE_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-            const optionData = dependentFields?.TEMPLATE_CD?.optionData
-            // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
-            if(Array.isArray(optionData) && optionData.length>0) {
-                return optionData[0]?.DESCRIPTION;
-            } else return "";
+          const optionData = dependentFields?.TEMPLATE_CD?.optionData;
+          // console.log(dependentFields.TEMPLATE_CD, "siudbcsiudbcisbdc setvalue", optionData)
+          if (Array.isArray(optionData) && optionData.length > 0) {
+            return optionData[0]?.DESCRIPTION;
+          } else return "";
         },
       },
       {
@@ -102,12 +102,80 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
         __EDIT__: { isReadOnly: false },
       },
       {
+        render: { componentType: "numberFormat" },
+        name: "DOC_AMOUNT",
+        placeholder: "0.00",
+        type: "text",
+        label: "Document Amount",
+        GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+        FormatProps: {
+          // thousandSeparator: false,
+          // thousandsGroupStyle: "",
+          // allowNegative: false,
+          // allowLeadingZeros: false,
+          decimalScale: 2,
+          fixedDecimalScale: true,
+          isAllowed: (values) => {
+            console.log(values, "wiuefhdwuehfiuwehfiwhef");
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
+      },
+      {
+        render: { componentType: "numberFormat" },
+        name: "DOC_WEIGHTAGE",
+        type: "text",
+        label: "Document Weightage",
+        GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+        FormatProps: {
+          // thousandSeparator: false,
+          // thousandsGroupStyle: "",
+          allowNegative: false,
+          // allowLeadingZeros: false,
+          // fixedDecimalScale: true,
+          isAllowed: (values) => {
+            console.log(values, "wiuefhdwuehfiuwehfiwhef");
+            if (values?.value?.length > 3) {
+              return false;
+            }
+            if (values.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
+      },
+      {
+        render: { componentType: "textField" },
+        name: "DOC_TYPE",
+        label: "Document Type",
+        placeholder: "",
+        GridProps: { xs: 12, md: 4, sm: 4 },
+        isReadOnly: true,
+      },
+      {
         render: { componentType: "checkbox" },
         defaultValue: true,
         name: "SUBMIT",
         label: "Submit",
         GridProps: { xs: 12, md: 2, sm: 2 },
         __VIEW__: { IsReadOnly: true },
+        // __EDIT__: { render: { componentType: "checkbox" } },
+      },
+      {
+        render: { componentType: "checkbox" },
+        defaultValue: true,
+        name: "ACTIVE",
+        label: "Active",
+        GridProps: { xs: 12, md: 2, sm: 2 },
+        isReadOnly: false,
+        __NEW__: { isReadOnly: true },
         // __EDIT__: { render: { componentType: "checkbox" } },
       },
       {
@@ -148,7 +216,7 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
         isAutoSequence: true,
       },
       {
-        accessor: "LINE_CD",
+        accessor: "PAGE_NO",
         columnName: "Page No.",
         componentType: "editableNumberFormat",
         sequence: 1,
@@ -179,8 +247,62 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
             // },
           ],
         },
-        __EDIT__: {isReadOnly: true}
+        isReadOnly: true,
+        __EDIT__: { isReadOnly: false },
       },
+      // {
+      //   accessor: "SEQ_NO",
+      //   columnName: "Column Sequence",
+      //   componentType: "editableNumberFormat",
+      //   required: true,
+      //   // validation: (value, data) => {
+      //   //   if (!Boolean(value)) {
+      //   //     return "This field is required.";
+      //   //   }
+      //   //   return "";
+      //   // },
+      //   alignment: "left",
+      //   sequence: 5,
+      //   width: 140,
+      //   maxWidth: 180,
+      //   minWidth: 150,
+      // },
+      // {
+      //   accessor: "DOC_AMOUNT",
+      //   columnName: "Document Amount",
+      //   componentType: "editableNumberFormat",
+      //   placeholder: "0.00",
+      //   className: "textInputFromRight",
+      //   autoComplete: "off",
+      //   FormatProps: {
+      //     thousandSeparator: true,
+      //     thousandsGroupStyle: "lakh",
+      //     allowNegative: false,
+      //     allowLeadingZeros: true,
+      //     decimalScale: 2,
+      //     fixedDecimalScale: true,
+      //     isAllowed: (values) => {
+      //       if (values?.value?.length > 14) {
+      //         return false;
+      //       }
+      //       // if (values.floatValue === 0) {
+      //       //   return false;
+      //       // }
+      //       return true;
+      //     },
+      //   },
+      //   // validation: (value, data) => {
+      //   //   if (!Boolean(value)) {
+      //   //     return "This field is required.";
+      //   //   }
+      //   //   return "";
+      //   // },
+      //   sequence: 2,
+      //   alignment: "right",
+      //   width: 150,
+      //   maxWidth: 250,
+      //   minWidth: 130,
+      // },
       // {
       //   accessor: "DB_COLUMN",
       //   columnName: "Description*",

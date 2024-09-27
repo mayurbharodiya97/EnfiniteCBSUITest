@@ -1,20 +1,23 @@
 import { Grid, Typography } from "@mui/material";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { t } from "i18next";
 import { ckyc_pending_req_meta_data } from "./metadata";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { format } from "date-fns";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
-import { queryClient } from "cache";
+import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 const PendingCustomer = () => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -42,7 +45,8 @@ const PendingCustomer = () => {
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      REQ_FLAG: "A",
+      // REQ_FLAG: "A",
+      REQ_FLAG: "P", //for checking only
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"
     })
@@ -50,9 +54,9 @@ const PendingCustomer = () => {
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries("getPendingData")
-    }
-  }, [])
+      queryClient.removeQueries("getPendingData");
+    };
+  }, []);
 
   const pendingActions: ActionTypes[] = [
     {
@@ -77,32 +81,32 @@ const PendingCustomer = () => {
       const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
-      if(Boolean(confirmed)) {
+      if (Boolean(confirmed)) {
         // P=SENT TO CONFIRMATION
-        if(confirmed.includes("P")) {
-          if(maker === loggedinUser) {
-            setFormMode("edit")
+        if (confirmed.includes("P")) {
+          if (maker === loggedinUser) {
+            setFormMode("edit");
           } else {
-            setFormMode("view")
+            setFormMode("view");
           }
-        } else if(confirmed.includes("M")) {
+        } else if (confirmed.includes("M")) {
           // M=SENT TO MODIFICATION
-          setFormMode("edit")
+          setFormMode("edit");
         } else {
-          setFormMode("view")
+          setFormMode("view");
         }
       }
       // console.log("kwfeiwehifdhweihfwef pending", data, data.rows?.[0]?.data?.UPD_TAB_NAME)
-      if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P") {
+      if (data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "P") {
         // P=EXISTING_PHOTO_MODIFY
         navigate("photo-signature", {
           state: data?.rows,
-        })
-      } else if(data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D") {
+        });
+      } else if (data.rows?.[0]?.data?.UPD_TAB_FLAG_NM === "D") {
         // D=EXISTING_DOC_MODIFY
         navigate("document", {
-          state: {CUSTOMER_DATA: data?.rows},
-        })
+          state: { CUSTOMER_DATA: data?.rows },
+        });
       } else {
         setRowsData(data?.rows);
         navigate(data?.name, {
@@ -117,7 +121,7 @@ const PendingCustomer = () => {
   ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
     min: "42vh",
     max: "calc(100vh - 300px)",
-  }
+  };
 
   return (
     <Grid>
@@ -171,6 +175,18 @@ const PendingCustomer = () => {
                 navigate(".");
               }}
               viewMode={formMode ?? "edit"}
+            />
+          }
+        />
+
+        <Route
+          path="document/*"
+          element={
+            <UpdateDocument
+              open={true}
+              onClose={() => navigate(".")}
+              viewMode={formMode ?? "view"}
+              from={"ckyc-pending"}
             />
           }
         />

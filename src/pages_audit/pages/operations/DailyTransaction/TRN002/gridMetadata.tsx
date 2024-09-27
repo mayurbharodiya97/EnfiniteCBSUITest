@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const TRN002_TableMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -12,13 +12,13 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: false,
-    // hideHeader: false,
+    enablePagination: true,
+    hideHeader: false,
     hideFooter: false,
-    // pageSizes: [10, 20, 30],
-    // defaultPageSize: 10,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
     containerHeight: {
-      min: "26vh",
+      min: "30vh",
       max: "30vh",
     },
     allowFilter: false,
@@ -29,28 +29,28 @@ export const TRN002_TableMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "TRAN_CD",
-      columnName: "Voucher No",
+      columnName: "Voucher No.",
       sequence: 1,
       componentType: "default",
       width: 100,
     },
     {
       accessor: "ACCT_CD_NEW",
-      columnName: "Account No",
+      columnName: "AccountNo",
       sequence: 2,
       componentType: "default",
       width: 180,
     },
     {
       accessor: "ACCT_NM",
-      columnName: "A/C Holder Name",
+      columnName: "AccountHolder",
       sequence: 3,
       componentType: "default",
       width: 200,
     },
     {
       accessor: "TYPE_CD",
-      columnName: "TRX",
+      columnName: "Trx",
       sequence: 4,
       componentType: "default",
       width: 20,
@@ -78,15 +78,14 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_DATE",
-      columnName: "Date",
+      columnName: "EnteredDate",
       sequence: 8,
       width: 70,
       componentType: "date",
       isVisible: true,
-      dateFormat: "dd/MM/yyyy",
     },
     {
-      accessor: "time",
+      accessor: "TIME",
       columnName: "Time",
       sequence: 9,
       width: 30,
@@ -99,18 +98,19 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       alignment: "right",
+      isDisplayTotal: true,
     },
 
     {
       accessor: "ENTERED_BY",
-      columnName: "Entered By",
+      columnName: "EnteredBy",
       sequence: 11,
       componentType: "default",
       width: 80,
     },
     {
       accessor: "ENTERED_BRANCH_CD",
-      columnName: "Branch",
+      columnName: "Entered Branch",
       sequence: 12,
       componentType: "default",
       width: 80,

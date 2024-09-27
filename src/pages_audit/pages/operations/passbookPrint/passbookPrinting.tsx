@@ -10,19 +10,22 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import RetrieveIcon from "assets/icons/retrieveIcon";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
 import { enqueueSnackbar } from "notistack";
 import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
+import {
+  Transition,
+  usePopupContext,
+  GradientButton,
+  queryClient,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 export const PassbookPrint = () => {
   const location = useLocation();
@@ -78,13 +81,11 @@ export const PassbookPrint = () => {
     API.passbookPrintingCompleted,
     {
       onSuccess: (data) => {},
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -303,6 +304,7 @@ export const PassbookPrint = () => {
           onClose={() => setFindAccount(false)}
           rowsData={null}
           screenFlag={"ACCT_PASSBOOK"}
+          close={() => {}}
         />
       )}
 

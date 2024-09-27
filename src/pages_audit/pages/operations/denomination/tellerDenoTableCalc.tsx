@@ -1,12 +1,12 @@
-import React, { useEffect, useReducer, useRef } from "react";
+import React, { useContext, useEffect, useReducer, useRef } from "react";
 import TellerDenoTable from "./tellerDenoTable";
 import {
   SingleTableDataReducer,
   SingleTableInititalState,
   SingleTableActionTypes,
 } from "./denoTableActionTypes";
-import { usePopupContext } from "components/custom/popupContext";
-
+import { usePopupContext } from "@acuteinfo/common-base";
+import { AuthContext } from "pages_audit/auth";
 const TellerDenoTableCalc = ({
   displayTable,
   formData,
@@ -22,7 +22,7 @@ const TellerDenoTableCalc = ({
     SingleTableInititalState
   );
   const { MessageBox, CloseMessageBox } = usePopupContext();
-
+  const { authState } = useContext(AuthContext);
   useEffect(() => {
     dispatch({
       type: SingleTableActionTypes?.SET_INPUT_VAL,
@@ -275,6 +275,11 @@ const TellerDenoTableCalc = ({
     }
   }, [state?.columnTotal?.amount, data, haveerror, formData]);
 
+  // const saveDenominationData = useMutation(API.saveDenoData, {
+  //   onSuccess: async (data: any, variables: any) => {},
+  //   onError: (error: any, variables: any) => {},
+  // });
+
   useEffect(() => {
     const fetchData = async () => {
       if (state?.remainExcess === 0 && displayTable) {
@@ -292,8 +297,26 @@ const TellerDenoTableCalc = ({
           icon: "INFO",
         });
         if (res === "Yes") {
-          console.log("Form Submitted");
           const DDT = getRowData();
+          const reqData = {
+            TRN_DTL: formData?.singleDenoRow?.map((item) => {
+              const parameters = {
+                BRANCH_CD: item?.BRANCH_CD ?? "",
+                ACCT_TYPE: item?.ACCT_TYPE ?? "",
+                ACCT_CD: item?.ACCT_CD ?? "",
+                TYPE_CD: item?.TRX ?? "",
+                COMP_CD: authState?.companyID ?? "",
+                CHEQUE_NO: "",
+                SDC: "1",
+                SCROLL1: "",
+                CHEQUE_DT: "",
+                REMARKS: "1 BY CASH -",
+                AMOUNT: "1000.00",
+              };
+              return parameters;
+            }),
+          };
+          // saveDenominationData?.mutate({});
         } else if (res === "No") {
           CloseMessageBox();
         }

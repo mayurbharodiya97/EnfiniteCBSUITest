@@ -7,16 +7,20 @@ import {
   useState,
 } from "react";
 import { userAccessbranch } from "./metaData/metaDataGrid";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "./api/api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { extractGridMetaData } from "components/utils";
-import { Alert } from "reactstrap";
+
+import {
+  extractGridMetaData,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "populate",
@@ -42,16 +46,13 @@ const BranchAccessRights = forwardRef<any, any>(
       isError: newisError,
       error: newerror,
       refetch: newRefetch,
-    }: any = useQuery<any, any>(
-      ["getNewUserBranchAccess", userState?.formData?.USER_NAME],
-      () => {
-        if (defaultView === "new") {
-          return API.getNewUserBranchAccess({
-            comp_cd: authState?.companyID,
-          });
-        }
+    }: any = useQuery<any, any>(["getNewUserBranchAccess", Username], () => {
+      if (defaultView === "new") {
+        return API.getNewUserBranchAccess({
+          comp_cd: authState?.companyID,
+        });
       }
-    );
+    });
     const {
       data: branchData,
       isLoading: editloading,

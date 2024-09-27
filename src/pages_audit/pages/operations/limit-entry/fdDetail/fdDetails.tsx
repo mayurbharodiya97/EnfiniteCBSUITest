@@ -1,16 +1,18 @@
-import { usePopupContext } from "components/custom/popupContext";
 import React, { useContext, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { getLimitFDdetail } from "../api";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { AppBar, Dialog, LinearProgress } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
 import { fdDetailGridData } from "./fdDetailsGridMetaData";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 export const FdDetails = ({ navigate, myMasterRef }) => {
   const fdAction: ActionTypes[] = [
@@ -25,10 +27,10 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [openDialog, setOpenDialg] = useState<boolean>(false);
-  const { t } = useTranslation();
 
   const fdDetail: any = useMutation("getLimitFDdetail", getLimitFDdetail, {
     onSuccess: (data) => {
+      CloseMessageBox();
       if (data?.[0]?.MESSAGE) {
         navigate(".");
         MessageBox({
@@ -64,7 +66,7 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
           }
         });
 
-        CloseMessageBox();
+        // CloseMessageBox();
       } else {
         navigate(".");
       }

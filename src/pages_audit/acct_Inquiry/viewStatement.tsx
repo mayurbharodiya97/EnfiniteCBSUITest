@@ -1,12 +1,5 @@
 import { CircularProgress, Dialog, useTheme } from "@mui/material";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -19,8 +12,24 @@ import {
 } from "./metaData";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  MetaDataType,
+  queryClient,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
-export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
+export const ViewStatement = ({
+  open,
+  onClose,
+  rowsData,
+  screenFlag,
+  close,
+}) => {
   const [disableButton, setDisableButton] = useState(false);
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -55,15 +64,14 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
             acctInqDataRef: acctInqData?.data?.[0],
           },
         });
-        handleClose();
+        close();
+        onClose();
       },
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -77,7 +85,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
       onSuccess: async (data: any) => {
         if (data?.[0]?.O_STATUS === "999") {
           const btnName = await MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: "ValidationFailed",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Ok"],
           });
@@ -97,13 +105,11 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
           });
         }
       },
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        const btnName = await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: error?.error_msg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -228,14 +234,6 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}
-            loading={
-              acctInqData?.isLoading ||
-              acctInqData?.isFetching ||
-              passbookInqData?.isLoading ||
-              passbookInqData?.isFetching ||
-              passbookValidation?.isLoading ||
-              passbookValidation?.isFetching
-            }
             formStyle={{
               background: "white",
             }}
@@ -246,7 +244,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
               acctInqData: acctInqData?.data?.[0],
               handleButonDisable: handleButonDisable,
               MessageBox: MessageBox,
-              docCD: "RPT/430"
+              docCD: "RPT/430",
             }}
             setDataOnFieldChange={(action, payload) => {
               if (action === "accountDetails") {
@@ -278,7 +276,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
                     passbookInqData?.isFetching ||
                     passbookValidation?.isLoading ||
                     passbookValidation?.isFetching
-                      ? null
+                      ? undefined
                       : "CheckCircleOutline"
                   }
                   rotateIcon="scale(1.4)"

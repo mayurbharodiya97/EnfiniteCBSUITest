@@ -7,13 +7,17 @@ import {
   StrictMode,
   useState,
 } from "react";
-import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+  usePopupContext,
+  ClearCacheProvider,
+  ClearCacheContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -31,8 +35,10 @@ import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirma
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
 import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmationForm";
 import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confirmationForm";
+import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
+import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
 
-export const Confirmations = ({ screenFlag }) => {
+export const Confirmations = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "view-details",
@@ -103,7 +109,7 @@ export const Confirmations = ({ screenFlag }) => {
       rowDoubleClick: false,
       alwaysAvailable: true,
     });
-  } else if (screenFlag === "limitCFM") {
+  } else if (screenFlag === "limitCFM" || "limitForTrn") {
     gridMetaData = limitConfirmGridMetaData;
   } else if (screenFlag === "stockCFM") {
     gridMetaData = stockConfirmGridMetaData;
@@ -113,6 +119,8 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = lienConfirmGridMetaData;
   } else if (screenFlag === "tempOdCFM") {
     gridMetaData = tempODConfirmGridMetaData;
+  } else if (screenFlag === "insuranceCFM") {
+    gridMetaData = insuranceEntryConfirmGridMetaData;
   }
 
   return (
@@ -129,7 +137,7 @@ export const Confirmations = ({ screenFlag }) => {
         <GridWrapper
           key={`ConfirmationReqGrid-` + screenFlag}
           finalMetaData={gridMetaData as GridMetaDataType}
-          data={result.data ?? []}
+          data={reqData ? reqData : result.data ?? []}
           setData={() => null}
           loading={result.isLoading}
           actions={actions}
@@ -153,10 +161,11 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ) : screenFlag === "limitCFM" ? (
+              ) : screenFlag === "limitCFM" || "limitForTrn" ? (
                 <LimitConfirmationForm
                   closeDialog={ClosedEventCall}
                   result={result}
+                  screenFlag="limitForTrn"
                 />
               ) : screenFlag === "stockCFM" ? (
                 <StockConfirmationForm
@@ -175,6 +184,11 @@ export const Confirmations = ({ screenFlag }) => {
                 />
               ) : screenFlag === "tempOdCFM" ? (
                 <TempODConfirmationForm
+                  closeDialog={ClosedEventCall}
+                  result={result}
+                />
+              ) : screenFlag === "insuranceCFM" ? (
+                <InsuranceConfirmationFormWrapper
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
@@ -197,12 +211,13 @@ export const Confirmations = ({ screenFlag }) => {
   );
 };
 
-export const ConfirmationGridWrapper = ({ screenFlag }) => {
+export const ConfirmationGridWrapper = ({ screenFlag, reqData }) => {
   return (
     <ClearCacheProvider>
       <Confirmations
         key={screenFlag + "-Confirmation"}
         screenFlag={screenFlag}
+        reqData={reqData}
       />
     </ClearCacheProvider>
   );

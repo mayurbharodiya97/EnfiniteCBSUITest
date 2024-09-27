@@ -1,61 +1,84 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import {
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+  extractMetaData,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { main_tab_metadata } from "../tabMetadata/mainTabMetadata";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import TabNavigate from "../TabNavigate";
 import _ from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
 
 const MainTab = () => {
-  const { AcctMSTState, handlecustomerIDctx, handleCurrFormctx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx, handleSavectx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handlecustomerIDctx,
+    handleCurrFormctx,
+    handleStepStatusctx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+    handleSavectx,
+  } = useContext(AcctMSTContext);
   const { MessageBox } = usePopupContext();
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const formRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
 
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
+    });
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    handleSavectx(e, refs);
+  };
 
   useEffect(() => {
-    let refs = [formRef]
+    let refs = [formRef];
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: AcctMSTState?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
-  }, [])
+    });
+  }, []);
 
   useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
+    if (
+      Boolean(
+        AcctMSTState?.currentFormctx.currentFormRefctx &&
+          AcctMSTState?.currentFormctx.currentFormRefctx.length > 0
+      ) &&
+      Boolean(formStatus && formStatus.length > 0)
+    ) {
+      if (
+        AcctMSTState?.currentFormctx.currentFormRefctx.length ===
+        formStatus.length
+      ) {
+        setIsNextLoading(false);
         let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+        submitted = formStatus.filter((form) => !Boolean(form));
+        if (submitted && Array.isArray(submitted) && submitted.length > 0) {
           submitted = false;
         } else {
           submitted = true;
           handleStepStatusctx({
             status: "completed",
             coltabvalue: AcctMSTState?.colTabValuectx,
-          })
+          });
         }
         handleCurrFormctx({
           currentFormSubmitted: submitted,
           isLoading: false,
-        })
-        setFormStatus([])
+        });
+        setFormStatus([]);
       }
     }
-  }, [formStatus])
+  }, [formStatus]);
 
   const onSubmitPDHandler = (
     data: any,
@@ -66,42 +89,85 @@ const MainTab = () => {
     hasError
   ) => {
     if (data && !hasError) {
-      let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
-      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
-
+      let formFields = Object.keys(data); // array, get all form-fields-name
+      formFields = formFields.filter(
+        (field) => !field.includes("_ignoreField")
+      ); // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current);
 
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
-        IsNewRow: true,
-        COMP_CD: "",
+        IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
+        // COMP_CD: "",
+        // ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+        // ACCT_CD: AcctMSTState?.acctNumberctx,
+        // OP_DATE: authState?.workingDate,
+        // CLOSE_DT: "",
+        // STATUS: "",
+        // CUSTOMER_ID: AcctMSTState?.customerIDctx,
+        // CONFIRMED: "",
+        // MOBILE_REG: "Y",
+        // LEAN_TYPE: "0",
+        // LEAN_AMT: "0",
+        // ENTERED_DATE: authState?.workingDate,
+        // RECOMMENDED_DESG: "04",
+        // APPLY_DT: authState?.workingDate,
+        // INS_START_DT: authState?.workingDate,
+        // APPLIED_AMT: "0",
+        // INST_RS: "0",
+        // LAST_INST_DT: authState?.workingDate,
+        // INSTALLMENT_TYPE: "M",
+        // LIMIT_AMOUNT: "0",
+        // DRAWING_POWER: "0",
+        // DUE_AMT: "6",
+        // DISBURSEMENT_DT: "21-02-1995",
+        // CLOSE_REASON_CD: "001 ",
+        // LST_STATEMENT_DT: "21-09-2012",
+        // PREFIX_CD: "1",
+        // HANDICAP_DESCIRPTION: "12345678901",
+        // DOCKET_NO: "0",
+        // INT_SKIP_FLAG: "N",
+        // INT_SKIP_REASON_TRAN_CD: "3",
+        // LOCKER_KEY_NO: "000003",
+        // REF_COMP_CD: "132 ",
+        // REF_BRANCH_CD: "099 ",
+        // REF_ACCT_TYPE: "0030",
+        // REF_ACCT_CD: "000001              ",
+        // CHEQUE_NO: "0",
+        // ACTION_TAKEN_CD: "1",
+        // REQUEST_CD: "",
+        // THROUGH_CHANNEL: "MOBILE",
+        // RENRE_CD: "01  ",
+        // INDUSTRY_CODE: "01  ",
         // BRANCH_CD: "",
         // REQ_FLAG: "",
         // REQ_CD: "",
         // SR_CD: "",
       };
       newData["MAIN_DETAIL"] = {
+        ...AcctMSTState?.mainIntialVals,
         ...newData["MAIN_DETAIL"],
         ...formData,
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!AcctMSTState?.isFreshEntryctx) {
-        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
-        let updatedCols = tabModifiedCols.MAIN_DETAIL ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+      if (!AcctMSTState?.isFreshEntryctx) {
+        let tabModifiedCols: any = AcctMSTState?.modifiedFormCols;
+        let updatedCols = tabModifiedCols.MAIN_DETAIL
+          ? _.uniq([...tabModifiedCols.MAIN_DETAIL, ...formFieldsRef.current])
+          : _.uniq([...formFieldsRef.current]);
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -110,25 +176,30 @@ const MainTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
 
   const initialVal = useMemo(() => {
-    console.log(AcctMSTState?.retrieveFormDataApiRes, "ewhfiuwhfwef", AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"])
-    return (
-      AcctMSTState?.isFreshEntryctx
-        ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
-        : AcctMSTState?.formDatactx["MAIN_DETAIL"]
-          ? {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}, ...AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}}
-          : {...AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}}
-    )
+    console.log(
+      AcctMSTState?.retrieveFormDataApiRes,
+      "ewhfiuwhfwef",
+      AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"]
+    );
+    return AcctMSTState?.isFreshEntryctx
+      ? AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      : AcctMSTState?.formDatactx["MAIN_DETAIL"]
+      ? {
+          ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}),
+          ...(AcctMSTState?.formDatactx["MAIN_DETAIL"] ?? {}),
+        }
+      : { ...(AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"] ?? {}) };
   }, [
-    AcctMSTState?.isFreshEntryctx, 
-    AcctMSTState?.retrieveFormDataApiRes, 
-    AcctMSTState?.formDatactx["MAIN_DETAIL"]
-  ])
+    AcctMSTState?.isFreshEntryctx,
+    AcctMSTState?.retrieveFormDataApiRes,
+    AcctMSTState?.formDatactx["MAIN_DETAIL"],
+  ]);
 
   return (
     <Grid sx={{ mb: 4 }}>
@@ -136,20 +207,30 @@ const MainTab = () => {
         ref={formRef}
         onSubmitHandler={onSubmitPDHandler}
         initialValues={initialVal}
-        key={"acct-mst-main-tab-form" + initialVal}
-        metaData={main_tab_metadata as MetaDataType}
+        key={"acct-mst-main-tab-form" + initialVal + AcctMSTState?.formmodectx}
+        // metaData={main_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            main_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         formStyle={{}}
         formState={{
-          PARAM320: AcctMSTState?.param320, 
+          PARAM320: AcctMSTState?.param320,
           ACCT_TYPE: AcctMSTState?.accTypeValuectx,
           MessageBox: MessageBox,
-          handlecustomerIDctx: handlecustomerIDctx
+          handlecustomerIDctx: handlecustomerIDctx,
         }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

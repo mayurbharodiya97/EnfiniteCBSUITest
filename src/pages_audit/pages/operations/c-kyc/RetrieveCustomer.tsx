@@ -1,18 +1,19 @@
 import { Grid } from "@mui/material";
-import {
-  FilterFormMetaType,
-  FormComponentView,
-} from "components/formcomponent";
 import { RetrieveDataFilterForm, ckyc_retrieved_meta_data } from "./metadata";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { Alert } from "components/common/alert";
+
+import {
+  FormComponentView,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  FilterFormMetaType,
+} from "@acuteinfo/common-base";
 import FormModal from "./formModal/formModal";
 import { DeactivateCustomer } from "./DeactivateCustomer";
 // import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
@@ -146,30 +147,29 @@ const RetrieveCustomer = () => {
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
       // console.log("retrievecustomer", confirmed, maker, loggedinUser)
-      if(Boolean(confirmed)) {
+      if (Boolean(confirmed)) {
         // P=SENT TO CONFIRMATION
-        if(confirmed.includes("P")) {
-          if(maker === loggedinUser) {
-            setFormMode("edit")
+        if (confirmed.includes("P")) {
+          if (maker === loggedinUser) {
+            setFormMode("edit");
           } else {
-            setFormMode("view")
+            setFormMode("view");
           }
-        } else if(confirmed.includes("M")) {
+        } else if (confirmed.includes("M")) {
           // M=SENT TO MODIFICATION
-          setFormMode("edit")
-        } else if(confirmed.includes("Y") || confirmed.includes("R")) {
-          setFormMode("edit")
+          setFormMode("edit");
+        } else if (confirmed.includes("Y") || confirmed.includes("R")) {
+          setFormMode("edit");
         } else {
-          setFormMode("view")
+          setFormMode("view");
         }
       }
 
-
       setRowsData(data?.rows);
-      if(data?.name === "document") {
+      if (data?.name === "document") {
         navigate(data?.name, {
-          state: {CUSTOMER_DATA: data?.rows},
-        })
+          state: { CUSTOMER_DATA: data?.rows },
+        });
       } else {
         navigate(data?.name, {
           state: data?.rows,
@@ -189,9 +189,9 @@ const RetrieveCustomer = () => {
       COMP_CD: authState?.companyID ?? "",
       SELECT_COLUMN: newObj,
     };
-    retrievePayloadRef.current = newObj
-    mutation.mutate(data);  
-  }
+    retrievePayloadRef.current = newObj;
+    mutation.mutate(data);
+  };
 
   return (
     <Grid>
@@ -237,12 +237,12 @@ const RetrieveCustomer = () => {
               newArr.forEach((key) => {
                 newObj[key] = colomnValue[key];
               });
-              if(Boolean(retrievePayloadRef.current)) {
-                if(!_.isEqual(retrievePayloadRef.current, newObj)) {
-                  onFormSubmit(newObj)
+              if (Boolean(retrievePayloadRef.current)) {
+                if (!_.isEqual(retrievePayloadRef.current, newObj)) {
+                  onFormSubmit(newObj);
                 }
               } else {
-                onFormSubmit(newObj)
+                onFormSubmit(newObj);
               }
             }
           }}
@@ -320,6 +320,7 @@ const RetrieveCustomer = () => {
               open={true}
               onClose={() => navigate(".")}
               viewMode={formMode ?? "edit"}
+              from={"ckyc-retrieve"}
             />
             // <ExtDocument
             //   open={true}

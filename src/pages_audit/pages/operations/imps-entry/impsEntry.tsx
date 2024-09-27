@@ -6,25 +6,26 @@ import {
   Grid,
   LinearProgress,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { t } from "i18next";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "pages_audit/auth";
 import { impsEntryMetadata, impsRegDetails } from "./impsEntryMetadata";
-import { ClearCacheProvider } from "cache";
 import { useMutation, useQuery } from "react-query";
-
 import * as API from "./api";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { DayLimit } from "./dayLimit/dayLimit";
-import { extractMetaData } from "components/utils";
-
+import {
+  extractMetaData,
+  Alert,
+  ClearCacheProvider,
+  usePopupContext,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 export const ImpsEntryCustom = () => {
   const [isData, setIsData] = useState({
     isVisible: false,
@@ -35,7 +36,7 @@ export const ImpsEntryCustom = () => {
   const [formMode, setFormMode] = useState<any>("add");
   const [retrieveData, setRetrieveData] = useState<any>();
   const [rowData, setRowData] = useState<any>();
-  const myRef = useRef<any>(null);
+  const formRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -57,10 +58,10 @@ export const ImpsEntryCustom = () => {
         messagebox(filteredData);
       }
     },
-    onError: (error) => {},
   });
 
   const messagebox = async (filterData) => {
+    let insertData: any = [];
     if (filterData?.length) {
       for (let i = 0; i < filterData?.length; i++) {
         if (filterData[i]?.STATUS !== "0") {
@@ -70,11 +71,12 @@ export const ImpsEntryCustom = () => {
             defFocusBtnName: "Ok",
           });
         } else {
-          setRowData((old) => {
-            return [...old, filterData[i]];
-          });
+          insertData.push(filterData[i]);
         }
       }
+      setRowData((old) => {
+        return [...old, ...insertData];
+      });
     }
   };
 
@@ -105,6 +107,23 @@ export const ImpsEntryCustom = () => {
       navigate("daylimit-form", { state: rowData });
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "s" && event.ctrlKey) {
+        event.preventDefault();
+        formRef?.current?.handleSubmit({ preventDefault: () => {} }, "Save");
+      } else if (event.key === "r" && event.ctrlKey) {
+        event.preventDefault();
+        navigate("retrieve-form");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       <Container>
@@ -156,8 +175,8 @@ export const ImpsEntryCustom = () => {
               height: "calc(100vh - 562px)",
             }}
             displayMode={formMode}
+            ref={formRef}
             onFormButtonClickHandel={(id, dependentFields) => {
-              console.log("<<<formbutt", dependentFields);
               if (
                 dependentFields?.CUSTOMER_ID &&
                 dependentFields?.CUSTOMER_ID?.value !== ""
