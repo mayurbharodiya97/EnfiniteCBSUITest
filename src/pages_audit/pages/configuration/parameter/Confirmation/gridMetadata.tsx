@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ParameterConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -21,8 +21,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     },
     allowFilter: true,
     allowColumnHiding: false,
-    allowRowSelection: true,
-    //isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   filters: [
     {
@@ -48,15 +47,14 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
   ],
   columns: [
     {
-      accessor: "SR_NO",
-      columnName: "Sr.No.",
+      accessor: "COMP_CD",
+      columnName: "BankCode",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 60,
-      minWidth: 50,
-      maxWidth: 200,
-      isAutoSequence: true,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
     },
     {
       accessor: "BRANCH_CD",
@@ -71,7 +69,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "PARA_CD",
       columnName: "Para Code",
-      sequence: 2,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 80,
@@ -81,7 +79,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "PARA_NM",
       columnName: "Description",
-      sequence: 3,
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 300,
@@ -89,19 +87,9 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 180,
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    {
       accessor: "PARA_VALUE",
       columnName: "New Para Value",
-      sequence: 3,
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       width: 120,
@@ -111,7 +99,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "OLD_VALUE",
       columnName: "Old Para Value",
-      sequence: 3,
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 120,
@@ -121,7 +109,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "DATATYPE_DISP_VALUE",
       columnName: "New Datatype",
-      sequence: 3,
+      sequence: 7,
       alignment: "left",
       componentType: "default",
       width: 150,
@@ -131,7 +119,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "OLD_DATATYPE_DISP_VALUE",
       columnName: "Old Datatype",
-      sequence: 3,
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 150,
@@ -141,12 +129,22 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     {
       accessor: "LAST_ENTERED_BY",
       columnName: "Modified By",
-      sequence: 3,
+      sequence: 9,
       alignment: "left",
       componentType: "default",
       width: 100,
       minWidth: 80,
       maxWidth: 200,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 180,
+      minWidth: 120,
+      maxWidth: 300,
     },
   ],
 };

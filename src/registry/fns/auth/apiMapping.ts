@@ -1712,6 +1712,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOSAVELOANRECHEDULE",
     packageName: "",
   },
+  GETUPDATERATE: {
+    url: "/loanServiceAPI/GETUPDATERATE",
+    packageName: "",
+  },
+  DOUPDATERATEAMOUNT: {
+    url: "/loanServiceAPI/DOUPDATERATEAMOUNT",
+    packageName: "",
+  },
+  GETLOANRESCHEDULECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULECNF",
+    packageName: "",
+  },
+  DOCONFIRMLOANRESCHEDULE: {
+    url: "/loanServiceAPI/DOCONFIRMLOANRESCHEDULE",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
@@ -2586,7 +2602,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
+    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
@@ -2605,8 +2621,92 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DOCASHEXCHANGENTRY: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
+    packageName: "",
+  },
+  GETCASHEXCHANGECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGECNF",
+    packageName: "",
+  },
+  GETCASHEXCHANGEDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGEDTLCNF",
+    packageName: "",
+  },
+  DOCASHEXCHANGECONFIRMATION: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGECONFIRMATION",
+    packageName: "",
+  },
+  FDMATURITYCOMPAREJASPER: {
+    url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  RECCURRINGTOFDCALCULATORJASPER: {
+    url: "/enfinityReportServiceAPI/RECCURRINGTOFDCALCULATORJASPER",
+    packageName: "",
+  },
+  GETSESSIONDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
+    packageName: "",
+  },
+  UPDEODRUNNINGSTATUS: {
+    url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
+    packageName: "",
+  },
+  DOEOD: {
+    url: "/enfinityBankProcessingServiceAPI/DOEOD",
+    packageName: "",
+  },
+  VALIDATEFDDEPAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDEPAMT",
+    packageName: "",
+  },
+  CHECKLIEN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKLIEN",
+    packageName: "",
+  },
+  VALIDATEUPDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEUPDATEFDDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDDETAILS",
+    packageName: "",
+  },
+  SAVEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDDETAILS",
+    packageName: "",
+  },
+  CHECKALLOWFDPAY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWFDPAY",
+    packageName: "",
+  },
+  GETPREMATRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREMATRATE",
+    packageName: "",
+  },
+  GETFDPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
+    packageName: "",
+  },
+  VALIDATEFDPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
+    packageName: "",
+  },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
   GETLOGINPAGEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
+    packageName: "",
+  },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
 };
@@ -2624,17 +2724,17 @@ export const GetAPIURLFromAction = (action, pname) => {
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
-    PackageName +
-    (url.startsWith("./")
-      ? url.substring(1)
-      : url.startsWith("/")
+      PackageName +
+      (url.startsWith("./")
+        ? url.substring(1)
+        : url.startsWith("/")
         ? url
         : "/" + url)
     : url.startsWith(".")
-      ? url
-      : url.startsWith("/")
-        ? "." + url
-        : "./" + url;
+    ? url
+    : url.startsWith("/")
+    ? "." + url
+    : "./" + url;
   //console.log(apiurl);
   return apiurl;
 };

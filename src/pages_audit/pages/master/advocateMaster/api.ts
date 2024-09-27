@@ -1,5 +1,5 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 
 export const getAdvocateMstData = async ({ companyID, branchCode }) => {
   const { data, status, message, messageDetails } =
@@ -8,7 +8,12 @@ export const getAdvocateMstData = async ({ companyID, branchCode }) => {
       BRANCH_CD: branchCode,
     });
   if (status === "0") {
-    return data;
+    return data?.map((item) => {
+      return {
+        ...item,
+        STATUS: item?.STATUS === "I" ? true : false,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

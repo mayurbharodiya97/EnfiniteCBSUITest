@@ -1,6 +1,6 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
-
+//API
 export const getDayendprocessFlag = async ({
   ENT_COMP_CD,
   ENT_BRANCH_CD,
@@ -40,7 +40,17 @@ export const getpendingtrnReport = async ({
     });
 
   if (status === "0") {
-    return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ ...items }) => {
+        return {
+          ...items,
+
+          ACCT_CD_DISP: `${items?.BRANCH_CD}${items?.ACCT_TYPE} ${items?.ACCT_CD}`,
+        };
+      });
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -116,15 +126,15 @@ export const getDayEnderrLog = async ({
   BRANCH_CD,
   TRAN_DT,
   VERSION,
-  SR_CD
+  SR_CD,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAYENDERRLOG", {
-      COMP_CD:COMP_CD,
-      BRANCH_CD:BRANCH_CD,
-      TRAN_DT:TRAN_DT,
-      VERSION:VERSION,
-      SR_CD:SR_CD
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      TRAN_DT: TRAN_DT,
+      VERSION: VERSION,
+      SR_CD: SR_CD,
     });
 
   if (status === "0") {
@@ -186,6 +196,57 @@ export const executeChecksums = async ({
       SR_CD: SR_CD,
       MENDETORY: MENDETORY,
       EOD_VER_ID: EOD_VER_ID,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getSessionDtl = async ({
+  COMP_CD,
+  BRANCH_CD,
+  BASE_BRANCH_CD,
+  BASE_COMP_CD,
+  WORKING_DATE,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSESSIONDTL", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      BASE_COMP_CD: BASE_COMP_CD,
+      WORKING_DATE: WORKING_DATE,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateEodRunningStatus = async ({ COMP_CD, BRANCH_CD, FLAG }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("UPDEODRUNNINGSTATUS", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      FLAG: FLAG,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const doEod = async ({ FLAG, SCREEN_REF, NPA_CALC, NEW_SESSION }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOEOD", {
+      FLAG: FLAG,
+      SCREEN_REF: SCREEN_REF,
+      NPA_CALC: NPA_CALC,
+      NEW_SESSION: NEW_SESSION,
     });
 
   if (status === "0") {
