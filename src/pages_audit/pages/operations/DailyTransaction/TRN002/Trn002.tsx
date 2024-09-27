@@ -375,6 +375,7 @@ export const Trn002 = () => {
         TRAN_DT: dataRow?.TRAN_DT ?? "",
         CONFIRMED: dataRow?.CONFIRMED ?? "",
         USER_DEF_REMARKS: input ?? "",
+        ENTERED_BY: dataRow?.ENTERED_BY ?? "",
       };
 
       deleteScrollByVoucher.mutate(obj);

@@ -56,7 +56,6 @@ import Temp from "./OtherTrx/Temp";
 import LienDetail from "./OtherTrx/Lien_Detail";
 import SIDetail from "./OtherTrx/SI_Detail";
 import { makeStyles } from "@mui/styles";
-import { Tab, Tabs } from "@acuteinfo/common-base";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
@@ -76,6 +75,8 @@ import {
 } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import DialogWithAppbar from "components/common/dialogWithAppbar";
+import { Tabs } from "components/tabs";
+import { Tab } from "components/tab";
 
 interface TabPanelProps {
   children?: React.ReactNode;

@@ -491,14 +491,14 @@ export const TellerScreenMetadata: any = {
           }
           btn99 = 0;
           return {
-            TOKEN_NO: {
+            TOKEN: {
               value: returnVal ?? "",
               ignoreUpdate: true,
             },
           };
         } else if (!currentField?.value) {
           return {
-            TOKEN_NO: { value: "", ignoreUpdate: true },
+            TOKEN: { value: "", ignoreUpdate: true },
           };
         }
         return {};
@@ -868,7 +868,7 @@ export const TellerScreenMetadata: any = {
           }
         }
       },
-      isReadOnly: true,
+      // isReadOnly: true,
     },
     // {
     //   render: {
