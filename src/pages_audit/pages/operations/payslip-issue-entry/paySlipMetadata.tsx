@@ -2659,6 +2659,60 @@ export const DeleteDialogMetaData = {
     },
   ],
 };
+export const DDtransactionsMetadata = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Payslip/DD Transaction",
+    rowIdColumn: "DOCCD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: true,
+    hideActionBar: true,
+    disableGroupBy: true,
+    enablePagination: false,
+    pageSizes: [30, 50, 100],
+    disableGlobalFilter: true,
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "auto",
+      max: "auto",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+    allowGlobalFilter: false,
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "DOCCD",
+      columnName: "",
+      sequence: 1,
+      alignment: "right",
+      componentType: "default",
+      width: 120,
+      minWidth: 60,
+      maxWidth: 500,
+    },
+    {
+      accessor: "DOCURL",
+      columnName: "",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 400,
+      minWidth: 60,
+      maxWidth: 500,
+    },
+  ],
+};
 const checkForUpdate = (dependentFields) => {
   const insFlag = dependentFields?.["PAYSLIP_DRAFT_DTL.PENDING_FLAG"]?.value;
   return insFlag === "Y" || insFlag === "N" ? true : false;

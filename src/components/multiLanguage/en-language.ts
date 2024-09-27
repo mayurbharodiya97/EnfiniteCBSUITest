@@ -91,6 +91,7 @@ export const en_language_data = {
   PayableAt: "Payable At",
   EnterPayableAt: "Enter Payable At",
   PayslipAndDemandDraft: "Payslip & Demand Draft",
+  PayslipDDTransaction: "Payslip/DD Transaction",
   SelectBillType: "Select Bill Type",
   InfavourOf: "Infavour Of",
   SelectInfavourOf: "Select Infavour Of",
