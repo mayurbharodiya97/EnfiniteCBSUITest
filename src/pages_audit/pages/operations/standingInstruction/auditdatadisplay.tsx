@@ -1,12 +1,15 @@
 import { Fragment, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { AuditgridMetaData } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "./api";
 import { useQuery } from "react-query";
 import { Dialog } from "@mui/material";
-import { queryClient } from "cache";
+import {
+  ActionTypes,
+  GridWrapper,
+  queryClient,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {

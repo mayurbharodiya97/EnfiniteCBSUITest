@@ -1,7 +1,7 @@
 import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
-import { utilFunction } from "components/utils/utilFunctions";
+import { utilFunction } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 const authAPI = () => {
   let baseURL: URL | null = null;

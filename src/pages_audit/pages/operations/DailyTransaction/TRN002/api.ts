@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 import { format, parse } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 

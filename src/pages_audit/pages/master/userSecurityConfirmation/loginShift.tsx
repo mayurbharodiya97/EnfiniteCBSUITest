@@ -3,8 +3,7 @@ import { forwardRef, Fragment, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { loginShift } from "./metaDataGrid";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
 
 export const LoginShiftConfirmation = forwardRef<any, any>(
   ({ userId }, ref) => {

@@ -15,7 +15,7 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { other_details_meta_data } from "../../metadata/individual/otherdetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";

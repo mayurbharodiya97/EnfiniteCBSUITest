@@ -30,9 +30,8 @@ import useAutocompleteHandlers, {
   DynFormHelperText,
   CustomTextField,
 } from "./components";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { getCurrencySymbol, formatCurrency } from "@acuteinfo/common-base";
+import { usePropertiesConfigContext } from "@acuteinfo/common-base";
 
 const RowsTable = forwardRef<any, any>(
   (
@@ -92,7 +91,7 @@ const RowsTable = forwardRef<any, any>(
       handleDateBlurCtx,
     } = useContext(TRN001Context);
     const { authState } = useContext(AuthContext);
-    const customParameter = useContext(CustomPropertiesConfigurationContext);
+    const customParameter = usePropertiesConfigContext();
 
     const {
       commonDateFormat,

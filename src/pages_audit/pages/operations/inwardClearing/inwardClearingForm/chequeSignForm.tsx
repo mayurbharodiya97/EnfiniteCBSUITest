@@ -2,14 +2,12 @@ import { FC } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
-import { GradientButton } from "components/styledComponent/button";
 import * as API from "../api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { chequesignFormMetaData } from "./metaData";
 import { format } from "date-fns";
 import { ChequeSignImage } from "./chequeSignImage";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
+import { LoaderPaperComponent, GradientButton } from "@acuteinfo/common-base";
+import { Alert, FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 
 export const ChequeSignForm: FC<{
@@ -56,12 +54,11 @@ export const ChequeSignForm: FC<{
           },
         }}
       >
-        {" "}
         <FormWrapper
           key={`chequeSignForm`}
           metaData={chequesignFormMetaData as unknown as MetaDataType}
           initialValues={reqDataRef.current}
-          onSubmitHandler={{}}
+          onSubmitHandler={() => {}}
           formStyle={{
             background: "white",
           }}

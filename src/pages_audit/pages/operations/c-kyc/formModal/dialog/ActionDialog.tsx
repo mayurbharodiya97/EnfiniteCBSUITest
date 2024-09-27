@@ -3,18 +3,9 @@ import { CkycContext } from "../../CkycContext";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../../api";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { ckyc_confirmation_form_metadata } from "../formDetails/metadata/confirmation";
-import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { enqueueSnackbar } from "notistack";
+
+import { RemarksAPIWrapper } from "@acuteinfo/common-base";
 
 export const ActionDialog = ({
   open,

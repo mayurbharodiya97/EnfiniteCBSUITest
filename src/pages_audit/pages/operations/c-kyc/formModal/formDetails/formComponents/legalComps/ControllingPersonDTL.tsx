@@ -18,7 +18,7 @@ import {
   DialogTitle,
   Box,
 } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useTranslation } from "react-i18next";
@@ -378,9 +378,10 @@ export const EntiyDialog = ({ open, onClose, data, isLoading }) => {
         ref={PDFormRef}
         // onSubmitHandler={onSubmitPDHandler}
         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
-        initialValues={data?.[0]} //{initialVal}
+        initialValues={data?.[0] ?? {}} //{initialVal}
         key={"pd-form-kyc" + data}
         metaData={personal_individual_detail_metadata as MetaDataType}
+        onSubmitHandler={() => {}}
         formStyle={{}}
         hideHeader={true}
         displayMode={"view"}

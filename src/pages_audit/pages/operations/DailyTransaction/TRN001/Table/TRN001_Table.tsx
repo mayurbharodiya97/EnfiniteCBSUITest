@@ -1,8 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TRN001_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "../api";
 import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
@@ -20,14 +18,20 @@ import {
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
 
-import { GradientButton } from "components/styledComponent/button";
+import { useLocation } from "react-router-dom";
 import { DynFormHelperText, PaperComponent } from "../components";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-
+import {
+  GridWrapper,
+  GradientButton,
+  Alert,
+  ActionTypes,
+  queryClient,
+  GridMetaDataType,
+  RemarksAPIWrapper,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "Delete",
@@ -328,8 +332,8 @@ export const TRN001_Table = ({
           ref={myGridRef}
           actions={actions}
           setAction={setCurrentAction}
-          onlySingleSelectionAllow={true}
-          isNewRowStyle={true}
+          disableMultipleRowSelect={true}
+          variant={"outlined"}
           defaultSelectedRowId={
             trnGridData?.[0]?.TRAN_CD ? trnGridData?.[0]?.TRAN_CD : ""
           }

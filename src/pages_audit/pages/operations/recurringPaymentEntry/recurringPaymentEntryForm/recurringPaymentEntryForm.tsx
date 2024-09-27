@@ -1,8 +1,4 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { forwardRef, useContext, useEffect, useState } from "react";
-import { usePopupContext } from "components/custom/popupContext";
-import { extractMetaData, utilFunction } from "components/utils";
-import { InitialValuesType } from "packages/form";
 import { RecurringContext } from "../context/recurringPaymentContext";
 import { useLocation } from "react-router-dom";
 import { RecurringPaymentEntryFormMetaData } from "./metaData/recurringPmtEntryMetaData";
@@ -11,12 +7,20 @@ import { Dialog } from "@mui/material";
 import { LienDetailsGrid } from "../lienDetailsGrid";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import ClosingAdvice from "../closingAdvice";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  LoaderPaperComponent,
+  queryClient,
+  GradientButton,
+  InitialValuesType,
+  utilFunction,
+  extractMetaData,
+  usePopupContext,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 export const RecurringPaymentEntryForm = forwardRef<any, any>(
   (
@@ -155,6 +159,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
                 entryScreenFlagDataForm: entryScreenFlagData?.[0],
                 handleDisableButton: handleDisableButton,
                 screenFlag: screenFlag,
+                docCD: "RECDRTYPE",
               }}
               displayMode={formMode}
               setDataOnFieldChange={(action, payload) => {
@@ -207,6 +212,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
                 formMode
               ) as MetaDataType
             }
+            onSubmitHandler={() => {}}
             initialValues={{
               ...(rows?.[0]?.data as InitialValuesType),
               FORM_60:
@@ -218,6 +224,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
             }}
             formState={{
               screenFlag: screenFlag,
+              docCD: "RECDRTYPE",
             }}
             displayMode={formMode}
             hideHeader={screenFlag === "recurringPmtConf" ? true : false}

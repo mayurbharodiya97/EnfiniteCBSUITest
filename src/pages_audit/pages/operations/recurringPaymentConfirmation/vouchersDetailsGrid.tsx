@@ -1,15 +1,16 @@
 import { useContext, useEffect } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType } from "components/dataTable/types";
-import { Alert } from "components/common/alert";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { queryClient } from "cache";
 import { useTranslation } from "react-i18next";
 import { VouchersDetailsGridMetaData } from "./vouchersDetailsGridMetadata";
 import { useLocation } from "react-router-dom";
-
+import {
+  queryClient,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+} from "@acuteinfo/common-base";
 export const VouchersDetailsGrid = () => {
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();

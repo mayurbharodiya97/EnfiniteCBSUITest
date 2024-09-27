@@ -2,7 +2,7 @@ import React, { useCallback, useReducer } from "react";
 import * as API from "./api";
 import { CkycStateType } from "./type";
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject, utilFunction } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import _ from "lodash";
 
 const initialState: any = {

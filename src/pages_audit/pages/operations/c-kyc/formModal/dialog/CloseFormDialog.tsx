@@ -1,14 +1,6 @@
 import * as React from "react";
 import { CkycContext } from "../../CkycContext";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { PopupRequestWrapper } from "@acuteinfo/common-base";
 
 export const CloseFormDialog = ({ open, onClose, closeForm }) => {
   const { state, handleUpdatectx, handleFormModalClosectx } =
@@ -29,7 +21,8 @@ export const CloseFormDialog = ({ open, onClose, closeForm }) => {
       }}
       buttonNames={["Ok", "Cancel"]}
       rows={[]}
-      loading={{ Yes: true }}
+      // Commented Temporary
+      // loading={{ Yes: true }}
       // loading={{ Yes: getData?.isLoading, No: false }}
       open={open}
     />

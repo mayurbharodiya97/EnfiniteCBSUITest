@@ -1,7 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { utilFunction } from "components/utils";
-import * as API from "../api";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+
 import { GeneralAPI } from "registry/fns/functions";
 
 export const standingInsructionGridMetaData: GridMetaDataType = {
@@ -26,7 +24,7 @@ export const standingInsructionGridMetaData: GridMetaDataType = {
       max: "65vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -106,7 +104,7 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       max: "30vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
@@ -383,11 +381,11 @@ export const siasExecutedGridMetadata: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "47vh",
-      max: "47vh",
+      min: "40vh",
+      max: "40vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
@@ -494,7 +492,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
     footerNote: "ColorandSi",
@@ -682,7 +680,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       max: "70vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },

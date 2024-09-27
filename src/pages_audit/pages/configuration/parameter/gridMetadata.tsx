@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ParametersGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -22,7 +22,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     allowFilter: true,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   filters: [
@@ -88,7 +88,6 @@ export const ParametersGridMetaData: GridMetaDataType = {
       width: 70,
       minWidth: 50,
       maxWidth: 150,
-      //isAutoSequence: true,
     },
     {
       accessor: "PARA_NM",

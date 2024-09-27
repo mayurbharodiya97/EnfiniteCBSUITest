@@ -1,13 +1,19 @@
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { SecurityUserConfirmationGrid } from "./metaDataGrid";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import * as API from "./api";
 import { useQuery } from "react-query";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheContext, queryClient } from "cache";
 import { SecurityContextWrapper } from "../usersecurity/context/SecuityForm";
 import Steppers from "../usersecurity/stepper/stepper";
+import {
+  ClearCacheContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "confirmation",

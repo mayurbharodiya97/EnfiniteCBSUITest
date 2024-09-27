@@ -1,13 +1,16 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useTranslation } from "react-i18next";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { RetrievalFormMetaData } from "./retrieveFormMetadata";
-
+import {
+  usePopupContext,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   const { t } = useTranslation();
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -23,12 +26,20 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
   ) => {
     endSubmit(true);
     if (Boolean(data)) {
+      if (Boolean(data["ACCT_CD"])) {
+        data["ACCT_CD"] = utilFunction.getPadAccountNumber(
+          data["ACCT_CD"],
+          data["ACCT_TYPE"]
+        );
+      }
       retrieveDataRef.current = data;
       retrievalParaValues({
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: retrieveDataRef?.current?.BRANCH_CD ?? "",
         ACCT_TYPE: retrieveDataRef?.current?.ACCT_TYPE ?? "",
         ACCT_CD: retrieveDataRef?.current?.ACCT_CD ?? "",
+        ALLOW_REGERATE: retrieveDataRef?.current?.ALLOW_REGERATE ?? "",
+        ALLOW_RESCHEDULE: retrieveDataRef?.current?.ALLOW_RESCHEDULE ?? "",
       });
     }
   };
@@ -44,14 +55,15 @@ export const RetrievalForm = ({ closeDialog, retrievalParaValues }) => {
         metaData={RetrievalFormMetaData as MetaDataType}
         initialValues={{}}
         onSubmitHandler={onSubmitHandler}
-        isLoading={true}
         //@ts-ignore
         formStyle={{
           background: "white",
         }}
         formState={{
           MessageBox: MessageBox,
+          CloseMessageBox: CloseMessageBox,
           handleButtonDisable: handleButtonDisable,
+          docCD: "MST/006",
         }}
         controlsAtBottom={true}
         containerstyle={{ padding: "10px" }}

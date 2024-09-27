@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getFromUserDdw = async ({
@@ -45,6 +45,17 @@ export const getCashDeno = async ({
       COMP_CD: COMP_CD,
       TRAN_DT: TRAN_DT,
       USER_NAME: USER_NAME,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const insertCashierEntry = async (request) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCASHEXCHANGENTRY", {
+      ...request,
     });
   if (status === "0") {
     return data;

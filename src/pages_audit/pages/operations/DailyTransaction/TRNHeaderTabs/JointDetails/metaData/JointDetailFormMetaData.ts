@@ -1,0 +1,553 @@
+import { getGuardianorRelationTypeOp } from "pages_audit/pages/operations/acct-mst/api";
+import { getOptionsOnPinParentArea } from "pages_audit/pages/operations/c-kyc/api";
+
+export const JointDetailFormMetaData = {
+  form: {
+    name: "jointDetail_form",
+    label: "",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 12,
+          md: 12,
+          lg: 12,
+          xl: 12,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+      Divider: {
+        fullWidth: true,
+      },
+    },
+  },
+
+  fields: [
+    {
+      render: {
+        componentType: "divider",
+      },
+      name: "referenceDivider_ignoreField",
+      label: "Reference",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CUSTOMER_ID",
+      label: "Customer Id",
+      GridProps: { xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "typography",
+      },
+      name: "JOINT_NAME",
+      label: "JOINT NAME",
+      TypographyProps: {
+        variant: "subtitle2",
+        style: {
+          marginTop: "33px",
+          fontSize: "14px",
+          width: "100%",
+          textAlign: "center",
+        },
+      },
+      fullWidth: true,
+      GridProps: { xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "divider",
+      },
+      name: "MembershipDivider_ignoreField",
+      label: "Membership",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MEM_ACCT_TYPE",
+      label: "A/C No.",
+      placeholder: "COMP CD",
+      maxLength: 4,
+      GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MEM_ACCT_CD",
+      label: "",
+      placeholder: "BRANCH CD",
+      maxLength: 4,
+      GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SHARE_ACCT_TYPE",
+      label: "",
+      placeholder: "A/C Type",
+      maxLength: 4,
+      GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SHARE_ACCT_CD",
+      label: "",
+      placeholder: "A/C No.",
+      maxLength: 8,
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "CRDT_WORTHINESS_ignoreField",
+      label: "Credit Worthiness",
+      type: "text",
+      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+
+    {
+      render: {
+        componentType: "divider",
+      },
+      name: "PersonaldtlDivider_ignoreField",
+      label: "",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "rateOfInt",
+      },
+      name: "SHARE_PER",
+      label: "Share %",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REF_PERSON_NAME",
+      label: "Holder Name",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "dob",
+      },
+      name: "BIRTH_DATE",
+      label: "Birth Date",
+      maxDate: new Date(),
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "GENDER",
+      label: "Gender",
+      options: [
+        { label: "MALE", value: "M" },
+        { label: "FEMALE", value: "F" },
+        { label: "OTHER", value: "O" },
+        { label: "TRANSGENDER", value: "T" },
+      ],
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "DESIGNATION",
+      label: "Designation/Relation",
+      options: (dependentValue, formState, _, authState) =>
+        getGuardianorRelationTypeOp({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        }),
+
+      _optionsKey: "designJointOP",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ADD1",
+      label: "Line1",
+      required: true,
+      maxLength: 50,
+      placeholder: "",
+      type: "text",
+      txtTransform: "uppercase",
+      GridProps: { xs: 12, sm: 5, md: 3.2, lg: 3.2, xl: 3.3 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ADD2",
+      label: "Line2",
+      placeholder: "",
+      maxLength: 50,
+
+      type: "text",
+      txtTransform: "uppercase",
+      GridProps: { xs: 12, sm: 5, md: 3.2, lg: 3.2, xl: 3.3 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ADD3",
+      label: "Line3",
+      placeholder: "",
+      maxLength: 50,
+      type: "text",
+      txtTransform: "uppercase",
+      GridProps: { xs: 12, sm: 5, md: 3.2, lg: 3.2, xl: 3.3 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "PIN_CODE",
+      label: "PIN",
+      required: true,
+      maxLength: 6,
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "select",
+      },
+      runPostValidationHookAlways: false,
+      name: "AREA_CD",
+      label: "SubArea",
+      dependentFields: ["PIN_CODE"],
+      disableCaching: true,
+      options: (dependentValue, formState, _, authState) =>
+        getOptionsOnPinParentArea(_?.PIN_CODE?.value, formState, _, authState),
+      _optionsKey: "indSubareaMaiwejfjwefnOpjoint",
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const pincode = dependentFields?.PIN_CODE?.value;
+        if (Boolean(pincode)) {
+          if (pincode.length < 6) {
+            return "";
+          }
+        } else return null;
+      },
+      postValidationSetCrossFieldValues: (
+        field,
+        __,
+        ___,
+        dependentFieldsValues
+      ) => {
+        if (field.value) {
+          let values = {
+            CITY_CD: {
+              value: field?.optionData[0]?.CITY_CD
+                ? field?.optionData[0]?.CITY_CD
+                : "",
+            },
+            CITY_ignoreField: {
+              value: field?.optionData[0]?.CITY_NM
+                ? field?.optionData[0]?.CITY_NM
+                : "",
+            },
+            DISTRICT_CD: {
+              value: field?.optionData[0]?.DISTRICT_CD
+                ? field?.optionData[0]?.DISTRICT_CD
+                : "",
+            },
+            DISTRICT_ignoreField: {
+              value: field?.optionData[0]?.DISTRICT_NM
+                ? field?.optionData[0]?.DISTRICT_NM
+                : field?.optionData[0]?.DISTRICT_CD
+                ? field?.optionData[0]?.DISTRICT_CD
+                : "",
+            },
+            STATE: { value: field?.optionData[0]?.STATE_NM ?? "" },
+            COUNTRY: { value: field?.optionData[0]?.COUNTRY_NM ?? "" },
+            STATE_CD: { value: field?.optionData[0]?.STATE_CD ?? "" },
+            COUNTRY_CD: { value: field?.optionData[0]?.COUNTRY_CD ?? "" },
+          };
+          return values;
+        }
+        return {};
+      },
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CITY_ignoreField",
+      label: "City",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].CITY_NM;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CITY_CD",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].CITY_CD;
+        } else return "";
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DISTRICT_ignoreField",
+      label: "District Name",
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].DISTRICT_NM;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "DISTRICT_CD",
+      label: "hidden district",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].DISTRICT_CD;
+        } else return "";
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "STATE",
+      label: "State",
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].STATE_NM;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "COUNTRY",
+      label: "Country",
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].COUNTRY_NM;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "STATE_CD",
+      label: "UnionTerritoriesCode",
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].STATE_CD;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "COUNTRY_CD",
+      label: "CountryCode",
+      isReadOnly: true,
+      placeholder: "",
+      type: "text",
+      dependentFields: ["AREA_CD"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields["AREA_CD"]?.optionData;
+        if (optionData && optionData.length > 0) {
+          return optionData[0].COUNTRY_CD;
+        } else return "";
+      },
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CKYC_NUMBER",
+      label: "CKYC No",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "MOBILE_NO",
+      label: "Mobile No.",
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "PHONE",
+      label: "Phone",
+      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "aadharCard",
+      },
+      name: "UNIQUE_ID",
+      label: "UIDAadhaar",
+      placeholder: "1111 1111 1111",
+      required: true,
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "FORM_60",
+      label: "Form6061",
+      placeholder: "",
+      defaultValue: "N",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+      options: [
+        { label: "Form 61", value: "F" },
+        { label: "No", value: "N" },
+      ],
+    },
+    {
+      render: {
+        componentType: "panCard",
+      },
+      name: "PAN_NO",
+      label: "PanNo",
+      placeholder: "AAAAA1111A",
+      type: "text",
+      txtTransform: "uppercase",
+      required: true,
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "DIN_NO",
+      label: "DIN",
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      label: "Remarks",
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 4.7, xl: 4 },
+    },
+  ],
+};
