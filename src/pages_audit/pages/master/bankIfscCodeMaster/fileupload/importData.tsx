@@ -1,24 +1,14 @@
-import { ActionTypes, GridMetaDataType } from "components/dataTable";
-import { FileUploadControl } from "components/fileUpload";
-import { ConvertExcelToJSONData } from "components/utils";
 import { useContext, useState } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar, useSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { LoadingTextAnimation } from "components/common/loader";
-import { AuthContext } from "pages_audit/auth";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Dialog } from "@mui/material";
 import { AdditionalcollumnMetadata } from "./additionalCollumMetadata";
-import { GeneralAPI } from "registry/fns/functions";
-import { usePopupContext } from "components/custom/popupContext";
-
+import {
+  usePopupContext,
+  ActionTypes,
+  FileUploadControl,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "upload",

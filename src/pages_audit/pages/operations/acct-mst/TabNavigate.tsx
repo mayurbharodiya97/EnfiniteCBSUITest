@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { CircularProgress, Grid } from "@mui/material";
 import { t } from "i18next";
 import { AcctMSTContext } from "./AcctMSTContext";

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { Button, Grid, Skeleton, Typography } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails";
 import { CkycContext } from "../../../../CkycContext";
 import { AuthContext } from "pages_audit/auth";

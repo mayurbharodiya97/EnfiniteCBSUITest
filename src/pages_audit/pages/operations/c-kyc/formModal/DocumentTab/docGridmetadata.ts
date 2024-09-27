@@ -1,5 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+import { MasterDetailsMetaData } from "@acuteinfo/common-base";
 
 export const DocumentGridMetadata: GridMetaDataType = {
   gridConfig: {

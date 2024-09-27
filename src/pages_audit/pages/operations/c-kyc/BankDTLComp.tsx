@@ -1,13 +1,15 @@
 import React, { Fragment, useCallback, useState, useContext } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { ActionTypes } from "components/dataTable";
 import { bank_dtl_grid_meta_data } from "./metadata";
 import { Dialog } from "@mui/material";
 import { useLocation } from "react-router-dom";
-
+import {
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const BankDTLComp = ({ open, onClose }) => {
   const { authState } = useContext(AuthContext);
   const { state: data }: any = useLocation();

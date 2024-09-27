@@ -1,5 +1,4 @@
 import { gstOutwardEntryGrid } from "./gridMetaData";
-import { GridMetaDataType } from "components/dataTableStatic";
 import {
   Fragment,
   useCallback,
@@ -8,15 +7,20 @@ import {
   useRef,
   useState,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "reactstrap";
 import { GstOutwardMasterDetailForm } from "./gstOutwardMasterForm/gstOutwardMasterDetailForm";
-import { ClearCacheContext, queryClient } from "cache";
+import {
+  ClearCacheContext,
+  queryClient,
+  ActionTypes,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",

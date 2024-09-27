@@ -9,15 +9,15 @@ import {
   Toolbar,
 } from "@mui/material";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { TextField } from "components/styledComponent";
 import { CkycContext } from "../CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import CategoryUpdate from "./CategoryUpdate";
-import { queryClient } from "cache";
+import { queryClient } from "@acuteinfo/common-base";
+import { TextField } from "@acuteinfo/common-base";
+import { GradientButton } from "@acuteinfo/common-base";
 
 const HeaderForm = () => {
   const {

@@ -58,18 +58,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Document from "./DocumentTab/Document";
 import PhotoSignatureCpy from "./formDetails/formComponents/individualComps/PhotoSignCopy2";
 import { format } from "date-fns";
-import { GradientButton } from "components/styledComponent/button";
 import { ckyc_confirmation_form_metadata } from "./formDetails/metadata/confirmation";
-import { TextField } from "components/styledComponent";
-import { ActionDialog } from "./dialog/ActionDialog";
 import { CloseFormDialog } from "./dialog/CloseFormDialog";
 import { PreventUpdateDialog } from "./dialog/PreventUpdateDialog";
 import { ConfirmUpdateDialog } from "./dialog/ConfirmUpdateDialog";
-import { Alert } from "components/common/alert";
 import ExtractedHeader from "./ExtractedHeader";
 import HeaderForm from "./HeaderForm";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { MessageBoxWrapper } from "components/custom/messageBox";
+import {
+  MessageBoxWrapper,
+  Alert,
+  RemarksAPIWrapper,
+  GradientButton,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
+
 import PhotoSign from "./formDetails/formComponents/individualComps/PhotoSign";
 import { CustomTab, useDialogStyles } from "./style";
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
@@ -1055,7 +1058,8 @@ export default function FormModal({
         // isRequired={false}
       />
 
-      <MessageBoxWrapper
+      {/* Commented Temporary */}
+      {/* <MessageBoxWrapper
         MessageTitle={"SUCCESS"}
         // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
         Message={
@@ -1088,7 +1092,7 @@ export default function FormModal({
         rows={[]}
         buttonNames={["OK"]}
         open={confirmMsgDialog}
-      />
+      /> */}
 
       {/* {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 

@@ -20,18 +20,24 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { DetailForm } from "./fdParameters";
 import { FixDepositDetailForm } from "./fixDepositDetail";
 import { TransferAcctDetailForm } from "./trnAccountDetail";
-import { SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { cloneDeep } from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
 
+import {
+  usePopupContext,
+  SubmitFnType,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ theme, ownerState }) => ({

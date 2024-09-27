@@ -8,16 +8,19 @@ import {
 } from "react";
 import { ParameterConfirmGridMetaData } from "./gridMetadata";
 import * as API from "./api";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { Alert } from "components/common/alert";
-import { ClearCacheContext, queryClient } from "cache";
-
+import {
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  Alert,
+  ClearCacheContext,
+  queryClient,
+  PopupMessageAPIWrapper,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "accept",
@@ -151,7 +154,7 @@ const ParameterConfirmGridWrapper = () => {
         data={data ?? []}
         actions={actions}
         setData={() => null}
-        ReportExportButton={true}
+        enableExport={true}
         setAction={setCurrentAction}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}

@@ -7,7 +7,6 @@ import {
   IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { related_person_detail_data } from "../../metadata/individual/relatedpersondetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -16,8 +15,11 @@ import { CkycContext } from "../../../../CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
-import { MessageBoxWrapper } from "components/custom/messageBox";
-
+import {
+  MessageBoxWrapper,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 const RelatedPersonDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
@@ -273,8 +275,8 @@ const RelatedPersonDetails = () => {
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
       />
-
-      <MessageBoxWrapper
+      {/* // Commented Temporary */}
+      {/* <MessageBoxWrapper
         MessageTitle={"Data Validation Failed"}
         Message={
           `In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'` ??
@@ -284,7 +286,7 @@ const RelatedPersonDetails = () => {
         rows={[]}
         buttonNames={["OK"]}
         open={open}
-      />
+      /> */}
     </Grid>
   );
 };

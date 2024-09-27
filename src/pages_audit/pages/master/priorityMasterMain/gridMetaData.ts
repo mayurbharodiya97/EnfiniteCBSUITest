@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const Prioritymastermainmetadata: GridMetaDataType = {
   gridConfig: {
@@ -22,7 +22,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -68,7 +68,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "FROMLIMIT",
+      accessor: "FROM_LIMIT",
       columnName: "SanctionFromLimit",
       sequence: 6,
       alignment: "right",
@@ -78,7 +78,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "TOLIMIT",
+      accessor: "TO_LIMIT",
       columnName: "SanctionToLimit",
       sequence: 7,
       alignment: "right",
@@ -102,7 +102,7 @@ export const Prioritymastermainmetadata: GridMetaDataType = {
       columnName: "ProvisionUnsecured",
       sequence: 9,
       alignment: "right",
-      componentType: "currency",
+      componentType: "default",
       width: 120,
       minWidth: 120,
       maxWidth: 150,

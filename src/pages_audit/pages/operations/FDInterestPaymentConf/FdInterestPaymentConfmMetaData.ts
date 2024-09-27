@@ -1,4 +1,4 @@
-export const FdInterestPaymentConfmMetaData = {
+export const FdInterestPaymentConfmGridMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "",
@@ -40,7 +40,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "COMP_CD",
       columnName: "CompanyID",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -50,7 +50,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "BRANCH_CD",
       columnName: "branchCode",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -60,7 +60,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "ACCT_TYPE",
       columnName: "accountType",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -70,7 +70,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "ACCT_CD",
       columnName: "accountCode",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -286,9 +286,19 @@ export const FdInterestPaymentconfFormMetaData = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "hidden",
           },
           name: "PAYMENT_MODE",
+          label: "PaymentMode",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 4, md: 1.5, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PAYMENT_MODE_DIS",
           label: "PaymentMode",
           type: "text",
           fullWidth: true,

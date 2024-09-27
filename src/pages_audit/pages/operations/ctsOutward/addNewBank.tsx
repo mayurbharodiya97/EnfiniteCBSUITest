@@ -1,13 +1,16 @@
 import { FC, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { queryClient, ClearCacheContext } from "cache";
+import { queryClient, ClearCacheContext } from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
 import { Theme, Dialog, Button, CircularProgress } from "@mui/material";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+
+import {
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { AddNewBankMasterFormMetadata } from "./metaData";
 import { useTranslation } from "react-i18next";

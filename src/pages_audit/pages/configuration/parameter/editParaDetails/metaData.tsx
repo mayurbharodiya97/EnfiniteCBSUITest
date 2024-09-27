@@ -103,6 +103,7 @@ export const ParaDetailMetadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER",
       GridProps: {
         xs: 12,
         xl: 4,

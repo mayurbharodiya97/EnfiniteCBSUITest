@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const applicationAccess: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -45,19 +45,19 @@ export const applicationAccess: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      SelectAllColumn: true,
+      enableColumnSelection: true,
       width: 125,
       minWidth: 100,
       maxWidth: 125,
       isReadOnly: false,
-      __VIEW__: {
-        isReadOnly: true,
-        SelectAllColumn: false,
-      },
+      // __VIEW__: {
+      //     isReadOnly: true,
+      //     enableColumnSelection: false
+      // },
     },
   ],
 };
-export const userAccessbranch: GridMetaDataType = {
+export const userAccessbranch = {
   gridConfig: {
     dense: true,
     gridLabel: "BranchAccessRights",
@@ -78,6 +78,19 @@ export const userAccessbranch: GridMetaDataType = {
     },
     allowRowSelection: false,
   },
+  allowColumnReordering: true,
+  disableSorting: false,
+  hideHeader: false,
+  hideFooter: false,
+  disableGroupBy: true,
+  enablePagination: true,
+  pageSizes: [10, 20, 30],
+  defaultPageSize: 10,
+  containerHeight: {
+    min: "48vh",
+    max: "48vh",
+  },
+  allowRowSelection: false,
   columns: [
     {
       accessor: "BRANCH_CD",
@@ -105,15 +118,15 @@ export const userAccessbranch: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      SelectAllColumn: true,
+      enableColumnSelection: true,
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
-      __VIEW__: {
-        isReadOnly: true,
-        SelectAllColumn: false,
-      },
+      // __VIEW__: {
+      //     isReadOnly: true,
+      //     enableColumnSelection: false
+      // },
     },
     {
       accessor: "REPORT_ACCESS",
@@ -121,15 +134,15 @@ export const userAccessbranch: GridMetaDataType = {
       sequence: 3,
       alignment: "center",
       componentType: "editableCheckbox",
-      SelectAllColumn: true,
+      enableColumnSelection: true,
       width: 180,
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
-      __VIEW__: {
-        isReadOnly: true,
-        SelectAllColumn: false,
-      },
+      // __VIEW__: {
+      //     isReadOnly: true,
+      //     enableColumnSelection: false
+      // },
     },
   ],
 };
@@ -196,14 +209,14 @@ export const productaccess: GridMetaDataType = {
       sequence: 5,
       alignment: "left",
       componentType: "editableCheckbox",
-      SelectAllColumn: true,
+      enableColumnSelection: true,
       width: 100,
       minWidth: 100,
       maxWidth: 100,
       isReadOnly: false,
       __VIEW__: {
         isReadOnly: true,
-        SelectAllColumn: false,
+        enableColumnSelection: false,
       },
     },
   ],
@@ -257,11 +270,11 @@ export const loginBiometric: GridMetaDataType = {
       minWidth: 160,
       maxWidth: 200,
       isVisibleInNew: true,
-      __VIEW__: {
-        shouldExclude(fieldData, dependentFieldsValues, formState) {
-          return true;
-        },
-      },
+      // __VIEW__:{
+      //     shouldExclude(fieldData, dependentFieldsValues, formState) {
+      //         return true;
+      //       },
+      // }
     },
     {
       accessor: "Delete",
@@ -273,11 +286,11 @@ export const loginBiometric: GridMetaDataType = {
       minWidth: 160,
       maxWidth: 200,
       isVisibleInNew: true,
-      __VIEW__: {
-        shouldExclude(fieldData, dependentFieldsValues, formState) {
-          return true;
-        },
-      },
+      // __VIEW__:{
+      //     shouldExclude(fieldData, dependentFieldsValues, formState) {
+      //         return true;
+      //       },
+      // }
     },
   ],
 };

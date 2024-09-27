@@ -1,16 +1,18 @@
 import { CircularProgress, Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, useContext } from "react";
 import { returnChequeFormMetaData } from "./formMetaData";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
 import { useMutation } from "react-query";
-import { usePopupContext } from "components/custom/popupContext";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
-import { t } from "i18next";
+import {
+  usePopupContext,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 export const ReturnChequeForm = ({ open, onclose }) => {
   const { authState } = useContext(AuthContext);

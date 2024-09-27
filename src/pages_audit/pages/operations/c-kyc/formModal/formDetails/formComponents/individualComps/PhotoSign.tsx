@@ -10,17 +10,17 @@ import React, {
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { Button, Grid, IconButton, Tooltip, Typography } from "@mui/material";
-import { transformFileObject } from "components/fileUpload/utils";
-import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
-
+import {
+  utilFunction,
+  ActionTypes,
+  transformFileObject,
+} from "@acuteinfo/common-base";
 const PhotoSign = () => {
   const {
     state,
