@@ -1614,6 +1614,7 @@ export const en_language_data = {
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
   entryType: "Entry Type",
+  typeRequired: "Type is required",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",
@@ -1864,9 +1865,12 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
+  rateRequired: "rate is required",
   normalPremature: "Normal/Premature",
   asonDate: "As on Date",
   maturityDate: "Maturity Date",
+  categCdRequired: "Category is required.",
+  definationRequired: "definayion is required.",
   term: "Term",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",

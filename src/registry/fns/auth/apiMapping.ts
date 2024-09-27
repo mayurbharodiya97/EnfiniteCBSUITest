@@ -2673,6 +2673,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  GETRECTOFDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECTOFDDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
