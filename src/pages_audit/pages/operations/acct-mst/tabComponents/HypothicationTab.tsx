@@ -7,10 +7,17 @@ import TabNavigate from "../TabNavigate";
 import _ from "lodash";
 
 const HypothicationTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
+  const {
+    AcctMSTState,
+    handleCurrFormctx,
+    handleSavectx,
+    handleStepStatusctx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+  } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
-  const [formStatus, setFormStatus] = useState<any[]>([])
+  const [formStatus, setFormStatus] = useState<any[]>([]);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const onFormSubmitHandler = (
     data: any,
@@ -31,9 +38,9 @@ const HypothicationTab = () => {
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
         IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
-        COMP_CD: "",
+        // COMP_CD: "",
         // BRANCH_CD: "",
-        REQ_FLAG: "",
+        // REQ_FLAG: "",
         // REQ_CD: "",
         // SR_CD: "",
       };
@@ -51,14 +58,14 @@ const HypothicationTab = () => {
 
         tabModifiedCols = {
           ...tabModifiedCols,
-          MAIN_DETAIL: [...updatedCols]
-        }
-        handleModifiedColsctx(tabModifiedCols)
+          MAIN_DETAIL: [...updatedCols],
+        };
+        handleModifiedColsctx(tabModifiedCols);
       }
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      setFormStatus(old => [...old, true])
+      setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -67,7 +74,7 @@ const HypothicationTab = () => {
         coltabvalue: AcctMSTState?.colTabValuectx,
       });
       // setIsNextLoading(false);
-      setFormStatus(old => [...old, false])
+      setFormStatus((old) => [...old, false]);
     }
     endSubmit(true);
   };
@@ -75,44 +82,53 @@ const HypothicationTab = () => {
   const handleSave = (e) => {
     handleCurrFormctx({
       isLoading: true,
-    })
-    const refs = [formRef.current.handleSubmitError(e, "save", false)]
-    handleSavectx(e, refs)
-  }
+    });
+    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    handleSavectx(e, refs);
+  };
 
   useEffect(() => {
-    let refs = [formRef]
+    let refs = [formRef];
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: AcctMSTState?.colTabValuectx,
       currentFormSubmitted: null,
       isLoading: false,
-    })
-  }, [])
+    });
+  }, []);
   useEffect(() => {
-    console.log("ikufhwheniufhiwehfhwf", formStatus)
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
-      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
-        setIsNextLoading(false)
+    console.log("ikufhwheniufhiwehfhwf", formStatus);
+    if (
+      Boolean(
+        AcctMSTState?.currentFormctx.currentFormRefctx &&
+          AcctMSTState?.currentFormctx.currentFormRefctx.length > 0
+      ) &&
+      Boolean(formStatus && formStatus.length > 0)
+    ) {
+      if (
+        AcctMSTState?.currentFormctx.currentFormRefctx.length ===
+        formStatus.length
+      ) {
+        setIsNextLoading(false);
         let submitted;
-        submitted = formStatus.filter(form => !Boolean(form))
-        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+        submitted = formStatus.filter((form) => !Boolean(form));
+        if (submitted && Array.isArray(submitted) && submitted.length > 0) {
           submitted = false;
         } else {
           submitted = true;
           handleStepStatusctx({
             status: "completed",
             coltabvalue: AcctMSTState?.colTabValuectx,
-          })
+          });
         }
         handleCurrFormctx({
           currentFormSubmitted: submitted,
           isLoading: false,
-        })
-        setFormStatus([])
+        });
+        setFormStatus([]);
       }
     }
-  }, [formStatus])
+  }, [formStatus]);
 
   const initialVal = useMemo(() => {
     return AcctMSTState?.isFreshEntryctx
@@ -136,15 +152,19 @@ const HypothicationTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-tab-hypothication-form" + initialVal}
+        key={"acct-mst-hypothication-tab-form" + initialVal}
         metaData={hypothication_metadata as MetaDataType}
         formStyle={{}}
-        formState={{GPARAM155: AcctMSTState?.gparam155 }}
+        formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
         controlsAtBottom={false}
       ></FormWrapper>
-      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate
+        handleSave={handleSave}
+        displayMode={AcctMSTState?.formmodectx ?? "new"}
+        isNextLoading={isNextLoading}
+      />
     </Grid>
   );
 };

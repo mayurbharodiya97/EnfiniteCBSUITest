@@ -13,7 +13,6 @@ import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 import { MessageBoxWrapper } from "components/custom/messageBox";
 
-
 const AcctConfirm = () => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
@@ -23,7 +22,6 @@ const AcctConfirm = () => {
 
   // temporary-use-state
   const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
-  
 
   const {
     data: PendingAcct,
@@ -32,14 +30,14 @@ const AcctConfirm = () => {
     isFetching: isPendingAcctFetching,
     refetch: PendingRefetch,
     error: PendingError,
-    } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
+  } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
     API.getPendingAcct({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        REQ_FLAG: "P",
-    //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      REQ_FLAG: "P",
+      //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
     })
-    )
+  );
 
   const actions: ActionTypes[] = [
     {
@@ -58,19 +56,19 @@ const AcctConfirm = () => {
   const setCurrentAction = useCallback(
     (data) => {
       // console.log("weohhfdwef", data)
-      const maker = data.rows?.[0]?.data?.MAKER
+      const maker = data.rows?.[0]?.data?.MAKER;
       const loggedinUser = authState?.user?.id;
-      if(maker === loggedinUser) {
-        setPreventConfirmDialog(true)
+      if (maker === loggedinUser) {
+        setPreventConfirmDialog(true);
       } else {
-        if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+        if (data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
           navigate("photo-signature", {
             state: data?.rows,
-          })
-        } else if(data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
+          });
+        } else if (data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
           navigate("view-detail", {
             state: data?.rows,
-          })
+          });
         } else {
           setRowsData(data?.rows);
           navigate(data?.name, {
@@ -83,17 +81,17 @@ const AcctConfirm = () => {
   );
 
   useEffect(() => {
-    PendingRefetch()
-  }, [location])
+    PendingRefetch();
+  }, [location]);
 
-    pendingAcctMetadata.gridConfig.gridLabel = "Confirmation Pending Request";
-    pendingAcctMetadata.gridConfig["containerHeight"] = {
-      min: "60vh",
-      max: "calc(100vh - 200px)",
-    }
+  pendingAcctMetadata.gridConfig.gridLabel = "Confirmation Pending Request";
+  pendingAcctMetadata.gridConfig["containerHeight"] = {
+    min: "60vh",
+    max: "calc(100vh - 200px)",
+  };
 
   return (
-    <Grid sx={{mx:"10px"}}>
+    <Grid sx={{ mx: "10px" }}>
       {isPendingError && (
         <Alert
           severity={PendingError?.severity ?? "error"}
@@ -102,7 +100,7 @@ const AcctConfirm = () => {
           color="error"
         />
       )}
-        {/* <Typography
+      {/* <Typography
           sx={{
             color: (theme) => theme.palette.grey[700],
             mb: (theme) => theme.spacing(2),
@@ -111,45 +109,45 @@ const AcctConfirm = () => {
         >
           {t("Confirmation Pending")}
         </Typography> */}
-        <GridWrapper
-          key={`ckycConfirmation`+PendingAcct}
-          finalMetaData={pendingAcctMetadata as GridMetaDataType}
-          data={PendingAcct ?? []}
-          setData={() => null}
-          loading={isPendingAcctLoading || isPendingAcctFetching}
-          actions={actions}
-          setAction={setCurrentAction}
-          refetchData={() => PendingRefetch()}
-          // ref={myGridRef}
+      <GridWrapper
+        key={`ckycConfirmation` + PendingAcct}
+        finalMetaData={pendingAcctMetadata as GridMetaDataType}
+        data={PendingAcct ?? []}
+        setData={() => null}
+        loading={isPendingAcctLoading || isPendingAcctFetching}
+        actions={actions}
+        setAction={setCurrentAction}
+        refetchData={() => PendingRefetch()}
+        // ref={myGridRef}
+      />
+
+      <MessageBoxWrapper
+        MessageTitle={"ALERT"}
+        Message={"You can not confirm your own posted transaction"}
+        onClickButton={() => {
+          setPreventConfirmDialog(false);
+          // setConfirmAction(null)
+          // setConfirmMsgDialog(false)
+          // closeForm()
+        }}
+        rows={[]}
+        buttonNames={["OK"]}
+        open={preventConfirmDialog}
+      />
+
+      <Routes>
+        <Route
+          path="view-detail/*"
+          element={
+            <AcctModal
+              onClose={() => navigate(".")}
+              formmode={"view"}
+              from={"confirmation-entry"}
+            />
+          }
         />
 
-        <MessageBoxWrapper
-          MessageTitle={"ALERT"}
-          Message={"You can not confirm your own posted transaction"}
-          onClickButton={() => {
-            setPreventConfirmDialog(false)
-            // setConfirmAction(null)
-            // setConfirmMsgDialog(false)
-            // closeForm()
-          }}
-          rows={[]}
-          buttonNames={["OK"]}
-          open={preventConfirmDialog}
-        />
-
-        <Routes>
-          <Route
-            path="view-detail/*"
-            element={
-                <AcctModal
-                    onClose={() => navigate(".")}
-                    formmode={"view"}
-                    from={"pending-entry"}
-                />
-            }
-          />
-
-          {/* <Route
+        {/* <Route
             path="photo-signature/*"
             element={
               <PhotoSignConfirmDialog
@@ -160,7 +158,7 @@ const AcctConfirm = () => {
               />
             }
           /> */}
-        </Routes>
+      </Routes>
     </Grid>
   );
 };
