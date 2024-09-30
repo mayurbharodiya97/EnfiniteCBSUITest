@@ -94,7 +94,21 @@ export const getPendingAcct = async ({ COMP_CD, BRANCH_CD, REQ_FLAG }) => {
       REQ_FLAG: REQ_FLAG,
     });
   if (status === "0") {
-    return data;
+    let responseData = data;
+    if (REQ_FLAG === "A") {
+      responseData = data?.map((row) => {
+        if (row?.CONFIRMED === "Y") {
+          return { ...row, _rowColor: "rgb(9 132 3 / 51%)" };
+        } else if (row?.CONFIRMED === "R") {
+          return { ...row, _rowColor: "rgb(152 59 70 / 61%)" };
+        } else {
+          return { ...row };
+        }
+      });
+      return responseData;
+    } else {
+      return data;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
