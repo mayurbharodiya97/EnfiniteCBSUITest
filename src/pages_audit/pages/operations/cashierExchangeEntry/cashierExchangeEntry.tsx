@@ -1,20 +1,16 @@
 import { Fragment, useContext, useRef, useState } from "react";
+import { cashierEntryFormMetaData } from "./cashierEntryMetadata";
 import {
-  cashierEntryMetaData,
-  cashierEntryMetaData2,
-} from "./cashierEntryMetadata";
-import {
-  SubmitFnType,
   usePopupContext,
   GradientButton,
   MetaDataType,
   FormWrapper,
-  GridMetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { LinearProgress } from "@mui/material";
+import { AppBar, LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { format, parse } from "date-fns";
 import CashierExchangeTable from "./tableComponent/tableComponent";
@@ -26,11 +22,11 @@ const CashierExchangeEntry = () => {
   const TableRef = useRef<any>([]);
   const { authState } = useContext(AuthContext);
   const [tableData, setTableData] = useState([]);
-  const getData: any = useMutation(API.getCashDeno, {
+  const getData = useMutation(API.getCashDeno, {
     onSuccess: (data) => {
       setTableData(data);
     },
-    onError: (error: any, variables?: any) => {
+    onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -84,9 +80,21 @@ const CashierExchangeEntry = () => {
   };
   return (
     <Fragment>
+      {getData?.isError ? (
+        <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={getData?.error?.error_msg ?? "Unknow Error"}
+              errorDetail={getData?.error?.error_detail ?? ""}
+              color="error"
+            />
+          </AppBar>
+        </div>
+      ) : null}
       <FormWrapper
         key={"CashierExchangeEntryForm"}
-        metaData={cashierEntryMetaData2 as MetaDataType}
+        metaData={cashierEntryFormMetaData as MetaDataType}
         ref={FormRef}
         formStyle={{
           height: "auto",
@@ -114,9 +122,9 @@ const CashierExchangeEntry = () => {
         <GradientButton onClick={handleSaves}>Save</GradientButton>
       </FormWrapper>
       {getData?.isLoading && <LinearProgress color="secondary" />}
-      {getData?.data?.length > 0 && (
+      {tableData.length > 0 && (
         <CashierExchangeTable
-          data={tableData}
+          data={tableData ?? []}
           metadata={CashierMetaData}
           TableLabel={"Cashier Exchange Table"}
           hideHeader={true}
