@@ -23,7 +23,7 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
 
     let totalFDAmt =
       screenFlag === "paymentTransfer"
-        ? FDState?.fdSavedPaymentData?.TOT_AMT -
+        ? FDState?.fdSavedPaymentData?.FINAL_TOT_AMT -
           FDState?.fdSavedPaymentData?.TDS_UPTO_TOTAL
         : (Array.isArray(FDState?.fdDetailFormData?.FDDTL)
             ? FDState?.fdDetailFormData?.FDDTL
@@ -33,6 +33,11 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
               accum + Number(obj?.CASH_AMT ?? 0) + Number(obj?.TRSF_AMT ?? 0),
             0
           );
+
+    console.log(
+      "TransferAcctDetailFormMetadata",
+      TransferAcctDetailFormMetadata
+    );
 
     useEffect(() => {
       if (screenFlag === "paymentTransfer") {
@@ -44,12 +49,33 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
           TransferAcctDetailFormMetadata.fields[5]._fields[0]
             .accountCodeMetadata
         ) {
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].branchCodeMetadata.GridProps =
+            { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountTypeMetadata.GridProps =
+            { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 };
           TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
-            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
-          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
-            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
-          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
-            { lg: 2.5, md: 2.5, sm: 2.5, xl: 1.3, xs: 12 };
+            { xs: 12, sm: 4, md: 4, lg: 1.5, xl: 1.5 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[1].GridProps = {
+            xs: 12,
+            sm: 6,
+            md: 6,
+            lg: 3.5,
+            xl: 3.5,
+          };
+          TransferAcctDetailFormMetadata.fields[5]._fields[2].GridProps = {
+            xs: 12,
+            sm: 3,
+            md: 3,
+            lg: 2,
+            xl: 2,
+          };
+          TransferAcctDetailFormMetadata.fields[5]._fields[5].GridProps = {
+            xs: 12,
+            sm: 3,
+            md: 3,
+            lg: 2,
+            xl: 2,
+          };
           TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
             "Credit Amount";
           TransferAcctDetailFormMetadata.fields[1].label =
@@ -64,12 +90,33 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
           TransferAcctDetailFormMetadata.fields[5]._fields[0]
             .accountCodeMetadata
         ) {
-          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].branchCodeMetadata.GridProps =
+            { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountTypeMetadata.GridProps =
             { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
           TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
             { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
-          TransferAcctDetailFormMetadata.fields[5]._fields[0].accountCodeMetadata.GridProps =
-            { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.3 };
+          TransferAcctDetailFormMetadata.fields[5]._fields[1].GridProps = {
+            xs: 12,
+            sm: 4.5,
+            md: 4.5,
+            lg: 4.5,
+            xl: 2.6,
+          };
+          TransferAcctDetailFormMetadata.fields[5]._fields[2].GridProps = {
+            xs: 12,
+            sm: 3,
+            md: 3,
+            lg: 3,
+            xl: 1.5,
+          };
+          TransferAcctDetailFormMetadata.fields[5]._fields[5].GridProps = {
+            xs: 12,
+            sm: 3,
+            md: 3,
+            lg: 3,
+            xl: 1.5,
+          };
           TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
             "Debit Amount";
           TransferAcctDetailFormMetadata.fields[1].label = "Total Debit Amount";
@@ -119,10 +166,9 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
                   const item = dataArray[0];
 
                   if (
-                    !Boolean(item.BRANCH_CD.trim()) ||
-                    !Boolean(item.ACCT_TYPE.trim()) ||
-                    !Boolean(item.ACCT_CD.trim()) ||
-                    !Boolean(item.CHEQUE_NO.trim())
+                    !Boolean(item?.BRANCH_CD?.trim()) ||
+                    !Boolean(item?.ACCT_TYPE?.trim()) ||
+                    !Boolean(item?.ACCT_CD?.trim())
                   ) {
                     return await MessageBox({
                       messageTitle: t("ValidationFailed"),

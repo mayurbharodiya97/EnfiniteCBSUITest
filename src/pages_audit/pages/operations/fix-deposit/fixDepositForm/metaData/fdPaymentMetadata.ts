@@ -981,13 +981,11 @@ export const FDPaymentMetadata = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        const formattedCurField = utilFunction.isValidDate(currentField?.value)
+        const formattedCurField = currentField?.value
           ? format(new Date(currentField?.value), "dd/MMM/yyyy")
           : "";
 
-        const formattedFormStVal = utilFunction.isValidDate(
-          formState.paidDateIniValue
-        )
+        const formattedFormStVal = formState.paidDateIniValue
           ? format(new Date(formState.paidDateIniValue), "dd/MMM/yyyy")
           : "";
 
@@ -1020,7 +1018,7 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: dependentFieldValues?.INT_RATE_REST?.value ?? "",
-            A_PAID_DT: utilFunction.isValidDate(currentField?.value)
+            A_PAID_DT: currentField?.value
               ? format(new Date(currentField?.value), "dd/MMM/yyyy")
               : "",
           };
@@ -1154,9 +1152,7 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: currentField?.value ?? "",
-            A_PAID_DT: utilFunction.isValidDate(
-              dependentFieldValues?.PAID_DT?.value
-            )
+            A_PAID_DT: dependentFieldValues?.PAID_DT?.value
               ? format(
                   new Date(dependentFieldValues?.PAID_DT?.value),
                   "dd/MMM/yyyy"
@@ -1720,6 +1716,10 @@ export const FDPaymentMetadata = {
         },
       },
       dependentFields: ["CASH_TOTAL", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: true,
+      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1934,7 +1934,7 @@ export const FDPaymentMetadata = {
       render: {
         componentType: "amountField",
       },
-      name: "TOT_AMT",
+      name: "FINAL_TOT_AMT",
       label: "",
       isReadOnly: true,
       dependentFields: ["TRANSFER_TOTAL", "CASH_TOTAL"],

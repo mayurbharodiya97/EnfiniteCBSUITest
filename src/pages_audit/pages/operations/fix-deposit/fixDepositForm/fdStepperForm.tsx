@@ -226,10 +226,8 @@ export const FixDepositForm = ({
 
     const newData = data?.FDDTL?.map((obj) => ({
       ...obj,
-      TRAN_DT: utilFunction.isValidDate(obj.TRAN_DT)
-        ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy")
-        : "",
-      MATURITY_DT: utilFunction.isValidDate(obj.MATURITY_DT)
+      TRAN_DT: obj.TRAN_DT ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy") : "",
+      MATURITY_DT: obj.MATURITY_DT
         ? format(new Date(obj.MATURITY_DT), "dd/MMM/yyyy")
         : "",
     }));
@@ -281,7 +279,7 @@ export const FixDepositForm = ({
 
     const newData = data?.TRNDTLS?.map((obj) => ({
       ...obj,
-      CHEQUE_DT: utilFunction.isValidDate(obj.CHEQUE_DATE)
+      CHEQUE_DT: obj.CHEQUE_DATE
         ? format(new Date(obj.CHEQUE_DATE), "dd/MMM/yyyy")
         : "",
     }));

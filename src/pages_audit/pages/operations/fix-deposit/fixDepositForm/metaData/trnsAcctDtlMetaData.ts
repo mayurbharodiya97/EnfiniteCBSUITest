@@ -93,7 +93,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -114,6 +113,9 @@ export const TransferAcctDetailFormMetadata = {
 
         return value ?? "0";
       },
+      FormatProps: {
+        allowNegative: true,
+      },
       textFieldStyle: {
         "& .MuiInputBase-root": {
           background: "var(--theme-color5)",
@@ -128,7 +130,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -155,7 +156,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -190,7 +190,7 @@ export const TransferAcctDetailFormMetadata = {
           },
           branchCodeMetadata: {
             name: "BRANCH_CD",
-            isFieldFocus: true,
+            isFieldFocused: true,
             fullWidth: true,
             runPostValidationHookAlways: true,
             validationRun: "onChange",
@@ -260,6 +260,10 @@ export const TransferAcctDetailFormMetadata = {
             name: "ACCT_CD",
             dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
             runPostValidationHookAlways: true,
+            AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: true,
+            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -387,6 +391,9 @@ export const TransferAcctDetailFormMetadata = {
                   STATUS: {
                     value: returnVal?.STATUS ?? "",
                   },
+                  AMOUNT: {
+                    value: "",
+                  },
                 };
               } else if (!currentField?.value) {
                 return {
@@ -395,6 +402,7 @@ export const TransferAcctDetailFormMetadata = {
                   TYPE_CD: { value: "" },
                   CHEQUE_NO: { value: "" },
                   STATUS: { value: "" },
+                  AMOUNT: { value: "" },
                 };
               }
               return {};

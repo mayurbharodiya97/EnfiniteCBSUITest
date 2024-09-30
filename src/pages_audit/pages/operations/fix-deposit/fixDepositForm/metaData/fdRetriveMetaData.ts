@@ -74,6 +74,10 @@ export const FDRetriveMetadata = {
         validationRun: "onChange",
         dependentFields: ["BRANCH_CD"],
         isFieldFocused: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -117,13 +121,37 @@ export const FDRetriveMetadata = {
               ACCT_TYPE: currentField?.value ?? "",
               SCREEN_REF: "RPT/401",
             };
+            formState?.handleDisableButton(true);
             const postData = await API.getFDParaDetail(reqParameters);
-
-            if (postData?.length) {
+            if (postData?.status === "999") {
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
+                message: postData?.messageDetails ?? "Somethingwenttowrong",
+                icon: "ERROR",
+              });
+              if (btnName === "Ok") {
+                formState.handleDisableButton(false);
+                return {
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_CD: { value: "" },
+                  ACCT_NM: { value: "" },
+                };
+              }
+            } else if (postData?.length) {
+              formState.handleDisableButton(false);
               formState.setDataOnFieldChange("GET_PARA_DATA", postData?.[0]);
               return {
                 DOUBLE_FAC: { value: postData?.[0]?.DOUBLE_FAC ?? "" },
                 TRAN_CD: { value: postData?.[0]?.DOUBLE_TRAN ?? "" },
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
               };
             }
           }
@@ -270,6 +298,13 @@ export const FDRetriveMetadata = {
             };
           }
           return {};
+        },
+        isReadOnly(_, dependentFieldsValues, formState) {
+          if (formState?.FDState?.disableButton) {
+            return true;
+          } else {
+            return false;
+          }
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
