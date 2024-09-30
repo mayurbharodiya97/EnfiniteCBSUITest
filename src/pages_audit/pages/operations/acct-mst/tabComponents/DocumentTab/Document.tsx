@@ -3,16 +3,20 @@ import { useMutation } from "react-query";
 import { Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { utilFunction } from "components/utils";
 import * as API from "../../api";
 import { DocumentGridMetadata } from "./docGridmetadata";
 import { DocMasterDTLForm } from "./DocMasterDTLForm";
 import { AcctMSTContext } from "../../AcctMSTContext";
 import TabNavigate from "../../TabNavigate";
+import {
+  PopupMessageAPIWrapper,
+  GridWrapper,
+  GradientButton,
+  PDFViewer,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const Document = () => {
   const navigate = useNavigate();

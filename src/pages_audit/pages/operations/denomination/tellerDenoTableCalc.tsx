@@ -5,10 +5,11 @@ import {
   SingleTableInititalState,
   SingleTableActionTypes,
 } from "./denoTableActionTypes";
-import { usePopupContext } from "components/custom/popupContext";
-import * as API from "./api";
-import { useMutation } from "react-query";
+import { usePopupContext } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
+import { useMutation } from "react-query";
+import * as API from "./api";
+
 const TellerDenoTableCalc = ({
   displayTable,
   formData,
@@ -17,6 +18,8 @@ const TellerDenoTableCalc = ({
   onCloseTable,
   gridLable,
   initRemainExcess,
+  screenRef,
+  entityType,
 }) => {
   const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -335,6 +338,8 @@ const TellerDenoTableCalc = ({
               };
               return data;
             }),
+            SCREEN_REF: screenRef,
+            ENTRY_TYPE: entityType,
           };
           saveDenominationData?.mutate(reqData);
         } else if (res === "No") {

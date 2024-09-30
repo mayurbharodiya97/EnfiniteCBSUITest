@@ -1,12 +1,5 @@
 import { CircularProgress, Dialog, useTheme } from "@mui/material";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -19,6 +12,16 @@ import {
 } from "./metaData";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  MetaDataType,
+  queryClient,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 export const ViewStatement = ({
   open,
@@ -62,6 +65,7 @@ export const ViewStatement = ({
           },
         });
         close();
+        onClose();
       },
       onError: async (error: any) => {
         const btnName = await MessageBox({
@@ -81,7 +85,7 @@ export const ViewStatement = ({
       onSuccess: async (data: any) => {
         if (data?.[0]?.O_STATUS === "999") {
           const btnName = await MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: "ValidationFailed",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Ok"],
           });
@@ -230,14 +234,6 @@ export const ViewStatement = ({
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}
-            loading={
-              acctInqData?.isLoading ||
-              acctInqData?.isFetching ||
-              passbookInqData?.isLoading ||
-              passbookInqData?.isFetching ||
-              passbookValidation?.isLoading ||
-              passbookValidation?.isFetching
-            }
             formStyle={{
               background: "white",
             }}
@@ -280,7 +276,7 @@ export const ViewStatement = ({
                     passbookInqData?.isFetching ||
                     passbookValidation?.isLoading ||
                     passbookValidation?.isFetching
-                      ? null
+                      ? undefined
                       : "CheckCircleOutline"
                   }
                   rotateIcon="scale(1.4)"

@@ -4,11 +4,13 @@ import {
   FormHelperText,
   Grid,
 } from "@mui/material";
-import { TextField } from "components/styledComponent/textfield";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  TextField,
+  GradientButton,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { Fragment, useRef, useState } from "react";
-import { utilFunction } from "components/utils/utilFunctions";
-import { ResetPassword, validatePasswords } from "./api";
+import { ResetPassword, validatePasswords } from "../api";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 

@@ -1,4 +1,3 @@
-import { GridMetaDataType } from "components/dataTableStatic";
 import {
   Fragment,
   useCallback,
@@ -7,16 +6,20 @@ import {
   useRef,
   useState,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { gstOutwardEntryConfirmationGrid } from "./gstConfirmationGridMetaData";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { GstOutwardMasterDetailForm } from "../gstOutwardMasterForm/gstOutwardMasterDetailForm";
-import { Alert } from "components/common/alert";
-import { ClearCacheContext, queryClient } from "cache";
+import {
+  queryClient,
+  GridWrapper,
+  Alert,
+  ActionTypes,
+  ClearCacheContext,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -146,6 +149,7 @@ export const GstOutwardConfirmationGrid = ({ screenFlag }) => {
               ClosedEventCall={handleDialogClose}
               defaultView={"view"}
               screenFlag={screenFlag}
+              refetchData={refetch}
             />
           }
         />

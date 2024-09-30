@@ -1,8 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+
 export const gridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "Mode Master (MST/051)",
     rowIdColumn: "MODE_CD",
     defaultColumnConfig: {
       width: 400,

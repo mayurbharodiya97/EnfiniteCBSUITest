@@ -1,16 +1,18 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
-import { useTranslation } from "react-i18next";
 import { FDRetriveMetadata } from "./metaData/fdRetriveMetaData";
 import { FDContext } from "../context/fdContext";
+import {
+  usePopupContext,
+  SubmitFnType,
+  GradientButton,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 
-export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
+export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
   const {
     FDState,
     updateRetrieveFormData,
@@ -30,14 +32,24 @@ export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
   ) => {
     endSubmit(true);
     updateRetrieveFormData(data);
+
+    // const reqParam = {
+    //   COMP_CD: authState?.companyID ?? "",
+    //   BRANCH_CD: data?.BRANCH_CD ?? "",
+    //   ACCT_TYPE: data?.ACCT_TYPE ?? "",
+    //   ACCT_CD: data?.ACCT_CD ?? "",
+    //   WORKING_DT: authState?.workingDate ?? "",
+    // };
     const reqParam = {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: data?.BRANCH_CD ?? "",
       ACCT_TYPE: data?.ACCT_TYPE ?? "",
-      ACCT_CD: data?.ACCT_CD ?? "",
+      ACCT_CD:
+        utilFunction.getPadAccountNumber(data?.ACCT_CD, data?.ACCT_TYPE) ?? "",
       WORKING_DT: authState?.workingDate ?? "",
     };
     getFDViewDtlMutation?.mutate(reqParam);
+    handleDialogClose();
   };
 
   return (
@@ -77,21 +89,14 @@ export const FDRetriveForm = ({ closeDialog, getFDViewDtlMutation }) => {
           <>
             <GradientButton
               onClick={handleSubmit}
-              endIcon={
-                getFDViewDtlMutation?.isLoading ? (
-                  <CircularProgress size={20} />
-                ) : null
-              }
-              disabled={
-                isSubmitting ||
-                getFDViewDtlMutation?.isFetching ||
-                FDState?.disableButton
-              }
+              disabled={isSubmitting || FDState?.disableButton}
               color={"primary"}
             >
               Ok
             </GradientButton>
-            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+            <GradientButton onClick={() => handleDialogClose(false)}>
+              Close
+            </GradientButton>
           </>
         )}
       </FormWrapper>

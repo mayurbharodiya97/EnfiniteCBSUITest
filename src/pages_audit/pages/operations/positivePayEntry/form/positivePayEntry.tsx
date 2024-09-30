@@ -1,23 +1,24 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { PositivePayEntryFormMetadata } from "./metadata";
-import { ImageViewer } from "components/fileUpload/preView";
 import UploadImageDialogue from "./uploadImage";
 import * as API from "../api";
 import { format } from "date-fns";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { isValidDate } from "components/utils/utilFunctions/function";
-
+import {
+  ImageViewer,
+  RemarksAPIWrapper,
+  GradientButton,
+  usePopupContext,
+  utilFunction,
+  SubmitFnType,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 interface PositivePayEntryFormWrapperProps {
   isDataChangedRef: any;
   closeDialog: () => void;
@@ -232,6 +233,7 @@ export const PositivePayEntry = ({
                   messageTitle: "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok" && formMode !== "view") {
                   endSubmit(true);
@@ -240,6 +242,7 @@ export const PositivePayEntry = ({
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
                   message: data?.[0]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
@@ -322,7 +325,11 @@ export const PositivePayEntry = ({
         formStyle={{
           background: "white",
         }}
-        formState={{ formMode: formMode, MessageBox: MessageBox }}
+        formState={{
+          formMode: formMode,
+          MessageBox: MessageBox,
+          docCD: "MST/968",
+        }}
         onFormButtonClickHandel={async (id) => {
           if (id === "VIEW") {
             setChequeImage();
@@ -411,10 +418,11 @@ export const PositivePayEntry = ({
                         messageTitle: "InvalidConfirmation",
                         message: "ConfirmRestrictionMessage",
                         buttonNames: ["Ok"],
+                        icon: "WARNING",
                       });
                     } else {
                       const confirmation = await MessageBox({
-                        message: "ConfirmFormData",
+                        message: "ConfirmMessage",
                         messageTitle: "Confirmation",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
@@ -422,7 +430,7 @@ export const PositivePayEntry = ({
                       if (confirmation === "Yes") {
                         const confirmData = {
                           ...rows?.[0]?.data,
-                          ENTERED_DATE: isValidDate(
+                          ENTERED_DATE: utilFunction.isValidDate(
                             rows?.[0]?.data?.ENTERED_DATE
                           )
                             ? format(
@@ -430,25 +438,31 @@ export const PositivePayEntry = ({
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          TRAN_DT: isValidDate(rows?.[0]?.data?.TRAN_DT)
+                          TRAN_DT: utilFunction.isValidDate(
+                            rows?.[0]?.data?.TRAN_DT
+                          )
                             ? format(
                                 new Date(rows?.[0]?.data?.TRAN_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          CHEQUE_DT: isValidDate(rows?.[0]?.data?.CHEQUE_DT)
+                          CHEQUE_DT: utilFunction.isValidDate(
+                            rows?.[0]?.data?.CHEQUE_DT
+                          )
                             ? format(
                                 new Date(rows?.[0]?.data?.CHEQUE_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          ACTIVITY_DATE: isValidDate(authState?.workingDate)
+                          ACTIVITY_DATE: utilFunction.isValidDate(
+                            authState?.workingDate
+                          )
                             ? format(
                                 new Date(authState?.workingDate),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          LAST_MODIFIED_DATE: isValidDate(
+                          LAST_MODIFIED_DATE: utilFunction.isValidDate(
                             rows?.[0]?.data?.LAST_MODIFIED_DATE
                           )
                             ? format(
@@ -477,8 +491,8 @@ export const PositivePayEntry = ({
                   color={"primary"}
                   onClick={async (event) => {
                     const confirmation = await MessageBox({
-                      message: "deleteTitle",
-                      messageTitle: "DeleteWarning",
+                      message: "RejectMessage",
+                      messageTitle: "Confirmation",
                       buttonNames: ["Yes", "No"],
                     });
                     if (confirmation === "Yes") {
@@ -577,19 +591,21 @@ export const PositivePayEntry = ({
             const rejectData = {
               ...rows,
               INS_UPD: "D",
-              ENTERED_DATE: isValidDate(rows?.ENTERED_DATE)
+              ENTERED_DATE: utilFunction.isValidDate(rows?.ENTERED_DATE)
                 ? format(new Date(rows?.ENTERED_DATE), "dd/MMM/yyyy") ?? ""
                 : "",
-              TRAN_DT: isValidDate(rows?.TRAN_DT)
+              TRAN_DT: utilFunction.isValidDate(rows?.TRAN_DT)
                 ? format(new Date(rows?.TRAN_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              CHEQUE_DT: isValidDate(rows?.CHEQUE_DT)
+              CHEQUE_DT: utilFunction.isValidDate(rows?.CHEQUE_DT)
                 ? format(new Date(rows?.CHEQUE_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              ACTIVITY_DATE: isValidDate(authState?.workingDate)
+              ACTIVITY_DATE: utilFunction.isValidDate(authState?.workingDate)
                 ? format(new Date(authState?.workingDate), "dd/MMM/yyyy") ?? ""
                 : "",
-              LAST_MODIFIED_DATE: isValidDate(rows?.LAST_MODIFIED_DATE)
+              LAST_MODIFIED_DATE: utilFunction.isValidDate(
+                rows?.LAST_MODIFIED_DATE
+              )
                 ? format(new Date(rows?.LAST_MODIFIED_DATE), "dd/MMM/yyyy") ??
                   ""
                 : "",
@@ -630,7 +646,7 @@ export const PositivePayEntryFormWrapper: React.FC<
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}

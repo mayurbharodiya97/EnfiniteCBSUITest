@@ -2,25 +2,29 @@ import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQueries, useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
-import { GradientButton } from "components/styledComponent/button";
 import * as API from "../api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { chequeReturnPostFormMetaData } from "./metaData";
 import { format } from "date-fns";
 import { ChequeSignImage } from "./chequeSignImage";
-import { usePopupContext } from "components/custom/popupContext";
-import { SubmitFnType } from "packages/form";
-import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
 import { PositivePayFormWrapper } from "./positvePayForm";
 import { CircularProgress } from "@mui/material";
-import { utilFunction } from "components/utils";
 import { ShareDividendFormWrapper } from "./shareDividendForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
+import { LoaderPaperComponent, GradientButton } from "@acuteinfo/common-base";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  utilFunction,
+  GridMetaDataType,
+  SubmitFnType,
+  queryClient,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+
 export const ChequeReturnPostForm: FC<{
   onClose?: any;
   inwardGridData?: any;

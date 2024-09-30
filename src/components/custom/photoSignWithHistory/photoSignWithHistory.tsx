@@ -18,24 +18,26 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { utilFunction } from "components/utils";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { GeneralAPI } from "registry/fns/functions";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { GradientButton } from "components/styledComponent/button";
 import { makeStyles, styled } from "@mui/styles";
 import React from "react";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { ActionTypes } from "components/dataTable";
-import { PhotoSignHistoryMetadata } from "./photoSignHistoryGridMetadata";
+import {
+  ActionTypes,
+  LoaderPaperComponent,
+  queryClient,
+  GridMetaDataType,
+  GradientButton,
+  Alert,
+  GridWrapper,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";
 import AvatarEditor from "react-avatar-editor";
 import Draggable from "react-draggable";
 import { t } from "i18next";
+import { PhotoSignHistoryMetadata } from "components/common/custom/photoSignWithHistory/photoSignHistoryGridMetadata";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,5 +1,5 @@
 import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 
 export const getParameterConfirm = async ({ comp_cd, branch_cd }) => {
   const { status, data, message, messageDetails } =

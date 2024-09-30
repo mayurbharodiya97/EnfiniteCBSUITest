@@ -1,5 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { utilFunction } from "components/utils";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../api";
 

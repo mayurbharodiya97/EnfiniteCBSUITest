@@ -1,18 +1,21 @@
 import { useRef, useCallback, useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { AgentMasterGridMetaData } from "./gridMetadata";
-import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { ClearCacheContext, queryClient } from "cache";
 import { enqueueSnackbar } from "notistack";
 import { AgentMasterFormWrapper } from "./agentMasterForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -45,13 +48,15 @@ export const AgentMasterGrid = () => {
   const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.agentMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -145,7 +150,7 @@ export const AgentMasterGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
-        ReportExportButton={true}
+        enableExport={true}
       />
       <Routes>
         <Route

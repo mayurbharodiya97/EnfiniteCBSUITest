@@ -6,17 +6,16 @@ import {
   useState,
   useEffect,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
+
+import { Alert, MetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
+import { SubmitFnType } from "@acuteinfo/common-base";
 import { format } from "date-fns";
-import FormWrapper from "components/dyanmicForm";
-import { ClearCacheProvider, queryClient } from "cache";
-import { AppBar, Theme, Toolbar, Typography } from "@mui/material";
+import { ClearCacheProvider, queryClient } from "@acuteinfo/common-base";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import {
   RetrieveFormConfigMetaData,
   branchClearingDateTransferGridMetaData,
@@ -24,14 +23,18 @@ import {
   slipClearingDateTransferGridMetaData,
 } from "./girdMetadata";
 import { makeStyles } from "@mui/styles";
-import { GradientButton } from "components/styledComponent/button";
-import { usePopupContext } from "components/custom/popupContext";
 import { useSnackbar } from "notistack";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
-
+import {
+  GridWrapper,
+  FormWrapper,
+  usePopupContext,
+  GradientButton,
+} from "@acuteinfo/common-base";
+import getDynamicLabel from "components/common/custom/getDynamicLabel";
+import { Theme } from "@mui/system";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -350,7 +353,7 @@ const ClearingDateTransferGrid = () => {
         </AppBar>
         <FormWrapper
           key={`retrieveForm`}
-          metaData={RetrieveFormConfigMetaData}
+          metaData={RetrieveFormConfigMetaData as MetaDataType}
           initialValues={{
             FR_TRAN_DT: authState?.workingDate,
             TO_TRAN_DT: authState?.workingDate,
