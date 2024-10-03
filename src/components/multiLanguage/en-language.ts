@@ -2013,4 +2013,7 @@ export const en_language_data = {
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
+
+  // Cashier Exchange Entry
+  TransferDetails: "Transfer Details",
 };

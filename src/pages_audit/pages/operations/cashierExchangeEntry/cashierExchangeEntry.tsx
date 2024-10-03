@@ -5,12 +5,11 @@ import {
   GradientButton,
   MetaDataType,
   FormWrapper,
-  Alert,
 } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { AppBar, LinearProgress } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { format, parse } from "date-fns";
 import CashierExchangeTable from "./tableComponent/tableComponent";
@@ -22,11 +21,11 @@ const CashierExchangeEntry = () => {
   const TableRef = useRef<any>([]);
   const { authState } = useContext(AuthContext);
   const [tableData, setTableData] = useState([]);
-  const getData = useMutation(API.getCashDeno, {
+  const getData: any = useMutation(API.getCashDeno, {
     onSuccess: (data) => {
       setTableData(data);
     },
-    onError: (error: any) => {
+    onError: (error: any, variables?: any) => {
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -43,11 +42,20 @@ const CashierExchangeEntry = () => {
       });
     },
     onSuccess: async (data) => {
-      setTableData([]);
-      CloseMessageBox();
-      enqueueSnackbar(data?.[0]?.O_MESSAGE, {
-        variant: "success",
-      });
+      if (data?.[0]?.O_STATUS === "999") {
+        CloseMessageBox();
+        MessageBox({
+          messageTitle: "ValidationFailed",
+          message: data?.[0]?.O_MESSAGE,
+          buttonNames: ["Ok"],
+        });
+      } else {
+        setTableData([]);
+        CloseMessageBox();
+        enqueueSnackbar(data?.[0]?.O_MESSAGE, {
+          variant: "success",
+        });
+      }
     },
   });
   const handleSaves = async (e) => {
@@ -80,18 +88,6 @@ const CashierExchangeEntry = () => {
   };
   return (
     <Fragment>
-      {getData?.isError ? (
-        <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-          <AppBar position="relative" color="primary">
-            <Alert
-              severity="error"
-              errorMsg={getData?.error?.error_msg ?? "Unknow Error"}
-              errorDetail={getData?.error?.error_detail ?? ""}
-              color="error"
-            />
-          </AppBar>
-        </div>
-      ) : null}
       <FormWrapper
         key={"CashierExchangeEntryForm"}
         metaData={cashierEntryFormMetaData as MetaDataType}
