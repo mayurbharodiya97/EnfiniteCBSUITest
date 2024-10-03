@@ -2717,6 +2717,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
+  SAVEFDPAYMENTFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDPAYMENTFDDETAILS",
+    packageName: "",
+  },
   GETCASHRELEASEMCTDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
     packageName: "",

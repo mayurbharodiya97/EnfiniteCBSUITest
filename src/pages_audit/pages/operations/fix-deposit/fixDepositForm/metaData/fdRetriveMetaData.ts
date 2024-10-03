@@ -74,6 +74,10 @@ export const FDRetriveMetadata = {
         validationRun: "onChange",
         dependentFields: ["BRANCH_CD"],
         isFieldFocused: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -118,12 +122,33 @@ export const FDRetriveMetadata = {
               SCREEN_REF: "RPT/401",
             };
             const postData = await API.getFDParaDetail(reqParameters);
-
-            if (postData?.length) {
+            if (postData?.status === "999") {
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
+                message: postData?.messageDetails ?? "Somethingwenttowrong",
+                icon: "ERROR",
+              });
+              if (btnName === "Ok") {
+                return {
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_CD: { value: "" },
+                  ACCT_NM: { value: "" },
+                };
+              }
+            } else if (postData?.length) {
               formState.setDataOnFieldChange("GET_PARA_DATA", postData?.[0]);
               return {
                 DOUBLE_FAC: { value: postData?.[0]?.DOUBLE_FAC ?? "" },
                 TRAN_CD: { value: postData?.[0]?.DOUBLE_TRAN ?? "" },
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
               };
             }
           }
@@ -191,6 +216,7 @@ export const FDRetriveMetadata = {
             };
             formState?.handleDisableButton(true);
             const postData = await API.validateAcctDtl(reqParameters);
+
             let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
@@ -269,6 +295,7 @@ export const FDRetriveMetadata = {
               ACCT_NM: { value: "" },
             };
           }
+          formState?.handleDisableButton(false);
           return {};
         },
         fullWidth: true,
