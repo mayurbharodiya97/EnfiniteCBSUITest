@@ -6,28 +6,30 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper from "components/dyanmicForm";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTableStatic";
 import {
   DailyTransactionImportGridMetaData,
   DailyTransactionImportMetadata,
 } from "./dailyTransactionImportMetadata";
-import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
-import { ClearCacheProvider } from "cache";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useMutation, useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { SubmitFnType } from "packages/form";
-import { GradientButton } from "components/styledComponent/button";
 import { CircularProgress, Dialog } from "@mui/material";
-import { FileUploadControl } from "components/fileUpload";
-import { Alert } from "components/common/alert";
-
+import {
+  SubmitFnType,
+  GridWrapper,
+  ClearCacheProvider,
+  ActionTypes,
+  usePopupContext,
+  GridMetaDataType,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+  FileUploadControl,
+  Alert,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "errors",
@@ -119,9 +121,7 @@ const DailyTransactionImport = () => {
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
+        enqueueSnackbar(errorMsg, {});
       },
       onSuccess: async (data, variables) => {
         enqueueSnackbar(t("DataSaveSuccessfully"), {
@@ -156,9 +156,6 @@ const DailyTransactionImport = () => {
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
       },
       onSuccess: async (data, variables) => {
         setReqPara(variables);
@@ -172,7 +169,6 @@ const DailyTransactionImport = () => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: data[0]?.O_MESSAGE,
-            // buttonNames: ["No", "Yes"],
             buttonNames: ["Merge", "Replace"],
             loadingBtnName: ["Replace"],
           });
@@ -251,43 +247,20 @@ const DailyTransactionImport = () => {
     setFieldError,
     actionFlag
   ) => {
-    data["OPP_ENT"] = Boolean(data["OPP_ENT"]) ? "Y" : "N";
-    data["IGNR_INSUF"] = Boolean(data["IGNR_INSUF"]) ? "Y" : "N";
+    let newData = data;
     if (actionFlag === "SELECT") {
       getValidateToSelectFile.mutate({
-        A_BRANCH_CD: data?.FROM_BRANCH_CD,
-        A_ACCT_TYPE: data?.FROM_ACCT_TYPE,
-        A_ACCT_CD: data?.FROM_ACCT_CD,
+        A_BRANCH_CD: data?.BRANCH_CD,
+        A_ACCT_TYPE: data?.ACCT_TYPE,
+        A_ACCT_CD: data?.ACCT_CD,
         A_CHEQUE_NO: data?.CHEQUE_NO,
         A_TYPE_CD: data?.TYPE_CD,
-        A_TRAN_CD: data?.TRAN_CD,
-        A_TABLE_NM: data?.TABLE_NM,
+        // A_TRAN_CD :data ?.A_TRAN_CD ,
+        // A_TABLE_NM :data ?.A_TABLE_NM ,
         A_SCREEN_REF: "MST/454",
         A_LOG_COMP: authState?.companyID,
         A_LOG_BRANCH: authState?.user?.branchCode,
-        WORKING_DATE: authState.workingDate,
-        USERNAME: authState?.user?.name,
-        USERROLE: authState?.role,
-        ...data,
       });
-    } else {
-      if (
-        gridRef.current?.cleanData?.().length &&
-        gridRef.current?.cleanData?.().length > 0
-      ) {
-        getDailyTransactionUploadData.mutate({
-          COMP_CD: authState.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          ACCT_TYPE: data?.FROM_ACCT_TYPE,
-          ACCT_CD: data?.FROM_ACCT_CD,
-          FLAG: "P",
-          IGNR_INSUF: data?.IGNR_INSUF,
-          CHEQUE_NO: data?.CHEQUE_NO,
-          OPP_ENT: data?.OPP_ENT,
-          REMARKS: data?.REMARKS,
-          TABLE_NM: data?.TABLE_NM,
-        });
-      }
     }
     endSubmit(true);
   };
@@ -308,7 +281,7 @@ const DailyTransactionImport = () => {
     <>
       <FormWrapper
         key={"DailyTransactionImportForm"}
-        metaData={DailyTransactionImportMetadata}
+        metaData={DailyTransactionImportMetadata as MetaDataType}
         initialValues={{}}
         onSubmitHandler={onSubmitHandler}
         formStyle={{

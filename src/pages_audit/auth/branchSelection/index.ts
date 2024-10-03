@@ -1,1 +1,1 @@
-export * from "./branchSelectionGrid";
+export * as BranchSelectionGridWrapper from "./branchSelectionGrid";

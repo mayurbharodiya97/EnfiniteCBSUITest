@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getDailyImportConfigData = async (reqData: any) => {
@@ -7,9 +7,9 @@ export const getDailyImportConfigData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, ...other }) => {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
         return {
-          value: DESCRIPTION,
+          value: TRAN_CD,
           label: DESCRIPTION,
           ...other,
         };

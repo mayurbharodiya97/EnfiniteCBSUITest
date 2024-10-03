@@ -1,7 +1,4 @@
 import { AppBar, Box, CircularProgress, Dialog } from "@mui/material";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { GradientButton } from "components/styledComponent/button";
 import {
   Fragment,
   useCallback,
@@ -14,19 +11,25 @@ import {
 import { GstOutwardForm } from "./gstOutwarsMasterMetaData";
 import { t } from "i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { TemplateDetail } from "../templateDetail/templateDetail";
-import { ActionTypes } from "components/dataTable";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import * as APIs from "../gstOutwardEntryConfirmation/api";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
-import { ClearCacheContext, queryClient } from "cache";
 import { cloneDeep } from "lodash";
-import { utilFunction } from "components/utils";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  utilFunction,
+  ClearCacheContext,
+  queryClient,
+  ActionTypes,
+  usePopupContext,
+  GradientButton,
+  MasterDetailsMetaData,
+  MasterDetailsForm,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -40,6 +43,7 @@ export const GstOutwardMasterDetailForm = ({
   ClosedEventCall,
   defaultView,
   screenFlag,
+  refetchData,
 }) => {
   const [gridData, setGridData]: any = useState([]);
   const { state: rows }: any = useLocation();
@@ -48,7 +52,6 @@ export const GstOutwardMasterDetailForm = ({
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [componentToShow, setComponentToShow] = useState("");
   const [dilogueOpen, setDilogueOpen] = useState(false);
   const [totalTaxAmount, setTotalTaxAmount] = useState<number>(0);
   const [trancdjoin, setTrancdJoin] = useState("");
@@ -103,6 +106,26 @@ export const GstOutwardMasterDetailForm = ({
     onSuccess: (data) => {
       CloseMessageBox();
       closeDialog();
+      refetchData();
+      enqueueSnackbar(t("Success"), {
+        variant: "success",
+      });
+    },
+  });
+  const singleDeletemutation = useMutation(API.getGstOutwardENtryDML, {
+    onError: async (error: any) => {
+      let errorMsg = "Unknown Error occurred";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      CloseMessageBox();
+      refetch();
       enqueueSnackbar(t("Success"), {
         variant: "success",
       });
@@ -144,6 +167,7 @@ export const GstOutwardMasterDetailForm = ({
     onSuccess: (data) => {
       CloseMessageBox();
       closeDialog();
+      refetchData();
       enqueueSnackbar(t("Success"), {
         variant: "success",
       });
@@ -166,7 +190,6 @@ export const GstOutwardMasterDetailForm = ({
   const setCurrentAction = useCallback(
     async (data) => {
       if (data.name === "add") {
-        setComponentToShow("addOpen");
         setRowsData(data?.rows);
         setDilogueOpen(true);
       } else {
@@ -177,10 +200,18 @@ export const GstOutwardMasterDetailForm = ({
     },
     [navigate]
   );
-  const onSubmitHandler = async ({ data, endSubmit }) => {
+  const onSubmitHandler = async ({
+    data,
+    displayData,
+    resultValueObj,
+    resultDisplayValueObj,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+  }) => {
     //@ts-ignore
     endSubmit(true);
-    if (defaultView === "new") {
+    if (defaultView === "new" && actionFlag === "Save") {
       const transformedData = {
         _isNewRow: true,
         BRANCH_CD: data.BRANCH_CD.trim(),
@@ -208,7 +239,7 @@ export const GstOutwardMasterDetailForm = ({
       if (btnName === "Yes") {
         mutation.mutate(transformedData);
       }
-    } else if (defaultView === "edit") {
+    } else {
       const singleRowDeleteData = rows?.[0]?.data;
       if (
         new Date(singleRowDeleteData?.ENTERED_DATE).toDateString() !==
@@ -259,7 +290,7 @@ export const GstOutwardMasterDetailForm = ({
           loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
-          mutation.mutate(SingleRowdeleteDataFilter);
+          singleDeletemutation.mutate(SingleRowdeleteDataFilter);
         }
       }
     }
@@ -435,12 +466,10 @@ export const GstOutwardMasterDetailForm = ({
           key={"formGstOutwardEnterTemplate-" + defaultView + gridData}
           metaData={metaData}
           ref={myRef}
-          initialData={
-             {
-                  ...rows?.[0]?.data,
-                  DETAILS_DATA: gridData,
-                }
-          }
+          initialData={{
+            ...rows?.[0]?.data,
+            DETAILS_DATA: gridData,
+          }}
           displayMode={defaultView}
           actions={defaultView === "new" ? actions : []}
           setDataOnFieldChange={gridData || []}
@@ -450,24 +479,43 @@ export const GstOutwardMasterDetailForm = ({
             docCD: "TRN/658",
             MessageBox: MessageBox,
             defaultView: defaultView,
+            OpenDilogueBox: setDilogueOpen,
           }}
           onSubmitData={onSubmitHandler}
           onClickActionEvent={async (index, id, data) => {
-            if (id === "DELETE_ROW") {
-              const SingleRecordDelete = await MessageBox({
-                message: "DeleteData",
-                messageTitle: "Confirmation",
-                buttonNames: ["Yes", "No"],
-              });
-              if (SingleRecordDelete === "Yes") {
-                setGridData((old) => {
-                  return [...old, { ...data }];
+            if (defaultView === "edit") {
+              if (id === "DELETE_ROW") {
+                const SingleRecordDelete = await MessageBox({
+                  message: "DeleteData",
+                  messageTitle: "Confirmation",
+                  buttonNames: ["Yes", "No"],
                 });
-                let newData = gridData.filter(
-                  (row) => row.TRAN_CD !== data?.TRAN_CD
-                );
-                CloseMessageBox();
-                setGridData(newData);
+                if (SingleRecordDelete === "Yes") {
+                  setGridData((old) => {
+                    return [...old, { ...data }];
+                  });
+                  let newData = gridData.filter(
+                    (row) => row.TRAN_CD !== data?.TRAN_CD
+                  );
+                  CloseMessageBox();
+                  setGridData(newData);
+                }
+              }
+            } else if (defaultView === "new") {
+              if (id === "DELETE_ROW") {
+                const SingleRecordDelete = await MessageBox({
+                  message: "DeleteData",
+                  messageTitle: "Confirmation",
+                  buttonNames: ["Yes", "No"],
+                });
+                if (SingleRecordDelete === "Yes") {
+                  const dataGrid = myRef?.current?.GetGirdData();
+                  let newData = dataGrid.filter(
+                    (row) => row.TRAN_CD !== data?.TRAN_CD
+                  );
+                  CloseMessageBox();
+                  myRef.current?.setGridData(newData);
+                }
               }
             }
           }}
@@ -500,7 +548,7 @@ export const GstOutwardMasterDetailForm = ({
                     {t("Delete")}
                   </GradientButton>
                   <GradientButton
-                    onClick={(event) => handleSubmit(event, "Save")}
+                    onClick={(event) => handleSubmit(event, "SingleDelete")}
                     color={"primary"}
                   >
                     {t("Save")}
@@ -541,15 +589,13 @@ export const GstOutwardMasterDetailForm = ({
             </>
           )}
         </MasterDetailsForm>
-        {componentToShow === "addOpen" ? (
-          <TemplateDetail
-            open={dilogueOpen}
-            onClose={() => setDilogueOpen(false)}
-            getFormData={getFormData}
-            refData={myRef}
-            rowsData={rowsData}
-          />
-        ) : null}
+        <TemplateDetail
+          open={dilogueOpen}
+          onClose={() => setDilogueOpen(false)}
+          getFormData={getFormData}
+          refData={myRef}
+          rowsData={rowsData}
+        />
       </Dialog>
     </Fragment>
   );
