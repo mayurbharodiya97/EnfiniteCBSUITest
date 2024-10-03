@@ -574,6 +574,7 @@ const RowsTable = forwardRef<any, any>(
                                   </Fragment>
                                 ),
                               },
+                              variant: "outlined",
                             },
                           }}
                           inputRef={cqDateInputRef}

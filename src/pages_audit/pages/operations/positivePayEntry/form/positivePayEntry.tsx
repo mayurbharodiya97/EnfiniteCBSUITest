@@ -233,6 +233,7 @@ export const PositivePayEntry = ({
                   messageTitle: "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok" && formMode !== "view") {
                   endSubmit(true);
@@ -241,6 +242,7 @@ export const PositivePayEntry = ({
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
                   message: data?.[0]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
@@ -323,7 +325,11 @@ export const PositivePayEntry = ({
         formStyle={{
           background: "white",
         }}
-        formState={{ formMode: formMode, MessageBox: MessageBox }}
+        formState={{
+          formMode: formMode,
+          MessageBox: MessageBox,
+          docCD: "MST/968",
+        }}
         onFormButtonClickHandel={async (id) => {
           if (id === "VIEW") {
             setChequeImage();
@@ -412,10 +418,11 @@ export const PositivePayEntry = ({
                         messageTitle: "InvalidConfirmation",
                         message: "ConfirmRestrictionMessage",
                         buttonNames: ["Ok"],
+                        icon: "WARNING",
                       });
                     } else {
                       const confirmation = await MessageBox({
-                        message: "ConfirmFormData",
+                        message: "ConfirmMessage",
                         messageTitle: "Confirmation",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
@@ -484,8 +491,8 @@ export const PositivePayEntry = ({
                   color={"primary"}
                   onClick={async (event) => {
                     const confirmation = await MessageBox({
-                      message: "deleteTitle",
-                      messageTitle: "DeleteWarning",
+                      message: "RejectMessage",
+                      messageTitle: "Confirmation",
                       buttonNames: ["Yes", "No"],
                     });
                     if (confirmation === "Yes") {
@@ -639,7 +646,7 @@ export const PositivePayEntryFormWrapper: React.FC<
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}

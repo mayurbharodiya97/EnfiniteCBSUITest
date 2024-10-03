@@ -83,8 +83,8 @@ const Securityuser = () => {
         sx={{
           fontWeight: "bold",
           color: "rgb(152 59 70 / 61%)",
-          marginLeft: "460px",
-          marginTop: "-36.2px",
+          marginLeft: "630px",
+          marginTop: "-43.2px",
         }}
         variant="subtitle1"
       >

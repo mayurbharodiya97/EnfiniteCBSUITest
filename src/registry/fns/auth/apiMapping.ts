@@ -1712,6 +1712,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOSAVELOANRECHEDULE",
     packageName: "",
   },
+  GETUPDATERATE: {
+    url: "/loanServiceAPI/GETUPDATERATE",
+    packageName: "",
+  },
+  DOUPDATERATEAMOUNT: {
+    url: "/loanServiceAPI/DOUPDATERATEAMOUNT",
+    packageName: "",
+  },
+  GETLOANRESCHEDULECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULECNF",
+    packageName: "",
+  },
+  DOCONFIRMLOANRESCHEDULE: {
+    url: "/loanServiceAPI/DOCONFIRMLOANRESCHEDULE",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
@@ -2605,6 +2621,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DELETEIMPORTEDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
+    packageName: "",
+  },
+  DOCASHEXCHANGENTRY: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
+    packageName: "",
+  },
+  GETCASHEXCHANGECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGECNF",
+    packageName: "",
+  },
+  GETCASHEXCHANGEDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGEDTLCNF",
+    packageName: "",
+  },
+  DOCASHEXCHANGECONFIRMATION: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGECONFIRMATION",
+    packageName: "",
+  },
   FDMATURITYCOMPAREJASPER: {
     url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
     packageName: "",
@@ -2683,6 +2719,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETPAYSLIPREALIZEHDR: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREALIZEHDR",
+    packageName: "",
+  },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
 };

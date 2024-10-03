@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const AddBranchGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "Add in Branch(es)",
     rowIdColumn: "BRANCH_CD",
     defaultColumnConfig: {
       width: 440,
@@ -20,6 +20,7 @@ export const AddBranchGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    hideFooter: true,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -40,7 +41,7 @@ export const AddBranchGridMetaData: GridMetaDataType = {
       dependentOptionField: "VISIBLE_YN",
       componentType: "editableCheckbox",
       enableColumnSelection: true,
-      width: 100,
+      width: 120,
       minWidth: 80,
       maxWidth: 140,
       defaultValue: false,

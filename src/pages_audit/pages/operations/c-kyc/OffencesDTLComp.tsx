@@ -10,6 +10,7 @@ import {
   GridMetaDataType,
   ActionTypes,
 } from "@acuteinfo/common-base";
+
 const OffencesDTLComp = ({ open, onClose }) => {
   const { authState } = useContext(AuthContext);
   const { state: data } = useLocation();

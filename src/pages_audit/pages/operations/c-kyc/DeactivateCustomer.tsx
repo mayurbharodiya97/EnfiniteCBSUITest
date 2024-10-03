@@ -13,6 +13,7 @@ import {
   ActionTypes,
   queryClient,
 } from "@acuteinfo/common-base";
+
 export const DeactivateCustomer = ({ rowdata, onClose }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();

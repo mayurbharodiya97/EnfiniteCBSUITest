@@ -18,6 +18,7 @@ import {
   FormWrapper,
   MetaDataType,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 export const AdvocateMstForm = ({
   isDataChangedRef,
   closeDialog,
@@ -61,11 +62,19 @@ export const AdvocateMstForm = ({
   ) => {
     //@ts-ignore
     endSubmit(true);
+    if (Boolean(data["INACTIVE_DATE"])) {
+      data["INACTIVE_DATE"] = format(
+        new Date(data["INACTIVE_DATE"]),
+        "dd/MMM/yyyy"
+      );
+    }
     let newData = {
       ...data,
+      STATUS: Boolean(data?.STATUS) ? "I" : "A",
     };
     let oldData = {
       ...rows?.[0]?.data,
+      STATUS: Boolean(rows?.[0]?.data?.STATUS) ? "I" : "A",
     };
     let upd = utilFunction.transformDetailsData(newData, oldData);
     isErrorFuncRef.current = {
@@ -201,8 +210,8 @@ export const AdvocateMstFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
           overflow: "auto",
+          width: "70%",
         },
       }}
       maxWidth="lg"

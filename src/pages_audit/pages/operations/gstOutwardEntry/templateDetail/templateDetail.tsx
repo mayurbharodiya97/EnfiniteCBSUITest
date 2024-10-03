@@ -1,7 +1,6 @@
 import { Button, Dialog } from "@mui/material";
 import { t } from "i18next";
 import { useRef, useState } from "react";
-// import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { TemplateDetailMetadata } from "./templateMetadata";
 import { useLocation } from "react-router-dom";
 import {

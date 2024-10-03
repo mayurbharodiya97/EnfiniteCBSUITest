@@ -29,6 +29,9 @@ export const AuditorMstFormMetaData = {
       select: {
         fullWidth: true,
       },
+      phoneNumberOptional: {
+        fullWidth: true,
+      },
     },
   },
   fields: [
@@ -78,6 +81,7 @@ export const AuditorMstFormMetaData = {
       label: "Address2",
       placeholder: "EnterAddress2",
       type: "text",
+      maxLength: 100,
       autoComplete: "off",
       txtTransform: "uppercase",
       preventSpecialChars: localStorage.getItem("specialChar") || "",
@@ -85,28 +89,50 @@ export const AuditorMstFormMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "phoneNumberOptional",
       },
       name: "CONTACT1",
       label: "PhoneNo",
       placeholder: "EnterPhoneNo",
-      maxLength: 15,
+      maxLength: 10,
       type: "text",
       autoComplete: "off",
+      fullWidth: true,
       preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 0) {
+          return "";
+        } else if (columnValue.value.length >= 11) {
+          return "The length of your Phone Number is greater than 10 character";
+        } else if (columnValue.value.length <= 9) {
+          return "The length of your Phone Number is less than 10 character";
+        }
+        return "";
+      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "phoneNumberOptional",
       },
       name: "CONTACT2",
       label: "MobileNo",
       placeholder: "EnterMobileNo",
-      maxLength: 15,
+      maxLength: 10,
+      fullWidth: true,
       type: "text",
       autoComplete: "off",
       preventSpecialChars: localStorage.getItem("specialChar") || "",
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 0) {
+          return "";
+        } else if (columnValue.value.length >= 11) {
+          return "The length of your Mobile Number is greater than 10 character";
+        } else if (columnValue.value.length <= 9) {
+          return "The length of your Mobile Number is less than 10 character";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {
