@@ -2713,6 +2713,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
+  GETCASHRELEASEMCTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTSUBDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+    packageName: "",
+  },
+  DELETECASHTRNDTL: {
+    url: "/transactionServiceAPI/DELETECASHTRNDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

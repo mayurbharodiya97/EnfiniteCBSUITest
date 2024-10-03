@@ -359,7 +359,12 @@ const TellerDenoTableCalc = ({
     const multiplicationResult = state?.amount || "";
     const getRowViseData = row
       ?.map((apiRows, index) => {
-        if (Object?.hasOwn(inputAmount, index)) {
+        if (
+          Object?.hasOwn(inputAmount, index) &&
+          Boolean(inputAmount[index]) &&
+          Boolean(state?.amount[index]) &&
+          state?.amount[index] !== "NaN"
+        ) {
           const newRow = { ...apiRows, INPUT_VALUE: inputAmount[index] };
           if (state?.amount[index] !== undefined) {
             newRow.MULTIPLIED_VALUE = state?.amount[index];
