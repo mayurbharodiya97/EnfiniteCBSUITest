@@ -996,6 +996,9 @@ export const en_language_data = {
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
   Disagree: "Disagree",
   Agree: "Agree",
+  RecordInsertedMsg: "Record Inserted Successfully.",
+  RecordUpdatedMsg: "Record Updated Successfully.",
+  RecordRemovedMsg: "Record Removed Successfully.",
 
   // cheque book
 
@@ -1964,6 +1967,14 @@ export const en_language_data = {
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
 
+  // Daily Transaction Import
+  errors: "Errors",
+  UploadData: "Upload Data",
+  PleaseEnterConfiguration: "Please Enter Configuration",
+  GenerateOppositeEntry: "Generate Opposite Entry",
+  IgnoreInsufficientBalance: "Ignore Insufficient Balance",
+  SelectFile: "Select File",
+  CreditToAccount: "Credit to Account",
   //loan Schedule
   DisbursementDate: "Disbursement Date",
   DisbursementAmount: "Disbursement Amount",
