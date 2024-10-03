@@ -1,4 +1,4 @@
-import { Chip, CircularProgress, Dialog, Grid } from "@mui/material";
+import { Box, Chip, CircularProgress, Dialog, Grid } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { Transition } from "@acuteinfo/common-base";
 import {
@@ -19,8 +19,6 @@ import {
   ActionTypes,
   usePopupContext,
   GridWrapper,
-  extractMetaData,
-  utilFunction,
   queryClient,
 } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
@@ -451,8 +449,6 @@ export const FdInterestPaymentGrid = () => {
     };
   }, []);
 
-  console.log("formDataRef.current", formDataRef.current);
-
   return (
     <Fragment>
       <Dialog
@@ -488,36 +484,38 @@ export const FdInterestPaymentGrid = () => {
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <GradientButton
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                disabled={
-                  isSubmitting ||
-                  fetchFDPaymentInstructions.isLoading ||
-                  isButtonDisabled
-                }
-                endIcon={
-                  isSubmitting || fetchFDPaymentInstructions.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : null
-                }
-                color={"primary"}
-              >
-                {t("Submit")}
-              </GradientButton>
+              <Box display="flex" gap={2}>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={
+                    isSubmitting ||
+                    fetchFDPaymentInstructions.isLoading ||
+                    isButtonDisabled
+                  }
+                  endIcon={
+                    isSubmitting || fetchFDPaymentInstructions.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
+                  color={"primary"}
+                >
+                  {t("Submit")}
+                </GradientButton>
 
-              <GradientButton
-                onClick={handleCloseForm}
-                color={"primary"}
-                disabled={
-                  isSubmitting ||
-                  fetchFDPaymentInstructions.isLoading ||
-                  isButtonDisabled
-                }
-              >
-                {t("Cancel")}
-              </GradientButton>
+                <GradientButton
+                  onClick={handleCloseForm}
+                  color={"primary"}
+                  disabled={
+                    isSubmitting ||
+                    fetchFDPaymentInstructions.isLoading ||
+                    isButtonDisabled
+                  }
+                >
+                  {t("Cancel")}
+                </GradientButton>
+              </Box>
             </>
           )}
         </FormWrapper>
@@ -532,10 +530,9 @@ export const FdInterestPaymentGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
       />
-      <Grid
-        item
-        xs={12}
-        sm={12}
+      <Box
+        // xs={12}
+        // sm={12}
         sx={{
           height: "23px",
           width: "60%",
@@ -545,6 +542,8 @@ export const FdInterestPaymentGrid = () => {
           display: "flex",
           gap: "4rem",
           alignItems: "center",
+          justifyContent: "flex-end",
+          paddingRight: "1rem",
         }}
       >
         <Chip
@@ -552,10 +551,10 @@ export const FdInterestPaymentGrid = () => {
             backgroundColor: "rgb(130, 224, 170)",
             color: "black",
           }}
-          size="small"
+          size="medium"
           label={`Success`}
         />
-      </Grid>
+      </Box>
 
       <Dialog
         open={isPaidFDOpen}
