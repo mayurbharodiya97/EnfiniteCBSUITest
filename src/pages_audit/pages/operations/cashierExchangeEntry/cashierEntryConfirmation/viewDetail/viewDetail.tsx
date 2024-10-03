@@ -66,11 +66,11 @@ const CashierEntryViewDetail = ({
 
   const handleConfirm = async () => {
     const MapFrom = stateData.fromData.map((row) => ({
-      ENTERED_COMP_CD: row.ENTERED_COMP_CD,
-      ENTERED_BRANCH_CD: row.ENTERED_BRANCH_CD,
-      SCROLL1: row.SCROLL1,
-      TYPE_CD: row.TYPE_CD,
-      TRAN_CD: row.TRAN_CD,
+      ENTERED_COMP_CD: row?.ENTERED_COMP_CD,
+      ENTERED_BRANCH_CD: row?.ENTERED_BRANCH_CD,
+      SCROLL1: row?.SCROLL1,
+      TYPE_CD: row?.TYPE_CD,
+      TRAN_CD: row?.TRAN_CD,
     }));
 
     const request = {
@@ -183,8 +183,8 @@ const CashierEntryViewDetail = ({
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-        {isData.fromUserData.ALLOW_CONFIRM !== "N" &&
-          isData.toUserData.ALLOW_CONFIRM !== "N" && (
+        {isData?.fromUserData?.ALLOW_CONFIRM !== "N" &&
+          isData?.toUserData?.ALLOW_CONFIRM !== "N" && (
             <GradientButton onClick={handleConfirm}>Ok</GradientButton>
           )}
         <GradientButton onClick={handleClose}>Cancel</GradientButton>

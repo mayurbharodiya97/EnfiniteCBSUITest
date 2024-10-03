@@ -69,11 +69,11 @@ const CashierExchangeEntry = () => {
     }));
     const Request = {
       DENO_DTL: [...TableDataMap],
-      TOTAL_TO_AMT: TableData?.tablefooter?.DENO_AMOUNT?.toString(),
-      ENTERED_COMP_CD: authState?.companyID,
-      ENTERED_BRANCH_CD: authState?.user?.branchCode,
-      TO_USER: FormRefData?.To,
-      FROM_USER: FormRefData?.From_User,
+      TOTAL_TO_AMT: TableData?.tablefooter?.DENO_AMOUNT?.toString() ?? "",
+      ENTERED_COMP_CD: authState?.companyID ?? "",
+      ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+      TO_USER: FormRefData?.To ?? "",
+      FROM_USER: FormRefData?.From_User ?? "",
       SCREEN_REF: "TRN/044",
     };
     const Check = await MessageBox({
@@ -118,7 +118,7 @@ const CashierExchangeEntry = () => {
         <GradientButton onClick={handleSaves}>Save</GradientButton>
       </FormWrapper>
       {getData?.isLoading && <LinearProgress color="secondary" />}
-      {tableData.length > 0 && (
+      {tableData?.length > 0 && (
         <CashierExchangeTable
           data={tableData ?? []}
           metadata={CashierMetaData}
