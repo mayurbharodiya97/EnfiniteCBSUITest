@@ -66,6 +66,7 @@ export const AtmEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        name: "CC_BRANCH_CD",
         validationRun: "onChange",
         dependentFields: ["PARA_311"],
         isReadOnly: (fieldData, dependentFieldsValues, formState) => {
@@ -78,30 +79,22 @@ export const AtmEntryMetaData = {
             return false;
           }
         },
-        postValidationSetCrossFieldValues: (field, formState) => {
-          if (field.value) {
-            return {
-              ACCT_TYPE: { value: "" },
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              CUSTOMER_ID: { value: "" },
-              MOBILE_NO: { value: "" },
-              ORGINAL_NM: { value: "" },
-              ACCOUNT_NAME: { value: "" },
-              SMS_ALERT: { value: "" },
-            };
-          } else if (!field.value) {
-            return {
-              ACCT_TYPE: { value: "" },
-              ACCT_CD: { value: "" },
-              ACCT_NM: { value: "" },
-              CUSTOMER_ID: { value: "" },
-              MOBILE_NO: { value: "" },
-              ORGINAL_NM: { value: "" },
-              ACCOUNT_NAME: { value: "" },
-              SMS_ALERT: { value: "" },
-            };
-          }
+        postValidationSetCrossFieldValues: () => {
+          return {
+            CC_ACCT_TYPE: { value: "" },
+            CC_ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            CUSTOMER_ID: { value: "" },
+            MOBILE_NO: { value: "" },
+            ORGINAL_NM: { value: "" },
+            ACCOUNT_NAME: { value: "" },
+            SMS_ALERT: { value: "" },
+            SB_COMP_CD: { value: "" },
+            CA_COMP_CD: { value: "" },
+            SB_BRANCH_CD: { value: "" },
+            CA_BRANCH_CD: { value: "" },
+            ACCT_CD: { value: "" },
+          };
         },
         GridProps: {
           xs: 12,
@@ -114,6 +107,7 @@ export const AtmEntryMetaData = {
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
+        name: "CC_ACCT_TYPE",
         GridProps: {
           xs: 12,
           md: 2,
@@ -123,6 +117,7 @@ export const AtmEntryMetaData = {
         },
         validationRun: "onChange",
         isFieldFocused: true,
+        dependentFields: ["CC_BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
@@ -134,13 +129,18 @@ export const AtmEntryMetaData = {
         _optionsKey: "securityDropDownListType",
         postValidationSetCrossFieldValues: (field, formState) => {
           return {
-            ACCT_CD: { value: "" },
+            CC_ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
             CUSTOMER_ID: { value: "" },
             MOBILE_NO: { value: "" },
             ORGINAL_NM: { value: "" },
             ACCOUNT_NAME: { value: "" },
             SMS_ALERT: { value: "" },
+            SB_COMP_CD: { value: "" },
+            CA_COMP_CD: { value: "" },
+            SB_BRANCH_CD: { value: "" },
+            CA_BRANCH_CD: { value: "" },
+            ACCT_CD: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
@@ -154,6 +154,7 @@ export const AtmEntryMetaData = {
           lg: 2.5,
           xl: 2.5,
         },
+        name: "CC_ACCT_CD",
         render: {
           componentType: "textField",
         },
@@ -165,7 +166,12 @@ export const AtmEntryMetaData = {
           }
           return "";
         },
-        dependentFields: ["BRANCH_CD", "ACCT_TYPE", "PARA_946", "PARA_602"],
+        dependentFields: [
+          "CC_BRANCH_CD",
+          "CC_ACCT_TYPE",
+          "PARA_946",
+          "PARA_602",
+        ],
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -174,16 +180,16 @@ export const AtmEntryMetaData = {
         ) => {
           if (
             field?.value &&
-            dependentValue?.BRANCH_CD?.value &&
-            dependentValue?.ACCT_TYPE?.value
+            dependentValue?.CC_BRANCH_CD?.value &&
+            dependentValue?.CC_ACCT_TYPE?.value
           ) {
             let apiRequest = {
               ACCT_CD: utilFunction.getPadAccountNumber(
                 field?.value,
-                dependentValue?.ACCT_TYPE?.optionData
+                dependentValue?.CC_ACCT_TYPE?.optionData
               ),
-              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              ACCT_TYPE: dependentValue?.CC_ACCT_TYPE?.value,
+              BRANCH_CD: dependentValue?.CC_BRANCH_CD?.value,
               PARA_602: dependentValue?.PARA_602?.value,
               PARA_946: dependentValue?.PARA_946?.value,
               SCREEN_REF: "MST/846",
@@ -217,21 +223,26 @@ export const AtmEntryMetaData = {
                   if (btnName.buttonName === "No" || btnName.status === "999") {
                     formState.setDataOnFieldChange("RES_DATA", {});
                     return {
-                      ACCT_CD: { value: "", isFieldFocused: true },
+                      CC_ACCT_CD: { value: "", isFieldFocused: true },
                       ACCT_NM: { value: "" },
                       CUSTOMER_ID: { value: "" },
                       MOBILE_NO: { value: "" },
                       ORGINAL_NM: { value: "" },
                       ACCOUNT_NAME: { value: "" },
                       SMS_ALERT: { value: "" },
+                      SB_COMP_CD: { value: "" },
+                      CA_COMP_CD: { value: "" },
+                      SB_BRANCH_CD: { value: "" },
+                      CA_BRANCH_CD: { value: "" },
+                      ACCT_CD: { value: "" },
                     };
                   } else {
                     formState.setDataOnFieldChange("RES_DATA", {
                       validateData: {
                         ...postData?.[0],
                         COMP_CD: authState?.companyID,
-                        BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-                        ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+                        BRANCH_CD: dependentValue?.CC_BRANCH_CD?.value,
+                        ACCT_TYPE: dependentValue?.CC_ACCT_TYPE?.value,
                         ACCT_CD: field?.value,
                       },
                       isVisible: true,
@@ -243,8 +254,8 @@ export const AtmEntryMetaData = {
                     validateData: {
                       ...postData?.[0],
                       COMP_CD: authState?.companyID,
-                      BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-                      ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+                      BRANCH_CD: dependentValue?.CC_BRANCH_CD?.value,
+                      ACCT_TYPE: dependentValue?.CC_ACCT_TYPE?.value,
                       ACCT_CD: field?.value,
                     },
                     isVisible: true,
@@ -255,10 +266,10 @@ export const AtmEntryMetaData = {
             }
             if (Boolean(isReturn)) {
               return {
-                ACCT_CD: {
+                CC_ACCT_CD: {
                   value: utilFunction.getPadAccountNumber(
                     field?.value,
-                    dependentValue?.ACCT_TYPE?.optionData
+                    dependentValue?.CC_ACCT_TYPE?.optionData
                   ),
                   ignoreUpdate: true,
                   isFieldFocused: false,
@@ -272,6 +283,16 @@ export const AtmEntryMetaData = {
                   value: postData?.[0]?.SMS_ALERT === "Y" ? true : false,
                 },
                 DISABLE_SMS_ALERT: { value: postData?.[0]?.DISABLE_SMS_ALERT },
+                SB_COMP_CD: { value: authState?.companyID },
+                CA_COMP_CD: { value: authState?.companyID },
+                SB_BRANCH_CD: { value: dependentValue?.CC_BRANCH_CD?.value },
+                CA_BRANCH_CD: { value: dependentValue?.CC_BRANCH_CD?.value },
+                ACCT_CD: {
+                  value: utilFunction.getPadAccountNumber(
+                    field?.value,
+                    dependentValue?.CC_ACCT_TYPE?.optionData
+                  ),
+                },
               };
             }
           } else if (!field?.value) {
@@ -283,6 +304,11 @@ export const AtmEntryMetaData = {
               ORGINAL_NM: { value: "" },
               ACCOUNT_NAME: { value: "" },
               SMS_ALERT: { value: "" },
+              SB_COMP_CD: { value: "" },
+              CA_COMP_CD: { value: "" },
+              SB_BRANCH_CD: { value: "" },
+              CA_BRANCH_CD: { value: "" },
+              ACCT_CD: { value: "" },
             };
           }
 
@@ -445,6 +471,48 @@ export const AtmEntryMetaData = {
         componentType: "hidden",
       },
       name: "PARA_311",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SB_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SB_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SB_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CA_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CA_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CA_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ACCT_CD",
     },
   ],
 };

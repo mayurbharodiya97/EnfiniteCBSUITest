@@ -172,17 +172,21 @@ export const ForgotPasswordController = ({ screenFlag }) => {
   } = useQuery<any, any>(["getLoginImageData"], () =>
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
- 
+
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
         dispath({ type: "initverifyUserNameandMobileNo" });
-        const { status, data: resdata, message } = await veirfyUsernameandMobileNo(
+        const {
+          status,
+          data: resdata,
+          message,
+        } = await veirfyUsernameandMobileNo(
           data?.userName.toLowerCase(),
           data?.mobileno,
           screenFlag
         );
-  
+
         if (status === "0") {
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
@@ -207,14 +211,14 @@ export const ForgotPasswordController = ({ screenFlag }) => {
           });
         }
       } else if (flag === 1) {
-        console.log("data", data)
+        console.log("data", data);
         dispath({ type: "initverifyPasswordSetReq" });
         const { validateStatus, validateData } = await API.validatePasswords({
           USER_ID: data?.userName,
           PASSWORD: data?.password,
-          SCREEN_REF: "FORGET_PW"
+          SCREEN_REF: "FORGET_PW",
         });
-        console.log("validateData", validateData?.O_MESSAGE, validateStatus)
+        // console.log("validateData", validateData?.O_MESSAGE, validateStatus)
         if (validateStatus === "0") {
           switch (validateData?.O_STATUS) {
             case "999":
@@ -228,7 +232,11 @@ export const ForgotPasswordController = ({ screenFlag }) => {
               });
               break;
             case "0":
-              const { status, data: resdata, message } = await updatenewPassword(
+              const {
+                status,
+                data: resdata,
+                message,
+              } = await updatenewPassword(
                 loginState?.requestCd,
                 loginState?.username,
                 data?.password
@@ -265,7 +273,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
         }
       }
     }
-  }
+  };
   const verifyRequestData = (data, flag) => {
     if (flag === 0) {
       let validationData = {
@@ -412,8 +420,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                 {loginState.workingState === 1
                   ? t("Setnewpassword")
                   : screenFlag === "totp"
-                    ? "Forgot TOTP"
-                    : t("ForgotPassword")}
+                  ? "Forgot TOTP"
+                  : t("ForgotPassword")}
               </h2>
               {open ? (
                 <OTPModelForm

@@ -1,4 +1,11 @@
-import { AppBar, Button, Dialog, Grid, Paper } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Dialog,
+  Grid,
+  LinearProgress,
+  Paper,
+} from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
@@ -25,6 +32,8 @@ import { t } from "i18next";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { format } from "date-fns";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 const AtmEntryCustom = ({ parameter }) => {
   const actions: ActionTypes[] = [
@@ -47,6 +56,8 @@ const AtmEntryCustom = ({ parameter }) => {
   const [formMode, setFormMode] = useState<any>("add");
   const [retrieveData, setRetrieveData] = useState<any>();
   const { MessageBox, CloseMessageBox } = usePopupContext();
+
+  const gridRef = useRef<any>(null);
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
   const { authState } = useContext(AuthContext);
@@ -81,16 +92,50 @@ const AtmEntryCustom = ({ parameter }) => {
       },
     }
   );
+  const validateInsert: any = useMutation(
+    "validateInsertData",
+    API.validateInsertData,
+    {
+      onSuccess(data) {
+        console.log("<<<vlidate", data);
+        let validate = async () => {
+          const messagebox = async (msgTitle, msg, buttonNames, status) => {
+            let buttonName = await MessageBox({
+              messageTitle: msgTitle,
+              message: msg,
+              buttonNames: buttonNames,
+            });
+            return { buttonName, status };
+          };
+          if (data?.length) {
+            for (let i = 0; i < data?.length; i++) {
+              let btnName = await messagebox(
+                data[i]?.O_STATUS === "999"
+                  ? "validation fail"
+                  : data[i]?.O_STATUS === "0"
+                  ? "Are you sure to proceed"
+                  : "ALert message",
+                data[i]?.O_MESSAGE,
+                data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
+                  ? ["Yes", "No"]
+                  : ["Ok"],
+                data[i]?.O_STATUS
+              );
+              if (btnName.buttonName === "No") {
+                return;
+              } else if (
+                btnName.buttonName === "Yes" ||
+                btnName.status === "0"
+              ) {
+              }
+            }
+          }
+        };
 
-  const changeIndex = (direction) => {
-    setCurrentIndex((prevIndex) => {
-      if (direction === "next") {
-        return prevIndex === retrieveData.length - 1 ? 0 : prevIndex + 1;
-      } else {
-        return prevIndex === 0 ? retrieveData.length - 1 : prevIndex - 1;
-      }
-    });
-  };
+        validate();
+      },
+    }
+  );
 
   useEffect(() => {
     if (retrieveData?.length) {
@@ -98,11 +143,6 @@ const AtmEntryCustom = ({ parameter }) => {
       cardDetails.mutate();
     }
   }, [retrieveData, currentIndex]);
-
-  const onSubmitHandler = ({ data, displayData, endSubmit }) => {
-    //@ts-ignore
-    endSubmit(true);
-  };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -119,8 +159,73 @@ const AtmEntryCustom = ({ parameter }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  const changeIndex = (direction) => {
+    setCurrentIndex((prevIndex) => {
+      if (direction === "next") {
+        return prevIndex === retrieveData.length - 1 ? 0 : prevIndex + 1;
+      } else {
+        return prevIndex === 0 ? retrieveData.length - 1 : prevIndex - 1;
+      }
+    });
+  };
+
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
+    let result = gridRef?.current?.cleanData?.();
+    let gridDtl =
+      result?.length > 0
+        ? result.map((item) => {
+            console.log("<<<item", item);
+            return {
+              ...item,
+              REQ_DT: item?.REQ_DT
+                ? format(new Date(item?.REQ_DT), "dd/MMM/yyyy")
+                : "",
+              ISSUE_DT: item?.ISSUE_DT
+                ? format(new Date(item?.ISSUE_DT), "dd/MMM/yyyy")
+                : "",
+              EXPIRE_DT: item?.EXPIRE_DT
+                ? format(new Date(item?.EXPIRE_DT), "dd/MMM/yyyy")
+                : "",
+            };
+          })
+        : result;
+
+    console.log("<<<isdata", isData);
+    let apiReq = {
+      ...data,
+      SMS_ALERT: Boolean(data?.SMS_ALERT) ? "Y" : "N",
+      PARA_601: parameter?.PARA_601,
+      PARA_602: parameter?.PARA_602,
+      PARA_604: parameter?.PARA_604,
+      PARA_100: parameter?.PARA_100,
+      PARA_336: parameter?.PARA_336,
+      SCREEN_REF: "MST/846",
+      ENTRY_FLAG: retrieveData?.length ? "M" : "F",
+      DTL_DATA: gridDtl,
+    };
+    validateInsert.mutate(apiReq);
+    //@ts-ignore
+    endSubmit(true);
+    console.log("<<<onsub", data, apiReq);
+  };
+  console.log("<<<onsubijhihhfhkfhkdjfklfnlsdn");
   return (
     <>
+      {validateInsert?.isLoading ? (
+        <LinearProgress color="secondary" />
+      ) : validateInsert?.isError ? (
+        <AppBar position="relative" color="primary">
+          <Alert
+            severity="error"
+            errorMsg={validateInsert?.error?.error_msg ?? "Unknow Error"}
+            errorDetail={validateInsert?.error?.error_detail ?? ""}
+            color="error"
+          />
+        </AppBar>
+      ) : (
+        <LinearProgressBarSpacer />
+      )}
       <Grid container>
         <FormWrapper
           key={"atm-reg-entry" + currentIndex + formMode}
@@ -237,9 +342,7 @@ const AtmEntryCustom = ({ parameter }) => {
               )}
               <Button
                 color={"primary"}
-                // onClick={(event) =>
-                //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
-                // }
+                onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                 // endIcon={
                 //   mutation?.isLoading ? <CircularProgress size={20} /> : null
                 // }
@@ -269,6 +372,7 @@ const AtmEntryCustom = ({ parameter }) => {
             loading={cardDetails?.isLoading || cardDetails?.isFetching}
             setData={() => null}
             actions={actions}
+            ref={gridRef}
             setAction={(data) => {
               if (data?.name === "card-details") {
                 navigate(data?.name, {

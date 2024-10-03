@@ -215,3 +215,15 @@ export const validateCardStatus = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const validateInsertData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEATMREGSAVEDATA", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

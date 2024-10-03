@@ -1644,7 +1644,6 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
 
-
   GETLOANSCHEDULEACCTDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANSCHEDULEACCTDATA",
     packageName: "",
@@ -2282,31 +2281,31 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/GETPASSBOOKACCOUNTDETAILS",
     packageName: "",
   },
-  GETGSTOUTENTHDRGRID : {
+  GETGSTOUTENTHDRGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTHDRGRID",
     packageName: "",
   },
-  GETGSTOUTENTMODEDDW : {
+  GETGSTOUTENTMODEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTMODEDDW",
     packageName: "",
   },
-  GETGSTTEMPLATEDDW : {
+  GETGSTTEMPLATEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTTEMPLATEDDW",
     packageName: "",
   },
-  GETGSTOUTENTDTLGRID : {
+  GETGSTOUTENTDTLGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTENTDTLGRID",
     packageName: "",
   },
-  GETGSTOUTWARDACCTDETAILS : {
+  GETGSTOUTWARDACCTDETAILS: {
     url: "/transactionServiceAPI/GETGSTOUTWARDACCTDETAILS",
     packageName: "",
   },
-  DOGSTOUTWARDENTRYDML : {
+  DOGSTOUTWARDENTRYDML: {
     url: "/transactionServiceAPI/DOGSTOUTWARDENTRYDML",
     packageName: "",
   },
-  DOGSTOUTWARDCONFIRMATION : {
+  DOGSTOUTWARDCONFIRMATION: {
     url: "/transactionServiceAPI/DOGSTOUTWARDCONFIRMATION",
     packageName: "",
   },
@@ -2410,7 +2409,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSDAILYSPENDLIMIT",
     packageName: "",
   },
-  GETGSTOUTVIEWVOUCHER : {
+  GETGSTOUTVIEWVOUCHER: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTOUTVIEWVOUCHER",
     packageName: "",
   },
@@ -2434,47 +2433,47 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOINSURANCEENTCONFIRMATION",
     packageName: "",
   },
-  GETSIHDRCNF    : {
+  GETSIHDRCNF: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSIHDRCNF",
     packageName: "",
-  }, 
+  },
   DOSICONFIRMATION: {
     url: "/transactionServiceAPI/DOSICONFIRMATION",
     packageName: "",
   },
-  GETRECCALCINTTYPEDDW:{
+  GETRECCALCINTTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTTYPEDDW",
     packageName: "",
   },
-  GETRECCALCINTRATE:{
+  GETRECCALCINTRATE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCINTRATE",
     packageName: "",
   },
-  GETRECCALCDUEDATE:{
+  GETRECCALCDUEDATE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECCALCDUEDATE",
     packageName: "",
   },
-  GETRECURRINGCALCULATEDAMOUNT:{
+  GETRECURRINGCALCULATEDAMOUNT: {
     url: "/transactionServiceAPI/GETRECURRINGCALCULATEDAMOUNT",
     packageName: "",
   },
-  GETEMICALCINSTTYPEDDW:{
+  GETEMICALCINSTTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINSTTYPEDDW",
     packageName: "",
   },
-  GETEMICALCPERIODDDW:{
+  GETEMICALCPERIODDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCPERIODDDW",
     packageName: "",
   },
-  GETEMICALCINTFUNDEDDDW:{
+  GETEMICALCINTFUNDEDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMICALCINTFUNDEDDDW",
     packageName: "",
   },
-  CHECKEMISCHEDULEDTL:{
+  CHECKEMISCHEDULEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMISCHEDULEDTL",
     packageName: "",
   },
-  CHECKEMIDISBURSDTL:{
+  CHECKEMIDISBURSDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKEMIDISBURSDTL",
     packageName: "",
   },
@@ -2587,7 +2586,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   VALIDATETOSELECTFILE: {
-    url: "/transactionServiceAPI/VALIDATETOSELECTFILE",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATETOSELECTFILE",
     packageName: "",
   },
   GETFDINTRATE: {
@@ -2600,6 +2599,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETFDRATEDEFINITION: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
+    packageName: "",
+  },
+  VALIDATEATMREGSAVEDATA: {
+    url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
 };
