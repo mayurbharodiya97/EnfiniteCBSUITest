@@ -4,7 +4,7 @@ export const UserOnboardform = {
     name: "AddSecurityUser",
     label: "User Onboarding",
     resetFieldOnUnmount: false,
-    readonly:true,
+    readonly: true,
     validationRun: "onBlur",
     render: {
       ordering: "auto",
@@ -53,9 +53,7 @@ export const UserOnboardform = {
       __EDIT__: { isReadOnly: true },
       __NEW__: {
         required: true,
-        postValidationSetCrossFieldValues: async (
-          currentField,
-        ) => {
+        postValidationSetCrossFieldValues: async (currentField) => {
           if (currentField?.value !== undefined) {
             return API.checkUsername(currentField, {
               USER_NM: currentField?.value,
@@ -271,7 +269,7 @@ export const UserOnboardform = {
       ) => {
         if (currentField?.value.length > 0) {
           return API.getCustomerId(currentField, {
-            COMP_CD : authState?.companyID,
+            COMP_CD: authState?.companyID,
             CUSTOMER_ID: currentField?.value,
           });
         }
@@ -439,7 +437,7 @@ export const UserOnboardform = {
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (formState?.sharing) {
-          if (formState?.sharing?.[0]?.ACUTE_PAYROLL  === "Y") {
+          if (formState?.sharing?.[0]?.ACUTE_PAYROLL === "Y") {
             return false;
           } else {
             return true;
@@ -604,7 +602,7 @@ export const UserOnboardform = {
       render: { componentType: "checkbox" },
       name: "MULTI_APP_ACCESS",
       sequence: 21,
-      label: "Allow Concurrent",
+      label: "Allow Concurrent App. Login",
       autoComplete: "off",
       __EDIT__: {
         GridProps: {
@@ -629,7 +627,7 @@ export const UserOnboardform = {
       sequence: 22,
       label: "Inactive Date",
       type: "text",
-      __EDIT__:{
+      __EDIT__: {
         ignoreInSubmit: (dependentFieldsValues) => {
           if (
             dependentFieldsValues?.ACTIVE_FLAG?.value === true ||
@@ -1129,11 +1127,11 @@ export const editloginShift = {
           dependentFields: ["SHIFT_TRAN_CD"],
           runValidationOnDependentFieldsChange: true,
           setValueOnDependentFieldsChange: (dependentFields) => {
-            
-            return dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"]?.optionData[0]?.rest?.START_TIME
+            return dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"]
+              ?.optionData[0]?.rest?.START_TIME
               ? dependentFields[
-                      "EDITLOGINSHIFT.SHIFT_TRAN_CD"
-                    ].optionData[0]?.rest?.START_TIME?.split(" ")[1]
+                  "EDITLOGINSHIFT.SHIFT_TRAN_CD"
+                ].optionData[0]?.rest?.START_TIME?.split(" ")[1]
               : "";
           },
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -1166,8 +1164,8 @@ export const editloginShift = {
           dependentFields: ["SHIFT_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             let value =
-              dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"].optionData[0]?.rest
-                ?.ACTIVE === "Y"
+              dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"].optionData[0]
+                ?.rest?.ACTIVE === "Y"
                 ? true
                 : false;
             return value ? value : "";

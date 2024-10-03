@@ -130,6 +130,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           formState={{
             MessageBox: MessageBox,
             handleDisableButton: handleDisableButton,
+            docCD: "RECCRTYPE",
           }}
           displayMode={formMode}
           formStyle={{

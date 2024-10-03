@@ -2,14 +2,16 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { CashierExchangeCnfMetaData } from "./cashierExchangeCnfMetadata";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import CashierEntryViewDetail from "./viewDetail/viewDetail";
+import {
+  ActionTypes,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "viewall",

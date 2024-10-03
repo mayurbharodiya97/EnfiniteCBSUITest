@@ -130,7 +130,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();

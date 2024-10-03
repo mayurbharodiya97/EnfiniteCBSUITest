@@ -21,7 +21,6 @@ import {
   Dialog,
   DialogContent,
   Paper,
-  Theme,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -29,7 +28,7 @@ import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
-import { Box } from "@mui/system";
+import { Box, Theme } from "@mui/system";
 import { OTPModel } from "pages_audit/auth/otpPopup";
 import { useStyles } from "pages_audit/auth/style";
 import { rtgsVerifyOTP } from "./api";

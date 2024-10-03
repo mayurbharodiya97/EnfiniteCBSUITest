@@ -12,6 +12,7 @@ export interface FDStateType {
   checkAllowFDPayApiData: object;
   prematureRateData: object;
   fdSavedPaymentData: object;
+  renewTrnsFormData: object;
 }
 
 export interface ActionType {

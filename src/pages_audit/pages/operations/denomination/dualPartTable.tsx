@@ -609,7 +609,11 @@ import {
   GradientButton,
   usePropertiesConfigContext,
   getCurrencySymbol,
+  usePopupContext,
 } from "@acuteinfo/common-base";
+import { AuthContext } from "pages_audit/auth";
+import { useMutation } from "react-query";
+import * as API from "./api";
 const DualPartTable = ({
   data,
   columnDefinitions,
@@ -630,12 +634,16 @@ const DualPartTable = ({
   closeConfirmation,
   getRowData,
   formData,
+  screenRef,
+  entityType,
 }) => {
   const classes = useStyles();
   const inputRefs = useRef<any>({});
   const [refsReady, setRefsReady] = useState(false);
   const customParameter = usePropertiesConfigContext();
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
+  const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   useEffect(() => {
     // console.log(inputRefs.current, "inputRefs.current5645454545");
@@ -663,6 +671,15 @@ const DualPartTable = ({
       };
     }
   }, [refsReady, displayTableDual, data]);
+
+  const saveDenominationData = useMutation(API.saveDenoData, {
+    onSuccess: async (data: any, variables: any) => {
+      CloseMessageBox();
+    },
+    onError: (error: any, variables: any) => {
+      CloseMessageBox();
+    },
+  });
 
   const renderTableHeader = () => {
     return (
@@ -961,23 +978,43 @@ const DualPartTable = ({
           Message={"All Transaction are Completed Want to Proceed"}
           onClickButton={(buttonNames) => {
             if (Boolean(buttonNames === "Yes")) {
-              console.log("form Submitted");
-              const A = getRowData();
+              const rowsData = getRowData();
 
-              const extractedValue = A?.map((item) => {
-                return {
-                  TYPE_CD:
-                    formData?.TRN === "1"
-                      ? "1"
-                      : formData?.TRN === "4"
-                      ? "4"
-                      : "",
-                  DENO_QTY: item?.DENO_QTY,
-                  DENO_TRAN_CD: item?.TRAN_CD,
-                  DENO_VAL: item?.DENO_VAL,
-                  AMOUNT: item?.AMOUNT,
-                };
-              });
+              const reqData = {
+                TRN_DTL: formData?.singleDenoRow?.map((item) => {
+                  const parameters = {
+                    BRANCH_CD: item?.BRANCH_CD ?? "",
+                    ACCT_TYPE: item?.ACCT_TYPE ?? "",
+                    ACCT_CD: item?.ACCT_CD ?? "",
+                    TYPE_CD: item?.TRX ?? "",
+                    COMP_CD: authState?.companyID ?? "",
+                    CHEQUE_NO: item?.CHQNO ?? "",
+                    SDC: item?.SDC ?? "",
+                    SCROLL1: Boolean(item?.SCROLL)
+                      ? item?.SCROLL
+                      : item?.TOKEN ?? "",
+                    CHEQUE_DT: item?.CHQ_DT ?? "",
+                    REMARKS: item?.REMARK ?? "",
+                    AMOUNT: Boolean(item?.RECEIPT)
+                      ? item?.RECEIPT
+                      : item?.PAYMENT ?? "",
+                  };
+                  return parameters;
+                }),
+                DENO_DTL: rowsData?.map((itemData) => {
+                  const data = {
+                    TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4" ?? "",
+                    DENO_QTY: itemData?.DENO_QTY ?? "",
+                    DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
+                    DENO_VAL: itemData?.DENO_VAL ?? "",
+                    AMOUNT: itemData?.AMOUNT?.toString() ?? "",
+                  };
+                  return data;
+                }),
+                SCREEN_REF: screenRef,
+                ENTRY_TYPE: entityType,
+              };
+              saveDenominationData?.mutate(reqData);
             } else if (Boolean(buttonNames === "No")) {
               closeConfirmation();
             }

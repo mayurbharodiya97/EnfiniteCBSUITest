@@ -75,12 +75,9 @@ export const GstOutwardForm = {
         },
       },
       {
-        render: {
-          componentType: "_accountNumber",
-        },
+        render: { componentType: "_accountNumber" },
         branchCodeMetadata: {
           name: "BRANCH_CD",
-          fullWidth: true,
           dependentFields: ["MODE"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (dependentFieldsValues?.["MODE"]?.value === "C") {
@@ -94,7 +91,6 @@ export const GstOutwardForm = {
               return true;
             }
           },
-          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: (
             currentField,
             formState,
@@ -122,8 +118,7 @@ export const GstOutwardForm = {
         },
         accountTypeMetadata: {
           name: "ACCT_TYPE",
-          dependentFields: ["BRANCH_CD", "MODE"],
-          fullWidth: true,
+          dependentFields: ["MODE"],
           isReadOnly: (fieldValue, dependentFields, formState) => {
             if (formState?.defaultView === "edit") {
               return true;
@@ -135,22 +130,6 @@ export const GstOutwardForm = {
             } else {
               return false;
             }
-          },
-          runPostValidationHookAlways: true,
-          postValidationSetCrossFieldValues: async (
-            currentField,
-            formState,
-            authState,
-            dependentFieldValues,
-            reqFlag
-          ) => {
-            return {
-              ACCT_CD: { value: "" },
-              RECEIPT: { value: "" },
-              PAYMENT: { value: "" },
-              ACCT_NM: { value: "" },
-              BALANCE: { value: "" },
-            };
           },
           GridProps: {
             xs: 12,
@@ -163,7 +142,6 @@ export const GstOutwardForm = {
         accountCodeMetadata: {
           name: "ACCT_CD",
           dependentFields: ["BRANCH_CD", "ACCT_TYPE", "MODE"],
-          fullWidth: true,
           isReadOnly: (fieldValue, dependentFields, formState) => {
             if (formState?.defaultView === "edit") {
               return true;
@@ -176,35 +154,37 @@ export const GstOutwardForm = {
               return false;
             }
           },
-          runValidationOnDependentFieldsChange: false,
-          autoComplete: "off",
+
           postValidationSetCrossFieldValues: async (
-            field,
+            currentField,
             formState,
             authState,
             dependentFieldValues
           ) => {
-            const paddedAcctcode = utilFunction?.getPadAccountNumber(
-              field?.value,
-              dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
-            );
             const reqParameters = {
-              BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
-              ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
-              ACCT_CD: paddedAcctcode,
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
+              ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                currentField?.value,
+                dependentFieldValues?.ACCT_TYPE?.optionData
+              ),
               SCREEN_REF: "TRN/658",
             };
+
             if (
               dependentFieldValues?.BRANCH_CD?.value &&
-              dependentFieldValues?.ACCT_TYPE?.value
+              dependentFieldValues?.ACCT_TYPE?.value &&
+              currentField?.value &&
+              dependentFieldValues?.MODE?.value === "T" &&
+              formState?.defaultView === "new"
             ) {
               const postData = await API.getAccountDetail(reqParameters);
               let btn99, returnVal;
               for (let i = 0; i < postData?.length; i++) {
                 if (postData?.[i]?.O_STATUS === "999") {
                   const btnName = await formState.MessageBox({
-                    messageTitle: "Validation Failed.",
+                    messageTitle: "ValidationFailed",
                     message: postData?.[i]?.O_MESSAGE,
                   });
                   returnVal = "";
@@ -226,57 +206,47 @@ export const GstOutwardForm = {
                 } else if (postData?.[i]?.O_STATUS === "0") {
                   if (btn99 !== "No") {
                     returnVal = postData?.[i];
+                    formState?.OpenDilogueBox(true);
                   } else {
                     returnVal = "";
                   }
                 }
               }
               return {
-                ACCT_CD: {
-                  value:
-                    returnVal !== ""
-                      ? utilFunction.getPadAccountNumber(
-                          field?.value,
+                ACCT_CD:
+                  returnVal !== ""
+                    ? {
+                        value: utilFunction.getPadAccountNumber(
+                          currentField?.value,
                           dependentFieldValues?.ACCT_TYPE?.optionData
-                        )
-                      : "",
-
-                  ignoreUpdate: true,
-                },
+                        ),
+                        isFieldFocused: false,
+                        ignoreUpdate: true,
+                      }
+                    : {
+                        value: "",
+                        isFieldFocused: true,
+                        ignoreUpdate: true,
+                      },
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 WIDTH_BAL: {
                   value: returnVal?.WIDTH_BAL ?? "",
                   ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
                 GSTIN: {
                   value: returnVal?.GSTIN ?? "",
                   ignoreUpdate: true,
-                },
-              };
-            } else {
-              return {
-                ACCT_CD: {
-                  value: "",
-                  ignoreUpdate: true,
-                },
-                ACCT_NM: {
-                  value: "",
-                  ignoreUpdate: true,
-                },
-                WIDTH_BAL: {
-                  value: "",
-                  ignoreUpdate: true,
-                },
-                GSTIN: {
-                  value: "",
-                  ignoreUpdate: true,
+                  isFieldFocused: false,
                 },
               };
             }
           },
+          fullWidth: true,
           GridProps: {
             xs: 12,
             sm: 2.4,
@@ -377,7 +347,7 @@ export const GstOutwardForm = {
     columns: [
       {
         accessor: "TRAN_CD",
-        columnName: "TranCd",
+        columnName: "SrNo",
         sequence: 1,
         alignment: "left",
         componentType: "default",
@@ -394,14 +364,14 @@ export const GstOutwardForm = {
         sequence: 2,
         alignment: "left",
         componentType: "default",
-        width: 150,
-        minWidth: 120,
-        maxWidth: 180,
+        width: 200,
+        minWidth: 180,
+        maxWidth: 220,
       },
       {
         accessor: "TAXABLE_VALUE",
         columnName: "ChargeAmount",
-        alignment: "left",
+        alignment: "right",
         sequence: 3,
         componentType: "currency",
         isDisplayTotal: true,
@@ -413,7 +383,7 @@ export const GstOutwardForm = {
         accessor: "TAX_AMOUNT",
         columnName: "taxAmount",
         sequence: 4,
-        alignment: "left",
+        alignment: "right",
         isDisplayTotal: true,
         componentType: "currency",
         width: 150,
@@ -424,7 +394,7 @@ export const GstOutwardForm = {
         accessor: "CHEQUE_NO",
         columnName: "Chequeno",
         sequence: 5,
-        alignment: "left",
+        alignment: "right",
         componentType: "default",
         width: 100,
         minWidth: 80,
@@ -457,32 +427,13 @@ export const GstOutwardForm = {
         sequence: 8,
         alignment: "center",
         componentType: "buttonRowCell",
-        __VIEW__: {
-          isVisible: false,
-        },
-        __NEW__: {
-          isVisible: false,
-        },
-        width: 200,
-        minWidth: 200,
-        maxWidth: 200,
-      },
-      {
-        accessor: "_hidden",
-        columnName: "Delete",
-        sequence: 8,
-        alignment: "center",
-        componentType: "deleteRowCell",
         isVisibleInNew: true,
         __VIEW__: {
           isVisible: false,
         },
-        __EDIT__: {
-          isVisible: false,
-        },
-        width: 200,
-        minWidth: 200,
-        maxWidth: 200,
+        width: 150,
+        minWidth: 120,
+        maxWidth: 180,
       },
     ],
   },

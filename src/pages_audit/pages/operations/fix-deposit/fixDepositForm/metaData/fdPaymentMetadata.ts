@@ -289,6 +289,9 @@ export const FDPaymentMetadata = {
       label: "",
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -324,6 +327,9 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
     },
 
@@ -366,6 +372,9 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
@@ -406,6 +415,9 @@ export const FDPaymentMetadata = {
           return true;
         }
       },
+      FormatProps: {
+        allowNegative: true,
+      },
       fullWidth: true,
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
@@ -425,6 +437,9 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -478,6 +493,9 @@ export const FDPaymentMetadata = {
       label: "",
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -527,6 +545,9 @@ export const FDPaymentMetadata = {
       label: "",
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -570,6 +591,9 @@ export const FDPaymentMetadata = {
       label: "",
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -581,6 +605,9 @@ export const FDPaymentMetadata = {
       label: "",
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -603,21 +630,35 @@ export const FDPaymentMetadata = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.PROV_INT_AMT?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+
+        if (Number(dependentFieldsValues?.PROV_INT_AMT?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.PROV_INT_AMT?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                INT_CASH: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.PROV_INT_AMT?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              INT_CASH: {
-                value: "",
+              INT_TRF: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
@@ -632,6 +673,9 @@ export const FDPaymentMetadata = {
             },
           };
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -657,39 +701,53 @@ export const FDPaymentMetadata = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.PROV_INT_AMT?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+        if (Number(dependentFieldsValues?.PROV_INT_AMT?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.PROV_INT_AMT?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                INT_TRF: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.PROV_INT_AMT?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                INT_TRF: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.PROV_INT_AMT?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              INT_TRF: {
-                value: "",
+              INT_CASH: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
-              },
-            };
-          }
-        } else if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.PROV_INT_AMT?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
-            return {
-              INT_TRF: {
-                value: "",
-                ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
@@ -704,6 +762,9 @@ export const FDPaymentMetadata = {
             },
           };
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -724,6 +785,9 @@ export const FDPaymentMetadata = {
         return value;
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -882,6 +946,9 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
     },
 
@@ -915,6 +982,9 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -981,13 +1051,11 @@ export const FDPaymentMetadata = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        const formattedCurField = utilFunction.isValidDate(currentField?.value)
+        const formattedCurField = currentField?.value
           ? format(new Date(currentField?.value), "dd/MMM/yyyy")
           : "";
 
-        const formattedFormStVal = utilFunction.isValidDate(
-          formState.paidDateIniValue
-        )
+        const formattedFormStVal = formState.paidDateIniValue
           ? format(new Date(formState.paidDateIniValue), "dd/MMM/yyyy")
           : "";
 
@@ -1020,7 +1088,7 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: dependentFieldValues?.INT_RATE_REST?.value ?? "",
-            A_PAID_DT: utilFunction.isValidDate(currentField?.value)
+            A_PAID_DT: currentField?.value
               ? format(new Date(currentField?.value), "dd/MMM/yyyy")
               : "",
           };
@@ -1154,9 +1222,7 @@ export const FDPaymentMetadata = {
             A_TDS_METHOD: dependentFieldValues?.TDS_METHOD?.value ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_INT_RATE: currentField?.value ?? "",
-            A_PAID_DT: utilFunction.isValidDate(
-              dependentFieldValues?.PAID_DT?.value
-            )
+            A_PAID_DT: dependentFieldValues?.PAID_DT?.value
               ? format(
                   new Date(dependentFieldValues?.PAID_DT?.value),
                   "dd/MMM/yyyy"
@@ -1248,6 +1314,9 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -1270,21 +1339,35 @@ export const FDPaymentMetadata = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.INT_REST?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+
+        if (Number(dependentFieldsValues?.INT_REST?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.INT_REST?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                INT_REST_CASH: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.INT_REST?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              INT_REST_CASH: {
-                value: "",
+              INT_REST_TRF: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
@@ -1300,6 +1383,9 @@ export const FDPaymentMetadata = {
           };
         }
       },
+      FormatProps: {
+        allowNegative: true,
+      },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
     },
@@ -1311,6 +1397,7 @@ export const FDPaymentMetadata = {
       name: "INT_REST_TRF",
       label: "",
       dependentFields: ["INT_REST"],
+      runPostValidationHookAlways: true,
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
         touchAndValidate: true,
@@ -1322,21 +1409,35 @@ export const FDPaymentMetadata = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.INT_REST?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+
+        if (Number(dependentFieldsValues?.INT_REST?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.INT_REST?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                INT_REST_TRF: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.INT_REST?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              INT_REST_TRF: {
-                value: "",
+              INT_REST_CASH: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
@@ -1351,6 +1452,9 @@ export const FDPaymentMetadata = {
             },
           };
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1371,6 +1475,9 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -1430,6 +1537,9 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -1455,6 +1565,7 @@ export const FDPaymentMetadata = {
       name: "PAY_CASH",
       label: "",
       dependentFields: ["BAL_AMT"],
+      runPostValidationHookAlways: true,
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
         touchAndValidate: true,
@@ -1467,21 +1578,34 @@ export const FDPaymentMetadata = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.BAL_AMT?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+        if (Number(dependentFieldsValues?.BAL_AMT?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.BAL_AMT?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                PAY_CASH: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.BAL_AMT?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              PAY_CASH: {
-                value: "",
+              PAY_TRF: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
@@ -1503,6 +1627,9 @@ export const FDPaymentMetadata = {
         } else {
           return false;
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1530,6 +1657,7 @@ export const FDPaymentMetadata = {
       name: "PAY_TRF",
       label: "",
       dependentFields: ["BAL_AMT"],
+      runPostValidationHookAlways: true,
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
         touchAndValidate: true,
@@ -1541,35 +1669,40 @@ export const FDPaymentMetadata = {
         dependentFieldsValues
       ) => {
         if (formState?.isSubmitting) return {};
-        if (
-          Number(currentField?.value) < 0 ||
-          Number(currentField?.value) >
-            Number(dependentFieldsValues?.BAL_AMT?.value)
-        ) {
-          let btnName = await formState.MessageBox({
-            messageTitle: "ValidationFailed",
-            message: "Invalid Amount",
-          });
-          if (btnName === "Ok") {
+
+        if (Number(dependentFieldsValues?.BAL_AMT?.value) >= 0) {
+          if (
+            Number(currentField?.value) < 0 ||
+            Number(currentField?.value) >
+              Number(dependentFieldsValues?.BAL_AMT?.value)
+          ) {
+            let btnName = await formState.MessageBox({
+              messageTitle: "ValidationFailed",
+              message: "Invalid Amount",
+              icon: "ERROR",
+            });
+            if (btnName === "Ok") {
+              return {
+                PAY_TRF: {
+                  value: "",
+                  ignoreUpdate: true,
+                  isFieldFocused: true,
+                },
+              };
+            }
+          } else {
+            let value =
+              Number(dependentFieldsValues?.BAL_AMT?.value ?? 0) -
+              Number(currentField?.value ?? 0);
             return {
-              PAY_TRF: {
-                value: "",
+              PAY_CASH: {
+                value: value,
                 ignoreUpdate: true,
-                isFieldFocused: true,
               },
             };
           }
-        } else {
-          let value =
-            Number(dependentFieldsValues?.BAL_AMT?.value ?? 0) -
-            Number(currentField?.value ?? 0);
-          return {
-            PAY_CASH: {
-              value: value,
-              ignoreUpdate: true,
-            },
-          };
         }
+        return {};
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
         if (formState?.screenFlag === "intPayment") {
@@ -1577,6 +1710,9 @@ export const FDPaymentMetadata = {
         } else {
           return false;
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1619,6 +1755,9 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
@@ -1720,6 +1859,10 @@ export const FDPaymentMetadata = {
         },
       },
       dependentFields: ["CASH_TOTAL", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: true,
+      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1760,6 +1903,7 @@ export const FDPaymentMetadata = {
               const { btnName, obj } = await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
@@ -1845,6 +1989,9 @@ export const FDPaymentMetadata = {
         return value;
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
@@ -1878,6 +2025,9 @@ export const FDPaymentMetadata = {
             },
           };
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1915,16 +2065,11 @@ export const FDPaymentMetadata = {
               value: false,
               ignoreUpdate: true,
             },
-            PAYSLIP_INTPAY: {
-              value: false,
-              ignoreUpdate: true,
-            },
-            RTGS_NEFT_INTPAY: {
-              value: false,
-              ignoreUpdate: true,
-            },
           };
         }
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       fullWidth: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -1934,7 +2079,7 @@ export const FDPaymentMetadata = {
       render: {
         componentType: "amountField",
       },
-      name: "TOT_AMT",
+      name: "FINAL_TOT_AMT",
       label: "",
       isReadOnly: true,
       dependentFields: ["TRANSFER_TOTAL", "CASH_TOTAL"],
@@ -1945,6 +2090,9 @@ export const FDPaymentMetadata = {
         return value;
       },
       fullWidth: true,
+      FormatProps: {
+        allowNegative: true,
+      },
       GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 

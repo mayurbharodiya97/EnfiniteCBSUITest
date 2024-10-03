@@ -14,7 +14,7 @@ import * as API from "../api";
 import { useTranslation } from "react-i18next";
 import { cloneDeep } from "lodash";
 import { InsuranceDetailFormMetaData } from "./insuranceDetailMetadata";
-import { format } from "date-fns";
+import { addMonths, format, subDays } from "date-fns";
 import {
   LoaderPaperComponent,
   RemarksAPIWrapper,
@@ -143,13 +143,14 @@ export const InsuranceDetailForm = ({
       actionFlag,
     }) => {
       let newData = data;
-      // if (updPara.isNewRow) {
-      //   updPara.isNewRow.forEach((item) => {
-      //     delete item.SR_CD;
-      //     delete item.TRAN_CD;
-      //   });
-      // }
-      console.log("newData", newData);
+      if (newData.undefined) {
+        // data.OLD_ROW = data.undefined;
+        delete newData.undefined;
+      }
+      newData["RENEWED_FLAG"] = Boolean(newData["RENEWED_FLAG"])
+        ? "I"
+        : rows?.[0]?.data?.RENEW_FLAG ?? "";
+
       validateInsuranceEntryData.mutate(
         {
           COMP_CD: authState?.companyID,
@@ -174,6 +175,20 @@ export const InsuranceDetailForm = ({
         },
         {
           onSuccess: async (data, variables) => {
+            let mutateData = {
+              ...newData,
+              INSURANCE_DATE: format(
+                new Date(newData?.INSURANCE_DATE),
+                "dd/MMM/yyyy"
+              ),
+              DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
+              TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+              COMP_CD: authState?.companyID,
+              _isNewRow: formMode === "new" ? true : false,
+              _isAllowRenewRow: formMode === "new" ? true : false,
+              _isDeleteRow: false,
+              _isUpdateRow: formMode === "edit" ? true : false,
+            };
             for (let i = 0; i < data?.length; i++) {
               if (data[i]?.O_STATUS === "0") {
                 const buttonName = await MessageBox({
@@ -183,23 +198,29 @@ export const InsuranceDetailForm = ({
                   loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "Yes") {
-                  doInsuranceDml.mutate({
-                    ...newData,
-                    INSURANCE_DATE: format(
-                      new Date(newData?.INSURANCE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    DUE_DATE: format(
-                      new Date(newData?.DUE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
-                    COMP_CD: authState?.companyID,
-                    _isNewRow: formMode === "new" ? true : false,
-                    _isDeleteRow: false,
-                    _isUpdateRow: formMode === "edit" ? true : false,
-                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : "",
-                  });
+                  if (formMode === "edit") {
+                    mutateData = {
+                      ...mutateData,
+                      TRAN_CD: mainData?.[0]?.TRAN_CD,
+                    };
+                  }
+                  if (formMode === "new") {
+                    mutateData = {
+                      ...mutateData,
+                      RENEWED_FLAG: "0",
+                      ENTERED_BRANCH_CD: authState?.user?.branchCode,
+                      ENTERED_COMP_CD: authState?.companyID,
+                      OLD_ROW: {
+                        BRANCH_CD: newData?.BRANCH_CD,
+                        COMP_CD: authState?.companyID,
+                        TRAN_CD: mainData?.[0]?.TRAN_CD,
+                      },
+                      _UPDATEDCOLUMNS: [],
+                      _OLDROWVALUE: [],
+                    };
+                  }
+                  // console.log("mutateData", mutateData)
+                  doInsuranceDml.mutate(mutateData);
                 }
               } else if (data[i]?.O_STATUS === "9") {
                 MessageBox({
@@ -214,23 +235,34 @@ export const InsuranceDetailForm = ({
                   loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "Yes") {
-                  doInsuranceDml.mutate({
-                    ...newData,
-                    INSURANCE_DATE: format(
-                      new Date(newData?.INSURANCE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    DUE_DATE: format(
-                      new Date(newData?.DUE_DATE),
-                      "dd/MMM/yyyy"
-                    ),
-                    TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
-                    COMP_CD: authState?.companyID,
-                    _isNewRow: formMode === "new" ? true : false,
-                    _isDeleteRow: false,
-                    _isUpdateRow: formMode === "edit" ? true : false,
-                    TRAN_CD: formMode === "edit" ? mainData?.[0]?.TRAN_CD : "",
-                  });
+                  if (formMode === "edit") {
+                    newData.RENEWED_FLAG =
+                      newData.RENEWED_FLAG === "Y"
+                        ? "I"
+                        : newData.RENEWED_FLAG === "N"
+                        ? rows?.[0]?.data?.RENEW_FLAG ?? ""
+                        : newData.RENEWED_FLAG;
+                    mutateData = {
+                      ...mutateData,
+                      TRAN_CD: mainData?.[0]?.TRAN_CD,
+                    };
+                  }
+                  if (formMode === "new") {
+                    mutateData = {
+                      ...mutateData,
+                      RENEWED_FLAG: "0",
+                      ENTERED_BRANCH_CD: authState?.user?.branchCode,
+                      ENTERED_COMP_CD: authState?.companyID,
+                      OLD_ROW: {
+                        BRANCH_CD: newData?.BRANCH_CD,
+                        COMP_CD: authState?.companyID,
+                        TRAN_CD: mainData?.[0]?.TRAN_CD,
+                      },
+                      _UPDATEDCOLUMNS: [],
+                      _OLDROWVALUE: [],
+                    };
+                  }
+                  doInsuranceDml.mutate(mutateData);
                 }
               } else if (data[i]?.O_STATUS === "999") {
                 MessageBox({
@@ -255,7 +287,6 @@ export const InsuranceDetailForm = ({
       _isNewRow: formMode === "new" ? true : false,
     };
   });
-  console.log("detailsData", detailsData);
   return (
     <>
       <Dialog
@@ -284,11 +315,17 @@ export const InsuranceDetailForm = ({
             initialData={{
               _isNewRow: formMode === "new" ? true : false,
               ...mainData?.[0],
+              INSURANCE_TYPE_CD:
+                formMode === "new" ? "" : mainData?.[0].INSURANCE_TYPE_CD,
               ALLOW_EDIT: mainData?.[0]?.ALLOW_EDIT,
               ALLOW_RENEW: rows?.[0]?.data?.ALLOW_RENEW,
               INACTIVE_DATE: authState?.workingDate,
-              COVER_NOTE: mainData?.[0]?.COVER_NOTE,
-              // DETAILS_DATA: mainData?.detailData,
+              TRAN_DT:
+                formMode === "new"
+                  ? authState.workingDate
+                  : mainData?.[0]?.TRAN_DT,
+              COVER_NOTE: formMode === "new" ? "" : mainData?.[0]?.COVER_NOTE,
+              POLICY_NO: formMode === "new" ? "" : mainData?.[0]?.POLICY_NO,
               DETAILS_DATA: detailsData,
             }}
             onSubmitData={onSubmitHandler}
