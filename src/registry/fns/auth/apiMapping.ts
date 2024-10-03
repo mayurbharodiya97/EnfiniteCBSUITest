@@ -2617,6 +2617,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
     packageName: "",
   },
+  SAVERECEIPTPAYMENTDTL: {
+    url: "/transactionServiceAPI/SAVERECEIPTPAYMENTDTL",
+    packageName: "",
+  },
   VALIDATEATMREGSAVEDATA: {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
@@ -2711,6 +2715,18 @@ export const ActionWiseAPIConfiguration = {
   },
   CUSTOMERCASHEXCHANGE: {
     url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTSUBDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+    packageName: "",
+  },
+  DELETECASHTRNDTL: {
+    url: "/transactionServiceAPI/DELETECASHTRNDTL",
     packageName: "",
   },
 };
