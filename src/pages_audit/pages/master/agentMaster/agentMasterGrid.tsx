@@ -61,7 +61,7 @@ export const AgentMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
