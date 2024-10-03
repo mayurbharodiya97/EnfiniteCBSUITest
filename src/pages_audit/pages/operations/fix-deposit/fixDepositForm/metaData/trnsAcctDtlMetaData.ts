@@ -93,7 +93,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -114,6 +113,9 @@ export const TransferAcctDetailFormMetadata = {
 
         return value ?? "0";
       },
+      FormatProps: {
+        allowNegative: true,
+      },
       textFieldStyle: {
         "& .MuiInputBase-root": {
           background: "var(--theme-color5)",
@@ -128,7 +130,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -155,7 +156,6 @@ export const TransferAcctDetailFormMetadata = {
           },
         },
       },
-      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
     {
@@ -190,7 +190,7 @@ export const TransferAcctDetailFormMetadata = {
           },
           branchCodeMetadata: {
             name: "BRANCH_CD",
-            isFieldFocus: true,
+            isFieldFocused: true,
             fullWidth: true,
             runPostValidationHookAlways: true,
             validationRun: "onChange",
@@ -260,6 +260,10 @@ export const TransferAcctDetailFormMetadata = {
             name: "ACCT_CD",
             dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
             runPostValidationHookAlways: true,
+            AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: true,
+            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -387,6 +391,9 @@ export const TransferAcctDetailFormMetadata = {
                   STATUS: {
                     value: returnVal?.STATUS ?? "",
                   },
+                  AMOUNT: {
+                    value: "",
+                  },
                 };
               } else if (!currentField?.value) {
                 return {
@@ -395,6 +402,7 @@ export const TransferAcctDetailFormMetadata = {
                   TYPE_CD: { value: "" },
                   CHEQUE_NO: { value: "" },
                   STATUS: { value: "" },
+                  AMOUNT: { value: "" },
                 };
               }
               return {};
@@ -723,6 +731,123 @@ export const TransferAcctDetailFormMetadata = {
           name: "STATUS",
         },
       ],
+    },
+  ],
+};
+
+//FD Renew transfer form metadata
+export const RenewTransferMetadata = {
+  form: {
+    name: "renewTransfer",
+    label: "",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    allowColumnHiding: true,
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      amountField: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "PAYMENT_AMOUNT",
+      label: "Payment Amount",
+      placeholder: "",
+      isReadOnly: true,
+      fullWidth: true,
+      type: "text",
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "RENEW_AMT",
+      label: "Renew Amount",
+      placeholder: "",
+      type: "text",
+      dependentFields: ["PAYMENT_AMOUNT"],
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        if (formState?.isSubmitting) return {};
+
+        if (
+          Number(currentField?.value) >
+          Number(dependentFieldsValues?.PAYMENT_AMOUNT?.value)
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "ValidationFailed",
+            message:
+              "Renewal amount should be less or equals to Payment amount.",
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+          if (buttonName === "Ok") {
+            return {
+              RENEW_AMT: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        }
+
+        return {};
+      },
+      FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: true,
+      },
+      validate: (columnValue) => {
+        if (!Boolean(columnValue.value)) {
+          return "Amount is Required.";
+        } else if (columnValue.value <= 0) {
+          return "Amount can't be Negative or Zero.";
+        }
+        return "";
+      },
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
     },
   ],
 };

@@ -996,6 +996,9 @@ export const en_language_data = {
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
   Disagree: "Disagree",
   Agree: "Agree",
+  RecordInsertedMsg: "Record Inserted Successfully.",
+  RecordUpdatedMsg: "Record Updated Successfully.",
+  RecordRemovedMsg: "Record Removed Successfully.",
 
   // cheque book
 
@@ -2021,4 +2024,7 @@ export const en_language_data = {
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
+
+  // Cashier Exchange Entry
+  TransferDetails: "Transfer Details",
 };

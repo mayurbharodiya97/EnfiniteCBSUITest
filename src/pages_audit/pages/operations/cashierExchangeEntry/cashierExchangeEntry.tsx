@@ -1,17 +1,12 @@
 import { Fragment, useContext, useRef, useState } from "react";
+import { cashierEntryFormMetaData } from "./cashierEntryMetadata";
 import {
-  cashierEntryMetaData,
-  cashierEntryMetaData2,
-} from "./cashierEntryMetadata";
-import {
-  SubmitFnType,
   usePopupContext,
   GradientButton,
   MetaDataType,
   FormWrapper,
-  GridMetaDataType,
 } from "@acuteinfo/common-base";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { LinearProgress } from "@mui/material";
@@ -47,11 +42,20 @@ const CashierExchangeEntry = () => {
       });
     },
     onSuccess: async (data) => {
-      setTableData([]);
-      CloseMessageBox();
-      enqueueSnackbar(data?.[0]?.O_MESSAGE, {
-        variant: "success",
-      });
+      if (data?.[0]?.O_STATUS === "999") {
+        CloseMessageBox();
+        MessageBox({
+          messageTitle: "ValidationFailed",
+          message: data?.[0]?.O_MESSAGE,
+          buttonNames: ["Ok"],
+        });
+      } else {
+        setTableData([]);
+        CloseMessageBox();
+        enqueueSnackbar(data?.[0]?.O_MESSAGE, {
+          variant: "success",
+        });
+      }
     },
   });
   const handleSaves = async (e) => {
@@ -65,11 +69,11 @@ const CashierExchangeEntry = () => {
     }));
     const Request = {
       DENO_DTL: [...TableDataMap],
-      TOTAL_TO_AMT: TableData?.tablefooter?.DENO_AMOUNT?.toString(),
-      ENTERED_COMP_CD: authState?.companyID,
-      ENTERED_BRANCH_CD: authState?.user?.branchCode,
-      TO_USER: FormRefData?.To,
-      FROM_USER: FormRefData?.From_User,
+      TOTAL_TO_AMT: TableData?.tablefooter?.DENO_AMOUNT?.toString() ?? "",
+      ENTERED_COMP_CD: authState?.companyID ?? "",
+      ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+      TO_USER: FormRefData?.To ?? "",
+      FROM_USER: FormRefData?.From_User ?? "",
       SCREEN_REF: "TRN/044",
     };
     const Check = await MessageBox({
@@ -86,7 +90,7 @@ const CashierExchangeEntry = () => {
     <Fragment>
       <FormWrapper
         key={"CashierExchangeEntryForm"}
-        metaData={cashierEntryMetaData2 as MetaDataType}
+        metaData={cashierEntryFormMetaData as MetaDataType}
         ref={FormRef}
         formStyle={{
           height: "auto",
@@ -114,9 +118,9 @@ const CashierExchangeEntry = () => {
         <GradientButton onClick={handleSaves}>Save</GradientButton>
       </FormWrapper>
       {getData?.isLoading && <LinearProgress color="secondary" />}
-      {getData?.data?.length > 0 && (
+      {tableData?.length > 0 && (
         <CashierExchangeTable
-          data={tableData}
+          data={tableData ?? []}
           metadata={CashierMetaData}
           TableLabel={"Cashier Exchange Table"}
           hideHeader={true}

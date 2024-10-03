@@ -233,6 +233,33 @@ export const RecurringPaymentEntryFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+
+            if (
+              currentField?.value &&
+              dependentFieldValues?.BRANCH_CD?.value?.length === 0
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: "Enter Account Branch.",
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+
+              if (buttonName === "Ok") {
+                return {
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            }
             return {
               ...resetFields,
               ACCT_CD: {
@@ -247,6 +274,11 @@ export const RecurringPaymentEntryFormMetaData = {
           autoComplete: "off",
           maxLength: 20,
           dependentFields: ["ACCT_TYPE", "BRANCH_CD", "INT_RATE"],
+          runPostValidationHookAlways: true,
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: true,
+          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -255,6 +287,31 @@ export const RecurringPaymentEntryFormMetaData = {
           ) => {
             if (formState?.isSubmitting) return {};
             if (
+              currentField.value &&
+              dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: "Enter Account Type.",
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+
+              if (buttonName === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            } else if (
               currentField?.value &&
               dependentFieldsValues?.ACCT_TYPE?.value &&
               dependentFieldsValues?.BRANCH_CD?.value
@@ -575,7 +632,6 @@ export const RecurringPaymentEntryFormMetaData = {
             formState.handleDisableButton(false);
             return {};
           },
-          runPostValidationHookAlways: true,
           FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 20) {
@@ -1350,12 +1406,14 @@ export const RecurringPaymentEntryFormMetaData = {
 
     {
       render: {
-        componentType: "amountField",
+        componentType: "numberFormat",
       },
       name: "TOKEN_NO",
       label: "CashPaymentTokenNumber",
+      placeholder: "EnterCashPaymentTokenNumber",
       autoComplete: "off",
       maxLength: 9,
+      className: "textInputFromRight",
       dependentFields: ["CASH_AMT", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
       __NEW__: {
         isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -1367,9 +1425,8 @@ export const RecurringPaymentEntryFormMetaData = {
         },
         FormatProps: {
           allowLeadingZeros: false,
-          allowNegative: false,
+          allowNegative: true,
           fixedDecimalScale: false,
-          placeholder: "EnterCashPaymentTokenNumber",
           isAllowed: (values) => {
             if (values?.value?.length > 9) {
               return false;

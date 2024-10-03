@@ -7,6 +7,9 @@ import {
 } from "./denoTableActionTypes";
 import { usePopupContext } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
+import { useMutation } from "react-query";
+import * as API from "./api";
+
 const TellerDenoTableCalc = ({
   displayTable,
   formData,
@@ -15,6 +18,8 @@ const TellerDenoTableCalc = ({
   onCloseTable,
   gridLable,
   initRemainExcess,
+  screenRef,
+  entityType,
 }) => {
   const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -275,10 +280,14 @@ const TellerDenoTableCalc = ({
     }
   }, [state?.columnTotal?.amount, data, haveerror, formData]);
 
-  // const saveDenominationData = useMutation(API.saveDenoData, {
-  //   onSuccess: async (data: any, variables: any) => {},
-  //   onError: (error: any, variables: any) => {},
-  // });
+  const saveDenominationData = useMutation(API.saveDenoData, {
+    onSuccess: async (data: any, variables: any) => {
+      CloseMessageBox();
+    },
+    onError: (error: any, variables: any) => {
+      CloseMessageBox();
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -293,7 +302,7 @@ const TellerDenoTableCalc = ({
           //@ts-ignore
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
-          // loadingBtnName: ["Yes"],
+          loadingBtnName: ["Yes"],
           icon: "INFO",
         });
         if (res === "Yes") {
@@ -306,17 +315,33 @@ const TellerDenoTableCalc = ({
                 ACCT_CD: item?.ACCT_CD ?? "",
                 TYPE_CD: item?.TRX ?? "",
                 COMP_CD: authState?.companyID ?? "",
-                CHEQUE_NO: "",
-                SDC: "1",
-                SCROLL1: "",
-                CHEQUE_DT: "",
-                REMARKS: "1 BY CASH -",
-                AMOUNT: "1000.00",
+                CHEQUE_NO: item?.CHQNO ?? "",
+                SDC: item?.SDC ?? "",
+                SCROLL1: Boolean(item?.SCROLL)
+                  ? item?.SCROLL
+                  : item?.TOKEN ?? "",
+                CHEQUE_DT: item?.CHQ_DT ?? "",
+                REMARKS: item?.REMARK ?? "",
+                AMOUNT: Boolean(item?.RECEIPT)
+                  ? item?.RECEIPT
+                  : item?.PAYMENT ?? "",
               };
               return parameters;
             }),
+            DENO_DTL: DDT?.map((itemData) => {
+              const data = {
+                TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4" ?? "",
+                DENO_QTY: itemData?.INPUT_VALUE ?? "",
+                DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
+                DENO_VAL: itemData?.DENO_VAL ?? "",
+                AMOUNT: itemData?.MULTIPLIED_VALUE?.toString() ?? "",
+              };
+              return data;
+            }),
+            SCREEN_REF: screenRef,
+            ENTRY_TYPE: entityType,
           };
-          // saveDenominationData?.mutate({});
+          saveDenominationData?.mutate(reqData);
         } else if (res === "No") {
           CloseMessageBox();
         }
@@ -334,7 +359,12 @@ const TellerDenoTableCalc = ({
     const multiplicationResult = state?.amount || "";
     const getRowViseData = row
       ?.map((apiRows, index) => {
-        if (Object?.hasOwn(inputAmount, index)) {
+        if (
+          Object?.hasOwn(inputAmount, index) &&
+          Boolean(inputAmount[index]) &&
+          Boolean(state?.amount[index]) &&
+          state?.amount[index] !== "NaN"
+        ) {
           const newRow = { ...apiRows, INPUT_VALUE: inputAmount[index] };
           if (state?.amount[index] !== undefined) {
             newRow.MULTIPLIED_VALUE = state?.amount[index];
