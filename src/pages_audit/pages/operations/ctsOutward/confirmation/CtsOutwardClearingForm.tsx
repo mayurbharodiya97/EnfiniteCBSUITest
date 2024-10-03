@@ -294,10 +294,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         buttonNames: ["Ok"],
                       });
                     } else if (
-                      !(
-                        format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-                        format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-                      )
+                      format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
+                      format(new Date(authState?.workingDate), "dd/MMM/yyyy")
                     ) {
                       await MessageBox({
                         messageTitle: t("Validation Failed"),
