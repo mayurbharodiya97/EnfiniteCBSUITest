@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getDailyImportConfigData = async (reqData: any) => {
@@ -7,9 +7,9 @@ export const getDailyImportConfigData = async (reqData: any) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, ...other }) => {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
         return {
-          value: DESCRIPTION,
+          value: TRAN_CD,
           label: DESCRIPTION,
           ...other,
         };
@@ -33,17 +33,16 @@ export const getDailyTransactionImportData = async (apiReq) => {
         item.FROM_BRANCH_CD,
         item.FROM_ACCT_TYPE,
         item.FROM_ACCT_CD,
-      ].filter(Boolean).join("-");
-      item.CREDIT_AC = [
-        item.TO_BRANCH_CD,
-        item.TO_ACCT_TYPE,
-        item.TO_ACCT_CD,
-      ].filter(Boolean).join("-");
+      ]
+        .filter(Boolean)
+        .join("-");
+      item.CREDIT_AC = [item.TO_BRANCH_CD, item.TO_ACCT_TYPE, item.TO_ACCT_CD]
+        .filter(Boolean)
+        .join("-");
 
       return item;
     });
     return responseData;
-
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -55,8 +54,42 @@ export const getValidateToSelectFile = async (apiReq) => {
     });
   if (status === "0") {
     return data;
-
   } else {
     throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const deleteImportedData = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DELETEIMPORTEDDATA", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const dailyTranimportFileData = async ({ ...reqData }) => {
+  try {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("IMPORTFILEDATA", {
+        ...reqData,
+      });
+    if (status === "0") {
+      const dataStatus = data;
+      if (Boolean(dataStatus?.[0]?.PPS_DATA)) {
+        dataStatus?.[0]?.PPS_DATA.map((item) => {
+          if (item?.ERROR_FLAG === "Y") {
+            item._rowColor = "red";
+          }
+        });
+      }
+      return dataStatus;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  } catch (error) {
+    throw error;
   }
 };

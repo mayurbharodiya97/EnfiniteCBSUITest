@@ -1,17 +1,18 @@
-import { Transition } from "pages_audit/common";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+  InitialValuesType,
+  SubmitFnType,
+  PopupMessageAPIWrapper,
+  ClearCacheContext,
+  LoaderPaperComponent,
+} from "@acuteinfo/common-base";
 import { FC, useEffect, useRef, useState, useContext } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
-import { queryClient, ClearCacheContext } from "cache";
 import { useSnackbar } from "notistack";
-import {
-  CreateDetailsRequestData,
-  ProcessDetailsData,
-  utilFunction,
-} from "components/utils";
 import { PropsComponentFormMetaData } from "./metaData";
 import { makeStyles } from "@mui/styles";
 import {
@@ -24,11 +25,8 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
 
+import { AuthContext } from "pages_audit/auth";
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
     alignItems: "center",
