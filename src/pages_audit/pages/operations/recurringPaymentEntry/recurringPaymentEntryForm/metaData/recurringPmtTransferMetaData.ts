@@ -223,16 +223,6 @@ export const RecurringPaymentTransferFormMetaData = {
           accountTypeMetadata: {
             name: "DC_ACCT_TYPE",
             dependentFields: ["DC_BRANCH_CD"],
-            disableCaching: true,
-            options: (...arg) => {
-              return GeneralAPI.get_Account_Type({
-                COMP_CD: arg?.[3]?.companyID ?? "",
-                BRANCH_CD: arg?.[2]?.["RECPAYTRANS.DC_BRANCH_CD"]?.value ?? "",
-                USER_NAME: arg?.[3]?.user?.id ?? "",
-                DOC_CD: "RECCRTYPE",
-              });
-            },
-            _optionsKey: "getCreditAccountType",
             runPostValidationHookAlways: true,
             validationRun: "onChange",
             postValidationSetCrossFieldValues: async (
@@ -242,6 +232,33 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    DC_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    DC_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
                 DC_ACCT_CD: { value: "" },
                 ACCT_NM: { value: "" },
@@ -255,6 +272,10 @@ export const RecurringPaymentTransferFormMetaData = {
             autoComplete: "off",
             dependentFields: ["DC_ACCT_TYPE", "DC_BRANCH_CD"],
             runPostValidationHookAlways: true,
+            AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: true,
+            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -263,6 +284,32 @@ export const RecurringPaymentTransferFormMetaData = {
             ) => {
               if (formState?.isSubmitting) return {};
               if (
+                currentField.value &&
+                dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    DC_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    DC_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]?.value
