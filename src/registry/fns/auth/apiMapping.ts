@@ -2621,6 +2621,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DELETEIMPORTEDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
+    packageName: "",
+  },
   DOCASHEXCHANGENTRY: {
     url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
     packageName: "",
