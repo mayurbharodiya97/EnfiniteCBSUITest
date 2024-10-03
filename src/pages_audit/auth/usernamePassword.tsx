@@ -177,7 +177,7 @@ export const UsernamePasswordField = ({
                 fullWidth
                 type={showPassword ? "text" : "password"}
                 name="password"
-                value={input.password}
+                value={input.password.trimStart() || ""}
                 onChange={handleChange}
                 error={loginState.isPasswordError}
                 helperText={
