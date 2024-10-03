@@ -2677,6 +2677,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECTOFDDDW",
     packageName: "",
   },
+  GETPAYSLIPREALIZERETRIVEGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREALIZERETRIVEGRID",
+    packageName: "",
+  },
+  GETPAYSLIPREALIZEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREALIZEHDR",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

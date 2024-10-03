@@ -240,7 +240,7 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spaceer",
+      name: "SPACER4",
       GridProps: {
         xs: 2,
         sm: 2,
@@ -253,7 +253,7 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer",
+      name: "SPACER5",
       GridProps: {
         xs: 1,
         sm: 1,
@@ -352,7 +352,7 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer2",
+      name: "SPACER6",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -360,7 +360,7 @@ export const PayslipdetailsFormMetaData = {
         componentType: "amountField",
       },
       name: "MST_TOTAL",
-      label: "Total ",
+      label: "Total",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -1272,7 +1272,6 @@ export const DraftdetailsFormMetaData = {
           txtTransform: "uppercase",
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
-
         {
           render: {
             componentType: "numberFormat",
@@ -2271,7 +2270,7 @@ export const TotaldetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spaceer",
+      name: "SPACER7",
       GridProps: {
         xs: 0,
         sm: 2,
@@ -2648,7 +2647,7 @@ export const DeleteDialogMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer3",
+      name: "SPACER3",
       GridProps: {
         xs: 5,
         sm: 5,
@@ -2665,8 +2664,8 @@ export const DDtransactionsMetadata = {
     gridLabel: "Payslip/DD Transaction",
     rowIdColumn: "DOCCD",
     defaultColumnConfig: {
-      width: 400,
-      maxWidth: 450,
+      width: 300,
+      maxWidth: 300,
       minWidth: 300,
     },
     allowColumnReordering: true,
@@ -2692,24 +2691,25 @@ export const DDtransactionsMetadata = {
   filters: [],
   columns: [
     {
-      accessor: "DOCCD",
+      accessor: "DOCURL",
       columnName: "",
       sequence: 1,
-      alignment: "right",
+      alignment: "left",
       componentType: "default",
-      width: 120,
+      width: 360,
       minWidth: 60,
       maxWidth: 500,
     },
     {
-      accessor: "DOCURL",
+      accessor: "OPEN",
       columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "Open",
       sequence: 2,
       alignment: "left",
-      componentType: "default",
-      width: 400,
-      minWidth: 60,
-      maxWidth: 500,
+      width: 70,
+      minWidth: 70,
+      maxWidth: 100,
     },
   ],
 };

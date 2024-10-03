@@ -4,6 +4,7 @@ import {
   Dialog,
   Grid,
   List,
+  Paper,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -16,8 +17,9 @@ import {
   GridWrapper,
 } from "@acuteinfo/common-base";
 import { DDtransactionsMetadata } from "./paySlipMetadata";
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useState } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { RetrieveEntryGrid } from "./entries/entryGrid";
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -26,9 +28,17 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
+  {
+    actionName: "",
+    actionLabel: "",
+    multiple: false,
+    rowDoubleClick: true,
+  },
 ];
 export const PayslipDDTransaction = () => {
   const navigate = useNavigate();
+  const [componentTorender, setComponetToRender] = useState([]);
+  const [screenOpen, setScreenOpen] = useState(false);
 
   const setCurrentAction = useCallback(
     async (data) => {
@@ -41,28 +51,44 @@ export const PayslipDDTransaction = () => {
     [navigate]
   );
   const screens = [
-    { DOCCD: "RPT/14", DOCURL: "Payslip Issue Entry" },
-    { DOCCD: "RPT/15", DOCURL: "Payslip Issue Entry Confirmation" },
-    { DOCCD: "RPT/17", DOCURL: "Payslip Realize Entry" },
-    { DOCCD: "RPT/18", DOCURL: "Payslip Realize Confirmation" },
-    { DOCCD: "RPT/20", DOCURL: "Payslip Cancel Entry" },
-    { DOCCD: "RPT/21", DOCURL: "Payslip Cancel Confirmation" },
-    { DOCCD: "RPT/22", DOCURL: "Payslip Stop Payment" },
+    { DOCCD: "RPT/14", DOCURL: "Payslip Issue Entry", SCREENREF: "ISSUE" },
+    {
+      DOCCD: "RPT/17",
+      DOCURL: "Payslip Realize Entry",
+      SCREENREF: "REALIZE",
+      TRAN_TYPE: "RE",
+    },
+    {
+      DOCCD: "RPT/20",
+      DOCURL: "Payslip Cancel Entry",
+      SCREENREF: "CANCEL",
+      TRAN_TYPE: "TE",
+    },
+    {
+      DOCCD: "RPT/22",
+      DOCURL: "Payslip Stop Payment",
+      SCREENREF: "STOPPAYMENT",
+      TRAN_TYPE: "S",
+    },
   ];
-
+  const close = () => {
+    setScreenOpen(false);
+  };
   return (
     <>
       <Dialog
         open={true}
+        fullScreen
         //@ts-ignore
         PaperProps={{
           style: {
-            width: "100%",
-            minHeight: "auto",
+            width: "32%",
             height: "auto",
+            // padding: "5px",
+            overflow: "hidden",
           },
         }}
-        maxWidth="sm"
+        maxWidth="md"
       >
         {/* <AppBar
           position="relative"
@@ -84,18 +110,42 @@ export const PayslipDDTransaction = () => {
             </Typography>
           </Toolbar>
         </AppBar> */}
-        <GridWrapper
-          key={"modeMasterGrid"}
-          finalMetaData={DDtransactionsMetadata as GridMetaDataType}
-          data={screens ?? []}
-          setData={() => null}
-          actions={actions}
-          loading={undefined}
-          setAction={() => {}}
-          refetchData={null}
-          variant="contained"
-          controlsAtBottom
-        />
+        <Paper sx={{ p: 2 }}>
+          <GridWrapper
+            key={"modeMasterGrid"}
+            finalMetaData={DDtransactionsMetadata as GridMetaDataType}
+            data={screens ?? []}
+            setData={() => null}
+            actions={actions}
+            loading={undefined}
+            setAction={setCurrentAction}
+            refetchData={null}
+            onClickActionEvent={(index, id, currentData) => {
+              if (id === "OPEN") {
+                console.log(componentTorender);
+                setComponetToRender([
+                  //@ts-ignore
+                  currentData?.DOCCD, //@ts-ignore
+                  currentData?.DOCURL, //@ts-ignore
+                  currentData?.SCREENREF, //@ts-ignore
+                  currentData?.TRAN_TYPE, //@ts-ignore
+                ]);
+                setScreenOpen(true);
+              }
+            }}
+            variant="contained"
+          />
+        </Paper>
+        {screenOpen && (
+          <RetrieveEntryGrid
+            screenFlag={componentTorender[2]}
+            open={screenOpen}
+            close={close}
+            headerLabel={`${componentTorender[1]} (${componentTorender[0]})`}
+            apiReqFlag={componentTorender[0]}
+            trans_type={componentTorender[3]}
+          />
+        )}
       </Dialog>
     </>
   );
