@@ -121,7 +121,6 @@ export const FDRetriveMetadata = {
               ACCT_TYPE: currentField?.value ?? "",
               SCREEN_REF: "RPT/401",
             };
-            formState?.handleDisableButton(true);
             const postData = await API.getFDParaDetail(reqParameters);
             if (postData?.status === "999") {
               let btnName = await formState.MessageBox({
@@ -130,7 +129,6 @@ export const FDRetriveMetadata = {
                 icon: "ERROR",
               });
               if (btnName === "Ok") {
-                formState.handleDisableButton(false);
                 return {
                   ACCT_TYPE: {
                     value: "",
@@ -142,7 +140,6 @@ export const FDRetriveMetadata = {
                 };
               }
             } else if (postData?.length) {
-              formState.handleDisableButton(false);
               formState.setDataOnFieldChange("GET_PARA_DATA", postData?.[0]);
               return {
                 DOUBLE_FAC: { value: postData?.[0]?.DOUBLE_FAC ?? "" },
@@ -219,6 +216,7 @@ export const FDRetriveMetadata = {
             };
             formState?.handleDisableButton(true);
             const postData = await API.validateAcctDtl(reqParameters);
+
             let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
@@ -297,14 +295,8 @@ export const FDRetriveMetadata = {
               ACCT_NM: { value: "" },
             };
           }
+          formState?.handleDisableButton(false);
           return {};
-        },
-        isReadOnly(_, dependentFieldsValues, formState) {
-          if (formState?.FDState?.disableButton) {
-            return true;
-          } else {
-            return false;
-          }
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },

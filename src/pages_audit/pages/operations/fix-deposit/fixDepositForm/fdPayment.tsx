@@ -1,4 +1,11 @@
-import { CircularProgress, Dialog } from "@mui/material";
+import {
+  AppBar,
+  CircularProgress,
+  Dialog,
+  Theme,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { FDContext } from "../context/fdContext";
@@ -23,6 +30,28 @@ import {
   utilFunction,
 } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
+import { PayslipAndDDForm } from "../../recurringPaymentEntry/payslipAndNEFT/payslipAndDDForm";
+import { makeStyles } from "@mui/styles";
+
+const useTypeStyles = makeStyles((theme: Theme) => ({
+  root: {
+    background: "var(--theme-color5)",
+  },
+  title: {
+    flex: "1 1 100%",
+    color: "var(--theme-color2)",
+    letterSpacing: "1px",
+    fontSize: "1.5rem",
+  },
+  formHeaderTitle: {
+    margin: "0",
+    fontWeight: "500",
+    fontSize: "1.25rem",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
+    color: "var(--theme-color2)",
+  },
+}));
 
 export const FDPayment = ({
   handleDialogClose,
@@ -34,14 +63,21 @@ export const FDPayment = ({
     handleDisableButton,
     updateFDPaymentData,
     updateFdSavedPaymentData,
+    updateSourceAcctFormData,
+    updateRenewTrnsFormData,
   } = useContext(FDContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const [openPayment, setOpenPayment] = useState(false);
   const [openRenew, setOpenRenew] = useState(false);
-  const [opentrnsForm, setOpentrnsForm] = useState(false);
+  const [openTrnsForm, setOpenTrnsForm] = useState(false);
+  const [openRenewTrnsForm, setOpenRenewTrnsForm] = useState(false);
+  const [openNeftForm, setOpenNeftForm] = useState(false);
+  const [openPayslipForm, setOpenPayslipForm] = useState(false);
   const sourceAcctformRef: any = useRef(null);
+  const payslipAndDDRef: any = useRef(null);
   const { state: rows }: any = useLocation();
+  const headerClasses = useTypeStyles();
   const { t } = useTranslation();
   let reqParam = {
     A_LOGIN_BR: authState?.user?.branchCode ?? "",
@@ -62,6 +98,30 @@ export const FDPayment = ({
     A_PAID_DT: "",
   };
 
+  //Initial values for Payslip Form
+  const accountDetailsForPayslip = {
+    PAYSLIPDD: [
+      {
+        INSTRUCTION_REMARKS: `FD PAYMENT:-${
+          rows?.[0]?.data?.BRANCH_CD?.trim() ?? ""
+        }-${rows?.[0]?.data?.ACCT_TYPE?.trim() ?? ""}-${
+          rows?.[0]?.data?.ACCT_CD?.trim() ?? ""
+        }`,
+        FROM_CERTI_NO: "",
+      },
+    ],
+    PAYMENT_AMOUNT:
+      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT) -
+        Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT) ?? 0,
+    ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+    BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+    ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+    SCREEN_REF: "RPT/401",
+    SCREEN_NAME: t("PayslipAndDemandDraft"),
+    COMP_CD: authState?.companyID ?? "",
+  };
+
+  //Common function for format date
   const formatDate = (date) =>
     date ? format(new Date(date), "dd/MMM/yyyy") : "";
 
@@ -85,7 +145,6 @@ export const FDPayment = ({
       //   icon: "ERROR",
       // });
       // CloseMessageBox();
-
       // },
       onSuccess: async (data) => {
         for (const response of data?.[0]?.MSG ?? []) {
@@ -142,8 +201,6 @@ export const FDPayment = ({
     }
   );
 
-  console.log("FDState", FDState);
-
   useEffect(() => {
     const formName = Boolean(openRenew)
       ? "Renew"
@@ -184,8 +241,6 @@ export const FDPayment = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      console.log("data saveFDPaymentDtls", data);
-
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
@@ -206,9 +261,6 @@ export const FDPayment = ({
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
           });
-          if (buttonName === "No") {
-            break;
-          }
         } else if (response?.O_STATUS === "0") {
           const buttonName = await MessageBox({
             messageTitle: "Voucher(s) Confirmation",
@@ -219,6 +271,11 @@ export const FDPayment = ({
             isDataChangedRef.current = true;
             CloseMessageBox();
             handleDialogClose();
+            updateSourceAcctFormData([
+              {
+                ACCT_NAME: "",
+              },
+            ]);
           }
         }
       }
@@ -233,6 +290,7 @@ export const FDPayment = ({
     actionFlag
   ) => {
     endSubmit(true);
+    const formData = data;
     updateFdSavedPaymentData(data);
 
     if (
@@ -267,7 +325,14 @@ export const FDPayment = ({
               PAYSLIP: Boolean(data?.PAYSLIP) ? "Y" : "N",
               TOT_AMT: rows?.[0]?.data?.TOT_AMT ?? "",
             },
-            A_FLAG: screenFlag === "intPayment" ? "I" : "P",
+            A_FLAG:
+              screenFlag === "intPayment"
+                ? "I"
+                : Boolean(openPayment)
+                ? "P"
+                : Boolean(openRenew)
+                ? "R"
+                : "",
             A_TDS_METHOD: data?.TDS_METHOD ?? "",
             WORKING_DATE: authState?.workingDate ?? "",
             A_SCREEN_REF: "RPT/401",
@@ -300,7 +365,55 @@ export const FDPayment = ({
                     break;
                   }
                 } else if (response?.O_STATUS === "0") {
-                  setOpentrnsForm(true);
+                  if (Number(formData?.TRANSFER_TOTAL) <= 0) {
+                    // const buttonName = await MessageBox({
+                    //   messageTitle: "Confirmation",
+                    //   message: "Proceed?",
+                    //   buttonNames: ["Yes", "No"],
+                    //   defFocusBtnName: "Yes",
+                    //   loadingBtnName: ["Yes"],
+                    // });
+                    // if (buttonName === "Yes") {
+                    saveFDPaymentDtlsMutation.mutate({
+                      TRANSACTION_DTL: [],
+                      FD_DETAIL_DATA: {
+                        ...formData,
+                        COMP_CD: authState?.companyID ?? "",
+                        INT_RATE: FDState?.fdPaymentData.INT_RATE ?? "",
+                        TOT_AMT: FDState?.fdPaymentData.TOT_AMT ?? "",
+                        TERM_CD: FDState?.fdParaDetailData.TERM_CD ?? "",
+                        TDS_APPLICABLE:
+                          FDState?.fdPaymentData.TDS_APPLICABLE ?? "",
+                        TDS_RATE: FDState?.fdPaymentData.TDS_RATE ?? "",
+                        CATEG_CD: FDState?.fdPaymentData.CATEG_CD ?? "",
+                        CM_TDS_FROM: formatDate(formData?.CM_TDS_FROM),
+                        FROM_DT: formatDate(formData?.FROM_DT),
+                        INT_PAID_DT: formatDate(formData?.INT_PAID_DT),
+                        PAID_DT: formatDate(formData?.PAID_DT),
+                        PROV_DT: formatDate(formData?.PROV_DT),
+                        TDS_DT: formatDate(formData?.TDS_DT),
+                        TRAN_DT: formatDate(formData?.TRAN_DT),
+                        MATURITY_DT: formatDate(formData?.MATURITY_DT),
+                      },
+                      SCREEN_REF: "RPT/401",
+                      FLAG: Boolean(openPayment)
+                        ? "P"
+                        : Boolean(openRenew)
+                        ? "R"
+                        : "",
+                    });
+                    // }
+                  } else if (Boolean(openPayment)) {
+                    if (Boolean(formData?.PAYSLIP)) {
+                      setOpenPayslipForm(true);
+                    } else if (Boolean(formData?.RTGS_NEFT)) {
+                      setOpenNeftForm(true);
+                    } else {
+                      setOpenTrnsForm(true);
+                    }
+                  } else if (Boolean(openRenew)) {
+                    setOpenRenewTrnsForm(true);
+                  }
                 }
               }
               CloseMessageBox();
@@ -318,6 +431,17 @@ export const FDPayment = ({
     }
   };
 
+  //Payslip and Beneficiary form submit handler
+  const paysBenefSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    action
+  ) => {
+    endSubmit(true);
+  };
+
   const finalPaySubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -327,39 +451,92 @@ export const FDPayment = ({
   ) => {
     endSubmit(true);
 
-    console.log("data", data);
+    if (Boolean(openTrnsForm)) {
+      const newData = data?.TRNDTLS?.map(
+        ({ CHEQUE_DATE, TRAN_BAL, STATUS, TYPE_CD, CHEQUE_NO, ...rest }) => rest
+      );
 
-    const newData = data?.TRNDTLS?.map(
-      ({ CHEQUE_DATE, TRAN_BAL, STATUS, TYPE_CD, CHEQUE_NO, ...rest }) => rest
-    );
-
-    console.log("newData", newData);
-
-    if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
-      MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total credit amount can't be Zero/Negative.",
-        icon: "ERROR",
-      });
-    } else if (
-      parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
-    ) {
-      MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total credit amount should be equal to total FD amount.",
-        icon: "ERROR",
-      });
-    } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {
-      const buttonName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: "Proceed?",
-        buttonNames: ["Yes", "No"],
-        defFocusBtnName: "Yes",
-        loadingBtnName: ["Yes"],
-      });
-      if (buttonName === "Yes") {
+      if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
+        MessageBox({
+          messageTitle: t("ValidationFailed"),
+          message: "Total credit amount can't be Zero/Negative.",
+          icon: "ERROR",
+        });
+      } else if (
+        parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
+      ) {
+        MessageBox({
+          messageTitle: t("ValidationFailed"),
+          message: "Total credit amount should be equal to total FD amount.",
+          icon: "ERROR",
+        });
+      } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: "Proceed?",
+          buttonNames: ["Yes", "No"],
+          defFocusBtnName: "Yes",
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          saveFDPaymentDtlsMutation.mutate({
+            TRANSACTION_DTL: [...newData],
+            FD_DETAIL_DATA: {
+              ...FDState?.fdSavedPaymentData,
+              COMP_CD: authState?.companyID ?? "",
+              INT_RATE: FDState?.fdPaymentData.INT_RATE ?? "",
+              TOT_AMT: FDState?.fdPaymentData.TOT_AMT ?? "",
+              TERM_CD: FDState?.fdParaDetailData.TERM_CD ?? "",
+              TDS_APPLICABLE: FDState?.fdPaymentData.TDS_APPLICABLE ?? "",
+              TDS_RATE: FDState?.fdPaymentData.TDS_RATE ?? "",
+              CATEG_CD: FDState?.fdPaymentData.CATEG_CD ?? "",
+              CM_TDS_FROM: formatDate(FDState?.fdSavedPaymentData.CM_TDS_FROM),
+              FROM_DT: formatDate(FDState?.fdSavedPaymentData.FROM_DT),
+              INT_PAID_DT: formatDate(FDState?.fdSavedPaymentData.INT_PAID_DT),
+              PAID_DT: formatDate(FDState?.fdSavedPaymentData.PAID_DT),
+              PROV_DT: formatDate(FDState?.fdSavedPaymentData.PROV_DT),
+              TDS_DT: formatDate(FDState?.fdSavedPaymentData.TDS_DT),
+              TRAN_DT: formatDate(FDState?.fdSavedPaymentData.TRAN_DT),
+              MATURITY_DT: formatDate(FDState?.fdSavedPaymentData.MATURITY_DT),
+              RENEW_AMT: FDState?.renewTrnsFormData.RENEW_AMT ?? "",
+            },
+            SCREEN_REF: "RPT/401",
+            FLAG: Boolean(openPayment) ? "P" : Boolean(openRenew) ? "R" : "",
+          });
+        }
+      }
+    } else if (Boolean(openRenewTrnsForm)) {
+      const diffAmt =
+        parseFloat(data?.PAYMENT_AMOUNT) - parseFloat(data?.RENEW_AMT);
+      if (parseFloat(data?.PAYMENT_AMOUNT) > parseFloat(data?.RENEW_AMT)) {
+        updateRenewTrnsFormData(data);
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: `Are you sure to renew less than ${diffAmt}?`,
+          buttonNames: ["Yes", "No"],
+          defFocusBtnName: "Yes",
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          if (Boolean(FDState?.fdSavedPaymentData?.PAYSLIP)) {
+            setOpenPayslipForm(true);
+          } else if (Boolean(FDState?.fdSavedPaymentData?.RTGS_NEFT)) {
+            setOpenNeftForm(true);
+          } else {
+            setOpenTrnsForm(true);
+            updateFdSavedPaymentData({
+              ...FDState?.fdSavedPaymentData,
+              TRANSFER_TOTAL:
+                FDState?.fdSavedPaymentData?.TRANSFER_TOTAL -
+                FDState?.renewTrnsFormData?.RENEW_AMT,
+            });
+          }
+          CloseMessageBox();
+        }
+        return {};
+      } else {
         saveFDPaymentDtlsMutation.mutate({
-          TRANSACTION_DTL: [...newData],
+          TRANSACTION_DTL: [{}],
           FD_DETAIL_DATA: {
             ...FDState?.fdSavedPaymentData,
             COMP_CD: authState?.companyID ?? "",
@@ -377,6 +554,7 @@ export const FDPayment = ({
             TDS_DT: formatDate(FDState?.fdSavedPaymentData.TDS_DT),
             TRAN_DT: formatDate(FDState?.fdSavedPaymentData.TRAN_DT),
             MATURITY_DT: formatDate(FDState?.fdSavedPaymentData.MATURITY_DT),
+            RENEW_AMT: data?.RENEW_AMT ?? "",
           },
           SCREEN_REF: "RPT/401",
           FLAG: Boolean(openPayment) ? "P" : Boolean(openRenew) ? "R" : "",
@@ -391,7 +569,14 @@ export const FDPayment = ({
   };
 
   const handleTrnsferFormClose = () => {
-    setOpentrnsForm(false);
+    updateSourceAcctFormData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
+    setOpenTrnsForm(false);
+    setOpenRenewTrnsForm(false);
+    setOpenPayslipForm(false);
   };
 
   return (
@@ -539,7 +724,7 @@ export const FDPayment = ({
         </Dialog>
       ) : null}
 
-      {Boolean(opentrnsForm) ? (
+      {Boolean(openTrnsForm) ? (
         <Dialog
           open={true}
           PaperProps={{
@@ -556,6 +741,50 @@ export const FDPayment = ({
             handleTrnsferFormClose={handleTrnsferFormClose}
             onSubmitHandler={finalPaySubmitHandler}
             ref={sourceAcctformRef}
+          />
+        </Dialog>
+      ) : null}
+
+      {Boolean(openRenewTrnsForm) ? (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+          fullWidth={true}
+        >
+          <TransferAcctDetailForm
+            handleTrnsferFormClose={handleTrnsferFormClose}
+            onSubmitHandler={finalPaySubmitHandler}
+            ref={sourceAcctformRef}
+            openRenewTrnsForm={openRenewTrnsForm}
+          />
+        </Dialog>
+      ) : null}
+
+      {Boolean(openPayslipForm) ? (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+          fullWidth={true}
+        >
+          <PayslipAndDDForm
+            ref={payslipAndDDRef}
+            defaultView="new"
+            accountDetailsForPayslip={accountDetailsForPayslip}
+            onSubmitHandler={paysBenefSubmitHandler}
+            handleDialogClose={handleTrnsferFormClose}
+            hideHeader={false}
           />
         </Dialog>
       ) : null}

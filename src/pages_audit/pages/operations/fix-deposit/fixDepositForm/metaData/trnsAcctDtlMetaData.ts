@@ -734,3 +734,120 @@ export const TransferAcctDetailFormMetadata = {
     },
   ],
 };
+
+//FD Renew transfer form metadata
+export const RenewTransferMetadata = {
+  form: {
+    name: "renewTransfer",
+    label: "",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    allowColumnHiding: true,
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      amountField: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "PAYMENT_AMOUNT",
+      label: "Payment Amount",
+      placeholder: "",
+      isReadOnly: true,
+      fullWidth: true,
+      type: "text",
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "RENEW_AMT",
+      label: "Renew Amount",
+      placeholder: "",
+      type: "text",
+      dependentFields: ["PAYMENT_AMOUNT"],
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        if (formState?.isSubmitting) return {};
+
+        if (
+          Number(currentField?.value) >
+          Number(dependentFieldsValues?.PAYMENT_AMOUNT?.value)
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "ValidationFailed",
+            message:
+              "Renewal amount should be less or equals to Payment amount.",
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+          if (buttonName === "Ok") {
+            return {
+              RENEW_AMT: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        }
+
+        return {};
+      },
+      FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: true,
+      },
+      validate: (columnValue) => {
+        if (!Boolean(columnValue.value)) {
+          return "Amount is Required.";
+        } else if (columnValue.value <= 0) {
+          return "Amount can't be Negative or Zero.";
+        }
+        return "";
+      },
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+    },
+  ],
+};

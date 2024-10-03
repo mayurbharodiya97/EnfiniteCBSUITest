@@ -120,8 +120,6 @@ export const FixDepositForm = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      console.log("data", data);
-
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
@@ -274,8 +272,6 @@ export const FixDepositForm = ({
     actionFlag
   ) => {
     endSubmit(true);
-
-    console.log("data", data);
 
     const newData = data?.TRNDTLS?.map((obj) => ({
       ...obj,
