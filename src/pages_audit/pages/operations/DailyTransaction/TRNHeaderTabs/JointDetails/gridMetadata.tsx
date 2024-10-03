@@ -73,10 +73,10 @@ export const JointDetailGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Contact No.",
-      accessor: "phone1",
+      accessor: "MOBILE_NO",
       sequence: 7,
       componentType: "default",
-      width: 100,
+      width: 200,
     },
     {
       columnName: "Customer ID",

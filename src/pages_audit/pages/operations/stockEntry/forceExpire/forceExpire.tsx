@@ -23,10 +23,24 @@ import {
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
-export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
+type StockDtlCustomProps = {
+  setStockDtlOpen?: any;
+  navigate?: any;
+  stockEntryGridData?: any;
+  screenFlag?: any;
+};
+export const ForceExpireStock: React.FC<StockDtlCustomProps> = ({
+  setStockDtlOpen,
+  navigate,
+  stockEntryGridData,
+  screenFlag,
+}) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+  const handleCloseDialog = () => {
+    screenFlag === "stockForTrn" ? setStockDtlOpen(false) : navigate(".");
+  };
 
   let newInitialData = {
     ...rows?.[0]?.data,
@@ -164,7 +178,7 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
                     {t("Save")}
                   </Button>
                 )}
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
                 </Button>
               </>
