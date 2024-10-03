@@ -14,17 +14,7 @@ import {
   queryClient,
 } from "@acuteinfo/common-base";
 
-type ChequebookIssuedDtlCustomProps = {
-  navigate?: any;
-  setChequebookIssueDtlOpen?: any;
-  screenFlag?: any;
-};
-
-export const ChequeDtlGrid: React.FC<ChequebookIssuedDtlCustomProps> = ({
-  navigate,
-  setChequebookIssueDtlOpen,
-  screenFlag,
-}) => {
+export const ChequeDtlGrid = ({ navigate }) => {
   const closeAction: ActionTypes[] = [
     {
       actionName: "close",
@@ -104,13 +94,7 @@ export const ChequeDtlGrid: React.FC<ChequebookIssuedDtlCustomProps> = ({
           setData={() => {}}
           loading={chequeDTL?.isLoading}
           actions={closeAction}
-          setAction={() => {
-            if (screenFlag === "chequesDtlForTrn") {
-              setChequebookIssueDtlOpen(false);
-            } else {
-              navigate(".");
-            }
-          }}
+          setAction={() => navigate(".")}
         />
       </div>
     </Dialog>

@@ -25,19 +25,10 @@ import {
   queryClient,
   usePopupContext,
 } from "@acuteinfo/common-base";
-type InsuranceEntryDtlCustomProps = {
-  handleDialogClose?: any;
-  defaultView?: any;
-  isDataChangedRef?: any;
-  setInsuranceDtlOpen?: any;
-  screenFlag?: any;
-};
-export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
+export const InsuranceDetailForm = ({
   handleDialogClose,
   defaultView,
   isDataChangedRef,
-  setInsuranceDtlOpen,
-  screenFlag,
 }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -386,26 +377,23 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                     </>
                   ) : (
                     <>
-                      {screenFlag !== "insuranceForTrn" ? (
-                        <GradientButton
-                          onClick={async () => {
-                            if (rows?.[0]?.data?.ALLOW_DELETE === "N") {
-                              await MessageBox({
-                                messageTitle: t("ValidationFailed"),
-                                message: t("CannotDeleteBackDatedEntry"),
-                                buttonNames: ["Ok"],
-                              });
-                            } else {
-                              SetDeleteRemark(true);
-                            }
-                          }}
-                          color={"primary"}
-                        >
-                          {t("Remove")}
-                        </GradientButton>
-                      ) : null}
-                      {mainData?.[0]?.ALLOW_EDIT === "Y" &&
-                      screenFlag !== "insuranceForTrn" ? (
+                      <GradientButton
+                        onClick={async () => {
+                          if (rows?.[0]?.data?.ALLOW_DELETE === "N") {
+                            await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t("CannotDeleteBackDatedEntry"),
+                              buttonNames: ["Ok"],
+                            });
+                          } else {
+                            SetDeleteRemark(true);
+                          }
+                        }}
+                        color={"primary"}
+                      >
+                        {t("Remove")}
+                      </GradientButton>
+                      {mainData?.[0]?.ALLOW_EDIT === "Y" ? (
                         <GradientButton
                           onClick={() => {
                             setFormMode("edit");
@@ -415,8 +403,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                           {t("Edit")}
                         </GradientButton>
                       ) : null}
-                      {rows?.[0]?.data?.ALLOW_RENEW === "Y" &&
-                      screenFlag !== "insuranceForTrn" ? (
+                      {rows?.[0]?.data?.ALLOW_RENEW === "Y" ? (
                         <GradientButton
                           onClick={() => {
                             setFormMode("new");
@@ -427,13 +414,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                         </GradientButton>
                       ) : null}
                       <GradientButton
-                        onClick={() => {
-                          if (screenFlag === "insuranceForTrn") {
-                            setInsuranceDtlOpen(false);
-                          } else {
-                            handleDialogClose();
-                          }
-                        }}
+                        onClick={() => handleDialogClose()}
                         color={"primary"}
                       >
                         {t("Close")}

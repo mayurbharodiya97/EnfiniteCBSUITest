@@ -38,7 +38,7 @@ import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confir
 import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
 import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
 
-export const Confirmations = ({ screenFlag }) => {
+export const Confirmations = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "view-details",
@@ -137,7 +137,7 @@ export const Confirmations = ({ screenFlag }) => {
         <GridWrapper
           key={`ConfirmationReqGrid-` + screenFlag}
           finalMetaData={gridMetaData as GridMetaDataType}
-          data={result.data ?? []}
+          data={reqData ? reqData : result.data ?? []}
           setData={() => null}
           loading={result.isLoading}
           actions={actions}
@@ -161,10 +161,11 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ) : screenFlag === "limitCFM" ? (
+              ) : screenFlag === "limitCFM" || "limitForTrn" ? (
                 <LimitConfirmationForm
                   closeDialog={ClosedEventCall}
                   result={result}
+                  screenFlag="limitForTrn"
                 />
               ) : screenFlag === "stockCFM" ? (
                 <StockConfirmationForm
@@ -210,12 +211,13 @@ export const Confirmations = ({ screenFlag }) => {
   );
 };
 
-export const ConfirmationGridWrapper = ({ screenFlag }) => {
+export const ConfirmationGridWrapper = ({ screenFlag, reqData }) => {
   return (
     <ClearCacheProvider>
       <Confirmations
         key={screenFlag + "-Confirmation"}
         screenFlag={screenFlag}
+        reqData={reqData}
       />
     </ClearCacheProvider>
   );

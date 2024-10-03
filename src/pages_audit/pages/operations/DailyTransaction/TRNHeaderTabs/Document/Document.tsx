@@ -35,10 +35,25 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
+const actions: ActionTypes[] = [
+  {
+    actionName: "view-detail",
+    actionLabel: "View Detail",
+    multiple: false,
+    rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+  {
+    actionName: "close",
+    actionLabel: "Close",
+    multiple: undefined,
+    alwaysAvailable: true,
+  },
+];
+
 type DocumentProps = {
   reqData: any;
   handleDialogClose?: any;
-  isDisplayClose?: any;
 };
 
 let imgBase = "";
@@ -46,7 +61,6 @@ let imgBase = "";
 export const Document: React.FC<DocumentProps> = ({
   reqData,
   handleDialogClose,
-  isDisplayClose,
 }) => {
   const [dataRow, setDataRow] = useState<any>({});
   const imgUrl = useRef<any | null>(null);
@@ -57,26 +71,6 @@ export const Document: React.FC<DocumentProps> = ({
   const [detailViewDialog, setDetailViewDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
-
-  const actions: ActionTypes[] = [
-    {
-      actionName: "view-detail",
-      actionLabel: "View Detail",
-      multiple: false,
-      rowDoubleClick: true,
-      // alwaysAvailable: true,
-    },
-    ...(isDisplayClose
-      ? [
-          {
-            actionName: "close",
-            actionLabel: "Close",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-        ]
-      : []),
-  ];
 
   //api define=====================
   const getDocTemplateList = useMutation(API.getDocTemplateList, {
@@ -203,7 +197,7 @@ export const Document: React.FC<DocumentProps> = ({
         setAction={setCurrentAction}
         // onlySingleSelectionAllow={true}
         // isNewRowStyle={true}
-        // disableMultipleRowSelect={true}
+        disableMultipleRowSelect={true}
         variant={"standard"}
         // defaultSelectedRowId={1}
         //  controlsAtBottom={true}

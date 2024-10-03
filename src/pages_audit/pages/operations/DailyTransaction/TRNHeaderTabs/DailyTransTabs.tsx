@@ -248,9 +248,7 @@ export const DailyTransTabs = ({
                 {a.TAB_NAME.includes("HOLDCHRG") && (
                   <HoldCharge reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("DOCS") && (
-                  <Document reqData={reqData} isDisplayClose={false} />
-                )}
+                {a.TAB_NAME.includes("DOCS") && <Document reqData={reqData} />}
                 {a.TAB_NAME.includes("STOP") && <StopPay reqData={reqData} />}
                 {a.TAB_NAME.includes("INSU") && <Insurance reqData={reqData} />}
                 {a.TAB_NAME.includes("DISBDTL") && (

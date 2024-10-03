@@ -106,16 +106,6 @@ export const StockGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
     },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "SecurityDescription",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 150,
-    },
 
     {
       accessor: "ENTERED_DATE",

@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -43,7 +42,6 @@ import {
   MetaDataType,
   FormWrapper,
 } from "@acuteinfo/common-base";
-import { cloneDeep } from "lodash";
 const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
     {
@@ -69,8 +67,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const reqDataRef = useRef<any>({});
-  const [limitDtlOpen, setLimitDtlOpen] = useState(false);
-  const limitDtlForTrnmetaData = useRef<any>(null);
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -243,7 +239,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getLimitDTL"]);
-      queryClient.removeQueries(["getLimitList"]);
       queryClient.removeQueries(["securityLimitData"]);
       queryClient.removeQueries(["crudLimitEntryData"]);
       queryClient.removeQueries(["validateInsert"]);
@@ -271,11 +266,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
               state: data?.rows,
             });
           }
-        } else if (screenFlag === "limitForTrn") {
-          setLimitDtlOpen(true);
-          navigate("", {
-            state: data?.rows,
-          });
         } else {
           navigate(data?.name, {
             state: data?.rows,
@@ -301,30 +291,14 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-  if (screenFlag === "limitForTrn") {
-    limitDtlForTrnmetaData.current = cloneDeep(limitEntryGridMetaData);
 
-    if (limitDtlForTrnmetaData?.current?.gridConfig) {
-      limitDtlForTrnmetaData.current.gridConfig.containerHeight = {
+  useEffect(() => {
+    screenFlag === "limitForTrn" ??
+      (limitEntryGridMetaData.gridConfig.containerHeight = {
         min: "36vh",
         max: "30vh",
-      };
-      limitDtlForTrnmetaData.current.gridConfig.footerNote = "";
-    }
-
-    if (limitDtlForTrnmetaData?.current?.columns) {
-      limitDtlForTrnmetaData.current.columns =
-        limitDtlForTrnmetaData?.current?.columns?.map((column) => {
-          if (column?.componentType === "buttonRowCell") {
-            return {
-              ...column,
-              isVisible: false,
-            };
-          }
-          return column;
-        });
-    }
-  }
+      });
+  }, [screenFlag]);
 
   return (
     <>
@@ -339,13 +313,15 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           ) : null}
           <GridWrapper
             key={`limitentrygridMetaData` + screenFlag}
-            finalMetaData={limitDtlForTrnmetaData?.current as GridMetaDataType}
+            finalMetaData={limitEntryGridMetaData as GridMetaDataType}
             data={data ?? []}
             loading={isLoading}
             setData={() => {}}
             actions={actions}
             setAction={setCurrentAction}
-            refetchData={() => refetch()}
+            onClickActionEvent={(index, id, data) => {
+              validateDeleteData.mutate(data);
+            }}
           />
         </>
       ) : (
@@ -639,26 +615,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           )}
         </>
       )}
-      {limitDtlOpen ? (
-        <Dialog
-          open={true}
-          fullWidth={true}
-          PaperProps={{
-            style: {
-              width: "100%",
-              overflow: "auto",
-            },
-          }}
-          maxWidth="md"
-        >
-          <ForceExpire
-            navigate={navigate}
-            getLimitDetail={getLimitDetail}
-            setLimitDtlOpen={setLimitDtlOpen}
-            screenFlag={screenFlag}
-          />
-        </Dialog>
-      ) : null}
     </>
   );
 };

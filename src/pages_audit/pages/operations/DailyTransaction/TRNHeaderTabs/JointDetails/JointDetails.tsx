@@ -1,10 +1,17 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import { t } from "i18next";
+import { IconButton } from "@mui/material";
+
+//logic
 import { Fragment, useCallback, useRef, useState, useContext } from "react";
 import { useQuery } from "react-query";
+// import GridWrapper from "components/dataTableStatic";
 import { useSnackbar } from "notistack";
+import { AccDetailContext } from "pages_audit/auth";
+import { Transition } from "@acuteinfo/common-base";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -25,7 +32,6 @@ import {
   FormWrapper,
   MetaDataType,
   GradientButton,
-  Transition,
 } from "@acuteinfo/common-base";
 export const JointDetails = ({ reqData }) => {
   const actions: ActionTypes[] = [
@@ -171,6 +177,8 @@ export const JointDetails = ({ reqData }) => {
           }}
           maxWidth="lg"
           scroll="body"
+          // aria-labelledby="alert-dialog-title"
+          // aria-describedby="alert-dialog-description"
         >
           <FormWrapper
             key={`JointDetailDisplayForm_${currentIndex}_${metaData?.form?.label}`}
@@ -198,7 +206,7 @@ export const JointDetails = ({ reqData }) => {
                   {t("Next")}
                 </GradientButton>
                 <GradientButton onClick={handleClose} color={"primary"}>
-                  {t("Close")}
+                  <CloseIcon />
                 </GradientButton>
               </>
             )}

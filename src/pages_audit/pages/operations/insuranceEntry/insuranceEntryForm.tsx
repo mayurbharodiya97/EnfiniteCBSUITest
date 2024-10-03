@@ -19,7 +19,7 @@ import {
 } from "./insuranceEntryMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import * as API from "./api";
 import { useTranslation } from "react-i18next";
 import { cloneDeep } from "lodash";
@@ -50,7 +50,7 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
   },
 ];
-const InsuranceEntry = ({ screenFlag, reqApiData }) => {
+const InsuranceEntry = () => {
   const { authState } = useContext(AuthContext);
   const [isData, setIsData] = useState({
     isVisible: false,
@@ -65,22 +65,13 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
   const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
   const [isRetrieveData, setIsRetrieveData] = useState<any>({});
   const isDataChangedRef = useRef(false);
-  const insuranceEntryDtlForTrnmetaData = useRef<any>(null);
-  const [insuranceDtlOpen, setInsuranceDtlOpen] = useState(false);
 
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "view-detail") {
-        if (screenFlag === "insuranceForTrn") {
-          setInsuranceDtlOpen(true);
-          navigate("", {
-            state: data?.rows,
-          });
-        } else {
-          navigate(data?.name, {
-            state: data?.rows,
-          });
-        }
+        navigate(data?.name, {
+          state: data?.rows,
+        });
       }
     },
     [navigate]
@@ -92,34 +83,6 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
     {
       onError: () => {
         setIsData((old) => ({ ...old }));
-      },
-    }
-  );
-  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-    any,
-    any
-  >(
-    ["getInsuranceEntryList", { reqApiData }],
-    () =>
-      API.getInsuranceDetailData({
-        ...reqApiData,
-        A_GD_DATE: authState?.workingDate,
-        USER_LEVEL: authState?.role,
-      }),
-    {
-      enabled: Boolean(screenFlag === "insuranceForTrn"),
-      onSuccess: (data) => {
-        data.forEach((item) => {
-          const dueDate = new Date(item?.DUE_DATE);
-          const workingDate = new Date(authState?.workingDate);
-          if (item?.CONFIRMED === "Y") {
-            if (dueDate > workingDate) {
-              item._rowColor = "rgb(255,225,225)";
-            } else if (dueDate < workingDate) {
-              item._rowColor = "rgb(192,192,192)";
-            }
-          }
-        });
       },
     }
   );
@@ -148,32 +111,6 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
       });
     },
   });
-  if (screenFlag === "insuranceForTrn") {
-    insuranceEntryDtlForTrnmetaData.current = cloneDeep(
-      DetailInsuranceGridMetaData
-    );
-
-    if (insuranceEntryDtlForTrnmetaData?.current?.gridConfig) {
-      insuranceEntryDtlForTrnmetaData.current.gridConfig.containerHeight = {
-        min: "36vh",
-        max: "30vh",
-      };
-    }
-
-    if (insuranceEntryDtlForTrnmetaData?.current?.columns) {
-      insuranceEntryDtlForTrnmetaData.current.columns =
-        insuranceEntryDtlForTrnmetaData?.current?.columns?.map((column) => {
-          if (column?.componentType === "buttonRowCell") {
-            return {
-              ...column,
-              isVisible: false,
-            };
-          }
-          return column;
-        });
-    }
-  }
-
   const doInsuranceDml: any = useMutation(API.doInsuranceDml, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -327,404 +264,332 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
   metadata = cloneDeep(InsuranceEntryFormMetaData) as MasterDetailsMetaData;
   return (
     <>
-      {screenFlag === "insuranceForTrn" ? (
-        <>
-          {isError ? (
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          ) : null}
-          <GridWrapper
-            key={`Insurance-Detail` + screenFlag}
-            finalMetaData={
-              insuranceEntryDtlForTrnmetaData?.current as GridMetaDataType
-            }
-            data={data ?? []}
-            loading={isLoading}
-            setData={() => {}}
-            actions={actions}
-            setAction={setCurrentAction}
-            refetchData={() => refetch()}
-          />
-        </>
-      ) : (
-        <>
-          <Box sx={{ width: "100%" }}>
-            <Tabs
-              value={isData.value}
-              sx={{ ml: "25px" }}
-              onChange={(event, newValue) => {
-                setIsData((old) => ({
-                  ...old,
-                  value: newValue,
-                }));
-                getInsuranceViewData.data = [];
-                if (newValue === "tab2") {
-                  //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
-                  if (reqData && Object.keys(reqData).length > 0) {
-                    if (
-                      reqData?.ACCT_CD &&
-                      reqData?.ACCT_TYPE &&
-                      reqData?.BRANCH_CD
-                    ) {
-                      const RequestPara = {
-                        COMP_CD: authState?.companyID,
-                        ACCT_CD: reqData?.ACCT_CD,
-                        ACCT_TYPE: reqData?.ACCT_TYPE,
-                        BRANCH_CD: reqData?.BRANCH_CD,
-                      };
-                      getInsuranceViewData.mutate(RequestPara);
-                    }
-                  }
-                } else if (newValue === "tab3") {
-                  if (reqData && Object.keys(reqData).length > 0) {
-                    if (
-                      reqData?.ACCT_CD &&
-                      reqData?.ACCT_TYPE &&
-                      reqData?.BRANCH_CD
-                    ) {
-                      const RequestPara = {
-                        COMP_CD: authState?.companyID,
-                        ACCT_CD: reqData?.ACCT_CD,
-                        ACCT_TYPE: reqData?.ACCT_TYPE,
-                        BRANCH_CD: reqData?.BRANCH_CD,
-                        USER_LEVEL: authState?.role,
-                        A_GD_DATE: authState?.workingDate,
-                      };
-                      getInsuranceDetailData.mutate(RequestPara);
-                    }
-                  }
+      <Box sx={{ width: "100%" }}>
+        <Tabs
+          value={isData.value}
+          sx={{ ml: "25px" }}
+          onChange={(event, newValue) => {
+            setIsData((old) => ({
+              ...old,
+              value: newValue,
+            }));
+            getInsuranceViewData.data = [];
+            if (newValue === "tab2") {
+              //API calling for Grid-Details on tab-change, and account number and name set to inside the header of Grid-details
+              if (reqData && Object.keys(reqData).length > 0) {
+                if (
+                  reqData?.ACCT_CD &&
+                  reqData?.ACCT_TYPE &&
+                  reqData?.BRANCH_CD
+                ) {
+                  const RequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: reqData?.ACCT_CD,
+                    ACCT_TYPE: reqData?.ACCT_TYPE,
+                    BRANCH_CD: reqData?.BRANCH_CD,
+                  };
+                  getInsuranceViewData.mutate(RequestPara);
                 }
-              }}
-              textColor="secondary"
-              indicatorColor="secondary"
-              aria-label="secondary tabs example"
-            >
-              <Tab value="tab1" label={t("InsuranceEntry")} />
-              {isData.isVisible && (
-                <Tab value="tab2" label={t("InsuranceView")} />
-              )}
-              {isData.isVisible && (
-                <Tab value="tab3" label={t("InsuranceDetail")} />
-              )}
-            </Tabs>
-          </Box>
+              }
+            } else if (newValue === "tab3") {
+              if (reqData && Object.keys(reqData).length > 0) {
+                if (
+                  reqData?.ACCT_CD &&
+                  reqData?.ACCT_TYPE &&
+                  reqData?.BRANCH_CD
+                ) {
+                  const RequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: reqData?.ACCT_CD,
+                    ACCT_TYPE: reqData?.ACCT_TYPE,
+                    BRANCH_CD: reqData?.BRANCH_CD,
+                    USER_LEVEL: authState?.role,
+                    A_GD_DATE: authState?.workingDate,
+                  };
+                  getInsuranceDetailData.mutate(RequestPara);
+                }
+              }
+            }
+          }}
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="secondary tabs example"
+        >
+          <Tab value="tab1" label={t("InsuranceEntry")} />
+          {isData.isVisible && <Tab value="tab2" label={t("InsuranceView")} />}
+          {isData.isVisible && (
+            <Tab value="tab3" label={t("InsuranceDetail")} />
+          )}
+        </Tabs>
+      </Box>
 
-          <Container>
-            <Grid
-              sx={{
-                backgroundColor: "var(--theme-color2)",
-                padding: "0px",
-                borderRadius: "10px",
-                boxShadow:
-                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-              }}
-            >
-              <>
-                {doInsuranceDml?.isError ||
-                validateInsuranceEntryData?.isError ? (
-                  <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                    <AppBar position="relative" color="primary">
-                      <Alert
-                        severity="error"
-                        errorMsg={
-                          doInsuranceDml?.error?.error_msg ??
-                          validateInsuranceEntryData?.error?.error_msg ??
-                          "Unknow Error"
-                        }
-                        errorDetail={
-                          doInsuranceDml?.error?.error_detail ??
-                          validateInsuranceEntryData?.error?.error_detail ??
-                          ""
-                        }
-                        color="error"
-                      />
-                    </AppBar>
-                  </div>
-                ) : (
-                  <LinearProgressBarSpacer />
-                )}
-                <div
-                  style={{
-                    display: isData.value === "tab1" ? "inherit" : "none",
-                  }}
-                >
-                  <MasterDetailsForm
-                    key={
-                      "InsuranceEntryForm" +
-                      formDataRefresh +
-                      isRetrieveData.length
+      <Container>
+        <Grid
+          sx={{
+            backgroundColor: "var(--theme-color2)",
+            padding: "0px",
+            borderRadius: "10px",
+            boxShadow:
+              "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+          }}
+        >
+          <>
+            {doInsuranceDml?.isError || validateInsuranceEntryData?.isError ? (
+              <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                <AppBar position="relative" color="primary">
+                  <Alert
+                    severity="error"
+                    errorMsg={
+                      doInsuranceDml?.error?.error_msg ??
+                      validateInsuranceEntryData?.error?.error_msg ??
+                      "Unknow Error"
                     }
-                    metaData={metadata}
-                    // displayMode={"new"}
-                    initialData={{
-                      ...isRetrieveData,
-                      TRAN_DT: authState.workingDate,
-                      INSURANCE_DATE: authState.workingDate,
-                      DETAILS_DATA: [
-                        {
-                          _isNewRow: true,
-                        },
-                      ],
+                    errorDetail={
+                      doInsuranceDml?.error?.error_detail ??
+                      validateInsuranceEntryData?.error?.error_detail ??
+                      ""
+                    }
+                    color="error"
+                  />
+                </AppBar>
+              </div>
+            ) : (
+              <LinearProgressBarSpacer />
+            )}
+            <div
+              style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
+            >
+              <MasterDetailsForm
+                key={
+                  "InsuranceEntryForm" + formDataRefresh + isRetrieveData.length
+                }
+                metaData={metadata}
+                // displayMode={"new"}
+                initialData={{
+                  ...isRetrieveData,
+                  TRAN_DT: authState.workingDate,
+                  INSURANCE_DATE: authState.workingDate,
+                  DETAILS_DATA: [
+                    {
+                      _isNewRow: true,
+                    },
+                  ],
+                }}
+                onSubmitData={onSubmitHandler}
+                // isLoading={validateInsuranceEntryData?.isLoading}
+                // isNewRow={true}
+                formState={{ MessageBox: MessageBox }}
+                setDataOnFieldChange={(action, payload) => {
+                  if (action === "IS_VISIBLE") {
+                    setIsData((old) => ({
+                      ...old,
+                      isVisible: payload?.IS_VISIBLE,
+                      // value: "tab2",
+                    }));
+                  } else if (action === "TAB_REQUEST") {
+                    setReqData(payload);
+                  }
+                }}
+                ref={myMasterRef}
+                formStyle={{
+                  background: "white",
+                  height: "43vh",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
+              >
+                {({ isSubmitting, handleSubmit }) => {
+                  return (
+                    <>
+                      <Button
+                        onClick={() => {
+                          setIsRetrieveOpen(true);
+                        }}
+                        color={"primary"}
+                        disabled={isSubmitting}
+                      >
+                        {t("Retrieve")}
+                      </Button>
+                      <Button onClick={AddNewRow} color={"primary"}>
+                        {t("AddRow")}
+                      </Button>
+
+                      <Button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        endIcon={
+                          validateInsuranceEntryData?.isLoading ? (
+                            <CircularProgress size={20} />
+                          ) : null
+                        }
+                        color={"primary"}
+                      >
+                        {t("Save")}
+                      </Button>
+                    </>
+                  );
+                }}
+              </MasterDetailsForm>
+            </div>
+            {/* )} */}
+          </>
+          {getInsuranceViewData.isLoading ? (
+            <LoaderPaperComponent />
+          ) : getInsuranceViewData?.isError ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={
+                    getInsuranceViewData?.error?.error_msg ?? "Unknow Error"
+                  }
+                  errorDetail={getInsuranceViewData?.error?.error_detail ?? ""}
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
+          <div
+            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
+          >
+            <FormWrapper
+              key={"Insurance-View" + getInsuranceViewData?.isSuccess}
+              metaData={(ViewInsuranceMetaData as MetaDataType) ?? {}}
+              initialValues={getInsuranceViewData?.data?.[0] ?? {}}
+              onSubmitHandler={() => {}}
+              displayMode={"view"}
+            ></FormWrapper>
+          </div>
+          <div
+            style={{ display: isData.value === "tab3" ? "inherit" : "none" }}
+          >
+            {getInsuranceDetailData.isError && (
+              <Alert
+                severity="error"
+                errorMsg={
+                  getInsuranceDetailData.error?.error_msg ??
+                  "Something went to wrong.."
+                }
+                errorDetail={getInsuranceDetailData.error?.error_detail}
+                color="error"
+              />
+            )}
+            <>
+              <GridWrapper
+                key={`Insurance-Detail`}
+                finalMetaData={DetailInsuranceGridMetaData as GridMetaDataType}
+                data={getInsuranceDetailData?.data ?? []}
+                setData={() => {}}
+                loading={getInsuranceDetailData.isLoading}
+                actions={actions}
+                setAction={setCurrentAction}
+              />
+            </>
+          </div>
+          <>
+            {isRetrieveOpen ? (
+              <>
+                <Dialog
+                  open={isRetrieveOpen}
+                  PaperProps={{
+                    style: {
+                      width: "100%",
+                    },
+                  }}
+                  maxWidth="sm"
+                >
+                  <FormWrapper
+                    key={"accountFindmetaData"}
+                    metaData={insuranceAccountRetrievemetaData as MetaDataType}
+                    formStyle={{
+                      background: "white",
                     }}
-                    onSubmitData={onSubmitHandler}
-                    // isLoading={validateInsuranceEntryData?.isLoading}
-                    // isNewRow={true}
-                    formState={{ MessageBox: MessageBox }}
+                    controlsAtBottom={true}
+                    onSubmitHandler={async (
+                      data: any,
+                      displayData,
+                      endSubmit,
+                      setFieldError,
+                      action
+                    ) => {
+                      //@ts-ignore
+                      endSubmit(true);
+                      setIsRetrieveData(data);
+                      setIsRetrieveOpen(false);
+                      setFormDataRefresh((old) => old + 1);
+                    }}
+                    formState={{
+                      MessageBox: MessageBox,
+                    }}
                     setDataOnFieldChange={(action, payload) => {
                       if (action === "IS_VISIBLE") {
                         setIsData((old) => ({
                           ...old,
                           isVisible: payload?.IS_VISIBLE,
-                          // value: "tab2",
                         }));
                       } else if (action === "TAB_REQUEST") {
                         setReqData(payload);
                       }
                     }}
-                    ref={myMasterRef}
-                    formStyle={{
-                      background: "white",
-                      height: "43vh",
-                      overflowY: "auto",
-                      overflowX: "hidden",
-                    }}
                   >
-                    {({ isSubmitting, handleSubmit }) => {
-                      return (
-                        <>
-                          <Button
-                            onClick={() => {
-                              setIsRetrieveOpen(true);
-                            }}
-                            color={"primary"}
-                            disabled={isSubmitting}
-                          >
-                            {t("Retrieve")}
-                          </Button>
-                          <Button onClick={AddNewRow} color={"primary"}>
-                            {t("AddRow")}
-                          </Button>
+                    {({ isSubmitting, handleSubmit }) => (
+                      <>
+                        <GradientButton
+                          onClick={(event) => {
+                            handleSubmit(event, "Save");
+                          }}
+                          color={"primary"}
+                        >
+                          Ok
+                        </GradientButton>
 
-                          <Button
-                            onClick={handleSubmit}
-                            disabled={isSubmitting}
-                            endIcon={
-                              validateInsuranceEntryData?.isLoading ? (
-                                <CircularProgress size={20} />
-                              ) : null
-                            }
-                            color={"primary"}
-                          >
-                            {t("Save")}
-                          </Button>
-                        </>
-                      );
-                    }}
-                  </MasterDetailsForm>
-                </div>
-                {/* )} */}
+                        <GradientButton
+                          onClick={() => {
+                            setIsRetrieveOpen(false);
+                            setFormDataRefresh((old) => old + 1);
+                            setIsRetrieveData({});
+                          }}
+                          color={"primary"}
+                          // disabled={
+                          //   isSubmitting || getAccountDetails.isLoading || disableButton
+                          // }
+                        >
+                          Cancel
+                        </GradientButton>
+                      </>
+                    )}
+                  </FormWrapper>
+                </Dialog>
               </>
-              {getInsuranceViewData.isLoading ? (
-                <LoaderPaperComponent />
-              ) : getInsuranceViewData?.isError ? (
-                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                  <AppBar position="relative" color="primary">
-                    <Alert
-                      severity="error"
-                      errorMsg={
-                        getInsuranceViewData?.error?.error_msg ?? "Unknow Error"
-                      }
-                      errorDetail={
-                        getInsuranceViewData?.error?.error_detail ?? ""
-                      }
-                      color="error"
-                    />
-                  </AppBar>
-                </div>
-              ) : (
-                <LinearProgressBarSpacer />
-              )}
-              <div
-                style={{
-                  display: isData.value === "tab2" ? "inherit" : "none",
-                }}
-              >
-                <FormWrapper
-                  key={"Insurance-View" + getInsuranceViewData?.isSuccess}
-                  metaData={(ViewInsuranceMetaData as MetaDataType) ?? {}}
-                  initialValues={getInsuranceViewData?.data?.[0] ?? {}}
-                  onSubmitHandler={() => {}}
-                  displayMode={"view"}
-                ></FormWrapper>
-              </div>
-              <div
-                style={{
-                  display: isData.value === "tab3" ? "inherit" : "none",
-                }}
-              >
-                {getInsuranceDetailData.isError && (
-                  <Alert
-                    severity="error"
-                    errorMsg={
-                      getInsuranceDetailData.error?.error_msg ??
-                      "Something went to wrong.."
-                    }
-                    errorDetail={getInsuranceDetailData.error?.error_detail}
-                    color="error"
-                  />
-                )}
-                <>
-                  <GridWrapper
-                    key={`Insurance-Detail`}
-                    finalMetaData={
-                      DetailInsuranceGridMetaData as GridMetaDataType
-                    }
-                    data={getInsuranceDetailData?.data ?? []}
-                    setData={() => {}}
-                    loading={getInsuranceDetailData.isLoading}
-                    actions={actions}
-                    setAction={setCurrentAction}
-                  />
-                </>
-              </div>
-              <>
-                {isRetrieveOpen ? (
-                  <>
-                    <Dialog
-                      open={isRetrieveOpen}
-                      PaperProps={{
-                        style: {
-                          width: "100%",
-                        },
-                      }}
-                      maxWidth="sm"
-                    >
-                      <FormWrapper
-                        key={"accountFindmetaData"}
-                        metaData={
-                          insuranceAccountRetrievemetaData as MetaDataType
-                        }
-                        formStyle={{
-                          background: "white",
-                        }}
-                        controlsAtBottom={true}
-                        onSubmitHandler={async (
-                          data: any,
-                          displayData,
-                          endSubmit,
-                          setFieldError,
-                          action
-                        ) => {
-                          //@ts-ignore
-                          endSubmit(true);
-                          setIsRetrieveData(data);
-                          setIsRetrieveOpen(false);
-                          setFormDataRefresh((old) => old + 1);
-                        }}
-                        formState={{
-                          MessageBox: MessageBox,
-                        }}
-                        setDataOnFieldChange={(action, payload) => {
-                          if (action === "IS_VISIBLE") {
-                            setIsData((old) => ({
-                              ...old,
-                              isVisible: payload?.IS_VISIBLE,
-                            }));
-                          } else if (action === "TAB_REQUEST") {
-                            setReqData(payload);
-                          }
-                        }}
-                      >
-                        {({ isSubmitting, handleSubmit }) => (
-                          <>
-                            <GradientButton
-                              onClick={(event) => {
-                                handleSubmit(event, "Save");
-                              }}
-                              color={"primary"}
-                            >
-                              Ok
-                            </GradientButton>
+            ) : null}
+          </>
+        </Grid>
 
-                            <GradientButton
-                              onClick={() => {
-                                setIsRetrieveOpen(false);
-                                setFormDataRefresh((old) => old + 1);
-                                setIsRetrieveData({});
-                              }}
-                              color={"primary"}
-                              // disabled={
-                              //   isSubmitting || getAccountDetails.isLoading || disableButton
-                              // }
-                            >
-                              Cancel
-                            </GradientButton>
-                          </>
-                        )}
-                      </FormWrapper>
-                    </Dialog>
-                  </>
-                ) : null}
-              </>
-            </Grid>
-
-            <>
-              <Routes>
-                <Route
-                  path="view-detail/*"
-                  element={
-                    <InsuranceDetailForm
-                      handleDialogClose={handleDialogClose}
-                      isDataChangedRef={isDataChangedRef}
-                      defaultView={"view"}
-                    />
-                  }
+        <>
+          <Routes>
+            <Route
+              path="view-detail/*"
+              element={
+                <InsuranceDetailForm
+                  handleDialogClose={handleDialogClose}
+                  isDataChangedRef={isDataChangedRef}
+                  defaultView={"view"}
                 />
-              </Routes>
-            </>
-          </Container>
+              }
+            />
+          </Routes>
         </>
-      )}
-
-      {insuranceDtlOpen ? (
-        <Dialog
-          open={true}
-          fullWidth={true}
-          PaperProps={{
-            style: {
-              width: "100%",
-              overflow: "auto",
-            },
-          }}
-          maxWidth="md"
-        >
-          <InsuranceDetailForm
-            handleDialogClose={handleDialogClose}
-            isDataChangedRef={isDataChangedRef}
-            defaultView={"view"}
-            screenFlag={screenFlag}
-            setInsuranceDtlOpen={setInsuranceDtlOpen}
-          />
-        </Dialog>
-      ) : null}
+      </Container>
     </>
   );
 };
 
-type InsuranceEntryCustomProps = {
-  screenFlag?: any;
-  reqData?: any;
-};
-export const InsuranceEntryForm: React.FC<InsuranceEntryCustomProps> = ({
-  screenFlag,
-  reqData,
-}) => {
+export const InsuranceEntryForm = () => {
   return (
     <ClearCacheProvider>
-      <InsuranceEntry screenFlag={screenFlag} reqApiData={reqData} />
+      <InsuranceEntry />
     </ClearCacheProvider>
   );
 };

@@ -8,30 +8,7 @@ import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { Button, Grid, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import {
-  GridMetaDataType,
-  Alert,
-  GridWrapper,
-  ActionTypes,
-} from "@acuteinfo/common-base";
-import ChequebookTab from "pages_audit/pages/operations/chequeBookTab";
-
-const actions: ActionTypes[] = [
-  {
-    actionName: "Today's-Clearing",
-    actionLabel: "Today's-Clearing",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
-  {
-    actionName: "Cheque-return-histore",
-    actionLabel: "Cheque Return History",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
-];
+import { GridMetaDataType, Alert, GridWrapper } from "@acuteinfo/common-base";
 export const CheckBook = ({ reqData }) => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -40,25 +17,25 @@ export const CheckBook = ({ reqData }) => {
   const [sumAmt, setSumAmt] = useState(0);
   const [sumChqNo, setSumChqNo] = useState(0);
 
-  // const getCheckDetailsList = useMutation(API.getCheckDetailsList, {
-  //   onSuccess: (data) => {
-  //     let sum = 0;
-  //     let sum2 = 0;
-  //     data &&
-  //       data?.map((a) => {
-  //         if (Number(a.AMOUNT)) {
-  //           sum = sum + Number(a.AMOUNT);
-  //         }
-  //         if (Number(a.CHEQUE_TOTAL)) {
-  //           sum2 = sum2 + Number(a.CHEQUE_TOTAL);
-  //         }
-  //       });
-  //     setSumAmt(sum);
-  //     setSumChqNo(sum2);
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
+  const getCheckDetailsList = useMutation(API.getCheckDetailsList, {
+    onSuccess: (data) => {
+      let sum = 0;
+      let sum2 = 0;
+      data &&
+        data?.map((a) => {
+          if (Number(a.AMOUNT)) {
+            sum = sum + Number(a.AMOUNT);
+          }
+          if (Number(a.CHEQUE_TOTAL)) {
+            sum2 = sum2 + Number(a.CHEQUE_TOTAL);
+          }
+        });
+      setSumAmt(sum);
+      setSumChqNo(sum2);
+      setRows(data);
+    },
+    onError: (error) => {},
+  });
   // const getCheckDetailsList = useMutation(API.getCheckDetailsList, {
   //   onSuccess: (data) => {
   //     console.log(data, " check detailssss");
@@ -72,48 +49,47 @@ export const CheckBook = ({ reqData }) => {
   //     getCheckDetailsList.mutate(tempStore.accInfo);
   // }, [tempStore]);
 
-  // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-  //   any,
-  //   any
-  // >(["getCheckDetailsList", { reqData }], () =>
-  //   API.getCheckDetailsList(reqData)
-  // );
-  // console.log(data, "data!");
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getCheckDetailsList", { reqData }], () =>
+    API.getCheckDetailsList(reqData)
+  );
+  console.log(data, "data!");
 
-  // const getTodayClearing = useMutation(API.getTodayClearing, {
-  //   onSuccess: (data) => {
-  //     const obj = [...rows];
-  //     setRows(obj);
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //   },
-  // });
-  // const getReturnHistory = useMutation(API.getReturnHistory, {
-  //   onSuccess: (data) => {
-  //     const obj = [...rows];
-  //     setRows(obj);
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //   },
-  // });
+  const getTodayClearing = useMutation(API.getTodayClearing, {
+    onSuccess: (data) => {
+      const obj = [...rows];
+      setRows(obj);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const getReturnHistory = useMutation(API.getReturnHistory, {
+    onSuccess: (data) => {
+      const obj = [...rows];
+      setRows(obj);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
 
-  // const handleTodayClearing = () => {
-  //   getTodayClearing.mutate(tempStore?.accInfo);
-  // };
-  // const handleReturnHistory = () => {
-  //   let obj = { ...tempStore?.accInfo, authState };
-  //   getReturnHistory.mutate(obj);
-  // };
+  const handleTodayClearing = () => {
+    getTodayClearing.mutate(tempStore?.accInfo);
+  };
+  const handleReturnHistory = () => {
+    let obj = { ...tempStore?.accInfo, authState };
+    getReturnHistory.mutate(obj);
+  };
   return (
     <>
-      <ChequebookTab screenFlag="chequesDtlForTrn" reqData={reqData} />
-      {/* {isError ? (
+      {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
             <Alert
@@ -171,7 +147,7 @@ export const CheckBook = ({ reqData }) => {
             Total Chq No: {sumChqNo}
           </Typography>
         </Grid>
-      </Grid> */}
+      </Grid>
     </>
   );
 };
