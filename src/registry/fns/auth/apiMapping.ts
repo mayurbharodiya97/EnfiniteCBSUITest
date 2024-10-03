@@ -2713,6 +2713,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
+  GETEMICACLCULATEDATA: {
+    url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
+    packageName: "",
+  },
+  DOGETEMICALCULATEREPORT: {
+    url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
