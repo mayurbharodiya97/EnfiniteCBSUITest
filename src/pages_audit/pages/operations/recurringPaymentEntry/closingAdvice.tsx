@@ -461,10 +461,7 @@ const ClosingAdvice = ({ handleCloseAdviceDetails }) => {
           open={true}
           PaperProps={{
             style: {
-              overflow: "auto",
-              padding: "10px",
-              width: "600px",
-              height: "100px",
+              width: "100%",
             },
           }}
           maxWidth="md"
