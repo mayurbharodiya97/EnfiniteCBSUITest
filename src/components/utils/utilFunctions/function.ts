@@ -192,7 +192,6 @@ export const transformBlobData = (data) => {
 };
 
 export const transformDetailsData = (newData, oldData) => {
-  console.log("<<<tran", newData, oldData);
   let allKey = Object.keys(newData);
   let _UPDATEDCOLUMNS: any = [];
   let _OLDROWVALUE = {};

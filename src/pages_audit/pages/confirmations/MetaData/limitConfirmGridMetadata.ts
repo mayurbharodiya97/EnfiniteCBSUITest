@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const limitConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "LimitConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

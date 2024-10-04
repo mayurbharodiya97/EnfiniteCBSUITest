@@ -357,9 +357,9 @@ export const impsRegDetails = {
       //   agreeButtonName: "Yes",
       //   errorTitle: "Are you Sure you want to delete this row?",
       //   removeRowFn: "deleteFormArrayFieldData",
-      fixedRows: true,
-      // isScreenStyle: true,
-      // isRemoveButton: false,
+      //   fixedRows: true,
+      //   isScreenStyle: true,
+      //   isRemoveButton: false,
       GridProps: {
         xs: 12,
         md: 12,
@@ -1010,26 +1010,6 @@ export const impsRegDetails = {
               return true;
             }
             return false;
-          },
-        },
-        {
-          render: {
-            componentType: "formbutton",
-          },
-          name: "ALLLOW_DELETE",
-          label: "Delete",
-          dependentFields: ["REG_DATE", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
-          __VIEW__: {
-            render: {
-              componentType: "hidden",
-            },
-          },
-          GridProps: {
-            xs: 12,
-            sm: 1,
-            md: 1,
-            lg: 1,
-            xl: 1,
           },
         },
       ],

@@ -1,7 +1,43 @@
 import { GeneralAPI } from "registry/fns/functions";
-import * as API from "../../api";
+import * as API from "../api";
+import { utilFunction } from "@acuteinfo/common-base";
 
 export const atmentrymetadata = {
+  form: {
+    name: "atm-registration-metadata2",
+    label: "ATMRegistrationEntryMST846",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 3,
+          md: 3,
+        },
+        container: {
+          direction: "row",
+          spacing: 1.5,
+        },
+      },
+    },
+    componentProps: {
+      datePicker: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      textField: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+    },
+  },
   fields: [
     {
       render: {
@@ -15,7 +51,6 @@ export const atmentrymetadata = {
         }
         return true;
       },
-      fullWidth: true,
       TypographyProps: { variant: "subtitle2" },
       GridProps: {
         xs: 12,
@@ -32,7 +67,6 @@ export const atmentrymetadata = {
       },
       name: "CUSTOMER_ID",
       label: "CustomerId",
-      fullWidth: true,
       // isFieldFocused: true,
       placeholder: "Enter Customer Id",
       dependentFields: ["PARA_602", "PARA_946"],
@@ -148,7 +182,6 @@ export const atmentrymetadata = {
       name: "ORGINAL_NM",
       label: "AcctOrignalName",
       isReadOnly: true,
-      fullWidth: true,
       GridProps: {
         xs: 12,
         md: 3,
@@ -165,7 +198,6 @@ export const atmentrymetadata = {
       name: "ACCT_NM",
       label: "NameOnCard",
       required: true,
-      fullWidth: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -184,7 +216,6 @@ export const atmentrymetadata = {
         componentType: "numberFormat",
       },
       name: "MOBILE_NO",
-      fullWidth: true,
       isReadOnly: true,
       label: "MobileNo",
       GridProps: {
@@ -201,7 +232,6 @@ export const atmentrymetadata = {
       },
       name: "SMS_ALERT",
       label: "SMSAlert",
-      fullWidth: true,
       dependentFields: ["DISABLE_SMS_ALERT"],
       isReadOnly: (fieldData, dependentFieldsValues) => {
         if (dependentFieldsValues?.DISABLE_SMS_ALERT?.value === "Y") {
@@ -224,7 +254,6 @@ export const atmentrymetadata = {
       },
       name: "CARD_PRINT",
       label: "CardPrinting",
-      fullWidth: true,
       GridProps: {
         xs: 12,
         sm: 1,
@@ -240,7 +269,6 @@ export const atmentrymetadata = {
       },
       branchCodeMetadata: {
         validationRun: "onChange",
-        fullWidth: true,
         label: "SBAccountBranch",
         name: "SB_BRANCH_CD",
         GridProps: {
@@ -281,7 +309,6 @@ export const atmentrymetadata = {
       },
       accountTypeMetadata: {
         label: "SBAccountType",
-        fullWidth: true,
         name: "SB_ACCT_TYPE",
         GridProps: {
           xs: 12,
@@ -315,7 +342,6 @@ export const atmentrymetadata = {
       accountCodeMetadata: {
         label: "SBAccountCode",
         name: "SB_ACCT_CD",
-        fullWidth: true,
         GridProps: {
           xs: 12,
           md: 2.5,
@@ -438,7 +464,6 @@ export const atmentrymetadata = {
       name: "SB_ACCT_NM",
       label: "SBAccountName",
       type: "text",
-      fullWidth: true,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -455,7 +480,6 @@ export const atmentrymetadata = {
       branchCodeMetadata: {
         label: "CAAccountBranch",
         name: "CA_BRANCH_CD",
-        fullWidth: true,
         GridProps: {
           xs: 12,
           md: 2.5,
@@ -496,7 +520,6 @@ export const atmentrymetadata = {
       accountTypeMetadata: {
         label: "CAAccountType",
         name: "CA_TYPE_CD",
-        fullWidth: true,
         GridProps: {
           xs: 12,
           md: 2.5,
@@ -523,7 +546,6 @@ export const atmentrymetadata = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
-        fullWidth: true,
         // disableCaching: true,
         GridProps: {
           xs: 12,
@@ -646,7 +668,6 @@ export const atmentrymetadata = {
       name: "CA_ACCT_NM",
       label: "CAAccountName",
       type: "text",
-      fullWidth: true,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -662,7 +683,6 @@ export const atmentrymetadata = {
       },
       branchCodeMetadata: {
         label: "ODAccountBranch",
-        fullWidth: true,
         name: "CC_BRANCH_CD",
         dependentFields: ["PARA_311"],
         isReadOnly: (fieldData, dependentFieldsValues, formState) => {
@@ -712,7 +732,6 @@ export const atmentrymetadata = {
       accountTypeMetadata: {
         label: "ODAccountType",
         name: "CC_ACCT_TYPE",
-        fullWidth: true,
         validationRun: "onChange",
         options: (dependentValue, formState, _, authState) => {
           return API.acctTypeList({
@@ -743,7 +762,6 @@ export const atmentrymetadata = {
         },
       },
       accountCodeMetadata: {
-        fullWidth: true,
         // disableCaching: true,
         GridProps: {
           xs: 12,
@@ -868,7 +886,6 @@ export const atmentrymetadata = {
       label: "ODAccountName",
       type: "text",
       isReadOnly: true,
-      fullWidth: true,
       GridProps: {
         xs: 12,
         md: 4.5,

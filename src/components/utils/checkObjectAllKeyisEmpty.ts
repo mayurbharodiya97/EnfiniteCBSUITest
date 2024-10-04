@@ -109,7 +109,6 @@ export const CreateLanguageRequestData = (reqData, languageData) => {
 };
 
 export const CreateDetailsRequestData = (reqData) => {
-  console.log("<<<reqdata", reqData);
   let _isNewRowdata: any[] = [];
   let _isDeleteRowdata: any[] = [];
   let _isUpdatedRowdata: any[] = [];

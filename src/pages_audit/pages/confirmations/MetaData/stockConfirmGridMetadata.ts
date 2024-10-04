@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const stockConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "StockConfirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

@@ -76,7 +76,6 @@ export const CardDetailsMetaData = {
         authState,
         dependentValue
       ) => {
-        if (formState?.isSubmitting) return {};
         if (field?.value) {
           let statusData: any = [];
           formState?.setIsData((old) => {
@@ -101,7 +100,6 @@ export const CardDetailsMetaData = {
             ISSUE_DT: formState?.reqData?.ISSUE_DT ?? "",
             CONFIRMED: formState?.reqData?.CONFIRMED ?? "",
             PARA_320: formState?.reqData?.PARA_320,
-            PARA_604: formState?.reqData?.PARA_604,
             SCREEN_REF: "MST/846",
           };
           let { resp, status } = await API.validateCardStatus(apiReq);
@@ -120,7 +118,6 @@ export const CardDetailsMetaData = {
                   DEACTIVE_DT_DISABLE: { value: "" },
                   CITIZEN_ID_VISIBLE: { value: "" },
                   M_CARD_NO_VISIBLE: { value: "" },
-                  CARD_NO_VISIBLE: { value: "" },
                   DEACTIVE_DT: { value: "" },
                   DEACTIVE_DT_VISIBLE: { value: "" },
                   ISSUE_DT: { value: "" },
@@ -135,7 +132,6 @@ export const CardDetailsMetaData = {
                 DEACTIVE_DT_DISABLE: { value: resp?.DEACTIVE_DT_DISABLE },
                 CITIZEN_ID_VISIBLE: { value: resp?.CITIZEN_ID_VISIBLE },
                 M_CARD_NO_VISIBLE: { value: resp?.M_CARD_NO_VISIBLE },
-                CARD_NO_VISIBLE: { value: resp?.CARD_NO_VISIBLE },
                 DEACTIVE_DT: { value: resp?.DEACTIVE_DT },
                 DEACTIVE_DT_VISIBLE: { value: resp?.DEACTIVE_DT_VISIBLE },
                 REMARKS_DISABLE: { value: resp?.REMARKS_DISABLE },
@@ -157,7 +153,6 @@ export const CardDetailsMetaData = {
             DEACTIVE_DT_DISABLE: { value: "" },
             CITIZEN_ID_VISIBLE: { value: "" },
             M_CARD_NO_VISIBLE: { value: "" },
-            CARD_NO_VISIBLE: { value: "" },
             DEACTIVE_DT: { value: "" },
             DEACTIVE_DT_VISIBLE: { value: "" },
             ISSUE_DT: { value: "" },
@@ -304,20 +299,20 @@ export const CardDetailsMetaData = {
       },
     },
 
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "CUSTOMER_NM",
-    //   label: "CustomerName",
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 3.5,
-    //     sm: 3.5,
-    //     lg: 3.5,
-    //     xl: 3.5,
-    //   },
-    // },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CUSTOMER_NM",
+      label: "CustomerName",
+      GridProps: {
+        xs: 12,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
+      },
+    },
 
     {
       render: {
@@ -452,7 +447,7 @@ export const CardDetailsMetaData = {
         lg: 4,
         xl: 4,
       },
-      dependentFields: ["STATUS", "M_CARD_NO_VISIBLE", "CARD_NO"],
+      dependentFields: ["STATUS", "M_CARD_NO_VISIBLE"],
       shouldExclude(fieldData, dependentFields) {
         if (
           dependentFields?.STATUS?.value === "P" ||
@@ -463,57 +458,7 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
-      validate: (columnValue) => {
-        if (!columnValue.value) {
-          return "Please Enter Card Number";
-        } else if (columnValue.value?.length != 16) {
-          return "Card number should be 16 digits";
-        }
-        return "";
-      },
-      // setValueOnDependentFieldsChange: (dependentFields) => {
-      //   let value = dependentFields?.CARD_NO?.value;
-      //   return value;
-      // },
     },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "CARD_NO",
-      // maxLength: 16,
-      placeholder: "Enter Card No.",
-      label: "CardNo",
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-        lg: 4,
-        xl: 4,
-      },
-      dependentFields: ["CARD_NO_VISIBLE", "M_CARD_NO"],
-      shouldExclude(fieldData, dependentFields) {
-        if (dependentFields?.CARD_NO_VISIBLE?.value === "Y") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-
-      validate: (columnValue) => {
-        if (!columnValue.value) {
-          return "Please Enter Card Number";
-        } else if (columnValue.value?.length != 16) {
-          return "Card number should be 16 digits";
-        }
-        return "";
-      },
-      // setValueOnDependentFieldsChange: (dependentFields) => {
-      //   let value = dependentFields?.M_CARD_NO?.value;
-      //   return value;
-      // },
-    },
-
     {
       render: {
         componentType: "autocomplete",
@@ -669,12 +614,6 @@ export const CardDetailsMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "CARD_NO_VISIBLE",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
       name: "EXPIRY_DT_DISABLE",
     },
     {
@@ -699,13 +638,7 @@ export const CardDetailsMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "TRAN_CD",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "REASON",
+      name: "CARD_NO",
     },
     {
       render: {

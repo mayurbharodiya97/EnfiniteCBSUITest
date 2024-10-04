@@ -2,18 +2,25 @@ import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { dayLimitData } from "../api";
-import { useEffect } from "react";
+import {
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
-const DayLimitCustom = ({ navigate }) => {
+export const DayLimit = ({ navigate }) => {
   const { state: rows }: any = useLocation();
   const { MessageBox } = usePopupContext();
 
-  const dailyLimitData: any = useMutation("validateDeleteData", dayLimitData);
-  useEffect(() => {
-    return () => {
-      dailyLimitData.mutate({
+  const { data, isError, isSuccess, error, isLoading } = useQuery<any, any>(
+    ["daylimit"],
+    () =>
+      dayLimitData({
         DTL_ROW: [
           {
             REG_DATE: rows?.REG_DATE,
@@ -42,9 +49,12 @@ const DayLimitCustom = ({ navigate }) => {
           },
         ],
         SCREEN_REF: "MST/843",
-      });
-    };
-  }, []);
+      }),
+    {
+      enabled: !!rows?.TRAN_CD,
+      onSuccess(data) {},
+    }
+  );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -67,15 +77,15 @@ const DayLimitCustom = ({ navigate }) => {
             },
           }}
         >
-          {dailyLimitData?.isLoading ? (
+          {isLoading ? (
             <LinearProgress color="secondary" />
-          ) : dailyLimitData?.isError ? (
+          ) : isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={dailyLimitData?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={dailyLimitData?.error?.error_detail ?? ""}
+                  errorMsg={error?.error_msg ?? "Unknow Error"}
+                  errorDetail={error?.error_detail ?? ""}
                   color="error"
                 />
               </AppBar>
@@ -85,16 +95,10 @@ const DayLimitCustom = ({ navigate }) => {
           )}
 
           <FormWrapper
-            key={`day-limit-Form` + dailyLimitData?.isSuccess}
+            key={`day-limit-Form` + isSuccess}
             metaData={dayLimitFormMetaData as MetaDataType}
-            initialValues={dailyLimitData?.data?.[0] ?? {}}
-            displayMode={
-              dailyLimitData?.data?.[0]?.READ_ONLY === "Y" ||
-              rows?.FLAG === "C" ||
-              dailyLimitData?.isLoading
-                ? "view"
-                : null
-            }
+            initialValues={data?.[0] ?? {}}
+            displayMode={data?.[0]?.READ_ONLY === "Y" ? "view" : null}
             onSubmitHandler={onSubmitHandler}
             formState={{ MessageBox: MessageBox }}
             formStyle={{
@@ -103,8 +107,7 @@ const DayLimitCustom = ({ navigate }) => {
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
-                rows?.FLAG === "C" ? (
+                {data?.[0]?.READ_ONLY !== "Y" && (
                   <Button
                     color={"primary"}
                     // onClick={(event) =>
@@ -116,7 +119,7 @@ const DayLimitCustom = ({ navigate }) => {
                   >
                     {t("Save")}
                   </Button>
-                ) : null}
+                )}
 
                 <Button onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
@@ -127,13 +130,5 @@ const DayLimitCustom = ({ navigate }) => {
         </Dialog>
       </>
     </>
-  );
-};
-
-export const DayLimit = ({ navigate }) => {
-  return (
-    <ClearCacheProvider>
-      <DayLimitCustom navigate={navigate} />
-    </ClearCacheProvider>
   );
 };
