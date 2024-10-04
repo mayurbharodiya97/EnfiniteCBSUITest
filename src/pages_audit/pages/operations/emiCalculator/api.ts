@@ -102,18 +102,30 @@ export const validateDisburseDetail = async ({ ...reqdata }) => {
   }
 };
 
-export const getRecurringCalculateData = async ({ ...reqData }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRECURRINGCALCULATEDAMOUNT", {
-      ...reqData,
-    });
+export const emiCalculateData = async ({ ...reqdata }) => {
+  const { data, status, message } = await AuthSDK.internalFetcher(
+    "GETEMICACLCULATEDATA",
+    {
+      ...reqdata,
+    }
+  );
   if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-      };
-    });
+    return data;
   } else {
-    throw DefaultErrorObject(message, messageDetails);
+    throw DefaultErrorObject(message);
+  }
+};
+
+export const emiReportData = async ({ ...reqdata }) => {
+  const { data, status, message } = await AuthSDK.internalFetcher(
+    "DOGETEMICALCULATEREPORT",
+    {
+      ...reqdata,
+    }
+  );
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message);
   }
 };
