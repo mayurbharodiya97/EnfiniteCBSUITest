@@ -15,12 +15,10 @@ import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import {
   ClearCacheProvider,
-  MasterDetailsMetaData,
   MasterDetailsForm,
-  PDFViewer,
-  utilFunction,
-  GridMetaDataType,
+  MasterDetailsMetaData,
 } from "@acuteinfo/common-base";
+
 const ConfirmationCustom = () => {
   const [isData, setIsData] = useState<any>({
     gridData: [],
