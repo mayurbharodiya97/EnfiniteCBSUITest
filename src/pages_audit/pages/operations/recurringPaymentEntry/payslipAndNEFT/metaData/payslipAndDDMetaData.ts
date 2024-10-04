@@ -254,6 +254,10 @@ export const PayslipAndDDFormMetaData = {
                   value: amountValue ?? "",
                   ignoreUpdate: true,
                 },
+                AMOUNT_HIDDEN: {
+                  value: amountValue ?? "",
+                  ignoreUpdate: true,
+                },
                 COMM_TYPE_CD: {
                   value: currentField?.optionData?.[0]?.TYPE_CD ?? "",
                   ignoreUpdate: true,
@@ -279,6 +283,9 @@ export const PayslipAndDDFormMetaData = {
                   value: "",
                 },
                 COMM_TYPE_CD: {
+                  value: "",
+                },
+                AMOUNT_HIDDEN: {
                   value: "",
                 },
               };
@@ -369,9 +376,14 @@ export const PayslipAndDDFormMetaData = {
           name: "PAYSLIP_NO",
           label: "payslipNumber",
           placeholder: "EnterPayslipNumber",
+          className: "textInputFromRight",
           type: "number",
           maxLength: 12,
           disableCaching: true,
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: false,
+            touchAndValidate: false,
+          },
           dependentFields: ["DEF_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             return dependentFields["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
@@ -497,10 +509,6 @@ export const PayslipAndDDFormMetaData = {
           placeholder: "EnterAmount",
           autoComplete: "off",
           required: true,
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: false,
-            touchAndValidate: false,
-          },
           FormatProps: {
             allowLeadingZeros: false,
             allowNegative: false,
@@ -514,7 +522,7 @@ export const PayslipAndDDFormMetaData = {
               return true;
             },
           },
-          dependentFields: ["DEF_TRAN_CD"],
+          dependentFields: ["DEF_TRAN_CD", "AMOUNT_HIDDEN"],
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -522,6 +530,16 @@ export const PayslipAndDDFormMetaData = {
             dependentFieldsValues
           ) => {
             if (formState?.isSubmitting) return {};
+
+            if (
+              parseFloat(currentField?.value).toFixed(2) ===
+              parseFloat(
+                dependentFieldsValues?.["PAYSLIPDD.AMOUNT_HIDDEN"]?.value
+              ).toFixed(2)
+            ) {
+              return {};
+            }
+
             if (
               currentField?.value &&
               formState?.accountDetailsForPayslip?.ACCT_TYPE &&
@@ -562,6 +580,10 @@ export const PayslipAndDDFormMetaData = {
                   value: gstApiData?.[0]?.GST_ROUND ?? "",
                   ignoreUpdate: true,
                 },
+                AMOUNT_HIDDEN: {
+                  value: currentField?.value ?? "",
+                  ignoreUpdate: true,
+                },
               };
             } else if (!currentField?.value) {
               return {
@@ -570,6 +592,9 @@ export const PayslipAndDDFormMetaData = {
                   ignoreUpdate: true,
                 },
                 REGION: {
+                  value: "",
+                },
+                AMOUNT_HIDDEN: {
                   value: "",
                 },
               };
@@ -594,6 +619,13 @@ export const PayslipAndDDFormMetaData = {
             lg: 2.4,
             xl: 2.4,
           },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "AMOUNT_HIDDEN",
         },
 
         {

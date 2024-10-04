@@ -2,6 +2,7 @@ import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
 import { GridMetaDataType } from "@acuteinfo/common-base";
+import { getDailyTransactionImportData } from "./api";
 
 export const DailyTransactionImportMetadata = {
   form: {
@@ -50,15 +51,14 @@ export const DailyTransactionImportMetadata = {
     },
   },
   fields: [
-    {
-      render: {
-        componentType: "divider",
-      },
-      // dividerText: "IFSC Bank Detail",
-      name: "AccountDetail",
-      label: "Please Enter Details",
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    },
+    // {
+    //   render: {
+    //     componentType: "divider",
+    //   },
+    //   name: "AccountDetail",
+    //   label: "Please Enter Details",
+    //   GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    // },
     {
       render: {
         componentType: "_accountNumber",
@@ -138,9 +138,7 @@ export const DailyTransactionImportMetadata = {
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
             };
-            console.log("Apireq", Apireq);
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
-
             let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
@@ -178,23 +176,7 @@ export const DailyTransactionImportMetadata = {
                 } else {
                   returnVal = "";
                 }
-                // let gridDetail = await getDailyTransactionImportData({
-                //   COMP_CD: auth?.companyID,
-                //   BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                //   ACCT_CD: utilFunction.getPadAccountNumber(
-                //     field?.value,
-                //     dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                //   ),
-                //   ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                //   FLAG: "R",
-                //   CHEQUE_NO:"",
-                //   OPP_ENT:"",
-                //   REMARKS:"",
-                //   TABLE_NM:"",
-                //   IGNR_INSUF:"",
-                // });
-                // console.log("gridDetail",gridDetail)
-                // formState.setDataOnFieldChange("JOINT_DETAIL", gridDetail);
+                formState.setDataOnFieldChange("API_REQ", Apireq);
               }
             }
             btn99 = 0;
@@ -284,7 +266,60 @@ export const DailyTransactionImportMetadata = {
         });
       },
       _optionsKey: "getDailyImportConfigData",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["PleaseEnterConfiguration"],
+          },
+        ],
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentFieldValues
+      ) => {
+        if (field.value) {
+          return {
+            TABLE_NM: {
+              value: field?.optionData?.[0]?.TABLE_NM,
+            },
+            TRAN_CD: {
+              value: field?.optionData?.[0]?.TRAN_CD,
+            },
+            FILE_FORMAT: {
+              value: field?.optionData?.[0]?.FILE_FORMAT,
+            },
+          };
+        } else {
+          return {
+            TABLE_NM: { value: "" },
+            TRAN_CD: { value: "" },
+            FILE_FORMAT: { value: "" },
+          };
+        }
+      },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FILE_FORMAT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TABLE_NM",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
     },
     {
       render: {
@@ -295,7 +330,6 @@ export const DailyTransactionImportMetadata = {
       placeholder: "Cheque No.",
       type: "text",
       autoComplete: "off",
-
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
@@ -329,7 +363,7 @@ export const DailyTransactionImportMetadata = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Information",
-            message: "Enter Account Information",
+            message: "EnterAccountInformation",
             buttonNames: ["Ok"],
           });
 
@@ -448,7 +482,7 @@ export const DailyTransactionImportMetadata = {
         componentType: "checkbox",
       },
       name: "OPP_ENT",
-      label: "Generate Opposite Entry",
+      label: "GenerateOppositeEntry",
       defaultValue: true,
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
@@ -457,7 +491,7 @@ export const DailyTransactionImportMetadata = {
         componentType: "checkbox",
       },
       name: "IGNR_INSUF",
-      label: "Ignore Insufficient Balance",
+      label: "IgnoreInsufficientBalance",
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
     {
@@ -469,8 +503,6 @@ export const DailyTransactionImportMetadata = {
       rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
-
-      // GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
       GridProps: {
         xs: 12,
         md: 1,
@@ -520,8 +552,8 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "POLICY_NO",
-      columnName: "Debit From Account",
+      accessor: "CREDIT_AC",
+      columnName: "CreditToAccount",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -540,8 +572,8 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "TYPE",
-      columnName: "Trx.",
+      accessor: "TYPE_CD",
+      columnName: "Trx",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -552,7 +584,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque No",
+      columnName: "ChequeNo",
       sequence: 5,
       alignment: "left",
       componentType: "default",

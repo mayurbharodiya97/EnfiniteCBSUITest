@@ -1,4 +1,4 @@
-import { Dialog } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -161,26 +161,28 @@ const FdInterestPaymentconfForm = ({
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <GradientButton
-                onClick={(event) => {
-                  handleSubmit(event, "Confirm");
-                }}
-                disabled={rowsData?.[0]?.data?.ALLOW_CONFIRM === "N"}
-                color={"primary"}
-              >
-                {t("Confirm")}
-              </GradientButton>
-              <GradientButton
-                onClick={(event) => {
-                  handleSubmit(event, "Reject");
-                }}
-                color={"primary"}
-              >
-                {t("Reject")}
-              </GradientButton>
-              <GradientButton onClick={closeDialog} color={"primary"}>
-                {t("Close")}
-              </GradientButton>
+              <Box display="flex" gap={2}>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Confirm");
+                  }}
+                  disabled={rowsData?.[0]?.data?.ALLOW_CONFIRM === "N"}
+                  color={"primary"}
+                >
+                  {t("Confirm")}
+                </GradientButton>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Reject");
+                  }}
+                  color={"primary"}
+                >
+                  {t("Reject")}
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  {t("Close")}
+                </GradientButton>
+              </Box>
             </>
           )}
         </FormWrapper>

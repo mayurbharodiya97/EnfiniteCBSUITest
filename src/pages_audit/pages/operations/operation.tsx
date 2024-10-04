@@ -265,7 +265,7 @@ export const OperationsMenu = () => (
     /> */}
 
     <Route
-      path="fix-deposit/*"
+      path="fix-deposit-entry/*"
       element={
         <FDContextWrapper>
           <FDDetailGrid />

@@ -65,6 +65,7 @@ export const ViewStatement = ({
           },
         });
         close();
+        onClose();
       },
       onError: async (error: any) => {
         const btnName = await MessageBox({
@@ -84,7 +85,7 @@ export const ViewStatement = ({
       onSuccess: async (data: any) => {
         if (data?.[0]?.O_STATUS === "999") {
           const btnName = await MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: "ValidationFailed",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Ok"],
           });
@@ -268,14 +269,14 @@ export const ViewStatement = ({
                     passbookValidation?.isFetching ||
                     disableButton
                   }
-                  endIcon={
+                  endicon={
                     acctInqData?.isLoading ||
                     acctInqData?.isFetching ||
                     passbookInqData?.isLoading ||
                     passbookInqData?.isFetching ||
                     passbookValidation?.isLoading ||
                     passbookValidation?.isFetching
-                      ? null
+                      ? undefined
                       : "CheckCircleOutline"
                   }
                   rotateIcon="scale(1.4)"

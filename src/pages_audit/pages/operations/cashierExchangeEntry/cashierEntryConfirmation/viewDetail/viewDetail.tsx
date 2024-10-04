@@ -1,18 +1,17 @@
 import {
   AppBar,
   Box,
-  Button,
   Dialog,
   Divider,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { useEffect, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { FromUserMetadata, ToUserMetadata } from "./viewDetailMetadata";
-import { InitialValuesType } from "packages/form";
-import { usePopupContext } from "components/custom/popupContext";
+import { InitialValuesType } from "@acuteinfo/common-base";
+import { usePopupContext } from "@acuteinfo/common-base";
 import CashierExchangeTable from "../../tableComponent/tableComponent";
 import { CashierConfirmationMetaData } from "./viewTableMetadata";
 import { useMutation } from "react-query";
@@ -67,11 +66,11 @@ const CashierEntryViewDetail = ({
 
   const handleConfirm = async () => {
     const MapFrom = stateData.fromData.map((row) => ({
-      ENTERED_COMP_CD: row.ENTERED_COMP_CD,
-      ENTERED_BRANCH_CD: row.ENTERED_BRANCH_CD,
-      SCROLL1: row.SCROLL1,
-      TYPE_CD: row.TYPE_CD,
-      TRAN_CD: row.TRAN_CD,
+      ENTERED_COMP_CD: row?.ENTERED_COMP_CD,
+      ENTERED_BRANCH_CD: row?.ENTERED_BRANCH_CD,
+      SCROLL1: row?.SCROLL1,
+      TYPE_CD: row?.TYPE_CD,
+      TRAN_CD: row?.TRAN_CD,
     }));
 
     const request = {
@@ -148,6 +147,7 @@ const CashierEntryViewDetail = ({
             metaData={FromUserMetadata as MetaDataType}
             hideHeader
             formStyle={{ height: "auto" }}
+            onSubmitHandler={() => {}}
             initialValues={isData.fromUserData as InitialValuesType}
           />
           <CashierExchangeTable
@@ -168,6 +168,7 @@ const CashierEntryViewDetail = ({
             metaData={ToUserMetadata as MetaDataType}
             hideHeader
             formStyle={{ height: "auto" }}
+            onSubmitHandler={() => {}}
             initialValues={isData.toUserData as InitialValuesType}
           />
           <CashierExchangeTable
@@ -182,16 +183,10 @@ const CashierEntryViewDetail = ({
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-        <Button
-          onClick={handleConfirm}
-          disabled={
-            isData.fromUserData.ALLOW_CONFIRM === "N" &&
-            isData.toUserData.ALLOW_CONFIRM === "N"
-          }
-          color="primary"
-        >
-          Ok
-        </Button>
+        {isData?.fromUserData?.ALLOW_CONFIRM !== "N" &&
+          isData?.toUserData?.ALLOW_CONFIRM !== "N" && (
+            <GradientButton onClick={handleConfirm}>Ok</GradientButton>
+          )}
         <GradientButton onClick={handleClose}>Cancel</GradientButton>
         <GradientButton onClick={handleDelete}>Delete</GradientButton>
       </Box>

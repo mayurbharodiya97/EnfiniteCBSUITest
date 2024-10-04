@@ -84,12 +84,14 @@ export const getGstOtwardTemplateDdw = async ({
   BASE_COMP_CD,
   BASE_BRANCH_CD,
   TEMPLATE_TYPE,
+  GSTMODE,
 }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETGSTTEMPLATEDDW", {
       BASE_COMP_CD: BASE_COMP_CD,
       BASE_BRANCH_CD: BASE_BRANCH_CD,
-      TEMPLATE_TYPE: "OUT",
+      TEMPLATE_TYPE: TEMPLATE_TYPE,
+      GSTMODE: GSTMODE,
     });
   if (status === "0") {
     let responseData = data;

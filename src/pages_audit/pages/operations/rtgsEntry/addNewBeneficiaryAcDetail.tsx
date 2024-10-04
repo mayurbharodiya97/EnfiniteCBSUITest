@@ -24,7 +24,7 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
-import { Theme, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import {
   AddNewBenfiDetailGridMetadata,

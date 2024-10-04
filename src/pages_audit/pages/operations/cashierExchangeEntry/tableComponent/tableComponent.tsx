@@ -1,8 +1,6 @@
-import React, {
+import {
   useEffect,
   useState,
-  useMemo,
-  useContext,
   useRef,
   forwardRef,
   useImperativeHandle,
@@ -17,15 +15,16 @@ import {
   Typography,
   AppBar,
   Toolbar,
-  Button,
   Box,
 } from "@mui/material";
 import { useStyles, StyledTableCell } from "./style";
-import { TextField } from "components/styledComponent";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
-import { CashierExchangeTableProps, Field } from "./type";
+import {
+  TextField,
+  usePropertiesConfigContext,
+  formatCurrency,
+  getCurrencySymbol,
+} from "@acuteinfo/common-base";
+import { CashierExchangeTableProps } from "./type";
 const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
   (
     {
@@ -40,7 +39,7 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
     },
     ref
   ) => {
-    const customParameter = useContext(CustomPropertiesConfigurationContext);
+    const customParameter = usePropertiesConfigContext();
     const [apiData, setApiData] = useState(data || []);
     const [inputData, setInputData] = useState({});
     const { dynamicAmountSymbol, currencyFormat, decimalCount } =
@@ -99,12 +98,10 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
       const fieldMetadata = metadata?.fields.find(
         (field) => field.name === fieldName
       );
-      //make this working not accept empty value or NaN value while blur perform and edit state update.
       if (
         currentFieldValue === undefined ||
         currentFieldValue === rowData[fieldName]
       ) {
-        // Skip if the value is unchanged
         return;
       }
       const setDependentValue = (targetFieldName, value) => {
@@ -147,10 +144,15 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
           ...row,
           ...inputData[index],
         }))
-        .filter(
-          (_, index) =>
-            inputData[index] && Object.keys(inputData[index]).length > 0
-        );
+        .filter((_, index) => {
+          const input = inputData[index];
+          return (
+            input &&
+            !Object.values(input).some(
+              (value) => value === null || value === ""
+            )
+          );
+        });
       const finalData = {
         tableData: updatedRows,
         tableDisplayData: apiData,
@@ -163,8 +165,6 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
       saveData: functionFn,
       getFooterTotals: calculateColumnTotalsforRemain,
     }));
-    //remove currency because calculation is perform on isCalculation prop.
-    //rename totals
     const calculateColumnTotals = () => {
       return metadata?.fields.reduce((totals, field) => {
         if (field.isCalculation) {
@@ -252,7 +252,6 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
                           key={`${meta?.name}-${index}`}
                           align="center"
                         >
-                          {/*Give align from metadata. */}
                           {meta?.label}
                         </StyledTableCell>
                       ))}

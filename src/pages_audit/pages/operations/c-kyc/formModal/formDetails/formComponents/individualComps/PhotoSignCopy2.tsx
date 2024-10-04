@@ -9,6 +9,7 @@ import React, {
   useMemo,
   Fragment,
 } from "react";
+import { queryClient } from "@acuteinfo/common-base";
 import {
   Box,
   Button,
@@ -23,7 +24,6 @@ import {
   Slider,
   Tooltip,
   Typography,
-  makeStyles,
 } from "@mui/material";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
