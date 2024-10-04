@@ -60,7 +60,7 @@ export const accountFindmetaData = {
               currentField?.value ?? "",
               dependentFieldValues?.ACCT_TYPE?.optionData
             ),
-            SCREEN_REF: "TRN/584",
+            SCREEN_REF: formState?.docCD ?? "",
           };
 
           if (

@@ -2617,8 +2617,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
     packageName: "",
   },
+  SAVERECEIPTPAYMENTDTL: {
+    url: "/transactionServiceAPI/SAVERECEIPTPAYMENTDTL",
+    packageName: "",
+  },
   VALIDATEATMREGSAVEDATA: {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
+    packageName: "",
+  },
+  DOATMREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/DOATMREGISTRATIONDML",
     packageName: "",
   },
   DELETEIMPORTEDDATA: {
@@ -2643,6 +2651,38 @@ export const ActionWiseAPIConfiguration = {
   },
   FDMATURITYCOMPAREJASPER: {
     url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  GETIMPSREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSREGCONFGRID",
+    packageName: "",
+  },
+  VALIDATEDELETEIMPSENTRY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEDELETEIMPSENTRY",
+    packageName: "",
+  },
+  DOATMREGCONFRIMATION: {
+    url: "/commonMasterServiceAPI/DOATMREGCONFRIMATION",
+    packageName: "",
+  },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+    packageName: "",
+  },
+  SAVEFDPAYMENTFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDPAYMENTFDDETAILS",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTSUBDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+    packageName: "",
+  },
+  DELETECASHTRNDTL: {
+    url: "/transactionServiceAPI/DELETECASHTRNDTL",
     packageName: "",
   },
   RECCURRINGTOFDCALCULATORJASPER: {
@@ -2707,10 +2747,6 @@ export const ActionWiseAPIConfiguration = {
   },
   GETLOGINPAGEDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
-    packageName: "",
-  },
-  CUSTOMERCASHEXCHANGE: {
-    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
     packageName: "",
   },
   GETEMICACLCULATEDATA: {

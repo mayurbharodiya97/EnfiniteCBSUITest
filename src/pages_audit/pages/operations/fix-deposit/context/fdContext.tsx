@@ -27,6 +27,7 @@ const inititalState: FDStateType = {
   prematureRateData: {},
   viewDtlGridData: [],
   checkAllowFDPayApiData: {},
+  renewTrnsFormData: {},
 };
 
 const FDReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -158,6 +159,14 @@ export const FDContextWrapper = ({ children }) => {
       },
     });
   };
+  const updateRenewTrnsFormData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        renewTrnsFormData: data,
+      },
+    });
+  };
 
   const resetAllData = (data) => {
     dispatch({
@@ -184,6 +193,7 @@ export const FDContextWrapper = ({ children }) => {
         updateCheckAllowFDPayApiData,
         updatePrematureRateData,
         updateFdSavedPaymentData,
+        updateRenewTrnsFormData,
       }}
     >
       {children}

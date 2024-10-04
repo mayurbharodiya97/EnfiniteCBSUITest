@@ -167,7 +167,7 @@ export const MyAppBar = ({
             display: "flex",
             justifyContent: "space-evenly",
             alignItems: "center",
-            height: "80px",
+            height: isNewStyle ? "auto" : "80px",
             width: "227px",
           }}
         >

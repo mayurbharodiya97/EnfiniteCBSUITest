@@ -168,6 +168,7 @@ export const FixDepositDetailFormMetadata = {
               name: "BRANCH_CD",
               runPostValidationHookAlways: true,
               validationRun: "onChange",
+              isFieldFocused: true,
               postValidationSetCrossFieldValues: async (
                 currentField,
                 formState,

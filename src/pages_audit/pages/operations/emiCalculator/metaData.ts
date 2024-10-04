@@ -10,7 +10,6 @@ export const EMICalculateMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -1225,7 +1224,6 @@ export const EMICalculatorSecondPartMetaData = {
     validationRun: "onBlur",
     hideHeader: false,
     submitAction: "home",
-
     render: {
       ordering: "auto",
       renderType: "simple",

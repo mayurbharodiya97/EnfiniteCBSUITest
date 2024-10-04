@@ -17,7 +17,7 @@ import { VouchersDetailsGrid } from "./vouchersDetailsGrid";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { recurringPmtConfirmation } from "./api";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   usePopupContext,
   GradientButton,
@@ -245,6 +245,7 @@ export const RecurringPaymentConfirmation = ({
               BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
               ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
               ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+              AC_CUST_LEVEL: "",
               AMOUNT:
                 Number(rows?.[0]?.data?.TRAN_BAL) +
                   Number(rows?.[0]?.data?.PROV_INT_AMT) +

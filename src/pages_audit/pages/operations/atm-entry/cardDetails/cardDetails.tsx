@@ -3,15 +3,11 @@ import { t } from "i18next";
 import React, { useState } from "react";
 import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { useLocation } from "react-router-dom";
+import { format } from "date-fns";
 import {
-  LoaderPaperComponent,
-  usePopupContext,
-  GradientButton,
-  SubmitFnType,
-  extractMetaData,
-  utilFunction,
   FormWrapper,
   MetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 
 export const CardDetails = ({ navigate, setIsData, parameter }) => {

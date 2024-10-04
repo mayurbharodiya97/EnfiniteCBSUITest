@@ -131,10 +131,8 @@ export const ViewMasterMetadata = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(255, 0, 0) !important",
-            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
-          },
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
         },
       },
       GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
@@ -160,10 +158,8 @@ export const ViewMasterMetadata = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(255, 0, 0) !important",
-            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
-          },
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
         },
       },
       GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
@@ -335,10 +331,8 @@ export const ViewMasterMetadata = {
       isReadOnly: true,
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(168, 0, 0) !important",
-            "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
-          },
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
         },
       },
       GridProps: { xs: 12, sm: 2.8, md: 2, lg: 2, xl: 2 },
@@ -408,10 +402,8 @@ export const ViewMasterMetadata = {
       isReadOnly: true,
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(168, 0, 0) !important",
-            "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
-          },
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
         },
       },
       GridProps: { xs: 12, sm: 6, md: 5, lg: 5, xl: 5 },
