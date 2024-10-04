@@ -690,7 +690,6 @@ export const AgentMasterFormMetaData = {
       label: "Security%",
       defaultValue: "0.00",
       autoComplete: "off",
-      maxLength: 14,
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
