@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../api";
+import { utilFunction } from "@acuteinfo/common-base";
 
 export const atmentrymetadata = {
   form: {

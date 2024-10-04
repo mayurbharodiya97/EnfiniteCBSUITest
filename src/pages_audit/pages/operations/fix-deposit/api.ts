@@ -56,10 +56,13 @@ export const getFDParaDetail = async (reqData) => {
     await AuthSDK.internalFetcher("GETFDPARADETAIL", { ...reqData });
   if (status === "0") {
     return data;
+  } else if (status === "999") {
+    return { status: status, messageDetails: messageDetails };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getFDIntDetail = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDINTDTL", { ...reqData });
@@ -392,6 +395,16 @@ export const getFDPaymentDtl = async (reqData) => {
 export const validatePaymetEntry = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATEFDPAYMENT", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const saveFDPaymentDtls = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEFDPAYMENTFDDETAILS", reqData);
   if (status === "0") {
     return data;
   } else {

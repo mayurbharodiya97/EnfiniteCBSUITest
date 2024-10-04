@@ -99,7 +99,8 @@ const PhotoSignWithHistory = ({
   const [showAll, setShowAll] = useState(false);
   const [isImgPhotoOpen, setIsImagePhotoOpen] = useState<any>(false);
   const [rotateImg, setRotateImg] = useState<number>(0);
-  const [selectedImageUrl, setSelectedImageUrl] = useState("");
+  const [selectedImageUrl, setSelectedImageUrl] = useState<any>("");
+  const [AcCustLevel, setAcCustLevel] = useState<any>("");
   // latest photo/sign data
   const {
     data: LatestPhotoSignData,
@@ -108,7 +109,7 @@ const PhotoSignWithHistory = ({
     isFetching: isLatestDtlFetching,
     refetch: LatestDtlRefetch,
     error: LatestDtlError,
-  } = useQuery<any, any>(["getCustAccountLatestDtl", data], () =>
+  } = useQuery<any, any>(["getCustAccountLatestDtl", data, AcCustLevel], () =>
     GeneralAPI.getCustAccountLatestDtl({
       COMP_CD: data?.COMP_CD ?? "",
       BRANCH_CD: data?.BRANCH_CD ?? "",
@@ -116,6 +117,7 @@ const PhotoSignWithHistory = ({
       ACCT_CD: data?.ACCT_CD ?? "",
       AMOUNT: data?.AMOUNT ?? "",
       SCREEN_REF: screenRef,
+      AC_CUST_LEVEL: AcCustLevel ?? "",
     })
   );
 
@@ -135,7 +137,7 @@ const PhotoSignWithHistory = ({
   });
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getCustAccountLatestDtl", data]);
+      queryClient.removeQueries(["getCustAccountLatestDtl", data, AcCustLevel]);
     };
   }, []);
 
@@ -194,7 +196,7 @@ const PhotoSignWithHistory = ({
                   variant={"h4"}
                   component="div"
                 >
-                  {LatestPhotoSignData[0]?.AC_CUST_LEVEL === "A"
+                  {LatestPhotoSignData?.[0]?.AC_CUST_LEVEL === "A"
                     ? t("AccountLevelPhotoSignature") +
                       "" +
                       t("ACNo") +
@@ -230,6 +232,15 @@ const PhotoSignWithHistory = ({
                         data?.ACCT_MODE
                       )}
                 </Typography>
+                <GradientButton
+                  onClick={() => {
+                    setAcCustLevel(LatestPhotoSignData[0]?.AC_CUST_LEVEL);
+                  }}
+                >
+                  {LatestPhotoSignData[0]?.AC_CUST_LEVEL === "A"
+                    ? t("AccountLevelPhotoSignature")
+                    : t("CustomerLevelPhotoSignature")}
+                </GradientButton>
                 <GradientButton
                   onClick={() => {
                     showAll ? setShowAll(false) : setShowAll(true);

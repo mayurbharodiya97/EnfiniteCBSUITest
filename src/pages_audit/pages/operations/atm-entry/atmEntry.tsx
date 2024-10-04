@@ -8,35 +8,32 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
+import { getParameter } from "./api";
 import { useMutation, useQuery } from "react-query";
+import {
+  Alert,
+  usePopupContext,
+  ActionTypes,
+  LoaderPaperComponent,
+  FormWrapper,
+  MetaDataType,
+  GridWrapper,
+  GridMetaDataType,
+  ClearCacheProvider,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AtmEntryMetaData } from "./metaData/atmEntryMetadata";
-import { useTranslation } from "react-i18next";
-import { AtmEntryMetaData602 } from "./atmEntryMetadata";
 import * as API from "./api";
 import { atmGridMetaData } from "./metaData/atmEntryGridMetadata";
 import { CardDetails } from "./cardDetails/cardDetails";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Draggable from "react-draggable";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import { atmentrymetadata } from "./metaData/atmEntryMetadata2";
 import { CardPrinting } from "./cardPrinting";
 import { RetrieveData } from "./retrieveData/retrieveData";
 import { t } from "i18next";
-import { gridClasses } from "@mui/system";
-import {
-  LoaderPaperComponent,
-  ClearCacheProvider,
-  RemarksAPIWrapper,
-  FormWrapper,
-  MetaDataType,
-  usePopupContext,
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
-  ActionTypes,
-  SubmitFnType,
-} from "@acuteinfo/common-base";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -177,9 +174,8 @@ const AtmEntryCustom = ({ parameter }) => {
       }
     });
   };
-  console.log("<<<isDataaa11", isData);
 
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
     let result = gridRef?.current?.cleanData?.();
     let gridDtl =
       result?.length > 0
@@ -200,7 +196,7 @@ const AtmEntryCustom = ({ parameter }) => {
           })
         : result;
 
-    console.log("<<<isdata", isData, result, gridDtl);
+    console.log("<<<isdata", isData);
     let apiReq = {
       ...data,
       SMS_ALERT: Boolean(data?.SMS_ALERT) ? "Y" : "N",
@@ -218,7 +214,7 @@ const AtmEntryCustom = ({ parameter }) => {
     endSubmit(true);
     console.log("<<<onsub", data, apiReq);
   };
-
+  console.log("<<<onsubijhihhfhkfhkdjfklfnlsdn");
   return (
     <>
       {validateInsert?.isLoading ? (

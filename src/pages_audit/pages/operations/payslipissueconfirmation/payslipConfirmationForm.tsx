@@ -22,7 +22,7 @@ import { ConFirmedHistory } from "./conFirmedHistory";
 import { format } from "date-fns";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   LoaderPaperComponent,
   RemarksAPIWrapper,

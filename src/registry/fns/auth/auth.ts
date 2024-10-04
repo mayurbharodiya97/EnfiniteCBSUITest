@@ -271,7 +271,12 @@ const authAPI = () => {
           return {
             status: "0",
             message: "",
-            data: data,
+            data:
+              data?.ISDATACOMPRESSED === "Y"
+                ? utilFunction?.uncompressApiResponse(
+                    data?.RESPONSE?.[0]?.DATA ?? ""
+                  ) ?? []
+                : data?.RESPONSE ?? [],
             messageDetails: "",
             isPrimaryKeyError: false,
           };
