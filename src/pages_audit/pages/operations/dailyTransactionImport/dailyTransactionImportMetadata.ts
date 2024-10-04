@@ -2,7 +2,6 @@ import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { getDailyTransactionImportData } from "./api";
 
 export const DailyTransactionImportMetadata = {
   form: {
@@ -625,10 +624,14 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       columnName: "Status",
       sequence: 8,
       alignment: "center",
-      componentType: "default",
-      width: 100,
-      minWidth: 150,
-      maxWidth: 190,
+      width: 210,
+      minWidth: 200,
+      maxWidth: 250,
+      componentType: "editableAutocomplete",
+      options: (_, auth) => {
+        return API.getDailyTranStatus();
+      },
+      _optionsKey: "getDailyTranStatus",
     },
   ],
 };

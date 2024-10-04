@@ -24,7 +24,7 @@ import { useMutation, useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
-import { CircularProgress, Dialog } from "@mui/material";
+import { AppBar, CircularProgress, Dialog } from "@mui/material";
 import { FileUploadControl } from "components/fileUpload";
 import { Alert } from "components/common/alert";
 
@@ -206,9 +206,6 @@ const DailyTransactionImport = () => {
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
       CloseMessageBox();
       setIsSelectFileOpen(false);
     },
@@ -380,6 +377,23 @@ const DailyTransactionImport = () => {
       {isSelectFileOpen && (
         <>
           <Dialog fullWidth maxWidth="md" open={isSelectFileOpen}>
+            {dailyTranimportFileData?.isError ? (
+              <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                <AppBar position="relative" color="primary">
+                  <Alert
+                    severity="error"
+                    errorMsg={
+                      dailyTranimportFileData?.error?.error_msg ??
+                      "Unknow Error"
+                    }
+                    errorDetail={
+                      dailyTranimportFileData?.error?.error_detail ?? ""
+                    }
+                    color="error"
+                  />
+                </AppBar>
+              </div>
+            ) : null}
             <FileUploadControl
               key={"DailyTransactionFileUploadData"}
               onClose={() => {

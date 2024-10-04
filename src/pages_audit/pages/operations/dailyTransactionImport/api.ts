@@ -93,3 +93,21 @@ export const dailyTranimportFileData = async ({ ...reqData }) => {
     throw error;
   }
 };
+export const getDailyTranStatus = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETERRSTATUSDDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DATA_VAL, DISP_VAL }) => {
+        return {
+          value: DATA_VAL,
+          label: DISP_VAL,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
