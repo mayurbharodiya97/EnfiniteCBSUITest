@@ -17,7 +17,7 @@ import { VouchersDetailsGrid } from "./vouchersDetailsGrid";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { recurringPmtConfirmation } from "./api";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   usePopupContext,
   GradientButton,

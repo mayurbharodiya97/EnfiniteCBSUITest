@@ -8,7 +8,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { RetrieveCfmData } from "./retrieveCfmData/retrieveCfmData";
 import Draggable from "react-draggable";
 import JointDetails from "../../DailyTransaction/TRNHeaderTabs/JointDetails";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import { CardPrinting } from "../cardPrinting";
 import * as API from "../api";
 import { useMutation, useQuery } from "react-query";

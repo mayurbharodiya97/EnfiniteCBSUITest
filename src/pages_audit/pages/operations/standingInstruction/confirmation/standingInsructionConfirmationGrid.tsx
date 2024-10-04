@@ -12,7 +12,7 @@ import SearchGrid from "../searchGrid";
 import { t } from "i18next";
 import { enqueueSnackbar } from "notistack";
 import SiExecuteDetailView from "../siExecuteDetailView";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   usePopupContext,
   GridWrapper,
