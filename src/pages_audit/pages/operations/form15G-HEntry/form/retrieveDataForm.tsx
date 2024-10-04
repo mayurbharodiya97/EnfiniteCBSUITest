@@ -31,7 +31,11 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
     isFetching,
     isError,
     error,
-  } = useQuery(["getFinDate"], () => API.getFinDate());
+  } = useQuery(["getFinDate"], () =>
+    API.getFinDate({
+      GD_DATE: authState?.workingDate,
+    })
+  );
 
   useEffect(() => {
     return () => {

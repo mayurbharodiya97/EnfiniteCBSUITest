@@ -557,7 +557,9 @@ export const form15GHEntryMetaData = {
             dependentFields
           ) => {
             if (formState?.isSubmitting) return {};
-            const getDate = await getFinDate();
+            const getDate = await getFinDate({
+              GD_DATE: authState?.workingDate,
+            });
             if (currentField?.value === "Y") {
               return {
                 LAST_ASS_YEAR: {
