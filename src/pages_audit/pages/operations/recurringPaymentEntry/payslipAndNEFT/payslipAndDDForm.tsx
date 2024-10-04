@@ -36,7 +36,7 @@ export const PayslipAndDDForm = forwardRef<any, any>(
               defaultView
             ) as MetaDataType
           }
-          hideHeader={hideHeader ? true : false}
+          hideHeader={hideHeader ?? true}
           initialValues={{ ...accountDetailsForPayslip } as InitialValuesType}
           onSubmitHandler={onSubmitHandler}
           ref={ref}

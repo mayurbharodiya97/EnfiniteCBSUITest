@@ -2749,6 +2749,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  GETEMICACLCULATEDATA: {
+    url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
+    packageName: "",
+  },
+  DOGETEMICALCULATEREPORT: {
+    url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

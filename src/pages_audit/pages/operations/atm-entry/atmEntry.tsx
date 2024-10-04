@@ -29,7 +29,7 @@ import { atmGridMetaData } from "./metaData/atmEntryGridMetadata";
 import { CardDetails } from "./cardDetails/cardDetails";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Draggable from "react-draggable";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import { atmentrymetadata } from "./metaData/atmEntryMetadata2";
 import { CardPrinting } from "./cardPrinting";
 import { RetrieveData } from "./retrieveData/retrieveData";
