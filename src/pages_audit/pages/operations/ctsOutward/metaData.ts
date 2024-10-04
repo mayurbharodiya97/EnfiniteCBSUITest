@@ -137,10 +137,12 @@ export const CTSOutwardClearingFormMetaData = {
           dependentFieldsValues
         ) => {
           formState.setDataOnFieldChange("ACCT_CD_BLANK");
+
           return {
             ACCT_CD: { value: "", ignoreUpdate: true },
             ACCT_NAME: { value: "" },
             TRAN_BAL: { value: "" },
+            AMOUNT: { value: "" },
           };
         },
       },
@@ -192,7 +194,6 @@ export const CTSOutwardClearingFormMetaData = {
               return { btnName, obj };
             };
             for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
-              console.log("postData", postData?.[0]?.MSG?.length);
               if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
@@ -219,6 +220,7 @@ export const CTSOutwardClearingFormMetaData = {
                   returnVal = "";
                 }
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "0") {
+                formState.setDataOnFieldChange("ACCT_CD_VALID", postData?.[0]);
                 if (btn99 !== "No") {
                   returnVal = postData?.[0];
                 } else {
@@ -916,7 +918,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           placeholder: "",
           type: "text",
-          required: true,
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["PayeeACNorequired"] }],
@@ -954,7 +955,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             type: "string",
             rules: [{ name: "required", params: ["ChequeDateRequired"] }],
           },
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
         },
         {
           render: {
@@ -964,6 +965,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
+          maxLength: 100,
           // required: true,
 
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
@@ -1004,6 +1006,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
+          maxLength: 100,
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["PayeeNameRequired"] }],
@@ -1800,7 +1803,7 @@ export const AddNewBankMasterFormMetadata = {
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "",
+    label: "Clearing Retrieve Information",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

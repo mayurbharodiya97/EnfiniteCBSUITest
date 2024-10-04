@@ -346,7 +346,7 @@ const CtsOutwardClearingForm: FC<{
             <LoaderPaperComponent />
           </div>
         </div>
-      ) : isError ? (
+      ) : isError || getOutwardClearingData?.isError ? (
         <>
           <div
             style={{
@@ -359,8 +359,16 @@ const CtsOutwardClearingForm: FC<{
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={error?.error_msg ?? "Unknow Error"}
-                errorDetail={error?.error_detail ?? ""}
+                errorMsg={
+                  error?.error_msg ??
+                  getOutwardClearingData?.error?.error_msg ??
+                  "Unknow Error"
+                }
+                errorDetail={
+                  error?.error_detail ??
+                  getOutwardClearingData?.error?.error_detail ??
+                  ""
+                }
                 color="error"
               />
             </AppBar>
@@ -414,9 +422,6 @@ const CtsOutwardClearingForm: FC<{
             setDataOnFieldChange={(action, payload) => {
               if (action === "API_REQ") {
                 setChequeReqData(payload);
-              } else if (action === "ACCT_CD_VALID") {
-                setJointDtlExpand(true);
-                setGridData(payload);
                 setChequeDetailData((old) => {
                   return {
                     ...old,
@@ -424,13 +429,16 @@ const CtsOutwardClearingForm: FC<{
                       ...old.chequeDetails.map((item) => {
                         return {
                           ...item,
-                          ECS_USER_NO: payload?.ACCT_NAME ?? "",
+                          ECS_USER_NO: payload?.[0]?.ACCT_NM ?? "",
                           CHEQUE_DATE: authState?.workingDate ?? "",
                         };
                       }),
                     ],
                   };
                 });
+              } else if (action === "ACCT_CD_VALID") {
+                setJointDtlExpand(true);
+                setGridData(payload);
                 setChequeDtlRefresh((old) => old + 1);
               } else if (action === "ACCT_CD_BLANK") {
                 setGridData([]);
