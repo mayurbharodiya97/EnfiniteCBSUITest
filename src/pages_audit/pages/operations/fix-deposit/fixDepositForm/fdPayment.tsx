@@ -75,6 +75,7 @@ export const FDPayment = ({
   const [openRenewTrnsForm, setOpenRenewTrnsForm] = useState(false);
   const [openNeftForm, setOpenNeftForm] = useState(false);
   const [openPayslipForm, setOpenPayslipForm] = useState(false);
+  const [renewTrnsVal, setRenewTrnsVal] = useState(false);
   const sourceAcctformRef: any = useRef(null);
   const { state: rows }: any = useLocation();
   const headerClasses = useTypeStyles();
@@ -111,8 +112,8 @@ export const FDPayment = ({
       },
     ],
     PAYMENT_AMOUNT:
-      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT) -
-        Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT) ?? 0,
+      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT ?? 0) -
+      Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT ?? 0),
     ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
     BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
     ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
@@ -127,7 +128,7 @@ export const FDPayment = ({
       {
         AMOUNT:
           Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT ?? 0) -
-            Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT ?? 0) ?? 0,
+          Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT ?? 0),
         REMARKS: `FD PAYMENT ${authState?.companyID?.trim() ?? ""}${
           rows?.[0]?.data?.BRANCH_CD?.trim() ?? ""
         }${rows?.[0]?.data?.ACCT_TYPE?.trim() ?? ""}${
@@ -136,8 +137,8 @@ export const FDPayment = ({
       },
     ],
     PAYMENT_AMOUNT:
-      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT) -
-        Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT) ?? 0,
+      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT ?? 0) -
+      Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT ?? 0),
     ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
     BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
     ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
@@ -590,13 +591,13 @@ export const FDPayment = ({
         }
       }
     } else if (Boolean(openRenewTrnsForm)) {
-      const diffAmt =
-        parseFloat(data?.PAYMENT_AMOUNT) - parseFloat(data?.RENEW_AMT);
-      if (parseFloat(data?.PAYMENT_AMOUNT) > parseFloat(data?.RENEW_AMT)) {
+      if (
+        parseFloat(data?.PAYMENT_AMOUNT ?? 0) > parseFloat(data?.RENEW_AMT ?? 0)
+      ) {
         updateRenewTrnsFormData(data);
         const buttonName = await MessageBox({
           messageTitle: "Confirmation",
-          message: `Are you sure to renew less than ${diffAmt}?`,
+          message: `Are you sure to renew less than ${data?.PAYMENT_AMOUNT}?`,
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
@@ -608,12 +609,7 @@ export const FDPayment = ({
             setOpenNeftForm(true);
           } else {
             setOpenTrnsForm(true);
-            updateFdSavedPaymentData({
-              ...FDState?.fdSavedPaymentData,
-              TRANSFER_TOTAL:
-                FDState?.fdSavedPaymentData?.TRANSFER_TOTAL -
-                FDState?.renewTrnsFormData?.RENEW_AMT,
-            });
+            setRenewTrnsVal(true);
           }
           CloseMessageBox();
         }
@@ -826,6 +822,8 @@ export const FDPayment = ({
             handleTrnsferFormClose={handleTrnsferFormClose}
             onSubmitHandler={finalPaySubmitHandler}
             ref={sourceAcctformRef}
+            openTrnsForm={openTrnsForm}
+            renewTrnsVal={renewTrnsVal}
           />
         </Dialog>
       ) : null}
@@ -847,6 +845,7 @@ export const FDPayment = ({
             onSubmitHandler={finalPaySubmitHandler}
             ref={sourceAcctformRef}
             openRenewTrnsForm={openRenewTrnsForm}
+            renewTrnsVal={renewTrnsVal}
           />
         </Dialog>
       ) : null}

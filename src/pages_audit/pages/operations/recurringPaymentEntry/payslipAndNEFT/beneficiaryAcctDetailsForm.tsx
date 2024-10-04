@@ -84,7 +84,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
                   defaultView
                 ) as MetaDataType
               }
-              hideHeader={hideHeader ?? false}
+              hideHeader={hideHeader ?? true}
               initialValues={
                 {
                   ...accountDetailsForBen,

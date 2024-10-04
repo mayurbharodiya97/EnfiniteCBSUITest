@@ -12,15 +12,19 @@ import {
 } from "@acuteinfo/common-base";
 import { FDContext } from "../context/fdContext";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
-import * as API from "../api";
-import { enqueueSnackbar } from "notistack";
 import { CircularProgress, Dialog } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
 export const TransferAcctDetailForm = forwardRef<any, any>(
   (
-    { onSubmitHandler, screenFlag, handleTrnsferFormClose, openRenewTrnsForm },
+    {
+      onSubmitHandler,
+      screenFlag,
+      handleTrnsferFormClose,
+      openRenewTrnsForm,
+      openTrnsForm,
+      renewTrnsVal,
+    },
     ref: any
   ) => {
     const { FDState, updateSourceAcctFormData } = useContext(FDContext);
@@ -29,17 +33,22 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
     const { t } = useTranslation();
     const { state: rows }: any = useLocation();
 
-    let totalFDAmt =
-      screenFlag === "paymentTransfer" || Boolean(openRenewTrnsForm)
-        ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL
-        : (Array.isArray(FDState?.fdDetailFormData?.FDDTL)
-            ? FDState?.fdDetailFormData?.FDDTL
-            : []
-          ).reduce(
-            (accum, obj) =>
-              accum + Number(obj?.CASH_AMT ?? 0) + Number(obj?.TRSF_AMT ?? 0),
-            0
-          );
+    let totalFDAmt = (
+      Array.isArray(FDState?.fdDetailFormData?.FDDTL)
+        ? FDState?.fdDetailFormData?.FDDTL
+        : []
+    ).reduce(
+      (accum, obj) =>
+        accum + Number(obj?.CASH_AMT ?? 0) + Number(obj?.TRSF_AMT ?? 0),
+      0
+    );
+
+    let totalFDAmtTrns = Boolean(renewTrnsVal)
+      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL) -
+        Number(FDState?.renewTrnsFormData?.RENEW_AMT)
+      : !Boolean(renewTrnsVal) && Boolean(openTrnsForm)
+      ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL
+      : totalFDAmt;
 
     useEffect(() => {
       if (screenFlag === "paymentTransfer" || Boolean(openRenewTrnsForm)) {
@@ -175,8 +184,9 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
               }}
               initialValues={
                 {
-                  PAYMENT_AMOUNT: totalFDAmt,
-                  RENEW_AMT: totalFDAmt,
+                  PAYMENT_AMOUNT:
+                    FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0,
+                  RENEW_AMT: FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0,
                 } as InitialValuesType
               }
               ref={ref}
@@ -214,13 +224,14 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
             key={
               "TransferAcctDetail" +
               FDState?.sourceAcctFormData?.TRNDTLS?.length +
-              trnsDtlRefresh
+              trnsDtlRefresh +
+              screenFlag
             }
             metaData={TransferAcctDetailFormMetadata as MetaDataType}
             initialValues={
               {
                 ...FDState?.sourceAcctFormData,
-                TOTAL_FD_AMOUNT: totalFDAmt,
+                TOTAL_FD_AMOUNT: totalFDAmtTrns,
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}
