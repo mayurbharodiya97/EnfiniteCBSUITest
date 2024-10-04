@@ -28,7 +28,7 @@ export const CashierExchangeCnfMetaData = {
   columns: [
     {
       accessor: "REMARKS",
-      columnName: "Transfer Details",
+      columnName: "TransferDetails",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -38,7 +38,7 @@ export const CashierExchangeCnfMetaData = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "tran date",
+      columnName: "TranDate",
       sequence: 1,
       alignment: "center",
       componentType: "date",
@@ -59,7 +59,7 @@ export const CashierExchangeCnfMetaData = {
     },
     {
       accessor: "ENTERED_BY",
-      columnName: "Entered by",
+      columnName: "EnteredBy",
       sequence: 1,
       alignment: "left",
       componentType: "default",

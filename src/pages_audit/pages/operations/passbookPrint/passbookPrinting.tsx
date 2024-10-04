@@ -251,8 +251,6 @@ export const PassbookPrint = () => {
             color: "var(--theme-color2)",
             borderRadius: "10px",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             position: "relative",
           }}
         >

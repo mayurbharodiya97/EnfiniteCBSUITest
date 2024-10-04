@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { fetchFDPaymentConfAcct } from "../FDInterestPaymentConf/api";
 import { updateRecInterestPaymentEntry } from "../recInterestPayment/api";
-import { RecInterestPaymentMetaData } from "../recInterestPayment/RecInterestPaymentMetaData";
+import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
 import * as API from "./api";
 import {
   ActionTypes,
@@ -18,6 +18,7 @@ import {
   MetaDataType,
   queryClient,
   SubmitFnType,
+  Transition,
   usePopupContext,
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
@@ -250,7 +251,7 @@ export const RecInterestPaymentConf = () => {
         ) : (
           <FormWrapper
             key={"RecInterestPaymentConf" + recPaymentInstructions?.length}
-            metaData={RecInterestPaymentMetaData as MetaDataType}
+            metaData={FdInterestPaymentFormMetaData as MetaDataType}
             formStyle={{
               background: "white",
             }}
@@ -260,10 +261,13 @@ export const RecInterestPaymentConf = () => {
               ACCT_NAME: rowData?.[0]?.data?.ACCT_NM,
             }}
             displayMode={"view"}
+            formState={{
+              SCREEN_REF: "MST/940",
+            }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <Box display="flex" gap="8px">
+                <Box display="flex" gap={2}>
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Confirm");
