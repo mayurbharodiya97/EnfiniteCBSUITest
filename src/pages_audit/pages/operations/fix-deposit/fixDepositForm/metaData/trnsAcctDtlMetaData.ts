@@ -799,6 +799,7 @@ export const RenewTransferMetadata = {
       },
       name: "RENEW_AMT",
       label: "Renew Amount",
+      isFieldFocused: true,
       placeholder: "",
       type: "text",
       dependentFields: ["PAYMENT_AMOUNT"],

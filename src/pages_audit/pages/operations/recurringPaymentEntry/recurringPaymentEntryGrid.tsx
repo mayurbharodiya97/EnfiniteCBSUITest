@@ -80,8 +80,8 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     ["getRecurPaymentScreenPara", authState?.user?.branchCode],
     () =>
       API.getRecurPaymentScreenPara({
-        companyID: authState?.companyID,
-        branchCode: authState?.user?.branchCode,
+        companyID: authState?.companyID ?? "",
+        branchCode: authState?.user?.branchCode ?? "",
       })
   );
 

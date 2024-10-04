@@ -121,7 +121,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           initialValues={
             {
               ...rpState?.recurPmtTransferData,
-              TRF_AMT: rpState?.recurPmtEntryData?.TRF_AMT,
+              TRF_AMT: rpState?.recurPmtEntryData?.TRF_AMT ?? "",
               COMP_CD: authState?.companyID ?? "",
             } as InitialValuesType
           }

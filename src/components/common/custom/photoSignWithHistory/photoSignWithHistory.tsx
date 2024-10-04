@@ -209,10 +209,12 @@ const PhotoSignWithHistory = ({
                         "-",
                         data?.ACCT_CD,
                         t("Account_Name") + ":",
-                        data?.ACCT_NM,
+                        data?.ACCT_NM ?? "",
                         " ",
                         t("ACMode") + ":",
-                        data?.ACCT_MODE
+                        data?.ACCT_MODE ??
+                          LatestPhotoSignData?.[0]?.ACCT_MODE ??
+                          ""
                       )
                     : t("CustomerLevelPhotoSignature") +
                       "" +
@@ -229,7 +231,9 @@ const PhotoSignWithHistory = ({
                         data?.ACCT_NM,
                         " ",
                         t("ACMode") + ":",
-                        data?.ACCT_MODE
+                        data?.ACCT_MODE ??
+                          LatestPhotoSignData?.[0]?.ACCT_MODE ??
+                          ""
                       )}
                 </Typography>
                 <GradientButton
