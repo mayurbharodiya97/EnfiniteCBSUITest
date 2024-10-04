@@ -33,8 +33,8 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
       refetch,
     } = useQuery<any, any>(["getNEFTFlags", authState?.user?.branchCode], () =>
       API.getNEFTFlags({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
       })
     );
 
@@ -46,7 +46,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
       return () => {
         queryClient.removeQueries([
           "getNEFTFlags",
-          authState?.user?.branchCode,
+          authState?.user?.branchCode ?? "",
         ]);
       };
     }, []);
