@@ -162,10 +162,10 @@ export const PayslipAndDDFormMetaData = {
           for (let i = 0; i < dataArray?.length; i++) {
             const item = dataArray[0];
             if (
-              item.DEF_TRAN_CD.trim() &&
-              item.INFAVOUR_OF.trim() &&
-              String(item.AMOUNT).trim() &&
-              item.PAYSLIP_NO.trim()
+              item?.DEF_TRAN_CD?.trim() &&
+              item?.INFAVOUR_OF?.trim() &&
+              String(item?.AMOUNT)?.trim() &&
+              item?.PAYSLIP_NO?.trim()
             ) {
               return true;
             }
@@ -189,8 +189,8 @@ export const PayslipAndDDFormMetaData = {
           fullWidth: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.getCommTypeList({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: authState?.user?.branchCode,
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
               CODE: "DD",
             });
           },
@@ -213,21 +213,22 @@ export const PayslipAndDDFormMetaData = {
               currentField?.optionData?.[0]?.TYPE_CD
             ) {
               const reqParams = {
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: authState?.user?.branchCode,
-                ACCT_CD: formState?.accountDetailsForPayslip?.ACCT_CD,
-                ACCT_TYPE: formState?.accountDetailsForPayslip?.ACCT_TYPE,
-                DEF_TRAN_CD: currentField?.value,
-                AMOUNT: dependentFieldsValues?.PAYMENT_AMOUNT?.value,
-                TYPE_CD: currentField?.optionData?.[0]?.TYPE_CD,
-                SCREEN_REF: formState?.accountDetailsForPayslip?.SCREEN_REF,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACCT_CD: formState?.accountDetailsForPayslip?.ACCT_CD ?? "",
+                ACCT_TYPE: formState?.accountDetailsForPayslip?.ACCT_TYPE ?? "",
+                DEF_TRAN_CD: currentField?.value ?? "",
+                AMOUNT: dependentFieldsValues?.PAYMENT_AMOUNT?.value ?? "",
+                TYPE_CD: currentField?.optionData?.[0]?.TYPE_CD ?? "",
+                SCREEN_REF:
+                  formState?.accountDetailsForPayslip?.SCREEN_REF ?? "",
               };
               const gstApiData = await API.getCalculateGstDtl(reqParams);
 
               let amountValue =
-                Number(dependentFieldsValues?.PAYMENT_AMOUNT?.value) -
-                (Number(gstApiData?.[0]?.SERVICE_CHARGE) +
-                  Number(gstApiData?.[0]?.COMMISSION));
+                Number(dependentFieldsValues?.PAYMENT_AMOUNT?.value ?? 0) -
+                (Number(gstApiData?.[0]?.SERVICE_CHARGE ?? 0) +
+                  Number(gstApiData?.[0]?.COMMISSION ?? 0));
 
               return {
                 SERVICE_CHARGE: {
@@ -386,9 +387,9 @@ export const PayslipAndDDFormMetaData = {
           },
           dependentFields: ["DEF_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            return dependentFields["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
+            return dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
               ?.MST_TRAN_CD
-              ? dependentFields["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
+              ? dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
                   ?.MST_TRAN_CD
               : "";
           },
@@ -409,9 +410,10 @@ export const PayslipAndDDFormMetaData = {
               let reqParameters = {
                 COMM_TYPE:
                   dependentFieldsValues?.["PAYSLIPDD.DEF_TRAN_CD"]
-                    ?.optionData?.[0]?.TYPE_CD,
-                PAYSLIP_NO: currentField?.value,
-                SCREEN_REF: formState?.accountDetailsForPayslip?.SCREEN_REF,
+                    ?.optionData?.[0]?.TYPE_CD ?? "",
+                PAYSLIP_NO: currentField?.value ?? "",
+                SCREEN_REF:
+                  formState?.accountDetailsForPayslip?.SCREEN_REF ?? "",
               };
               let postData = await API.validatePayslipNo(reqParameters);
 
@@ -422,7 +424,7 @@ export const PayslipAndDDFormMetaData = {
               let btn99, returnVal;
 
               const getButtonName = async (obj) => {
-                let btnName = await formState.MessageBox(obj);
+                let btnName = await formState?.MessageBox(obj);
                 return { btnName, obj };
               };
               for (let i = 0; i < postData.length; i++) {
@@ -546,17 +548,18 @@ export const PayslipAndDDFormMetaData = {
               formState?.accountDetailsForPayslip?.ACCT_CD
             ) {
               const reqParams = {
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: authState?.user?.branchCode,
-                ACCT_CD: formState?.accountDetailsForPayslip?.ACCT_CD,
-                ACCT_TYPE: formState?.accountDetailsForPayslip?.ACCT_TYPE,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACCT_CD: formState?.accountDetailsForPayslip?.ACCT_CD ?? "",
+                ACCT_TYPE: formState?.accountDetailsForPayslip?.ACCT_TYPE ?? "",
                 DEF_TRAN_CD:
                   dependentFieldsValues?.["PAYSLIPDD.DEF_TRAN_CD"]?.value ?? "",
-                AMOUNT: currentField?.value,
+                AMOUNT: currentField?.value ?? "",
                 TYPE_CD:
                   dependentFieldsValues?.["PAYSLIPDD.DEF_TRAN_CD"]
                     ?.optionData?.[0]?.TYPE_CD ?? "",
-                SCREEN_REF: formState?.accountDetailsForPayslip?.SCREEN_REF,
+                SCREEN_REF:
+                  formState?.accountDetailsForPayslip?.SCREEN_REF ?? "",
               };
               const gstApiData = await API.getCalculateGstDtl(reqParams);
               return {
@@ -644,11 +647,12 @@ export const PayslipAndDDFormMetaData = {
               arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD
             ) {
               return API.getPayslipRegionList({
-                BRANCH_CD: arg?.[3]?.user?.branchCode,
-                COMP_CD: arg?.[3]?.companyID,
+                BRANCH_CD: arg?.[3]?.user?.branchCode ?? "",
+                COMP_CD: arg?.[3]?.companyID ?? "",
                 FLAG: "R",
                 COMM_TYPE_CD:
-                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD,
+                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
+                    ?.TYPE_CD ?? "",
               });
             } else {
               return [];
@@ -711,11 +715,12 @@ export const PayslipAndDDFormMetaData = {
                         )) /
                         100
                     ) ?? ""
-                  : (parseInt(currentField?.value) *
+                  : (parseInt(currentField?.value ?? 0) *
                       parseInt(
-                        dependentFieldsValues?.["PAYSLIPDD.TAX_RATE"]?.value
+                        dependentFieldsValues?.["PAYSLIPDD.TAX_RATE"]?.value ??
+                          0
                       )) /
-                      100 ?? "";
+                    100;
               return {
                 SERVICE_CHARGE: {
                   value: gstValue ?? "",
@@ -739,7 +744,7 @@ export const PayslipAndDDFormMetaData = {
               if (values?.value?.length > 13) {
                 return false;
               }
-              if (values.floatValue === 0) {
+              if (values?.floatValue === 0) {
                 return false;
               }
               return true;
@@ -771,7 +776,7 @@ export const PayslipAndDDFormMetaData = {
               if (values?.value?.length > 13) {
                 return false;
               }
-              if (values.floatValue === 0) {
+              if (values?.floatValue === 0) {
                 return false;
               }
               return true;
@@ -829,9 +834,9 @@ export const PayslipAndDDFormMetaData = {
           type: "text",
           dependentFields: ["COL_BANK_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            return dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+            return dependentFields?.["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
               ?.BANK_NM
-              ? dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+              ? dependentFields?.["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
                   ?.BANK_NM
               : "";
           },
@@ -846,9 +851,9 @@ export const PayslipAndDDFormMetaData = {
           name: "BRANCH_NM",
           dependentFields: ["COL_BANK_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            return dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+            return dependentFields?.["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
               ?.BRANCH_NM
-              ? dependentFields["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
+              ? dependentFields?.["PAYSLIPDD.COL_BANK_CD"]?.optionData?.[0]
                   ?.BRANCH_NM
               : "";
           },
@@ -870,10 +875,11 @@ export const PayslipAndDDFormMetaData = {
               arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD
             ) {
               return API.getPayslipSignatureList({
-                BRANCH_CD: arg?.[3]?.user?.branchCode,
-                COMP_CD: arg?.[3]?.companyID,
+                BRANCH_CD: arg?.[3]?.user?.branchCode ?? "",
+                COMP_CD: arg?.[3]?.companyID ?? "",
                 COMM_TYPE_CD:
-                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD,
+                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
+                    ?.TYPE_CD ?? "",
               });
             } else {
               return [];
@@ -905,10 +911,11 @@ export const PayslipAndDDFormMetaData = {
               arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD
             ) {
               return API.getPayslipSignatureList({
-                BRANCH_CD: arg?.[3]?.user?.branchCode,
-                COMP_CD: arg?.[3]?.companyID,
+                BRANCH_CD: arg?.[3]?.user?.branchCode ?? "",
+                COMP_CD: arg?.[3]?.companyID ?? "",
                 COMM_TYPE_CD:
-                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]?.TYPE_CD,
+                  arg?.[2]?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
+                    ?.TYPE_CD ?? "",
               });
             } else {
               return [];
