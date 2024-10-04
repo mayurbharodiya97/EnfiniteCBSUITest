@@ -15,14 +15,26 @@ import {
   MetaDataType,
   usePopupContext,
   Alert,
+  GradientButton,
 } from "@acuteinfo/common-base";
+import { CircularProgress } from "@mui/material";
 export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
-  ({ accountDetailsForBen, onSubmitHandler, defaultView }, ref: any) => {
+  (
+    {
+      accountDetailsForBen,
+      onSubmitHandler,
+      defaultView,
+      handleDialogClose,
+      hideHeader,
+    },
+    ref: any
+  ) => {
     const { MessageBox } = usePopupContext();
     const { authState } = useContext(AuthContext);
     const [openAuditTrail, setOpenAuditTrail] = useState(false);
     const [isBenAuditTrailData, setIsBenAuditTrailData] = useState({});
     const { t } = useTranslation();
+    const [formMode, setFormMode] = useState(defaultView);
 
     const {
       data: NEFTFlagsData,
@@ -72,7 +84,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
                   defaultView
                 ) as MetaDataType
               }
-              hideHeader={true}
+              hideHeader={hideHeader ?? false}
               initialValues={
                 {
                   ...accountDetailsForBen,
@@ -99,7 +111,75 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
               formStyle={{
                 background: "white",
               }}
-            />
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  {formMode === "edit" ? (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                        disabled={isSubmitting}
+                        endIcon={
+                          isSubmitting ? <CircularProgress size={20} /> : null
+                        }
+                        color={"primary"}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+                      <GradientButton
+                        onClick={() => {
+                          setFormMode("view");
+                        }}
+                        color={"primary"}
+                      >
+                        {t("Cancel")}
+                      </GradientButton>
+                    </>
+                  ) : formMode === "new" ? (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                        disabled={isSubmitting}
+                        endIcon={
+                          isSubmitting ? <CircularProgress size={20} /> : null
+                        }
+                        color={"primary"}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+
+                      <GradientButton
+                        onClick={handleDialogClose}
+                        color={"primary"}
+                      >
+                        {t("Close")}
+                      </GradientButton>
+                    </>
+                  ) : (
+                    <>
+                      <GradientButton
+                        onClick={() => {
+                          setFormMode("edit");
+                        }}
+                        color={"primary"}
+                      >
+                        {t("Edit")}
+                      </GradientButton>
+                      <GradientButton
+                        onClick={handleDialogClose}
+                        color={"primary"}
+                      >
+                        {t("Close")}
+                      </GradientButton>
+                    </>
+                  )}
+                </>
+              )}
+            </FormWrapper>
           </>
         )}
 

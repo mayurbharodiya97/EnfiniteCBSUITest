@@ -32,6 +32,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { PayslipAndDDForm } from "../../recurringPaymentEntry/payslipAndNEFT/payslipAndDDForm";
 import { makeStyles } from "@mui/styles";
+import { BeneficiaryAcctDetailsForm } from "../../recurringPaymentEntry/payslipAndNEFT/beneficiaryAcctDetailsForm";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -75,7 +76,6 @@ export const FDPayment = ({
   const [openNeftForm, setOpenNeftForm] = useState(false);
   const [openPayslipForm, setOpenPayslipForm] = useState(false);
   const sourceAcctformRef: any = useRef(null);
-  const payslipAndDDRef: any = useRef(null);
   const { state: rows }: any = useLocation();
   const headerClasses = useTypeStyles();
   const { t } = useTranslation();
@@ -119,6 +119,30 @@ export const FDPayment = ({
     SCREEN_REF: "RPT/401",
     SCREEN_NAME: t("PayslipAndDemandDraft"),
     COMP_CD: authState?.companyID ?? "",
+  };
+
+  //Initial values For Beneficiary Form
+  const accountDetailsForBen = {
+    BENEFIACCTDTL: [
+      {
+        AMOUNT:
+          Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT ?? 0) -
+            Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT ?? 0) ?? 0,
+        REMARKS: `FD PAYMENT ${authState?.companyID?.trim() ?? ""}${
+          rows?.[0]?.data?.BRANCH_CD?.trim() ?? ""
+        }${rows?.[0]?.data?.ACCT_TYPE?.trim() ?? ""}${
+          rows?.[0]?.data?.ACCT_CD?.trim() ?? ""
+        }`,
+      },
+    ],
+    PAYMENT_AMOUNT:
+      Number(FDState?.fdSavedPaymentData?.TOTAL_AMOUNT) -
+        Number(FDState?.fdSavedPaymentData?.PAYMENT_AMT) ?? 0,
+    ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+    BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+    ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+    ENTRY_TYPE: "NEFT",
+    SCREEN_NAME: t("BeneficiaryACDetails"),
   };
 
   //Common function for format date
@@ -440,6 +464,66 @@ export const FDPayment = ({
     action
   ) => {
     endSubmit(true);
+    if (Boolean(FDState?.fdSavedPaymentData?.PAYSLIP)) {
+      if (Number(data?.TOTAL_AMOUNT) !== Number(data?.PAYMENT_AMOUNT)) {
+        await MessageBox({
+          messageTitle: "PaymentAmountNotTally",
+          message: "PayslipAmountShouldTallyWithPaymentAmount",
+        });
+        return;
+      } else {
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: "AreYouSureToContinue",
+          buttonNames: ["Yes", "No"],
+          defFocusBtnName: "Yes",
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          // recurringPaymentEntrySaveMutation.mutate({
+          //   ...saveDataRef.current?.data,
+          //   TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+          //   CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
+          //   SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
+          //   ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
+          //   REC_DTL: [...rpState?.recurPmtTransferData.RECPAYTRANS],
+          //   PAY_SLIP_NEFT_DTL: [...data?.PAYSLIPDD],
+          //   PAYSLIP_NO: data?.PAYSLIPDD?.[0]?.PAYSLIP_NO
+          //     ? (data?.PAYSLIPDD[data?.PAYSLIPDD?.length - 1]).PAYSLIP_NO
+          //     : "",
+          // });
+        }
+      }
+    } else if (Boolean(FDState?.fdSavedPaymentData?.RTGS_NEFT)) {
+      if (Number(data?.TOTAL_AMOUNT) !== Number(data?.PAYMENT_AMOUNT)) {
+        await MessageBox({
+          message: "NEFTAmountShouldTallyWithPaymentAmount",
+          messageTitle: "PaymentAmountNotTally",
+        });
+        return;
+      } else {
+        const buttonName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: "AreYouSureToContinue",
+          buttonNames: ["Yes", "No"],
+          defFocusBtnName: "Yes",
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          // updateBeneficiaryAcctData([...data?.BENEFIACCTDTL]);
+          // recurringPaymentEntrySaveMutation.mutate({
+          //   ...saveDataRef.current?.data,
+          //   TRAN_CD: rpState?.onSaveValidationData?.[0]?.TRAN_CD ?? "",
+          //   CONFIRMED: rpState?.onSaveValidationData?.[0]?.CONFIRMED ?? "",
+          //   SCROLL1: rpState?.onSaveValidationData?.[0]?.SCROLL1 ?? "",
+          //   ACCOUNT_CLOSE: rpState?.onSaveValidationData?.ACCOUNT_CLOSE ?? "",
+          //   REC_DTL: [...rpState?.recurPmtTransferData.RECPAYTRANS],
+          //   PAY_SLIP_NEFT_DTL: [...data?.BENEFIACCTDTL],
+          //   PAYSLIP_NO: "",
+          // });
+        }
+      }
+    }
   };
 
   const finalPaySubmitHandler: SubmitFnType = async (
@@ -577,6 +661,7 @@ export const FDPayment = ({
     setOpenTrnsForm(false);
     setOpenRenewTrnsForm(false);
     setOpenPayslipForm(false);
+    setOpenNeftForm(false);
   };
 
   return (
@@ -779,12 +864,33 @@ export const FDPayment = ({
           fullWidth={true}
         >
           <PayslipAndDDForm
-            ref={payslipAndDDRef}
             defaultView="new"
             accountDetailsForPayslip={accountDetailsForPayslip}
             onSubmitHandler={paysBenefSubmitHandler}
             handleDialogClose={handleTrnsferFormClose}
             hideHeader={false}
+          />
+        </Dialog>
+      ) : null}
+
+      {Boolean(openNeftForm) ? (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+          fullWidth={true}
+        >
+          <BeneficiaryAcctDetailsForm
+            defaultView="new"
+            onSubmitHandler={paysBenefSubmitHandler}
+            accountDetailsForBen={accountDetailsForBen}
+            hideHeader={false}
+            handleDialogClose={handleTrnsferFormClose}
           />
         </Dialog>
       ) : null}
