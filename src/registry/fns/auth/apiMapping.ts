@@ -2749,6 +2749,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  GETFDCONFIRMATIONGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFIRMATIONGRID",
+    packageName: "",
+  },
+  GETFDCONFTRNDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFTRNDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTADVICE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTADVICE",
+    packageName: "",
+  },
+  GETFDAUDITDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDAUDITDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDELETE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
+    packageName: "",
+  },
   GETEMICACLCULATEDATA: {
     url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
     packageName: "",
