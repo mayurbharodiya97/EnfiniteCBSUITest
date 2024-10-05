@@ -6,67 +6,135 @@ import {
   GradientButton,
   LoadingTextAnimation,
   MetaDataType,
+  SubmitFnType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
-import { Dialog, Paper } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { CircularProgress, Dialog, Paper } from "@mui/material";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ddTransactionFormMetaData } from "./metaData";
 import { useLocation } from "react-router-dom";
 import { commonDataRetrive, headerDataRetrive } from "../api";
-import { useQuery } from "react-query";
+import { Mutation, useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
+import { t } from "i18next";
+import { enqueueSnackbar } from "notistack";
+import { format } from "date-fns";
 
-const EntryFormView = ({ onClose, gridData }) => {
-  const [combinedData, setCombinedData] = useState<any>([]);
-  const { state: rows } = useLocation();
+const EntryFormView = ({
+  onClose,
+  gridData,
+  currentIndex,
+  handlePrev,
+  handleNext,
+  rowsData,
+  headerLabel,
+  screenFlag,
+}) => {
   const [formMode, setFormMode] = useState("edit");
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+
   const requestData = {
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState.user.branchCode,
-    TRAN_CD: rows?.gridData.TRAN_CD,
-    SR_CD: rows?.gridData.SR_CD,
+    TRAN_CD: rowsData?.TRAN_CD,
+    SR_CD: rowsData?.SR_CD,
   };
   const { data: acctDtlData, isLoading: isAcctDtlLoading } = useQuery(
     ["headerData", requestData],
-    () => headerDataRetrive(requestData),
-    {
-      enabled: formMode !== "add",
-    }
+    () => headerDataRetrive(requestData)
   );
   const { data: draftDtlData, isLoading: isdraftDtlLoading } = useQuery(
     ["draftdata", requestData],
-    () => API.getRealizedHeaderData(requestData),
+    () => API.getRealizedHeaderData(requestData)
+  );
+  ddTransactionFormMetaData.form.label = headerLabel;
+  const mutation = useMutation(
+    API.ddTransactionSave,
+
     {
-      enabled: formMode !== "add",
+      onError: async (error: any) => {
+        let errorMsg = t("Unknownerroroccured");
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        const btnName = await MessageBox({
+          message: `${errorMsg}`,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
+        if (btnName === "Ok") {
+          onClose();
+        }
+
+        CloseMessageBox();
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar(t("RecordInsertedMsg"), {
+          variant: "success",
+        });
+        CloseMessageBox();
+        onClose();
+      },
     }
   );
-  useEffect(() => {
-    if (!isAcctDtlLoading && !isdraftDtlLoading) {
-      const combined: any = [];
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData: any,
+    endSubmit,
+    setFieldError
+  ) => {
+    endSubmit(true);
+    console.log(data);
 
-      // Combine acctDtlData
-      for (const acctItem of acctDtlData) {
-        combined.push({ ...acctItem });
-      }
-
-      // Combine draftDtlData
-      for (const draftItem of draftDtlData) {
-        combined.push({ ...draftItem });
-      }
-
-      setCombinedData(combined);
+    if (screenFlag === "REALIZE" || screenFlag === "CANCEL") {
+      isErrorFuncRef.current = {
+        data: {
+          REALIZE_DATE: data?.REALIZE_DATE,
+          REALIZE_AMT: data?.REALIZE_AMT,
+          C_C_T_SP_C: data?.C_C_T_SP_C,
+          COLLECT_COMISSION: data?.COLLECT_COMISSION,
+          COL_SER_CHARGE: data?.COL_SER_CHARGE,
+          TRF_COMP_CD: data?.TRF_COMP_CD,
+          TRF_BRANCH_CD: data?.TRF_BRANCH_CD,
+          TRF_ACCT_TYPE: data?.TRF_ACCT_TYPE,
+          TRF_ACCT_CD: data?.TRF_ACCT_CD,
+          TRF_NAME: data?.TRF_NAME,
+          TOKEN_NO: data?.TOKEN_NO,
+        },
+        displayData,
+        endSubmit,
+        setFieldError,
+      };
+      mutation.mutate({
+        ...isErrorFuncRef.current?.data,
+      });
+    } else if (screenFlag === "STOPPAYMENT") {
+      isErrorFuncRef.current = {
+        data: {
+          STOP_DATE: data?.STOP_DATE,
+          REALEASE_DATE: data?.REALEASE_DATE,
+          REASON_STOPPAYMENT: data?.REASON_STOPPAYMENT,
+          REASON_CD: data?.REASON_CD,
+        },
+        displayData,
+        endSubmit,
+        setFieldError,
+      };
+      mutation.mutate({
+        ...isErrorFuncRef.current?.data,
+      });
     }
-  }, [acctDtlData, draftDtlData]);
-  console.log(combinedData);
-
+  };
   return (
     <>
       <Dialog
         open={true}
         PaperProps={{
           style: {
-            overflow: "hidden",
             height: "auto",
             width: "100%",
           },
@@ -84,16 +152,21 @@ const EntryFormView = ({ onClose, gridData }) => {
                 ) as MetaDataType
               }
               displayMode={formMode}
-              onSubmitHandler={() => {}}
+              onSubmitHandler={onSubmitHandler}
+              formState={{
+                MessageBox: MessageBox,
+                Mode: formMode,
+                docCd: "RPT/014",
+              }}
               initialValues={{
-                CCTFLAG: draftDtlData && draftDtlData[0]?.C_C_T,
-                REALIZE_AMT: draftDtlData && draftDtlData[0]?.AMOUNT,
-                ...(acctDtlData && acctDtlData.length > 0
-                  ? acctDtlData[0]
-                  : {}),
-                ...(draftDtlData && draftDtlData.length > 0
-                  ? draftDtlData[0]
-                  : {}),
+                SCREENFLAG: screenFlag,
+                CCTFLAG: draftDtlData?.[0]?.C_C_T,
+                REALIZE_AMT: draftDtlData?.[0]?.AMOUNT,
+                REALIZED_DATE: authState?.workingDate,
+                STOP_DATE: authState?.workingDate,
+                CHEQUE_NO_DISP: acctDtlData?.[0]?.CHEQUE_NO,
+                ...((acctDtlData?.length ? acctDtlData[0] : {}) || {}),
+                ...((draftDtlData?.length ? draftDtlData[0] : {}) || {}),
               }}
               formStyle={{
                 background: "white",
@@ -101,6 +174,49 @@ const EntryFormView = ({ onClose, gridData }) => {
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
+                  {gridData?.length !== 1 ? (
+                    <>
+                      <GradientButton
+                        disabled={rowsData === undefined}
+                        onClick={() => {
+                          if (currentIndex && currentIndex !== gridData) {
+                          }
+                          handlePrev();
+                        }}
+                      >
+                        {t("Previous")}
+                      </GradientButton>
+
+                      <GradientButton
+                        disabled={rowsData?.INDEX === undefined}
+                        onClick={() => {
+                          if (currentIndex && currentIndex !== gridData)
+                            console.log("next cliked and data", rowsData?.id);
+
+                          handleNext();
+                        }}
+                      >
+                        {t("MoveForward")}
+                      </GradientButton>
+                      <GradientButton
+                        disabled={isSubmitting}
+                        endIcon={
+                          mutation?.isLoading ? (
+                            <CircularProgress size={20} />
+                          ) : null
+                        }
+                        onClick={() => {
+                          let event: any = { preventDefault: () => {} };
+                          handleSubmit(event, "SAVE");
+                        }}
+                      >
+                        {t("save")}
+                      </GradientButton>
+                    </>
+                  ) : (
+                    ""
+                  )}
+
                   <GradientButton onClick={() => onClose()} color={"primary"}>
                     Close
                   </GradientButton>
@@ -109,7 +225,7 @@ const EntryFormView = ({ onClose, gridData }) => {
             </FormWrapper>
           </>
         ) : (
-          <Paper sx={{ display: "flex", justifyContent: "center" }}>
+          <Paper sx={{ display: "flex", p: 2, justifyContent: "center" }}>
             <LoadingTextAnimation />
           </Paper>
         )}
@@ -118,11 +234,31 @@ const EntryFormView = ({ onClose, gridData }) => {
   );
 };
 
-export const EntryForm = ({ onClose, gridData }) => {
+export const EntryForm = ({
+  onClose,
+  gridData,
+  currentIndexRef,
+  handleNext,
+  handlePrev,
+  headerLabel,
+  screenFlag,
+}) => {
+  const { state: rows } = useLocation();
+  currentIndexRef.current = rows?.index;
+
   return (
     <>
       <ClearCacheProvider>
-        <EntryFormView onClose={onClose} gridData={gridData} />
+        <EntryFormView
+          onClose={onClose}
+          gridData={gridData}
+          rowsData={rows?.gridData}
+          currentIndex={rows.index}
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+          headerLabel={headerLabel}
+          screenFlag={screenFlag}
+        />
       </ClearCacheProvider>
     </>
   );

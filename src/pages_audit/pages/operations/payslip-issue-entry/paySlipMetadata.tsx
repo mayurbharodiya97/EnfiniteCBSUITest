@@ -575,7 +575,7 @@ export const AccdetailsFormMetaData = {
                           ignoreUpdate: true,
                         },
                   ACCT_NM: {
-                    value: returnVal?.ACCT_NM ?? "",
+                    value: postData?.ACCT_NM ?? "",
                   },
                   TYPE_CD: {
                     value: postData?.TYPE_CD ?? "",
@@ -707,15 +707,6 @@ export const AccdetailsFormMetaData = {
             componentType: "textField",
           },
           name: "REMARKS",
-          setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C"
-              ? "Cash"
-              : currVal === "T"
-              ? "Transfer"
-              : currVal === "G"
-              ? "Clearing"
-              : null;
-          },
           label: "narration",
           placeholder: "Mode",
           type: "text",

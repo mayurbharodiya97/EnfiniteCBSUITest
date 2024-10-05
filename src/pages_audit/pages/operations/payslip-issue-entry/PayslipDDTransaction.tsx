@@ -18,7 +18,7 @@ import {
 } from "@acuteinfo/common-base";
 import { DDtransactionsMetadata } from "./paySlipMetadata";
 import { useCallback, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { RetrieveEntryGrid } from "./entries/entryGrid";
 const actions: ActionTypes[] = [
   {
@@ -28,28 +28,19 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
-  {
-    actionName: "",
-    actionLabel: "",
-    multiple: false,
-    rowDoubleClick: true,
-  },
 ];
 export const PayslipDDTransaction = () => {
   const navigate = useNavigate();
   const [componentTorender, setComponetToRender] = useState([]);
   const [screenOpen, setScreenOpen] = useState(false);
 
-  const setCurrentAction = useCallback(
-    async (data) => {
-      if (data?.name === "Delete") {
-      }
-      navigate(data?.name, {
-        state: data?.rows,
-      });
-    },
-    [navigate]
-  );
+  const setCurrentAction = useCallback(async (data) => {
+    if (data?.name === "close") {
+      console.log("closed");
+
+      navigate("/cbsenfinity/dashboard");
+    }
+  }, []);
   const screens = [
     { DOCCD: "RPT/14", DOCURL: "Payslip Issue Entry", SCREENREF: "ISSUE" },
     {
@@ -112,7 +103,7 @@ export const PayslipDDTransaction = () => {
         </AppBar> */}
         <Paper sx={{ p: 2 }}>
           <GridWrapper
-            key={"modeMasterGrid"}
+            key={"DDtransactionsMetadata"}
             finalMetaData={DDtransactionsMetadata as GridMetaDataType}
             data={screens ?? []}
             setData={() => null}

@@ -7,7 +7,7 @@ import {
   useState,
   useEffect,
 } from "react";
-import { useMutation } from "react-query";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
 import * as API from "./api";
 import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
 import { AppBar, Dialog, Toolbar, Typography } from "@mui/material";
@@ -66,8 +66,11 @@ export const RetriveGridForm: FC<{
   const indexRef = useRef(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
+      console.log(data?.rows);
+
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -88,25 +91,23 @@ export const RetriveGridForm: FC<{
   );
   const handlePrev = useCallback(() => {
     navigate(".");
-    const index = (indexRef.current -= 1);
-    // console.log("index prev", index);
+    let index = (indexRef.current -= 1);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
         rows: [
           {
-            data: mutation?.data[index - 1],
-            id: String(index - 1),
+            data: mutation?.data[index],
+            id: String(index),
           },
         ],
       });
-      // console.log("mutation?.data[index]", mutation?.data);
     }, 0);
+    // queryClient.clear();
   }, [mutation?.data]);
   const handleNext = useCallback(() => {
     navigate(".");
-    const index = indexRef.current++;
-    // console.log("index next", index);
+    let index = indexRef.current;
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
@@ -117,8 +118,8 @@ export const RetriveGridForm: FC<{
           },
         ],
       });
-      // console.log("mutation?.data[index + 1]", mutation?.data[index + 1])
     }, 0);
+    // queryClient.clear();
   }, [mutation?.data]);
 
   const onSubmitHandler: SubmitFnType = async (
@@ -162,27 +163,18 @@ export const RetriveGridForm: FC<{
     mutation.mutate(data);
     endSubmit(true);
   };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     TO_DT: format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //     FLAG: "P",
-  //     FLAG_RTGSC: "",
-  //   });
-  // }, []);
+
   console.log(headerLabel);
 
   RetrieveFormConfigMetaData.form.label = headerLabel;
-
+  RetrieveGridMetaData.gridConfig.gridLabel = "Enter Retrival Parameters";
   const ClosedEventCall = () => {
     navigate(".");
   };
   return (
     <>
       <>
-        {screenFlag === "ISSUE" ? (
+        {apiReqFlag === "RPT/14" ? (
           <Dialog
             open={opem}
             PaperProps={{
@@ -285,6 +277,11 @@ export const RetriveGridForm: FC<{
                   <EntryForm
                     onClose={ClosedEventCall}
                     gridData={mutation?.data}
+                    currentIndexRef={indexRef}
+                    handlePrev={handlePrev}
+                    handleNext={handleNext}
+                    headerLabel={headerLabel}
+                    screenFlag={screenFlag}
                   />
                 }
               />

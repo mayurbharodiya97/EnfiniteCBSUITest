@@ -37,8 +37,9 @@ export const retRiveGridData = async ({
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map((items) => ({
+      responseData = responseData.map((items, index) => ({
         ...items,
+        INDEX: `${index}`,
         PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
         REALIZE_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
       }));
@@ -70,6 +71,77 @@ export const getRealizedHeaderData = async ({
       }));
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getGstCalcAmount = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ACCT_TYPE,
+  ACCT_CD,
+  AMOUNT,
+  ENT_BRANCH_CD,
+  MODULE,
+  ASON_DT,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCALCGSTAMT", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      ACCT_CD: ACCT_CD,
+      AMOUNT: AMOUNT,
+      ENT_BRANCH_CD: ENT_BRANCH_CD,
+      MODULE: MODULE,
+      ASON_DT: ASON_DT,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getStopPaymentReasonData = async ({
+  COMP_CD: COMP_CD,
+  BRANCH_CD: BRANCH_CD,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSTPREASONDDW", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      RETURN_TYPE: "CLG",
+    });
+
+  if (status === "0") {
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DISLAY_REASON, REASON_CD, ...items }) => {
+            return {
+              ...items,
+              value: REASON_CD,
+              label: DISLAY_REASON,
+            };
+          }
+        );
+      }
+      return responseData;
+    }
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const ddTransactionSave = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCALCGSTAMT", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
