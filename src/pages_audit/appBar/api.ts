@@ -6,6 +6,7 @@ export const getBankimgAndProfileimg = async ({ userID, companyID }) => {
     await AuthSDK.internalFetcher("BANKPROFILEPICK", {
       COMP_CD: companyID,
       // COMP_CD: "132 ",
+      APP_TRAN_CD: "51",
       USER_ID: userID,
     });
   if (status === "0") {
