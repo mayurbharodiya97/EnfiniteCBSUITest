@@ -1,8 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction, greaterThanDate } from "@acuteinfo/common-base";
-import * as API from "./api";
+import * as API from "../api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { greaterThanDate, utilFunction } from "@acuteinfo/common-base";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -47,6 +47,14 @@ export const ChequeBookEntryMetaData = {
       },
       branchCodeMetadata: {
         validationRun: "onChange",
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
+
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
@@ -85,13 +93,6 @@ export const ChequeBookEntryMetaData = {
         },
 
         runPostValidationHookAlways: true,
-        GridProps: {
-          xs: 12,
-          md: 2,
-          sm: 2,
-          lg: 2,
-          xl: 2,
-        },
       },
       accountTypeMetadata: {
         validationRun: "onChange",
@@ -102,6 +103,7 @@ export const ChequeBookEntryMetaData = {
           lg: 2,
           xl: 2,
         },
+
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -134,15 +136,15 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        render: {
+          componentType: "textField",
+        },
         GridProps: {
           xs: 12,
           md: 2.5,
           sm: 2.5,
           lg: 2.5,
           xl: 2.5,
-        },
-        render: {
-          componentType: "textField",
         },
 
         validate: (columnValue) => {
@@ -282,6 +284,9 @@ export const ChequeBookEntryMetaData = {
               TRAN_DT: {
                 value: authState?.workingDate ?? "",
               },
+              SERVICE_TAX: { value: "" },
+              AMOUNT: { value: "" },
+              NO_OF_CHQBK: { value: "1" },
 
               TOOLBAR_DTL: {
                 value:
@@ -843,7 +848,19 @@ export const ChequeBookEntryMetaData = {
         xl: 4,
       },
     },
-
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
     {
       render: {
         componentType: "amountField",
@@ -951,6 +968,7 @@ export const ChequeBookEntryMetaData = {
         xl: 4,
       },
     },
+
     {
       render: {
         componentType: "textField",
@@ -1039,6 +1057,107 @@ export const ChequeBookEntryMetaData = {
         componentType: "hidden",
       },
       name: "STATUS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FLAG",
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "AUTO_CHQBK_FLAG",
+      label: "AutoIssueFlag",
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TRAN_DT",
+      fullWidth: true,
+      label: "IssueDate",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_BY",
+      label: "EnteredBy",
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "VERIFIED_BY",
+      fullWidth: true,
+      label: "VerifiedBy",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
   ],
 };

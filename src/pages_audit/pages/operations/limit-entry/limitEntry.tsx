@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { limitEntryMetaData } from "./limitEntryMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
@@ -41,6 +41,7 @@ import {
   RemarksAPIWrapper,
   MetaDataType,
   FormWrapper,
+  utilFunction,
 } from "@acuteinfo/common-base";
 const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
@@ -299,6 +300,11 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
         max: "30vh",
       });
   }, [screenFlag]);
+  isData.newFormMTdata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
 
   return (
     <>

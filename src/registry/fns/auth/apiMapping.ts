@@ -2749,6 +2749,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  IMPSREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/IMPSREGISTRATIONDML",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

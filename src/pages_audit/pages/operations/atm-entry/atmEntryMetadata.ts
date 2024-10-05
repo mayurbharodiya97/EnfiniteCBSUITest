@@ -740,7 +740,7 @@ export const AtmEntryMetaData946 = {
     },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "CHEQUE_TOTAL",
       label: "NoOfCheques",
@@ -1136,22 +1136,16 @@ export const AtmEntryMetaData946 = {
       },
       name: "REQUISITION_DT",
       label: "RequisitionDate",
-      isMaxWorkingDate: true,
+      // isMaxWorkingDate: true,
       isWorkingDate: true,
       required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
-      validate: (value) => {
-        if (Boolean(value?.value) && !isValid(value?.value)) {
-          return "ThisFieldisrequired";
-        } else if (
-          greaterThanDate(value?.value, value?._maxDt, {
-            ignoreTime: true,
-          })
-        ) {
-          return t("RequistionDtShouldBeLessThanOrEqualWorkingDt");
+      validate: (currentField, dependent, formState) => {
+        if (new Date(currentField?.value) > new Date(formState?.workingDate)) {
+          return "RequistionDtShouldBeLessThanOrEqualWorkingDt";
         }
         return "";
       },
