@@ -71,6 +71,7 @@ export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
           MessageBox: MessageBox,
           handleDisableButton: handleDisableButton,
           docCD: "RPT/401",
+          FDState: FDState,
         }}
         formStyle={{
           background: "white",

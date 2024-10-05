@@ -17,12 +17,12 @@ import { VouchersDetailsGrid } from "./vouchersDetailsGrid";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { recurringPmtConfirmation } from "./api";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   usePopupContext,
   GradientButton,
   utilFunction,
 } from "@acuteinfo/common-base";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -114,7 +114,7 @@ export const RecurringPaymentConfirmation = ({
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
           ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
-          TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+          TRAN_CD: rows?.[0]?.data?.TRAN_CD ?? "",
           SCREEN_REF: "TRN/385",
           ACCOUNT_CLOSE: "",
           ENTERED_BY: rows?.[0]?.data?.ENTERED_BY ?? "",
@@ -245,11 +245,12 @@ export const RecurringPaymentConfirmation = ({
               BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
               ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
               ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+              AC_CUST_LEVEL: "",
               AMOUNT:
-                Number(rows?.[0]?.data?.TRAN_BAL) +
-                  Number(rows?.[0]?.data?.PROV_INT_AMT) +
-                  Number(rows?.[0]?.data?.INT_AMOUNT) -
-                  Number(rows?.[0]?.data?.TDS_AMT) ?? "",
+                Number(rows?.[0]?.data?.TRAN_BA ?? 0) +
+                Number(rows?.[0]?.data?.PROV_INT_AMT ?? 0) +
+                Number(rows?.[0]?.data?.INT_AMOUNT ?? 0) -
+                Number(rows?.[0]?.data?.TDS_AMT ?? 0),
             }}
             onClose={() => {
               setOpenPhotoSign(false);

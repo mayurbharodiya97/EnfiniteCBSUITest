@@ -152,7 +152,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
         if (dataArray?.length > 0) {
           for (let i = 0; i < dataArray?.length; i++) {
             const item = dataArray[0];
-            if (item.TO_ACCT_NO.trim() && String(item.AMOUNT).trim()) {
+            if (item?.TO_ACCT_NO?.trim() && String(item?.AMOUNT)?.trim()) {
               return true;
             }
           }
@@ -245,7 +245,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
               });
 
               if (validateIFSC?.[0]?.O_STATUS === "999") {
-                let buttonName = await formState.MessageBox({
+                let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
                   message: validateIFSC?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],

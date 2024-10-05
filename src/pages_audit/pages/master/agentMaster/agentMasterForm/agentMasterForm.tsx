@@ -73,10 +73,13 @@ const AgentMasterForm = ({
 
     let newData = {
       ...data,
+      SECURITY_PER: parseFloat(data?.SECURITY_PER).toFixed(2),
     };
     let oldData = {
       ...rows?.[0]?.data,
+      SECURITY_PER: parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2),
     };
+
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
     if (
@@ -92,15 +95,6 @@ const AgentMasterForm = ({
       return;
     } else {
       if (upd._UPDATEDCOLUMNS.length > 0) {
-        upd._UPDATEDCOLUMNS = upd._UPDATEDCOLUMNS.filter(
-          (field) =>
-            field !== "AgentAccount" &&
-            field !== "SecurityAccount" &&
-            field !== "OtherAccount" &&
-            field !== "ProfessionalTaxAccount" &&
-            field !== "HandHeldMachine"
-        );
-
         isErrorFuncRef.current = {
           data: {
             ...newData,

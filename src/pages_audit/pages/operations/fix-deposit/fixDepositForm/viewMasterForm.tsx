@@ -17,7 +17,14 @@ import {
   MetaDataType,
 } from "@acuteinfo/common-base";
 
-export const ViewMasterForm = ({ handleDialogClose }) => {
+interface ViewMasterFormProps {
+  handleDialogClose: any;
+  requestData?: any;
+}
+export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
+  handleDialogClose,
+  requestData,
+}) => {
   const { authState } = useContext(AuthContext);
   const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
@@ -29,11 +36,14 @@ export const ViewMasterForm = ({ handleDialogClose }) => {
   >(["getFDViewMasterDtl", authState?.user?.branchCode], () =>
     API.getFDViewMasterDtl({
       COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-      ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-      ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+      BRANCH_CD: requestData.BRANCH_CD ?? "",
+
+      ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
+
+      ACCT_CD: requestData?.ACCT_CD ?? "",
+
       A_ASON_DT: authState?.workingDate ?? "",
-      TDS_METHOD: FDState?.fdParaDetailData?.TDS_METHOD ?? "",
+      TDS_METHOD: requestData?.TDS_METHOD ?? "",
     })
   );
 
@@ -48,10 +58,10 @@ export const ViewMasterForm = ({ handleDialogClose }) => {
 
   //Form Header title
   ViewMasterMetadata.form.label = `View Master of A/c No.: ${
-    FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-  }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-    FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-  } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
+    requestData?.BRANCH_CD ?? ""
+  }-${requestData?.ACCT_TYPE ?? ""}-${requestData?.ACCT_CD ?? ""} ${
+    requestData?.ACCT_NM ?? ""
+  }`;
 
   return (
     <Dialog
@@ -99,9 +109,11 @@ export const ViewMasterForm = ({ handleDialogClose }) => {
                     : data?.[0]?.FORM_60 === "N"
                     ? "N"
                     : "",
-                BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-                ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-                ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                BRANCH_CD: requestData?.BRANCH_CD ?? "",
+
+                ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
+
+                ACCT_CD: requestData?.ACCT_CD ?? "",
               } as InitialValuesType
             }
             onSubmitHandler={() => {}}

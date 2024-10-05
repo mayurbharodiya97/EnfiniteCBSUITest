@@ -184,7 +184,7 @@ export const OTPModel = ({
               }}
             >
               {loginState?.authType === "OTP"
-                ? t("otp.EnterOTPsentToMobile")
+                ? loginState?.otpSentText ?? ""
                 : loginState?.authType === "TOTP"
                 ? t("otp.PleaseEnterOTP")
                 : null}
@@ -433,8 +433,10 @@ export const OTPModelForm = ({
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
+    } else if (Boolean(OTPError)) {
+      setOTP("");
     }
-  }, [loginState.otpmodelClose]);
+  }, [loginState.otpmodelClose, OTPError]);
 
   return (
     <Fragment>
@@ -465,6 +467,18 @@ export const OTPModelForm = ({
           >
             {t("otp.GenerateNewOTP")}
           </div> */}
+          <div
+            style={{
+              color: "#949597",
+              fontSize: "16px",
+              fontWeight: "400",
+              alignItems: "center",
+              fontStyle: "normal",
+              lineHeight: "33px",
+            }}
+          >
+            {loginState?.forgotOtpSentText ?? ""}
+          </div>
           <div className={classes.OTPalignName}>
             {t("otp.Hello")}{" "}
             {loginState?.username

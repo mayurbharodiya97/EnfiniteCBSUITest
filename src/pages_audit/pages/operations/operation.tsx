@@ -21,6 +21,7 @@ const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 // const FixDepositForm = lazy(() => import("./fixDeposit"));
 const FDDetailGrid = lazy(() => import("./fix-deposit"));
+const FDConfirmationGrid = lazy(() => import("./fixDepositConfirmation"));
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -261,14 +262,14 @@ export const OperationsMenu = () => (
     /> */}
 
     <Route
-      path="fix-deposit/*"
+      path="fix-deposit-entry/*"
       element={
         <FDContextWrapper>
           <FDDetailGrid />
         </FDContextWrapper>
       }
     />
-
+    <Route path="fix-deposit-confirmation/*" element={<FDConfirmationGrid />} />
     <Route
       path="form-15g-h-entry/*"
       element={<Form15GHEntryGrid screenFlag="E" />}

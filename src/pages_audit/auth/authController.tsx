@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./authContext";
 import { veirfyUsernameandPassword, verifyOTP } from "./api";
@@ -10,6 +10,9 @@ import { FullScreenLoader } from "@acuteinfo/common-base";
 import { AuthControllerWrapper } from "@acuteinfo/common-screens";
 
 export const AuthLoginController = () => {
+  const [specialChar, setSpecialChar] = useState(
+    localStorage.getItem("specialChar") || ""
+  );
   const { isLoggedIn, login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -33,6 +36,10 @@ export const AuthLoginController = () => {
     GeneralAPI.setDocumentName("Enfinity");
   }, []);
 
+  useEffect(() => {
+    setSpecialChar(localStorage.getItem("specialChar") || "");
+  }, [imageData]);
+
   return (
     <>
       {isLoading || isFetching ? (
@@ -55,6 +62,7 @@ export const AuthLoginController = () => {
             validatePasswordFn={API.validatePasswords}
             LanguageComponent={MultiLanguages}
             forgotPasswordEndpoint="forgotpassword"
+            preventSpecialChars={specialChar ?? ""}
           />
         </>
       )}

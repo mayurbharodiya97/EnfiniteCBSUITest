@@ -182,6 +182,7 @@ const RecurringCalculatorForm = () => {
             setPrintVisible(true);
             return printRef.current;
           }}
+          buttonText="Print"
         />
       </>
       <GridWrapper
@@ -226,6 +227,7 @@ const RecurringCalculatorForm = () => {
               content={() => {
                 return printRef.current;
               }}
+              buttonText="Print"
             />
             <GradientButton onClick={() => setOpen(false)}>
               Close
