@@ -9,22 +9,21 @@ import {
 import { useMutation } from "react-query";
 import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import {
-  Alert,
-  GridWrapper,
-  GradientButton,
-  ActionTypes,
-  SubmitFnType,
-  FormWrapper,
-  MetaDataType,
-  ClearCacheProvider,
-} from "@acuteinfo/common-base";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { RetrieveGridMetaData } from "./retrieveCfmGridMetadata";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { getCfmRetrieveData } from "../../api";
 import { format } from "date-fns";
+import { getimpsCfmRetrieveData } from "../../api";
+import {
+  ActionTypes,
+  Alert,
+  ClearCacheProvider,
+  FormWrapper,
+  GradientButton,
+  GridWrapper,
+  MetaDataType,
+  SubmitFnType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -43,7 +42,6 @@ export const RetrieveCfmDataCustom = ({
   onClose,
   navigate,
   setRetrieveData,
-  setFormMode,
 }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -55,24 +53,27 @@ export const RetrieveCfmDataCustom = ({
   const setCurrentAction = useCallback((data: any) => {
     // onClose();
     let newData = data?.rows?.map((item) => item?.data);
-    setFormMode("view");
     navigate(".", { state: newData });
     setRetrieveData(newData);
   }, []);
 
-  const mutation: any = useMutation("cfmRetrieveData", getCfmRetrieveData, {
-    onSuccess: (data) => {
-      if (Array.isArray(data) && data.length) {
-        let updateData = data.filter(
-          (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
-        );
-        setFlag("filter");
-        setRetrieve(data);
-        setFilterRetData(updateData);
-      }
-    },
-    onError: (error: any) => {},
-  });
+  const mutation: any = useMutation(
+    "getimpsCfmRetrieveData",
+    getimpsCfmRetrieveData,
+    {
+      onSuccess: (data) => {
+        if (Array.isArray(data) && data.length) {
+          let updateData = data.filter(
+            (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
+          );
+          setFlag("filter");
+          setRetrieve(data);
+          setFilterRetData(updateData);
+        }
+      },
+      onError: (error: any) => {},
+    }
+  );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -123,7 +124,7 @@ export const RetrieveCfmDataCustom = ({
           maxWidth="xl"
         >
           <FormWrapper
-            key={`AtmCfmretrieveForm`}
+            key={`impscfm-retrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
             onSubmitHandler={onSubmitHandler}
@@ -185,19 +186,13 @@ export const RetrieveCfmDataCustom = ({
   );
 };
 
-export const RetrieveCfmData = ({
-  onClose,
-  navigate,
-  setRetrieveData,
-  setFormMode,
-}) => {
+export const RetrieveCfmData = ({ onClose, navigate, setRetrieveData }) => {
   return (
     <ClearCacheProvider>
       <RetrieveCfmDataCustom
         onClose={onClose}
         navigate={navigate}
         setRetrieveData={setRetrieveData}
-        setFormMode={setFormMode}
       />
     </ClearCacheProvider>
   );

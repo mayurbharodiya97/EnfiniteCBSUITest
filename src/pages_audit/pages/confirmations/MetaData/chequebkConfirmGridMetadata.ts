@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const chequeBkConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ChequeBookConfirmation",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,

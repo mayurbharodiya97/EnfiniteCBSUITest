@@ -37,11 +37,8 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
     API.getFDViewMasterDtl({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: requestData.BRANCH_CD ?? "",
-
       ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
-
       ACCT_CD: requestData?.ACCT_CD ?? "",
-
       A_ASON_DT: authState?.workingDate ?? "",
       TDS_METHOD: requestData?.TDS_METHOD ?? "",
     })
@@ -110,9 +107,7 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
                     ? "N"
                     : "",
                 BRANCH_CD: requestData?.BRANCH_CD ?? "",
-
                 ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
-
                 ACCT_CD: requestData?.ACCT_CD ?? "",
               } as InitialValuesType
             }

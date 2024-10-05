@@ -79,18 +79,14 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
 
   accountCode: {
     render: {
-      componentType: "numberFormat",
+      componentType: "textField",
     },
     label: "Account Number",
     name: "ACCT_CD",
     placeholder: "Enter account number",
     required: true,
-    // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    // setValueOnDependentFieldsChange: (dependentFields) => {
-    //   return "";
-    // },
     schemaValidation: {
       type: "string",
       rules: [
@@ -101,25 +97,18 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
         },
       ],
     },
+    inputProps: {
+      maxLength: 8,
+      onInput: (event) => {
+        event.target.value = event.target.value.replace(/[^0-9]/g, "");
+      },
+    },
     GridProps: {
       xs: 3,
       md: 3,
       sm: 3,
       lg: 3,
       xl: 3,
-    },
-    FormatProps: {
-      // format: "###########",
-      allowNegative: false,
-      allowLeadingZeros: true,
-      // isNumericString: true,
-
-      isAllowed: (values) => {
-        if (values?.value?.length > 8) {
-          return false;
-        }
-        return true;
-      },
     },
   },
 
