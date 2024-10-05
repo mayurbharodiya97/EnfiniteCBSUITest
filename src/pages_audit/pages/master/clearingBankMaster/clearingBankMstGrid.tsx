@@ -187,6 +187,7 @@ export const ClearingBankMstGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        enableExport={true}
       />
       <Routes>
         <Route

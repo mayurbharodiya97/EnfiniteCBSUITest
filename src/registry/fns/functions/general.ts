@@ -777,6 +777,7 @@ const GeneralAPISDK = () => {
     ACCT_CD,
     AMOUNT,
     SCREEN_REF,
+    AC_CUST_LEVEL,
   }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
@@ -786,6 +787,7 @@ const GeneralAPISDK = () => {
         ACCT_CD: ACCT_CD,
         AMOUNT: AMOUNT,
         SCREEN_REF: SCREEN_REF,
+        AC_CUST_LEVEL: AC_CUST_LEVEL,
       });
     if (status === "0") {
       return data;

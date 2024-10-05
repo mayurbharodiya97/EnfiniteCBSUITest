@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import AddSubData from "./addSubdata";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import {
   GridWrapper,
   ActionTypes,

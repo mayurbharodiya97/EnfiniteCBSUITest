@@ -23,7 +23,7 @@ import SiExecuteDetailView from "./siExecuteDetailView";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { DeleteDialog } from "./deleteDialog";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import Draggable from "react-draggable";
 import { t } from "i18next";
 import {

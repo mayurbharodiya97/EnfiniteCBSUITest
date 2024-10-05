@@ -54,7 +54,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
     //Mutation for Closing Advice
     const closingAdviceDtlMutation = useMutation(
       "getRecurAdviceDtl",
-      API.getRecurAdviceDtl,
+      API?.getRecurAdviceDtl,
       {
         onError: (error: any) => {
           let errorMsg = "Unknownerroroccured";
@@ -105,7 +105,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
         queryClient.removeQueries(["getRecurAdviceDtl"]);
         queryClient.removeQueries([
           "lienGridDetail",
-          authState?.user?.branchCode,
+          authState?.user?.branchCode ?? "",
         ]);
       };
     }, []);

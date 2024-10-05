@@ -2753,6 +2753,34 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/IMPSREGISTRATIONDML",
     packageName: "",
   },
+  GETFDCONFIRMATIONGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFIRMATIONGRID",
+    packageName: "",
+  },
+  GETFDCONFTRNDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFTRNDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTADVICE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTADVICE",
+    packageName: "",
+  },
+  GETFDAUDITDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDAUDITDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDELETE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
+    packageName: "",
+  },
+  GETEMICACLCULATEDATA: {
+    url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
+    packageName: "",
+  },
+  DOGETEMICALCULATEREPORT: {
+    url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

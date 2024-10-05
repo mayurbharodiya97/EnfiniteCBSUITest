@@ -77,7 +77,7 @@ export const AdvocateMstFormMetaData = {
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 1, xl: 1 },
+      GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -118,7 +118,7 @@ export const AdvocateMstFormMetaData = {
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 4.5, xl: 4.5 },
+      GridProps: { xs: 12, sm: 10, md: 7.5, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -137,11 +137,11 @@ export const AdvocateMstFormMetaData = {
       },
       validate: (columnValue, allField, flag) => {
         if (columnValue.value.length <= 9) {
-          return "The length of your Mobile Number is less than 10 character.";
+          return "MobileNumberValidation";
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 4, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -152,8 +152,9 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterAddress",
       autoComplete: "off",
       type: "text",
+      maxLength: 100,
       preventSpecialChars: localStorage.getItem("specialChar") || "",
-      GridProps: { xs: 12, sm: 12, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 9, md: 12, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -174,7 +175,7 @@ export const AdvocateMstFormMetaData = {
         }
         return "";
       },
-      GridProps: { xs: 12, sm: 12, md: 7.5, lg: 8, xl: 8 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 8, xl: 8 },
     },
     {
       render: {
@@ -205,7 +206,7 @@ export const AdvocateMstFormMetaData = {
           };
         }
       },
-      GridProps: { xs: 3, sm: 2, md: 2, lg: 1.5, xl: 2 },
+      GridProps: { xs: 3, sm: 3, md: 3, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -213,10 +214,18 @@ export const AdvocateMstFormMetaData = {
       },
       name: "INACTIVE_DATE",
       label: "Inactive Date",
+      dependentFields: ["STATUS"],
       __NEW__: {
         validate: (currentField, dependentField) => {
           if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
             return t("Mustbeavaliddate");
+          }
+        },
+        isReadOnly: (fieldValue, dependentFields, formState) => {
+          if (Boolean(dependentFields?.STATUS?.value)) {
+            return false;
+          } else {
+            return true;
           }
         },
       },
