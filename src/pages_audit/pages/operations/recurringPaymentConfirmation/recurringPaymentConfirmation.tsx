@@ -245,7 +245,6 @@ export const RecurringPaymentConfirmation = ({
               BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
               ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
               ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
-              AC_CUST_LEVEL: "",
               AMOUNT:
                 Number(rows?.[0]?.data?.TRAN_BA ?? 0) +
                 Number(rows?.[0]?.data?.PROV_INT_AMT ?? 0) +
