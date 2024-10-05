@@ -132,6 +132,43 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
       lazy: true,
     },
   },
+
+  fullAccountNumber: {
+    render: {
+      componentType: "textField",
+    },
+    name: "FULL_ACCT_NO",
+    label: "Full Account Number",
+    postValidationSetCrossFieldValues: "retrieveStatementDtlFullAcctNo",
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Full account No is required"] }],
+    },
+    GridProps: {
+      xs: 12,
+      md: 12,
+      sm: 12,
+      lg: 12,
+      xl: 12,
+    },
+    maxLength: 20,
+    FormatProps: {
+      allowNegative: false,
+      allowLeadingZeros: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 20) {
+          return false;
+        }
+        return true;
+      },
+    },
+  },
+  Remark: {
+    render: {
+      componentType: "textField",
+    },
+    maxLength: 100,
+  },
 };
 
 const EntryPoint = () => (
