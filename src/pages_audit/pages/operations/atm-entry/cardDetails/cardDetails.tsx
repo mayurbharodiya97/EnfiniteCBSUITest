@@ -1,22 +1,22 @@
 import { Button, Dialog } from "@mui/material";
 import { t } from "i18next";
-import React, { useState } from "react";
 import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { useLocation } from "react-router-dom";
-import { format } from "date-fns";
 import {
+  usePopupContext,
   FormWrapper,
   MetaDataType,
-  usePopupContext,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 
-export const CardDetails = ({ navigate, setIsData, parameter }) => {
+export const CardDetails = ({ navigate, parameter, myRef }) => {
   const {
     state: { rows, retrieveData },
   }: any = useLocation();
-  const [idNumber, setIdNumber] = useState(1);
   const { MessageBox } = usePopupContext();
-  console.log("<<<rrr", rows, retrieveData);
+
+  const formatDate = (date) =>
+    date ? format(new Date(date), "dd/MMM/yyyy") : "";
 
   return (
     <Dialog
@@ -35,12 +35,13 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
         initialValues={rows?.[0]?.data ?? {}}
         formState={{
           MessageBox: MessageBox,
-          setIsData: setIsData,
+          myRef: myRef,
           reqData: {
             PARA_602: parameter?.PARA_602,
             PARA_946: parameter?.PARA_946,
             PARA_200: parameter?.PARA_200,
             PARA_320: parameter?.PARA_320,
+            PARA_604: parameter?.PARA_604,
             OLD_STATUS: rows?.[0]?.data?.OLD_STATUS,
             CONFIRMED: rows?.[0]?.data?.CONFIRMED,
             ENTERED_BRANCH_CD: retrieveData?.ENTERED_BRANCH_CD,
@@ -53,23 +54,66 @@ export const CardDetails = ({ navigate, setIsData, parameter }) => {
         onSubmitHandler={(data: any, displayData, endSubmit) => {
           // @ts-ignore
           endSubmit(true);
-          setIdNumber((old) => old + 1);
-          setIsData((old) => {
+          data = {
+            ...data,
+            REQ_DT: formatDate(data?.REQ_DT),
+            ISSUE_DT: formatDate(data?.ISSUE_DT),
+            EXPIRE_DT: formatDate(data?.EXPIRE_DT),
+            DEACTIVE_DT: formatDate(data?.DEACTIVE_DT),
+          };
+          myRef.current?.setGridData((old) => {
+            let oldRowData = old.map((item) => {
+              return {
+                ...item,
+                REQ_DT: formatDate(item?.REQ_DT),
+                ISSUE_DT: formatDate(item?.ISSUE_DT),
+                EXPIRE_DT: formatDate(item?.EXPIRE_DT),
+                DEACTIVE_DT: formatDate(item?.DEACTIVE_DT),
+              };
+            });
             const updatedGridData =
-              rows?.[0]?.data?.TRAN_CD || rows?.[0]?.data?.ID_NO
-                ? old?.gridData.map((item) =>
-                    item.TRAN_CD === rows?.[0]?.data?.TRAN_CD ||
-                    item.ID_NO === rows?.[0]?.data?.ID_NO
-                      ? { ...item, ...data }
-                      : item
-                  )
-                : [...old.gridData, { ...data, ID_NO: idNumber }];
-            return {
-              ...old,
-              gridData: updatedGridData,
-            };
-          });
+              rows?.[0]?.data?.SR_CD || rows?.[0]?.data?.ID_NO
+                ? oldRowData?.map((item) => {
+                    if (
+                      item.SR_CD === rows?.[0]?.data?.SR_CD ||
+                      (item.ID_NO && item.ID_NO === rows?.[0]?.data?.ID_NO)
+                    ) {
+                      const changedValues = {};
+                      const changedDataValues = {};
 
+                      // Iterate through keys of new data
+                      Object.keys(data).forEach((key) => {
+                        // Compare each key's value with old object
+                        if (item[key] !== data[key]) {
+                          changedDataValues[key] = item[key];
+                          changedValues[key] = true;
+                        }
+                      });
+
+                      return {
+                        ...item,
+                        ...data,
+                        _oldData: {
+                          ...changedDataValues,
+                        },
+                        _isTouchedCol: {
+                          ...changedValues,
+                        },
+                      };
+                    }
+                    return item;
+                  })
+                : [
+                    ...oldRowData,
+                    {
+                      ...data,
+                      ID_NO: Date.now(),
+                      ID_SR_NO: Date.now(),
+                      _isNewRow: true,
+                    },
+                  ];
+            return updatedGridData;
+          });
           navigate(".");
         }}
         formStyle={{

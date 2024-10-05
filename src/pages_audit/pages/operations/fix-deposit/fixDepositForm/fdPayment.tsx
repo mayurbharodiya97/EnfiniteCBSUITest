@@ -419,6 +419,8 @@ export const FDPayment = ({
                         TDS_DT: formatDate(formData?.TDS_DT),
                         TRAN_DT: formatDate(formData?.TRAN_DT),
                         MATURITY_DT: formatDate(formData?.MATURITY_DT),
+                        PAYSLIP: Boolean(formData?.PAYSLIP) ? "Y" : "N",
+                        RTGS_NEFT: Boolean(formData?.RTGS_NEFT) ? "Y" : "N",
                       },
                       SCREEN_REF: "RPT/401",
                       FLAG: Boolean(openPayment)
@@ -583,6 +585,10 @@ export const FDPayment = ({
               TDS_DT: formatDate(FDState?.fdSavedPaymentData.TDS_DT),
               TRAN_DT: formatDate(FDState?.fdSavedPaymentData.TRAN_DT),
               MATURITY_DT: formatDate(FDState?.fdSavedPaymentData.MATURITY_DT),
+              PAYSLIP: Boolean(FDState?.fdSavedPaymentData.PAYSLIP) ? "Y" : "N",
+              RTGS_NEFT: Boolean(FDState?.fdSavedPaymentData.RTGS_NEFT)
+                ? "Y"
+                : "N",
               RENEW_AMT: FDState?.renewTrnsFormData.RENEW_AMT ?? "",
             },
             SCREEN_REF: "RPT/401",
@@ -634,6 +640,10 @@ export const FDPayment = ({
             TDS_DT: formatDate(FDState?.fdSavedPaymentData.TDS_DT),
             TRAN_DT: formatDate(FDState?.fdSavedPaymentData.TRAN_DT),
             MATURITY_DT: formatDate(FDState?.fdSavedPaymentData.MATURITY_DT),
+            PAYSLIP: Boolean(FDState?.fdSavedPaymentData.PAYSLIP) ? "Y" : "N",
+            RTGS_NEFT: Boolean(FDState?.fdSavedPaymentData.RTGS_NEFT)
+              ? "Y"
+              : "N",
             RENEW_AMT: data?.RENEW_AMT ?? "",
           },
           SCREEN_REF: "RPT/401",

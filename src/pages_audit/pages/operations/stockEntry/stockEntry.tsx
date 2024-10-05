@@ -15,8 +15,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FormWrapper, MetaDataType, queryClient } from "@acuteinfo/common-base";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { StockEditViewWrapper } from "./documents/documentViewUpload";
 import { StockEntryMetaData } from "./stockEntryMetadata";
 import { StockGridMetaData } from "./stockGridMetadata";
@@ -24,7 +23,14 @@ import { ForceExpireStock } from "./forceExpire/forceExpire";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, RemarksAPIWrapper } from "@acuteinfo/common-base";
+import {
+  ClearCacheProvider,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+  RemarksAPIWrapper,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import {
   crudStockData,
   insertValidate,
@@ -214,6 +220,13 @@ const StockEntryCustom = () => {
     },
     [navigate]
   );
+
+  isData.newFormMTdata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
+
   return (
     <>
       <Box sx={{ width: "100%" }}>

@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { StopPayGridMetaData } from "./stopPayGridMetadata";
 import { ReleaseCheque } from "./releaseCheque/releaseCheque";
 import { AuthContext } from "pages_audit/auth";
@@ -37,6 +37,7 @@ import {
   RemarksAPIWrapper,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 
 const StopPaymentEntryCustom = () => {
@@ -178,6 +179,12 @@ const StopPaymentEntryCustom = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  StopPayEntryMetadata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
 
   return (
     <>
