@@ -4,7 +4,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { t } from "i18next";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
 import { RetrieveCfmData } from "../confirm/retrieveCfmData/retrieveCfmData";
 import { impsCfmMetaData } from "./impsConfirmMetadata";
 import { useMutation } from "react-query";
@@ -17,6 +16,7 @@ import {
   MasterDetailsForm,
   MasterDetailsMetaData,
 } from "@acuteinfo/common-base";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 const ImpsConfirmation = () => {
   const actions: ActionTypes[] = [
     {

@@ -12,7 +12,6 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { t } from "i18next";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Draggable from "react-draggable";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { commonFormMetaData } from "./commonFormMetadata";
@@ -39,6 +38,7 @@ import {
   MasterDetailsMetaData,
   usePopupContext,
 } from "@acuteinfo/common-base";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 const CommonForm = (props) => {
   const actions: ActionTypes[] = [
     {
