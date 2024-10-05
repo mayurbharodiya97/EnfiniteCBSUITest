@@ -2769,6 +2769,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
     packageName: "",
   },
+  VALIDATEFDCONFIRM: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDCONFIRM",
+    packageName: "",
+  },
+  DOFIXDEPOSITCONFIRMATION: {
+    url: "/enfinityFDServiceAPI/DOFIXDEPOSITCONFIRMATION",
+    packageName: "",
+  },
+  DOFDCONFIRMATIONDELETE: {
+    url: "/enfinityFDServiceAPI/DOFDCONFIRMATIONDELETE",
+    packageName: "",
+  },
   GETEMICACLCULATEDATA: {
     url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
     packageName: "",

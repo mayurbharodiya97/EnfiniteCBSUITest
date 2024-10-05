@@ -25,6 +25,7 @@ import {
   LoaderPaperComponent,
   Alert,
   ActionTypes,
+  RemarksAPIWrapper,
 } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { ViewMasterForm } from "../../fix-deposit/fixDepositForm/viewMasterForm";
@@ -36,9 +37,12 @@ import {
 } from "../gridMetadata";
 import { useMutation, useQuery } from "react-query";
 import {
+  fdConfirmationDeleteFormData,
+  fdConfirmFormData,
   getFdConfPaymentData,
   getFdConfPaymentDepositGridData,
   getFdConfUpdateGridData,
+  ValidateFDConfirm,
   ValidateFDDelete,
 } from "../api";
 import { DualConfHistoryGridMetaData } from "../../rtgsEntry/confirmation/ConfirmationMetadata";
@@ -83,6 +87,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
   const [displayPhotoSign, setDisplayPhotoSign] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState({});
   const [openConfHistoryForm, setOpenConfHistoryForm] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
 
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "close") {
@@ -202,27 +207,49 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
     };
   }, []);
 
-  const deleteMutation = useMutation(ValidateFDDelete, {
-    onError: (error) => {},
+  const validateDelete = useMutation(ValidateFDDelete, {
+    onError: (error) => {
+      // remain to add
+    },
+    onSuccess: (data) => {},
+  });
+  const deleteMutation = useMutation(fdConfirmationDeleteFormData, {
+    onError: (error) => {
+      // remain to add
+    },
+    onSuccess: (data) => {},
+  });
+  const validateConfirm = useMutation(ValidateFDConfirm, {
+    onError: (error) => {
+      // remain to add
+    },
     onSuccess: (data) => {},
   });
 
-  const validateDelete = async (event) => {
-    const reqPara = {
-      A_LOG_BRANCH: authState?.user?.branchCode ?? "",
-      A_LOG_COMP: authState?.companyID ?? "",
-      A_BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
-      A_ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
-      A_ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
-      A_FD_NO: rows?.[0]?.data?.FD_NO ?? "",
-      A_TRN_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
-      WORKING_DATE: authState?.workingDate ?? "",
-      A_SCREEN_REF: "RPT/402",
-      USERNAME: authState?.user?.id ?? "",
-      USERROLE: authState?.role ?? "",
-      DISPLAY_LANGUAGE: "en",
-    };
-    deleteMutation.mutate(reqPara, {
+  const confirmMutation = useMutation(fdConfirmFormData, {
+    onError: (error) => {
+      // remain to add
+    },
+    onSuccess: (data) => {},
+  });
+
+  const reqPara = {
+    A_LOG_BRANCH: authState?.user?.branchCode ?? "",
+    A_LOG_COMP: authState?.companyID ?? "",
+    A_BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+    A_ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+    A_ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+    A_FD_NO: rows?.[0]?.data?.FD_NO ?? "",
+    A_TRN_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
+    WORKING_DATE: authState?.workingDate ?? "",
+    A_SCREEN_REF: "RPT/402",
+    USERNAME: authState?.user?.id ?? "",
+    USERROLE: authState?.role ?? "",
+    DISPLAY_LANGUAGE: "en",
+  };
+
+  const handleDelete = async () => {
+    validateDelete.mutate(reqPara, {
       onSuccess: async (data, variables) => {
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "999") {
@@ -248,11 +275,61 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
               break;
             }
           } else if (data[i]?.O_STATUS === "0") {
-            // console.log("data", data);
+            setIsDelete(true);
           }
         }
       },
     });
+  };
+
+  const handleConfirm = async () => {
+    validateConfirm.mutate(
+      {
+        ...reqPara,
+        A_REMARKS: rows?.[0]?.data?.REMARKS ?? "",
+        A_ENTERED_BY: rows?.[0]?.data?.ENTERED_BY ?? "",
+      },
+      {
+        onSuccess: async (data, variables) => {
+          for (let i = 0; i < data?.length; i++) {
+            if (data[i]?.O_STATUS === "999") {
+              const btnName = await MessageBox({
+                messageTitle: "ValidationFailed",
+                message: data[i]?.O_MESSAGE,
+                buttonNames: ["Ok"],
+                icon: "ERROR",
+              });
+            } else if (data[i]?.O_STATUS === "9") {
+              const btnName = await MessageBox({
+                messageTitle: "Alert",
+                message: data?.[0]?.O_MESSAGE,
+                icon: "WARNING",
+              });
+            } else if (data[i]?.O_STATUS === "99") {
+              const btnName = await MessageBox({
+                messageTitle: "Confirmation",
+                message: data?.[0]?.O_MESSAGE,
+                buttonNames: ["Yes", "No"],
+              });
+              if (btnName === "No") {
+                break;
+              }
+            } else if (data[i]?.O_STATUS === "0") {
+              const confirmData = {
+                A_BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+                A_ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+                A_ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+                A_FD_NO: rows?.[0]?.data?.FD_NO ?? "",
+                A_TRN_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
+                REMARKS: rows?.[0]?.data?.REMARKS ?? "",
+                A_SCREEN_REF: "RPT/402",
+              };
+              confirmMutation.mutate(confirmData);
+            }
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -297,21 +374,6 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 {t("View Master")}
               </GradientButton>
 
-              {rows?.[0]?.data?.ALLOW_DELETE === "Y" ? (
-                <GradientButton
-                  onClick={validateDelete}
-                  disabled={deleteMutation?.isLoading || isLoading}
-                  endIcon={
-                    deleteMutation?.isLoading ? (
-                      <CircularProgress size={20} />
-                    ) : null
-                  }
-                  color={"primary"}
-                >
-                  {t("Delete")}
-                </GradientButton>
-              ) : null}
-
               {rows?.[0]?.data?.TRN_FLAG === "P" ||
               rows?.[0]?.data?.TRN_FLAG === "F" ? (
                 <GradientButton
@@ -327,19 +389,33 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
 
               <GradientButton
                 color={"primary"}
-                disabled={isLoading || isFetching}
-                onClick={async (event) => {}}
+                disabled={isLoading || isFetching || validateConfirm?.isLoading}
+                endIcon={
+                  validateConfirm?.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
+                onClick={handleConfirm}
               >
                 {t("Confirm")}
               </GradientButton>
 
-              <GradientButton
-                color={"primary"}
-                disabled={isLoading || isFetching}
-                onClick={async (event) => {}}
-              >
-                {t("Reject")}
-              </GradientButton>
+              {rows?.[0]?.data?.ALLOW_DELETE === "Y" ? (
+                <GradientButton
+                  onClick={handleDelete}
+                  disabled={
+                    validateDelete?.isLoading || isLoading || isFetching
+                  }
+                  endIcon={
+                    validateDelete?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
+                  color={"primary"}
+                >
+                  {t("Reject")}
+                </GradientButton>
+              ) : null}
 
               <GradientButton onClick={closeDialog} color={"primary"}>
                 {t("Close")}
@@ -532,6 +608,46 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
               </Dialog>
             </>
           ) : null}
+
+          {isDelete && (
+            <RemarksAPIWrapper
+              TitleText={
+                "Enter Removal Remarks For Fix Deposit Confirmation (RPT/402)"
+              }
+              label={"RemovalRemarks"}
+              onActionNo={() => setIsDelete(false)}
+              onActionYes={(val, rows) => {
+                const DeleteData = {
+                  LOG_BR: authState?.user?.branchCode ?? "",
+                  COMP_CD: authState?.companyID ?? "",
+                  BRANCH_CD: rows?.BRANCH_CD ?? "",
+                  ACCT_TYPE: rows?.ACCT_TYPE ?? "",
+                  ACCT_CD: rows?.ACCT_CD ?? "",
+                  FD_NO: rows?.FD_NO ?? "",
+                  REMARKS: rows?.REMARKS ?? "",
+                  TRN_FLAG: rows?.TRN_FLAG ?? "",
+                  USER_REMARKS: val
+                    ? val
+                    : "WRONG ENTRY FROM FIX DEPOSIT CONFIRMATION (RPT/402)",
+                  AMOUNT: data?.[0]?.TOT_AMT ?? "",
+                  CONFIRMED: rows?.CONFIRMED ?? "",
+                  ENTERED_BY: rows?.ENTERED_BY ?? "",
+                  GD_DATE: authState?.workingDate ?? "",
+                  SCREEN_REF: "RPT/402",
+                };
+                deleteMutation.mutate(DeleteData);
+              }}
+              isLoading={deleteMutation?.isLoading}
+              isEntertoSubmit={true}
+              AcceptbuttonLabelText="Ok"
+              CanceltbuttonLabelText="Cancel"
+              open={isDelete}
+              rows={rows?.[0]?.data}
+              defaultValue={
+                "WRONG ENTRY FROM FIX DEPOSIT CONFIRMATION (RPT/402)"
+              }
+            />
+          )}
         </>
       )}
     </>
