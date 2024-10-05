@@ -2103,7 +2103,10 @@ export const FDPaymentMetadata = {
       name: "FD_REM_TYPO",
       label: "FD Remark :",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (
+          formState?.screenFlag === "intPayment" ||
+          formState?.flag === "FDCNF"
+        ) {
           return true;
         } else {
           return false;
@@ -2136,7 +2139,6 @@ export const FDPaymentMetadata = {
       },
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
-
     {
       render: {
         componentType: "textField",
@@ -2144,7 +2146,10 @@ export const FDPaymentMetadata = {
       name: "FD_REMARK",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (
+          formState?.screenFlag === "intPayment" ||
+          formState?.flag === "FDCNF"
+        ) {
           return true;
         } else {
           return false;
@@ -2167,7 +2172,10 @@ export const FDPaymentMetadata = {
         }
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (Boolean(dependentFieldsValues?.RTGS_NEFT?.value)) {
+        if (
+          Boolean(dependentFieldsValues?.RTGS_NEFT?.value) ||
+          formState?.flag === "FDCNF"
+        ) {
           return true;
         } else {
           return false;
@@ -2195,7 +2203,10 @@ export const FDPaymentMetadata = {
         }
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (Boolean(dependentFieldsValues?.PAYSLIP?.value)) {
+        if (
+          Boolean(dependentFieldsValues?.PAYSLIP?.value) ||
+          formState?.flag === "FDCNF"
+        ) {
           return true;
         } else {
           return false;

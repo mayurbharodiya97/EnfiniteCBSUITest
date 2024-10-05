@@ -2625,6 +2625,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  DOATMREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/DOATMREGISTRATIONDML",
+    packageName: "",
+  },
   DELETEIMPORTEDDATA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
     packageName: "",
@@ -2647,6 +2651,38 @@ export const ActionWiseAPIConfiguration = {
   },
   FDMATURITYCOMPAREJASPER: {
     url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  GETIMPSREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSREGCONFGRID",
+    packageName: "",
+  },
+  VALIDATEDELETEIMPSENTRY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEDELETEIMPSENTRY",
+    packageName: "",
+  },
+  DOATMREGCONFRIMATION: {
+    url: "/commonMasterServiceAPI/DOATMREGCONFRIMATION",
+    packageName: "",
+  },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+    packageName: "",
+  },
+  SAVEFDPAYMENTFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDPAYMENTFDDETAILS",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTSUBDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+    packageName: "",
+  },
+  DELETECASHTRNDTL: {
+    url: "/transactionServiceAPI/DELETECASHTRNDTL",
     packageName: "",
   },
   RECCURRINGTOFDCALCULATORJASPER: {
@@ -2713,24 +2749,32 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
-  CUSTOMERCASHEXCHANGE: {
-    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+  GETFDCONFIRMATIONGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFIRMATIONGRID",
     packageName: "",
   },
-  SAVEFDPAYMENTFDDETAILS: {
-    url: "/enfinityFDServiceAPI/SAVEFDPAYMENTFDDETAILS",
+  GETFDCONFTRNDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFTRNDTL",
     packageName: "",
   },
-  GETCASHRELEASEMCTDTL: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+  GETFDPAYMENTADVICE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTADVICE",
     packageName: "",
   },
-  GETCASHRELEASEMCTSUBDTL: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+  GETFDAUDITDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDAUDITDETAILS",
     packageName: "",
   },
-  DELETECASHTRNDTL: {
-    url: "/transactionServiceAPI/DELETECASHTRNDTL",
+  VALIDATEFDDELETE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
+    packageName: "",
+  },
+  GETEMICACLCULATEDATA: {
+    url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
+    packageName: "",
+  },
+  DOGETEMICALCULATEREPORT: {
+    url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
 };
