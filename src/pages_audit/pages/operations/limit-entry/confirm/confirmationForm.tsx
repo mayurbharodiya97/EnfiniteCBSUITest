@@ -17,7 +17,7 @@ import {
   queryClient,
 } from "@acuteinfo/common-base";
 
-export const LimitConfirmationForm = ({ closeDialog, result, screenFlag }) => {
+export const LimitConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const [deletePopup, setDeletePopup] = useState<any>(false);
   const { authState } = useContext(AuthContext);
@@ -136,41 +136,37 @@ export const LimitConfirmationForm = ({ closeDialog, result, screenFlag }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                {screenFlag !== "limitForTrn" && (
-                  <Button
-                    color="primary"
-                    onClick={async () => {
-                      let buttonName = await MessageBox({
-                        messageTitle: "confirmation",
-                        message: `AreYouSureToConfirm`,
-                        buttonNames: ["No", "Yes"],
-                        defFocusBtnName: "Yes",
-                        loadingBtnName: ["Yes"],
+                <Button
+                  color="primary"
+                  onClick={async () => {
+                    let buttonName = await MessageBox({
+                      messageTitle: "confirmation",
+                      message: `AreYouSureToConfirm`,
+                      buttonNames: ["No", "Yes"],
+                      defFocusBtnName: "Yes",
+                      loadingBtnName: ["Yes"],
+                    });
+                    if (buttonName === "Yes") {
+                      limitCfm.mutate({
+                        IS_CONFIMED: true,
+                        COMP_CD: authState?.companyID,
+                        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+                        TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+                        STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
                       });
-                      if (buttonName === "Yes") {
-                        limitCfm.mutate({
-                          IS_CONFIMED: true,
-                          COMP_CD: authState?.companyID,
-                          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-                          TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                          STATUS_FLAG: rows?.[0]?.data?.STATUS_FLAG,
-                        });
-                      }
-                    }}
-                  >
-                    {t("Confirm")}
-                  </Button>
-                )}
-                {screenFlag !== "limitForTrn" && (
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      setDeletePopup(true);
-                    }}
-                  >
-                    {t("Reject")}
-                  </Button>
-                )}
+                    }
+                  }}
+                >
+                  {t("Confirm")}
+                </Button>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setDeletePopup(true);
+                  }}
+                >
+                  {t("Reject")}
+                </Button>
                 <Button color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
                 </Button>

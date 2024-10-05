@@ -25,10 +25,19 @@ import {
   queryClient,
   usePopupContext,
 } from "@acuteinfo/common-base";
-export const InsuranceDetailForm = ({
+type InsuranceEntryDtlCustomProps = {
+  handleDialogClose?: any;
+  defaultView?: any;
+  isDataChangedRef?: any;
+  setInsuranceDtlOpen?: any;
+  screenFlag?: any;
+};
+export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
   handleDialogClose,
   defaultView,
   isDataChangedRef,
+  setInsuranceDtlOpen,
+  screenFlag,
 }) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -377,23 +386,26 @@ export const InsuranceDetailForm = ({
                     </>
                   ) : (
                     <>
-                      <GradientButton
-                        onClick={async () => {
-                          if (rows?.[0]?.data?.ALLOW_DELETE === "N") {
-                            await MessageBox({
-                              messageTitle: t("ValidationFailed"),
-                              message: t("CannotDeleteBackDatedEntry"),
-                              buttonNames: ["Ok"],
-                            });
-                          } else {
-                            SetDeleteRemark(true);
-                          }
-                        }}
-                        color={"primary"}
-                      >
-                        {t("Remove")}
-                      </GradientButton>
-                      {mainData?.[0]?.ALLOW_EDIT === "Y" ? (
+                      {screenFlag !== "insuranceForTrn" ? (
+                        <GradientButton
+                          onClick={async () => {
+                            if (rows?.[0]?.data?.ALLOW_DELETE === "N") {
+                              await MessageBox({
+                                messageTitle: t("ValidationFailed"),
+                                message: t("CannotDeleteBackDatedEntry"),
+                                buttonNames: ["Ok"],
+                              });
+                            } else {
+                              SetDeleteRemark(true);
+                            }
+                          }}
+                          color={"primary"}
+                        >
+                          {t("Remove")}
+                        </GradientButton>
+                      ) : null}
+                      {mainData?.[0]?.ALLOW_EDIT === "Y" &&
+                      screenFlag !== "insuranceForTrn" ? (
                         <GradientButton
                           onClick={() => {
                             setFormMode("edit");
@@ -403,7 +415,8 @@ export const InsuranceDetailForm = ({
                           {t("Edit")}
                         </GradientButton>
                       ) : null}
-                      {rows?.[0]?.data?.ALLOW_RENEW === "Y" ? (
+                      {rows?.[0]?.data?.ALLOW_RENEW === "Y" &&
+                      screenFlag !== "insuranceForTrn" ? (
                         <GradientButton
                           onClick={() => {
                             setFormMode("new");
@@ -414,7 +427,13 @@ export const InsuranceDetailForm = ({
                         </GradientButton>
                       ) : null}
                       <GradientButton
-                        onClick={() => handleDialogClose()}
+                        onClick={() => {
+                          if (screenFlag === "insuranceForTrn") {
+                            setInsuranceDtlOpen(false);
+                          } else {
+                            handleDialogClose();
+                          }
+                        }}
                         color={"primary"}
                       >
                         {t("Close")}

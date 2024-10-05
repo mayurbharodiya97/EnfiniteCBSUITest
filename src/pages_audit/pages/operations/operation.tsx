@@ -135,35 +135,31 @@ export const OperationsMenu = () => (
 
     <Route
       path="chequebook-confirmation/*"
-      element={
-        <ConfirmationGridWrapper screenFlag="chequebookCFM" reqData="" />
-      }
+      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
     />
     <Route
       path="limit-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="limitCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
     />
     <Route
       path="stock-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stockCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
     />
     <Route
       path="stop-pay-confirmation/*"
-      element={
-        <ConfirmationGridWrapper screenFlag="stopPaymentCFM" reqData="" />
-      }
+      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
     />
     <Route
       path="lien-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="lienCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
     />
     <Route
       path="tempOd-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
     />
     <Route
       path="insurance-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
