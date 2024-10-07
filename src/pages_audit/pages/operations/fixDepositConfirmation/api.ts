@@ -89,3 +89,37 @@ export const ValidateFDDelete = async (formData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const ValidateFDConfirm = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEFDCONFIRM", formData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const fdConfirmFormData = async (formData) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOFIXDEPOSITCONFIRMATION",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const fdConfirmationDeleteFormData = async (formData) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOFDCONFIRMATIONDELETE",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
