@@ -1,18 +1,20 @@
 import { AppBar, Button, Dialog } from "@mui/material";
 import React, { useContext, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
 import * as API from "./api";
-import { ClearCacheProvider } from "cache";
 import { insuranceConfirmFormMetaData } from "./confirmMetadata";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-
+import {
+  RemarksAPIWrapper,
+  ClearCacheProvider,
+  Alert,
+  usePopupContext,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 const InsuranceConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
@@ -50,31 +52,27 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
     }
   );
 
-  const deleteInsuranceMutation: any = useMutation(
-    API.doInsuranceDml,
-    {
-      onError: (error: any) => {
-        let errorMsg = "Unknown Error occured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox()
-      },
+  const deleteInsuranceMutation: any = useMutation(API.doInsuranceDml, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
 
-      onSuccess: (data) => {
-        enqueueSnackbar(t("DataUpdatedSuccessfully"), {
-          variant: "success",
-        });
-        CloseMessageBox()
-        closeDialog();
-        CloseMessageBox();
-
-      },
-    }
-  );
+    onSuccess: (data) => {
+      enqueueSnackbar(t("DataUpdatedSuccessfully"), {
+        variant: "success",
+      });
+      CloseMessageBox();
+      closeDialog();
+      CloseMessageBox();
+    },
+  });
 
   return (
     <Dialog
@@ -83,37 +81,35 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
       PaperProps={{
         style: {
           width: "100%",
-
         },
       }}
       maxWidth="sm"
     >
       <>
-        {insuranceEntryConfirmation.isError
-          || deleteInsuranceMutation?.isError ?
-          (
-            <AppBar position="relative" color="primary">
-              <Alert
-                severity="error"
-                errorMsg={
-                  insuranceEntryConfirmation?.error?.error_msg ??
-                  deleteInsuranceMutation?.error?.error_msg ??
-                  "Unknow Error"
-                }
-                errorDetail={
-                  insuranceEntryConfirmation?.error?.error_detail ??
-                  deleteInsuranceMutation?.error?.error_detail ??
-                  ""
-                }
-                color="error"
-              />
-            </AppBar>
-          ) : null}
+        {insuranceEntryConfirmation.isError ||
+        deleteInsuranceMutation?.isError ? (
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={
+                insuranceEntryConfirmation?.error?.error_msg ??
+                deleteInsuranceMutation?.error?.error_msg ??
+                "Unknow Error"
+              }
+              errorDetail={
+                insuranceEntryConfirmation?.error?.error_detail ??
+                deleteInsuranceMutation?.error?.error_detail ??
+                ""
+              }
+              color="error"
+            />
+          </AppBar>
+        ) : null}
         <FormWrapper
           key={"insuranceConfirmForm"}
           metaData={insuranceConfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
-          onSubmitHandler={{}}
+          onSubmitHandler={() => {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
@@ -131,7 +127,14 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                   onClick={async () => {
                     let buttonName = await MessageBox({
                       messageTitle: t("confirmation"),
-                      message: t("Security") + "" + ":" + rows?.[0]?.data?.SEC + " " + "\n" + t("DoYouWantAllowTheTransaction"),
+                      message:
+                        t("Security") +
+                        "" +
+                        ":" +
+                        rows?.[0]?.data?.SEC +
+                        " " +
+                        "\n" +
+                        t("DoYouWantAllowTheTransaction"),
                       buttonNames: ["No", "Yes"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
@@ -139,18 +142,18 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                     if (buttonName === "Yes") {
                       insuranceEntryConfirmation.mutate({
                         _isConfrimed: true,
-                        ...rows?.[0]?.data
+                        ...rows?.[0]?.data,
                       });
                     }
                   }}
                 >
                   {t("Confirm")}
-                </Button >
+                </Button>
                 <Button
                   color="primary"
                   onClick={async () => {
                     if (rows?.[0]?.data?.RENEWED_FLAG === "0") {
-                      SetDeleteRemark(true)
+                      SetDeleteRemark(true);
                     } else {
                       let buttonName = await MessageBox({
                         messageTitle: t("confirmation"),
@@ -162,7 +165,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                       if (buttonName === "Yes") {
                         insuranceEntryConfirmation.mutate({
                           _isConfrimed: false,
-                          ...rows?.[0]?.data
+                          ...rows?.[0]?.data,
                         });
                       }
                     }
@@ -180,9 +183,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
       </>
       {isDeleteRemark && (
         <RemarksAPIWrapper
-          TitleText={
-            t("EnterRemovalRemarksForInsuranceConfirmation")
-          }
+          TitleText={t("EnterRemovalRemarksForInsuranceConfirmation")}
           onActionNo={() => SetDeleteRemark(false)}
           onActionYes={async (val) => {
             const buttonName = await MessageBox({
@@ -196,6 +197,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
               deleteInsuranceMutation.mutate({
                 _isNewRow: false,
                 _isDeleteRow: true,
+                _isAllowRenewRow: false,
                 ...rows?.[0]?.data,
                 USER_DEF_REMARKS: val
                   ? val
@@ -204,8 +206,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                 ACTIVITY_TYPE: "INSURANCE CONFIRMATION SCREEN",
               });
             }
-          }
-          }
+          }}
           isEntertoSubmit={true}
           AcceptbuttonLabelText="Ok"
           CanceltbuttonLabelText="Cancel"
@@ -214,10 +215,10 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
           rows={undefined}
         />
       )}
-    </Dialog >
+    </Dialog>
   );
 };
-export const InsuranceConfirmationFormWrapper = ({ closeDialog, result },) => {
+export const InsuranceConfirmationFormWrapper = ({ closeDialog, result }) => {
   return (
     <ClearCacheProvider>
       <InsuranceConfirmationForm closeDialog={closeDialog} result={result} />

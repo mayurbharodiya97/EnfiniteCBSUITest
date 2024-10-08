@@ -1,5 +1,3 @@
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
 import { FDDetailGridMetaData } from "./fdDetailgridMetaData";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FDRetriveForm } from "./fixDepositForm/fdRetriveForm";
@@ -8,20 +6,26 @@ import { FixDepositForm } from "./fixDepositForm/fdStepperForm";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { PaidFDGrid } from "./paidFDGrid";
 import { Dialog, Paper } from "@mui/material";
 import { ViewMasterForm } from "./fixDepositForm/viewMasterForm";
 import { FDContext } from "./context/fdContext";
 import { FDDetailForm } from "./fixDepositForm/fdDetailForm";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { utilFunction } from "components/utils";
 import { IntPaidDtlGrid } from "./intPaidDtlGrid";
 import Draggable from "react-draggable";
 import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import Document from "../DailyTransaction/TRNHeaderTabs/Document";
-
+import {
+  LoaderPaperComponent,
+  GridWrapper,
+  usePopupContext,
+  ActionTypes,
+  utilFunction,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
+import { format } from "date-fns";
+import { FDPayment } from "./fixDepositForm/fdPayment";
 export const FDDetailGrid = () => {
   const {
     FDState,
@@ -29,105 +33,123 @@ export const FDDetailGrid = () => {
     updateRetrieveFormData,
     resetAllData,
     updateViewDtlGridData,
+    setActiveStep,
+    updateCheckAllowFDPayApiData,
+    updatePrematureRateData,
   } = useContext(FDContext);
-  const [openRetriveForm, setOpenRetriveForm] = useState(false);
+  const [openFDPmtBtns, setOpenFDPmtBtns] = useState(false);
+  const [openIntPayment, setOpenIntPayment] = useState(false);
   const [openDetailForm, setOpenDetailForm] = useState(false);
+  const [displayAllActions, setDisplayAllActions] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isDataChangedRef = useRef(false);
   const initialRender = useRef(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const acctNoDataRef: any = useRef({});
+  const paramDataRef: any = useRef({});
   const { authState } = useContext(AuthContext);
   let currentPath = useLocation().pathname;
-  const [gridMetadata, setGridMetadata] = useState(FDDetailGridMetaData);
 
-  const actions: ActionTypes[] =
-    Object.keys(FDState?.retrieveFormData).length === 0
-      ? [
-          {
-            actionName: "retrieve",
-            actionLabel: "Retrieve",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-        ]
-      : [
-          {
-            actionName: "view-master",
-            actionLabel: "View Master",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          {
-            actionName: "paid-fd",
-            actionLabel: "Paid FD",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          {
-            actionName: "joint-dtl",
-            actionLabel: "Joint",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          {
-            actionName: "int-paid-dtl",
-            actionLabel: "Int Paid Dtl",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          // {
-          //   actionName: "docs",
-          //   actionLabel: "Docs",
-          //   multiple: undefined,
-          //   alwaysAvailable: true,
-          // },
-          {
-            actionName: "add",
-            actionLabel: "New FD",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          {
-            actionName: "retrieve",
-            actionLabel: "Retrieve",
-            multiple: undefined,
-            alwaysAvailable: true,
-          },
-          {
-            actionName: "view-details",
-            actionLabel: "View Detail",
-            multiple: false,
-            rowDoubleClick: true,
-          },
-        ];
+  const actions: ActionTypes[] = !Boolean(displayAllActions)
+    ? [
+        {
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+      ]
+    : [
+        {
+          actionName: "view-master",
+          actionLabel: "View Master",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "paid-fd",
+          actionLabel: "Paid FD",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "joint-dtl",
+          actionLabel: "Joint",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "int-paid-dtl",
+          actionLabel: "Int Paid Dtl",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "docs",
+          actionLabel: "Docs",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "add",
+          actionLabel: "New FD",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "retrieve",
+          actionLabel: "Retrieve",
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "view-details",
+          actionLabel: "View Detail",
+          multiple: false,
+          rowDoubleClick: true,
+        },
+        {
+          actionName: "payment/renew",
+          actionLabel: "Payment/Renew",
+          multiple: false,
+          rowDoubleClick: false,
+        },
+        {
+          actionName: "int-payment",
+          actionLabel: "Int. Payment",
+          multiple: false,
+          rowDoubleClick: false,
+        },
+      ];
 
   useEffect(() => {
-    if (initialRender.current) {
-      acctNoDataRef.current = FDState?.acctNoData;
-    }
-  }, [Object.keys(FDState?.acctNoData).length]);
+    paramDataRef.current = {
+      ...FDState?.acctNoData,
+      ...FDState?.fdParaDetailData,
+    };
+  }, [FDState?.acctNoData?.AC_STATUS, FDState?.fdParaDetailData?.SPL_AMT]);
 
   //Mutation for get View Detail grid data
   const getFDViewDtlMutation: any = useMutation(
     "getFDViewDtl",
     API.getFDViewDtl,
     {
-      onError: (error: any) => {
+      onError: async (error: any) => {
         let errorMsg = "Unknownerroroccured";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+        await MessageBox({
+          messageTitle: "ERROR",
+          message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
       onSuccess: (data) => {
+        setDisplayAllActions(true);
         updateViewDtlGridData(data);
         CloseMessageBox();
-        setOpenRetriveForm(false);
       },
     }
   );
@@ -137,13 +159,15 @@ export const FDDetailGrid = () => {
     "checkAllowModifyFDData",
     API.checkAllowModifyFDData,
     {
-      onError: (error: any) => {
+      onError: async (error: any) => {
         let errorMsg = "Unknownerroroccured";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+        await MessageBox({
+          messageTitle: "ERROR",
+          message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -151,12 +175,95 @@ export const FDDetailGrid = () => {
     }
   );
 
+  //Mutation for allow FD payment
+  const checkAllowFDPayMutation: any = useMutation(
+    "checkAllowFDPay",
+    API.checkAllowFDPay,
+    {
+      onError: async (error: any) => {
+        let errorMsg = "Unknownerroroccured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        await MessageBox({
+          messageTitle: "ERROR",
+          message: errorMsg ?? "",
+          icon: "ERROR",
+        });
+        CloseMessageBox();
+      },
+      onSuccess: () => {},
+    }
+  );
+
+  //Mutation for premature rate
+  const getPrematureRateMutation: any = useMutation(
+    "getPrematureRate",
+    API.getPrematureRate,
+    {
+      onError: async (error: any) => {
+        let errorMsg = "Unknownerroroccured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        await MessageBox({
+          messageTitle: "ERROR",
+          message: errorMsg ?? "",
+          icon: "ERROR",
+        });
+        CloseMessageBox();
+      },
+      onSuccess: (data) => {
+        updatePrematureRateData(data?.[0]);
+        setOpenFDPmtBtns(true);
+      },
+    }
+  );
+
   const setCurrentAction = useCallback(
     async (data) => {
       const actionData = data;
+      const reqParam = {
+        A_COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
+        A_BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
+        A_ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE ?? "",
+        A_ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
+        A_FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
+        A_LEAN_FLAG: data?.rows?.[0]?.data?.LEAN_FLAG ?? "",
+        A_MATURITY_DT: data?.rows?.[0]?.data?.MATURITY_DT
+          ? format(new Date(data?.rows?.[0]?.data?.MATURITY_DT), "dd/MMM/yyyy")
+          : "",
+        A_TRAN_DT: data?.rows?.[0]?.data?.TRAN_DT
+          ? format(new Date(data?.rows?.[0]?.data?.TRAN_DT), "dd/MMM/yyyy")
+          : "",
+        A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",
+        A_SCREEN_REF: "RPT/401",
+        WORKING_DATE: authState?.workingDate ?? "",
+        USERROLE: authState?.role ?? "",
+        USERNAME: authState?.user?.id ?? "",
+        A_PRIN_AMT: data?.rows?.[0]?.data?.TOT_AMT ?? "",
+        A_INT_RATE: data?.rows?.[0]?.data?.INT_RATE ?? "",
+        A_SPL_AMT: paramDataRef?.current?.SPL_AMT ?? "",
+        COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
+        LOGIN_COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
+        LOGIN_BRANCH_CD: authState?.user?.branchCode ?? "",
+        ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE ?? "",
+        ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
+        WORKING_DT: authState?.workingDate ?? "",
+        USER_NM: authState?.user?.id ?? "",
+        USER_LEVEL: authState?.role ?? "",
+        FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
+        CONFIRMED: data?.rows?.[0]?.data?.CONFIRMED ?? "",
+        LAST_ENT_BY: data?.rows?.[0]?.data?.LAST_ENTERED_BY ?? "",
+        DOC_CD: "RPT/401",
+        STATUS: paramDataRef?.current?.AC_STATUS ?? "",
+      };
+
       if (data.name === "retrieve") {
         resetAllData();
-        setOpenRetriveForm(true);
+        setDisplayAllActions(false);
+        navigate("retrieve");
       } else if (data.name === "paid-fd") {
         navigate("paid-fd");
       } else if (data.name === "int-paid-dtl") {
@@ -170,20 +277,7 @@ export const FDDetailGrid = () => {
       } else if (data?.name === "view-details") {
         checkAllowModifyFDDataMutation.mutate(
           {
-            COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
-            LOGIN_COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
-            LOGIN_BRANCH_CD: authState?.user?.branchCode ?? "",
-            ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE ?? "",
-            ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
-            WORKING_DT: authState?.workingDate ?? "",
-            USER_NM: authState?.user?.id ?? "",
-            USER_LEVEL: authState?.role ?? "",
-            FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
-            CONFIRMED: data?.rows?.[0]?.data?.CONFIRMED ?? "",
-            LAST_ENT_BY: data?.rows?.[0]?.data?.LAST_ENTERED_BY ?? "",
-            DOC_CD: "RPT/401",
-            STATUS: acctNoDataRef?.current?.AC_STATUS ?? "",
+            ...reqParam,
           },
           {
             onSuccess: async (data) => {
@@ -191,11 +285,10 @@ export const FDDetailGrid = () => {
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
                   messageTitle: "Validation Failed",
-                  message: data?.O_MESSAGE ?? "Confirmation Pending.",
+                  message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else {
-                updateFDDetailsFormData([actionData?.rows?.[0]?.data]);
                 navigate(actionData?.name, {
                   state: actionData?.rows,
                 });
@@ -204,12 +297,113 @@ export const FDDetailGrid = () => {
             },
           }
         );
-      } else if (data?.name === "add") {
-        updateFDDetailsFormData([
+      } else if (data?.name === "payment/renew") {
+        checkAllowFDPayMutation.mutate(
           {
-            TRANS_ACCT_NM: "",
+            ...reqParam,
+            A_FLAG: "P",
           },
-        ]);
+          {
+            onSuccess: async (data) => {
+              const checkAllowFDPayData = data;
+              updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
+
+              for (const obj of checkAllowFDPayData) {
+                if (obj?.O_STATUS === "999") {
+                  await MessageBox({
+                    messageTitle: "ValidationFailed",
+                    message: obj?.O_MESSAGE,
+                    icon: "ERROR",
+                  });
+                } else if (obj?.O_STATUS === "9") {
+                  await MessageBox({
+                    messageTitle: "validationAlert",
+                    message: obj?.O_MESSAGE ?? "",
+                    icon: "WARNING",
+                  });
+                } else if (obj?.O_STATUS === "99") {
+                  const buttonName = await MessageBox({
+                    messageTitle: "Confirmation",
+                    message: obj?.O_MESSAGE ?? "",
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (buttonName === "No") {
+                    break;
+                  }
+                } else if (obj?.O_STATUS === "0") {
+                  if (obj?.IS_PREMATURE === "Y") {
+                    getPrematureRateMutation.mutate({
+                      ...reqParam,
+                    });
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                  } else {
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                    setOpenFDPmtBtns(true);
+                  }
+                }
+              }
+              CloseMessageBox();
+            },
+          }
+        );
+      } else if (data?.name === "int-payment") {
+        checkAllowFDPayMutation.mutate(
+          {
+            ...reqParam,
+            A_FLAG: "I",
+          },
+          {
+            onSuccess: async (data) => {
+              const checkAllowFDPayData = data;
+              updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
+
+              for (const obj of checkAllowFDPayData) {
+                if (obj?.O_STATUS === "999") {
+                  await MessageBox({
+                    messageTitle: "ValidationFailed",
+                    message: obj?.O_MESSAGE,
+                    icon: "ERROR",
+                  });
+                } else if (obj?.O_STATUS === "9") {
+                  await MessageBox({
+                    messageTitle: "validationAlert",
+                    message: obj?.O_MESSAGE ?? "",
+                    icon: "WARNING",
+                  });
+                } else if (obj?.O_STATUS === "99") {
+                  const buttonName = await MessageBox({
+                    messageTitle: "Confirmation",
+                    message: obj?.O_MESSAGE ?? "",
+                    buttonNames: ["Yes", "No"],
+                  });
+                  if (buttonName === "No") {
+                    break;
+                  }
+                } else if (obj?.O_STATUS === "0") {
+                  if (obj?.IS_PREMATURE === "Y") {
+                    getPrematureRateMutation.mutate({
+                      ...reqParam,
+                    });
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                  } else {
+                    navigate(actionData?.name, {
+                      state: actionData?.rows,
+                    });
+                    setOpenIntPayment(true);
+                  }
+                }
+              }
+              CloseMessageBox();
+            },
+          }
+        );
+      } else if (data?.name === "add") {
         navigate(data?.name, {
           state: [],
         });
@@ -223,82 +417,71 @@ export const FDDetailGrid = () => {
   );
 
   const handleDialogClose = useCallback(() => {
+    updateFDDetailsFormData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
+    setActiveStep(0);
     setOpenDetailForm(false);
+    setOpenFDPmtBtns(false);
+    setOpenIntPayment(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
-      //   refetch();
+      const reqParam = {
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
+        ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
+        ACCT_CD:
+          utilFunction.getPadAccountNumber(
+            FDState?.retrieveFormData?.ACCT_CD,
+            FDState?.retrieveFormData?.ACCT_TYPE
+          ) ?? "",
+        WORKING_DT: authState?.workingDate ?? "",
+      };
+      getFDViewDtlMutation?.mutate(reqParam);
       isDataChangedRef.current = false;
     }
   }, [navigate]);
 
-  const handleCloseRetriveForm = () => {
-    setOpenRetriveForm(false);
-  };
-
-  //   useEffect(() => {
-  //     if (initialRender.current) {
-  //       initialRender.current = false;
-  //       if (location.pathname === "/cbsenfinity/operation/fix-deposit") {
-  //         setOpenRetriveForm(true);
-  //       }
-  //     }
-  //   }, [location.pathname, navigate]);
-
-  console.log("FDState grid", FDState);
-
-  //Form Header title
   useEffect(() => {
-    if (
-      FDState?.retrieveFormData?.ACCT_NM &&
-      FDState?.retrieveFormData?.BRANCH_CD &&
-      FDState?.retrieveFormData?.ACCT_TYPE &&
-      FDState?.retrieveFormData?.ACCT_CD
-    ) {
-      let label = utilFunction.getDynamicLabel(
-        currentPath,
-        authState?.menulistdata,
-        true
-      );
-      const label2 = `${label ?? ""} of A/c No.: ${
-        FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-      }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-        FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-      } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
+    navigate("retrieve");
+  }, []);
 
-      const updatedGridMetadata = {
-        ...gridMetadata,
-        gridConfig: {
-          ...gridMetadata.gridConfig,
-          gridLabel: label2,
-        },
-      };
-      setGridMetadata(updatedGridMetadata);
-    } else {
-      const updatedGridMetadata = {
-        ...gridMetadata,
-        gridConfig: {
-          ...gridMetadata.gridConfig,
-          gridLabel: "",
-        },
-      };
-      setGridMetadata(updatedGridMetadata);
-    }
-  }, [Object.keys(FDState?.retrieveFormData).length]);
+  //Grid Header title
+  const label = utilFunction?.getDynamicLabel(
+    currentPath,
+    authState?.menulistdata,
+    true
+  );
+  FDDetailGridMetaData.gridConfig.gridLabel = Boolean(displayAllActions)
+    ? label +
+      " " +
+      `of A/c No.: ${FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""}-${
+        FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""
+      }-${FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""} ${
+        FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""
+      }`
+    : label;
 
   return (
     <>
-      {checkAllowModifyFDDataMutation.isLoading && (
+      {(checkAllowModifyFDDataMutation.isLoading ||
+        checkAllowFDPayMutation.isLoading ||
+        getPrematureRateMutation.isLoading) && (
         <Dialog open={true} fullWidth={true}>
           <LoaderPaperComponent size={30} />
         </Dialog>
       )}
+
       <GridWrapper
         key={
           "fdDetailGrid" +
           Object.keys(FDState?.retrieveFormData).length +
-          FDState?.viewDtlGridData?.length
+          FDState?.viewDtlGridData?.length +
+          displayAllActions
         }
-        finalMetaData={gridMetadata as GridMetaDataType}
+        finalMetaData={FDDetailGridMetaData as GridMetaDataType}
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
         loading={getFDViewDtlMutation?.isLoading}
@@ -327,8 +510,8 @@ export const FDDetailGrid = () => {
           path="add/*"
           element={
             <FixDepositForm
-              //   isDataChangedRef={isDataChangedRef}
-              closeDialog={handleDialogClose}
+              isDataChangedRef={isDataChangedRef}
+              handleDialogClose={handleDialogClose}
               defaultView={"new"}
             />
           }
@@ -347,8 +530,9 @@ export const FDDetailGrid = () => {
               maxWidth="xl"
             >
               <FDDetailForm
-                closeDialog={handleDialogClose}
+                handleDialogClose={handleDialogClose}
                 defaultView={"view"}
+                isDataChangedRef={isDataChangedRef}
               />
             </Dialog>
           }
@@ -381,6 +565,7 @@ export const FDDetailGrid = () => {
                     BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                    ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
                     BTN_FLAG: "Y",
                   }}
                 />
@@ -391,15 +576,32 @@ export const FDDetailGrid = () => {
 
         <Route
           path="view-master/*"
-          element={<ViewMasterForm closeDialog={handleDialogClose} />}
+          element={
+            <ViewMasterForm
+              handleDialogClose={handleDialogClose}
+              requestData={{
+                ...FDState?.retrieveFormData,
+                TDS_METHOD: FDState?.fdParaDetailData?.TDS_METHOD,
+              }}
+            />
+          }
         />
         <Route
           path="paid-fd/*"
-          element={<PaidFDGrid closeDialog={handleDialogClose} />}
+          element={<PaidFDGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
           path="int-paid-dtl/*"
-          element={<IntPaidDtlGrid closeDialog={handleDialogClose} />}
+          element={<IntPaidDtlGrid handleDialogClose={handleDialogClose} />}
+        />
+        <Route
+          path="retrieve/*"
+          element={
+            <FDRetriveForm
+              handleDialogClose={handleDialogClose}
+              getFDViewDtlMutation={getFDViewDtlMutation}
+            />
+          }
         />
         <Route
           path="docs/*"
@@ -429,8 +631,9 @@ export const FDDetailGrid = () => {
                     BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                    ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
                   }}
-                  // closeDialog={handleDialogClose}
+                  handleDialogClose={handleDialogClose}
                 />
               </div>
             </Dialog>
@@ -450,18 +653,27 @@ export const FDDetailGrid = () => {
           maxWidth="xl"
         >
           <FDDetailForm
-            //   isDataChangedRef={isDataChangedRef}
-            closeDialog={handleDialogClose}
+            isDataChangedRef={isDataChangedRef}
+            handleDialogClose={handleDialogClose}
             defaultView={"view"}
             screenFlag="openLienForm"
           />
         </Dialog>
       ) : null}
 
-      {openRetriveForm ? (
-        <FDRetriveForm
-          closeDialog={handleCloseRetriveForm}
-          getFDViewDtlMutation={getFDViewDtlMutation}
+      {openFDPmtBtns ? (
+        <FDPayment
+          handleDialogClose={handleDialogClose}
+          screenFlag=""
+          isDataChangedRef={isDataChangedRef}
+        />
+      ) : null}
+
+      {openIntPayment ? (
+        <FDPayment
+          handleDialogClose={handleDialogClose}
+          screenFlag="intPayment"
+          isDataChangedRef={isDataChangedRef}
         />
       ) : null}
     </>

@@ -1,9 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction, greaterThanDate } from "@acuteinfo/common-base";
 import * as API from "./api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
-import { geaterThanDate } from "registry/rulesEngine";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -483,8 +482,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -565,8 +564,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -663,7 +662,7 @@ export const ChequeBookEntryMetaData = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentFields?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         } else if (!field.value) {
@@ -813,7 +812,7 @@ export const ChequeBookEntryMetaData = {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
         } else if (
-          geaterThanDate(value?.value, value?._maxDt, {
+          greaterThanDate(value?.value, value?._maxDt, {
             ignoreTime: true,
           })
         ) {

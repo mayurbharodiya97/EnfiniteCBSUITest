@@ -1,17 +1,20 @@
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
+import { ActionTypes } from "@acuteinfo/common-base";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AcctModal from "./AcctModal";
 import { Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { MessageBoxWrapper } from "components/custom/messageBox";
+
+import {
+  MessageBoxWrapper,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+} from "@acuteinfo/common-base";
 
 const AcctConfirm = () => {
   const { authState } = useContext(AuthContext);
@@ -121,8 +124,9 @@ const AcctConfirm = () => {
         // ref={myGridRef}
       />
 
-      <MessageBoxWrapper
-        MessageTitle={"ALERT"}
+      {/* Commented Temporary */}
+      {/* <MessageBoxWrapper
+        // MessageTitle={"ALERT"}
         Message={"You can not confirm your own posted transaction"}
         onClickButton={() => {
           setPreventConfirmDialog(false);
@@ -133,7 +137,7 @@ const AcctConfirm = () => {
         rows={[]}
         buttonNames={["OK"]}
         open={preventConfirmDialog}
-      />
+      /> */}
 
       <Routes>
         <Route

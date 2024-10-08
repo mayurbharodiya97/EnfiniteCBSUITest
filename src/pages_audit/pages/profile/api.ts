@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getUserDetails = async ({ userID }) => {
@@ -133,7 +133,7 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
 };
 export const getdashboxData = async () => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDASHBOX", {});
+    await AuthSDK.internalFetcher("GETDASHBOX", { APP_TRAN_CD: "51" });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {

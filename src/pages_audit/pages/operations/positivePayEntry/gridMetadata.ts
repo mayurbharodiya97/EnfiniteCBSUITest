@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const PositivePayEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -23,7 +23,6 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
-    allowColumnHiding: true,
   },
   columns: [
     {
@@ -62,7 +61,7 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       accessor: "CHEQUE_NO",
       columnName: "ChequeNumber",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 200,
       minWidth: 150,
@@ -83,8 +82,8 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       accessor: "CHEQUE_AMT",
       columnName: "Amount",
       sequence: 6,
-      alignment: "left",
-      componentType: "default",
+      alignment: "right",
+      componentType: "currency",
       width: 100,
       minWidth: 70,
       maxWidth: 130,
@@ -105,8 +104,8 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 60,
+      width: 120,
+      minWidth: 100,
       maxWidth: 150,
     },
     {

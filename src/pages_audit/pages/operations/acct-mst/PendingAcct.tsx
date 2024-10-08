@@ -1,17 +1,19 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { Grid } from "@mui/material";
-import { Alert } from "components/common/alert";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { useQuery } from "react-query";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import * as API from "./api";
-import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
 import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
 import { format } from "date-fns";
 import AcctModal from "./AcctModal";
 
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const pendingActions: ActionTypes[] = [
   {
     actionName: "view-detail",

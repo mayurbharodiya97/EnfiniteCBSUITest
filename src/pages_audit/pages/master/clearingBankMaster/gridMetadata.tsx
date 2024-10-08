@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const ClearingBankMstGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -21,8 +21,8 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {
@@ -71,10 +71,10 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
       accessor: "EXCLUDE",
       columnName: "Exclude",
       sequence: 5,
-      alignment: "left",
+      alignment: "center",
       componentType: "editableCheckbox",
-      width: 140,
-      minWidth: 120,
+      width: 120,
+      minWidth: 100,
       maxWidth: 180,
       isReadOnly: true,
     },
@@ -82,10 +82,10 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
       accessor: "CTS",
       columnName: "CTS",
       sequence: 6,
-      alignment: "left",
+      alignment: "center",
       componentType: "editableCheckbox",
-      width: 140,
-      minWidth: 120,
+      width: 120,
+      minWidth: 100,
       maxWidth: 180,
       isReadOnly: true,
     },

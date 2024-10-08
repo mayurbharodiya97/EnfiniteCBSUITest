@@ -14,33 +14,34 @@ import {
   Chip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
 import { RecurringContext } from "../context/recurringPaymentContext";
 import { RecurringPaymentEntryForm } from "./recurringPaymentEntryForm";
 import { RecurringPaymentTransferForm } from "./recurringPaymentTransferForm";
 import { makeStyles } from "@mui/styles";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import {
   ColorlibConnector,
   ColorlibStepIconRoot,
-} from "components/dyanmicForm/stepperForm/style";
+} from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 import { PayslipAndDDForm } from "../payslipAndNEFT/payslipAndDDForm";
 import { BeneficiaryAcctDetailsForm } from "../payslipAndNEFT/beneficiaryAcctDetailsForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import ClosingAdvice from "../closingAdvice";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
-import { queryClient } from "cache";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
-
+import {
+  GradientButton,
+  usePopupContext,
+  queryClient,
+  utilFunction,
+  LoaderPaperComponent,
+  SubmitFnType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -124,7 +125,7 @@ const RecurringPaymentStepperForm = ({
       {
         AMOUNT:
           Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
-            Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0) ?? 0,
+          Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0),
         REMARKS: `Recurring A/c Payment ${authState?.companyID?.trim() ?? ""}${
           rpState?.recurPmtEntryData?.BRANCH_CD?.trim() ?? ""
         }${rpState?.recurPmtEntryData?.ACCT_TYPE?.trim() ?? ""}${
@@ -134,7 +135,7 @@ const RecurringPaymentStepperForm = ({
     ],
     PAYMENT_AMOUNT:
       Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
-        Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0) ?? 0,
+      Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0),
     ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
     BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
     ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
@@ -155,8 +156,8 @@ const RecurringPaymentStepperForm = ({
       },
     ],
     PAYMENT_AMOUNT:
-      Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
-        Number(rpState?.recurPmtEntryData?.PAYMENT_AMT) ?? 0,
+      Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
+      Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0),
     ACCT_TYPE: rpState?.recurPmtEntryData?.ACCT_TYPE ?? "",
     BRANCH_CD: rpState?.recurPmtEntryData?.BRANCH_CD ?? "",
     ACCT_CD: rpState?.recurPmtEntryData?.ACCT_CD ?? "",
@@ -178,25 +179,27 @@ const RecurringPaymentStepperForm = ({
       DD_AMT:
         (Boolean(rpState?.recurPmtEntryData?.PAYSLIP) ||
           Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT)) &&
-        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
-          Number(rpState?.recurPmtEntryData?.PAYMENT_AMT) >
+        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
+          Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0) >
           0
-          ? Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
-            Number(rpState?.recurPmtEntryData?.PAYMENT_AMT)
+          ? Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
+            Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0)
           : "",
       TRF_AMT:
-        Number(rpState?.recurPmtEntryData?.TRF_AMT) > 0
+        Number(rpState?.recurPmtEntryData?.TRF_AMT ?? 0) > 0
           ? rpState?.recurPmtEntryData?.TRF_AMT
           : "0",
       PAYSLIP: Boolean(rpState?.recurPmtEntryData?.PAYSLIP) ? "Y" : "N",
       RTGS_NEFT: Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT) ? "Y" : "N",
-      INT_FROM_DT: isValidDate(rpState?.recurPmtEntryData?.INT_FROM_DT)
+      INT_FROM_DT: utilFunction.isValidDate(
+        rpState?.recurPmtEntryData?.INT_FROM_DT
+      )
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_FROM_DT),
             "yyyy-MMM-dd"
           ) ?? ""
         : format(new Date(), "yyyy-MMM-dd") ?? "",
-      INT_TO_DT: isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
+      INT_TO_DT: utilFunction.isValidDate(rpState?.recurPmtEntryData?.INT_TO_DT)
         ? format(
             new Date(rpState?.recurPmtEntryData?.INT_TO_DT),
             "yyyy-MMM-dd"
@@ -205,8 +208,8 @@ const RecurringPaymentStepperForm = ({
       SCREEN_REF: "TRN/053",
       COMM_TYPE_CD: "",
       TOT_DD_NEFT_AMT:
-        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
-          Number(rpState?.recurPmtEntryData?.PAYMENT_AMT) ?? "",
+        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
+        Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0),
       PAY_FOR: "",
       SDC: "",
       DD_NEFT: Boolean(rpState?.recurPmtEntryData?.RTGS_NEFT)
@@ -218,15 +221,15 @@ const RecurringPaymentStepperForm = ({
       THROUGH_CHANNEL: "",
       REMARKS: "",
       DD_NEFT_PAY_AMT:
-        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT) -
-          Number(rpState?.recurPmtEntryData?.PAYMENT_AMT) ?? "",
+        Number(rpState?.recurPmtEntryData?.TOTAL_AMOUNT ?? 0) -
+        Number(rpState?.recurPmtEntryData?.PAYMENT_AMT ?? 0),
     },
   };
 
   //Mutation for Closing Advice
   const closingAdviceDtlMutation = useMutation(
     "getRecurAdviceDtl",
-    API.getRecurAdviceDtl,
+    API?.getRecurAdviceDtl,
     {
       onError: (error: any) => {
         let errorMsg = "Unknownerroroccured";
@@ -247,7 +250,7 @@ const RecurringPaymentStepperForm = ({
 
   //Mutation for Insert Data
   const recurringPaymentEntrySaveMutation = useMutation(
-    API.recurringPaymentEntryDML,
+    API?.recurringPaymentEntryDML,
     {
       onError: async (error: any) => {
         let errorMsg = "Unknownerroroccured";
@@ -264,20 +267,20 @@ const RecurringPaymentStepperForm = ({
         for (const obj in data[0]) {
           if (obj === "NEFT_DD_MSG") {
             for (const ddNeftObj of data[0][obj] ?? []) {
-              if (ddNeftObj.O_STATUS === "999") {
+              if (ddNeftObj?.O_STATUS === "999") {
                 await MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: ddNeftObj.O_MESSAGE ?? "",
+                  message: ddNeftObj?.O_MESSAGE ?? "",
                 });
-              } else if (ddNeftObj.O_STATUS === "9") {
+              } else if (ddNeftObj?.O_STATUS === "9") {
                 await MessageBox({
                   messageTitle: "Alert",
-                  message: ddNeftObj.O_MESSAGE ?? "",
+                  message: ddNeftObj?.O_MESSAGE ?? "",
                 });
-              } else if (ddNeftObj.O_STATUS === "99") {
+              } else if (ddNeftObj?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
                   messageTitle: "Confirmation",
-                  message: ddNeftObj.O_MESSAGE ?? "",
+                  message: ddNeftObj?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                 });
@@ -288,20 +291,20 @@ const RecurringPaymentStepperForm = ({
             }
           } else if (obj === "B_VOUCHER_MSG") {
             for (const voucherMsg of data[0][obj] ?? []) {
-              if (voucherMsg.O_STATUS === "999") {
+              if (voucherMsg?.O_STATUS === "999") {
                 await MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: voucherMsg.O_MESSAGE ?? "",
+                  message: voucherMsg?.O_MESSAGE ?? "",
                 });
-              } else if (voucherMsg.O_STATUS === "9") {
+              } else if (voucherMsg?.O_STATUS === "9") {
                 await MessageBox({
                   messageTitle: "VouchersConfirmation",
-                  message: voucherMsg.O_MESSAGE ?? "",
+                  message: voucherMsg?.O_MESSAGE ?? "",
                 });
-              } else if (voucherMsg.O_STATUS === "99") {
+              } else if (voucherMsg?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
                   messageTitle: "Confirmation",
-                  message: voucherMsg.O_MESSAGE ?? "",
+                  message: voucherMsg?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                 });
@@ -330,7 +333,7 @@ const RecurringPaymentStepperForm = ({
                   closeDialog();
                   break;
                 }
-              } else if (voucherMsg.O_STATUS === "0") {
+              } else if (voucherMsg?.O_STATUS === "0") {
                 isDataChangedRef.current = true;
                 closeDialog();
                 resetAllData();
@@ -438,7 +441,7 @@ const RecurringPaymentStepperForm = ({
                   });
                 }
               } else {
-                setActiveStep(rpState.activeStep + 1);
+                setActiveStep(rpState?.activeStep + 1);
                 CloseMessageBox();
               }
             } else if (obj?.O_STATUS === "9") {
@@ -472,7 +475,7 @@ const RecurringPaymentStepperForm = ({
                     REC_DTL: [],
                   });
                 } else {
-                  setActiveStep(rpState.activeStep + 1);
+                  setActiveStep(rpState?.activeStep + 1);
                 }
               }
               if (buttonName === "No") {
@@ -495,7 +498,7 @@ const RecurringPaymentStepperForm = ({
                     REC_DTL: [],
                   });
                 } else {
-                  setActiveStep(rpState.activeStep + 1);
+                  setActiveStep(rpState?.activeStep + 1);
                 }
               }
             } else if (obj?.O_STATUS === "999") {

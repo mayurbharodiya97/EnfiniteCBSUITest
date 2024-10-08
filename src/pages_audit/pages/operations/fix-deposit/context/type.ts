@@ -8,6 +8,11 @@ export interface FDStateType {
   fdParaDetailData: object;
   acctNoData: object;
   viewDtlGridData: object;
+  fdPaymentData: object;
+  checkAllowFDPayApiData: object;
+  prematureRateData: object;
+  fdSavedPaymentData: object;
+  renewTrnsFormData: object;
 }
 
 export interface ActionType {

@@ -1,18 +1,21 @@
 import React, { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { extractMetaData, utilFunction } from "components/utils";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { metaData } from "./metaData";
 import { CircularProgress, Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-
+import {
+  MetaDataType,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 
 const BankIfscCdMasterForm = ({
   isDataChangedRef,
@@ -25,7 +28,8 @@ const BankIfscCdMasterForm = ({
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const mutation = useMutation(API.updateBankIfscCodeData,
+  const mutation = useMutation(
+    API.updateBankIfscCodeData,
 
     {
       onError: (error: any) => {
@@ -48,8 +52,6 @@ const BankIfscCdMasterForm = ({
       },
     }
   );
-
-
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -99,15 +101,9 @@ const BankIfscCdMasterForm = ({
 
   return (
     <>
-
       <FormWrapper
         key={"bankifsccodeMasterForm" + formMode}
-        metaData={
-          extractMetaData(
-            metaData,
-            formMode
-          ) as MetaDataType
-        }
+        metaData={extractMetaData(metaData, formMode) as MetaDataType}
         initialValues={{
           ...(rows?.[0]?.data ?? {}),
         }}
@@ -178,7 +174,6 @@ const BankIfscCdMasterForm = ({
           </>
         )}
       </FormWrapper>
-
     </>
   );
 };

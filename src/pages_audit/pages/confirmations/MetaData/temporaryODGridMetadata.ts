@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const tempODConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "TempODAgainstConfirmation",
+    gridLabel: "",
     rowIdColumn: "ENTERED_DATE",
     defaultColumnConfig: {
       width: 150,
@@ -62,7 +62,7 @@ export const tempODConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 290,
     },
     {
-      accessor: "CODE_DISPLAY",
+      accessor: "CODE_DESC",
       columnName: "Parameters",
       sequence: 4,
       alignment: "left",

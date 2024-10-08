@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const Form15GHEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -22,7 +22,7 @@ export const Form15GHEntryGridMetaData: GridMetaDataType = {
       min: "77vh",
       max: "77vh",
     },
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
     footerNote: "NoteDoubleClickOnViewDetails",
@@ -83,9 +83,9 @@ export const Form15GHEntryGridMetaData: GridMetaDataType = {
       accessor: "ACTIVE",
       columnName: "Active",
       sequence: 6,
-      alignment: "left",
+      alignment: "center",
       componentType: "editableCheckbox",
-      width: 60,
+      width: 70,
       minWidth: 50,
       maxWidth: 90,
       isReadOnly: true,

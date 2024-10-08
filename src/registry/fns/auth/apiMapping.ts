@@ -1716,6 +1716,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/DOSAVELOANRECHEDULE",
     packageName: "",
   },
+  GETUPDATERATE: {
+    url: "/loanServiceAPI/GETUPDATERATE",
+    packageName: "",
+  },
+  DOUPDATERATEAMOUNT: {
+    url: "/loanServiceAPI/DOUPDATERATEAMOUNT",
+    packageName: "",
+  },
+  GETLOANRESCHEDULECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOANRESCHEDULECNF",
+    packageName: "",
+  },
+  DOCONFIRMLOANRESCHEDULE: {
+    url: "/loanServiceAPI/DOCONFIRMLOANRESCHEDULE",
+    packageName: "",
+  },
   GETAGENTMSTCONFIGPIGMYDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAGENTMSTCONFIGPIGMYDDW",
     packageName: "",
@@ -2605,12 +2621,184 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRATEDEFINITION",
     packageName: "",
   },
+  SAVERECEIPTPAYMENTDTL: {
+    url: "/transactionServiceAPI/SAVERECEIPTPAYMENTDTL",
+    packageName: "",
+  },
   VALIDATEATMREGSAVEDATA: {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
   GETMARITALSTATUSDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMARITALSTATUSDDW",
+    packageName: "",
+  },
+  DOATMREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/DOATMREGISTRATIONDML",
+    packageName: "",
+  },
+  DELETEIMPORTEDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
+    packageName: "",
+  },
+  DOCASHEXCHANGENTRY: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
+    packageName: "",
+  },
+  GETCASHEXCHANGECNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGECNF",
+    packageName: "",
+  },
+  GETCASHEXCHANGEDTLCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHEXCHANGEDTLCNF",
+    packageName: "",
+  },
+  DOCASHEXCHANGECONFIRMATION: {
+    url: "/transactionServiceAPI/DOCASHEXCHANGECONFIRMATION",
+    packageName: "",
+  },
+  FDMATURITYCOMPAREJASPER: {
+    url: "/enfinityReportServiceAPI/FDMATURITYCOMPAREJASPER",
+    packageName: "",
+  },
+  GETIMPSREGCONFGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETIMPSREGCONFGRID",
+    packageName: "",
+  },
+  VALIDATEDELETEIMPSENTRY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEDELETEIMPSENTRY",
+    packageName: "",
+  },
+  DOATMREGCONFRIMATION: {
+    url: "/commonMasterServiceAPI/DOATMREGCONFRIMATION",
+    packageName: "",
+  },
+  CUSTOMERCASHEXCHANGE: {
+    url: "/transactionServiceAPI/CUSTOMERCASHEXCHANGE",
+    packageName: "",
+  },
+  SAVEFDPAYMENTFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDPAYMENTFDDETAILS",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTDTL",
+    packageName: "",
+  },
+  GETCASHRELEASEMCTSUBDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHRELEASEMCTSUBDTL",
+    packageName: "",
+  },
+  DELETECASHTRNDTL: {
+    url: "/transactionServiceAPI/DELETECASHTRNDTL",
+    packageName: "",
+  },
+  RECCURRINGTOFDCALCULATORJASPER: {
+    url: "/enfinityReportServiceAPI/RECCURRINGTOFDCALCULATORJASPER",
+    packageName: "",
+  },
+  GETSESSIONDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSESSIONDTL",
+    packageName: "",
+  },
+  UPDEODRUNNINGSTATUS: {
+    url: "/enfinityBankProcessingServiceAPI/UPDEODRUNNINGSTATUS",
+    packageName: "",
+  },
+  DOEOD: {
+    url: "/enfinityBankProcessingServiceAPI/DOEOD",
+    packageName: "",
+  },
+  VALIDATEFDDEPAMT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDEPAMT",
+    packageName: "",
+  },
+  CHECKLIEN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKLIEN",
+    packageName: "",
+  },
+  VALIDATEUPDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEUPDATEFDDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDDETAILS",
+    packageName: "",
+  },
+  SAVEFDDETAILS: {
+    url: "/enfinityFDServiceAPI/SAVEFDDETAILS",
+    packageName: "",
+  },
+  CHECKALLOWFDPAY: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/CHECKALLOWFDPAY",
+    packageName: "",
+  },
+  GETPREMATRATE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREMATRATE",
+    packageName: "",
+  },
+  GETFDPAYMENTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTDTL",
+    packageName: "",
+  },
+  VALIDATEFDPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDPAYMENT",
+    packageName: "",
+  },
+  RECURRINGINSTRUCTIONMASTERDML: {
+    url: "/transactionServiceAPI/RECURRINGINSTRUCTIONMASTERDML",
+    packageName: "",
+  },
+  DORECINSTRUCTIONCONFIRMATION: {
+    url: "/transactionServiceAPI/DORECINSTRUCTIONCONFIRMATION",
+    packageName: "",
+  },
+  GETLOGINPAGEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
+    packageName: "",
+  },
+  IMPSREGISTRATIONDML: {
+    url: "/commonMasterServiceAPI/IMPSREGISTRATIONDML",
+    packageName: "",
+  },
+  GETFDCONFIRMATIONGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFIRMATIONGRID",
+    packageName: "",
+  },
+  GETFDCONFTRNDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDCONFTRNDTL",
+    packageName: "",
+  },
+  GETFDPAYMENTADVICE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPAYMENTADVICE",
+    packageName: "",
+  },
+  GETFDAUDITDETAILS: {
+    url: "/enfinityFDServiceAPI/GETFDAUDITDETAILS",
+    packageName: "",
+  },
+  VALIDATEFDDELETE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
+    packageName: "",
+  },
+  VALIDATEFDCONFIRM: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDCONFIRM",
+    packageName: "",
+  },
+  DOFIXDEPOSITCONFIRMATION: {
+    url: "/enfinityFDServiceAPI/DOFIXDEPOSITCONFIRMATION",
+    packageName: "",
+  },
+  DOFDCONFIRMATIONDELETE: {
+    url: "/enfinityFDServiceAPI/DOFDCONFIRMATIONDELETE",
+    packageName: "",
+  },
+  GETEMICACLCULATEDATA: {
+    url: "/enfinityReportServiceAPI/GETEMICACLCULATEDATA",
+    packageName: "",
+  },
+  DOGETEMICALCULATEREPORT: {
+    url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
 };

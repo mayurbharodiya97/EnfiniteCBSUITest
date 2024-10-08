@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const lienConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "LienConfirmation",
+    gridLabel: "",
     rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 150,

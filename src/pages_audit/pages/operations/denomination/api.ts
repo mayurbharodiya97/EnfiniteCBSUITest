@@ -1,5 +1,5 @@
-import { DefaultErrorObject } from "components/utils";
-import { AddIDinResponseData, utilFunction } from "components/utils";
+import { format } from "date-fns";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const CashReceiptEntrysData2 = async ({ a, b }) => {
@@ -249,13 +249,13 @@ export const cashReportData = async (reportID, filter, otherAPIRequestPara) => {
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
-      // COMP_CD: reqData?.branch?.info?.COMP_CD,
+      COMP_CD: reqData?.COMP_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
       ACCT_TYPE: reqData?.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
       CHEQUE_NO: reqData?.CHEQUE_NO,
       TYPE_CD: reqData?.TYPE_CD,
-      SCREEN_REF: "TRN/039",
+      SCREEN_REF: reqData?.SCREEN_REF,
     });
   if (status === "0") {
     return data;
@@ -264,6 +264,45 @@ export const getChqValidation = async (reqData) => {
   }
 };
 
+export const saveDenoData = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVERECEIPTPAYMENTDTL", {
+      SCREEN_REF: reqData?.SCREEN_REF ?? "",
+      ENTRY_TYPE: reqData?.ENTRY_TYPE ?? "",
+      TRANSACTION_DTL: {
+        isNewRow: [...reqData?.TRN_DTL],
+        isUpdatedRow: [],
+        isDeleteRow: [],
+      },
+      CASH_DENOMINATION_DTL: {
+        isNewRow: [...reqData?.DENO_DTL],
+        isUpdatedRow: [],
+        isDeleteRow: [],
+      },
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getTokenValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHECKTOKENVALIDATE", {
+      COMP_CD: reqData?.COMP_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      TOKEN_NO: reqData?.TOKEN_NO,
+      SCREEN_REF: reqData?.SCREEN_REF,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 // export const saveDenoData = async (reqData) => {
 //   const { data, status, message, messageDetails } =
 //     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -342,3 +381,81 @@ export const getChqValidation = async (reqData) => {
 //     throw DefaultErrorObject(message, messageDetails);
 //   }
 // };
+
+export const getAmountValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECREDITDEBITAMT", {
+      ...reqData,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const checkTokenValidate = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHECKTOKENVALIDATE", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getChqDateValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECHQDATE", {
+      BRANCH_CD: reqData?.BRANCH_CD ?? "", //099
+      TYPE_CD: reqData?.TYPE_CD ?? "", //5
+      CHEQUE_NO: reqData?.CHEQUE_NO ?? "", //33
+      CHEQUE_DT: format(new Date(reqData?.CHEQUE_DT), "dd/MMM/yyyy"), //06/Mar/2024
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getReleaseGridData = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCASHRELEASEMCTDTL", {
+      COMP_CD: COMP_CD ?? "",
+      BRANCH_CD: BRANCH_CD ?? "",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getReleaseSubGridData = async ({
+  ENTERED_COMP_CD,
+  ENTERED_BRANCH_CD,
+  MCT_TRAN_CD,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCASHRELEASEMCTSUBDTL", {
+      ENTERED_COMP_CD: ENTERED_COMP_CD ?? "",
+      ENTERED_BRANCH_CD: ENTERED_BRANCH_CD ?? "",
+      MCT_TRAN_CD: MCT_TRAN_CD ?? "",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const releaseRecords = async (req) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DELETECASHTRNDTL", {
+      ...req,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

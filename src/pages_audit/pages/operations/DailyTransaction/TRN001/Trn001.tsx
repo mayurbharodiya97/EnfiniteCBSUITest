@@ -11,19 +11,20 @@ import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001.css";
-import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
-import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
-import { queryClient } from "cache";
-import { utilFunction } from "components/utils";
 import { TRN001Context } from "./Trn001Reducer";
 import RowsTable from "./rowsTable";
-import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
 
+import {
+  queryClient,
+  usePopupContext,
+  Alert,
+  GradientButton,
+  utilFunction,
+} from "@acuteinfo/common-base";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -325,23 +326,25 @@ export const Trn001 = () => {
       CloseMessageBox();
 
       let finalMessage;
+      const scrollNo = res?.data[0]?.SCROLL1 ?? "";
       if (state?.rows?.length > 1) {
         const getVNo = res?.data?.map((ele) => ele?.TRAN_CD).join("\n");
-        const scrollNo = res?.data[0]?.SCROLL1 ?? "";
 
-        finalMessage = `Scroll No. : ${scrollNo}\nVoucher No. :\n${getVNo}`;
+        finalMessage = `Voucher No. :\n${getVNo}\nScroll Successfully Posted`;
         enqueueSnackbar("Scroll Saved Successfully", {
           variant: "success",
         });
       } else {
-        finalMessage = `Voucher No. ${res?.data[0]?.TRAN_CD ?? ""}`;
+        finalMessage = "Transaction Successfully Posted";
         enqueueSnackbar("Transaction Saved Successfully", {
           variant: "success",
         });
       }
       const msgBoxRes = await MessageBox({
         messageTitle:
-          state?.rows?.length > 0 ? "Scroll Alert" : "Transaction Alert",
+          state?.rows?.length > 1
+            ? `Scroll: ${scrollNo}`
+            : `Transaction: ${res?.data[0]?.TRAN_CD ?? ""}`,
         message: finalMessage ?? "",
         defFocusBtnName: "Ok",
         icon: "INFO",
@@ -639,6 +642,7 @@ export const Trn001 = () => {
         setReqData({});
         setCardsData([]);
         CloseMessageBox();
+        handleSetDefaultBranch(queriesResult?.[0]?.data, authState, 0);
       } else if (msgBoxRes === "No") {
         CloseMessageBox();
       }
@@ -654,6 +658,7 @@ export const Trn001 = () => {
       setTabsDetails([]);
       setReqData({});
       setCardsData([]);
+      handleSetDefaultBranch(queriesResult?.[0]?.data, authState, 0);
     }
   };
 
@@ -963,10 +968,16 @@ export const Trn001 = () => {
 
       {!Boolean(viewOnly) && (
         <>
-          <GradientButton onClick={() => window.open("Calculator:///")}>
+          <GradientButton
+            onClick={() => window.open("Calculator:///")}
+            sx={{ margin: "5px" }}
+          >
             Calculator
           </GradientButton>
-          <GradientButton onClick={() => setViewOnly(true)}>
+          <GradientButton
+            onClick={() => setViewOnly(true)}
+            sx={{ margin: "5px" }}
+          >
             View All
           </GradientButton>
         </>

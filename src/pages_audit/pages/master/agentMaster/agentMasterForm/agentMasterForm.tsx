@@ -1,18 +1,23 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import { AgentMasterFormMetaData } from "./metaData";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { usePopupContext } from "components/custom/popupContext";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useTranslation } from "react-i18next";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 
 const AgentMasterForm = ({
   isDataChangedRef,
@@ -29,13 +34,15 @@ const AgentMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.agentMasterDML, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        messageTitle: "Error",
+        message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -66,10 +73,13 @@ const AgentMasterForm = ({
 
     let newData = {
       ...data,
+      SECURITY_PER: parseFloat(data?.SECURITY_PER).toFixed(2),
     };
     let oldData = {
       ...rows?.[0]?.data,
+      SECURITY_PER: parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2),
     };
+
     let upd = utilFunction.transformDetailsData(newData, oldData);
 
     if (
@@ -77,28 +87,20 @@ const AgentMasterForm = ({
       Number(newData?.SECURITY_PER) !== 0
     ) {
       await MessageBox({
+        messageTitle: "ValidationFailed",
         message: "SecurityAmtPerValidation",
-        messageTitle: "Alert",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
       return;
     } else {
       if (upd._UPDATEDCOLUMNS.length > 0) {
-        upd._UPDATEDCOLUMNS = upd._UPDATEDCOLUMNS.filter(
-          (field) =>
-            field !== "AgentAccount" &&
-            field !== "SecurityAccount" &&
-            field !== "OtherAccount" &&
-            field !== "ProfessionalTaxAccount" &&
-            field !== "HandHeldMachine"
-        );
-
         isErrorFuncRef.current = {
           data: {
             ...newData,
             ...upd,
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
             _isNewRow: defaultView === "new" ? true : false,
           },
           displayData,
@@ -154,6 +156,7 @@ const AgentMasterForm = ({
             gridData: gridData,
             rows: rows?.[0]?.data,
             handleButtonDisable: handleButtonDisable,
+            docCD: "MST/041",
           }}
           formStyle={{
             background: "white",

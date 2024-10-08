@@ -1,7 +1,7 @@
 import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
-import { utilFunction } from "components/utils/utilFunctions";
+import { utilFunction } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 const authAPI = () => {
   let baseURL: URL | null = null;
@@ -83,7 +83,11 @@ const authAPI = () => {
       THROUGH_CHANNEL: "E_CBS",
       WORKING_DATE: workingDate ?? "",
       // WORKING_DT: workingDate ?? "",
-      HO_LOGIN: companyID.trim() === baseCompanyID.trim() && branchCode.trim() === baseBranchCode.trim() ? "Y" : "N"
+      HO_LOGIN:
+        companyID.trim() === baseCompanyID.trim() &&
+        branchCode.trim() === baseBranchCode.trim()
+          ? "Y"
+          : "N",
     };
   };
   const setToken = (argaccessToken) => {
@@ -267,7 +271,12 @@ const authAPI = () => {
           return {
             status: "0",
             message: "",
-            data: data,
+            data:
+              data?.ISDATACOMPRESSED === "Y"
+                ? utilFunction?.uncompressApiResponse(
+                    data?.RESPONSE?.[0]?.DATA ?? ""
+                  ) ?? []
+                : data?.RESPONSE ?? [],
             messageDetails: "",
             isPrimaryKeyError: false,
           };
@@ -285,10 +294,10 @@ const authAPI = () => {
               String(data.STATUS) === "0"
                 ? false
                 : (data?.RESPONSEMESSAGE ?? "").indexOf(
-                  "ORA-00001: unique constraint"
-                ) >= 0
-                  ? true
-                  : false,
+                    "ORA-00001: unique constraint"
+                  ) >= 0
+                ? true
+                : false,
           };
         }
       } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {

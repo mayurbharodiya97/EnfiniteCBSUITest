@@ -1,16 +1,50 @@
-import { utilFunction } from "components/utils/utilFunctions";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import CRC32C from "crc-32";
+export const ResetPassword = async (
+  username,
+  password,
+  newpassword,
+  accessToken,
+  token_type
+) => {
+  const { data, status, message, messageDetails, responseType, access_token } =
+    await AuthSDK.internalFetcherPreLogin(
+      "CHANGEPASSWORD",
+      {
+        USER_ID: username,
+        OLD_PASSWORD: password,
+        NEW_PASSWORD: newpassword,
+      },
+      {
+        Authorization: utilFunction.getAuthorizeTokenText(
+          accessToken,
+          token_type
+        ),
+        USER_ID: username,
+      }
+    );
+  return { status, data, message, messageDetails };
+};
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLOGINIMGDATA", {
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
       APP_TRAN_CD: APP_TRAN_CD,
     });
   if (status === "0") {
+    // Set special character in local storage
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -101,15 +135,6 @@ export const verifyOTP = async (
     }
   );
   if (status === "0") {
-    const GenerateCRC32 = async (str) => {
-      let fingerprint = await AuthSDK.Getfingerprintdata();
-      return String(CRC32C.str((str || "") + fingerprint));
-    };
-    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
-    localStorage.setItem(
-      "charchecksum",
-      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
-    );
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
@@ -538,37 +563,4 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
     token
   );
   return { status, data };
-};
-
-const cacheImageData = async (imageURL, cacheName = "image-cache") => {
-  const response = await getLoginImageData({ APP_TRAN_CD: "51" });
-
-  if ("caches" in window) {
-    const cache = await caches.open(cacheName);
-    await cache.put(imageURL, new Response(JSON.stringify(response)));
-  }
-
-  return response;
-};
-
-const getCachedImageData = async (imageURL, cacheName = "image-cache") => {
-  if ("caches" in window) {
-    const cache = await caches.open(cacheName);
-    const cachedResponse = await cache.match(imageURL);
-    return cachedResponse ? cachedResponse.json() : null;
-  }
-  return null;
-};
-
-const processImageData = async () => {
-  let data = await getCachedImageData("imageData");
-  if (!data) {
-    data = await cacheImageData("imageData");
-  }
-
-  return data;
-};
-
-export const getImageData = async () => {
-  return await processImageData();
 };

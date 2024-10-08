@@ -1,14 +1,16 @@
 import { useRef, useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import * as API from "../api";
-import { ClearCacheProvider } from "cache";
-import { CircularProgress, Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+import { CircularProgress, Dialog, Stack } from "@mui/material";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { retrieveFormMetaData } from "./retrieveFormMetadata";
-import { GradientButton } from "components/styledComponent/button";
+import {
+  SubmitFnType,
+  ClearCacheProvider,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
   const { authState } = useContext(AuthContext);
@@ -27,7 +29,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
-        if (data?.length <= 0) {
+        if (!data?.length) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
           setFormMode("view");
@@ -36,7 +38,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
           setRetrieveData(data);
         }
       },
-      onError: (error: any, { endSubmit }) => {
+      onError: (error: any, { endSubmit }: any) => {
         let errorMsg = t("UnknownErrorOccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
@@ -56,8 +58,8 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
       reqdata: {
         CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
         COMP_CD: authState?.companyID,
-        endSubmit,
       },
+      endSubmit,
     });
   };
 
@@ -98,7 +100,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
             ref={formRef}
           >
             {({ isSubmitting, handleSubmit }) => (
-              <>
+              <Stack spacing={1.5} direction="row">
                 <GradientButton
                   color={"primary"}
                   onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
@@ -113,7 +115,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
                 <GradientButton onClick={() => navigate(".")} color={"primary"}>
                   {t("Cancel")}
                 </GradientButton>
-              </>
+              </Stack>
             )}
           </FormWrapper>
         </Dialog>

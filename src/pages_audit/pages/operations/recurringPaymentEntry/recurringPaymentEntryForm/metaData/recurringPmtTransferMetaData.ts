@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const RecurringPaymentTransferFormMetaData = {
@@ -59,7 +59,7 @@ export const RecurringPaymentTransferFormMetaData = {
       type: "text",
       dependentFields: ["TRF_AMT"],
       setValueOnDependentFieldsChange: (dependentFields) => {
-        return Number(dependentFields?.TRF_AMT?.value) ?? "0";
+        return Number(dependentFields?.TRF_AMT?.value ?? 0);
       },
       textFieldStyle: {
         "& .MuiInputBase-root": {
@@ -94,9 +94,9 @@ export const RecurringPaymentTransferFormMetaData = {
           Array.isArray(dependentFieldsValues?.["RECPAYTRANS"])
             ? dependentFieldsValues?.["RECPAYTRANS"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value), 0);
         let diffAmount =
-          Number(dependentFieldsValues?.TRF_AMT?.value) - totalAmount;
+          Number(dependentFieldsValues?.TRF_AMT?.value ?? 0) - totalAmount;
         return diffAmount ?? "0";
       },
 
@@ -133,7 +133,7 @@ export const RecurringPaymentTransferFormMetaData = {
           Array.isArray(dependentFieldsValues?.["RECPAYTRANS"])
             ? dependentFieldsValues?.["RECPAYTRANS"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value ?? 0), 0);
         return amount ?? "0";
       },
       textFieldStyle: {
@@ -182,10 +182,10 @@ export const RecurringPaymentTransferFormMetaData = {
           for (let i = 0; i < dataArray?.length; i++) {
             const item = dataArray[0];
             if (
-              item.DC_BRANCH_CD.trim() &&
-              item.DC_ACCT_TYPE.trim() &&
-              item.DC_ACCT_CD.trim() &&
-              String(item.AMOUNT).trim()
+              item?.DC_BRANCH_CD?.trim() &&
+              item?.DC_ACCT_TYPE?.trim() &&
+              item?.DC_ACCT_CD?.trim() &&
+              String(item?.AMOUNT)?.trim()
             ) {
               return true;
             }
@@ -223,16 +223,6 @@ export const RecurringPaymentTransferFormMetaData = {
           accountTypeMetadata: {
             name: "DC_ACCT_TYPE",
             dependentFields: ["DC_BRANCH_CD"],
-            disableCaching: true,
-            options: (...arg) => {
-              return GeneralAPI.get_Account_Type({
-                COMP_CD: arg?.[3]?.companyID ?? "",
-                BRANCH_CD: arg?.[2]?.["RECPAYTRANS.DC_BRANCH_CD"]?.value ?? "",
-                USER_NAME: arg?.[3]?.user?.id ?? "",
-                DOC_CD: "RECCRTYPE",
-              });
-            },
-            _optionsKey: "getCreditAccountType",
             runPostValidationHookAlways: true,
             validationRun: "onChange",
             postValidationSetCrossFieldValues: async (
@@ -242,6 +232,33 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    DC_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    DC_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
                 DC_ACCT_CD: { value: "" },
                 ACCT_NM: { value: "" },
@@ -255,6 +272,10 @@ export const RecurringPaymentTransferFormMetaData = {
             autoComplete: "off",
             dependentFields: ["DC_ACCT_TYPE", "DC_BRANCH_CD"],
             runPostValidationHookAlways: true,
+            AlwaysRunPostValidationSetCrossFieldValues: {
+              alwaysRun: true,
+              touchAndValidate: true,
+            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -264,10 +285,36 @@ export const RecurringPaymentTransferFormMetaData = {
               if (formState?.isSubmitting) return {};
               if (
                 currentField?.value &&
+                dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "Alert",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    DC_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    DC_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
+                currentField?.value &&
                 dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]?.value
               ) {
-                formState.handleDisableButton(true);
+                formState?.handleDisableButton(true);
                 const reqParameters = {
                   BRANCH_CD:
                     dependentFieldsValues?.["RECPAYTRANS.DC_BRANCH_CD"]
@@ -276,11 +323,12 @@ export const RecurringPaymentTransferFormMetaData = {
                   ACCT_TYPE:
                     dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
                       ?.value ?? "",
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    currentField?.value,
-                    dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
-                      ?.optionData
-                  ),
+                  ACCT_CD:
+                    utilFunction.getPadAccountNumber(
+                      currentField?.value,
+                      dependentFieldsValues?.["RECPAYTRANS.DC_ACCT_TYPE"]
+                        ?.optionData
+                    ) ?? "",
                   SCREEN_REF: "TRN/053",
                 };
                 let postData = await GeneralAPI.getAccNoValidation(
@@ -289,19 +337,19 @@ export const RecurringPaymentTransferFormMetaData = {
 
                 let btn99, returnVal;
                 const getButtonName = async (obj) => {
-                  let btnName = await formState.MessageBox(obj);
+                  let btnName = await formState?.MessageBox(obj);
                   return { btnName, obj };
                 };
                 for (let i = 0; i < postData?.MSG?.length; i++) {
                   if (postData?.MSG?.[i]?.O_STATUS === "999") {
-                    formState.handleDisableButton(false);
+                    formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "ValidationFailed",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
                     });
                     returnVal = "";
                   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
-                    formState.handleDisableButton(false);
+                    formState?.handleDisableButton(false);
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
                         messageTitle: "Alert",
@@ -310,7 +358,7 @@ export const RecurringPaymentTransferFormMetaData = {
                     }
                     returnVal = postData;
                   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
-                    formState.handleDisableButton(false);
+                    formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Confirmation",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
@@ -322,7 +370,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       returnVal = "";
                     }
                   } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
-                    formState.handleDisableButton(false);
+                    formState?.handleDisableButton(false);
                     if (btn99 !== "No") {
                       returnVal = postData;
                     } else {
@@ -331,7 +379,7 @@ export const RecurringPaymentTransferFormMetaData = {
                   }
                 }
                 btn99 = 0;
-                formState.handleDisableButton(false);
+                formState?.handleDisableButton(false);
                 return {
                   DC_ACCT_CD:
                     returnVal !== ""
@@ -354,12 +402,12 @@ export const RecurringPaymentTransferFormMetaData = {
                   },
                 };
               } else if (!currentField?.value) {
-                formState.handleDisableButton(false);
+                formState?.handleDisableButton(false);
                 return {
                   ACCT_NM: { value: "" },
                 };
               }
-              formState.handleDisableButton(false);
+              formState?.handleDisableButton(false);
               return {};
             },
             fullWidth: true,
@@ -400,7 +448,7 @@ export const RecurringPaymentTransferFormMetaData = {
               if (values?.value?.length > 15) {
                 return false;
               }
-              if (values.floatValue === 0) {
+              if (values?.floatValue === 0) {
                 return false;
               }
               return true;

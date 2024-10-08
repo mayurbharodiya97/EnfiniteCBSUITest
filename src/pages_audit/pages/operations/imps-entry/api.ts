@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const validateCustId = async (apiReqPara) => {
@@ -32,62 +32,6 @@ export const getAcctList = async (apiReqPara) => {
       };
     });
     return newResp;
-    // return [
-    //   {
-    //     MESSAGE: "SUCCESS",
-    //     COMP_CD: "132 ",
-    //     STATUS: "0",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "099 ",
-    //     ACCT_CD: "99999              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    //   {
-    //     MESSAGE: "SUCCESS",
-    //     COMP_CD: "132 ",
-    //     STATUS: "0",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "002 ",
-    //     ACCT_CD: "100110              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    //   {
-    //     MESSAGE: "wrong data !..",
-    //     COMP_CD: "132 ",
-    //     STATUS: "999",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "012 ",
-    //     ACCT_CD: "333333              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    //   {
-    //     MESSAGE: "very wrong data !..",
-    //     COMP_CD: "132 ",
-    //     STATUS: "99",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "012 ",
-    //     ACCT_CD: "22222              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    //   {
-    //     MESSAGE: "SUCCESS",
-    //     COMP_CD: "132 ",
-    //     STATUS: "0",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "002 ",
-    //     ACCT_CD: "44444              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    //   {
-    //     MESSAGE: "very bad wrong data !..",
-    //     COMP_CD: "132 ",
-    //     STATUS: "9",
-    //     CONFIRMED: "Y",
-    //     BRANCH_CD: "012 ",
-    //     ACCT_CD: "11111              ",
-    //     ACCT_TYPE: "001 ",
-    //   },
-    // ];
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -161,6 +105,58 @@ export const dayLimitData = async (apiReqPara) => {
       };
     });
     return newResp;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getimpsCfmRetrieveData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETIMPSREGCONFGRID", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    // return data;
+    let newData;
+    if (Array.isArray(data) && data?.length > 0) {
+      newData = data.map((item) => ({
+        ...item,
+        DISPLAY_ACTIVE: item?.ACTIVE === "Y" ? "Yes" : "No",
+        DISPLAY_CONFIRMED:
+          item?.CONFIRMED === "Y"
+            ? "Confirmed"
+            : item?.CONFIRMED === "R"
+            ? "Rejected"
+            : item?.CONFIRMED === "N"
+            ? "Confirmation Pending"
+            : "",
+        _rowColor: item?.CONFIRMED === "Y" ? "rgb(9 132 3 / 51%)" : "",
+      }));
+    }
+    return newData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateDeleteData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEDELETEIMPSENTRY", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const crudDataIMPS = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("IMPSREGISTRATIONDML", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

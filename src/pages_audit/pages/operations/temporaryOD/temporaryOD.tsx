@@ -15,27 +15,31 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import {
   tempODGridTodayMetaData,
   tempODGridHistoryMetaData,
 } from "./temporaryGridMetaData";
 import { temporaryODentryMetadata } from "./tempODentryMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsForm } from "components/formcomponent";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import { cloneDeep } from "lodash";
 import { format } from "date-fns";
 import * as API from "./api";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+
+import {
+  ActionTypes,
+  Alert,
+  MasterDetailsMetaData,
+  usePopupContext,
+  GridMetaDataType,
+  MasterDetailsForm,
+  GridWrapper,
+  utilFunction,
+} from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
   const [isData, setIsData] = useState({
@@ -142,6 +146,11 @@ export const TemporaryOD = () => {
   // let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
   let metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
 
+  metadata.masterForm.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       <Box sx={{ width: "100%" }}>

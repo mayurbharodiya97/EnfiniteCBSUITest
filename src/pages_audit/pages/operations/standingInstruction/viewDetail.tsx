@@ -1,18 +1,20 @@
 import { Fragment, useContext, useState } from "react";
 import { useCallback } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
 import { standingInsructionViewGridMetaData } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { usePopupContext } from "components/custom/popupContext";
 import AddSubData from "./addSubdata";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import {
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "subadd",
@@ -27,19 +29,18 @@ const StadingInstructionViewData = () => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [opens, setOpens] = useState(false)
-  const [openAddDialog, setOpenAddDialog] = useState(false)
+  const [opens, setOpens] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
   const [lineId, setLineId] = useState(null);
   const [srCd, setSrCd] = useState(null);
-  const [currentRowData, setCurrentRowData] = useState(null)
-  const [deleteopen, setDeleteOpen] = useState(false)
+  const [currentRowData, setCurrentRowData] = useState(null);
+  const [deleteopen, setDeleteOpen] = useState(false);
   const [isPhotoSign, setIsPhotoSign] = useState(false);
   const [Acctdata, SetAcctData] = useState({});
   const tranCd = rows?.[0]?.data?.TRAN_CD;
 
   const setCurrentAction = useCallback(
     async (data) => {
-
       if (data?.name === "subadd") {
         setOpenAddDialog(true);
       }
@@ -50,14 +51,23 @@ const StadingInstructionViewData = () => {
     [MessageBox, navigate]
   );
 
-
-  const { data: apidata, isLoading, isFetching, refetch } = useQuery(
-    ["getStandingInstructionInnerData", authController?.authState?.companyID, authController?.authState?.user?.branchCode, tranCd],
+  const {
+    data: apidata,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery(
+    [
+      "getStandingInstructionInnerData",
+      authController?.authState?.companyID,
+      authController?.authState?.user?.branchCode,
+      tranCd,
+    ],
     () => {
       return API.getStandingInstructionInnerData({
         companyID: authController?.authState?.companyID,
         branchCode: authController?.authState?.user?.branchCode,
-        Tran_cd: tranCd
+        Tran_cd: tranCd,
       });
     },
     {
@@ -85,44 +95,58 @@ const StadingInstructionViewData = () => {
           }
           if (id === "delete") {
             setDeleteOpen(true);
-            setCurrentRowData(currentData)
+            setCurrentRowData(currentData);
           }
           if (id === "credit") {
-            const { COMP_CD, BRANCH_CD, CR_ACCT_TYPE, CR_ACCT_CD, SI_AMOUNT, CR_ACCT_NM } = currentData
+            const {
+              COMP_CD,
+              BRANCH_CD,
+              CR_ACCT_TYPE,
+              CR_ACCT_CD,
+              SI_AMOUNT,
+              CR_ACCT_NM,
+            } = currentData;
             const payload = {
               COMP_CD: COMP_CD,
               BRANCH_CD: BRANCH_CD,
               ACCT_TYPE: CR_ACCT_TYPE,
               ACCT_CD: CR_ACCT_CD,
               AMOUNT: SI_AMOUNT,
-              ACCT_NM: CR_ACCT_NM
-            }
-            setIsPhotoSign(true)
+              ACCT_NM: CR_ACCT_NM,
+            };
+            setIsPhotoSign(true);
             SetAcctData(payload);
           }
           if (id === "debit") {
-            const { COMP_CD, BRANCH_CD, DR_ACCT_TYPE, DR_ACCT_CD, SI_AMOUNT, DR_ACCT_NM } = currentData
+            const {
+              COMP_CD,
+              BRANCH_CD,
+              DR_ACCT_TYPE,
+              DR_ACCT_CD,
+              SI_AMOUNT,
+              DR_ACCT_NM,
+            } = currentData;
             const payload = {
               COMP_CD: COMP_CD,
               BRANCH_CD: BRANCH_CD,
               ACCT_TYPE: DR_ACCT_TYPE,
               ACCT_CD: DR_ACCT_CD,
               AMOUNT: SI_AMOUNT,
-              ACCT_NM: DR_ACCT_NM
-            }
-            setIsPhotoSign(true)
+              ACCT_NM: DR_ACCT_NM,
+            };
+            setIsPhotoSign(true);
             SetAcctData(payload);
-
           }
         }}
       />
-       <>
+      <>
         {isPhotoSign ? (
           <>
             <div style={{ paddingTop: 10 }}>
-              <PhotoSignWithHistory data={Acctdata}
+              <PhotoSignWithHistory
+                data={Acctdata}
                 onClose={() => {
-                  setIsPhotoSign(false)
+                  setIsPhotoSign(false);
                 }}
                 screenRef={"TRN/394"}
               />
@@ -141,7 +165,15 @@ const StadingInstructionViewData = () => {
       <Routes>
         <Route
           path="subadd/*"
-          element={<AddSubData open={openAddDialog} onClose={()=>{setOpenAddDialog(false)}} mainRefetch={refetch}/>}
+          element={
+            <AddSubData
+              open={openAddDialog}
+              onClose={() => {
+                setOpenAddDialog(false);
+              }}
+              mainRefetch={refetch}
+            />
+          }
         />
       </Routes>
       <SiExecuteDetailView
@@ -151,7 +183,13 @@ const StadingInstructionViewData = () => {
         srCd={srCd}
         tran_cd={tranCd}
       />
-      <DeleteDialog open={deleteopen} onClose={() => setDeleteOpen(false)} rowData={currentRowData} siRefetch={refetch} mainRefetch={refetch} />
+      <DeleteDialog
+        open={deleteopen}
+        onClose={() => setDeleteOpen(false)}
+        rowData={currentRowData}
+        siRefetch={refetch}
+        mainRefetch={refetch}
+      />
     </Fragment>
   );
 };

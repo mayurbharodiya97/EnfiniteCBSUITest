@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   useCallback,
   useContext,
@@ -9,18 +8,13 @@ import {
   useState,
 } from "react";
 import { TellerScreenMetadata } from "./metadataTeller";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { GradientButton } from "components/styledComponent/button";
 import TellerDenoTable from "./tellerDenoTable";
 import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { cashReportMetaData } from "./metadataTeller";
-import { ActionTypes } from "components/dataTable/types";
 import { format, parse } from "date-fns";
-import Report from "components/report";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
@@ -31,18 +25,29 @@ import {
   SingleTableInititalState,
   SingleTableActionTypes,
 } from "./denoTableActionTypes";
-import { usePopupContext } from "components/custom/popupContext";
 import DualTableCalc from "./dualTableCalc";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { padding } from "@mui/system";
-import { FocusTrap } from "@mui/base";
 import TellerDenoTableCalc from "./tellerDenoTableCalc";
+import { useLocation } from "react-router-dom";
+import {
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  InitialValuesType,
+  ActionTypes,
+  FormWrapper,
+  MetaDataType,
+  usePropertiesConfigContext,
+  ReportGrid,
+  utilFunction,
+} from "@acuteinfo/common-base";
+
 const TellerScreen = () => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
+  const cardDtlRef = useRef<any>(null);
   const textFieldRef: any = useRef(null);
   const popupReqWrapperRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -53,7 +58,8 @@ const TellerScreen = () => {
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const { authState }: any = useContext(AuthContext);
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  let currentPath = useLocation().pathname;
+  const customParameter = usePropertiesConfigContext();
   const { denoTableType } = customParameter;
   // const { cardStore, setCardStore } = useContext(AccDetailContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -574,10 +580,50 @@ const TellerScreen = () => {
   //   console.log(cardTabsReq, "cardTabsReq");
   // }, [cardTabsReq]);
 
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardDtlRef?.current?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  useEffect(() => {
+    if (cardDetails?.length) {
+      cardDtlRef.current = cardDetails;
+    }
+  }, [cardDetails]);
+
   return (
     <>
       <DailyTransTabs
-        heading="Teller Transaction (Maker) (ETRN/039)"
+        heading={utilFunction.getDynamicLabel(
+          currentPath,
+          authState?.menulistdata,
+          false
+        )}
         tabsData={tabsDetails}
         cardsData={cardDetails}
         reqData={cardTabsReq}
@@ -600,7 +646,12 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        formState={{ MessageBox: MessageBox, setCardDetails, docCd: "TRN/039" }}
+        formState={{
+          MessageBox: MessageBox,
+          setCardDetails,
+          docCd: "TRN/039",
+          getCardColumnValue,
+        }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
             let event: any = { preventDefault: () => {} };
@@ -635,6 +686,10 @@ const TellerScreen = () => {
               });
             }
           } else if (action === "TRN") {
+            TellerScreenMetadata.form.label =
+              payload?.value === "1"
+                ? "Cash Receipt Entry - TRN/039"
+                : "Cash Payment Entry - TRN/040";
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({
                   type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
@@ -822,7 +877,7 @@ const TellerScreen = () => {
           initRemainExcess={
             Boolean(state?.fieldsData?.TRN === "1")
               ? state?.fieldsData?.RECEIPT
-              : Boolean(state?.fieldsData?.TRN === "P")
+              : Boolean(state?.fieldsData?.TRN === "4")
               ? state?.fieldsData?.PAYMENT
               : "0"
           }
@@ -831,6 +886,8 @@ const TellerScreen = () => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
+          screenRef={""}
+          entityType={""}
         />
       ) : null}
       {/* <DualTableCalc data={data ?? []} /> */}
@@ -855,17 +912,18 @@ const TellerScreen = () => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
+          screenRef={"TRN/041"}
+          entityType={"MULTIRECPAY"}
         />
       ) : null}
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}
       {state?.viewAcctDetails ? (
         <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>
-          <Report
+          <ReportGrid
             reportID={"transactionServiceAPI/GETTODAYTRANDATA"}
             reportName={"GETTODAYTRANDATA"}
             dataFetcher={API.cashReportData}
             metaData={cashReportMetaData}
-            disableFilters
             maxHeight={window.innerHeight - 250}
             title={cashReportMetaData?.title}
             options={{

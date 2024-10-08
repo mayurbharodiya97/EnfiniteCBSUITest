@@ -1,12 +1,15 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { Fragment, forwardRef, useContext, useEffect, useState } from "react";
-import { usePopupContext } from "components/custom/popupContext";
-import { extractMetaData } from "components/utils";
 import { RecurringContext } from "../context/recurringPaymentContext";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { RecurringPaymentTransferFormMetaData } from "./metaData/recurringPmtTransferMetaData";
 import { useTranslation } from "react-i18next";
+import {
+  InitialValuesType,
+  SubmitFnType,
+  extractMetaData,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 
 export const RecurringPaymentTransferForm = forwardRef<any, any>(
   ({ defaultView, recurringPaymentEntrySaveMutation, saveDataRef }, ref) => {
@@ -118,7 +121,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           initialValues={
             {
               ...rpState?.recurPmtTransferData,
-              TRF_AMT: rpState?.recurPmtEntryData?.TRF_AMT,
+              TRF_AMT: rpState?.recurPmtEntryData?.TRF_AMT ?? "",
               COMP_CD: authState?.companyID ?? "",
             } as InitialValuesType
           }
@@ -127,6 +130,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           formState={{
             MessageBox: MessageBox,
             handleDisableButton: handleDisableButton,
+            docCD: "RECCRTYPE",
           }}
           displayMode={formMode}
           formStyle={{

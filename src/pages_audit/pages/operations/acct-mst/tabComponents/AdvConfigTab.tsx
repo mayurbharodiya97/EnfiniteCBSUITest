@@ -1,10 +1,9 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import { advConnfig_tab_metadata } from "../tabMetadata/advConfigMetadata";
 import TabNavigate from "../TabNavigate";
-
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 const AdvConfigTab = () => {
   const {
     AcctMSTState,
