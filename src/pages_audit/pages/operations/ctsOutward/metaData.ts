@@ -198,13 +198,16 @@ export const CTSOutwardClearingFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
+                formState.setDataOnFieldChange("ACCT_CD_BLANK");
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData?.[0];
@@ -297,6 +300,7 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       FormatProps: {
         allowNegative: false,
+        allowLeadingZeros: false,
       },
 
       postValidationSetCrossFieldValues: async (
@@ -704,7 +708,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
@@ -739,6 +743,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -906,6 +915,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           name: "ECS_SEQ_NO",
           label: "PayeeACNo",
           runExternalFunction: true,
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -1261,7 +1275,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
@@ -1489,6 +1503,11 @@ export const inwardReturnChequeDetailFormMetaData: any = {
               return true;
             },
           },
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           dependentFields: ["BANK_CD", "TRAN_DT"],
           postValidationSetCrossFieldValues: async (
             field,
@@ -1544,16 +1563,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     message: "AreYouSureContinue",
                     buttonNames: ["Yes", "No"],
                   });
-                  if (continueButtonName === "Yes") {
-                    return {
-                      CHEQUE_NO: {
-                        value: field.value,
-                        ignoreUpdate: true,
-                        isFieldFocused: false,
-                      },
-                      AMOUNT: { isFieldFocused: true },
-                    };
-                  } else {
+                  if (continueButtonName === "No") {
                     return {
                       CHEQUE_NO: {
                         value: "",
@@ -1569,6 +1579,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "9") {
@@ -1576,6 +1587,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = "";

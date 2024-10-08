@@ -16,7 +16,14 @@ import {
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { AppBar, Collapse, Grid, IconButton, Typography } from "@mui/material";
+import {
+  AppBar,
+  CircularProgress,
+  Collapse,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { AddNewBankMasterForm } from "./addNewBank";
@@ -487,6 +494,19 @@ const CtsOutwardClearingForm: FC<{
                     >
                       {t("Retrieve")}
                     </GradientButton>
+                    <GradientButton
+                      onClick={() => {
+                        let event: any = { preventDefault: () => {} };
+                        myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
+                      }}
+                      endIcon={
+                        mutationOutward?.isLoading ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                    >
+                      {t("Save")}
+                    </GradientButton>
                   </>
                 ) : formMode === "view" ? (
                   <>
@@ -705,7 +725,26 @@ const CtsOutwardClearingForm: FC<{
           {isOpenAddBankForm ? (
             <AddNewBankMasterForm
               isOpen={isOpenAddBankForm}
-              onClose={() => {
+              onClose={(flag, rowsData) => {
+                if (flag === "save") {
+                  setOpenAddBankForm(false);
+                  setChequeDetailData((old) => {
+                    return {
+                      ...old,
+                      chequeDetails: [
+                        ...old.chequeDetails.map((item) => {
+                          console.log("item", item);
+                          return {
+                            ...item,
+                            BANK_CD: rowsData?.data?.[0]?.BANK_CD ?? "",
+                            CHEQUE_DATE: authState?.workingDate ?? "",
+                          };
+                        }),
+                      ],
+                    };
+                  });
+                  setChequeDtlRefresh((old) => old + 1);
+                }
                 setOpenAddBankForm(false);
               }}
             />

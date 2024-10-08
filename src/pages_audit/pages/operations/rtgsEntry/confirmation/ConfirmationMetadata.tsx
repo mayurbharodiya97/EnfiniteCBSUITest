@@ -1739,7 +1739,7 @@ export const rtgBenDetailConfirmFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
