@@ -107,6 +107,7 @@ export const en_language_data = {
   documentDate: "Document Date",
   payslipIsuueBranch: "Payslip Issued From",
   Revalidate: "Revalidate",
+  selectTransactionMode: "Select Transaction Mode (Cash,Transfer,Clearing)",
   RevalidateConfPending: "Revalidate Conf. Pending",
   stopPayment: "Stop Payment",
   realseStoppedPayslip: "Release Stopped Payslip",

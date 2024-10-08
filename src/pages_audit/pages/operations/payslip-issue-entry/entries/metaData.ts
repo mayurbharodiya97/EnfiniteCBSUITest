@@ -415,7 +415,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "REVALID_CONF",
+      accessor: "REVALID_DT",
       columnName: "reValidDate",
       sequence: 9,
       alignment: "left",
@@ -839,7 +839,7 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "REALIZE_DATE",
+      name: "REALIZE_DATE_DISP",
       label: "realizeDate",
       dependentFields: ["SCREENFLAG"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -896,6 +896,7 @@ export const ddTransactionFormMetaData = {
       setValueOnDependentFieldsChange: (dependentFields) => {
         return dependentFields?.AMOUNT?.value;
       },
+
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -945,6 +946,11 @@ export const ddTransactionFormMetaData = {
           : currVal === "G"
           ? "By Clearing"
           : "By";
+      },
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["selectTransactionMode"] }],
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (

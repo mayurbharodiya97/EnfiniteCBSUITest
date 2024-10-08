@@ -94,6 +94,9 @@ const EntryFormView = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
       if (data[0]?.TRAN_CD) {
         voucherMutation.mutate({
           A_ENT_COMP_CD: authState?.companyID,
@@ -134,7 +137,8 @@ const EntryFormView = ({
         REALIZE_BRANCH_CD: authState?.user?.branchCode,
         REALIZE_COMP_CD: authState?.companyID,
         REALIZE_BY: authState?.user?.id,
-        REALIZE_DATE: format(new Date(data?.REALIZE_DATE), "dd/MMM/yyyy") ?? "",
+        REALIZE_DATE:
+          format(new Date(data?.REALIZE_DATE_DISP), "dd/MMM/yyyy") ?? "",
         PENDING_FLAG: "Y",
         ...(data?.C_C_T_SP_C !== "G" ? { CHEQUE_NO: data?.TOKEN_NO } : {}),
         ...(data?.C_C_T_SP_C === "T" ? newTransferAccountData : {}),
@@ -146,7 +150,6 @@ const EntryFormView = ({
           : {}),
       };
 
-      //if data?.C_C_T_SP_C ==="T" so merge oldTransferAccountData in olddata and newtransferaccdata in new data
       const oldTransferAccountData = {
         TRF_COMP_CD: draftDtlData[0]?.TRF_COMP_CD,
         TRF_BRANCH_CD: draftDtlData[0]?.TRF_BRANCH_CD,
@@ -163,6 +166,7 @@ const EntryFormView = ({
           ? { CHEQUE_NO: draftDtlData[0]?.CHEQUE_NO }
           : {}),
         REALIZE_BY: draftDtlData[0]?.REALIZE_BY,
+        // REALIZE_DATE_DISP: authState?.workingDate,
         REALIZE_DATE: draftDtlData[0]?.REALIZE_DATE,
         REALIZE_BRANCH_CD: draftDtlData[0]?.REALIZE_BRANCH_CD,
         REALIZE_COMP_CD: draftDtlData[0]?.REALIZE_COMP_CD,
@@ -233,7 +237,7 @@ const EntryFormView = ({
                 SCREENFLAG: screenFlag,
                 CCTFLAG: draftDtlData?.[0]?.C_C_T,
                 REALIZE_AMT: draftDtlData?.[0]?.AMOUNT,
-                REALIZED_DATE: authState?.workingDate,
+                REALIZE_DATE_DISP: authState?.workingDate,
                 STOP_DATE: authState?.workingDate,
                 TOKEN_NO: draftDtlData[0]?.CHEQUE_NO,
                 TRF_COMP_CD_DISP: authState?.companyID,
