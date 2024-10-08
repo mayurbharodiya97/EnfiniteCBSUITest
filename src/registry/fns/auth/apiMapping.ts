@@ -1463,6 +1463,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/SAVEACCOUNTDATA",
     packageName: "",
   },
+  CONFIRMACCTDATA: {
+    url: "accountServiceAPI/CONFIRMACCTDATA",
+    packageName: "",
+  },
   GETACTCHQSIGNAUTHODDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
     packageName: "",
@@ -2623,6 +2627,10 @@ export const ActionWiseAPIConfiguration = {
   },
   VALIDATEATMREGSAVEDATA: {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
+    packageName: "",
+  },
+  GETMARITALSTATUSDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMARITALSTATUSDDW",
     packageName: "",
   },
   DOATMREGISTRATIONDML: {

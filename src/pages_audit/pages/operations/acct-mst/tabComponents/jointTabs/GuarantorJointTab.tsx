@@ -1,6 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { AcctMSTContext } from "../../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
 import { guarantorjoint_tab_metadata } from "../../tabMetadata/guarantorJointMetadataa";
@@ -16,6 +20,7 @@ const GuarantorJointTab = () => {
     handleFormDataonSavectx,
     handleModifiedColsctx,
   } = useContext(AcctMSTContext);
+  const { MessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
@@ -26,7 +31,7 @@ const GuarantorJointTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -169,11 +174,15 @@ const GuarantorJointTab = () => {
   return (
     <Grid sx={{ mb: 4 }}>
       <FormWrapper
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-joint-guarantor-form" + initialVal}
         ref={formRef}
         metaData={guarantorjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
-        formState={{ PARAM320: AcctMSTState?.param320 }}
+        formState={{
+          PARAM320: AcctMSTState?.param320,
+          ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+          MessageBox: MessageBox,
+        }}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         hideHeader={true}

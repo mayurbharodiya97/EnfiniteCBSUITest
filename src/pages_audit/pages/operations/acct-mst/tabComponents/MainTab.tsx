@@ -33,7 +33,7 @@ const MainTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -150,6 +150,7 @@ const MainTab = () => {
         ...newData["MAIN_DETAIL"],
         ...formData,
         ...commonData,
+        ACCT_TYPE: AcctMSTState?.accTypeValuectx,
       };
       handleFormDataonSavectx(newData);
       if (!AcctMSTState?.isFreshEntryctx) {
@@ -167,7 +168,7 @@ const MainTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -207,7 +208,11 @@ const MainTab = () => {
         ref={formRef}
         onSubmitHandler={onSubmitPDHandler}
         initialValues={initialVal}
-        key={"acct-mst-main-tab-form" + initialVal + AcctMSTState?.formmodectx}
+        key={
+          "acct-mst-main-tab-form" +
+          initialVal +
+          AcctMSTState?.retrieveFormDataApiRes["MAIN_DETAIL"]
+        }
         // metaData={main_tab_metadata as MetaDataType}
         metaData={
           extractMetaData(
