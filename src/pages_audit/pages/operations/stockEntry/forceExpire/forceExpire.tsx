@@ -164,20 +164,21 @@ export const ForceExpireStock: React.FC<StockDtlCustomProps> = ({
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" && (
-                  <Button
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    // disabled={isSubmitting}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </Button>
-                )}
+                {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" &&
+                  screenFlag !== "stockForTrn" && (
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      // disabled={isSubmitting}
+                      endIcon={
+                        isSubmitting ? <CircularProgress size={20} /> : null
+                      }
+                      color={"primary"}
+                    >
+                      {t("Save")}
+                    </Button>
+                  )}
                 <Button color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
                 </Button>

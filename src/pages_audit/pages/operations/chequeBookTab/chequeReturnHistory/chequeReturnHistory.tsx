@@ -75,9 +75,9 @@ const ChequeReturnHistoryGrid = ({
       )}
       <GridWrapper
         key={
-          `ChequeReturnHistory` + data?.length ??
-          "" + ChequeReturnHistoryGridMetaData?.gridConfig?.gridLabel ??
-          ""
+          `ChequeReturnHistory` +
+          data?.length +
+          ChequeReturnHistoryGridMetaData?.gridConfig?.gridLabel
         }
         finalMetaData={ChequeReturnHistoryGridMetaData as GridMetaDataType}
         data={data ?? []}

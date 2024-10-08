@@ -237,7 +237,7 @@ export const ChequeReturnHistoryGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "TRAN_TYPE",
+      accessor: "TRAN_TYPE_DISP",
       columnName: "Trans Type",
       sequence: 2,
       alignment: "left",

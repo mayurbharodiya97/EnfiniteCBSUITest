@@ -2801,6 +2801,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
+  GETF1HOLDCHRGTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETF1HOLDCHRGTYPEDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
