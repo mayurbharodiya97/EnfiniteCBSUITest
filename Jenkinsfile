@@ -72,11 +72,6 @@ pipeline {
                 buildAndPushDockerImage(env.IMAGE_NAME, env.NEW_TAG)
             }
         }
-        stage('Trivy Image Scan') {
-            steps {
-                sh 'trivy image ${IMAGE_NAME}:${NEW_TAG} --format table -o ${MICROSERVICE}.txt '
-            }
-        }
         stage('Update Manifest and K8s Deployment') {
             steps {
                 updateManifestDeploy(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
@@ -85,6 +80,11 @@ pipeline {
         stage('Push Deployment File to Git') {
             steps {
                 pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL, )
+            }
+        }
+        stage('Trivy Image Scan') {
+            steps {
+                sh 'trivy image ${IMAGE_NAME}:${NEW_TAG} --format table -o ${MICROSERVICE}.txt '
             }
         }
     }
