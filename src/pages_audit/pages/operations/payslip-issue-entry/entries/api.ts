@@ -41,7 +41,8 @@ export const retRiveGridData = async ({
         ...items,
         INDEX: `${index}`,
         PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
-        REALIZE_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
+        PENDING_FLAG_DISP: items.PENDING_FLAG,
+        REALIZE_FLAG: items.REALIZE_FLAG === "Y" ? "Confirmed" : "Pending",
       }));
     }
     return responseData;
@@ -137,6 +138,18 @@ export const getStopPaymentReasonData = async ({
 export const ddTransactionSave = async ({ ...reqPara }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCALCGSTAMT", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const payslipRealizeEntrySave = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOPAYSLIPREALIZEENTRY", {
       ...reqPara,
     });
 

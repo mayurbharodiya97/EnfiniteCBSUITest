@@ -61,6 +61,18 @@ export const PayslipDDTransaction = () => {
       SCREENREF: "STOPPAYMENT",
       TRAN_TYPE: "S",
     },
+    {
+      DOCCD: "RPT/21",
+      DOCURL: "Payslip Cancel Confirmation",
+      SCREENREF: "CANCELCONFRM",
+      TRAN_TYPE: "TC",
+    },
+    {
+      DOCCD: "RPT/18",
+      DOCURL: "Payslip Realization Confirmation",
+      SCREENREF: "REALIZECONF",
+      TRAN_TYPE: "RC",
+    },
   ];
   const close = () => {
     setScreenOpen(false);

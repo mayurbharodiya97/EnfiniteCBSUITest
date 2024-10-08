@@ -151,6 +151,10 @@ export const RetriveGridForm: FC<{
           ? data?.CANCEL
           : screenFlag === "STOPPAYMENT"
           ? data?.STOPPAYMENT
+          : screenFlag === "CANCELCONFRM"
+          ? data?.CANCELCONFRM
+          : screenFlag === "REALIZECONF"
+          ? data?.REALIZECONF
           : "",
       ALL_BRANCH: "Y",
       A_TRAN_TYPE: trans_type,

@@ -100,11 +100,16 @@ export const RetrieveFormConfigMetaData = {
       placeholder: "enterPayslipToretrive",
       type: "number",
       fullWidth: true,
-      // required: true,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["payslipNoRequired"] }],
-      // },
+      dependentFields: ["SCREEN_REF"],
+      shouldExclude: (val1, dependent) => {
+        if (
+          dependent?.SCREEN_REF?.value === "CANCELCONFRM" ||
+          dependent?.SCREEN_REF?.value === "REALIZECONF"
+        ) {
+          return true;
+        }
+        return false;
+      },
       FormatProps: {
         allowLeadingZeros: true,
         isAllowed: (values) => {
@@ -196,6 +201,33 @@ export const RetrieveFormConfigMetaData = {
       render: {
         componentType: "radio",
       },
+      name: "REALIZECONF",
+      label: "",
+      defaultValue: "P",
+      RadioGroupProps: { row: true },
+      options: [
+        {
+          label: "confirmPending",
+          value: "P",
+        },
+        {
+          label: "todayTrns",
+          value: "V",
+        },
+      ],
+      dependentFields: ["SCREEN_REF"],
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.SCREEN_REF?.value === "REALIZECONF") {
+          return false;
+        }
+        return true;
+      },
+      GridProps: { xs: 6, sm: 6, md: 3.5, lg: 3.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "radio",
+      },
       name: "STOPPAYMENT",
       label: "",
       defaultValue: "E",
@@ -213,6 +245,37 @@ export const RetrieveFormConfigMetaData = {
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
         if (dependentFields?.SCREEN_REF?.value === "STOPPAYMENT") {
+          return false;
+        }
+        return true;
+      },
+      GridProps: { xs: 6, sm: 6, md: 3.5, lg: 3.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "radio",
+      },
+      name: "CANCELCONFRM",
+      label: "",
+      defaultValue: "P",
+      RadioGroupProps: { row: true },
+      options: [
+        {
+          label: "confirmPending",
+          value: "P",
+        },
+        {
+          label: "todayTrns",
+          value: "V",
+        },
+        {
+          label: "RevalidateConfPending",
+          value: "D",
+        },
+      ],
+      dependentFields: ["SCREEN_REF"],
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.SCREEN_REF?.value === "CANCELCONFRM") {
           return false;
         }
         return true;
@@ -292,7 +355,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       alignment: "left",
       color: (val, data) => {
         let PENDING_FLAG = data?.original?.PENDING_FLAG ?? "";
-        return PENDING_FLAG === "Y" ? "green" : "red";
+        return PENDING_FLAG === "Y" ? "red" : "green";
       },
     },
     {
@@ -454,7 +517,7 @@ export const ddTransactionFormMetaData = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "SCREENFLAG",
       label: "billType",
@@ -746,21 +809,60 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "divider",
+      },
+      name: "DEVIDER6",
+      label: "Realized but Confirmation Pending",
+      dependentFields: ["SCREENFLAG"],
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+          return false;
+        }
+        return true;
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "divider",
+      },
+      name: "DEVIDER7",
+      label: "Cancelled but Confirmation Pending",
+      dependentFields: ["SCREENFLAG"],
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.SCREENFLAG?.value === "CANCELCONFRM") {
+          return false;
+        }
+        return true;
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
         componentType: "datePicker",
       },
       name: "REALIZE_DATE",
       label: "realizeDate",
       dependentFields: ["SCREENFLAG"],
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+        ) {
+          return true;
+        } else return false;
+      },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return false;
         }
         return true;
       },
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -770,10 +872,20 @@ export const ddTransactionFormMetaData = {
       name: "REALIZE_AMT",
       label: "amount",
       dependentFields: ["CCTFLAG", "SCREENFLAG", "AMOUNT"],
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+        ) {
+          return true;
+        } else return false;
+      },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return false;
         }
@@ -836,10 +948,20 @@ export const ddTransactionFormMetaData = {
           ? "By Clearing"
           : "By";
       },
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+        ) {
+          return true;
+        } else return false;
+      },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return false;
         }
@@ -855,10 +977,20 @@ export const ddTransactionFormMetaData = {
       label: "colComm",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
       dependentFields: ["SCREENFLAG", "ACCT_CD", "ACCT_TYPE", "REALIZE_AMT"],
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+        ) {
+          return true;
+        } else return false;
+      },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return false;
         }
@@ -911,12 +1043,22 @@ export const ddTransactionFormMetaData = {
       },
       name: "COL_SER_CHARGE",
       label: "colGst",
-      isReadOnly: true,
+      // isReadOnly: true,
       dependentFields: ["SCREENFLAG"],
+      isReadOnly: (fieldValue, dependentFields, formState) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+        ) {
+          return true;
+        } else return false;
+      },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return false;
         }
@@ -937,7 +1079,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependent?.C_C_T_SP_C?.value === "T" &&
           (dependent?.SCREENFLAG?.value === "REALIZE" ||
-            dependent?.SCREENFLAG?.value === "CANCEL")
+            dependent?.SCREENFLAG?.value === "CANCEL" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONF")
         ) {
           return false;
         }
@@ -950,11 +1093,21 @@ export const ddTransactionFormMetaData = {
       branchCodeMetadata: {
         name: "TRF_BRANCH_CD",
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
+        isReadOnly: (fieldValue, dependentFields, formState) => {
+          if (
+            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          ) {
+            return true;
+          } else return false;
+        },
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL")
+              dependent?.SCREENFLAG?.value === "CANCEL" ||
+              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONF")
           ) {
             return false;
           }
@@ -966,11 +1119,21 @@ export const ddTransactionFormMetaData = {
         name: "TRF_ACCT_TYPE",
         GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
+        isReadOnly: (fieldValue, dependentFields, formState) => {
+          if (
+            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          ) {
+            return true;
+          } else return false;
+        },
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL")
+              dependent?.SCREENFLAG?.value === "CANCEL" ||
+              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONF")
           ) {
             return false;
           }
@@ -987,11 +1150,17 @@ export const ddTransactionFormMetaData = {
           "C_C_T_SP_C",
           "SCREENFLAG",
         ],
+        isReadOnly: (fieldValue, dependentFields, formState) => {
+          if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+            return true;
+          } else return false;
+        },
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL")
+              dependent?.SCREENFLAG?.value === "CANCEL" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONF")
           ) {
             return false;
           }
@@ -1108,7 +1277,9 @@ export const ddTransactionFormMetaData = {
         if (
           dependent?.C_C_T_SP_C?.value === "T" &&
           (dependent?.SCREENFLAG?.value === "REALIZE" ||
-            dependent?.SCREENFLAG?.value === "CANCEL")
+            dependent?.SCREENFLAG?.value === "CANCEL" ||
+            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONF")
         ) {
           return false;
         }
@@ -1124,15 +1295,25 @@ export const ddTransactionFormMetaData = {
       label: "TokenNo",
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
       dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
-      shouldExclude: (val1, dependent) => {
+      isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependent?.C_C_T_SP_C?.value !== "C" &&
-          (dependent?.SCREENFLAG?.value !== "REALIZE" ||
-            dependent?.SCREENFLAG?.value !== "CANCEL")
+          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
         ) {
           return true;
+        } else return false;
+      },
+      shouldExclude: (val1, dependent) => {
+        if (
+          dependent?.C_C_T_SP_C?.value === "C" &&
+          (dependent?.SCREENFLAG?.value === "REALIZE" ||
+            dependent?.SCREENFLAG?.value === "CANCEL" ||
+            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONF")
+        ) {
+          return false;
         }
-        return false;
+        return true;
       },
     },
     {
@@ -1196,6 +1377,15 @@ export const ddTransactionFormMetaData = {
       },
       fullWidth: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "REALIZE_BY",
+      label: "realizedBy",
+      isReadOnly: true,
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
       render: {

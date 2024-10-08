@@ -2729,6 +2729,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
   },
+  DOPAYSLIPREALIZEENTRY: {
+    url: "/transactionServiceAPI/DOPAYSLIPREALIZEENTRY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
