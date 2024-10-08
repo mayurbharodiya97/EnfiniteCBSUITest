@@ -146,7 +146,7 @@ const AcctConfirm = () => {
             <AcctModal
               onClose={() => navigate(".")}
               formmode={"view"}
-              from={"pending-entry"}
+              from={"confirmation-entry"}
             />
           }
         />

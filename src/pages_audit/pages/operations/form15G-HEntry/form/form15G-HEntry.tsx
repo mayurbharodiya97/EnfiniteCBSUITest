@@ -745,8 +745,8 @@ const Form15GHEntry = ({
                     color={"primary"}
                     onClick={async (event) => {
                       const confirmation = await MessageBox({
-                        message: "deleteTitle",
                         messageTitle: "DeleteWarning",
+                        message: "RejectFormMessage",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
                       });

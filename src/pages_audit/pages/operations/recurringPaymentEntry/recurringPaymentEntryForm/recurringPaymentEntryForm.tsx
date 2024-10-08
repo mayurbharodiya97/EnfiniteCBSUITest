@@ -3,7 +3,7 @@ import { RecurringContext } from "../context/recurringPaymentContext";
 import { useLocation } from "react-router-dom";
 import { RecurringPaymentEntryFormMetaData } from "./metaData/recurringPmtEntryMetaData";
 import { AuthContext } from "pages_audit/auth";
-import { Dialog } from "@mui/material";
+import { Dialog, Paper } from "@mui/material";
 import { LienDetailsGrid } from "../lienDetailsGrid";
 import { useMutation } from "react-query";
 import * as API from "../api";
@@ -21,6 +21,7 @@ import {
   FormWrapper,
   MetaDataType,
 } from "@acuteinfo/common-base";
+import Draggable from "react-draggable";
 
 export const RecurringPaymentEntryForm = forwardRef<any, any>(
   (
@@ -53,7 +54,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
     //Mutation for Closing Advice
     const closingAdviceDtlMutation = useMutation(
       "getRecurAdviceDtl",
-      API.getRecurAdviceDtl,
+      API?.getRecurAdviceDtl,
       {
         onError: (error: any) => {
           let errorMsg = "Unknownerroroccured";
@@ -104,7 +105,7 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
         queryClient.removeQueries(["getRecurAdviceDtl"]);
         queryClient.removeQueries([
           "lienGridDetail",
-          authState?.user?.branchCode,
+          authState?.user?.branchCode ?? "",
         ]);
       };
     }, []);
@@ -301,13 +302,23 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
               },
             }}
             maxWidth="xl"
+            PaperComponent={(props) => (
+              <Draggable
+                handle="#draggable-dialog-title"
+                cancel={'[class*="MuiDialogContent-root"]'}
+              >
+                <Paper {...props} />
+              </Draggable>
+            )}
           >
             {closingAdviceDtlMutation?.isLoading ? (
               <LoaderPaperComponent />
             ) : (
-              <ClosingAdvice
-                handleCloseAdviceDetails={handleCloseAdviceDetails}
-              />
+              <div id="draggable-dialog-title">
+                <ClosingAdvice
+                  handleCloseAdviceDetails={handleCloseAdviceDetails}
+                />
+              </div>
             )}
           </Dialog>
         ) : null}

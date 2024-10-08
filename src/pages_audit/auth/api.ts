@@ -35,6 +35,16 @@ export const getLoginImageData = async ({ APP_TRAN_CD }) => {
       APP_TRAN_CD: APP_TRAN_CD,
     });
   if (status === "0") {
+    // Set special character in local storage
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -125,15 +135,6 @@ export const verifyOTP = async (
     }
   );
   if (status === "0") {
-    const GenerateCRC32 = async (str) => {
-      let fingerprint = await AuthSDK.Getfingerprintdata();
-      return String(CRC32C.str((str || "") + fingerprint));
-    };
-    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
-    localStorage.setItem(
-      "charchecksum",
-      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
-    );
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,

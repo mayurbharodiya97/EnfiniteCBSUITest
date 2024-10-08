@@ -120,8 +120,6 @@ export const FixDepositForm = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      console.log("data", data);
-
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
@@ -226,10 +224,8 @@ export const FixDepositForm = ({
 
     const newData = data?.FDDTL?.map((obj) => ({
       ...obj,
-      TRAN_DT: utilFunction.isValidDate(obj.TRAN_DT)
-        ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy")
-        : "",
-      MATURITY_DT: utilFunction.isValidDate(obj.MATURITY_DT)
+      TRAN_DT: obj.TRAN_DT ? format(new Date(obj.TRAN_DT), "dd/MMM/yyyy") : "",
+      MATURITY_DT: obj.MATURITY_DT
         ? format(new Date(obj.MATURITY_DT), "dd/MMM/yyyy")
         : "",
     }));
@@ -277,11 +273,9 @@ export const FixDepositForm = ({
   ) => {
     endSubmit(true);
 
-    console.log("data", data);
-
     const newData = data?.TRNDTLS?.map((obj) => ({
       ...obj,
-      CHEQUE_DT: utilFunction.isValidDate(obj.CHEQUE_DATE)
+      CHEQUE_DT: obj.CHEQUE_DATE
         ? format(new Date(obj.CHEQUE_DATE), "dd/MMM/yyyy")
         : "",
     }));

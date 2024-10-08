@@ -233,6 +233,33 @@ export const RecurringPaymentEntryFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+
+            if (
+              currentField?.value &&
+              dependentFieldValues?.BRANCH_CD?.value?.length === 0
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: "Enter Account Branch.",
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+
+              if (buttonName === "Ok") {
+                return {
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            }
             return {
               ...resetFields,
               ACCT_CD: {
@@ -247,6 +274,11 @@ export const RecurringPaymentEntryFormMetaData = {
           autoComplete: "off",
           maxLength: 20,
           dependentFields: ["ACCT_TYPE", "BRANCH_CD", "INT_RATE"],
+          runPostValidationHookAlways: true,
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: true,
+          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -255,30 +287,56 @@ export const RecurringPaymentEntryFormMetaData = {
           ) => {
             if (formState?.isSubmitting) return {};
             if (
+              currentField.value &&
+              dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: "Enter Account Type.",
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+
+              if (buttonName === "Ok") {
+                return {
+                  ACCT_CD: {
+                    value: "",
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            } else if (
               currentField?.value &&
               dependentFieldsValues?.ACCT_TYPE?.value &&
               dependentFieldsValues?.BRANCH_CD?.value
             ) {
               let reqParameters = {
-                BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-                COMP_CD: authState?.companyID,
-                ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
-                ACCT_CD: utilFunction.getPadAccountNumber(
-                  currentField?.value,
-                  dependentFieldsValues?.ACCT_TYPE?.optionData
-                ),
+                BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
+                COMP_CD: authState?.companyID ?? "",
+                ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
+                ACCT_CD:
+                  utilFunction.getPadAccountNumber(
+                    currentField?.value,
+                    dependentFieldsValues?.ACCT_TYPE?.optionData
+                  ) ?? "",
                 SCREEN_REF: "TRN/053",
               };
-              formState.handleDisableButton(true);
-              const postData = await API.getRecurValidAcctDtl(reqParameters);
+              formState?.handleDisableButton(true);
+              const postData = await API?.getRecurValidAcctDtl(reqParameters);
 
               if (postData?.status === "999") {
-                let btnName = await formState.MessageBox({
+                let btnName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
                   message: postData?.messageDetails ?? "Somethingwenttowrong",
                 });
                 if (btnName === "Ok") {
-                  formState.handleDisableButton(false);
+                  formState?.handleDisableButton(false);
                   return {
                     ACCT_CD: {
                       value: "",
@@ -297,7 +355,7 @@ export const RecurringPaymentEntryFormMetaData = {
                 paySimIntValue;
 
               const getButtonName = async (obj) => {
-                let btnName = await formState.MessageBox(obj);
+                let btnName = await formState?.MessageBox(obj);
                 return { btnName, obj };
               };
               for (let i = 0; i < postData.length; i++) {
@@ -308,16 +366,19 @@ export const RecurringPaymentEntryFormMetaData = {
                   });
 
                   if (btnName === "Ok") {
-                    formState.handleDisableButton(false);
+                    formState?.handleDisableButton(false);
                     if (postData[i]?.SHOW_LIEN_DTL === "Y") {
-                      formState.setDataOnFieldChange("SHOW_LIEN", {
-                        COMP_CD: authState?.companyID,
-                        ACCT_CD: utilFunction.getPadAccountNumber(
-                          currentField?.value,
-                          dependentFieldsValues?.ACCT_TYPE?.optionData
-                        ),
-                        ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
-                        BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
+                      formState?.setDataOnFieldChange("SHOW_LIEN", {
+                        COMP_CD: authState?.companyID ?? "",
+                        ACCT_CD:
+                          utilFunction.getPadAccountNumber(
+                            currentField?.value,
+                            dependentFieldsValues?.ACCT_TYPE?.optionData
+                          ) ?? "",
+                        ACCT_TYPE:
+                          dependentFieldsValues?.ACCT_TYPE?.value ?? "",
+                        BRANCH_CD:
+                          dependentFieldsValues?.BRANCH_CD?.value ?? "",
                       });
                     }
                   }
@@ -359,16 +420,17 @@ export const RecurringPaymentEntryFormMetaData = {
                   }
                 } else if (postData[i]?.O_STATUS === "0") {
                   getRecurValidAcctDtl = postData[0];
-                  formState.handleDisableButton(true);
+                  formState?.handleDisableButton(true);
                   reqParam = {
-                    COMP_CD: authState?.companyID,
-                    INT_RATE: postData[i]?.INT_RATE,
-                    BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-                    ACCT_CD: utilFunction.getPadAccountNumber(
-                      currentField?.value,
-                      dependentFieldsValues?.ACCT_TYPE?.optionData
-                    ),
-                    ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
+                    COMP_CD: authState?.companyID ?? "",
+                    INT_RATE: postData[i]?.INT_RATE ?? "",
+                    BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
+                    ACCT_CD:
+                      utilFunction.getPadAccountNumber(
+                        currentField?.value,
+                        dependentFieldsValues?.ACCT_TYPE?.optionData
+                      ) ?? "",
+                    ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
                     SCREEN_REF: "TRN/053",
                     PAY_SIM_INT:
                       paySimIntValue?.PAY_SIM_INT === "Y"
@@ -377,13 +439,13 @@ export const RecurringPaymentEntryFormMetaData = {
                         ? "N"
                         : postData?.[i]?.PAY_SIM_INT,
                   };
-                  formState.handleDisableButton(true);
-                  let getRecurAcctAllData = await API.getRecurAcctData(
+                  formState?.handleDisableButton(true);
+                  let getRecurAcctAllData = await API?.getRecurAcctData(
                     reqParam
                   );
 
                   if (getRecurAcctAllData?.status === "999") {
-                    let btnName = await formState.MessageBox({
+                    let btnName = await formState?.MessageBox({
                       messageTitle: "ValidationFailed",
                       message:
                         getRecurAcctAllData?.messageDetails ??
@@ -391,7 +453,7 @@ export const RecurringPaymentEntryFormMetaData = {
                       buttonNames: ["Ok"],
                     });
                     if (btnName === "Ok") {
-                      formState.handleDisableButton(false);
+                      formState?.handleDisableButton(false);
                       return {
                         ACCT_CD: { value: "" },
                         ACCT_NM: { value: "" },
@@ -401,19 +463,19 @@ export const RecurringPaymentEntryFormMetaData = {
                     returnVal = getRecurAcctAllData?.[0];
                   }
 
-                  formState.setDataOnFieldChange("GET_ACCT_DATA", {
+                  formState?.setDataOnFieldChange("GET_ACCT_DATA", {
                     ...getRecurAcctAllData?.[0],
                     PREMATURE: getRecurValidAcctDtl?.PREMATURE,
                   });
                 }
               }
               btn99 = 0;
-              formState.handleDisableButton(false);
+              formState?.handleDisableButton(false);
               return {
                 ACCT_CD:
                   returnVal !== ""
                     ? {
-                        value: utilFunction.getPadAccountNumber(
+                        value: utilFunction?.getPadAccountNumber(
                           currentField?.value,
                           dependentFieldsValues?.ACCT_TYPE?.optionData
                         ),
@@ -430,9 +492,9 @@ export const RecurringPaymentEntryFormMetaData = {
                 },
                 CATEGORY_NM: {
                   value:
-                    String(returnVal?.CATEG_CD)?.trim() +
-                      " " +
-                      returnVal?.CATEGORY_NM ?? "",
+                    String(returnVal?.CATEG_CD ?? "")?.trim() +
+                    " " +
+                    (returnVal?.CATEGORY_NM ?? ""),
                 },
                 INST_RS: {
                   value: returnVal?.INST_RS ?? "",
@@ -569,13 +631,12 @@ export const RecurringPaymentEntryFormMetaData = {
                 },
               };
             } else if (!currentField?.value) {
-              formState.handleDisableButton(false);
+              formState?.handleDisableButton(false);
               return resetFields;
             }
-            formState.handleDisableButton(false);
+            formState?.handleDisableButton(false);
             return {};
           },
-          runPostValidationHookAlways: true,
           FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 20) {
@@ -780,9 +841,9 @@ export const RecurringPaymentEntryFormMetaData = {
       dependentFields: ["CR_AMT", "CR_INT_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =
-          Number(dependentFieldsValues?.CR_AMT?.value) +
-          Number(dependentFieldsValues?.CR_INT_AMT?.value);
-        return value ?? "0";
+          Number(dependentFieldsValues?.CR_AMT?.value ?? 0) +
+          Number(dependentFieldsValues?.CR_INT_AMT?.value ?? 0);
+        return value;
       },
       GridProps: {
         xs: 12,
@@ -1066,11 +1127,11 @@ export const RecurringPaymentEntryFormMetaData = {
       dependentFields: ["TRAN_BAL", "PROV_INT_AMT", "INT_AMOUNT", "TDS_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =
-          Number(dependentFieldsValues?.TRAN_BAL?.value) +
-            Number(dependentFieldsValues?.PROV_INT_AMT?.value) +
-            Number(dependentFieldsValues?.INT_AMOUNT?.value) -
-            Number(dependentFieldsValues?.TDS_AMT?.value) || 0;
-        return value ?? "0";
+          Number(dependentFieldsValues?.TRAN_BAL?.value ?? 0) +
+          Number(dependentFieldsValues?.PROV_INT_AMT?.value ?? 0) +
+          Number(dependentFieldsValues?.INT_AMOUNT?.value ?? 0) -
+          Number(dependentFieldsValues?.TDS_AMT?.value ?? 0);
+        return value;
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -1319,7 +1380,7 @@ export const RecurringPaymentEntryFormMetaData = {
           if (values?.value?.length > 15) {
             return false;
           }
-          if (values.floatValue === 0) {
+          if (values?.floatValue === 0) {
             return false;
           }
           return true;
@@ -1350,12 +1411,14 @@ export const RecurringPaymentEntryFormMetaData = {
 
     {
       render: {
-        componentType: "amountField",
+        componentType: "numberFormat",
       },
       name: "TOKEN_NO",
       label: "CashPaymentTokenNumber",
+      placeholder: "EnterCashPaymentTokenNumber",
       autoComplete: "off",
       maxLength: 9,
+      className: "textInputFromRight",
       dependentFields: ["CASH_AMT", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
       __NEW__: {
         isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -1367,14 +1430,13 @@ export const RecurringPaymentEntryFormMetaData = {
         },
         FormatProps: {
           allowLeadingZeros: false,
-          allowNegative: false,
+          allowNegative: true,
           fixedDecimalScale: false,
-          placeholder: "EnterCashPaymentTokenNumber",
           isAllowed: (values) => {
             if (values?.value?.length > 9) {
               return false;
             }
-            if (values.floatValue === 0) {
+            if (values?.floatValue === 0) {
               return false;
             }
             return true;
@@ -1412,7 +1474,7 @@ export const RecurringPaymentEntryFormMetaData = {
           let btn99, returnVal;
 
           const getButtonName = async (obj) => {
-            let btnName = await formState.MessageBox(obj);
+            let btnName = await formState?.MessageBox(obj);
             return { btnName, obj };
           };
           for (let i = 0; i < postData.length; i++) {
@@ -1524,7 +1586,7 @@ export const RecurringPaymentEntryFormMetaData = {
           if (values?.value?.length > 15) {
             return false;
           }
-          if (values.floatValue === 0) {
+          if (values?.floatValue === 0) {
             return false;
           }
           return true;
@@ -1758,9 +1820,9 @@ export const RecurringPaymentEntryFormMetaData = {
       dependentFields: ["TRF_AMT", "CASH_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =
-          Number(dependentFieldsValues?.TRF_AMT?.value) +
-          Number(dependentFieldsValues?.CASH_AMT?.value);
-        return value ?? "0";
+          Number(dependentFieldsValues?.TRF_AMT?.value ?? 0) +
+          Number(dependentFieldsValues?.CASH_AMT?.value ?? 0);
+        return value;
       },
       GridProps: {
         xs: 12,

@@ -80,8 +80,8 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     ["getRecurPaymentScreenPara", authState?.user?.branchCode],
     () =>
       API.getRecurPaymentScreenPara({
-        companyID: authState?.companyID,
-        branchCode: authState?.user?.branchCode,
+        companyID: authState?.companyID ?? "",
+        branchCode: authState?.user?.branchCode ?? "",
       })
   );
 
@@ -130,7 +130,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();

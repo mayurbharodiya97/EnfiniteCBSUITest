@@ -45,7 +45,6 @@ export const form15GHEntryMetaData = {
         placeholder: "EnterCustomerID",
         type: "text",
         autoComplete: "off",
-        // isFieldFocused: true,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["CustomerIDisrequired"] }],
@@ -53,6 +52,7 @@ export const form15GHEntryMetaData = {
         __VIEW__: { isReadOnly: true },
         __EDIT__: { isReadOnly: true },
         __NEW__: {
+          // isFieldFocused: true,
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -96,6 +96,7 @@ export const form15GHEntryMetaData = {
                   messageTitle: "ValidationFailed",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 formState.setDataOnFieldChange("GRID_DATA", []);
                 if (buttonName === "Ok") {
@@ -140,6 +141,7 @@ export const form15GHEntryMetaData = {
                   messageTitle: "Alert",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "WARNING",
                 });
               } else if (postData?.[0]?.O_STATUS === "0") {
                 returnVal = postData?.[0];
@@ -162,6 +164,7 @@ export const form15GHEntryMetaData = {
                       message: postData2[j]?.O_MESSAGE.startsWith("\n")
                         ? postData2[j]?.O_MESSAGE?.slice(1)
                         : postData2[j]?.O_MESSAGE,
+                      icon: "ERROR",
                     });
                     formState.setDataOnFieldChange("GRID_DATA", []);
                   } else if (postData2[j]?.O_STATUS === "9") {
@@ -169,6 +172,7 @@ export const form15GHEntryMetaData = {
                       const { btnName, obj } = await getButtonName({
                         messageTitle: "Alert",
                         message: postData2[j]?.O_MESSAGE,
+                        icon: "WARNING",
                       });
                     }
                   } else if (postData2[j]?.O_STATUS === "99") {
@@ -218,7 +222,6 @@ export const form15GHEntryMetaData = {
                 PAN_NO: { value: returnVal?.PAN_NO ?? "" },
                 BIRTH_DT: {
                   value: returnVal?.BIRTH_DT ?? "",
-                  isFieldFocused: true,
                 },
                 ADD2: { value: returnVal?.ADD2 ?? "" },
                 AGE: { value: returnVal?.AGE ?? "" },
@@ -441,8 +444,12 @@ export const form15GHEntryMetaData = {
             if (sumOfAllDependentField > Number(interestAmtLimit)) {
               formState.MessageBox({
                 messageTitle: "Validation Failed",
-                message: `This Customer is not eligible for ${formName}.Total Income of this Financial Year exceeds ${interestAmtLimit}.`,
+                message: `${t(`TotalIncomeValidateMessage`, {
+                  formName: formName,
+                  interestAmtLimit: interestAmtLimit,
+                })}`,
                 buttonNames: ["Ok"],
+                icon: "ERROR",
               });
               formState.setDataOnFieldChange("GRID_DATA", []);
               return {
@@ -515,8 +522,12 @@ export const form15GHEntryMetaData = {
             if (sumOfAllDependentField > Number(interestAmtLimit)) {
               formState.MessageBox({
                 messageTitle: "ValidationFailed",
-                message: `This Customer is not eligible for ${formName}.Total Income of this Financial Year exceeds ${interestAmtLimit}.`,
+                message: `${t(`TotalIncomeValidateMessage`, {
+                  formName: formName,
+                  interestAmtLimit: interestAmtLimit,
+                })}`,
                 buttonNames: ["Ok"],
+                icon: "ERROR",
               });
               formState.setDataOnFieldChange("GRID_DATA", []);
               return {
@@ -557,7 +568,9 @@ export const form15GHEntryMetaData = {
             dependentFields
           ) => {
             if (formState?.isSubmitting) return {};
-            const getDate = await getFinDate();
+            const getDate = await getFinDate({
+              GD_DATE: authState?.workingDate,
+            });
             if (currentField?.value === "Y") {
               return {
                 LAST_ASS_YEAR: {
