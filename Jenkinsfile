@@ -61,7 +61,7 @@ pipeline {
             }
         }
 
-            stage('Extract and Increment Image Tag') {
+        stage('Extract and Increment Image Tag') {
             steps {
                 extractAndIncrementImageTag()
             }
