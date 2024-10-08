@@ -202,7 +202,7 @@ const OtherDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [OtherDTLFormRef.current.handleSubmitError(e, "save", false)];
+    const refs = [OtherDTLFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

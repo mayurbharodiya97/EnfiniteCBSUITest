@@ -15,7 +15,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LienGridMetaData } from "./lienEntryGridMetaData";
 import { LienEntryMetadata } from "./lienEntryMetadata";
 import { AuthContext } from "pages_audit/auth";
@@ -37,6 +37,7 @@ import {
   SubmitFnType,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 
 const LienEntryCustom = () => {
@@ -212,6 +213,11 @@ const LienEntryCustom = () => {
     [navigate]
   );
 
+  LienEntryMetadata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       <Box sx={{ width: "100%" }}>

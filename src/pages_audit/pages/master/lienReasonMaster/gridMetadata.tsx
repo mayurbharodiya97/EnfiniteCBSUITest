@@ -22,6 +22,7 @@ export const LienReasonMstGridMetaData: GridMetaDataType = {
       max: "77vh",
     },
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {

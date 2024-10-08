@@ -576,7 +576,15 @@ export const FDDetailGrid = () => {
 
         <Route
           path="view-master/*"
-          element={<ViewMasterForm handleDialogClose={handleDialogClose} />}
+          element={
+            <ViewMasterForm
+              handleDialogClose={handleDialogClose}
+              requestData={{
+                ...FDState?.retrieveFormData,
+                TDS_METHOD: FDState?.fdParaDetailData?.TDS_METHOD,
+              }}
+            />
+          }
         />
         <Route
           path="paid-fd/*"

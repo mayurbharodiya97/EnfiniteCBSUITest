@@ -116,7 +116,7 @@ const OtherAddTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -170,7 +170,7 @@ const OtherAddTab = () => {
         onSubmitHandler={onSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-tab-other-add-form" + initialVal}
+        key={"acct-mst-other-add-tab-form" + initialVal}
         metaData={otherAdd_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

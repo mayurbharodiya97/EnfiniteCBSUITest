@@ -111,7 +111,7 @@ const RelativeDtlTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -164,7 +164,7 @@ const RelativeDtlTab = () => {
         onSubmitHandler={onSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-relative-dtl-tab-form" + initialVal}
         metaData={relativeDtl_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

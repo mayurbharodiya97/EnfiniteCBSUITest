@@ -241,7 +241,7 @@ export const AuthProvider = ({ children }) => {
         let checksumdata: any;
         if (keyNm === "specialChar") {
           checksumdata = localStorage.getItem("charchecksum");
-        } else {
+        } else if (keyNm === "authDetails") {
           // localStorage.getItem("tokenchecksum");
           checksumdata = localStorage.getItem("tokenchecksum");
         }
@@ -253,6 +253,7 @@ export const AuthProvider = ({ children }) => {
             clearTimeout(timeoutLogout);
           }
           timeoutLogout = setTimeout(() => {
+            console.log("logout-due-to localStorage change");
             logout();
           }, 500);
           return;
@@ -294,6 +295,7 @@ export const AuthProvider = ({ children }) => {
       //   setAuthenticating(false);
       // }
     } else {
+      console.log("logout-due-to localStorage-authDetails not found");
       logout();
       setAuthenticating(false);
     }

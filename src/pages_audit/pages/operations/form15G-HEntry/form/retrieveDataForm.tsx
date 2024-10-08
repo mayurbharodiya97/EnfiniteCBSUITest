@@ -116,7 +116,7 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
               background: "white",
             }}
             controlsAtBottom={true}
-            containerstyle={{ padding: "10px" }}
+            containerstyle={{ padding: "2px" }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
@@ -127,6 +127,7 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
                   disabled={isSubmitting}
                   color={"primary"}
                   ref={okButtonRef}
+                  style={{ marginRight: "5px" }}
                 >
                   {t("Ok")}
                 </GradientButton>

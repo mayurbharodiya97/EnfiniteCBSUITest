@@ -94,7 +94,21 @@ export const getPendingAcct = async ({ COMP_CD, BRANCH_CD, REQ_FLAG }) => {
       REQ_FLAG: REQ_FLAG,
     });
   if (status === "0") {
-    return data;
+    let responseData = data;
+    if (REQ_FLAG === "A") {
+      responseData = data?.map((row) => {
+        if (row?.CONFIRMED === "Y") {
+          return { ...row, _rowColor: "rgb(9 132 3 / 51%)" };
+        } else if (row?.CONFIRMED === "R") {
+          return { ...row, _rowColor: "rgb(152 59 70 / 61%)" };
+        } else {
+          return { ...row };
+        }
+      });
+      return responseData;
+    } else {
+      return data;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -689,6 +703,32 @@ export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+// for relative dtl marital status field only
+export const getMaritalStatusOP = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETMARITALSTATUSDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DISPLAY_VALUE, DATA_VALUE, ...other }) => {
+          return {
+            ...other,
+            DISPLAY_VALUE: DISPLAY_VALUE,
+            DATA_VALUE: DATA_VALUE,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
+    }
+    console.log("fiuwheifhweihfwefwef", data);
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 // retrieving document medatory docs in grid for new entry
 export const getKYCDocumentGridData = async ({
   COMP_CD,
@@ -902,5 +942,19 @@ export const accountSave = async (reqData) => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  }
+};
+
+export const confirmAccount = async ({ REQUEST_CD, REMARKS, CONFIRMED }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CONFIRMACCTDATA", {
+      REQUEST_CD: REQUEST_CD,
+      REMARKS: REMARKS,
+      CONFIRMED: CONFIRMED,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };

@@ -593,7 +593,7 @@ export default function FormModal({
   const openUpdateDialog = () => {
     // if(state?.currentFormRefctx) {
     //   if(typeof state?.currentFormRefctx.current.handleSubmitError === "function") {
-    //     state?.currentFormRefctx.current.handleSubmitError(e, "save")
+    //     state?.currentFormRefctx.current.handleSubmit(e, "save")
     //   }
     // }
     setUpdateDialog(true);
@@ -639,7 +639,7 @@ export default function FormModal({
               ? ref()
               : ref.current &&
                   ref.current.handleSubmitError &&
-                  ref.current.handleSubmitError(e, "save", false);
+                  ref.current.handleSubmit(e, "save", false);
           })
         );
       }

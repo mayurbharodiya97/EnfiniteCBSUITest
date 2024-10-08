@@ -165,7 +165,7 @@ export const retrieveAcctFormMetaData = {
                   let btnName = await messagebox(
                     apiRespMSGdata[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert",
+                      : "Alert",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"
                       ? ["Yes", "No"]
