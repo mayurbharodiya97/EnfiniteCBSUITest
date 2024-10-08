@@ -66,7 +66,7 @@ export const RetriveGridForm: FC<{
   const indexRef = useRef(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const retrievalParaRef = useRef<any>(null);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
       console.log(data?.rows);
@@ -130,13 +130,7 @@ export const RetriveGridForm: FC<{
     actionFlag
   ) => {
     delete data["RETRIEVE"];
-    delete data["VIEW_ALL"];
-    if (Boolean(data["FROM_DT"])) {
-      data["FROM_DT"] = format(new Date(data["FROM_DT"]), "dd/MMM/yyyy");
-    }
-    if (Boolean(data["TO_DT"])) {
-      data["TO_DT"] = format(new Date(data["TO_DT"]), "dd/MMM/yyyy");
-    }
+
     data = {
       ...data,
       A_COMP_CD: authState.companyID,
@@ -172,8 +166,10 @@ export const RetriveGridForm: FC<{
 
   RetrieveFormConfigMetaData.form.label = headerLabel;
   RetrieveGridMetaData.gridConfig.gridLabel = "Enter Retrival Parameters";
-  const ClosedEventCall = () => {
+  const handleDialogClose = () => {
     navigate(".");
+    let event: any = { preventDefault: () => {} };
+    formRef?.current?.handleSubmit(event, "RETRIEVE");
   };
   return (
     <>
@@ -279,7 +275,7 @@ export const RetriveGridForm: FC<{
                 path="view-detail/*"
                 element={
                   <EntryForm
-                    onClose={ClosedEventCall}
+                    onClose={handleDialogClose}
                     gridData={mutation?.data}
                     currentIndexRef={indexRef}
                     handlePrev={handlePrev}

@@ -900,6 +900,7 @@ export const en_language_data = {
   Yes: "Yes",
   No: "No",
   ValidationFailed: "Validation Failed",
+  tokenNumberValidationMsg: "Enter Value for Token No.",
   RiskCategoryAlert: "Risk Category Alert",
   HNIAlert: "HNI Alert",
   DataConfirmMessage: "Data has been successfully confirmed",

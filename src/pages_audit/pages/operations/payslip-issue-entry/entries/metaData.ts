@@ -310,8 +310,6 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     disableSorting: false,
     // hideHeader: true,
     disableGroupBy: true,
-    enablePagination: true,
-    pageSizes: [15, 25, 50],
     defaultPageSize: 15,
     containerHeight: {
       min: "64vh",
@@ -1070,7 +1068,7 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "TRF_COMP_CD",
+      name: "TRF_COMP_CD_DISP",
       label: "",
       isReadOnly: true,
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
@@ -1289,12 +1287,41 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "REALIZE_FLAG",
+    },
+    {
+      render: {
         componentType: "numberFormat",
       },
       name: "TOKEN_NO",
       label: "TokenNo",
       GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
       dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFieldsValues
+      ) => {
+        if (field.value === "") {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: t("ValidationFailed"),
+            message: t("tokenNumberValidationMsg"),
+            icon: "ERROR",
+            buttonNames: ["Ok"],
+          });
+
+          if (buttonName === "Ok") {
+            return {
+              TOKEN_NO: {
+                isFieldFocused: true,
+              },
+            };
+          }
+        }
+      },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
