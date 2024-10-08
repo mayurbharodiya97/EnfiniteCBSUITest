@@ -230,12 +230,10 @@ export const FDDetailGrid = () => {
         A_ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
         A_FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
         A_LEAN_FLAG: data?.rows?.[0]?.data?.LEAN_FLAG ?? "",
-        A_MATURITY_DT: utilFunction.isValidDate(
-          data?.rows?.[0]?.data?.MATURITY_DT
-        )
+        A_MATURITY_DT: data?.rows?.[0]?.data?.MATURITY_DT
           ? format(new Date(data?.rows?.[0]?.data?.MATURITY_DT), "dd/MMM/yyyy")
           : "",
-        A_TRAN_DT: utilFunction.isValidDate(data?.rows?.[0]?.data?.TRAN_DT)
+        A_TRAN_DT: data?.rows?.[0]?.data?.TRAN_DT
           ? format(new Date(data?.rows?.[0]?.data?.TRAN_DT), "dd/MMM/yyyy")
           : "",
         A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",
@@ -578,7 +576,15 @@ export const FDDetailGrid = () => {
 
         <Route
           path="view-master/*"
-          element={<ViewMasterForm handleDialogClose={handleDialogClose} />}
+          element={
+            <ViewMasterForm
+              handleDialogClose={handleDialogClose}
+              requestData={{
+                ...FDState?.retrieveFormData,
+                TDS_METHOD: FDState?.fdParaDetailData?.TDS_METHOD,
+              }}
+            />
+          }
         />
         <Route
           path="paid-fd/*"
@@ -656,13 +662,18 @@ export const FDDetailGrid = () => {
       ) : null}
 
       {openFDPmtBtns ? (
-        <FDPayment handleDialogClose={handleDialogClose} screenFlag="" />
+        <FDPayment
+          handleDialogClose={handleDialogClose}
+          screenFlag=""
+          isDataChangedRef={isDataChangedRef}
+        />
       ) : null}
 
       {openIntPayment ? (
         <FDPayment
           handleDialogClose={handleDialogClose}
           screenFlag="intPayment"
+          isDataChangedRef={isDataChangedRef}
         />
       ) : null}
     </>

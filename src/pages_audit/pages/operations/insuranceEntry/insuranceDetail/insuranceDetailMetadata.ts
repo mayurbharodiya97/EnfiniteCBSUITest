@@ -241,12 +241,11 @@ export const InsuranceDetailFormMetaData = {
         name: "DUE_DATE",
         fullWidth: true,
         label: "DueDate",
-        dependentFields: ["INSURANCE_DATE"],
+        dependentFields: ["TRAN_DT"],
         setValueOnDependentFieldsChange: (dependent) => {
-          let date = dependent["INSURANCE_DATE"]?.value;
+          let date = dependent["TRAN_DT"]?.value;
           if (!isNaN(date)) {
             let newDate = subDays(addMonths(date, 12), 1);
-            // This will be your final date
             return newDate;
           } else {
             return null;
@@ -339,6 +338,7 @@ export const InsuranceDetailFormMetaData = {
         },
         name: "POLICY_NO",
         label: "PolicyNo",
+        txtTransform: "uppercase",
         fullWidth: true,
         required: true,
         schemaValidation: {
@@ -577,69 +577,56 @@ export const InsuranceDetailFormMetaData = {
         },
         name: "ALLOW_RENEW",
       },
-      // {
-      //   render: {
-      //     componentType: "hidden",
-      //   },
-      //   name: "RENEWED_FLAG",
-      //   label: "Inactive",
-      //   fullWidth: true,
-      //   __EDIT__: {
-      //     render: {
-      //       componentType: "checkbox",
-      //     },
-      //     defaultValue: false,
-      //     dependentFields: ["ALLOW_EDIT", "ALLOW_RENEW"],
-      //     shouldExclude: (field, dependent) => {
-      //       if (dependent?.ALLOW_RENEW?.value === "N") {
-      //         console.log("renew", dependent?.ALLOW_RENEW?.value, dependent?.ALLOW_RENEW?.value === "Y")
-      //         return false
-      //       } else if (dependent?.ALLOW_EDIT?.value === "Y") {
-      //         console.log("edit", dependent?.ALLOW_EDIT?.value, dependent?.ALLOW_EDIT?.value === "Y")
-      //         return false;
-      //       }
-      //       return true;
-      //     },
-      //   },
-      //   GridProps: {
-      //     xs: 12,
-      //     md: 1.2,
-      //     sm: 1.2,
-      //     lg: 1.2,
-      //     xl: 1.2,
-      //   },
-      // },
+      {
+        render: {
+          componentType: "hidden",
+        },
+        name: "RENEWED_FLAG",
+        label: "Inactive",
+        fullWidth: true,
+        __EDIT__: {
+          render: {
+            componentType: "checkbox",
+          },
+          defaultValue: false,
+        },
+        GridProps: {
+          xs: 12,
+          md: 1.2,
+          sm: 1.2,
+          lg: 1.2,
+          xl: 1.2,
+        },
+      },
 
-      // {
-      //   render: {
-      //     componentType: "hidden",
-      //   },
-      //   __EDIT__: {
-      //     render: {
-      //       componentType: "datePicker",
-      //     },
-      //     name: "INACTIVE_DATE",
-      //     fullWidth: true,
-      //     label: "InactiveDate",
-      //     GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
-      //     dependentFields: ["RENEWED_FLAG"],
-      //     shouldExclude: (_, dependent, __) => {
-      //       if (
-      //         !Boolean(dependent?.RENEWED_FLAG?.value)
-      //       ) {
-      //         return true;
-      //       }
-      //       return false;
-      //     },
-      //   },
-      // }
+      {
+        render: {
+          componentType: "hidden",
+        },
+        __EDIT__: {
+          render: {
+            componentType: "datePicker",
+          },
+          name: "INACTIVE_DATE",
+          fullWidth: true,
+          label: "InactiveDate",
+          GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+          dependentFields: ["RENEWED_FLAG"],
+          shouldExclude: (_, dependent, __) => {
+            if (!Boolean(dependent?.RENEWED_FLAG?.value)) {
+              return true;
+            }
+            return false;
+          },
+        },
+      },
     ],
   },
   detailsGrid: {
     gridConfig: {
       dense: true,
       gridLabel: "Document Detail",
-      rowIdColumn: "id",
+      rowIdColumn: "SR_CD",
       defaultColumnConfig: { width: 150, maxWidth: 250, minWidth: 100 },
       allowColumnReordering: true,
       hideHeader: true,
@@ -708,15 +695,13 @@ export const InsuranceDetailFormMetaData = {
         },
         _optionsKey: "getSecurityData",
         validation: (value, data, prev) => {
-          // console.log(value,prev,data)
           if (!Boolean(value)) {
             return "PleaseEnterSecurity";
-          }
-          if (Array.isArray(prev)) {
+          } else if (Array.isArray(prev)) {
             let lb_error = false;
             let ls_msg = "";
             prev.forEach((item, index) => {
-              if (value.trim() === item?.SECURITY_CD) {
+              if (value.trim() === item?.SECURITY_CD.trim()) {
                 lb_error = true;
                 ls_msg = "SecurityAlreadyEnteredLine " + (index + 1);
                 return ls_msg;

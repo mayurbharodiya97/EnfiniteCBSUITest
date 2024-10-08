@@ -105,12 +105,11 @@ export const relativeDtl_tab_metadata = {
           },
           name: "MARITAL_STATUS",
           label: "MaritalStatus",
-          options: (dependentValue) => getPMISCData("Marital", dependentValue),
+          options: () => API.getMaritalStatusOP(),
           _optionsKey: "maritalMainOp",
           isReadOnly: (fieldValue, dependentFields, formState) =>
             API.isReadOnlyonParam320({ formState }),
           required: true,
-          dependentFields: ["PREFIX_CD"],
           disableCaching: true,
           schemaValidation: {
             type: "string",

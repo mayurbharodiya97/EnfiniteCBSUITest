@@ -61,7 +61,7 @@ export const impsEntryMetadata = {
         }
       },
       postValidationSetCrossFieldValues: async (field, formState) => {
-        if (field?.value) {
+        if (field?.value && formState?.FORM_MODE === "add") {
           let postData = await API.validateCustId({
             SCREEN_REF: "MST/843",
             CUST_ID: field?.value,
@@ -72,6 +72,7 @@ export const impsEntryMetadata = {
               let buttonName = await formState.MessageBox({
                 messageTitle: "ValidationAlert",
                 message: message?.O_MESSAGE,
+                defFocusBtnName: "Ok",
               });
               if (buttonName === "Ok") {
                 return {
@@ -85,6 +86,11 @@ export const impsEntryMetadata = {
               }
             } else if (message?.O_STATUS === "0") {
               return {
+                CUSTOMER_ID: {
+                  value: field?.value,
+                  ignoreUpdate: true,
+                  isFieldFocused: false,
+                },
                 ORGINAL_NM: { value: postData?.[0]?.ORIGINAL_NM },
                 UNIQUE_ID: { value: postData?.[0]?.UNIQUE_ID },
                 MOB_NO: { value: postData?.[0]?.MOB_NO },
@@ -223,6 +229,12 @@ export const impsEntryMetadata = {
       },
       name: "RETRIEVE_DATA",
     },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ROWDATA_LENGTH",
+    },
 
     {
       render: {
@@ -303,6 +315,709 @@ export const impsEntryMetadata = {
         xl: 1,
       },
     },
+
+    {
+      render: {
+        componentType: "arrayField",
+      },
+      name: "accMapping",
+      // displayCountName: "Account Mapping",
+      //   disagreeButtonName: "No",
+      //   agreeButtonName: "Yes",
+      //   errorTitle: "Are you Sure you want to delete this row?",
+      //   removeRowFn: "deleteFormArrayFieldData",
+      fixedRows: true,
+      // isScreenStyle: true,
+      // isRemoveButton: false,
+
+      dependentFields: ["ROWDATA_LENGTH"],
+      shouldExclude: (field, dependent) => {
+        console.log("<<<arry", field, dependent);
+        if (dependent?.ROWDATA_LENGTH?.value > 0) {
+          return false;
+        }
+        return true;
+      },
+      GridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+        lg: 12,
+        xl: 12,
+        sx: {
+          "& .MuiPaper-root": {
+            height: "calc(100vh - 370px)",
+            overflow: "scroll",
+          },
+        },
+      },
+      _fields: [
+        {
+          render: {
+            componentType: "typography",
+          },
+          name: "FULL_ACCT_NO_NM",
+          label: "",
+          shouldExclude: (field) => {
+            if (field?.value) {
+              return false;
+            }
+            return true;
+          },
+          TypographyProps: { variant: "subtitle1", fontWeight: 500 },
+          GridProps: {
+            xs: 12,
+            sm: 12,
+            md: 12,
+            lg: 12,
+            xl: 12,
+            pt: "6px !important",
+          },
+        },
+        {
+          render: { componentType: "datePicker" },
+          name: "REG_DATE",
+          type: "date",
+          label: "Reg. Date",
+          required: true,
+          isReadOnly: true,
+          isWorkingDate: true,
+          GridProps: {
+            xs: 12,
+            md: 2,
+            sm: 2,
+            lg: 2,
+            xl: 2,
+          },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["This field is required"] }],
+          },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "BRANCH_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCT_TYPE",
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCT_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCT_NM",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TRAN_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ENTERED_BRANCH_CD",
+        },
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "IFT",
+          label: "IFT",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_IFT_LIMIT",
+          type: "text",
+          label: "IFT/Daily Limit",
+          dependentFields: ["IFT"],
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          // required: true,
+          // schemaValidation: {
+          //   type: "string",
+          //   rules: [{ name: "required", params: ["This field is required"] }],
+          // },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IFT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "IFT_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["IFT"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IFT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "RTGS",
+          label: "RTGS",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_RTGS_LIMIT",
+          type: "text",
+          label: "RTGS/Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["RTGS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.RTGS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "RTGS_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["RTGS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.RTGS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "NEFT",
+          label: "NEFT",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_NEFT_LIMIT",
+          type: "text",
+          label: "NEFT/Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["NEFT"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.NEFT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "NEFT_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["NEFT"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.NEFT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "OWN_ACT",
+          label: "Own A/c",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_OWN_LIMIT",
+          type: "text",
+          label: "OWN/Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["OWN_ACT"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.OWN_ACT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "OWN_ACT_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["OWN_ACT"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.OWN_ACT"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "SPACER_ST",
+          GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
+          __VIEW__: {
+            render: {
+              componentType: "spacer",
+            },
+          },
+        },
+
+        {
+          render: {
+            componentType: "formbutton",
+          },
+          name: "JOINT_DETAILS",
+          label: "Joint Details",
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
+          GridProps: {
+            xs: 12,
+            sm: 1,
+            md: 1,
+            lg: 1,
+            xl: 1,
+          },
+        },
+        {
+          render: {
+            componentType: "formbutton",
+          },
+          name: "PHOTO_SIGN",
+          label: "Photo/sign",
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
+          GridProps: {
+            xs: 12,
+            sm: 1,
+            md: 1,
+            lg: 1,
+            xl: 1,
+          },
+        },
+
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "BBPS",
+          label: "BBPS",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_BBPS_LIMIT",
+          type: "text",
+          label: "BBPS/Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["BBPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.BBPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "BBPS_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+
+          label: " ",
+          dependentFields: ["BBPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.BBPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "PG_TRN",
+          defaultValue: false,
+          label: "Payment Gateway",
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_PG_AMT",
+          type: "text",
+          label: "P.Gateway/Daily Limit",
+          GridProps: { xs: 12, md: 2, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["PG_TRN"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.PG_TRN"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "PG_TRN_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 2, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["PG_TRN"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.PG_TRN"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: { componentType: "checkbox" },
+          type: "checkbox",
+          name: "IMPS",
+          label: "IMPS",
+          defaultValue: false,
+          GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_P2P_LIMIT",
+          type: "text",
+          label: "IMPS P2P Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["IMPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IMPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "IMPS_LIMIT_SPACER",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["IMPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IMPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: { componentType: "amountField" },
+          name: "PERDAY_P2A_LIMIT",
+          type: "text",
+          label: "IMPR P2A Day Limit",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          FormatProps: {
+            thousandSeparator: false,
+            thousandsGroupStyle: "",
+            allowNegative: false,
+            allowLeadingZeros: false,
+            decimalScale: 0,
+            isAllowed: (values) => {
+              if (values?.value?.length > 12) {
+                return false;
+              }
+              if (values.floatValue === 0) {
+                return false;
+              }
+              return true;
+            },
+          },
+          dependentFields: ["IMPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IMPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return false;
+            }
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "IMPS_LIMIT_SPACER2",
+          GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
+          defaultValue: "",
+          dependentFields: ["IMPS"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            const dependentValue = dependentFieldsValues?.[
+              "accMapping.IMPS"
+            ]?.value
+              .toString()
+              .trim();
+            if (dependentValue === "Y" || dependentValue === "true") {
+              return true;
+            }
+            return false;
+          },
+        },
+        {
+          render: {
+            componentType: "formbutton",
+          },
+          name: "ALLLOW_DELETE",
+          label: "Delete",
+          dependentFields: ["REG_DATE", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
+          GridProps: {
+            xs: 12,
+            sm: 1,
+            md: 1,
+            lg: 1,
+            xl: 1,
+          },
+        },
+      ],
+    },
   ],
 };
 export const impsRegDetails = {
@@ -357,9 +1072,9 @@ export const impsRegDetails = {
       //   agreeButtonName: "Yes",
       //   errorTitle: "Are you Sure you want to delete this row?",
       //   removeRowFn: "deleteFormArrayFieldData",
-      //   fixedRows: true,
-      //   isScreenStyle: true,
-      //   isRemoveButton: false,
+      fixedRows: true,
+      // isScreenStyle: true,
+      // isRemoveButton: false,
       GridProps: {
         xs: 12,
         md: 12,
@@ -1010,6 +1725,26 @@ export const impsRegDetails = {
               return true;
             }
             return false;
+          },
+        },
+        {
+          render: {
+            componentType: "formbutton",
+          },
+          name: "ALLLOW_DELETE",
+          label: "Delete",
+          dependentFields: ["REG_DATE", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+          __VIEW__: {
+            render: {
+              componentType: "hidden",
+            },
+          },
+          GridProps: {
+            xs: 12,
+            sm: 1,
+            md: 1,
+            lg: 1,
+            xl: 1,
           },
         },
       ],

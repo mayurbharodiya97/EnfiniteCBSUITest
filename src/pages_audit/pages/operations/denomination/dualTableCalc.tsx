@@ -11,6 +11,8 @@ const DualTableCalc = ({
   gridLable,
   formData,
   initRemainExcess,
+  screenRef,
+  entityType,
 }) => {
   const columnDefinitions = [
     {
@@ -172,7 +174,7 @@ const DualTableCalc = ({
           };
           const newRowsPayment = {
             ...apiRow,
-            DENO_QTY____PY:
+            DENO_QTY:
               TRN === "1"
                 ? "-" + inputValues[index]?.payment
                 : TRN === "4"
@@ -180,11 +182,21 @@ const DualTableCalc = ({
                 : "",
             AMOUNT: inputValues[index]?.amount2?.toString(),
           };
+
+          const resMinusPay = {
+            ...apiRow,
+            DENO_QTY: (
+              inputValues[index]?.receipt - inputValues[index]?.payment
+            )?.toString(),
+            AMOUNT: (
+              inputValues[index]?.amount - inputValues[index]?.amount2
+            )?.toString(),
+          };
           if (
             Boolean(inputValues[index]?.receipt) &&
             Boolean(inputValues[index]?.payment)
           ) {
-            return [newRowsReceipt, newRowsPayment];
+            return resMinusPay;
           } else if (inputValues[index]?.receipt) {
             return newRowsReceipt;
           } else if (inputValues[index]?.payment) {
@@ -330,6 +342,8 @@ const DualTableCalc = ({
       closeConfirmation={closeConfirmation}
       getRowData={getRowData}
       formData={formData}
+      screenRef={screenRef}
+      entityType={entityType}
     />
   );
 };

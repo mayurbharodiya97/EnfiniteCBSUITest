@@ -53,6 +53,7 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
         "linear-gradient(71.66deg, #4285f4 -2.97%, #885df5 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
       "--theme-color7": "#e7e5e563",
+      "--report-export-theme": "#07288e",
     },
     theme2: {
       "--theme-color1": "#075f2a",
@@ -64,6 +65,7 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--primary-bg":
         "linear-gradient(71.66deg, #3b694d -2.97%, #98d19a 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
+      "--report-export-theme": "#075f2a",
     },
     theme3: {
       "--theme-color1": "#b12e44",
@@ -75,6 +77,7 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--primary-bg":
         "linear-gradient(71.66deg, #b12e44 -2.97%, #fce4ec 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
+      "--report-export-theme": "#b12e44",
     },
     theme4: {
       "--theme-color1": "#0a5da0",
@@ -86,6 +89,7 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--primary-bg":
         "linear-gradient(71.66deg, #2196f3 -2.97%, #eceff1 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
+      "--report-export-theme": "#0a5da0",
     },
     theme5: {
       "--theme-color1": "#405864",
@@ -97,6 +101,7 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
       "--primary-bg":
         "linear-gradient(71.66deg, #597380 -2.97%, #eceff1 111.3%)",
       "--theme-color6": "rgba(148, 149, 151, 1)",
+      "--report-export-theme": "#405864",
     },
   };
 

@@ -619,15 +619,13 @@ export const InsuranceEntryFormMetaData = {
         },
         _optionsKey: "getSecurityData",
         validation: (value, data, prev) => {
-          // console.log(value,prev,data)
           if (!Boolean(value)) {
             return "PleaseEnterSecurity";
-          }
-          if (Array.isArray(prev)) {
+          } else if (Array.isArray(prev)) {
             let lb_error = false;
             let ls_msg = "";
             prev.forEach((item, index) => {
-              if (value.trim() === item?.SECURITY_CD) {
+              if (value.trim() === item?.SECURITY_CD.trim()) {
                 lb_error = true;
                 ls_msg = "SecurityAlreadyEnteredLine " + (index + 1);
                 return ls_msg;
@@ -1119,7 +1117,7 @@ export const DetailInsuranceGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED",
-      columnName: "Confirmerd",
+      columnName: "Confirmed",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -1129,7 +1127,7 @@ export const DetailInsuranceGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CM_RENEW",
-      columnName: "ConfirmerdStatus",
+      columnName: "ConfirmedStatus",
       sequence: 10,
       alignment: "left",
       componentType: "default",

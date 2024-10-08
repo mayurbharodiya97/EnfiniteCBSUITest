@@ -816,6 +816,7 @@ export const en_language_data = {
   Address: "Address",
   EnterEmailID: "Enter Email ID",
   InvalidEmailID: "Invalid Email ID.",
+  MobileNumberValidation: " Mobile Number should be of minimum 10 digit.",
 
   // Clearing bank master
   ClearingBankMaster: "Clearing Bank Master",
@@ -996,6 +997,9 @@ export const en_language_data = {
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
   Disagree: "Disagree",
   Agree: "Agree",
+  RecordInsertedMsg: "Record Inserted Successfully.",
+  RecordUpdatedMsg: "Record Updated Successfully.",
+  RecordRemovedMsg: "Record Removed Successfully.",
 
   // cheque book
 
@@ -1674,12 +1678,15 @@ export const en_language_data = {
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",
   ConfirmFormData: "Are you sure to confirm this Form?",
-  ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
+  ConfirmRestrictionMessage: "You can not confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
-  CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
+  CannotDeleteConfirmedForm: "You can not to delete Confirmed Form.",
+  RejectFormMessage: "Do you want to delete this Form?",
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  TotalIncomeValidateMessage:
+    "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
 
   // GST Outward Entry
   TranCd: "Tran Cd",
@@ -1964,6 +1971,14 @@ export const en_language_data = {
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
 
+  // Daily Transaction Import
+  errors: "Errors",
+  UploadData: "Upload Data",
+  PleaseEnterConfiguration: "Please Enter Configuration",
+  GenerateOppositeEntry: "Generate Opposite Entry",
+  IgnoreInsufficientBalance: "Ignore Insufficient Balance",
+  SelectFile: "Select File",
+  CreditToAccount: "Credit to Account",
   //loan Schedule
   DisbursementDate: "Disbursement Date",
   DisbursementAmount: "Disbursement Amount",
@@ -2013,4 +2028,7 @@ export const en_language_data = {
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
+
+  // Cashier Exchange Entry
+  TransferDetails: "Transfer Details",
 };

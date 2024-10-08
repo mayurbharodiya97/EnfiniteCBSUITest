@@ -20,7 +20,7 @@ import {
   tempODGridHistoryMetaData,
 } from "./temporaryGridMetaData";
 import { temporaryODentryMetadata } from "./tempODentryMetadata";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
@@ -38,6 +38,7 @@ import {
   GridMetaDataType,
   MasterDetailsForm,
   GridWrapper,
+  utilFunction,
 } from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
@@ -145,6 +146,11 @@ export const TemporaryOD = () => {
   // let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
   let metadata = cloneDeep(temporaryODentryMetadata) as MasterDetailsMetaData;
 
+  metadata.masterForm.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       <Box sx={{ width: "100%" }}>

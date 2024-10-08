@@ -47,9 +47,9 @@ export const getFDDtl = async (apiReq) => {
   }
 };
 
-export const getFinDate = async () => {
+export const getFinDate = async ({ GD_DATE }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFORM15GHFINDATE", {});
+    await AuthSDK.internalFetcher("GETFORM15GHFINDATE", { GD_DATE: GD_DATE });
   if (status === "0") {
     return data;
   } else {

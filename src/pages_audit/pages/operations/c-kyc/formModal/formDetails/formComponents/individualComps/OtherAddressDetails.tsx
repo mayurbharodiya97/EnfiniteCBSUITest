@@ -250,9 +250,7 @@ const OtherAddressDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [
-      OtherAddDTLFormRef.current.handleSubmitError(e, "save", false),
-    ];
+    const refs = [OtherAddDTLFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

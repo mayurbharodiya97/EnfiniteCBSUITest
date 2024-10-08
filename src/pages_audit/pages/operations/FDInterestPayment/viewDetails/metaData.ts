@@ -115,6 +115,133 @@ export const FdInterestPaymentFormMetaData = {
       name: "FD_NO",
     },
 
+    // Account details
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "BRANCH_CD",
+      label: "branchCode",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_TYPE",
+      label: "accountType",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "AccountNum",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NAME",
+      label: "AccountName",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Balance",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (formState?.SCREEN_REF === "MST/894") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    // FD/RD etail
+    {
+      render: {
+        componentType: "divider",
+      },
+      label: "FDRDDetail",
+      name: "FDRDDtl",
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
     {
       render: {
         componentType: "select",
@@ -331,12 +458,128 @@ export const FdInterestPaymentFormMetaData = {
         xl: 3,
       },
     },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TRAN_DT",
+      label: "DepositDate",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOT_AMT",
+      label: "Inst. Amount",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      textInputFromRight: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "MATURITY_DT",
+      label: "MaturityDate",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "MATURITY_AMT",
+      label: "MaturityAmount",
+      type: "text",
+      isReadOnly: true,
+      ignoreInSubmit: true,
+      textInputFromRight: true,
+      fullWidth: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MATURE_INST",
+      label: "MatureInstruction",
+      type: "text",
+      ignoreInSubmit: true,
+      isReadOnly: true,
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          formState?.SCREEN_REF === "MST/894" ||
+          formState?.SCREEN_REF === "MST/940"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 6, md: 2, lg: 2, xl: 2 },
+    },
 
     {
       render: {
         componentType: "spacer",
       },
       name: "PAYMENT_MODE_SPACER",
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (formState?.SCREEN_REF === "TRN/584") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: { xs: 0, sm: 6, md: 9, lg: 9, xl: 9 },
     },
     {
@@ -451,7 +694,7 @@ export const FdInterestPaymentFormMetaData = {
               currentField?.value,
               dependentFieldValues?.CR_ACCT_TYPE?.optionData
             ),
-            SCREEN_REF: "TRN/584",
+            SCREEN_REF: formState?.SCREEN_REF,
           };
 
           if (

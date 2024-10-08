@@ -198,6 +198,29 @@ const InsuranceEntry = () => {
       },
       {
         onSuccess: async (data, variables) => {
+          let reqData = {
+            ...newData,
+            INSURANCE_DATE: format(
+              new Date(newData?.INSURANCE_DATE),
+              "dd/MMM/yyyy"
+            ),
+            DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
+            TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
+            COVER_NOTE: newData?.COVER_NOTE,
+            INACTIVE_DATE: "",
+            COMM_TYPE_CD: "",
+            CONFIRMED: "N",
+            OLD_STATUS: "",
+            PREMIUM_AMOUNT: newData?.TOTAL_PRE,
+            RENEWED_FLAG: "0",
+            ENTERED_BRANCH_CD: authState?.user?.branchCode,
+            ENTERED_COMP_CD: authState?.companyID,
+            _UPDATEDCOLUMNS: [],
+            _OLDROWVALUE: {},
+            _isNewRow: true,
+            _isDeleteRow: false,
+            _isAllowRenewRow: false,
+          };
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "0") {
               const buttonName = await MessageBox({
@@ -207,28 +230,7 @@ const InsuranceEntry = () => {
                 loadingBtnName: ["Yes"],
               });
               if (buttonName === "Yes") {
-                doInsuranceDml.mutate({
-                  ...newData,
-                  INSURANCE_DATE: format(
-                    new Date(newData?.INSURANCE_DATE),
-                    "dd/MMM/yyyy"
-                  ),
-                  DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
-                  TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
-                  COVER_NOTE: newData?.COVER_NOTE,
-                  INACTIVE_DATE: "",
-                  COMM_TYPE_CD: "",
-                  CONFIRMED: "N",
-                  OLD_STATUS: "",
-                  PREMIUM_AMOUNT: newData?.TOTAL_PRE,
-                  RENEWED_FLAG: "0",
-                  ENTERED_BRANCH_CD: authState?.user?.branchCode,
-                  ENTERED_COMP_CD: authState?.companyID,
-                  _UPDATEDCOLUMNS: [],
-                  _OLDROWVALUE: {},
-                  _isNewRow: true,
-                  _isDeleteRow: false,
-                });
+                doInsuranceDml.mutate(reqData);
               }
             } else if (data[i]?.O_STATUS === "9") {
               MessageBox({
@@ -244,28 +246,7 @@ const InsuranceEntry = () => {
                 loadingBtnName: ["Yes"],
               });
               if (buttonName === "Yes") {
-                doInsuranceDml.mutate({
-                  ...newData,
-                  INSURANCE_DATE: format(
-                    new Date(newData?.INSURANCE_DATE),
-                    "dd/MMM/yyyy"
-                  ),
-                  DUE_DATE: format(new Date(newData?.DUE_DATE), "dd/MMM/yyyy"),
-                  TRAN_DT: format(new Date(newData?.TRAN_DT), "dd/MMM/yyyy"),
-                  COVER_NOTE: newData?.COVER_NOTE,
-                  INACTIVE_DATE: "",
-                  COMM_TYPE_CD: "",
-                  CONFIRMED: "N",
-                  OLD_STATUS: "",
-                  PREMIUM_AMOUNT: newData?.TOTAL_PRE,
-                  RENEWED_FLAG: "0",
-                  ENTERED_BRANCH_CD: authState?.user?.branchCode,
-                  ENTERED_COMP_CD: authState?.companyID,
-                  _UPDATEDCOLUMNS: [],
-                  _OLDROWVALUE: {},
-                  _isNewRow: true,
-                  _isDeleteRow: false,
-                });
+                doInsuranceDml.mutate(reqData);
               }
             } else if (data[i]?.O_STATUS === "999") {
               MessageBox({

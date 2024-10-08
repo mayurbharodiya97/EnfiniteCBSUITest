@@ -4,10 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
-import {
-  recAccountFindmetaData,
-  RecInterestPaymentMetaData,
-} from "./RecInterestPaymentMetaData";
 import { AuthContext } from "pages_audit/auth";
 import {
   FormWrapper,
@@ -15,9 +11,12 @@ import {
   MetaDataType,
   queryClient,
   SubmitFnType,
+  Transition,
   usePopupContext,
   utilFunction,
 } from "@acuteinfo/common-base";
+import { accountFindmetaData } from "../FDInterestPayment/FdInterestPaymentGridMetaData";
+import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
 
 export const RecInterestPaymentForm = () => {
   const [isFormOpen, setFormOpen] = useState(true);
@@ -79,6 +78,7 @@ export const RecInterestPaymentForm = () => {
         CloseMessageBox();
         setFormOpen(true);
         setRecPaymentInstructions([]);
+        setBalance({});
       },
       onError: async (error: any) => {
         const btnName = await MessageBox({
@@ -210,8 +210,7 @@ export const RecInterestPaymentForm = () => {
     };
   }, []);
 
-  const metaData = JSON.parse(JSON.stringify(RecInterestPaymentMetaData));
-  metaData.form.label = utilFunction.getDynamicLabel(
+  FdInterestPaymentFormMetaData.form.label = utilFunction.getDynamicLabel(
     currentPath,
     authState?.menulistdata,
     true
@@ -232,7 +231,7 @@ export const RecInterestPaymentForm = () => {
       >
         <FormWrapper
           key={"recAccountFindmetaData"}
-          metaData={recAccountFindmetaData as MetaDataType}
+          metaData={accountFindmetaData as MetaDataType}
           formStyle={{
             background: "white",
           }}
@@ -251,7 +250,7 @@ export const RecInterestPaymentForm = () => {
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Box display="flex" gap="8px">
+              <Box display="flex" gap={2}>
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
@@ -293,7 +292,7 @@ export const RecInterestPaymentForm = () => {
           "RecInterestPaymentMetaData" +
           Object.keys(recPaymentInstructions)?.length
         }
-        metaData={metaData as MetaDataType}
+        metaData={FdInterestPaymentFormMetaData as MetaDataType}
         formStyle={{
           background: "white",
         }}
@@ -307,11 +306,12 @@ export const RecInterestPaymentForm = () => {
           MessageBox: MessageBox,
           handleButtonDisable: handleButtonDisable,
           accountDetail: recPaymentInstructions,
+          SCREEN_REF: "MST/894",
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
-            <Box display="flex" gap="8px">
+            <Box display="flex" gap={2}>
               {Object.keys(recPaymentInstructions).length > 0 && (
                 <>
                   <GradientButton
