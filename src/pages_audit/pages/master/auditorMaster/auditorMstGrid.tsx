@@ -148,6 +148,7 @@ export const AuditorMstGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        enableExport={true}
       />
 
       <Routes>

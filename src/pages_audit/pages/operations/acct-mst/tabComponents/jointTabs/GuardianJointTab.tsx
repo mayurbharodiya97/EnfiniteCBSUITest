@@ -1,6 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { AcctMSTContext } from "../../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
 import { guardianjoint_tab_metadata } from "../../tabMetadata/guardianlJointMetadata";
@@ -17,6 +21,7 @@ const GuardianJointTab = () => {
     handleModifiedColsctx,
   } = useContext(AcctMSTContext);
   const { authState } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
@@ -25,7 +30,7 @@ const GuardianJointTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -172,7 +177,11 @@ const GuardianJointTab = () => {
         ref={formRef}
         metaData={guardianjoint_tab_metadata as MetaDataType}
         onSubmitHandler={onFormSubmitHandler}
-        formState={{ PARAM320: AcctMSTState?.param320 }}
+        formState={{
+          PARAM320: AcctMSTState?.param320,
+          ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+          MessageBox: MessageBox,
+        }}
         initialValues={initialVal}
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}

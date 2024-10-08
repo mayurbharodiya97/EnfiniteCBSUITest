@@ -350,9 +350,7 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [
-      AttestationDTLFormRef.current.handleSubmitError(e, "save", false),
-    ];
+    const refs = [AttestationDTLFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

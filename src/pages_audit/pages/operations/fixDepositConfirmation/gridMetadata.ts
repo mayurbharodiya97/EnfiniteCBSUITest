@@ -153,7 +153,6 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-      isAutoSequence: true,
     },
     {
       accessor: "BRANCH_CD",

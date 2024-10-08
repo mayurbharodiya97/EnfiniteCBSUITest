@@ -1,8 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
-  CircularProgress,
   Container,
   Dialog,
   Grid,
@@ -10,43 +8,35 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import {
-  GridWrapper,
-  MetaDataType,
-  FormWrapper,
-  GridMetaDataType,
-  Alert,
-  SubmitFnType,
-  ActionTypes,
-} from "@acuteinfo/common-base";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ChequeBookEntryMetaData } from "./chequebookEntryMetadata";
-import { ChequebookDtlGridMetaData } from "./chequebookDetailMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { ChequebookDtlGridMetaData } from "./chequebookDetailMetadata";
 
+import {
+  ActionTypes,
+  Alert,
+  ClearCacheProvider,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+  RemarksAPIWrapper,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { cloneDeep } from "lodash";
+import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import TodaysClearingGrid from "./Today'sClearing/todaysClearingGrid";
 import {
   getChequebookDTL,
   saveChequebookData,
   validateDeleteData,
-  validateInsert,
 } from "./api";
-import { enqueueSnackbar } from "notistack";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { ChequeDtlGrid } from "./chequeDetail/chequeDetail";
-import { MultipleChequebook } from "./multipleChequebook/multipleChequebook";
-import { IssuedChequebook } from "./issuedChequebook/issuedChequebook";
-import {
-  usePopupContext,
-  RemarksAPIWrapper,
-  ClearCacheProvider,
-  queryClient,
-} from "@acuteinfo/common-base";
-import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
-import { cloneDeep } from "lodash";
-import TodaysClearingGrid from "./Today'sClearing/todaysClearingGrid";
 import ChequeReturnHistoryGrid from "./chequeReturnHistory/chequeReturnHistory";
+import { EntryForm } from "./entryForm/entryForm";
 
 const ChequebookTabCustom = ({ screenFlag, reqData }) => {
   const chequeActions: ActionTypes[] = [
@@ -147,129 +137,6 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
   }
   // }, [screenFlag]);
 
-  // API calling function for validate data before Insert
-  const validateInsertData: any = useMutation(
-    "validateInsert",
-    validateInsert,
-    {
-      onSuccess: (data) => {
-        async function validData() {
-          let insertReq = reqDataRef.current?.insertReq;
-          let apiReq = {
-            _isNewRow: true,
-            _isDeleteRow: false,
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: insertReq?.BRANCH_CD,
-            ACCT_TYPE: insertReq?.ACCT_TYPE,
-            ACCT_CD: insertReq?.ACCT_CD,
-            CHEQUE_FROM: insertReq?.CHEQUE_FROM,
-            CHEQUE_TOTAL: insertReq?.CHEQUE_TOTAL,
-            CHARACTERISTICS: insertReq?.CHARACTERISTICS,
-            PAYABLE_AT_PAR: insertReq?.PAYABLE_AT_PAR,
-            REQUISITION_DT: insertReq?.REQUISITION_DT,
-            REMARKS: insertReq?.REMARKS,
-            SR_CD: insertReq?.SR_CD,
-            NO_OF_CHQBK: insertReq?.NO_OF_CHQBK,
-            AUTO_CHQBK_FLAG: insertReq?.AUTO_CHQBK_FLAG,
-            SERVICE_TAX: insertReq?.SERVICE_TAX,
-            AMOUNT: insertReq?.AMOUNT,
-            ENTERED_BRANCH_CD: insertReq?.ENTERED_BRANCH_CD,
-            REQUEST_CD: "",
-          };
-          // After validating data then inside the response multiple message with multiple statuses, so merge all the same status messages and conditionally display status-wise.
-          if (Array.isArray(data) && data?.length > 0) {
-            const btnName = async (buttonNames, msg, msgTitle, icon) => {
-              return await MessageBox({
-                messageTitle: msgTitle,
-                message: msg,
-                buttonNames: buttonNames,
-                loadingBtnName: ["Yes"],
-                icon: icon,
-              });
-            };
-            let messages = { "999": [], "99": [], "9": [], "0": [] };
-            let status = { "999": false, "99": false, "9": false, "0": false };
-
-            data.forEach((item) => {
-              if (messages[item.O_STATUS] !== undefined) {
-                messages[item.O_STATUS].push(`⁕ ${item?.O_MESSAGE}`);
-                status[item.O_STATUS] = true;
-              }
-            });
-            let concatenatedMessages = {};
-            for (let key in messages) {
-              concatenatedMessages[key] = messages[key].join("\n");
-            }
-            if (status["999"]) {
-              btnName(
-                ["Ok"],
-                concatenatedMessages["999"],
-                "ValidationFailed",
-                "ERROR"
-              );
-            } else if (status["99"]) {
-              let buttonName = await btnName(
-                ["Yes", "No"],
-                concatenatedMessages["99"],
-                "DoYouContinueWithRecord",
-                "INFO"
-              );
-
-              if (buttonName === "Yes" && status["9"]) {
-                btnName(
-                  ["Ok"],
-                  concatenatedMessages["9"],
-                  "ValidationAlert",
-                  "INFO"
-                );
-              } else if (
-                buttonName === "Yes" &&
-                data?.[0]?.RESTRICT_WINDOW === "N"
-              ) {
-                crudChequeData.mutate(apiReq);
-              } else if (
-                buttonName === "Yes" &&
-                data?.[0]?.RESTRICT_WINDOW === "Y"
-              ) {
-                navigate("issuedChequebook/", {
-                  state: {
-                    ...apiReq,
-                    CHEQUE_TO: insertReq?.CHEQUE_TO,
-                    COMP_CD: authState?.companyID,
-                  },
-                });
-                CloseMessageBox();
-              } else if (buttonName === "Yes") {
-                crudChequeData.mutate(apiReq);
-              }
-            } else if (status["9"]) {
-              btnName(
-                ["Ok"],
-                concatenatedMessages["9"],
-                "ValidationAlert",
-                "INFO"
-              );
-            } else if (status["0"]) {
-              let buttonName = await btnName(
-                ["Yes", "No"],
-                "AreYouSureToProceed",
-                "ValidationSuccessfull",
-                "INFO"
-              );
-              if (buttonName === "Yes") {
-                crudChequeData.mutate(apiReq);
-              }
-            }
-          }
-        }
-        validData();
-      },
-      onError() {
-        setIsData((old) => ({ ...old, closeAlert: true }));
-      },
-    }
-  );
-
   // API calling function for Insert , Delete
   const crudChequeData: any = useMutation(
     "saveChequebookData",
@@ -327,7 +194,6 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
       queryClient.removeQueries(["getTodayClearing"]);
       queryClient.removeQueries(["getChequebookDTL"]);
       queryClient.removeQueries(["saveChequebookData"]);
-      queryClient.removeQueries(["validateDeleteData"]);
     };
   }, []);
 
@@ -372,43 +238,6 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    // @ts-ignore
-    endSubmit(true);
-    let reqPara = {
-      ...data,
-      COMP_CD: authState?.companyID,
-      AUTO_CHQBK_FLAG: data?.PER_CHQ_ALLOW,
-      NO_OF_CHQBK: data?.NO_OF_CHQBK ?? "1",
-      CHEQUE_TOTAL: data?.CHEQUE_TOTAL ?? data?.CHEQUE_TOTALS,
-      CHARACTERISTICS: data?.CHARACTERISTICS ?? "B",
-      PAYABLE_AT_PAR: data?.PAYABLE_AT_PAR ?? "Y",
-      SR_CD: data?.AUTO_CHQBK_FLAG === "N" ? "0" : data?.SR_CD,
-    };
-    reqDataRef.current.insertReq = reqPara;
-
-    if (Number(reqPara.NO_OF_CHQBK) > 1 && reqPara?.CHEQUE_TO) {
-      navigate("multiChequebook/", {
-        state: reqPara,
-      });
-    } else {
-      validateInsertData.mutate({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: reqPara?.BRANCH_CD,
-        ACCT_TYPE: reqPara?.ACCT_TYPE,
-        ACCT_CD: reqPara?.ACCT_CD,
-        AMOUNT: reqPara?.AMOUNT,
-        SERVICE_TAX: reqPara?.SERVICE_TAX,
-        CHEQUE_FROM: reqPara?.CHEQUE_FROM,
-        CHEQUE_TO: reqPara?.CHEQUE_TO,
-        AUTO_CHQBK_FLAG: reqPara?.AUTO_CHQBK_FLAG,
-        SR_CD: reqPara?.SR_CD,
-        STATUS: reqPara?.STATUS,
-        SCREEN_REF: "TRN/045",
-      });
-    }
-  };
 
   return (
     <>
@@ -498,11 +327,10 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
               }}
             >
               {/* All API calls handle error */}
-              {validateDelete?.isLoading || validateInsertData?.isLoading ? (
+              {validateDelete?.isLoading ? (
                 <LinearProgress color="inherit" />
               ) : (crudChequeData?.isError && isData.closeAlert) ||
                 (validateDelete?.isError && isData.closeAlert) ||
-                (validateInsertData?.isError && isData.closeAlert) ||
                 (getChequeDetail?.isError && isData.closeAlert) ? (
                 <AppBar position="relative" color="primary">
                   <Alert
@@ -511,14 +339,12 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
                       crudChequeData?.error?.error_msg ??
                       validateDelete?.error?.error_msg ??
                       getChequeDetail?.error?.error_msg ??
-                      validateInsertData?.error?.error_msg ??
                       "Unknow Error"
                     }
                     errorDetail={
                       crudChequeData?.error?.error_detail ??
                       validateDelete?.error?.error_detail ??
                       getChequeDetail?.error?.error_detail ??
-                      validateInsertData?.error?.error_detail ??
                       ""
                     }
                     color="error"
@@ -532,60 +358,13 @@ const ChequebookTabCustom = ({ screenFlag, reqData }) => {
                   display: isData.value === "tab1" ? "inherit" : "none",
                 }}
               >
-                <FormWrapper
-                  key={"chequebooksEntry"}
-                  metaData={ChequeBookEntryMetaData as MetaDataType}
-                  initialValues={{}}
-                  onSubmitHandler={onSubmitHandler}
-                  ref={myMasterRef}
-                  formState={{ MessageBox: MessageBox }}
-                  setDataOnFieldChange={(action, payload) => {
-                    if (action === "DTL_TAB") {
-                      setIsData((old) => ({
-                        ...old,
-                        isVisible: payload.DTL_TAB,
-                      }));
-                    }
-                    if (action === "NO_OF_CHQBK") {
-                      myMasterRef?.current?.handleSubmit(
-                        { preventDefault: () => {} },
-                        "Save"
-                      );
-                    }
-                  }}
-                >
-                  {({ isSubmitting, handleSubmit }) => (
-                    <>
-                      <Button
-                        onClick={(event) => {
-                          handleSubmit(event, "Save");
-                        }}
-                        disabled={isSubmitting}
-                        endIcon={
-                          isSubmitting ? <CircularProgress size={20} /> : null
-                        }
-                        color={"primary"}
-                      >
-                        {t("Save")}
-                      </Button>
-                    </>
-                  )}
-                </FormWrapper>
-                <Routes>
-                  <Route
-                    path="multiChequebook/*"
-                    element={
-                      <MultipleChequebook
-                        navigate={navigate}
-                        validateInsertData={validateInsertData}
-                      />
-                    }
-                  />
-                  <Route
-                    path="issuedChequebook/*"
-                    element={<IssuedChequebook navigate={navigate} />}
-                  />
-                </Routes>
+                <EntryForm
+                  reqDataRef={reqDataRef}
+                  myMasterRef={myMasterRef}
+                  setIsData={setIsData}
+                  crudChequeData={crudChequeData}
+                  navigate={navigate}
+                />
               </div>
               <div
                 style={{
