@@ -33,7 +33,7 @@ const MainTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -168,7 +168,7 @@ const MainTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {

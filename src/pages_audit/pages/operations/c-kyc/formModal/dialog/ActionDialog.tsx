@@ -47,7 +47,7 @@ export const ActionDialog = ({
   });
 
   const onAction = (e) => {
-    confirmFormRef.current.handleSubmitError(e, "save");
+    confirmFormRef.current.handleSubmit(e, "save");
   };
 
   const onSubmitFormHandler = (
