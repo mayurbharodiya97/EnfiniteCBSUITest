@@ -24,7 +24,7 @@ const SavingsDepositTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -90,10 +90,10 @@ const SavingsDepositTab = () => {
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
         IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
-        COMP_CD: "",
-        BRANCH_CD: "",
-        REQ_FLAG: "",
-        REQ_CD: "",
+        // COMP_CD: "",
+        // BRANCH_CD: "",
+        // REQ_FLAG: "",
+        // REQ_CD: "",
         // SR_CD: "",
       };
       newData["MAIN_DETAIL"] = {
@@ -117,7 +117,7 @@ const SavingsDepositTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -153,7 +153,7 @@ const SavingsDepositTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-tab-saving-deposit-form" + initialVal}
+        key={"acct-mst-saving-deposit-tab-form" + initialVal}
         metaData={savingsDeposit_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

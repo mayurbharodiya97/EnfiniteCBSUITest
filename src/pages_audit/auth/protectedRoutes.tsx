@@ -28,6 +28,7 @@ export const ProtectedRoutes = ({ children }) => {
   }, []);
   // console.log("isTimeoutData=>", isTimeoutData);
   const onIdle = () => {
+    console.log("logout-due-to onIdle call");
     alert("logout");
     logout();
   };

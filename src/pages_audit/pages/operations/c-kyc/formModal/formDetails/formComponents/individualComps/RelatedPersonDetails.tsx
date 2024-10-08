@@ -213,7 +213,7 @@ const RelatedPersonDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [RelPersonFormRef.current.handleSubmitError(e, "save", false)];
+    const refs = [RelPersonFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
