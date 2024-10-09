@@ -35,7 +35,7 @@ export const getRetrievalClearingData = async (Apireq) => {
     return data.map((item) => {
       return {
         ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+        CONFIRMED_FLAG: item.CONFIRMED === "Y" ? "Confirmed" : "Pending",
       };
     });
   } else {
@@ -60,7 +60,7 @@ export const getOutwardConfirmViewDetailData = async ({
     return data.map((item) => {
       return {
         ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirmed" : "Pending",
       };
     });
   } else {

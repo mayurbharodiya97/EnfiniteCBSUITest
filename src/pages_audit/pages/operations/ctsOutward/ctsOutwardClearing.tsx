@@ -684,7 +684,7 @@ const CtsOutwardClearingForm: FC<{
                   ? {
                       ...chequeDetailData,
                       TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
+                      RANGE_DT: data?.[0]?.RANGE_FROM_DT ?? "",
                     }
                   : {
                       chequeDetails:

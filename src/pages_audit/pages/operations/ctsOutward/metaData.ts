@@ -684,8 +684,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "TRAN_DT",
-      label: "",
-      placeholder: "",
       format: "dd/MM/yyyy",
 
       GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
@@ -695,8 +693,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "RANGE_DT",
-      label: "",
-      placeholder: "",
       format: "dd/MM/yyyy",
 
       GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },

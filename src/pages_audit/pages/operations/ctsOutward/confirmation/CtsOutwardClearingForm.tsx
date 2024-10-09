@@ -205,7 +205,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     };
     document.addEventListener("keydown", handleKeyDown);
   }, []);
-
   return (
     <Fragment>
       <>
@@ -257,7 +256,14 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     } else {
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
-                        message: t("ProceedGen"),
+                        message: t(
+                          "DoYouWantToAllowTheTransaction" +
+                            " - " +
+                            "Slip No." +
+                            data?.[0]?.SLIP_CD +
+                            " " +
+                            "?"
+                        ),
                         buttonNames: ["No", "Yes"],
                         loadingBtnName: ["Yes"],
                       });
@@ -494,22 +500,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                               : zoneTranType === "R"
                               ? "INWARD RETURN CONFIRMATION(TRN/332)"
                               : "OUTWARD RETURN CONFIRMATION(TRN/346)",
-                          DETAILS_DATA: {
-                            isNewRow: [],
-                            isDeleteRow: [
-                              {
-                                TRAN_CD: rowsData?.TRAN_CD,
-                              },
-                            ],
-                            isUpdatedRow: [],
-                          },
-                          _isDeleteRow: true,
-                        });
-
-                        deleteMutation.mutate({
-                          DAILY_CLEARING: {
-                            TRAN_CD: rowsData?.TRAN_CD,
-                          },
                           DETAILS_DATA: {
                             isNewRow: [],
                             isDeleteRow: [
