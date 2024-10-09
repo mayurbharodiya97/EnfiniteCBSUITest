@@ -109,7 +109,9 @@ export const Confirmations = ({ screenFlag }) => {
       rowDoubleClick: false,
       alwaysAvailable: true,
     });
-  } else if (screenFlag === "limitCFM" || "limitForTrn") {
+  } else if (screenFlag === "limitCFM") {
+    gridMetaData = limitConfirmGridMetaData;
+  } else if (screenFlag === "limitForTrn") {
     gridMetaData = limitConfirmGridMetaData;
   } else if (screenFlag === "stockCFM") {
     gridMetaData = stockConfirmGridMetaData;
