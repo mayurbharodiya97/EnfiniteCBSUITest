@@ -35,7 +35,7 @@ const FdInterestPaymentForm = ({
   const updateAndCheck = (newData, oldData) => {
     // Update oldData with newData
     for (const key in newData) {
-      if (newData.hasOwnProperty(key) && key !== "FD_NO") {
+      if (newData?.hasOwnProperty(key) && key !== "FD_NO") {
         oldData[key] = newData[key];
       }
     }
@@ -43,10 +43,10 @@ const FdInterestPaymentForm = ({
     updateGrid(oldData);
   };
   const isLastRow = () => {
-    const currentIndex = gridData.findIndex(
+    const currentIndex = gridData?.findIndex(
       (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
     );
-    return currentIndex === gridData.length - 1;
+    return currentIndex === gridData?.length - 1;
   };
 
   const onSubmitHandler: SubmitFnType = async (
@@ -58,13 +58,13 @@ const FdInterestPaymentForm = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-    const index = gridData.findIndex(
+    const index = gridData?.findIndex(
       (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
     );
     let currentOldData = { ...rows?.[0]?.data };
     const currentfdNo = currentOldData?.FD_NO;
     let flagCheckData =
-      fdDetails.find((item) => item.FD_NO === currentfdNo) || {};
+      fdDetails?.find((item) => item?.FD_NO === currentfdNo) || {};
 
     let currentNewData = {
       ...data,
@@ -106,7 +106,7 @@ const FdInterestPaymentForm = ({
       let nextRowData = gridData[index + 1];
       carryForwardData.FD_NO = nextRowData?.FD_NO;
       let carryForwardflagCheckData =
-        fdDetails.find((item) => item.FD_NO === nextRowData?.FD_NO) || {};
+        fdDetails?.find((item) => item?.FD_NO === nextRowData?.FD_NO) || {};
 
       carryForwardData = {
         ...carryForwardData,
@@ -134,15 +134,14 @@ const FdInterestPaymentForm = ({
       let btnName = await MessageBox({
         messageTitle: "Confirmation",
         message: `${t(`CarryForwardmsg`, {
-          CURRENT_FD_NO: currentOldData.FD_NO,
-          CARRYFORWARD_FD_NO: carryForwardData.FD_NO,
+          CURRENT_FD_NO: currentOldData?.FD_NO,
+          CARRYFORWARD_FD_NO: carryForwardData?.FD_NO,
         })}`,
         buttonNames: ["Yes", "No"],
       });
       if (btnName === "Yes") {
         updateAndCheck(carryForwardData, nextRowData);
-        updateRow(iscarryForwardErrorFuncRef.current?.data);
-        closeDialog();
+        updateRow(iscarryForwardErrorFuncRef?.current?.data);
       }
     }
   };
@@ -179,7 +178,7 @@ const FdInterestPaymentForm = ({
           handleButtonDisable: handleButtonDisable,
           docCD: "FDINSTRCRTYPE",
           fdDetails:
-            fdDetails.find((item) => item.FD_NO === rows?.[0]?.data?.FD_NO) ||
+            fdDetails.find((item) => item?.FD_NO === rows?.[0]?.data?.FD_NO) ||
             {},
           rowsData: rows,
           SCREEN_REF: "TRN/584",
