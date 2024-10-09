@@ -231,6 +231,7 @@ export const ViewStatement = ({
             initialValues={
               {
                 ...acctInqData?.data?.[0],
+                BRANCH_CD: authState?.user?.branchCode,
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}

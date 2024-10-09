@@ -74,21 +74,12 @@ export const MortgagejointFormMetaData = {
     },
     {
       render: {
-        componentType: "typography",
+        componentType: "textField",
       },
-      name: "MORTGAGE",
-      label: "MORTGAGE",
-      TypographyProps: {
-        variant: "subtitle2",
-        style: {
-          marginTop: "33px",
-          fontSize: "14px",
-          width: "100%",
-          textAlign: "center",
-        },
-      },
+      name: "JOINT_DISC",
+      label: "Type",
       fullWidth: true,
-      GridProps: { xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 },
+      GridProps: { xs: 6, sm: 4, md: 3, lg: 1.5, xl: 1.5 },
     },
     {
       render: {
@@ -158,7 +149,7 @@ export const MortgagejointFormMetaData = {
       name: "CRDT_WORTHINESS_ignoreField",
       label: "Credit Worthiness",
       type: "text",
-      GridProps: { lg: 1, xl: 1 },
+      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
       render: {

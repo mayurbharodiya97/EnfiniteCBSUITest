@@ -1135,6 +1135,16 @@ export const DetailInsuranceGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 190,
     },
+    {
+      accessor: "INS_DESCRIPTION",
+      columnName: "Description",
+      sequence: 11,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 150,
+      maxWidth: 190,
+    },
   ],
 };
 

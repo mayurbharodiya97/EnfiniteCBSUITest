@@ -238,7 +238,7 @@ export const TellerScreenMetadata: any = {
               COMP_CD: authState?.companyID,
               ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
               ACCT_CD: paddedAcctcode,
-              SCREEN_REF: "ETRN/039",
+              SCREEN_REF: "TRN/039",
             };
 
             if (
@@ -260,19 +260,19 @@ export const TellerScreenMetadata: any = {
                       messageTitle: "ValidationFailed",
                       message: postData?.MSG[i]?.O_MESSAGE,
                     });
-                    if (btnNm === "Ok") {
-                      return {
-                        ACCT_CD: { value: "", ignoreUpdate: true },
-                        FLAG: { value: "", ignoreUpdate: true },
-                        CHEQUE_NO: { value: "", ignoreUpdate: true },
-                        CHEQUE_DT: {
-                          value: authState?.workingDate ?? "",
-                          ignoreUpdate: true,
-                        },
-                        RECEIPT: { value: "", ignoreUpdate: true },
-                        PAYMENT: { value: "", ignoreUpdate: true },
-                      };
-                    }
+                    // if (btnNm === "Ok") {
+                    //   return {
+                    //     ACCT_CD: { value: "", ignoreUpdate: true },
+                    //     FLAG: { value: "", ignoreUpdate: true },
+                    //     CHEQUE_NO: { value: "", ignoreUpdate: true },
+                    //     CHEQUE_DT: {
+                    //       value: authState?.workingDate ?? "",
+                    //       ignoreUpdate: true,
+                    //     },
+                    //     RECEIPT: { value: "", ignoreUpdate: true },
+                    //     PAYMENT: { value: "", ignoreUpdate: true },
+                    //   };
+                    // }
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
                     const { btnNm, msgObj } = await getBtnName({
                       messageTitle: "confirmation",
