@@ -20,13 +20,51 @@ const actions: ActionTypes[] = [
     multiple: false,
     rowDoubleClick: true,
   },
+  {
+    actionName: "viewAll",
+    actionLabel: "View All",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+    shouldExclude: (rows) => {
+      return false;
+    },
+  },
 ];
 
 export const FDConfirmationGrid = () => {
   const isDataChangedRef = useRef(false);
   const { authState } = useContext(AuthContext);
+  const [actionMenu, setActionMenu] = useState(actions);
+  const [displayAction, setDisplayAction] = useState("P");
+  const [gridData, setGridData] = useState([]);
 
   const navigate = useNavigate();
+
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
+    ["getFdConfirmationData", authState?.user?.branchCode],
+    () =>
+      API.getFdConfirmationData({
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        COMP_CD: authState?.companyID ?? "",
+      }),
+    {
+      onSuccess: async (data) => {
+        if (Boolean(displayAction) && displayAction === "V") {
+          setGridData(data);
+        } else if (Boolean(displayAction) && displayAction === "P") {
+          const filterData = data.filter((item) => item.CONFIRMED !== "Y");
+          setGridData(filterData);
+        } else {
+          setGridData(data);
+        }
+      },
+    }
+  );
+
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "view-details") {
@@ -35,21 +73,30 @@ export const FDConfirmationGrid = () => {
             state: data?.rows,
           });
         }
+      } else if (data?.name === "viewAll") {
+        setActionMenu((values) =>
+          values.map((item) =>
+            item.actionName === "viewAll"
+              ? { ...item, actionName: "pending", actionLabel: "Pending" }
+              : item
+          )
+        );
+        setDisplayAction("V");
+        refetch();
+      } else if (data?.name === "pending") {
+        refetch();
+        setActionMenu((values) =>
+          values.map((item) =>
+            item.actionName === "pending"
+              ? { ...item, actionName: "viewAll", actionLabel: "view All" }
+              : item
+          )
+        );
+        setDisplayAction("P");
       }
     },
     [navigate]
   );
-
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(["getFdConfirmationData", authState?.user?.branchCode], () =>
-    API.getFdConfirmationData({
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      COMP_CD: authState?.companyID ?? "",
-    })
-  );
-
   useEffect(() => {
     return () => {
       queryClient.removeQueries([
@@ -78,12 +125,12 @@ export const FDConfirmationGrid = () => {
         />
       )}
       <GridWrapper
-        key={`fixDepositConfirmationGrid`}
+        key={`fixDepositConfirmationGrid` + displayAction + gridData}
         finalMetaData={FDConfirmationGridMetaData as GridMetaDataType}
-        data={data ?? []}
-        setData={() => {}}
+        data={gridData ?? []}
+        setData={setGridData}
         loading={isLoading || isFetching}
-        actions={actions}
+        actions={actionMenu}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
       />

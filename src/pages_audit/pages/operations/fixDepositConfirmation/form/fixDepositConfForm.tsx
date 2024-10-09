@@ -105,19 +105,25 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
     ["getFdConfPaymentData", authState?.user?.branchCode],
     () =>
       getFdConfPaymentData({
-        BRANCH_CD: authState?.user?.branchCode ?? "",
+        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
         COMP_CD: authState?.companyID ?? "",
         ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
         ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
         FD_NO: rows?.[0]?.data?.FD_NO ?? "",
+        A_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
       }),
     {
-      enabled: rows?.[0]?.data?.TRN_FLAG === "P",
+      enabled:
+        rows?.[0]?.data?.TRN_FLAG === "P" || rows?.[0]?.data?.TRN_FLAG === "I",
       onSuccess: (payData) => {
         payData.forEach((item) => {
-          item.PAY_DATA = JSON.parse(item.PAY_DATA);
+          if (typeof item.PAY_DATA === "string" && item.PAY_DATA.length > 0) {
+            item.PAY_DATA = JSON.parse(item.PAY_DATA);
+          } else {
+            item.PAY_DATA = item.PAY_DATA;
+          }
         });
-        return paymentData;
+        return payData;
       },
     }
   );
@@ -137,7 +143,9 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
       }),
     {
       enabled:
-        rows?.[0]?.data?.TRN_FLAG === "P" || rows?.[0]?.data?.TRN_FLAG === "F",
+        rows?.[0]?.data?.TRN_FLAG === "P" ||
+        rows?.[0]?.data?.TRN_FLAG === "F" ||
+        rows?.[0]?.data?.TRN_FLAG === "I",
     }
   );
 
@@ -208,26 +216,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
   }, []);
 
   const validateDelete = useMutation(ValidateFDDelete, {
-    onError: (error) => {
+    onError: (error: any) => {
       // remain to add
     },
     onSuccess: (data) => {},
   });
   const deleteMutation = useMutation(fdConfirmationDeleteFormData, {
-    onError: (error) => {
+    onError: (error: any) => {
       // remain to add
     },
     onSuccess: (data) => {},
   });
   const validateConfirm = useMutation(ValidateFDConfirm, {
-    onError: (error) => {
+    onError: (error: any) => {
       // remain to add
     },
     onSuccess: (data) => {},
   });
 
   const confirmMutation = useMutation(fdConfirmFormData, {
-    onError: (error) => {
+    onError: (error: any) => {
       // remain to add
     },
     onSuccess: (data) => {},
@@ -262,13 +270,13 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
           } else if (data[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
               messageTitle: "Alert",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
             });
             if (btnName === "No") {
@@ -278,6 +286,9 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
             setIsDelete(true);
           }
         }
+      },
+      onError: async (data, variables) => {
+        CloseMessageBox();
       },
     });
   };
@@ -302,14 +313,15 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
             } else if (data[i]?.O_STATUS === "9") {
               const btnName = await MessageBox({
                 messageTitle: "Alert",
-                message: data?.[0]?.O_MESSAGE,
+                message: data[i]?.O_MESSAGE,
                 icon: "WARNING",
               });
             } else if (data[i]?.O_STATUS === "99") {
               const btnName = await MessageBox({
                 messageTitle: "Confirmation",
-                message: data?.[0]?.O_MESSAGE,
+                message: data[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
+                loadingBtnName: ["Yes"],
               });
               if (btnName === "No") {
                 break;
@@ -320,17 +332,63 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 A_ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
                 A_ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
                 A_FD_NO: rows?.[0]?.data?.FD_NO ?? "",
-                A_TRN_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
+                TRN_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
                 REMARKS: rows?.[0]?.data?.REMARKS ?? "",
-                A_SCREEN_REF: "RPT/402",
+                SCREEN_REF: "RPT/402",
               };
-              confirmMutation.mutate(confirmData);
+              confirmMutation.mutate(confirmData, {
+                onSuccess: async (confirmdata) => {
+                  for (let i = 0; i < confirmdata?.length; i++) {
+                    if (confirmdata[i]?.O_STATUS === "999") {
+                      const btnName = await MessageBox({
+                        messageTitle: "ValidationFailed",
+                        message: confirmdata[i]?.O_MESSAGE,
+                        buttonNames: ["Ok"],
+                        icon: "ERROR",
+                      });
+                    } else if (confirmdata[i]?.O_STATUS === "9") {
+                      const btnName = await MessageBox({
+                        messageTitle: "Alert",
+                        message: confirmdata[i]?.O_MESSAGE,
+                        icon: "WARNING",
+                      });
+                    } else if (confirmdata[i]?.O_STATUS === "99") {
+                      const btnName = await MessageBox({
+                        messageTitle: "Confirmation",
+                        message: confirmdata[i]?.O_MESSAGE,
+                        buttonNames: ["Yes", "No"],
+                      });
+                      if (btnName === "No") {
+                        break;
+                      }
+                    } else if (confirmdata[i]?.O_STATUS === "0") {
+                      isDataChangedRef.current = true;
+                      CloseMessageBox();
+                      closeDialog();
+                    }
+                  }
+                },
+                onError: async (data, variables) => {
+                  CloseMessageBox();
+                },
+              });
             }
           }
+        },
+        onError: async (data, variables) => {
+          CloseMessageBox();
         },
       }
     );
   };
+
+  const disableButton =
+    confirmMutation?.isLoading ||
+    validateDelete?.isLoading ||
+    validateConfirm?.isLoading ||
+    deleteMutation?.isLoading;
+
+  console.log("vdata?.TOT_AMT", data?.[0]?.TOT_AMT);
 
   return (
     <>
@@ -340,13 +398,31 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
         </div>
       ) : (
         <>
-          {paymentIsError ? (
+          {paymentIsError ||
+          validateDelete?.isError ||
+          deleteMutation?.isError ||
+          confirmMutation?.isError ||
+          validateConfirm.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={paymentError?.error_msg ?? "Unknow Error"}
-                  errorDetail={paymentError?.error_detail ?? ""}
+                  errorMsg={
+                    (paymentError?.error_msg ||
+                      validateDelete.error?.error_msg ||
+                      deleteMutation.error?.error_msg ||
+                      confirmMutation.error?.error_msg ||
+                      validateConfirm.error?.error_msg) ??
+                    "Unknow Error"
+                  }
+                  errorDetail={
+                    (paymentError?.error_detail ||
+                      validateDelete.error?.error_detail ||
+                      deleteMutation.error?.error_detail ||
+                      confirmMutation.error?.error_detail ||
+                      validateConfirm.error?.error_detail) ??
+                    ""
+                  }
                   color="error"
                 />
               </AppBar>
@@ -367,21 +443,27 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
               <GradientButton
                 onClick={() => setOpenViewMaster(true)}
                 color={"primary"}
-                // style={{
-                //   paddingRight
-                // }}
+                disabled={isLoading || isFetching || disableButton}
               >
                 {t("View Master")}
               </GradientButton>
 
               {rows?.[0]?.data?.TRN_FLAG === "P" ||
-              rows?.[0]?.data?.TRN_FLAG === "F" ? (
+              rows?.[0]?.data?.TRN_FLAG === "F" ||
+              rows?.[0]?.data?.TRN_FLAG === "I" ? (
                 <GradientButton
                   onClick={() => {
                     setOpenConfHistoryForm(true);
                   }}
                   color={"primary"}
-                  disabled={isLoading}
+                  disabled={
+                    isLoading ||
+                    isFetching ||
+                    confirmMutation?.isLoading ||
+                    validateDelete?.isLoading ||
+                    validateConfirm?.isLoading ||
+                    deleteMutation?.isLoading
+                  }
                 >
                   {t("ConfHistory")}
                 </GradientButton>
@@ -389,7 +471,16 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
 
               <GradientButton
                 color={"primary"}
-                disabled={isLoading || isFetching || validateConfirm?.isLoading}
+                disabled={
+                  isLoading ||
+                  isFetching ||
+                  confirmMutation?.isLoading ||
+                  validateDelete?.isLoading ||
+                  validateConfirm?.isLoading ||
+                  deleteMutation?.isLoading ||
+                  confirmMutation?.isError ||
+                  validateConfirm?.isError
+                }
                 endIcon={
                   validateConfirm?.isLoading ? (
                     <CircularProgress size={20} />
@@ -404,7 +495,14 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 <GradientButton
                   onClick={handleDelete}
                   disabled={
-                    validateDelete?.isLoading || isLoading || isFetching
+                    isLoading ||
+                    isFetching ||
+                    confirmMutation?.isLoading ||
+                    validateDelete?.isLoading ||
+                    validateConfirm?.isLoading ||
+                    deleteMutation?.isLoading ||
+                    deleteMutation?.isError ||
+                    validateDelete?.isError
                   }
                   endIcon={
                     validateDelete?.isLoading ? (
@@ -417,7 +515,13 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 </GradientButton>
               ) : null}
 
-              <GradientButton onClick={closeDialog} color={"primary"}>
+              <GradientButton
+                onClick={closeDialog}
+                color={"primary"}
+                disabled={
+                  validateDelete?.isLoading || validateConfirm?.isLoading
+                }
+              >
                 {t("Close")}
               </GradientButton>
             </Toolbar>
@@ -428,7 +532,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
             rows?.[0]?.data?.TRN_FLAG === "U" ? (
               <Paper
                 sx={{
-                  height: "42vh",
+                  height: "40vh",
                   overflow: "auto",
                   margin: "0 10px",
                   border: "1px solid var(--theme-color4)",
@@ -456,7 +560,8 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   hideHeader={true}
                 ></FormWrapper>
               </Paper>
-            ) : rows?.[0]?.data?.TRN_FLAG === "P" ? (
+            ) : rows?.[0]?.data?.TRN_FLAG === "P" ||
+              rows?.[0]?.data?.TRN_FLAG === "I" ? (
               <Paper
                 sx={{
                   height: "50vh",
@@ -478,7 +583,11 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     background: "white",
                     minWidth: "1200px",
                   }}
-                  formState={{ flag: "FDCNF" }}
+                  formState={{
+                    flag: "FDCNF",
+                    screenFlag:
+                      rows?.[0]?.data?.TRN_FLAG === "I" ? "intPayment" : "",
+                  }}
                   hideHeader={true}
                 ></FormWrapper>
               </Paper>
@@ -486,7 +595,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
           </>
           <Paper
             sx={{
-              height: "30vh",
+              height: "35vh",
               overflow: "auto",
               padding: "5px 10px 0px 10px",
               border: "none",
@@ -494,7 +603,8 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
             }}
           >
             {rows?.[0]?.data?.TRN_FLAG === "P" ||
-            rows?.[0]?.data?.TRN_FLAG === "F" ? (
+            rows?.[0]?.data?.TRN_FLAG === "F" ||
+            rows?.[0]?.data?.TRN_FLAG === "I" ? (
               <>
                 {isError && (
                   <Alert
@@ -511,7 +621,6 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   setData={() => {}}
                   loading={isLoading || isFetching}
                   onClickActionEvent={async (index, id, data) => {
-                    console.log("data", data);
                     if (id === "SIGNATURE") {
                       setDisplayPhotoSign(true);
                       setSelectedAccount({
@@ -521,10 +630,35 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                         ACCT_CD: data?.ACCT_CD ?? "",
                         SCREEN_REF: "RPT/402",
                         ACCT_NM: data?.ACCT_NM ?? "",
+                        AMOUNT: data?.AMOUNT ?? "",
                       });
                     }
                   }}
                 />
+                <div
+                  style={{
+                    height: "35px",
+                    marginTop: "10px",
+                    fontWeight: "bold",
+                    position: "sticky",
+                    fontFamily:
+                      '"Roboto", "Helvetica", "Arial", "sans-serif" !important',
+                    overflow: "auto",
+                  }}
+                >
+                  {`\u00A0\u00A0\u00A0\u00A0 Transaction Count: \u00A0
+                      ${
+                        Boolean(data) ? data.length ?? "0" : "0"
+                      } \u00A0\u00A0\u00A0\u00A0 Total Amount
+                  :\u00A0 ${
+                    Boolean(data?.[0]?.TOT_AMT)
+                      ? Number(data?.[0]?.TOT_AMT).toFixed(2) ?? "0"
+                      : "0.00"
+                  } \u00A0\u00A0\u00A0\u00A0
+                  Denomination Status: \u00A0${
+                    data?.[0]?.CASH_DENO_STATUS ?? "0"
+                  }`}
+                </div>
               </>
             ) : rows?.[0]?.data?.TRN_FLAG === "U" ? (
               <>
@@ -635,7 +769,44 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   GD_DATE: authState?.workingDate ?? "",
                   SCREEN_REF: "RPT/402",
                 };
-                deleteMutation.mutate(DeleteData);
+                deleteMutation.mutate(DeleteData, {
+                  onSuccess: async (deleteData) => {
+                    for (let i = 0; i < deleteData?.length; i++) {
+                      if (deleteData[i]?.O_STATUS === "999") {
+                        const btnName = await MessageBox({
+                          messageTitle: "ValidationFailed",
+                          message: deleteData[i]?.O_MESSAGE,
+                          buttonNames: ["Ok"],
+                          icon: "ERROR",
+                        });
+                      } else if (deleteData[i]?.O_STATUS === "9") {
+                        const btnName = await MessageBox({
+                          messageTitle: "Alert",
+                          message: deleteData[i]?.O_MESSAGE,
+                          icon: "WARNING",
+                        });
+                      } else if (deleteData[i]?.O_STATUS === "99") {
+                        const btnName = await MessageBox({
+                          messageTitle: "Confirmation",
+                          message: deleteData[i]?.O_MESSAGE,
+                          buttonNames: ["Yes", "No"],
+                        });
+                        if (btnName === "No") {
+                          break;
+                        }
+                      } else if (deleteData[i]?.O_STATUS === "0") {
+                        setIsDelete(false);
+                        isDataChangedRef.current = true;
+                        CloseMessageBox();
+                        closeDialog();
+                      }
+                    }
+                  },
+                  onError: async (data, variables) => {
+                    setIsDelete(false);
+                    CloseMessageBox();
+                  },
+                });
               }}
               isLoading={deleteMutation?.isLoading}
               isEntertoSubmit={true}

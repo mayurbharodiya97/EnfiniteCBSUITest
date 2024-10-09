@@ -2103,10 +2103,7 @@ export const FDPaymentMetadata = {
       name: "FD_REM_TYPO",
       label: "FD Remark :",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (
-          formState?.screenFlag === "intPayment" ||
-          formState?.flag === "FDCNF"
-        ) {
+        if (formState?.screenFlag === "intPayment") {
           return true;
         } else {
           return false;
@@ -2146,10 +2143,7 @@ export const FDPaymentMetadata = {
       name: "FD_REMARK",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (
-          formState?.screenFlag === "intPayment" ||
-          formState?.flag === "FDCNF"
-        ) {
+        if (formState?.screenFlag === "intPayment") {
           return true;
         } else {
           return false;
