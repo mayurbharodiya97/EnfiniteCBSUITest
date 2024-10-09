@@ -37,12 +37,19 @@ export const retRiveGridData = async ({
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
+      const totals = responseData.reduce<Record<string, number>>((acc, obj) => {
+        const amount = parseFloat(obj.AMOUNT || "0");
+        acc[obj.TRAN_CD] = (acc[obj.TRAN_CD] || 0) + amount;
+        return acc;
+      }, {} as Record<string, number>);
+
       responseData = responseData.map((items, index) => ({
         ...items,
         INDEX: `${index}`,
         PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
         PENDING_FLAG_DISP: items.PENDING_FLAG,
         REALIZE_FLAG: items.REALIZE_FLAG === "Y" ? "Confirmed" : "Pending",
+        TOTAL_AMT: `${totals[items.TRAN_CD]}`,
       }));
     }
     return responseData;
@@ -150,6 +157,18 @@ export const ddTransactionSave = async ({ ...reqPara }) => {
 export const payslipRealizeEntrySave = async ({ ...reqPara }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOPAYSLIPREALIZEENTRY", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const DoddTransactionConfirmation = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOPAYSLIPDDTRANSACTIONENTRY", {
       ...reqPara,
     });
 

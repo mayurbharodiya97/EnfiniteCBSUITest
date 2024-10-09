@@ -109,6 +109,10 @@ export const en_language_data = {
   Revalidate: "Revalidate",
   selectTransactionMode: "Select Transaction Mode (Cash,Transfer,Clearing)",
   RevalidateConfPending: "Revalidate Conf. Pending",
+  authoeizationFailed: "You are not authorized",
+  payslipAlreadyConfirmed: "PAYSLIP_NO' is already Confirmed",
+  payslipRealizeconfirmRestrictNSG:
+    "Are you sure to confirm 'Realize Payslip/DD Operation :-",
   stopPayment: "Stop Payment",
   realseStoppedPayslip: "Release Stopped Payslip",
   cancelReturnPending: "Cancel//Return Pending",
