@@ -62,7 +62,12 @@ export const getRetrievalClearingData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETCTSCNFRETRIEV`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

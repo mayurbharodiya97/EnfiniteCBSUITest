@@ -946,7 +946,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You Want to delete this row?",
+  DoYouWantDeleteRow: "Do you want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -1464,11 +1464,11 @@ export const en_language_data = {
 
   PleaseEnterSlipAmount: "Please Enter Slip Amount",
   PleaseCheckAmount: "Please Check Amount",
-  AreYouSureToAddBank: "Are You sure To Add Bank?",
+  AreYouSureToAddBank: "Are you sure to add Bank?",
   EnterRemovalRemarksForCTSOWCLEARING:
     "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
   EnterRemovalRemarksINWARDRETURNENTRY:
-    "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
+    "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)",
   PresentmentDate: "Presentment Date",
   Zone: "Zone",
   SlipAmount: "Slip Amount",
@@ -1489,7 +1489,6 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  ChequeAmountList: "Cheque Amount List",
   CLGDate: "CLG Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",

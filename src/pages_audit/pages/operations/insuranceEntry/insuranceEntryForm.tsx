@@ -236,6 +236,7 @@ const InsuranceEntry = () => {
               MessageBox({
                 messageTitle: t("Alert"),
                 message: data[i]?.O_MESSAGE,
+                icon: "WARNING",
               });
             } else if (data[i]?.O_STATUS === "99") {
               const buttonName = await MessageBox({
@@ -251,6 +252,7 @@ const InsuranceEntry = () => {
               MessageBox({
                 messageTitle: t("ValidationFailed"),
                 message: data[i]?.O_MESSAGE,
+                icon: "ERROR",
               });
             }
           }

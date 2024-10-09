@@ -283,7 +283,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "CONFIRMED",
+      accessor: "CONFIRMED_FLAG",
       columnName: "ConfirmStatus",
       sequence: 7,
       alignment: "left",
@@ -420,11 +420,11 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
       columnName: "Date",
       sequence: 4,
       alignment: "left",
-      componentType: "date",
+      componentType: "datetimePicker",
       placeholder: "",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 180,
+      maxWidth: 200,
     },
     {
       accessor: "MACHINE_NM",
@@ -660,7 +660,7 @@ export const CTSOutwardClearingConfirmMetaData = {
       format: "dd/MM/yyyy HH:mm:ss",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },
 
     {

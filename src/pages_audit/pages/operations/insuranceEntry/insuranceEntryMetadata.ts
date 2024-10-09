@@ -129,6 +129,7 @@ export const InsuranceEntryFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -139,6 +140,7 @@ export const InsuranceEntryFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = postData;
@@ -401,6 +403,7 @@ export const InsuranceEntryFormMetaData = {
                 messageTitle: "Alert",
                 message: `NetPremiumAmountCanGreaterThanInsuranceAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {
@@ -473,6 +476,7 @@ export const InsuranceEntryFormMetaData = {
                 messageTitle: "Alert",
                 message: `GSTShouldLessThanNetPremiumAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {
@@ -1220,6 +1224,7 @@ export const insuranceAccountRetrievemetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -1230,6 +1235,7 @@ export const insuranceAccountRetrievemetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
