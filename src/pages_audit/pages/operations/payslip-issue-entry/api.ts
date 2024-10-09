@@ -215,7 +215,6 @@ export const getCalculateGstComm = async (reqParams) => {
       SCREEN_REF: "RPT/14",
       TYPE_CD: reqParams.TYPE_CD,
     });
-
   if (status === "0") {
     let responseData = data;
 
@@ -459,5 +458,22 @@ export const getVoucherList = async (reqdata) => {
     return data;
   } else {
     throw DefaultErrorObject(message);
+  }
+};
+export const getDDtransaction = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPAYSLIPDOCDTL", {});
+
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map((items, index) => ({
+        ...items,
+        INDEX: `${index}`,
+      }));
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };

@@ -1,4 +1,4 @@
-import {geTrxDdw } from "../payslip-issue-entry/api";
+import { geTrxDdw } from "../payslip-issue-entry/api";
 export const PayslipdetailsFormMetaData = {
   form: {
     name: "payslip entry",
@@ -28,7 +28,7 @@ export const PayslipdetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      }
+      },
     },
   },
   fields: [
@@ -58,7 +58,12 @@ export const PayslipdetailsFormMetaData = {
       type: "text",
       isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-      dependentFields: ["PAYSLIP_MST_DTL", "PAYSLIP_DRAFT_DTL", "TRAN_DT", "HIDDENSLIP_CD"],
+      dependentFields: [
+        "PAYSLIP_MST_DTL",
+        "PAYSLIP_DRAFT_DTL",
+        "TRAN_DT",
+        "HIDDENSLIP_CD",
+      ],
       disableCaching: true,
     },
     {
@@ -67,7 +72,7 @@ export const PayslipdetailsFormMetaData = {
       },
       name: "PENDING_FLAG",
       label: "Status",
-      color: 'error',
+      color: "error",
       placeholder: "Mode",
       type: "text",
       isReadOnly: true,
@@ -82,6 +87,7 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER8",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -113,7 +119,7 @@ export const PayslipdetailsFormMetaData = {
         let totalValue = 0;
 
         // Iterate through each row in PAYSLIP_MST_DTL
-        dependentFields.PAYSLIP_MST_DTL.forEach(row => {
+        dependentFields.PAYSLIP_MST_DTL.forEach((row) => {
           const amount = parseFloat(row?.AMOUNT?.value) || 0;
           const commission = parseFloat(row?.COMMISSION?.value) || 0;
           const serviceCharge = parseFloat(row?.SERVICE_CHARGE?.value) || 0;
@@ -129,10 +135,9 @@ export const PayslipdetailsFormMetaData = {
         });
 
         return totalValue;
-      }
+      },
     },
-
-  ]
+  ],
 };
 export const AccdetailsFormMetaData = {
   form: {
@@ -162,7 +167,7 @@ export const AccdetailsFormMetaData = {
       },
       amountField: {
         fullWidth: true,
-      }
+      },
     },
   },
   fields: [
@@ -172,7 +177,9 @@ export const AccdetailsFormMetaData = {
       },
       name: "PAYSLIP_MST_DTL",
       addRowFn: (data) => {
-        const dataArray = Array.isArray(data?.PAYSLIP_MST_DTL) ? data?.PAYSLIP_MST_DTL : [];
+        const dataArray = Array.isArray(data?.PAYSLIP_MST_DTL)
+          ? data?.PAYSLIP_MST_DTL
+          : [];
 
         if (dataArray?.length > 0) {
           for (let i = 0; i < dataArray?.length; i++) {
@@ -187,8 +194,7 @@ export const AccdetailsFormMetaData = {
           }
 
           return false;
-        }
-        else return true;
+        } else return true;
       },
       __EDIT__: {
         fixedRows: true,
@@ -220,8 +226,8 @@ export const AccdetailsFormMetaData = {
               },
               isReadOnly: true,
               GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            }
-          }
+            },
+          },
         },
         {
           render: {
@@ -261,22 +267,20 @@ export const AccdetailsFormMetaData = {
           type: "text",
           GridProps: { lg: 1, xl: 1 },
           dependentFields: ["INFAVOUR_OF"],
-        
         },
         {
-            render: {
-              componentType: "formbutton",
-            },
-            name: "SIGN",
-            label: "Sign",
-            GridProps: { lg: 1, xl: 1 },
+          render: {
+            componentType: "formbutton",
           },
+          name: "SIGN",
+          label: "Sign",
+          GridProps: { lg: 1, xl: 1 },
+        },
         {
           render: {
             componentType: "hidden",
           },
           name: "TYPE_CD",
-
         },
         {
           render: {
@@ -284,11 +288,13 @@ export const AccdetailsFormMetaData = {
           },
           name: "REMARKS",
           setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C" ? "Cash"
-              : currVal === "T" ? "Transfer"
-                : currVal === "G" ? "Clearing"
-                  : null
-
+            return currVal === "C"
+              ? "Cash"
+              : currVal === "T"
+              ? "Transfer"
+              : currVal === "G"
+              ? "Clearing"
+              : null;
           },
           label: "narration",
           placeholder: "Mode",
@@ -307,11 +313,15 @@ export const AccdetailsFormMetaData = {
             return geTrxDdw();
           },
           setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C" ? "By Cash"
-              : currVal === "T" ? "By Trf"
-                : currVal === "R" ? "By Cr. Trf"
-                  : currVal === "G" ? "By CLG"
-                    : null
+            return currVal === "C"
+              ? "By Cash"
+              : currVal === "T"
+              ? "By Trf"
+              : currVal === "R"
+              ? "By Cr. Trf"
+              : currVal === "G"
+              ? "By CLG"
+              : null;
           },
           defaultValue: "T",
           __EDIT__: { isReadOnly: true },
@@ -328,9 +338,7 @@ export const AccdetailsFormMetaData = {
             };
 
             formState.setDataOnFieldChange("BY_TRF", payload);
-
-
-          }
+          },
         },
         {
           render: {
@@ -353,7 +361,13 @@ export const AccdetailsFormMetaData = {
             },
           },
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
-          dependentFields: ["ACCT_CD", "ACCT_TYPE", "BRANCH_CD", "C_C_T", "TYPE_CD"],
+          dependentFields: [
+            "ACCT_CD",
+            "ACCT_TYPE",
+            "BRANCH_CD",
+            "C_C_T",
+            "TYPE_CD",
+          ],
           required: true,
           schemaValidation: {
             type: "string",
@@ -369,8 +383,6 @@ export const AccdetailsFormMetaData = {
             }
             return false;
           },
-        
-         
         },
         {
           render: {
@@ -408,7 +420,7 @@ export const AccdetailsFormMetaData = {
           FormatProps: {
             allowNegative: false,
           },
-          __EDIT__: { isReadOnly: true, required: false, },
+          __EDIT__: { isReadOnly: true, required: false },
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["amountRequired"] }],
@@ -423,14 +435,14 @@ export const AccdetailsFormMetaData = {
           ) => {
             const payload = {
               AMOUNT: currentField.value,
-              COMMISSION: dependentFieldValues?.["PAYSLIP_MST_DTL.COMMISSION"]?.value,
-              SERVICE_CHARGE: dependentFieldValues?.["PAYSLIP_MST_DTL.SERVICE_CHARGE"]?.value,
+              COMMISSION:
+                dependentFieldValues?.["PAYSLIP_MST_DTL.COMMISSION"]?.value,
+              SERVICE_CHARGE:
+                dependentFieldValues?.["PAYSLIP_MST_DTL.SERVICE_CHARGE"]?.value,
               C_C_T: dependentFieldValues?.["PAYSLIP_MST_DTL.C_C_T"]?.value,
-            }
+            };
             formState.setDataOnFieldChange("MST_TOTAL", payload);
-
-          }
-
+          },
         },
         {
           render: {
@@ -444,7 +456,6 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
-
         },
         {
           render: {
@@ -458,20 +469,19 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
-
         },
 
         {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD"
+          name: "SR_CD",
         },
         {
           render: {
             componentType: "hidden",
           },
-          name: "PENDING_FLAG"
+          name: "PENDING_FLAG",
         },
         {
           render: {
@@ -485,7 +495,6 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
-
         },
         {
           render: {
@@ -499,7 +508,6 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
-
         },
         {
           render: {
@@ -513,12 +521,8 @@ export const AccdetailsFormMetaData = {
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
-
         },
-
-
       ],
     },
-
-  ]
+  ],
 };
