@@ -29,3 +29,14 @@ export const retrieveFdPrintData = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getFDPrintConfigDTL = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDPRINTCONFIGDTL", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

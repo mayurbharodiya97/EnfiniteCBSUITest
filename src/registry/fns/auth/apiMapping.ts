@@ -2757,6 +2757,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOGINPAGEDTL",
     packageName: "",
   },
+  GETRECTOFDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRECTOFDDDW",
+    packageName: "",
+  },
+  GETPAYSLIPREALIZERETRIVEGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREALIZERETRIVEGRID",
+    packageName: "",
+  },
+  GETPAYSLIPREALIZEHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPREALIZEHDR",
+    packageName: "",
+  },
   IMPSREGISTRATIONDML: {
     url: "/commonMasterServiceAPI/IMPSREGISTRATIONDML",
     packageName: "",
@@ -2803,6 +2815,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETF1HOLDCHRGTYPEDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETF1HOLDCHRGTYPEDDW",
+    packageName: "",
+  },
+  GETFDPRINTCONFIGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPRINTCONFIGDTL",
+    packageName: "",
+  },
+  GETPAYSLIPDOCDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
+    packageName: "",
+  },
+  DOPAYSLIPREALIZEENTRY: {
+    url: "/transactionServiceAPI/DOPAYSLIPREALIZEENTRY",
     packageName: "",
   },
 };

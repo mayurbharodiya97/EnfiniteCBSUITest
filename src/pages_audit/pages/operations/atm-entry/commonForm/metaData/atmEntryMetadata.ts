@@ -119,6 +119,10 @@ export const AtmEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         isReadOnly: (fieldData, dependentFieldsValues, formState) => {
           if (formState?.parameter?.FORM_MODE !== "add") {
             return true;
