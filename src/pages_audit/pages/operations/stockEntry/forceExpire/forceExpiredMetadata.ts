@@ -281,12 +281,6 @@ export const forceExpireStockMetaData = {
       label: "DrawingPower",
       DefaultValue: "0.00",
       dependentFields: ["PARENT_TYPE"],
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        // const newValue = dependentFields.PARENT_TYPE.value.trim();
-        // if (newValue === "SOD") {
-        // }
-        return 0.0;
-      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -298,7 +292,7 @@ export const forceExpireStockMetaData = {
     },
     {
       render: {
-        componentType: "Remark",
+        componentType: "textField",
       },
       name: "REMARKS",
       fullWidth: true,

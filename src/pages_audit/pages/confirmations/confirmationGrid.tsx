@@ -38,7 +38,7 @@ import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confir
 import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
 import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
 
-export const Confirmations = ({ screenFlag, reqData }) => {
+export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "view-details",
@@ -109,7 +109,9 @@ export const Confirmations = ({ screenFlag, reqData }) => {
       rowDoubleClick: false,
       alwaysAvailable: true,
     });
-  } else if (screenFlag === "limitCFM" || "limitForTrn") {
+  } else if (screenFlag === "limitCFM") {
+    gridMetaData = limitConfirmGridMetaData;
+  } else if (screenFlag === "limitForTrn") {
     gridMetaData = limitConfirmGridMetaData;
   } else if (screenFlag === "stockCFM") {
     gridMetaData = stockConfirmGridMetaData;
@@ -137,7 +139,7 @@ export const Confirmations = ({ screenFlag, reqData }) => {
         <GridWrapper
           key={`ConfirmationReqGrid-` + screenFlag}
           finalMetaData={gridMetaData as GridMetaDataType}
-          data={reqData ? reqData : result.data ?? []}
+          data={result.data ?? []}
           setData={() => null}
           loading={result.isLoading}
           actions={actions}
@@ -161,11 +163,10 @@ export const Confirmations = ({ screenFlag, reqData }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ) : screenFlag === "limitCFM" || "limitForTrn" ? (
+              ) : screenFlag === "limitCFM" ? (
                 <LimitConfirmationForm
                   closeDialog={ClosedEventCall}
                   result={result}
-                  screenFlag="limitForTrn"
                 />
               ) : screenFlag === "stockCFM" ? (
                 <StockConfirmationForm
@@ -211,13 +212,12 @@ export const Confirmations = ({ screenFlag, reqData }) => {
   );
 };
 
-export const ConfirmationGridWrapper = ({ screenFlag, reqData }) => {
+export const ConfirmationGridWrapper = ({ screenFlag }) => {
   return (
     <ClearCacheProvider>
       <Confirmations
         key={screenFlag + "-Confirmation"}
         screenFlag={screenFlag}
-        reqData={reqData}
       />
     </ClearCacheProvider>
   );

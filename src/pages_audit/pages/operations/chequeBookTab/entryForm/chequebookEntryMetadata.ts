@@ -58,7 +58,7 @@ export const ChequeBookEntryMetaData = {
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
-              ACCT_TYPE: { value: "" },
+              ACCT_TYPE: { value: "", isFieldFocused: true },
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
@@ -105,15 +105,19 @@ export const ChequeBookEntryMetaData = {
         },
 
         isFieldFocused: true,
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/045",
-          });
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
+        options: (dependent, formState, _, authState) => {
+          if (dependent?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependent?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/045",
+            });
+          }
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
 

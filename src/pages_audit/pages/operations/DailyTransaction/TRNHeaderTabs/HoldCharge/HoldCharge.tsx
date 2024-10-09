@@ -1,38 +1,80 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { HoldChargeGridMetaData } from "./gridMetadata";
-// import GridWrapper from "components/dataTableStatic";
-// import { GridMetaDataType } from "components/dataTable/types";
+import {
+  ActionTypes,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { Alert, GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
 
+const actions: ActionTypes[] = [
+  {
+    actionName: "proceed",
+    actionLabel: "Proceed",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+];
 export const HoldCharge = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
-
-  // api define
-  // const getHoldChargeList = useMutation(API.getHoldChargeList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getHoldChargeList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   console.log(tempStore, "tempStore");
-  //   tempStore?.accInfo?.ACCT_CD && getHoldChargeList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
-
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const oldRowsDataRef = useRef<any>([]);
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getHoldChargeList", { reqData }], () => API.getHoldChargeList(reqData));
+  >(["getHoldChargeList", { reqData }], () => API.getHoldChargeList(reqData), {
+    onSuccess: (data) => {
+      setRows(data);
+      oldRowsDataRef.current = data;
+    },
+  });
+
+  const setCurrentAction = useCallback(async (data) => {
+    if (data?.name === "proceed") {
+      const oldRows = oldRowsDataRef?.current;
+      const updatedRows = myGridRef.current?.cleanData(true);
+      const paidChanges = updatedRows
+        .filter((updatedRow, index) => {
+          const oldRow = oldRows?.[index];
+          return oldRow && oldRow.PAID !== updatedRow.PAID;
+        })
+        .map((updatedRow) => ({
+          amount: parseFloat(updatedRow.AMOUNT).toFixed(2),
+          remarks: updatedRow.REMARKS,
+          paid:
+            updatedRow.PAID === "Y"
+              ? "Paid"
+              : updatedRow.PAID === "N"
+              ? "Unpaid"
+              : updatedRow.PAID === "W"
+              ? "Waive"
+              : updatedRow.PAID,
+        }));
+
+      if (paidChanges.length > 0) {
+        const message = paidChanges
+          .map(
+            (change, index) =>
+              `${change.amount} ${change.remarks} ${change.paid}`
+          )
+          .join("\n");
+
+        const btnName = await MessageBox({
+          message: `Are you sure to apply/waive following transactions? \n\n${message} `,
+          messageTitle: "Confirmation",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (btnName === "Yes") {
+        }
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -48,12 +90,14 @@ export const HoldCharge = ({ reqData }) => {
         </Fragment>
       ) : null}
       <GridWrapper
-        key={`HoldChargeGridMetaData`}
+        key={`HoldChargeGridMetaData` + rows?.length}
         finalMetaData={HoldChargeGridMetaData as GridMetaDataType}
-        data={data ?? []}
-        setData={() => null}
+        data={rows ?? []}
+        setData={setRows}
         loading={isLoading || isFetching}
-        // refetchData={() => {}}
+        actions={actions}
+        setAction={setCurrentAction}
+        refetchData={() => refetch()}
         ref={myGridRef}
       />
     </>

@@ -39,7 +39,7 @@ const RetrieveDataCustom = ({
     updateFnWrapper(API.retrieveData),
     {
       onSuccess: (data, { endSubmit }: any) => {
-        // myRef?.current?.handleFormReset({ preventDefault: () => {} });
+        myRef?.current?.handleFormReset({ preventDefault: () => {} });
         if (!data?.length) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {

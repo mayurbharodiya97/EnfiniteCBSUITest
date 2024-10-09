@@ -45,6 +45,7 @@ export const StopPayEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
@@ -85,6 +86,7 @@ export const StopPayEntryMetadata = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -121,6 +123,10 @@ export const StopPayEntryMetadata = {
       accountCodeMetadata: {
         render: {
           componentType: "textField",
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
         validate: (columnValue) => {
           let regex = /^[^!&]*$/;
@@ -642,7 +648,7 @@ export const StopPayEntryMetadata = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentValue?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         }
