@@ -2821,6 +2821,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOPAYSLIPREALIZEENTRY",
     packageName: "",
   },
+  DOPAYSLIPDDTRANSACTIONENTRY: {
+    url: "/transactionServiceAPI/DOPAYSLIPDDTRANSACTIONENTRY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

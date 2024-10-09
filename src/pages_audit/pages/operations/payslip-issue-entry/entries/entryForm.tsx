@@ -6,6 +6,7 @@ import {
   GradientButton,
   LoadingTextAnimation,
   MetaDataType,
+  RemarksAPIWrapper,
   SubmitFnType,
   usePopupContext,
   utilFunction,
@@ -33,6 +34,7 @@ const EntryFormView = ({
   screenFlag,
 }) => {
   const [formMode, setFormMode] = useState("edit");
+  const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -112,7 +114,63 @@ const EntryFormView = ({
       onClose();
     },
   });
+  const confirmMutation = useMutation(API.DoddTransactionConfirmation, {
+    onError: async (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      const btnName = await MessageBox({
+        message: `${errorMsg}`,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
+      if (btnName === "Ok") {
+        onClose();
+      }
 
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      CloseMessageBox();
+      onClose();
+    },
+  });
+  const rejectMutaion = useMutation(
+    "rejectMutaion",
+    API.DoddTransactionConfirmation,
+    {
+      onSuccess: (data) => {
+        SetDeleteRemark(false);
+        enqueueSnackbar(`${data}`, {
+          variant: "success",
+        });
+        CloseMessageBox();
+        onClose();
+      },
+      onError: async (error: any) => {
+        let errorMsg = t("Unknownerroroccured");
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        const btnName = await MessageBox({
+          message: `${errorMsg}`,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
+        if (btnName === "Ok") {
+          onClose();
+        }
+
+        CloseMessageBox();
+      },
+    }
+  );
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
@@ -182,7 +240,7 @@ const EntryFormView = ({
       let upd = utilFunction.transformDetailsData(newData, oldData);
       console.log(newData, "newdata");
       console.log(oldData, "olddata");
-      console.log(upd, "UPD");
+      console.log(upd, "..");
 
       isErrorFuncRef.current = {
         data: {
@@ -192,6 +250,88 @@ const EntryFormView = ({
           ENTERED_BRANCH_CD: authState?.user?.branchCode,
           TRAN_CD: rowsData?.TRAN_CD,
           SR_CD: rowsData?.SR_CD,
+        },
+        displayData,
+        endSubmit,
+        setFieldError,
+      };
+
+      mutation.mutate({
+        ...isErrorFuncRef.current?.data,
+      });
+      console.log(isErrorFuncRef.current?.data, "PAYLOAD");
+    } else if (screenFlag === "CANCEL") {
+      const newTransferAccountData = {
+        TRF_COMP_CD: data?.TRF_COMP_CD_DISP,
+        TRF_BRANCH_CD: data?.TRF_BRANCH_CD,
+        TRF_ACCT_TYPE: data?.TRF_ACCT_TYPE,
+        TRF_ACCT_CD: data?.TRF_ACCT_CD,
+      };
+      let newData = {
+        COLLECT_COMISSION: data?.COLLECT_COMISSION,
+        REALIZE_AMT: data?.REALIZE_AMT,
+        C_C_T_SP_C: data?.C_C_T_SP_C,
+        REALIZE_BRANCH_CD: authState?.user?.branchCode,
+        REALIZE_COMP_CD: authState?.companyID,
+        REALIZE_BY: authState?.user?.id,
+        REALIZE_DATE:
+          format(new Date(data?.REALIZE_DATE_DISP), "dd/MMM/yyyy") ?? "",
+        PENDING_FLAG: "Y",
+        ...(data?.C_C_T_SP_C !== "G" ? { CHEQUE_NO: data?.TOKEN_NO } : {}),
+        ...(data?.C_C_T_SP_C === "T" ? newTransferAccountData : {}),
+        ...(data.C_C_T_SP_C === "C" ? { PENDING_FLAG: "Y" } : {}),
+        ...(rowsData?.PARA_243 === "Y"
+          ? {
+              REALIZE_FLAG: "Y",
+            }
+          : {}),
+      };
+
+      const oldTransferAccountData = {
+        TRF_COMP_CD: draftDtlData[0]?.TRF_COMP_CD,
+        TRF_BRANCH_CD: draftDtlData[0]?.TRF_BRANCH_CD,
+        TRF_ACCT_TYPE: draftDtlData[0]?.TRF_ACCT_TYPE,
+        TRF_ACCT_CD: draftDtlData[0]?.TRF_ACCT_CD,
+        // TRF_NAME: draftDtlData[0]?.TRF_NAME,
+      };
+
+      const oldData = {
+        COLLECT_COMISSION: draftDtlData[0]?.COLLECT_COMISSION,
+        REALIZE_AMT: draftDtlData[0]?.REALIZE_AMT,
+        C_C_T_SP_C: draftDtlData[0]?.C_C_T_SP_C,
+        ...(draftDtlData?.C_C_T_SP_C !== "G"
+          ? { CHEQUE_NO: draftDtlData[0]?.CHEQUE_NO }
+          : {}),
+        REALIZE_BY: draftDtlData[0]?.REALIZE_BY,
+        // REALIZE_DATE_DISP: authState?.workingDate,
+        REALIZE_DATE: draftDtlData[0]?.REALIZE_DATE,
+        REALIZE_BRANCH_CD: draftDtlData[0]?.REALIZE_BRANCH_CD,
+        REALIZE_COMP_CD: draftDtlData[0]?.REALIZE_COMP_CD,
+        PENDING_FLAG: draftDtlData[0]?.PENDING_FLAG,
+        ...(data?.C_C_T_SP_C === "T" ? oldTransferAccountData : {}),
+        ...(rowsData?.PARA_243 === "Y"
+          ? {
+              REALIZE_FLAG: rowsData.REALIZE_FLAG,
+            }
+          : {}),
+      };
+
+      let upd = utilFunction.transformDetailsData(newData, oldData);
+      console.log(newData, "newdata");
+      console.log(oldData, "olddata");
+      console.log(upd, "..");
+
+      isErrorFuncRef.current = {
+        data: {
+          ...newData,
+          ...upd,
+          ENTERED_COMP_CD: authState?.companyID,
+          ENTERED_BRANCH_CD: authState?.user?.branchCode,
+          TRAN_CD: rowsData?.TRAN_CD,
+          PARA_812: rowsData?.PARA_812,
+          PARA_243: rowsData?.PARA_243,
+          SR_CD: rowsData?.SR_CD,
+          A_ENTRY_MODE: data?.CANCEL,
         },
         displayData,
         endSubmit,
@@ -279,10 +419,63 @@ const EntryFormView = ({
                       {screenFlag === "CANCELCONFRM" ||
                       screenFlag === "REALIZECONF" ? (
                         <>
-                          <GradientButton onClick={() => {}}>
-                            {t("Confirmed")}
+                          <GradientButton
+                            onClick={async () => {
+                              if (
+                                authState?.user?.id ===
+                                draftDtlData[0]?.REALIZE_BY
+                              ) {
+                                await MessageBox({
+                                  messageTitle: t("ValidationFailed"),
+                                  message: t("ConfirmRestrictMsg"),
+                                  buttonNames: ["Ok"],
+                                });
+                              } else if (authState?.role === "1") {
+                                const buttonName = await MessageBox({
+                                  messageTitle: t("ValidationFailed"),
+                                  message: t("authoeizationFailed"),
+                                  buttonNames: ["Yes", "No"],
+                                  loadingBtnName: ["Yes"],
+                                });
+                              } else if (rowsData?.REALIZE_FLAG === "Y") {
+                                const buttonName = await MessageBox({
+                                  messageTitle: t("ValidationFailed"),
+                                  message: t("payslipAlreadyConfirmed"),
+                                  buttonNames: ["Ok"],
+                                });
+                              } else {
+                                const buttonName = await MessageBox({
+                                  messageTitle: t("Confirmation"),
+                                  message: `${t(
+                                    "payslipRealizeconfirmRestrictNSG"
+                                  )}PAYSLIP No. ${rowsData?.PAYSLIP_NO}`,
+                                  buttonNames: ["Yes", "No"],
+                                  loadingBtnName: ["Yes"],
+                                });
+                                if (buttonName === "Yes") {
+                                  confirmMutation.mutate({
+                                    _isConfirmed: true,
+                                    TRAN_TYPE: "RC",
+                                    ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
+                                    PARA_243: rowsData?.PARA_243,
+                                    ENETERED_COMP_CD:
+                                      rowsData?.ENETERED_COMP_CD,
+                                    ENTERED_BRANCH_CD:
+                                      rowsData?.ENTERED_BRANCH_CD,
+                                    TRAN_CD: rowsData?.TRAN_CD,
+                                    SR_CD: rowsData?.SR_CD,
+                                  });
+                                }
+                              }
+                            }}
+                          >
+                            {t("Confirm")}
                           </GradientButton>
-                          <GradientButton onClick={() => {}}>
+                          <GradientButton
+                            onClick={() => {
+                              SetDeleteRemark(true);
+                            }}
+                          >
                             {t("Reject")}
                           </GradientButton>
                         </>
@@ -320,6 +513,62 @@ const EntryFormView = ({
           </Paper>
         )}
       </Dialog>
+      {isDeleteRemark ? (
+        <RemarksAPIWrapper
+          TitleText={
+            "Enter Removal Remarks For PAYSLP REALIZE CONFIRMATION RPT/18"
+          }
+          onActionNo={() => {
+            SetDeleteRemark(false);
+          }}
+          onActionYes={async (val, rows) => {
+            const buttonName = await MessageBox({
+              messageTitle: t("Confirmation"),
+              message: t("DoYouWantDeleteRow"),
+              buttonNames: ["Yes", "No"],
+              defFocusBtnName: "Yes",
+              loadingBtnName: ["Yes"],
+            });
+            if (buttonName === "Yes") {
+              rejectMutaion.mutate({
+                _isConfirmed: false,
+                COMP_CD: authState?.companyID,
+                ENTERED_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD,
+                TRAN_CD: rowsData?.TRAN_CD,
+                SR_CD: rowsData?.SR_CD,
+                PAYSLIP_NO: rowsData?.PAYSLIP_NO,
+                TRAN_TYPE: "RC",
+                A_ENTRY_MODE: "P",
+                REALIZE_DATE: draftDtlData[0]?.REALIZE_DATE,
+                REVALID_DT: rowsData?.REVALID_DT,
+                TRAN_DT: authState?.workingDate,
+                REALIZE_FLAG: rowsData?.REALIZE_FLAG,
+                PENDING_FLAG: rowsData?.PENDING_FLAG,
+                STOP_REMARKS: "",
+                PARA_243: rowsData?.PARA_243,
+                PARA_812: rowsData?.PARA_812,
+                A_REJECT_FLAG: "Y",
+                BRANCH_CD: acctDtlData[0]?.BRANCH_CD,
+                ACCT_TYPE: acctDtlData[0]?.ACCT_TYPE,
+                ACCT_CD: acctDtlData[0]?.ACCT_CD,
+                AMOUNT: rowsData?.TOTAL_AMT,
+                USER_DEF_REMARKS: val,
+                SCREEN_REF: "RPT/18",
+              });
+            }
+          }}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
+          open={isDeleteRemark}
+          defaultValue={
+            "WRONG ENTRY FROM PAYSLIP REALIZE CONFIRMATION (RPT/18)"
+          }
+          rows={rowsData}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 };

@@ -127,6 +127,7 @@ export const PagesAudit = (props, { columns }) => {
                   <Route path="operation/*" element={<OperationsMenu />} />
                   <Route path="view-statement/*" element={<AccountDetails />} />
                   <Route path="configuration/*" element={<Configuration />} />
+                  {/* <Route path="all-screens/*" element={<Configuration />} /> */}
                   <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                   <Route
                     path="operation/daily_tran_F1"
