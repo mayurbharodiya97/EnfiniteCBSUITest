@@ -2801,6 +2801,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
+  GETFDPRINTCONFIGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPRINTCONFIGDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
