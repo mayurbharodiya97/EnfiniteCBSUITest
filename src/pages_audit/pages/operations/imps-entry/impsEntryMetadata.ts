@@ -52,7 +52,7 @@ export const impsEntryMetadata = {
       isFieldFocused: true,
       required: true,
       placeholder: "Enter Customer Id",
-      dependentFields: ["PARA_602", "PARA_946", "RETRIEVE_DATA"],
+      dependentFields: ["PARA_602", "PARA_946", "RETRIEVE_DATA", "OLD_CUST_ID"],
       isReadOnly: (fieldData, dependentFields) => {
         if (dependentFields?.RETRIEVE_DATA?.value === "Y") {
           return true;
@@ -60,8 +60,20 @@ export const impsEntryMetadata = {
           return false;
         }
       },
-      postValidationSetCrossFieldValues: async (field, formState) => {
-        if (field?.value && formState?.FORM_MODE === "add") {
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependent
+      ) => {
+        if (
+          field?.value &&
+          formState?.FORM_MODE === "add" &&
+          dependent?.OLD_CUST_ID?.value !== field?.value
+        ) {
+          formState?.setRowData([]);
+          formState?.setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+
           let postData = await API.validateCustId({
             SCREEN_REF: "MST/843",
             CUST_ID: field?.value,
@@ -81,7 +93,9 @@ export const impsEntryMetadata = {
                   UNIQUE_ID: { value: "" },
                   MOB_NO: { value: "" },
                   PAN_NO: { value: "" },
+                  OLD_CUST_ID: { value: "" },
                   POPULATE: { value: "N" },
+                  CONFIRMED: { value: "N" },
                 };
               }
             } else if (message?.O_STATUS === "0") {
@@ -95,16 +109,23 @@ export const impsEntryMetadata = {
                 UNIQUE_ID: { value: postData?.[0]?.UNIQUE_ID },
                 MOB_NO: { value: postData?.[0]?.MOB_NO },
                 PAN_NO: { value: postData?.[0]?.PAN_NO },
+                CONFIRMED: { value: postData?.[0]?.CONFIRMED },
+                OLD_CUST_ID: { value: field?.value },
                 POPULATE: { value: "Y" },
               };
             }
           }
         } else if (!field?.value) {
+          formState?.setRowData([]);
+          formState?.setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+
           return {
             ORGINAL_NM: { value: "" },
             UNIQUE_ID: { value: "" },
             MOB_NO: { value: "" },
             PAN_NO: { value: "" },
+            CONFIRMED: { value: "" },
+            OLD_CUST_ID: { value: "" },
             POPULATE: { value: "N" },
           };
         }
@@ -121,6 +142,12 @@ export const impsEntryMetadata = {
       },
     },
 
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "OLD_CUST_ID",
+    },
     {
       render: {
         componentType: "textField",
@@ -192,7 +219,7 @@ export const impsEntryMetadata = {
       GridProps: { xs: 12, md: 2.5, sm: 2.5, lg: 2.5, xl: 2.5 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "", params: [""] }],
       },
     },
 
@@ -206,7 +233,6 @@ export const impsEntryMetadata = {
       // placeholder: "AAAAA0000A",
       isReadOnly: true,
       txtTransform: "uppercase",
-      required: true,
       GridProps: { xs: 12, md: 2.5, sm: 2.5, lg: 2.5, xl: 2.5 },
 
       // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
@@ -222,6 +248,30 @@ export const impsEntryMetadata = {
       fullWidth: true,
       isReadOnly: true,
       GridProps: { xs: 12, md: 2.5, sm: 2.5, lg: 2.5, xl: 2.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CONFIRMED",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
     },
     {
       render: {
@@ -332,7 +382,6 @@ export const impsEntryMetadata = {
 
       dependentFields: ["ROWDATA_LENGTH"],
       shouldExclude: (field, dependent) => {
-        console.log("<<<arry", field, dependent);
         if (dependent?.ROWDATA_LENGTH?.value > 0) {
           return false;
         }

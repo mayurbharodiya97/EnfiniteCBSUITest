@@ -24,13 +24,19 @@ import {
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { format } from "date-fns";
+import { enqueueSnackbar } from "notistack";
 
 export const ImpsEntryCustom = () => {
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [isData, setIsData] = useState<any>({
+    closeAlert: true,
+    uniqueNo: 0,
+  });
   const [formMode, setFormMode] = useState<any>("add");
   const [retrieveData, setRetrieveData] = useState<any>();
   const [rowData, setRowData] = useState<any>();
@@ -39,7 +45,7 @@ export const ImpsEntryCustom = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { isError, error, isLoading, isFetching } = useQuery<any, any>(
+  const impsDetails: any = useMutation(
     ["getImpsDetails"],
     () =>
       API.getImpsDetails({
@@ -48,14 +54,28 @@ export const ImpsEntryCustom = () => {
         TRAN_CD: retrieveData?.[0]?.TRAN_CD,
       }),
     {
-      enabled: !!retrieveData?.[0]?.TRAN_CD,
       onSuccess(data) {
         if (Array.isArray(data) && data?.length > 0) {
           setRowData(data);
+        } else {
+          setRowData([]);
         }
+        setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+      },
+      onError(err) {
+        setIsData((old) => ({
+          ...old,
+          closeAlert: true,
+        }));
       },
     }
   );
+  useEffect(() => {
+    setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+    if (retrieveData?.[0]?.TRAN_CD) {
+      impsDetails.mutate();
+    }
+  }, [retrieveData?.[0]?.TRAN_CD]);
 
   const accountList: any = useMutation("getRtgsRetrieveData", API.getAcctList, {
     onSuccess: (data) => {
@@ -77,13 +97,36 @@ export const ImpsEntryCustom = () => {
         }
       } else {
         setRowData(data);
+        setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
       }
+    },
+    onError(err) {
+      setIsData((old) => ({
+        ...old,
+        closeAlert: true,
+      }));
     },
   });
 
   const crudIMPS: any = useMutation("crudDataIMPS", API.crudDataIMPS, {
     onSuccess: (data, variables) => {
       console.log("<<<imps", data, variables);
+      if (variables?._isNewRow) {
+        formRef?.current?.handleFormReset({ preventDefault: () => {} });
+        enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
+      } else if (variables?._isDeleteRow) {
+        enqueueSnackbar(t("RecordRemovedMsg"), { variant: "success" });
+      } else if (variables?._isUpdateRow) {
+        enqueueSnackbar(t("RecordUpdatedMsg"), { variant: "success" });
+      }
+      CloseMessageBox();
+    },
+    onError() {
+      CloseMessageBox();
+      setIsData((old) => ({
+        ...old,
+        closeAlert: true,
+      }));
     },
   });
 
@@ -98,14 +141,29 @@ export const ImpsEntryCustom = () => {
             message: data?.[0]?.O_MESSAGE,
           });
         } else {
-          if (variables?.FLAG === "S") {
-          } else if (rowData?.length !== currentIndex) {
-            setCurrentIndex((old) => old + 1);
-            setTimeout(() => {
-              deleteData({ flag: "A" });
-            }, 1000);
+          if (rowData?.length !== currentIndex) {
+            if (variables?.FLAG === "S") {
+            } else {
+              setCurrentIndex((old) => old + 1);
+              setTimeout(() => {
+                deleteData({ flag: "A" });
+              }, 1000);
+            }
+          } else {
+            console.log(
+              "<<<valodate del",
+              rowData?.length,
+              rowData,
+              currentIndex
+            );
           }
         }
+      },
+      onError(err) {
+        setIsData((old) => ({
+          ...old,
+          closeAlert: true,
+        }));
       },
     }
   );
@@ -167,13 +225,101 @@ export const ImpsEntryCustom = () => {
       setRowData((old) => {
         return [...old, ...insertData];
       });
+      setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
     }
   };
 
-  // const onSubmitHandler = ({ data, displayData, endSubmit }) => {
-  //   //@ts-ignore
-  //   endSubmit(true);
+  const onSubmitHandler = async (data: any, displayData, endSubmit) => {
+    // @ts-ignore
+    endSubmit(true);
 
+    // console.log("<<<onsub", data, retrieveData, rowData, populate);
+
+    let messagebox = async (apiReq) => {
+      let buttonName = await MessageBox({
+        messageTitle: rowData?.length ? "confirmation" : "Alert",
+        message: rowData?.length
+          ? "Are you sure to procced"
+          : "Atleast one row must be in Detail",
+        defFocusBtnName: rowData?.length ? "Yes" : "Ok",
+        buttonNames: rowData?.length ? ["Yes", "No"] : ["Ok"],
+        loadingBtnName: ["Yes"],
+        icon: "INFO",
+      });
+      if (buttonName === "Yes") {
+        crudIMPS.mutate(apiReq);
+      }
+    };
+
+    if (rowData?.length) {
+      let newData = data?.accMapping;
+      let oldData = rowData;
+
+      let formdata = { ...data };
+      delete formdata?.accMapping;
+      delete formdata?.POPULATE;
+      delete formdata?.ROWDATA_LENGTH;
+      delete formdata?.RETRIEVE_DATA;
+
+      let upd = utilFunction.transformDetailsData(
+        formdata ?? {},
+        retrieveData?.[0] ?? {}
+      );
+
+      let updPara = utilFunction.transformDetailDataForDML(
+        formMode === "add" ? [] : oldData,
+        newData ?? [],
+        ["SR_CD", "ACCT_TYPE", "BRANCH_CD"]
+      );
+      let apiReq = {
+        _isNewRow: formMode === "add" ? true : false,
+        _isDeleteRow: false,
+        _isUpdateRow: formMode !== "add" ? true : false,
+        ...formdata,
+        DEACTIVE_DT: formdata?.DEACTIVE_DT
+          ? format(new Date(formdata?.DEACTIVE_DT), "dd/MMM/yyyy")
+          : "",
+        ACTIVE:
+          formdata?.ACTIVE === "Y" || Boolean(formdata?.ACTIVE) ? "Y" : "N",
+        ...(formMode !== "add" ? upd : {}),
+        DETAILS_DATA: {
+          ...updPara,
+        },
+      };
+      messagebox(apiReq);
+    } else {
+      messagebox(null);
+    }
+
+    // console.log("<<<upd", upd, updPara, apiReq);
+  };
+  // const deleteData: any = async ({ FLAG, DATA }) => {
+  //   const formdata = await formRef?.current?.getFieldData();
+
+  //   let buttonName = await MessageBox({
+  //     messageTitle: "Confirmation",
+  //     message: "Are you sure to proceed",
+  //     buttonNames: ["Yes", "No"],
+  //     loadingBtnName: ["Yes"],
+  //   });
+
+  //   if (buttonName === "Yes") {
+  //     let apiReq = {
+  //       _isNewRow: false,
+  //       _isDeleteRow: true,
+  //       _isUpdateRow: false,
+  //       ENTERED_BRANCH_CD: formdata?.ENTERED_BRANCH_CD,
+  //       ENTERED_COMP_CD: formdata?.ENTERED_COMP_CD,
+  //       TRAN_CD: formdata?.TRAN_CD,
+  //       CONFIRMED: formdata?.CONFIRMED,
+  //       DETAILS_DATA: {
+  //         isNewRow: [],
+  //         isDeleteRow: rowData,
+  //         isUpdatedRow: [],
+  //       },
+  //     };
+  //     crudIMPS.mutate(apiReq);
+  //   }
   // };
 
   const RowData = (rowData) => {
@@ -212,23 +358,27 @@ export const ImpsEntryCustom = () => {
         >
           {accountList?.isLoading ||
           validateDelete?.isLoading ||
-          isLoading ||
-          isFetching ? (
+          impsDetails?.isLoading ? (
             <LinearProgress color="inherit" />
-          ) : accountList?.isError || validateDelete?.isError || isError ? (
+          ) : (accountList?.isError && isData.closeAlert) ||
+            (validateDelete?.isError && isData.closeAlert) ||
+            (crudIMPS?.isError && isData.closeAlert) ||
+            (impsDetails?.isError && isData.closeAlert) ? (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
                 errorMsg={
                   accountList?.error?.error_msg ??
                   validateDelete?.error?.error_msg ??
-                  error?.error_msg ??
+                  crudIMPS?.error?.error_msg ??
+                  impsDetails?.error?.error_msg ??
                   "Unknow Error"
                 }
                 errorDetail={
                   accountList?.error?.error_detail ??
                   validateDelete?.error?.error_detail ??
-                  error?.error_detail ??
+                  crudIMPS?.error?.error_detail ??
+                  impsDetails?.error?.error_detail ??
                   ""
                 }
                 color="error"
@@ -238,7 +388,12 @@ export const ImpsEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
           <FormWrapper
-            key={"imps-entry" + formMode + rowData}
+            key={
+              "imps-entry" +
+              formMode +
+              // retrieveData?. +
+              isData?.uniqueNo
+            }
             metaData={
               extractMetaData(impsEntryMetadata, formMode) as MetaDataType
             }
@@ -251,13 +406,10 @@ export const ImpsEntryCustom = () => {
               MessageBox: MessageBox,
               onArrayFieldRowDoubleClickHandle: RowData,
               FORM_MODE: formMode,
+              setRowData: setRowData,
+              setIsData: setIsData,
             }}
-            onSubmitHandler={(data: any, displayData, endSubmit) => {
-              // @ts-ignore
-              endSubmit(true);
-
-              console.log("<<<onsub", data, retrieveData);
-            }}
+            onSubmitHandler={onSubmitHandler}
             formStyle={{
               height: "166px",
               // height: "calc(100vh - 576px)",
