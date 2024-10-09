@@ -84,89 +84,170 @@ export const main_tab_metadata = {
         authState,
         dependentFieldsValues
       ) => {
-        const data = await API.getCustomerData({
-          CUSTOMER_ID: field.value,
-          ACCT_TYPE: formState?.ACCT_TYPE ?? "",
-          COMP_CD: authState?.companyID ?? "",
-          SCREEN_REF: "MST/002",
-        });
-        let response_messages: any[] = [];
-        if (data && data?.[0]?.MSG && Array.isArray(data?.[0]?.MSG)) {
-          response_messages = data?.[0]?.MSG;
-        }
-        if (Array.isArray(response_messages) && response_messages?.length > 0) {
-          const messagebox = async (msgTitle, msg, buttonNames, status) => {
-            let buttonName = await formState.MessageBox({
-              messageTitle: msgTitle,
-              message: msg,
-              buttonNames: buttonNames,
-            });
-            return { buttonName, status };
-          };
+        if (formState?.isSubmitting) return {};
+        if (Boolean(field?.value)) {
+          const data = await API.getCustomerData({
+            CUSTOMER_ID: field.value,
+            ACCT_TYPE: formState?.ACCT_TYPE ?? "",
+            COMP_CD: authState?.companyID ?? "",
+            SCREEN_REF: "MST/002",
+          });
+          let response_messages: any[] = [];
+          if (data && data?.[0]?.MSG && Array.isArray(data?.[0]?.MSG)) {
+            response_messages = data?.[0]?.MSG;
+          }
+          if (response_messages?.length > 0) {
+            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              let buttonName = await formState.MessageBox({
+                messageTitle: msgTitle,
+                message: msg,
+                buttonNames: buttonNames,
+              });
+              return { buttonName, status };
+            };
 
-          for (let i = 0; i < response_messages?.length; i++) {
-            if (response_messages[i]?.O_STATUS !== "0") {
-              let btnName = await messagebox(
-                response_messages[i]?.O_STATUS === "999"
-                  ? "validation fail"
-                  : "ALert",
-                response_messages[i]?.O_MESSAGE,
-                response_messages[i]?.O_STATUS === "99"
-                  ? ["Yes", "No"]
-                  : ["Ok"],
-                response_messages[i]?.O_STATUS
-              );
-              if (btnName?.status === "999" || btnName?.buttonName === "No") {
-                return {
-                  ACCT_CD: { value: "" },
-                  CUSTOMER_ID: { value: "" },
-                  CONTACT2: { value: "" },
-                  PAN_NO: { value: "" },
-                };
+            for (let i = 0; i < response_messages?.length; i++) {
+              if (response_messages[i]?.O_STATUS !== "0") {
+                let btnName = await messagebox(
+                  response_messages[i]?.O_STATUS === "999"
+                    ? "validation fail"
+                    : "Alert",
+                  response_messages[i]?.O_MESSAGE,
+                  response_messages[i]?.O_STATUS === "99"
+                    ? ["Yes", "No"]
+                    : ["Ok"],
+                  response_messages[i]?.O_STATUS
+                );
+                if (btnName?.status === "999" || btnName?.buttonName === "No") {
+                  return {
+                    //   ACCT_CD: {value: ""},
+                    CUSTOMER_ID: { value: "" },
+                    //   CONTACT2: {value: ""},
+                    //   PAN_NO: {value: ""},
+                  };
+                }
+              } else {
+                if (data?.[0]?.ACCOUNT_DTL) {
+                  // formState?.setCustomerDatactx(data?.[0]?.ACCOUNT_DTL);
+                  const CustomerData = data?.[0]?.ACCOUNT_DTL;
+                  return {
+                    GSTIN: { value: CustomerData?.GSTIN },
+                    MARITAL_STATUS: { value: CustomerData?.MARITAL_STATUS },
+                    REMARKS: { value: CustomerData?.REMARKS },
+                    PIN_CODE: { value: CustomerData?.PIN_CODE },
+                    COUNTRY_CD: { value: CustomerData?.COUNTRY_CD },
+                    FIRST_NM: { value: CustomerData?.FIRST_NM },
+                    GROUP_CD: { value: CustomerData?.GROUP_CD },
+                    AREA_CD: { value: CustomerData?.AREA_CD },
+                    // CUSTOMER_ID: {value: CustomerData?.//},
+                    CITY_CD: { value: CustomerData?.CITY_CD },
+                    PASSPORT_NO: { value: CustomerData?.PASSPORT_NO },
+                    MOTHER_MAIDEN_NM: { value: CustomerData?.MOTHER_MAIDEN_NM },
+                    MEM_ACCT_TYPE: { value: CustomerData?.MEM_ACCT_TYPE },
+                    ACCT_NM: { value: CustomerData?.ACCT_NM },
+                    UNIQUE_ID: { value: CustomerData?.UNIQUE_ID },
+                    ADD3: { value: CustomerData?.ADD3 },
+                    ADD1: { value: CustomerData?.ADD1 },
+                    ADD2: { value: CustomerData?.ADD2 },
+                    COMMU_CD: { value: CustomerData?.COMMU_CD },
+                    BIRTH_DT: { value: CustomerData?.BIRTH_DT },
+                    STATE_CD: { value: CustomerData?.STATE_CD },
+                    TRADE_CD: { value: CustomerData?.TRADE_CD },
+                    MEM_ACCT_CD: { value: CustomerData?.MEM_ACCT_CD },
+                    DISTRICT_CD: { value: CustomerData?.DISTRICT_CD },
+                    GENDER: { value: CustomerData?.GENDER },
+                    CONTACT3: { value: CustomerData?.CONTACT3 },
+                    CONTACT2: { value: CustomerData?.CONTACT2 },
+                    CONTACT1: { value: CustomerData?.CONTACT1 },
+                    SURNAME: { value: CustomerData?.SURNAME },
+                    CONTACT4: { value: CustomerData?.CONTACT4 },
+                    LAST_NM: { value: CustomerData?.LAST_NM },
+                    LF_NO: { value: CustomerData?.LF_NO },
+                    E_MAIL_ID: { value: CustomerData?.E_MAIL_ID },
+                    FORM_60: { value: CustomerData?.FORM_60 },
+                    PAN_NO: { value: CustomerData?.PAN_NO },
+                  };
+                }
+                //   formState.setDataOnFieldChange("BUTTON_CLICK_ACCTCD", {
+                //     ACCT_TYPE: ACCT_TYPE,
+                //     BRANCH_CD: BRANCH_CD,
+                //     ACCT_CD: field?.value
+                //   });
+                //   return {
+                //     CUSTOMER_ID: {value: ""},
+                //     CONTACT2: {value: ""},
+                //     PAN_NO: {value: ""},
+                //   }
               }
-            } else {
-              if (data?.[0]?.ACCOUNT_DTL) {
-              }
-              //   formState.setDataOnFieldChange("BUTTON_CLICK_ACCTCD", {
-              //     ACCT_TYPE: ACCT_TYPE,
-              //     BRANCH_CD: BRANCH_CD,
-              //     ACCT_CD: field?.value
-              //   });
-              //   return {
-              //     CUSTOMER_ID: {value: ""},
-              //     CONTACT2: {value: ""},
-              //     PAN_NO: {value: ""},
-              //   }
             }
           }
+          // if(data && Array.isArray(data)) {
+          //     if (Array.isArray(data) && data?.length > 0) {
+          //         for (let i = 0; i < data.length; i++) {
+          //             if (data[i]?.O_STATUS === "9") {
+          //                 const buttonName = await formState?.MessageBox({
+          //                 messageTitle: "Alert",
+          //                 message: data[i]?.O_MESSAGE,
+          //                 buttonNames: ["Ok"],
+          //                 });
+          //             } else if (data[i]?.O_STATUS === "99") {
+          //                 const buttonName = await formState?.MessageBox({
+          //                     messageTitle: "CONFIRM",
+          //                     message: data[i]?.O_MESSAGE,
+          //                     buttonNames: ["No", "Yes"],
+          //                     //   loadingBtnName: ["Yes"],
+          //                 });
+          //                 if (buttonName === "No") {
+          //                     formState?.handlecustomerIDctx("");
+          //                     return {
+          //                         CUSTOMER_ID: {value: "", ignoreUpdate: true}
+          //                     }
+          //                 }
+          //             }
+          //         }
+          //     }
+          // }
+        } else {
+          return {
+            GSTIN: { value: "" },
+            // MARITAL_STATUS: {value: ""},
+            REMARKS: { value: "" },
+            PIN_CODE: { value: "" },
+            COUNTRY_CD: { value: "" },
+            FIRST_NM: { value: "" },
+            GROUP_CD: { value: "" },
+            AREA_CD: { value: "" },
+            // CUSTOMER_ID: {v ""},
+            CITY_CD: { value: "" },
+            PASSPORT_NO: { value: "" },
+            MOTHER_MAIDEN_NM: { value: "" },
+            MEM_ACCT_TYPE: { value: "" },
+            ACCT_NM: { value: "" },
+            UNIQUE_ID: { value: "" },
+            ADD3: { value: "" },
+            ADD1: { value: "" },
+            ADD2: { value: "" },
+            COMMU_CD: { value: "" },
+            BIRTH_DT: { value: "" },
+            STATE_CD: { value: "" },
+            TRADE_CD: { value: "" },
+            MEM_ACCT_CD: { value: "" },
+            DISTRICT_CD: { value: "" },
+            GENDER: { value: "" },
+            CONTACT3: { value: "" },
+            CONTACT2: { value: "" },
+            CONTACT1: { value: "" },
+            SURNAME: { value: "" },
+            CONTACT4: { value: "" },
+            LAST_NM: { value: "" },
+            LF_NO: { value: "" },
+            E_MAIL_ID: { value: "" },
+            FORM_60: { value: "" },
+            PAN_NO: { value: "" },
+          };
         }
-        // if(data && Array.isArray(data)) {
-        //     if (Array.isArray(data) && data?.length > 0) {
-        //         for (let i = 0; i < data.length; i++) {
-        //             if (data[i]?.O_STATUS === "9") {
-        //                 const buttonName = await formState?.MessageBox({
-        //                 messageTitle: "Alert",
-        //                 message: data[i]?.O_MESSAGE,
-        //                 buttonNames: ["Ok"],
-        //                 });
-        //             } else if (data[i]?.O_STATUS === "99") {
-        //                 const buttonName = await formState?.MessageBox({
-        //                     messageTitle: "CONFIRM",
-        //                     message: data[i]?.O_MESSAGE,
-        //                     buttonNames: ["No", "Yes"],
-        //                     //   loadingBtnName: ["Yes"],
-        //                 });
-        //                 if (buttonName === "No") {
-        //                     formState?.handlecustomerIDctx("");
-        //                     return {
-        //                         CUSTOMER_ID: {value: "", ignoreUpdate: true}
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
       },
+      runPostValidationHookAlways: true,
     },
     {
       render: {
@@ -395,27 +476,28 @@ export const main_tab_metadata = {
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "MARITAL_STATUS",
-      label: "MaritalStatus",
-      options: (dependentValue) => getPMISCData("Marital", dependentValue),
-      _optionsKey: "maritalMainOp",
-      isReadOnly: (fieldValue, dependentFields, formState) =>
-        API.isReadOnlyonParam320({ formState }),
-      required: true,
-      dependentFields: ["PREFIX_CD"],
-      disableCaching: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
-      placeholder: "",
-      type: "text",
-      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-    },
+    // {
+    //     render: {
+    //         componentType: "autocomplete",
+    //     },
+    //     name: "MARITAL_STATUS",
+    //     label: "MaritalStatus",
+    //     options: (dependentValue) => getPMISCData("Marital", dependentValue),
+    //     _optionsKey: "maritalMainOp",
+    //     isReadOnly: (fieldValue, dependentFields, formState) => API.isReadOnlyonParam320({formState}),
+    //     required: true,
+    //     dependentFields: ["PREFIX_CD"],
+    //     disableCaching: true,
+    //     schemaValidation: {
+    //         type: "string",
+    //         rules: [
+    //           { name: "required", params: ["ThisFieldisrequired"] },
+    //         ],
+    //     },
+    //     placeholder: "",
+    //     type: "text",
+    //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
+    // },
     {
       render: {
         componentType: "divider",

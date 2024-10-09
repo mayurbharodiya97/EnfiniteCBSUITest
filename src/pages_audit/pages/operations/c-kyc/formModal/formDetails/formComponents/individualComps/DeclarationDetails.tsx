@@ -284,9 +284,7 @@ const DeclarationDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [
-      DeclarationFormRef.current.handleSubmitError(e, "save", false),
-    ];
+    const refs = [DeclarationFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

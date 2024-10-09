@@ -301,8 +301,10 @@ const authAPI = () => {
           };
         }
       } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {
+        console.log("logout-due-to 401, notlogout outside");
         //@ts-ignore
         if (typeof window.__logout === "function") {
+          console.log("logout-due-to 401, notlogout inside");
           //@ts-ignore
           window.__logout();
         }

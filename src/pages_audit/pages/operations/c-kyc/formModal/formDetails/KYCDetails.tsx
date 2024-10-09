@@ -199,7 +199,7 @@ const KYCDetails = () => {
       // if(state?.isFreshEntryctx) {
       setFormStatus((old) => [...old, true]);
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      // KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // KyCPoAFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
     } else {
       handleStepStatusctx({
@@ -339,8 +339,8 @@ const KYCDetails = () => {
       isLoading: true,
     });
     const refs = [
-      KyCPoIFormRef.current.handleSubmitError(e, "save", false),
-      KyCPoAFormRef.current.handleSubmitError(e, "save", false),
+      KyCPoIFormRef.current.handleSubmit(e, "save", false),
+      KyCPoAFormRef.current.handleSubmit(e, "save", false),
     ];
     handleSavectx(e, refs);
   };

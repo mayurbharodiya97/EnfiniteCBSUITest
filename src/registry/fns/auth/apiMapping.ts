@@ -1463,6 +1463,10 @@ export const ActionWiseAPIConfiguration = {
     url: "accountServiceAPI/SAVEACCOUNTDATA",
     packageName: "",
   },
+  CONFIRMACCTDATA: {
+    url: "accountServiceAPI/CONFIRMACCTDATA",
+    packageName: "",
+  },
   GETACTCHQSIGNAUTHODDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
     packageName: "",
@@ -2625,6 +2629,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/VALIDATEATMREGSAVEDATA",
     packageName: "",
   },
+  GETMARITALSTATUSDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMARITALSTATUSDDW",
+    packageName: "",
+  },
   DOATMREGISTRATIONDML: {
     url: "/commonMasterServiceAPI/DOATMREGISTRATIONDML",
     packageName: "",
@@ -2771,6 +2779,18 @@ export const ActionWiseAPIConfiguration = {
   },
   VALIDATEFDDELETE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDDELETE",
+    packageName: "",
+  },
+  VALIDATEFDCONFIRM: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEFDCONFIRM",
+    packageName: "",
+  },
+  DOFIXDEPOSITCONFIRMATION: {
+    url: "/enfinityFDServiceAPI/DOFIXDEPOSITCONFIRMATION",
+    packageName: "",
+  },
+  DOFDCONFIRMATIONDELETE: {
+    url: "/enfinityFDServiceAPI/DOFDCONFIRMATIONDELETE",
     packageName: "",
   },
   GETEMICACLCULATEDATA: {

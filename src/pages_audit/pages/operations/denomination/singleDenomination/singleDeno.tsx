@@ -398,13 +398,15 @@ export const SingleDeno = () => {
             ENTERED_COMP_CD: gridData?.[0]?.ENTERED_COMP_CD ?? "",
             ENTERED_BRANCH_CD: gridData?.[0]?.ENTERED_BRANCH_CD ?? "",
             SCREEN_REF: "TRN/041",
-            TRANSACTION_DTL: gridData?.map((record) => {
-              return {
-                DAILY_TRN_CD: record?.DAILY_TRN_CD ?? "",
-                MCT_TRAN_CD: record?.MCT_TRAN_CD ?? "",
-                DELETE_FLAG: record?.DELETE_FLAG ?? "",
-              };
-            }),
+            TRANSACTION_DTL: gridData
+              ?.map((record) => {
+                return {
+                  DAILY_TRN_CD: record?.DAILY_TRN_CD ?? "",
+                  MCT_TRAN_CD: record?.MCT_TRAN_CD ?? "",
+                  DELETE_FLAG: record?.DELETE_FLAG ?? "",
+                };
+              })
+              ?.filter((record) => record?.DELETE_FLAG === "Y"),
           };
           releaseRecords?.mutate(requestPara);
         } else {
