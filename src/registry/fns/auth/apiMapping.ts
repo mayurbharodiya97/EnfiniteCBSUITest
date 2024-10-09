@@ -2813,6 +2813,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
+  GETFDPRINTCONFIGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPRINTCONFIGDTL",
+    packageName: "",
+  },
   GETPAYSLIPDOCDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
