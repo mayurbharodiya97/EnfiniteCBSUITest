@@ -323,7 +323,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     }
                   }}
                 >
-                  {t("Remove")}
+                  {t("Reject")}
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
