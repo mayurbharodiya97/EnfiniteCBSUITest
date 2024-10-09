@@ -1466,7 +1466,6 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  ChequeAmountList: "Cheque Amount List",
   CLGDate: "CLG Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",

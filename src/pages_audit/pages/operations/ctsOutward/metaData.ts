@@ -2061,7 +2061,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_AMT_LIST",
-      columnName: "ChequeAmountList",
+      columnName: "ChequeAmount",
       sequence: 5,
       alignment: "right",
       componentType: "default",
@@ -2069,6 +2069,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 150,
       maxWidth: 250,
+      isDisplayTotal: true,
     },
     {
       accessor: "TRAN_DT",

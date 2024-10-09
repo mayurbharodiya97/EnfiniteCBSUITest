@@ -140,12 +140,22 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     "getCtsAndInwardConfirmtion",
     API.getCtsAndInwardConfirmtion,
     {
-      onSuccess: (data) => {
-        enqueueSnackbar(data, {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        onClose();
+      onSuccess: async (data) => {
+        if (data[0]?.STATUS === "999") {
+          await MessageBox({
+            messageTitle: "ValidationFailed",
+            message: data[0]?.MSG,
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+        } else if (data[0]?.O_STATUS === "0") {
+          enqueueSnackbar(data, {
+            variant: "success",
+          });
+          isDataChangedRef.current = true;
+          onClose();
+        }
+
         CloseMessageBox();
       },
       onError: (error: any) => {
@@ -280,10 +290,10 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                           AMOUNT: data?.[0]?.AMOUNT,
                           SCREEN_REF:
                             zoneTranType === "S"
-                              ? "ETRN/560"
+                              ? "TRN/560"
                               : zoneTranType === "R"
-                              ? "ETRN/029"
-                              : "ETRN/346",
+                              ? "TRN/029"
+                              : "TRN/346",
                         });
                       }
                     }
@@ -332,7 +342,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   {t("Previous")}
                 </GradientButton>
                 {zoneTranType === "R" &&
-                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD === undefined && (
+                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD !== null &&
+                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD !== undefined && (
                     <>
                       <GradientButton
                         onClick={() => {

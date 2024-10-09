@@ -733,7 +733,6 @@ const CtsOutwardClearingForm: FC<{
                       ...old,
                       chequeDetails: [
                         ...old.chequeDetails.map((item) => {
-                          console.log("item", item);
                           return {
                             ...item,
                             BANK_CD: rowsData?.data?.[0]?.BANK_CD ?? "",
