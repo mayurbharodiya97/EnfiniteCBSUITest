@@ -1201,11 +1201,6 @@ export const ddTransactionFormMetaData = {
 
             let btn99, returnVal;
 
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
-
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({

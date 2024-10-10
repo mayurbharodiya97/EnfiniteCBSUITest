@@ -36,6 +36,7 @@ const EntryFormView = ({
 }) => {
   const [formMode, setFormMode] = useState("add");
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
+  const [reqPara, setReqPara] = useState(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -83,10 +84,31 @@ const EntryFormView = ({
           buttonNames: ["Ok"],
         });
       }
-      // closeDialog();
       CloseMessageBox();
     },
   });
+  let updateParams: any = {};
+  useEffect(() => {
+    if (trans_type === "RC") {
+      if (rowsData?.PARA_243 === "N") {
+        updateParams.PARA_243 = "Y"; // Set UPDATE to 'Y'
+      }
+    } else if (trans_type === "TC") {
+      if (rowsData?.PARA_812 === "N" && rowsData?.RETRIVE_ENTRY_MODE === "D") {
+        if (rowsData?.PARA_243 === "N") {
+          updateParams.REVALID_CONF = "Y";
+        }
+      } else {
+        if (rowsData?.PARA_243 === "N") {
+          updateParams.REALIZE_FLAG = "T";
+        }
+      }
+    } else if (trans_type === "S") {
+      updateParams.REALIZE_FLAG = "S";
+    }
+    setReqPara(updateParams);
+  }, []);
+
   const mutation = useMutation(API.payslipRealizeEntrySave, {
     onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
@@ -182,7 +204,6 @@ const EntryFormView = ({
       },
     }
   );
-  console.log(reasonData, "GETRETURNREASON");
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -191,7 +212,6 @@ const EntryFormView = ({
     setFieldError
   ) => {
     endSubmit(true);
-    // console.log(data);
 
     if (screenFlag === "REALIZEENTRY") {
       const newTransferAccountData = {
@@ -251,10 +271,6 @@ const EntryFormView = ({
       };
 
       let upd = utilFunction.transformDetailsData(newData, oldData);
-      console.log(newData, "newdata");
-      console.log(oldData, "olddata");
-      console.log(upd, "..");
-
       isErrorFuncRef.current = {
         data: {
           ...newData,
@@ -272,7 +288,6 @@ const EntryFormView = ({
       mutation.mutate({
         ...isErrorFuncRef.current?.data,
       });
-      console.log(isErrorFuncRef.current?.data, "PAYLOAD");
     } else if (screenFlag === "CANCELENTRY") {
       const newTransferAccountData = {
         TRF_COMP_CD: data?.TRF_COMP_CD_DISP,
@@ -330,9 +345,6 @@ const EntryFormView = ({
       };
 
       let upd = utilFunction.transformDetailsData(newData, oldData);
-      console.log(newData, "newdata");
-      console.log(oldData, "olddata");
-      console.log(upd, "..");
 
       isErrorFuncRef.current = {
         data: {
@@ -356,7 +368,6 @@ const EntryFormView = ({
       });
     }
   };
-  console.log(rowsData?.RETRIVE_ENTRY_MODE);
 
   return (
     <>
@@ -423,9 +434,7 @@ const EntryFormView = ({
                         disabled={rowsData?.INDEX === undefined}
                         onClick={() => {
                           if (currentIndex && currentIndex !== gridData)
-                            console.log("next cliked and data", rowsData?.id);
-
-                          handleNext();
+                            handleNext();
                         }}
                       >
                         {t("MoveForward")}
@@ -490,6 +499,7 @@ const EntryFormView = ({
                                     TRAN_TYPE: trans_type,
                                     ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
                                     PARA_243: rowsData?.PARA_243,
+                                    ...(reqPara || {}),
                                     ENETERED_COMP_CD:
                                       rowsData?.ENETERED_COMP_CD,
                                     ENTERED_BRANCH_CD:

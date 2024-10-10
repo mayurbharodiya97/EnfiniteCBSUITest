@@ -161,8 +161,6 @@ export const RetriveGridForm: FC<{
     endSubmit(true);
   };
 
-  console.log(headerLabel);
-
   RetrieveFormConfigMetaData.form.label = headerLabel;
   RetrieveGridMetaData.gridConfig.gridLabel = "Enter Retrival Parameters";
   const handleDialogClose = () => {
@@ -170,6 +168,7 @@ export const RetriveGridForm: FC<{
     let event: any = { preventDefault: () => {} };
     formRef?.current?.handleSubmit(event, "RETRIEVE");
   };
+
   return (
     <>
       <>
@@ -201,7 +200,37 @@ export const RetriveGridForm: FC<{
                 </GradientButton>
               </Toolbar>
             </AppBar>
-            <Payslipissueconfirmation />
+            {<Payslipissueconfirmation />}
+          </Dialog>
+        ) : apiReqFlag === "RPT/14" ? (
+          <Dialog
+            open={opem}
+            PaperProps={{
+              style: {
+                overflow: "hidden",
+                height: "100vh",
+              },
+            }}
+            fullScreen
+            maxWidth="xl"
+          >
+            <AppBar position="relative" color="secondary">
+              <Toolbar
+                className={headerClasses.root}
+                variant="dense"
+                sx={{ display: "flex", justifyContent: "end" }}
+              >
+                <GradientButton
+                  onClick={(event) => {
+                    close();
+                  }}
+                  color={"primary"}
+                >
+                  {t("close")}
+                </GradientButton>
+              </Toolbar>
+            </AppBar>
+            {<PaySlipIssueEntry />}
           </Dialog>
         ) : (
           <Dialog

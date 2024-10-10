@@ -524,34 +524,31 @@ export const AccdetailsFormMetaData = {
                   return { btnName, obj };
                 };
 
-                for (let i = 0; i < postData.MSG.length; i++) {
-                  if (postData.MSG[i]?.O_STATUS === "999") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "Validation Failed",
-                      message: postData.MSG[i]?.O_MESSAGE,
+                for (let i = 0; i < postData?.MSG.length; i++) {
+                  if (postData?.MSG[i]?.O_STATUS === "999") {
+                    const btnName = await formState.MessageBox({
+                      messageTitle: "ValidationFailed",
+                      message: postData?.MSG[i]?.O_MESSAGE,
                     });
                     returnVal = "";
-                  } else if (postData.MSG[i]?.O_STATUS === "99") {
-                    const { btnName, obj } = await getButtonName({
+                  } else if (postData?.MSG[i]?.O_STATUS === "99") {
+                    const btnName = await formState.MessageBox({
                       messageTitle: "Confirmation",
-                      message: postData[i]?.O_MESSAGE,
+                      message: postData?.MSG[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
                     btn99 = btnName;
                     if (btnName === "No") {
                       returnVal = "";
                     }
-                  } else if (postData.MSG[i]?.O_STATUS === "9") {
+                  } else if (postData?.MSG[i]?.O_STATUS === "9") {
+                    const btnName = await formState.MessageBox({
+                      messageTitle: "Alert",
+                      message: postData?.MSG[i]?.O_MESSAGE,
+                    });
+                  } else if (postData?.MSG[i]?.O_STATUS === "0") {
                     if (btn99 !== "No") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
-                        message: postData.MSG[i]?.O_MESSAGE,
-                      });
-                    }
-                    returnVal = postData[i];
-                  } else if (postData.MSG[i]?.O_STATUS === "0") {
-                    if (btn99 !== "No") {
-                      returnVal = postData[i];
+                      returnVal = postData;
                     } else {
                       returnVal = "";
                     }

@@ -15,9 +15,10 @@ import {
   GradientButton,
   GridMetaDataType,
   GridWrapper,
+  queryClient,
 } from "@acuteinfo/common-base";
 import { DDtransactionsMetadata } from "./paySlipMetadata";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { RetrieveEntryGrid } from "./entries/entryGrid";
 import { getDDtransactionScreenList } from "./api";
@@ -50,7 +51,14 @@ export const PayslipDDTransactionsEntry = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getModeMasterData"], () => getDDtransactionScreenList({ FLAG: "E" }));
+  >(["getDDtransactionScreenList"], () =>
+    getDDtransactionScreenList({ FLAG: "E" })
+  );
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getDDtransactionScreenList"]);
+    };
+  }, []);
 
   return (
     <>
@@ -73,7 +81,7 @@ export const PayslipDDTransactionsEntry = () => {
             data={data ?? []}
             setData={() => null}
             actions={actions}
-            loading={undefined}
+            loading={isLoading || isFetching}
             setAction={setCurrentAction}
             refetchData={null}
             onClickActionEvent={(index, id, currentData) => {
