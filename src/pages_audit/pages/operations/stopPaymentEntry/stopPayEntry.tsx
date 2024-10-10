@@ -78,19 +78,25 @@ const StopPaymentEntryCustom = () => {
     "validateInsert",
     API.validateInsert,
     {
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         validateInsertData.isLoading = false;
         async function insertData() {
           if (data?.O_STATUS !== "0") {
             let res = await MessageBox({
               messageTitle: "confirmation",
-              message: "InsertStopPaymentMsg",
-              buttonNames: ["No", "Yes"],
+              message:
+                variables?.FLAG === "P"
+                  ? "InsertStopPaymentMsg"
+                  : variables?.FLAG === "S"
+                  ? "InsertStopPaymentMsg2"
+                  : variables?.FLAG === "D"
+                  ? "InsertStopPaymentMsg3"
+                  : "",
+              buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
-              console.log("<<<insertReq", insertReq, reqDataRef);
               crudStopPay.mutate({ ...reqDataRef?.current?.insertReq });
             }
           } else {
@@ -284,7 +290,6 @@ const StopPaymentEntryCustom = () => {
                   TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
                   _isNewRow: true,
                 };
-                console.log("<<<onsub", data, reqDataRef);
 
                 validateInsertData.mutate({
                   BRANCH_CD: data?.BRANCH_CD,
@@ -294,6 +299,7 @@ const StopPaymentEntryCustom = () => {
                   CHEQUE_TO: data?.CHEQUE_TO,
                   RELEASE_DATE: "",
                   SCREEN_REF: "ETRN/048",
+                  FLAG: data?.FLAG,
                 });
 
                 //@ts-ignore

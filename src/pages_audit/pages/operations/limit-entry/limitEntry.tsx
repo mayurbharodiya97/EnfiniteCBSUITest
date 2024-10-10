@@ -294,7 +294,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   }, []);
 
   useEffect(() => {
-    screenFlag === "limitForTrn" ??
+    screenFlag === "limitForTrn" &&
       (limitEntryGridMetaData.gridConfig.containerHeight = {
         min: "36vh",
         max: "30vh",
