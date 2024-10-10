@@ -58,6 +58,11 @@ export const StrBranchLevelForm: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
+
+    data["TRAN_BAL"] = data?.TRAN_BAL.toString().endsWith(".00")
+      ? data.TRAN_BAL.toString().slice(0, -3)
+      : data.TRAN_BAL.toString();
+
     let upd: any = utilFunction.transformDetailsData(data, rowsData ?? {});
     if (upd?._UPDATEDCOLUMNS?.length > 0) {
       const buttonName = await MessageBox({
