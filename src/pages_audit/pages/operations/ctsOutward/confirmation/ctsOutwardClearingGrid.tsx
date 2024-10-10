@@ -50,7 +50,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const isDataChangedRef = useRef(false);
   const { getEntries } = useContext(ClearCacheContext);
   let currentPath = useLocation().pathname;
-
+  const [formData, setFormData] = useState<any>({});
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
     () => API.getBussinessDate(),
@@ -144,13 +144,13 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
       CONFIRMED: actionFlag === "RETRIEVE" ? "N" : "0",
     };
     mutation.mutate(data);
+    setFormData(data);
     endSubmit(true);
   };
 
   const handleDialogClose = () => {
-    if (isDataChangedRef.current === true) {
-      isDataChangedRef.current = true;
-      mutation.mutate({
+    if (isDataChangedRef.current) {
+      const defaultData = {
         FROM_TRAN_DT:
           zoneTranType === "S"
             ? format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")
@@ -164,16 +164,16 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
         TRAN_TYPE: zoneTranType,
         CONFIRMED: "0",
         BANK_CD: "",
-        ZONE:
-          zoneTranType === "S"
-            ? "0   "
-            : zoneTranType === "R"
-            ? "10  "
-            : "18  ",
+        ZONE: zoneTranType === "S" ? "0" : zoneTranType === "R" ? "10" : "18",
         SLIP_CD: "",
         CHEQUE_NO: "",
         CHEQUE_AMOUNT: "",
-      });
+      };
+      mutation.mutate(
+        formData && Object.keys(formData).length > 0
+          ? { ...formData }
+          : defaultData
+      );
       isDataChangedRef.current = false;
     }
     navigate(".");
@@ -181,7 +181,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const handlePrev = useCallback(() => {
     navigate(".");
     const index = (indexRef.current -= 1);
-    console.log("index prev", index);
+    // console.log("index prev", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
@@ -192,13 +192,13 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
           },
         ],
       });
-      console.log("mutation?.data[index]", mutation?.data[index - 1]);
+      // console.log("mutation?.data[index]", mutation?.data[index - 1]);
     }, 0);
   }, [mutation?.data]);
   const handleNext = useCallback(() => {
     navigate(".");
     const index = indexRef.current++;
-    console.log("index next", index);
+    // console.log("index next", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
