@@ -273,7 +273,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                             " " +
                             "?"
                         ),
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
                       });
                       if (buttonName === "Yes") {

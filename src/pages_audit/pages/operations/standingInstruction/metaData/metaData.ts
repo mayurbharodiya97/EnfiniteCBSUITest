@@ -206,7 +206,7 @@ export const StandingInstructionMainMetaData = {
                   } else if (postData[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: t("Alert"),
+                        messageTitle: t("IncompleteDocument"),
                         message: postData[i]?.O_MESSAGE,
                       });
                     }

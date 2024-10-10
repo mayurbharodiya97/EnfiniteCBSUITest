@@ -55,7 +55,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "AccountNumber",
+      columnName: "AccountNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +65,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "AccountName",
+      columnName: "AccountHolder",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -98,7 +98,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "LastEnteredBy",
+      columnName: "User",
       sequence: 9,
       alignment: "center",
       componentType: "default",

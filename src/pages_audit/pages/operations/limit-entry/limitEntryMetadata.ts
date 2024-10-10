@@ -173,7 +173,7 @@ export const limitEntryMetaData = {
                   let btnName = await messagebox(
                     postData[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert message",
+                      : "Alert message",
                     postData[i]?.O_MESSAGE,
                     postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
                   );
