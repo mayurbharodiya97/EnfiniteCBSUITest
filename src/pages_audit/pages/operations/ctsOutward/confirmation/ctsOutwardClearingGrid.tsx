@@ -48,7 +48,6 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const indexRef = useRef(0);
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
-  const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
   let currentPath = useLocation().pathname;
 
@@ -146,14 +145,34 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     };
     mutation.mutate(data);
     endSubmit(true);
-    setFormData(data);
   };
 
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
       mutation.mutate({
-        ...formData,
+        FROM_TRAN_DT:
+          zoneTranType === "S"
+            ? format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")
+            : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+        TO_TRAN_DT:
+          zoneTranType === "S"
+            ? format(new Date(data?.[0]?.TRAN_DATE), "dd/MMM/yyyy")
+            : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState.user.branchCode,
+        TRAN_TYPE: zoneTranType,
+        CONFIRMED: "0",
+        BANK_CD: "",
+        ZONE:
+          zoneTranType === "S"
+            ? "0   "
+            : zoneTranType === "R"
+            ? "10  "
+            : "18  ",
+        SLIP_CD: "",
+        CHEQUE_NO: "",
+        CHEQUE_AMOUNT: "",
       });
       isDataChangedRef.current = false;
     }

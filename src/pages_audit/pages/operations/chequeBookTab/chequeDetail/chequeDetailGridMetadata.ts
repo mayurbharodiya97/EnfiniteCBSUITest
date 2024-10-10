@@ -3,7 +3,7 @@ export const ChequeDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "ChequeDetail",
-    rowIdColumn: "CHEQUE_NO",
+    rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
