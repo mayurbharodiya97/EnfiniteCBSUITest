@@ -114,6 +114,7 @@ export const printForm15G = async (apiReq) => {
       ...apiReq,
     });
   if (status === "0") {
+    console.log("data", data);
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

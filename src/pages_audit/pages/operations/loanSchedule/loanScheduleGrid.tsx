@@ -131,12 +131,12 @@ export const LoanScheduleGrid = () => {
   const loanScheduleHeaderData = useMutation(API.getLoanScheduleHeaderData, {
     onSuccess: (data) => {
       setSrCd(data?.[0]?.SR_CD);
-      const updateData = data.map((item) => ({
-        ...item,
-        DISBURSEMENT_AMT: Number(item?.DISBURSEMENT_AMT ?? 0).toFixed(2),
-        INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
-      }));
-      setHeaderGridData(updateData);
+      // const updateData = data.map((item) => ({
+      //   ...item,
+      //   DISBURSEMENT_AMT: Number(item?.DISBURSEMENT_AMT ?? 0).toFixed(2),
+      //   INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
+      // }));
+      setHeaderGridData(data);
       headerDataRef.current = data;
     },
     onError: (error: any) => {},
@@ -163,12 +163,7 @@ export const LoanScheduleGrid = () => {
         if (Array.isArray(data) && data.length > 0) {
           const updatedData = data.map((item) => ({
             ...item,
-            BEGIN_BAL: Number(item?.BEGIN_BAL ?? 0).toFixed(2),
             INT_RATE: Number(item?.INT_RATE ?? 0).toFixed(2),
-            INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
-            PRIN_DEMAND_AMT: Number(item?.PRIN_DEMAND_AMT ?? 0).toFixed(2),
-            INT_DEMAND_AMT: Number(item?.INT_DEMAND_AMT ?? 0).toFixed(2),
-            END_BAL: Number(item?.END_BAL ?? 0).toFixed(2),
           }));
           setDetailsGridData(updatedData);
         } else {
@@ -275,13 +270,6 @@ export const LoanScheduleGrid = () => {
       isDataChangedRef.current = false;
     }
   };
-
-  console.log(
-    "LoanSchedt",
-    LoanScheduleGridMetaData.gridConfig.containerHeight,
-    "hjhkjhkjhk",
-    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight
-  );
 
   return (
     <>
