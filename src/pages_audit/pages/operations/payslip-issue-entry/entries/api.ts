@@ -47,7 +47,7 @@ export const retRiveGridData = async ({
         ...items,
         INDEX: `${index}`,
         PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
-        PENDING_FLAG_DISP: items.PENDING_FLAG,
+        RETRIVE_ENTRY_MODE: A_ENTRY_MODE,
         REALIZE_FLAG: items.REALIZE_FLAG === "Y" ? "Confirmed" : "Pending",
         TOTAL_AMT: `${totals[items.TRAN_CD]}`,
       }));
@@ -170,6 +170,20 @@ export const DoddTransactionConfirmation = async ({ ...reqPara }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOPAYSLIPDDTRANSACTIONENTRY", {
       ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getReasonData = async ({ COMP_CD, BRANCH_CD, TRAN_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRETURNREASON", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      TRAN_CD: TRAN_CD,
     });
 
   if (status === "0") {

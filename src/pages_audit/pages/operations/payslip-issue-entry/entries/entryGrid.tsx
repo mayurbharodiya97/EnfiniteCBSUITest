@@ -69,8 +69,6 @@ export const RetriveGridForm: FC<{
   const retrievalParaRef = useRef<any>(null);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      console.log(data?.rows);
-
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -139,9 +137,9 @@ export const RetriveGridForm: FC<{
       A_PAYSLIP_NO: data?.PAYSLIP_NO,
       A_DEF_TRAN_CD: data?.DEF_TRAN_CD,
       A_ENTRY_MODE:
-        screenFlag === "REALIZE"
+        screenFlag === "REALIZEENTRY"
           ? data?.REALIZE
-          : screenFlag === "CANCEL"
+          : screenFlag === "CANCELENTRY"
           ? data?.CANCEL
           : screenFlag === "STOPPAYMENT"
           ? data?.STOPPAYMENT
@@ -282,6 +280,7 @@ export const RetriveGridForm: FC<{
                     handleNext={handleNext}
                     headerLabel={headerLabel}
                     screenFlag={screenFlag}
+                    trans_type={trans_type}
                   />
                 }
               />

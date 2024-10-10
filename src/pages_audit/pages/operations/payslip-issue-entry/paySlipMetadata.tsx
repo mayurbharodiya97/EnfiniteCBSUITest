@@ -1585,57 +1585,41 @@ export const DraftdetailsFormMetaData = {
 
             formState.setDataOnFieldChange("DRAFT_COMM", payload);
             if (formState?.isSubmitting) return {};
+
             if (currentField?.value) {
-              let gstValue =
-                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                  ?.value === "3"
-                  ? Math.floor(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "2"
-                  ? Math.ceil(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "1"
-                  ? Math.round(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : (parseInt(currentField?.value) *
-                      parseInt(
-                        dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                          ?.value
-                      )) /
-                      100 ?? "";
+              const taxRateValue =
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value;
+              const taxRate = parseInt(taxRateValue) || 0; // Default to 0 if undefined or NaN
+
+              let gstValue;
+              const commissionValue = parseInt(currentField.value) || 0; // Default to 0 if undefined or NaN
+              const gstRoundValue =
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]?.value;
+
+              if (gstRoundValue === "3") {
+                gstValue = Math.floor((commissionValue * taxRate) / 100);
+              } else if (gstRoundValue === "2") {
+                gstValue = Math.ceil((commissionValue * taxRate) / 100);
+              } else if (gstRoundValue === "1") {
+                gstValue = Math.round((commissionValue * taxRate) / 100);
+              } else {
+                gstValue = (commissionValue * taxRate) / 100;
+              }
+
               return {
                 SERVICE_CHARGE: {
-                  value: gstValue ?? "",
+                  value: gstValue,
                   ignoreUpdate: true,
                 },
               };
-            } else if (!currentField?.value || currentField?.value === "") {
+            } else {
               return {
                 SERVICE_CHARGE: {
                   value: "0",
                 },
               };
             }
+
             return {};
           },
 

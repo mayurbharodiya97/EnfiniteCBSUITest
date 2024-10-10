@@ -32,8 +32,9 @@ const EntryFormView = ({
   rowsData,
   headerLabel,
   screenFlag,
+  trans_type,
 }) => {
-  const [formMode, setFormMode] = useState("edit");
+  const [formMode, setFormMode] = useState("add");
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isErrorFuncRef = useRef<any>(null);
@@ -45,9 +46,18 @@ const EntryFormView = ({
     TRAN_CD: rowsData?.TRAN_CD,
     SR_CD: rowsData?.SR_CD,
   };
+  useEffect(() => {
+    if (screenFlag === "CANCELCONFRM") {
+      setFormMode("edit");
+    }
+  }, [screenFlag]);
   const { data: acctDtlData, isLoading: isAcctDtlLoading } = useQuery(
     ["headerData", requestData],
     () => headerDataRetrive(requestData)
+  );
+  const { data: reasonData, isLoading: isReasonDataLoading } = useQuery(
+    ["getReasonData", requestData],
+    () => API.getReasonData(requestData)
   );
   const { data: draftDtlData, isLoading: isdraftDtlLoading } = useQuery(
     ["draftdata", requestData],
@@ -140,6 +150,7 @@ const EntryFormView = ({
       onClose();
     },
   });
+
   const rejectMutaion = useMutation(
     "rejectMutaion",
     API.DoddTransactionConfirmation,
@@ -171,6 +182,8 @@ const EntryFormView = ({
       },
     }
   );
+  console.log(reasonData, "GETRETURNREASON");
+
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData: any,
@@ -180,7 +193,7 @@ const EntryFormView = ({
     endSubmit(true);
     // console.log(data);
 
-    if (screenFlag === "REALIZE") {
+    if (screenFlag === "REALIZEENTRY") {
       const newTransferAccountData = {
         TRF_COMP_CD: data?.TRF_COMP_CD_DISP,
         TRF_BRANCH_CD: data?.TRF_BRANCH_CD,
@@ -260,7 +273,7 @@ const EntryFormView = ({
         ...isErrorFuncRef.current?.data,
       });
       console.log(isErrorFuncRef.current?.data, "PAYLOAD");
-    } else if (screenFlag === "CANCEL") {
+    } else if (screenFlag === "CANCELENTRY") {
       const newTransferAccountData = {
         TRF_COMP_CD: data?.TRF_COMP_CD_DISP,
         TRF_BRANCH_CD: data?.TRF_BRANCH_CD,
@@ -341,9 +354,10 @@ const EntryFormView = ({
       mutation.mutate({
         ...isErrorFuncRef.current?.data,
       });
-      console.log(isErrorFuncRef.current?.data, "PAYLOAD");
     }
   };
+  console.log(rowsData?.RETRIVE_ENTRY_MODE);
+
   return (
     <>
       <Dialog
@@ -356,7 +370,7 @@ const EntryFormView = ({
         }}
         maxWidth="xl"
       >
-        {!isAcctDtlLoading && !isdraftDtlLoading ? (
+        {!isAcctDtlLoading && !isdraftDtlLoading && !isReasonDataLoading ? (
           <>
             <FormWrapper
               key={"modeMasterForm" + formMode}
@@ -384,6 +398,7 @@ const EntryFormView = ({
                 CHEQUE_NO_DISP: acctDtlData?.[0]?.CHEQUE_NO,
                 ...((acctDtlData?.length ? acctDtlData[0] : {}) || {}),
                 ...((draftDtlData?.length ? draftDtlData[0] : {}) || {}),
+                CANCEL_REASON: [...reasonData],
               }}
               formStyle={{
                 background: "white",
@@ -421,15 +436,42 @@ const EntryFormView = ({
                         <>
                           <GradientButton
                             onClick={async () => {
+                              // if (
+                              //   authState?.user?.id ===
+                              //   draftDtlData[0]?.REALIZE_BY
+                              // ) {
+                              //   await MessageBox({
+                              //     messageTitle: t("ValidationFailed"),
+                              //     message: t("ConfirmRestrictMsg"),
+                              //     buttonNames: ["Ok"],
+                              //   });
+                              // }
                               if (
-                                authState?.user?.id ===
-                                draftDtlData[0]?.REALIZE_BY
+                                trans_type === "TC" &&
+                                rowsData?.PARA_812 === "N" &&
+                                rowsData?.RETRIVE_ENTRY_MODE === "D"
                               ) {
-                                await MessageBox({
-                                  messageTitle: t("ValidationFailed"),
-                                  message: t("ConfirmRestrictMsg"),
-                                  buttonNames: ["Ok"],
-                                });
+                                if (
+                                  draftDtlData[0]?.ENTERED_BY ===
+                                  draftDtlData[0]?.REVALID_BY
+                                ) {
+                                  await MessageBox({
+                                    messageTitle: t("ValidationFailed"),
+                                    message: t("ConfirmRestrictMsg"),
+                                    buttonNames: ["Ok"],
+                                  });
+                                } else {
+                                  if (
+                                    draftDtlData[0]?.ENTERED_BY ===
+                                    draftDtlData[0]?.REALIZE_BY
+                                  ) {
+                                    await MessageBox({
+                                      messageTitle: t("ValidationFailed"),
+                                      message: t("ConfirmRestrictMsg"),
+                                      buttonNames: ["Ok"],
+                                    });
+                                  }
+                                }
                               } else if (authState?.role === "1") {
                                 const buttonName = await MessageBox({
                                   messageTitle: t("ValidationFailed"),
@@ -455,7 +497,7 @@ const EntryFormView = ({
                                 if (buttonName === "Yes") {
                                   confirmMutation.mutate({
                                     _isConfirmed: true,
-                                    TRAN_TYPE: "RC",
+                                    TRAN_TYPE: trans_type,
                                     ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
                                     PARA_243: rowsData?.PARA_243,
                                     ENETERED_COMP_CD:
@@ -581,6 +623,7 @@ export const EntryForm = ({
   handlePrev,
   headerLabel,
   screenFlag,
+  trans_type,
 }) => {
   const { state: rows } = useLocation();
   currentIndexRef.current = rows?.index;
@@ -597,6 +640,7 @@ export const EntryForm = ({
           handlePrev={handlePrev}
           headerLabel={headerLabel}
           screenFlag={screenFlag}
+          trans_type={trans_type}
         />
       </ClearCacheProvider>
     </>
