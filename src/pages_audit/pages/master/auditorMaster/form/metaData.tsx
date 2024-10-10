@@ -100,16 +100,6 @@ export const AuditorMstFormMetaData = {
       fullWidth: true,
       preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length <= 0) {
-          return "";
-        } else if (columnValue.value.length >= 11) {
-          return "The length of your Phone Number is greater than 10 character";
-        } else if (columnValue.value.length <= 9) {
-          return "The length of your Phone Number is less than 10 character";
-        }
-        return "";
-      },
     },
     {
       render: {
@@ -123,16 +113,6 @@ export const AuditorMstFormMetaData = {
       type: "text",
       autoComplete: "off",
       preventSpecialChars: localStorage.getItem("specialChar") || "",
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length <= 0) {
-          return "";
-        } else if (columnValue.value.length >= 11) {
-          return "The length of your Mobile Number is greater than 10 character";
-        } else if (columnValue.value.length <= 9) {
-          return "The length of your Mobile Number is less than 10 character";
-        }
-        return "";
-      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
     },
     {

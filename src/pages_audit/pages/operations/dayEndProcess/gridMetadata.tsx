@@ -265,7 +265,7 @@ export const verifyDayendChecksumsMetaData = {
       componentType: "buttonRowCell",
       buttonLabel: "REPORT",
       sequence: 14,
-      alignment: "center",
+      alignment: "right",
       width: 80,
       minWidth: 70,
       maxWidth: 100,

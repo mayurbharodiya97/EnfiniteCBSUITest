@@ -133,6 +133,7 @@ export const InsuranceDetailFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -143,6 +144,7 @@ export const InsuranceDetailFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = postData;
@@ -421,6 +423,7 @@ export const InsuranceDetailFormMetaData = {
                 messageTitle: "Alert",
                 message: `NetPremiumAmountCanGreaterThanInsuranceAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {
@@ -493,6 +496,7 @@ export const InsuranceDetailFormMetaData = {
                 messageTitle: "Alert",
                 message: `GSTShouldLessThanNetPremiumAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {

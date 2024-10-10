@@ -23,10 +23,25 @@ import {
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
-export const ForceExpire = ({ navigate, getLimitDetail }) => {
+type LimitDtlCustomProps = {
+  setLimitDtlOpen?: any;
+  navigate?: any;
+  getLimitDetail?: any;
+  screenFlag?: any;
+};
+export const ForceExpire: React.FC<LimitDtlCustomProps> = ({
+  navigate,
+  getLimitDetail,
+  setLimitDtlOpen,
+  screenFlag,
+}) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+
+  const handleCloseDialog = () => {
+    screenFlag === "limitForTrn" ? setLimitDtlOpen(false) : navigate(".");
+  };
 
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
@@ -139,7 +154,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
                     {t("Save")}
                   </Button>
                 )}
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
                 </Button>
               </>

@@ -46,6 +46,7 @@ export const LienEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
@@ -86,6 +87,7 @@ export const LienEntryMetadata = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -133,6 +135,10 @@ export const LienEntryMetadata = {
             }
             return true;
           },
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
         postValidationSetCrossFieldValues: async (
           field,
