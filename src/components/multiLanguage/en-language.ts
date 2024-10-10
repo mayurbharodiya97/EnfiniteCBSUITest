@@ -2031,4 +2031,7 @@ export const en_language_data = {
 
   // Cashier Exchange Entry
   TransferDetails: "Transfer Details",
+
+  // fix deposit confirmation
+  ConfirmationHistory: "Confirmation History",
 };

@@ -388,8 +388,23 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
     validateConfirm?.isLoading ||
     deleteMutation?.isLoading;
 
-  console.log("vdata?.TOT_AMT", data?.[0]?.TOT_AMT);
+  DualConfHistoryGridMetaData.gridConfig.disableGlobalFilter = true;
+  DualConfHistoryGridMetaData.gridConfig.enablePagination = false;
+  DualConfHistoryGridMetaData.gridConfig.containerHeight = {
+    min: "40vh",
+    max: "40vh",
+  };
 
+  const label =
+    rows?.[0]?.data?.TRN_FLAG === "I"
+      ? `Interest Payment of FD : ${rows?.[0]?.data?.FD_NO}`
+      : rows?.[0]?.data?.TRN_FLAG === "P"
+      ? `Payment of FD : ${rows?.[0]?.data?.FD_NO}`
+      : rows?.[0]?.data?.TRN_FLAG === "F"
+      ? `Deposit of FD : ${rows?.[0]?.data?.FD_NO}`
+      : rows?.[0]?.data?.TRN_FLAG === "U"
+      ? `Update of FD : ${rows?.[0]?.data?.FD_NO}`
+      : "";
   return (
     <>
       {paymentIsFetching || paymentIsLoading ? (
@@ -437,13 +452,14 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 variant={"h5"}
                 component="div"
               >
-                Fix Deposit Confirmation
+                {`Fix Deposit Confirmation \u00A0\u00A0\u00A0\u00A0${label}`}
               </Typography>
 
               <GradientButton
                 onClick={() => setOpenViewMaster(true)}
                 color={"primary"}
                 disabled={isLoading || isFetching || disableButton}
+                style={{ width: "150px" }}
               >
                 {t("View Master")}
               </GradientButton>
@@ -464,8 +480,9 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     validateConfirm?.isLoading ||
                     deleteMutation?.isLoading
                   }
+                  style={{ width: "230px" }}
                 >
-                  {t("ConfHistory")}
+                  {t("ConfirmationHistory")}
                 </GradientButton>
               ) : null}
 
