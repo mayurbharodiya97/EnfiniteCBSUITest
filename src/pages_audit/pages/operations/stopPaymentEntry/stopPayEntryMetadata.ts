@@ -442,7 +442,7 @@ export const StopPayEntryMetadata = {
       runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FromChequenorequired"] }],
       },
       required: true,
       GridProps: {
@@ -470,7 +470,7 @@ export const StopPayEntryMetadata = {
       ],
       validate: (field, dependentFields) => {
         if (!field?.value) {
-          return "ThisFieldisrequired";
+          return "ToChequenorequired";
         } else if (
           Number(dependentFields?.CHEQUE_FROM?.value) > Number(field?.value)
         ) {

@@ -100,7 +100,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                     let buttonName = await MessageBox({
                       messageTitle: t("confirmation"),
                       message: t("AreYouSureToConfirm"),
-                      buttonNames: ["No", "Yes"],
+                      buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
                     });
