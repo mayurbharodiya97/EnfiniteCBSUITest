@@ -1,1 +1,1 @@
-export { PayslipDDTransactionsEntry as default } from "./PayslipDDTransaction";
+export { PayslipDDTransactionsEntry as default } from "./PayslipDDTransactionsEntry";

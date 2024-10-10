@@ -103,8 +103,8 @@ export const RetrieveFormConfigMetaData = {
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependent) => {
         if (
-          dependent?.SCREEN_REF?.value === "CANCELCONFRM" ||
-          dependent?.SCREEN_REF?.value === "REALIZECONF"
+          dependent?.SCREEN_REF?.value === "CANCELCONFIRM" ||
+          dependent?.SCREEN_REF?.value === "REALIZECONFIRM"
         ) {
           return true;
         }
@@ -217,7 +217,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "REALIZECONF") {
+        if (dependentFields?.SCREEN_REF?.value === "REALIZECONFIRM") {
           return false;
         }
         return true;
@@ -275,7 +275,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "CANCELCONFRM") {
+        if (dependentFields?.SCREEN_REF?.value === "CANCELCONFIRM") {
           return false;
         }
         return true;
@@ -813,7 +813,7 @@ export const ddTransactionFormMetaData = {
       label: "Realized but Confirmation Pending",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+        if (dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM") {
           return false;
         }
         return true;
@@ -828,7 +828,7 @@ export const ddTransactionFormMetaData = {
       label: "Cancelled but Confirmation Pending",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "CANCELCONFRM") {
+        if (dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM") {
           return false;
         }
         return true;
@@ -844,8 +844,8 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["SCREENFLAG"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -854,8 +854,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -872,8 +872,8 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["CCTFLAG", "SCREENFLAG", "AMOUNT"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -882,8 +882,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -954,8 +954,8 @@ export const ddTransactionFormMetaData = {
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -964,8 +964,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -983,8 +983,8 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["SCREENFLAG", "ACCT_CD", "ACCT_TYPE", "REALIZE_AMT"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -993,8 +993,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -1061,8 +1061,8 @@ export const ddTransactionFormMetaData = {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -1099,8 +1099,8 @@ export const ddTransactionFormMetaData = {
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (
-            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+            dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
           ) {
             return true;
           } else return false;
@@ -1110,8 +1110,8 @@ export const ddTransactionFormMetaData = {
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
               dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
-              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1125,8 +1125,8 @@ export const ddTransactionFormMetaData = {
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (
-            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+            dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
           ) {
             return true;
           } else return false;
@@ -1136,8 +1136,8 @@ export const ddTransactionFormMetaData = {
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
               dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
-              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1155,7 +1155,7 @@ export const ddTransactionFormMetaData = {
           "SCREENFLAG",
         ],
         isReadOnly: (fieldValue, dependentFields, formState) => {
-          if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+          if (dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM") {
             return true;
           } else return false;
         },
@@ -1163,8 +1163,8 @@ export const ddTransactionFormMetaData = {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
-              dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1282,8 +1282,8 @@ export const ddTransactionFormMetaData = {
           dependent?.C_C_T_SP_C?.value === "T" &&
           (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
             dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
-            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-            dependent?.SCREENFLAG?.value === "REALIZECONF")
+            dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
         ) {
           return false;
         }
@@ -1330,8 +1330,8 @@ export const ddTransactionFormMetaData = {
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -1341,8 +1341,8 @@ export const ddTransactionFormMetaData = {
           dependent?.C_C_T_SP_C?.value === "C" &&
           (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
             dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
-            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-            dependent?.SCREENFLAG?.value === "REALIZECONF")
+            dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
         ) {
           return false;
         }
@@ -1583,7 +1583,7 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -1628,7 +1628,7 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -1651,7 +1651,7 @@ export const ddTransactionFormMetaData = {
           },
           _optionsKey: "getStopPaymentReason",
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if (dependentFields?.SCREENFLAG?.value === "CANCELCONFRM") {
+            if (dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM") {
               return true;
             } else return false;
           },

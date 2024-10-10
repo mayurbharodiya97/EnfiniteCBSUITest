@@ -2637,7 +2637,7 @@ export const DDtransactionsMetadata = {
   gridConfig: {
     dense: true,
     gridLabel: "Payslip/DD Transaction",
-    rowIdColumn: "DOCCD",
+    rowIdColumn: "DOC_CD",
     defaultColumnConfig: {
       width: 300,
       maxWidth: 300,
@@ -2666,7 +2666,7 @@ export const DDtransactionsMetadata = {
   filters: [],
   columns: [
     {
-      accessor: "DOCURL",
+      accessor: "DOC_NM",
       columnName: "",
       sequence: 1,
       alignment: "left",

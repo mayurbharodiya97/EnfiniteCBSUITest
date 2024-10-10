@@ -431,21 +431,11 @@ const EntryFormView = ({
                         {t("MoveForward")}
                       </GradientButton>
 
-                      {screenFlag === "CANCELCONFRM" ||
-                      screenFlag === "REALIZECONF" ? (
+                      {screenFlag === "CANCELCONFIRM" ||
+                      screenFlag === "REALIZECONFIRM" ? (
                         <>
                           <GradientButton
                             onClick={async () => {
-                              // if (
-                              //   authState?.user?.id ===
-                              //   draftDtlData[0]?.REALIZE_BY
-                              // ) {
-                              //   await MessageBox({
-                              //     messageTitle: t("ValidationFailed"),
-                              //     message: t("ConfirmRestrictMsg"),
-                              //     buttonNames: ["Ok"],
-                              //   });
-                              // }
                               if (
                                 trans_type === "TC" &&
                                 rowsData?.PARA_812 === "N" &&

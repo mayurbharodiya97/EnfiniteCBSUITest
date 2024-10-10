@@ -31,6 +31,7 @@ import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import { PaySlipIssueEntry } from "../paySlipIssueEntryGrid";
 import { EntryForm } from "./entryForm";
+import { Payslipissueconfirmation } from "../../payslipissueconfirmation/payslipissueconfirmationGrid";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -143,9 +144,9 @@ export const RetriveGridForm: FC<{
           ? data?.CANCEL
           : screenFlag === "STOPPAYMENT"
           ? data?.STOPPAYMENT
-          : screenFlag === "CANCELCONFRM"
+          : screenFlag === "CANCELCONFIRM"
           ? data?.CANCELCONFRM
-          : screenFlag === "REALIZECONF"
+          : screenFlag === "REALIZECONFIRM"
           ? data?.REALIZECONF
           : "",
       ALL_BRANCH: "Y",
@@ -172,7 +173,7 @@ export const RetriveGridForm: FC<{
   return (
     <>
       <>
-        {apiReqFlag === "RPT/14" ? (
+        {apiReqFlag === "RPT/15" ? (
           <Dialog
             open={opem}
             PaperProps={{
@@ -200,7 +201,7 @@ export const RetriveGridForm: FC<{
                 </GradientButton>
               </Toolbar>
             </AppBar>
-            <PaySlipIssueEntry />
+            <Payslipissueconfirmation />
           </Dialog>
         ) : (
           <Dialog
