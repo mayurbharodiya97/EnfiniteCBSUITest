@@ -323,6 +323,7 @@ export const personal_detail_prefix_data = {
         componentType: "spacer",
         sequence: 13,
       },
+      name: "SPACER1",
       sequence: 14,
       GridProps: {
         xs: 12,
@@ -1087,6 +1088,7 @@ export const personal_individual_detail_metadata = {
         componentType: "spacer",
         sequence: 13,
       },
+      name: "SPACER2",
       sequence: 14,
       GridProps: {
         xs: 12,

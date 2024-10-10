@@ -61,6 +61,7 @@ import {
   RemarksAPIWrapper,
   usePopupContext,
 } from "@acuteinfo/common-base";
+import { enqueueSnackbar } from "notistack";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -106,7 +107,10 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   // save new account entry
   const saveAcctMutation: any = useMutation(API.accountSave, {
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      enqueueSnackbar("Account Saved Successfully", { variant: "success" });
+      closeForm();
+    },
     onError: (error: any) => {},
   });
 
