@@ -12,27 +12,26 @@ const AcctMST = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-  // cheking
   return (
     <>
-      <Grid item xs="auto">
-        <CustomTabs
-          textColor="secondary"
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="acct-mst-tabs"
-        >
-          {/* <Tab label="Add New" /> */}
-          <Tab label={t("Retrieve")} />
-          <Tab label={t("Pending")} />
-        </CustomTabs>
-      </Grid>
-      <TabPanel value={tabValue} index={0}>
-        <RetrieveAcct />
-      </TabPanel>
-      <TabPanel value={tabValue} index={1}>
-        <PendingAcct />
-      </TabPanel>
+    <Grid item xs="auto">
+      <CustomTabs
+        textColor="secondary"
+        value={tabValue}
+        onChange={handleTabChange}
+        aria-label="acct-mst-tabs"
+      >
+        {/* <Tab label="Add New" /> */}
+        <Tab label={t("Retrieve")} />
+        <Tab label={t("Pending")} />
+      </CustomTabs>
+    </Grid>
+    <TabPanel value={tabValue} index={0}>
+      <RetrieveAcct />
+    </TabPanel>
+    <TabPanel value={tabValue} index={1}>
+      <PendingAcct />
+    </TabPanel>
     </>
   );
 };
