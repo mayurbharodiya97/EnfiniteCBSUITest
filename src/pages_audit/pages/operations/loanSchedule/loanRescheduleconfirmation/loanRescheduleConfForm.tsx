@@ -191,18 +191,24 @@ export const LoanRescheduleConfForm = ({ closeDialog, isDataChangedRef }) => {
     [navigate]
   );
 
-  console.log("detailsData", rows?.[0]?.data?.ACCT_NO);
-
   useEffect(() => {
     LoanScheduleDetailsGridMetadata.gridConfig.hideHeader = false;
     LoanScheduleDetailsGridMetadata.columns[8].isVisible = false;
     LoanScheduleDetailsGridMetadata.gridConfig.gridLabel = `Loan Reschedule Confirmation for A/c No.: ${rows?.[0]?.data?.ACCT_NO} `;
     LoanScheduleDetailsGridMetadata.gridConfig.disableGlobalFilter = true;
+    LoanScheduleDetailsGridMetadata.columns[2].width = 150;
+    LoanScheduleDetailsGridMetadata.columns[5].width = 150;
+    LoanScheduleDetailsGridMetadata.columns[6].width = 150;
+    LoanScheduleDetailsGridMetadata.columns[7].width = 150;
     return () => {
       LoanScheduleDetailsGridMetadata.gridConfig.hideHeader = true;
       LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
       LoanScheduleDetailsGridMetadata.gridConfig.gridLabel = "";
       LoanScheduleDetailsGridMetadata.gridConfig.disableGlobalFilter = false;
+      LoanScheduleDetailsGridMetadata.columns[2].width = 190;
+      LoanScheduleDetailsGridMetadata.columns[5].width = 190;
+      LoanScheduleDetailsGridMetadata.columns[6].width = 190;
+      LoanScheduleDetailsGridMetadata.columns[7].width = 200;
     };
   }, []);
   return (
@@ -211,7 +217,7 @@ export const LoanRescheduleConfForm = ({ closeDialog, isDataChangedRef }) => {
         open={true}
         PaperProps={{
           style: {
-            width: "85%",
+            width: "100%",
             overflow: "auto",
             padding: "10px",
           },
