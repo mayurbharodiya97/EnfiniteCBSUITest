@@ -3,18 +3,13 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { pendingAcctMetadata } from "./metadata/pendingAcctMetadata";
-import { ActionTypes } from "@acuteinfo/common-base";
+import { ActionTypes, usePopupContext } from "@acuteinfo/common-base";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AcctModal from "./AcctModal";
 import { Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 
-import {
-  MessageBoxWrapper,
-  Alert,
-  GridMetaDataType,
-  GridWrapper,
-} from "@acuteinfo/common-base";
+import { Alert, GridMetaDataType, GridWrapper } from "@acuteinfo/common-base";
 
 const AcctConfirm = () => {
   const { authState } = useContext(AuthContext);
@@ -22,10 +17,7 @@ const AcctConfirm = () => {
   const [rowsData, setRowsData] = useState<any[]>([]);
   const navigate = useNavigate();
   const location: any = useLocation();
-
-  // temporary-use-state
-  const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
-
+  const { MessageBox } = usePopupContext();
   const {
     data: PendingAcct,
     isError: isPendingError,
@@ -57,12 +49,16 @@ const AcctConfirm = () => {
     // },
   ];
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       // console.log("weohhfdwef", data)
       const maker = data.rows?.[0]?.data?.MAKER;
       const loggedinUser = authState?.user?.id;
       if (maker === loggedinUser) {
-        setPreventConfirmDialog(true);
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "You can not confirm your own posted transaction",
+          buttonNames: ["Ok"],
+        });
       } else {
         if (data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
           navigate("photo-signature", {
@@ -123,21 +119,6 @@ const AcctConfirm = () => {
         refetchData={() => PendingRefetch()}
         // ref={myGridRef}
       />
-
-      {/* Commented Temporary */}
-      {/* <MessageBoxWrapper
-        // MessageTitle={"ALERT"}
-        Message={"You can not confirm your own posted transaction"}
-        onClickButton={() => {
-          setPreventConfirmDialog(false);
-          // setConfirmAction(null)
-          // setConfirmMsgDialog(false)
-          // closeForm()
-        }}
-        rows={[]}
-        buttonNames={["OK"]}
-        open={preventConfirmDialog}
-      /> */}
 
       <Routes>
         <Route
