@@ -181,7 +181,7 @@ export const LienEntryMetadata = {
                   let btnName = await messagebox(
                     apiRespMSGdata[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert message",
+                      : "Alert message",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"
                       ? ["Yes", "No"]
@@ -275,7 +275,7 @@ export const LienEntryMetadata = {
       name: "LIEN_STATUS",
       label: "LienStatus",
       isReadOnly: true,
-      required: true,
+      required: false,
       defaultValue: "A",
       options: () => {
         return [
@@ -453,7 +453,7 @@ export const LienEntryMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      required: true,
+      required: false,
       placeholder: "EnterRemarks",
       schemaValidation: {
         type: "string",

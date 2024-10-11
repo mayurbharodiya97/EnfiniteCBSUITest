@@ -261,14 +261,14 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_AMT_LIST",
-      columnName: "ChequeAmountList",
+      columnName: "ChequeAmount",
       sequence: 5,
       alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 200,
       minWidth: 150,
-      maxWidth: 250,
+      maxWidth: 500,
     },
     {
       accessor: "TRAN_DT",

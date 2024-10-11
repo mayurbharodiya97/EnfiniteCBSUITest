@@ -569,7 +569,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                             const buttonName = await MessageBox({
                               messageTitle: t("Confirmation"),
                               message: t("DoYouWantToAllowTheTransaction"),
-                              buttonNames: ["No", "Yes"],
+                              buttonNames: ["Yes", "No"],
                               loadingBtnName: ["Yes"],
                             });
                             if (buttonName === "Yes") {
@@ -685,7 +685,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                           const buttonName = await MessageBox({
                             messageTitle: t("Confirmation"),
                             message: t("DoYouWantToRejectThisTransaction"),
-                            buttonNames: ["No", "Yes"],
+                            buttonNames: ["Yes", "No"],
                             defFocusBtnName: "Yes",
                             loadingBtnName: ["Yes"],
                           });
@@ -1005,7 +1005,7 @@ const RtgsBranchHoConfirmationForm: FC<{
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: t("DoYouWantDeleteRow"),
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
                 loadingBtnName: ["Yes"],
               });
