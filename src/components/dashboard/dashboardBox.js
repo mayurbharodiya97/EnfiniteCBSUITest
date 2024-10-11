@@ -43,6 +43,7 @@ export const DashboardBox = ({
     API.getDynamicBoxData(apiName, {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
+      USER_ID: authState?.user?.id ?? "",
     })
   );
 

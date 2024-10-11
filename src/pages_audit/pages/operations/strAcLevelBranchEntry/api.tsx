@@ -6,7 +6,10 @@ export const getStrBranchLevelData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETSTRDATA`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data.map((a, i) => {
+      a.index = i;
+      return a;
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

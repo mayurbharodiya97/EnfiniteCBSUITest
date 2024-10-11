@@ -323,6 +323,7 @@ export const RtgsEntryFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "9") {
@@ -330,6 +331,7 @@ export const RtgsEntryFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = "";
@@ -710,6 +712,7 @@ export const RtgsEntryFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData[i]?.ERR_MSG,
+                  icon: "WARNING",
                 });
                 if (btnName === "Ok") {
                   return {
@@ -730,6 +733,7 @@ export const RtgsEntryFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.ERR_MSG,
+                    icon: "WARNING",
                   });
                 }
               } else if (postData[i]?.ERR_CODE === "99") {
@@ -889,6 +893,7 @@ export const RtgsEntryFormMetaData = {
                 messageTitle: "ValidationFailed",
                 message: `AmountCantBelessThan ${dependentFieldsValues?.["ENTRY_TYPE"]?.optionData?.[0]?.TRN_LIMIT} RTGSMinimumLimit`,
                 buttonNames: ["Ok"],
+                icon: "ERROR",
               });
               if (buttonName === "Ok") {
                 return {
@@ -926,6 +931,7 @@ export const RtgsEntryFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: Validate[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   if (btnName === "Ok") {
                     return {
@@ -946,6 +952,7 @@ export const RtgsEntryFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: Validate[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                 } else if (Validate[i]?.O_STATUS === "99") {
@@ -1569,7 +1576,7 @@ export const rtgsAccountDetailFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
@@ -2300,6 +2307,7 @@ export const AuditBenfiDetailFormMetadata = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "9") {
@@ -2307,6 +2315,7 @@ export const AuditBenfiDetailFormMetadata = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = "";
@@ -2603,6 +2612,7 @@ export const AuditBenfiDetailFormMetadata = {
           formState?.MessageBox({
             messageTitle: "Alert",
             message: "ThisRecordWillNotSaveBeneficiaryMaster",
+            icon: "WARNING",
           });
         }
         return {};

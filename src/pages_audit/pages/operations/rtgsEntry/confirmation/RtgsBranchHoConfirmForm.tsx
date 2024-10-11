@@ -413,6 +413,7 @@ const RtgsBranchHoConfirmationForm: FC<{
             messageTitle: t("ValidationFailed"),
             message: t("CannotDeleteConfirmedTransaction"),
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
         } else if (
           !(
@@ -424,6 +425,7 @@ const RtgsBranchHoConfirmationForm: FC<{
             messageTitle: t("ValidationFailed"),
             message: t("CannotDeleteBackDatedEntry"),
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
         } else {
           SetDeleteRemark(true);
@@ -495,6 +497,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 "BranchRejectedTransactionNotAllowConfirmed"
                               ),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (
                             rowsData?.BR_CONFIRMED !== "Y" &&
@@ -506,12 +509,14 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 "BranchConfirmationPendingTransactionNotAllowedToConfirm"
                               ),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (rowsData?.HO_CONFIRMED === "Y") {
                             await MessageBox({
                               messageTitle: t("ValidationFailed"),
                               message: t("TransationAlreadyConfirmed"),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (rowsData?.HO_CONFIRMED === "T") {
                             await MessageBox({
@@ -520,6 +525,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 "RejectedTransactionNotAllowToConfirm"
                               ),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (
                             !(
@@ -537,6 +543,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                               messageTitle: t("ValidationFailed"),
                               message: t("CannotConfirmBackDatedEntry"),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (
                             authState?.user?.id === rowsData?.ENTERED_BY
@@ -545,6 +552,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                               messageTitle: t("ValidationFailed"),
                               message: t("ConfirmRestrictMsg"),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else if (
                             rowsData?.VERIFIED_BY === authState?.user?.id
@@ -555,12 +563,13 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 "YouCantConfirmYourOwnBranchConfirmation"
                               ),
                               buttonNames: ["Ok"],
+                              icon: "ERROR",
                             });
                           } else {
                             const buttonName = await MessageBox({
                               messageTitle: t("Confirmation"),
                               message: t("DoYouWantToAllowTheTransaction"),
-                              buttonNames: ["No", "Yes"],
+                              buttonNames: ["Yes", "No"],
                               loadingBtnName: ["Yes"],
                             });
                             if (buttonName === "Yes") {
@@ -626,6 +635,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                               "YouCantDeleteRejectHOConfirmedTransaction"
                             ),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else if (
                           rowsData?.HO_CONFIRMED === "T" ||
@@ -635,6 +645,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                             messageTitle: t("ValidationFailed"),
                             message: t("TransactionAlreadyRejected"),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else if (
                           flag === "BO"
@@ -648,6 +659,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 ? t("YouCantDeleteConfirmedTransaction")
                                 : t("YouCantRejectEntryAlreadyConfirmedByHO"),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else if (
                           !(
@@ -665,6 +677,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                             messageTitle: t("ValidationFailed"),
                             message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else if (flag === "BO") {
                           SetDeleteRemark(true);
@@ -672,7 +685,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                           const buttonName = await MessageBox({
                             messageTitle: t("Confirmation"),
                             message: t("DoYouWantToRejectThisTransaction"),
-                            buttonNames: ["No", "Yes"],
+                            buttonNames: ["Yes", "No"],
                             defFocusBtnName: "Yes",
                             loadingBtnName: ["Yes"],
                           });
@@ -992,7 +1005,7 @@ const RtgsBranchHoConfirmationForm: FC<{
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: t("DoYouWantDeleteRow"),
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
                 loadingBtnName: ["Yes"],
               });

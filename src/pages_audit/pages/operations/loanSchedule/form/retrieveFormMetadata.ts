@@ -41,25 +41,11 @@ export const RetrievalFormMetaData = {
     {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
-        runPostValidationHookAlways: true,
-        postValidationSetCrossFieldValues: async (
-          currentField,
-          formState,
-          authState,
-          dependentFieldValues
-        ) => {
-          return {
-            ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
-            BALANCE: { value: "" },
-          };
-        },
-        validationRun: "onChange",
-        isFieldFocused: true,
+        isReadOnly: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       },
       accountTypeMetadata: {
+        isFieldFocused: true,
         runPostValidationHookAlways: true,
         dependentFields: ["BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
@@ -68,32 +54,6 @@ export const RetrievalFormMetaData = {
           authState,
           dependentFieldValues
         ) => {
-          if (
-            currentField?.value &&
-            dependentFieldValues?.["BRANCH_CD"]?.value?.length === 0
-          ) {
-            let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
-              message: "Enter Account Branch.",
-              buttonNames: ["Ok"],
-              icon: "WARNING",
-            });
-
-            if (buttonName === "Ok") {
-              return {
-                ACCT_TYPE: {
-                  value: "",
-                  isFieldFocused: false,
-                  ignoreUpdate: true,
-                },
-                BRANCH_CD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-              };
-            }
-          }
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },

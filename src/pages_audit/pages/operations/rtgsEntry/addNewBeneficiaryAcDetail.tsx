@@ -107,6 +107,7 @@ export const AddNewBeneficiaryDetail: FC<{
         MessageBox({
           messageTitle: "Alert",
           message: data?.[0]?.O_MESSAGE,
+          icon: "WARNING",
         });
       }
     },
