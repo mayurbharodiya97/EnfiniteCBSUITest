@@ -262,13 +262,13 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
           } else if (data[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
               messageTitle: "Alert",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
             });
             if (btnName === "No") {
@@ -302,13 +302,13 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
             } else if (data[i]?.O_STATUS === "9") {
               const btnName = await MessageBox({
                 messageTitle: "Alert",
-                message: data?.[0]?.O_MESSAGE,
+                message: data[i]?.O_MESSAGE,
                 icon: "WARNING",
               });
             } else if (data[i]?.O_STATUS === "99") {
               const btnName = await MessageBox({
                 messageTitle: "Confirmation",
-                message: data?.[0]?.O_MESSAGE,
+                message: data[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
               });
               if (btnName === "No") {

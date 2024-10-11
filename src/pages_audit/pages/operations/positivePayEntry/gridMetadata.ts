@@ -76,7 +76,7 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       dateFormat: "dd/MM/yyyy",
       width: 150,
       minWidth: 130,
-      maxWidth: 170,
+      maxWidth: 200,
     },
     {
       accessor: "CHEQUE_AMT",
@@ -84,9 +84,9 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "right",
       componentType: "currency",
-      width: 100,
+      width: 170,
       minWidth: 70,
-      maxWidth: 130,
+      maxWidth: 300,
     },
     {
       accessor: "PAYEE_NM",
@@ -97,6 +97,7 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
       width: 300,
       minWidth: 250,
       maxWidth: 400,
+      showTooltip: true,
     },
     {
       accessor: "REQ_CHANNEL",

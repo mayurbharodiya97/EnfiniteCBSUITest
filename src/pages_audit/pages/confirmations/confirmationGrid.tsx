@@ -37,8 +37,9 @@ import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmati
 import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confirmationForm";
 import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
 import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
+import { Typography } from "@mui/material";
 
-export const Confirmations = ({ screenFlag, reqData }) => {
+export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "view-details",
@@ -109,7 +110,9 @@ export const Confirmations = ({ screenFlag, reqData }) => {
       rowDoubleClick: false,
       alwaysAvailable: true,
     });
-  } else if (screenFlag === "limitCFM" || "limitForTrn") {
+  } else if (screenFlag === "limitCFM") {
+    gridMetaData = limitConfirmGridMetaData;
+  } else if (screenFlag === "limitForTrn") {
     gridMetaData = limitConfirmGridMetaData;
   } else if (screenFlag === "stockCFM") {
     gridMetaData = stockConfirmGridMetaData;
@@ -137,7 +140,7 @@ export const Confirmations = ({ screenFlag, reqData }) => {
         <GridWrapper
           key={`ConfirmationReqGrid-` + screenFlag}
           finalMetaData={gridMetaData as GridMetaDataType}
-          data={reqData ? reqData : result.data ?? []}
+          data={result.data ?? []}
           setData={() => null}
           loading={result.isLoading}
           actions={actions}
@@ -152,6 +155,17 @@ export const Confirmations = ({ screenFlag, reqData }) => {
           // }
           ref={myGridRef}
         />
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            color: "rgb(152 59 70 / 61%)",
+            marginLeft: "630px",
+            marginTop: "-43.2px",
+          }}
+          variant="subtitle1"
+        >
+          Double Click To Confirm Entry.
+        </Typography>
         <Routes>
           <Route
             path="view-details/*"
@@ -161,11 +175,10 @@ export const Confirmations = ({ screenFlag, reqData }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ) : screenFlag === "limitCFM" || "limitForTrn" ? (
+              ) : screenFlag === "limitCFM" ? (
                 <LimitConfirmationForm
                   closeDialog={ClosedEventCall}
                   result={result}
-                  screenFlag="limitForTrn"
                 />
               ) : screenFlag === "stockCFM" ? (
                 <StockConfirmationForm
@@ -211,13 +224,12 @@ export const Confirmations = ({ screenFlag, reqData }) => {
   );
 };
 
-export const ConfirmationGridWrapper = ({ screenFlag, reqData }) => {
+export const ConfirmationGridWrapper = ({ screenFlag }) => {
   return (
     <ClearCacheProvider>
       <Confirmations
         key={screenFlag + "-Confirmation"}
         screenFlag={screenFlag}
-        reqData={reqData}
       />
     </ClearCacheProvider>
   );

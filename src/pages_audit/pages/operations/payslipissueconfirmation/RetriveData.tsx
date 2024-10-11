@@ -70,6 +70,7 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
           formStyle={{
             background: "white",
           }}
+          initialValues={{}}
           controlsAtBottom
           containerstyle={{ padding: "10px" }}
           ref={formRef}

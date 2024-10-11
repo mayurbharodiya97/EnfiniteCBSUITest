@@ -140,12 +140,21 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     "getCtsAndInwardConfirmtion",
     API.getCtsAndInwardConfirmtion,
     {
-      onSuccess: (data) => {
-        enqueueSnackbar(data, {
-          variant: "success",
-        });
-        isDataChangedRef.current = true;
-        onClose();
+      onSuccess: async (data) => {
+        if (data[0]?.STATUS === "999") {
+          await MessageBox({
+            messageTitle: "ValidationFailed",
+            message: data[0]?.MSG,
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+        } else if (data[0]?.STATUS === "0") {
+          enqueueSnackbar("success", {
+            variant: "success",
+          });
+          isDataChangedRef.current = true;
+          onClose();
+        }
         CloseMessageBox();
       },
       onError: (error: any) => {
@@ -205,7 +214,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
     };
     document.addEventListener("keydown", handleKeyDown);
   }, []);
-
   return (
     <Fragment>
       <>
@@ -257,8 +265,15 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     } else {
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
-                        message: t("ProceedGen"),
-                        buttonNames: ["No", "Yes"],
+                        message: t(
+                          "DoYouWantToAllowTheTransaction" +
+                            " - " +
+                            "Slip No." +
+                            data?.[0]?.SLIP_CD +
+                            " " +
+                            "?"
+                        ),
+                        buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
                       });
                       if (buttonName === "Yes") {
@@ -274,10 +289,10 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                           AMOUNT: data?.[0]?.AMOUNT,
                           SCREEN_REF:
                             zoneTranType === "S"
-                              ? "ETRN/560"
+                              ? "TRN/560"
                               : zoneTranType === "R"
-                              ? "ETRN/029"
-                              : "ETRN/346",
+                              ? "TRN/332"
+                              : "TRN/346",
                         });
                       }
                     }
@@ -294,10 +309,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         buttonNames: ["Ok"],
                       });
                     } else if (
-                      !(
-                        format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-                        format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-                      )
+                      format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
+                      format(new Date(authState?.workingDate), "dd/MMM/yyyy")
                     ) {
                       await MessageBox({
                         messageTitle: t("Validation Failed"),
@@ -309,7 +322,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     }
                   }}
                 >
-                  {t("Remove")}
+                  {t("Reject")}
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
@@ -328,7 +341,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   {t("Previous")}
                 </GradientButton>
                 {zoneTranType === "R" &&
-                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD === undefined && (
+                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD !== null &&
+                  data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD !== undefined && (
                     <>
                       <GradientButton
                         onClick={() => {
@@ -496,22 +510,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                               : zoneTranType === "R"
                               ? "INWARD RETURN CONFIRMATION(TRN/332)"
                               : "OUTWARD RETURN CONFIRMATION(TRN/346)",
-                          DETAILS_DATA: {
-                            isNewRow: [],
-                            isDeleteRow: [
-                              {
-                                TRAN_CD: rowsData?.TRAN_CD,
-                              },
-                            ],
-                            isUpdatedRow: [],
-                          },
-                          _isDeleteRow: true,
-                        });
-
-                        deleteMutation.mutate({
-                          DAILY_CLEARING: {
-                            TRAN_CD: rowsData?.TRAN_CD,
-                          },
                           DETAILS_DATA: {
                             isNewRow: [],
                             isDeleteRow: [
