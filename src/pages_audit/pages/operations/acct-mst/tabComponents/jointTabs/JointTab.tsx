@@ -9,7 +9,7 @@ import { AuthContext } from "pages_audit/auth";
 import TabNavigate from "../../TabNavigate";
 import _ from "lodash";
 import { joint_tab_metadata } from "../../tabMetadata/jointTabMetadata";
-import { AcctMSTContext } from "./AcctMSTContext";
+import { AcctMSTContext } from "../../AcctMSTContext";
 
 const JointTab = () => {
   const {

@@ -96,13 +96,8 @@ export const LoanRescheduleForm = ({
       enabled: fetchData,
       onSuccess(data) {
         if (Array.isArray(data) && data.length > 0) {
-          const updateData = data.map((item) => ({
-            ...item,
-            DISBURSEMENT_AMT: Number(item?.DISBURSEMENT_AMT ?? 0).toFixed(2),
-            INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
-          }));
-          setGridData(updateData);
-          gridRef.current = updateData;
+          setGridData(data);
+          gridRef.current = data;
           setShouldFetchDetails(true);
         } else {
           setGridData([]);
@@ -135,12 +130,7 @@ export const LoanRescheduleForm = ({
         if (Array.isArray(data) && data.length > 0) {
           const updatedData = data.map((item) => ({
             ...item,
-            BEGIN_BAL: Number(item?.BEGIN_BAL ?? 0).toFixed(2),
             INT_RATE: Number(item?.INT_RATE ?? 0).toFixed(2),
-            INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
-            PRIN_DEMAND_AMT: Number(item?.PRIN_DEMAND_AMT ?? 0).toFixed(2),
-            INT_DEMAND_AMT: Number(item?.INT_DEMAND_AMT ?? 0).toFixed(2),
-            END_BAL: Number(item?.END_BAL ?? 0).toFixed(2),
           }));
           setDetailsGridData(updatedData);
         } else {
@@ -273,13 +263,13 @@ export const LoanRescheduleForm = ({
               } else if (data[i]?.O_STATUS === "9") {
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
                   messageTitle: "Confirmation",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                 });
                 if (btnName === "No") {
@@ -342,13 +332,13 @@ export const LoanRescheduleForm = ({
               } else if (data[i]?.O_STATUS === "9") {
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
                   messageTitle: "Confirmation",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                 });
                 if (btnName === "No") {

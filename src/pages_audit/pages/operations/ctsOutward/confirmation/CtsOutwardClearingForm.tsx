@@ -148,14 +148,13 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             buttonNames: ["Ok"],
             icon: "ERROR",
           });
-        } else if (data[0]?.O_STATUS === "0") {
-          enqueueSnackbar(data, {
+        } else if (data[0]?.STATUS === "0") {
+          enqueueSnackbar("success", {
             variant: "success",
           });
           isDataChangedRef.current = true;
           onClose();
         }
-
         CloseMessageBox();
       },
       onError: (error: any) => {
@@ -292,7 +291,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                             zoneTranType === "S"
                               ? "TRN/560"
                               : zoneTranType === "R"
-                              ? "TRN/029"
+                              ? "TRN/332"
                               : "TRN/346",
                         });
                       }

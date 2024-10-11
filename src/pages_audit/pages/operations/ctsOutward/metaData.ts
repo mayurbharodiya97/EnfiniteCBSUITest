@@ -928,10 +928,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           placeholder: "",
           type: "text",
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["PayeeACNorequired"] }],
-          },
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
 
@@ -2068,7 +2064,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       placeholder: "",
       width: 200,
       minWidth: 150,
-      maxWidth: 250,
+      maxWidth: 500,
       isDisplayTotal: true,
     },
     {

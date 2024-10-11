@@ -52,7 +52,13 @@ export const impsEntryMetadata = {
       isFieldFocused: true,
       required: true,
       placeholder: "Enter Customer Id",
-      dependentFields: ["PARA_602", "PARA_946", "RETRIEVE_DATA", "OLD_CUST_ID"],
+      dependentFields: [
+        "PARA_602",
+        "PARA_946",
+        "RETRIEVE_DATA",
+        "ROWDATA_LENGTH",
+        "OLD_CUST_ID",
+      ],
       isReadOnly: (fieldData, dependentFields) => {
         if (dependentFields?.RETRIEVE_DATA?.value === "Y") {
           return true;
@@ -71,9 +77,6 @@ export const impsEntryMetadata = {
           formState?.FORM_MODE === "add" &&
           dependent?.OLD_CUST_ID?.value !== field?.value
         ) {
-          formState?.setRowData([]);
-          formState?.setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
-
           let postData = await API.validateCustId({
             SCREEN_REF: "MST/843",
             CUST_ID: field?.value,
@@ -87,6 +90,12 @@ export const impsEntryMetadata = {
                 defFocusBtnName: "Ok",
               });
               if (buttonName === "Ok") {
+                formState.initialDataRef.current = {};
+                formState?.setRowData([]);
+                formState?.setIsData((old) => ({
+                  ...old,
+                  uniqueNo: Date.now(),
+                }));
                 return {
                   CUSTOMER_ID: { value: "", isFieldFocused: true },
                   ORGINAL_NM: { value: "" },
@@ -95,10 +104,24 @@ export const impsEntryMetadata = {
                   PAN_NO: { value: "" },
                   OLD_CUST_ID: { value: "" },
                   POPULATE: { value: "N" },
-                  CONFIRMED: { value: "N" },
+                  CONFIRMED: { value: "" },
                 };
               }
             } else if (message?.O_STATUS === "0") {
+              formState.initialDataRef.current = {
+                CUSTOMER_ID: field?.value,
+                ORGINAL_NM: postData?.[0]?.ORIGINAL_NM,
+                UNIQUE_ID: postData?.[0]?.UNIQUE_ID,
+                MOB_NO: postData?.[0]?.MOB_NO,
+                PAN_NO: postData?.[0]?.PAN_NO,
+                OLD_CUST_ID: field?.value,
+                CONFIRMED: postData?.[0]?.CONFIRMED,
+              };
+              formState?.setRowData([]);
+              formState?.setIsData((old) => ({
+                ...old,
+                uniqueNo: Date.now(),
+              }));
               return {
                 CUSTOMER_ID: {
                   value: field?.value,
@@ -111,14 +134,20 @@ export const impsEntryMetadata = {
                 PAN_NO: { value: postData?.[0]?.PAN_NO },
                 CONFIRMED: { value: postData?.[0]?.CONFIRMED },
                 OLD_CUST_ID: { value: field?.value },
+                COMP_CD: { value: authState?.companyID },
                 POPULATE: { value: "Y" },
               };
             }
           }
         } else if (!field?.value) {
-          formState?.setRowData([]);
-          formState?.setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
-
+          if (dependent?.ROWDATA_LENGTH?.value > 0) {
+            formState.initialDataRef.current = {};
+            formState?.setRowData([]);
+            formState?.setIsData((old) => ({
+              ...old,
+              uniqueNo: Date.now(),
+            }));
+          }
           return {
             ORGINAL_NM: { value: "" },
             UNIQUE_ID: { value: "" },
@@ -147,6 +176,7 @@ export const impsEntryMetadata = {
         componentType: "hidden",
       },
       name: "OLD_CUST_ID",
+      // defaultValue: "007",
     },
     {
       render: {
@@ -425,7 +455,7 @@ export const impsEntryMetadata = {
         },
         {
           render: { componentType: "datePicker" },
-          name: "REG_DATE",
+          name: "REG_DT",
           type: "date",
           label: "Reg. Date",
           required: true,
@@ -444,6 +474,12 @@ export const impsEntryMetadata = {
           },
         },
 
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "COMP_CD",
+        },
         {
           render: {
             componentType: "hidden",

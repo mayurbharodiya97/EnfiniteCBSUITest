@@ -118,9 +118,9 @@ export const insuranceEntryConfirmGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "right",
       componentType: "default",
-      width: 180,
-      minWidth: 200,
-      maxWidth: 220,
+      width: 200,
+      minWidth: 220,
+      maxWidth: 350,
     },
     {
       accessor: "STATUS_DISP",
