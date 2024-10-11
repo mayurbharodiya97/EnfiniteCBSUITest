@@ -42,8 +42,10 @@ export const ImpsEntryCustom = () => {
   const [rowData, setRowData] = useState<any>();
   const [currentIndex, setCurrentIndex] = useState<any>(0);
   const formRef = useRef<any>(null);
+  const initialDataRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  console.log("<<<initiak", initialDataRef);
 
   const impsDetails: any = useMutation(
     ["getImpsDetails"],
@@ -271,6 +273,25 @@ export const ImpsEntryCustom = () => {
         newData ?? [],
         ["SR_CD", "ACCT_TYPE", "BRANCH_CD"]
       );
+      updPara?.isNewRow.map((item) => {
+        item.REG_DT = item?.REG_DT
+          ? format(new Date(item?.REG_DT), "dd/MMM/yyyy")
+          : "";
+        // delete item.TRAN_CD;
+        // delete item.SR_CD;
+
+        return item;
+      });
+
+      updPara?.isUpdatedRow?.map((item) => {
+        return {
+          ...item,
+          REG_DT: item?.REG_DT
+            ? format(new Date(item?.REG_DT), "dd/MMM/yyyy")
+            : "",
+        };
+      });
+
       let apiReq = {
         _isNewRow: formMode === "add" ? true : false,
         _isDeleteRow: false,
@@ -398,7 +419,9 @@ export const ImpsEntryCustom = () => {
               extractMetaData(impsEntryMetadata, formMode) as MetaDataType
             }
             initialValues={{
-              ...retrieveData?.[0],
+              ...(formMode === "add"
+                ? { ...initialDataRef.current }
+                : { ...retrieveData?.[0] }),
               accMapping: rowData,
               ROWDATA_LENGTH: rowData?.length ?? {},
             }}
@@ -408,6 +431,7 @@ export const ImpsEntryCustom = () => {
               FORM_MODE: formMode,
               setRowData: setRowData,
               setIsData: setIsData,
+              initialDataRef: initialDataRef,
             }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
@@ -462,6 +486,7 @@ export const ImpsEntryCustom = () => {
                     </Button>
                     <Button
                       onClick={() => {
+                        initialDataRef.current = {};
                         setFormMode("add");
                         setRetrieveData(null);
                         setRowData(null);

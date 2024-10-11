@@ -701,6 +701,9 @@ export const guj_language_data = {
   // stop payment
 
   InsertStopPaymentMsg: "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર રોકવા માંગો છો ?",
+  InsertStopPaymentMsg2:
+    "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર સરન્ડર કરવા માંગો છો ?",
+  InsertStopPaymentMsg3: "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર PDC કરવા માંગો છો ?",
   AreYouSureToRelease: "શું તમે ચોક્કસ રિલીઝ કરશો?",
   ChequeStopDetail: "ચેક સ્ટોપ વિગતો",
   ChequeStopEntry: "ચેક સ્ટોપ એન્ટ્રી",

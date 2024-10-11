@@ -1145,6 +1145,11 @@ export const en_language_data = {
 
   InsertStopPaymentMsg:
     "Are you sure you want to stop the selected check-number ?",
+  InsertStopPaymentMsg2:
+    "Are you sure you want to surrender the selected cheque number ?",
+  InsertStopPaymentMsg3:
+    "Are you sure you want to PDC the selected cheque number ?",
+
   AreYouSureToRelease: "Are you sure to Release ?",
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
