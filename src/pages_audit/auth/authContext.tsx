@@ -33,6 +33,7 @@ const inititalState: AuthStateType = {
   groupName: "",
   access: {},
   menulistdata: [],
+  uniqueAppId: "",
   user: {
     branch: "",
     branchCode: "",

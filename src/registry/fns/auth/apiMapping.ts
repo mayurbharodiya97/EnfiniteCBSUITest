@@ -2829,6 +2829,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRETURNREASON",
     packageName: "",
   },
+  SAVERECENTSCREENDATA: {
+    url: "dashboardServiceAPI/SAVERECENTSCREENDATA",
+    packageName: "",
+  },
+  SAVEFVSCREENDATA: {
+    url: "dashboardServiceAPI/SAVEFVSCREENDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

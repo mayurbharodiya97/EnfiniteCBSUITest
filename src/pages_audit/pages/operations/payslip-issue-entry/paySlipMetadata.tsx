@@ -722,13 +722,13 @@ export const AccdetailsFormMetaData = {
           },
           setFieldLabel: (dependenet, currVal) => {
             return currVal === "C"
-              ? "By Cash"
+              ? { label: "By Cash" }
               : currVal === "T"
-              ? "By Trf"
+              ? { label: "By Trf" }
               : currVal === "R"
-              ? "By Cr. Trf"
+              ? { label: "By Cr. Trf" }
               : currVal === "G"
-              ? "By CLG"
+              ? { label: "By CLG" }
               : null;
           },
           defaultValue: "T",
@@ -1839,14 +1839,14 @@ export const DraftdetailsFormMetaData = {
           setFieldLabel: (dependenet, currVal) => {
             const cct = dependenet?.PAYSLIP_MST_DTL[0]?.C_C_T?.value;
             return cct === "C"
-              ? "By Cash"
+              ? { label: "By Cash" }
               : cct === "T"
-              ? "By Transfer"
+              ? { label: "By Transfer" }
               : cct === "G"
-              ? "By Clearing"
+              ? { label: "By Clearing" }
               : cct === "R"
-              ? "By Transfer"
-              : null;
+              ? { label: "By Credit Transfe" }
+              : "Transfer";
           },
         },
         {

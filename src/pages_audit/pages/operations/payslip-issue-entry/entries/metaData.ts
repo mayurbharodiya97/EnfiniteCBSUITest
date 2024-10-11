@@ -582,15 +582,16 @@ export const ddTransactionFormMetaData = {
         let cct = dependenet?.CCTFLAG?.value;
 
         return cct === "C"
-          ? "By Cash"
+          ? { label: "By Cash" }
           : cct === "T"
-          ? "By Trf"
+          ? { label: "By Trf" }
           : cct === "R"
-          ? "By Cr. Trf"
+          ? { label: "By Cr. Trf" }
           : cct === "G"
-          ? "By CLG"
+          ? { label: "By CLG" }
           : null;
       },
+
       setValueOnDependentFieldsChange: (dependentFields) => {
         let cct = dependentFields?.CCTFLAG?.value;
 
@@ -938,15 +939,15 @@ export const ddTransactionFormMetaData = {
       label: "",
       dependentFields: ["CCTFLAG", "SCREENFLAG"],
       setFieldLabel: (dependenet, currVal) => {
-        let cct = dependenet?.CCTFLAG?.value;
         return currVal === "C"
-          ? "By Cash"
+          ? { label: "By Cash" }
           : currVal === "T"
-          ? "By Transfer"
+          ? { label: "By Transfer" }
           : currVal === "G"
-          ? "By Clearing"
-          : "By";
+          ? { label: "By Clearing" }
+          : { label: "By" };
       },
+
       required: "true",
       schemaValidation: {
         type: "string",
@@ -1476,15 +1477,16 @@ export const ddTransactionFormMetaData = {
       fullWidth: true,
       setFieldLabel: (dependenet, currVal) => {
         return currVal === "C"
-          ? "By Cash"
+          ? { label: "By Cash" }
           : currVal === "T"
-          ? "By Trf"
+          ? { label: "By Trf" }
           : currVal === "R"
-          ? "By Cr. Trf"
+          ? { label: "By Cr. Trf" }
           : currVal === "G"
-          ? "By CLG"
+          ? { label: "By CLG" }
           : null;
       },
+
       GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
     },
     {
