@@ -626,7 +626,7 @@ export const guj_language_data = {
   Charge: "ચાર્જ",
   ChequeSeries: "ચેક શ્રેણી",
   AutoIssueFlag: "ઓટો ઇશ્યૂ ફ્લેગ",
-  RetrieveParameters: "પરિમાણો પુનઃપ્રાપ્ત કરો",
+  RetrieveParameters: "પરિમાણો",
   ChequeBookConfirmation: "ચેક બુક કન્ફર્મેશન",
   BalanceIsLesThanServicecharge: "બેલેન્સ સર્વિસ-ચાર્જ કરતાં ઓછું છે",
   BeforeChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પહેલા",
