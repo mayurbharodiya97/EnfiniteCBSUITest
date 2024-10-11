@@ -223,7 +223,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
             return typeof ref === "function"
               ? ref()
               : ref.current &&
-                  ref.current.handleSubmitError &&
+                  ref.current.handleSubmit &&
                   ref.current.handleSubmit(e, "save", false);
           })
         );
