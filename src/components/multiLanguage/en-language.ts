@@ -1145,6 +1145,11 @@ export const en_language_data = {
 
   InsertStopPaymentMsg:
     "Are you sure you want to stop the selected check-number ?",
+  InsertStopPaymentMsg2:
+    "Are you sure you want to surrender the selected cheque number ?",
+  InsertStopPaymentMsg3:
+    "Are you sure you want to PDC the selected cheque number ?",
+
   AreYouSureToRelease: "Are you sure to Release ?",
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
@@ -1158,7 +1163,7 @@ export const en_language_data = {
   ChequeAmount: "Cheque Amount",
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
-    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
+    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-Cheque.",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1169,7 +1174,8 @@ export const en_language_data = {
   StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
   StopConfirmDeleteTitle:
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
-
+  FromChequenorequired: "From Cheque Number is required",
+  ToChequenorequired: "To Cheque Number is required",
   // stock entry
 
   stockEntry: "Stock Entry",
@@ -1882,6 +1888,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI:
     "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",

@@ -305,6 +305,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   if (screenFlag === "limitForTrn") {
     limitDtlForTrnmetaData.current = cloneDeep(limitEntryGridMetaData);
 
+
     if (limitDtlForTrnmetaData?.current?.gridConfig) {
       limitDtlForTrnmetaData.current.gridConfig.containerHeight = {
         min: "36vh",

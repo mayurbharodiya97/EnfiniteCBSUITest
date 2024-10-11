@@ -93,19 +93,25 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
     "validateInsert",
     API.validateInsert,
     {
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         validateInsertData.isLoading = false;
         async function insertData() {
           if (data?.O_STATUS !== "0") {
             let res = await MessageBox({
               messageTitle: "confirmation",
-              message: "InsertStopPaymentMsg",
-              buttonNames: ["No", "Yes"],
+              message:
+                variables?.FLAG === "P"
+                  ? "InsertStopPaymentMsg"
+                  : variables?.FLAG === "S"
+                  ? "InsertStopPaymentMsg2"
+                  : variables?.FLAG === "D"
+                  ? "InsertStopPaymentMsg3"
+                  : "",
+              buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });
             if (res === "Yes") {
-              console.log("<<<insertReq", insertReq, reqDataRef);
               crudStopPay.mutate({ ...reqDataRef?.current?.insertReq });
             }
           } else {
@@ -196,6 +202,12 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
     };
   }, []);
 
+  StopPayEntryMetadata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
+
   if (screenFlag === "stopPaymentForTrn") {
     stopPaymentDtlForTrnmetaData.current = cloneDeep(StopPayGridMetaData);
 
@@ -220,11 +232,6 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
         });
     }
   }
-  StopPayEntryMetadata.form.label = utilFunction.getDynamicLabel(
-    useLocation().pathname,
-    authState?.menulistdata,
-    true
-  );
 
   return (
     <>

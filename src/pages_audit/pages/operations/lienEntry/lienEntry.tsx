@@ -118,19 +118,19 @@ const LienEntryCustom = () => {
               btnName(
                 ["Ok"],
                 concatenatedMessages["9"],
-                "ValidationAlert",
+                "ValidationFailed",
                 "Yes"
               );
             } else if (buttonName === "Yes") {
               crudLienData.mutate(apiReq);
             }
           } else if (status["9"]) {
-            btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert", "");
+            btnName(["Ok"], concatenatedMessages["9"], "ValidationFailed", "");
           } else if (status["0"]) {
             let buttonName = await btnName(
               ["Yes", "No"],
               "AreYouSureToProceed",
-              "ValidationSuccessfull",
+              "confirmation",
               "Yes"
             );
             if (buttonName === "Yes") {

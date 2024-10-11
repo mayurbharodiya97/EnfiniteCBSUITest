@@ -1,84 +1,66 @@
 import {
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
+  Stack,
   Typography,
 } from "@mui/material";
 import { GradientButton } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
+import HelpIcon from "@mui/icons-material/Help";
 
 export const LogoutModal = ({ setLogoutOpen, logoutOpen }) => {
   const authController = useContext(AuthContext);
   return (
     <Dialog
-      // fullScreen={fullScreen}
       open={true}
-      // onClose={handleClose}
-      // maxWidth={"sm"}
+      maxWidth="md"
       PaperProps={{
         style: {
-          width: "auto",
-          height: "auto",
+          minWidth: "25%",
+          maxWidth: "50%",
         },
       }}
-      aria-labelledby="responsive-dialog-title"
     >
       <DialogTitle
         sx={{
-          background: "var(--theme-color3)",
-          color: "var(--theme-color2)",
-          // letterSpacing: "1.3px",
-          justifyItems: "center",
+          background: "var(--theme-color5)",
+          padding: "6px 15px !important",
           margin: "10px",
-          boxShadow:
-            "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-          fontWeight: 500,
-          borderRadius: "inherit",
-          minWidth: "150px",
-          py: 1,
+          color: "var(--theme-color2)",
+          borderRadius: "4px",
+          "& h2": {
+            fontWeight: "500 !important",
+          },
         }}
-        id="responsive-dialog-title"
       >
-        <Typography variant="h4">Logout</Typography>
-        {/* <img src={Logout} alt="logout-icon"  style={{height:"100%", paddingLeft:"85px"}}/> */}
+        Logout
       </DialogTitle>
       <DialogContent>
-        <DialogContentText
-          sx={{
-            // fontSize: "22px",
-            display: "flex",
-            justifyContent: "center",
-            // height:"100px"
-            // marginTop: "15px",
-          }}
-        >
-          {/* <h2 style={{color:"black"}}>Are you sure want to </h2> */}
-          <Typography variant="h5" style={{ color: "black" }}>
-            Are you sure want to
-          </Typography>
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-        </DialogContentText>
-        <DialogContentText
-          sx={{
-            // fontSize: "22px",
-            display: "flex",
-            justifyContent: "center",
-            // height:"100px"
-            // marginTop: "15px",
-          }}
-        >
-          {/* <h2 style={{color:"black",textAlign:"center"}}>logout.. ?</h2> */}
+        <Stack direction={"row"} gap={2} alignItems={"center"}>
+          <span>
+            <HelpIcon
+              fontSize="medium"
+              style={{
+                color: "dodgerblue",
+                width: "1.3em",
+                height: "1.3em",
+              }}
+            />
+          </span>
           <Typography
-            variant="h5"
-            style={{ color: "black", textAlign: "center" }}
+            style={{
+              color: "black",
+              whiteSpace: "pre-wrap",
+              maxHeight: "60vh",
+            }}
           >
-            logout.. ?
+            Are you sure want to logout ?
           </Typography>
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-        </DialogContentText>
+        </Stack>
       </DialogContent>
       <DialogActions
         style={{
