@@ -950,7 +950,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You Want to remove this row?",
+  DoYouWantDeleteRow: "Do You want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -1755,11 +1755,11 @@ export const en_language_data = {
 
   // str ac level branch entry
 
-  AsperExtraction: "As per Extraction",
+  AsperExtraction: "Show As per Extracted",
   Suspicious: "Suspicious",
   WhiteListed: "White Listed",
   STRHistory: "STR History",
-  SuspiciousStatus: "Suspicious Status",
+  SuspiciousStatus: "Show Not a Suspicious",
   SuspiciousReasons: "Suspicious Reasons",
   InvestigationDetail: "Investigation Detail",
   EditDetail: "Edit-Detail",

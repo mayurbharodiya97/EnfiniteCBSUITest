@@ -26,6 +26,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
     allowRowSelection: false,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
+    footerNote: "Note - Right Click on the Record for STR Hisoty",
   },
   filters: [],
   columns: [
