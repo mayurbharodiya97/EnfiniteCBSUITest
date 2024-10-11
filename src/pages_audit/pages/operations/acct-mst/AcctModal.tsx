@@ -144,6 +144,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
+    return () => {
+      handleFormModalClosectx();
+    };
   }, []);
 
   useEffect(() => {
