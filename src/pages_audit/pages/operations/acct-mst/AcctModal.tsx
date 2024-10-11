@@ -285,52 +285,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
     AcctMSTState?.modifiedFormCols,
   ]);
 
-  const dialogsMemo = useMemo(() => {
-    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
-    return (
-      <Fragment>
-        {/* confirms before updating */}
-        {updateDialog && (
-          <ConfirmUpdateDialog
-            open={updateDialog}
-            onClose={onCloseUpdateDialog}
-            mutationFormDTL={mutation}
-            setAlertOnUpdate={setAlertOnUpdate}
-          />
-        )}
-
-        {/* confirming action-remark dialog */}
-        {/* {actionDialog && <ActionDialog 
-            open={actionDialog} 
-            setOpen={setActionDialog} 
-            closeForm = {onClose}
-            action= {confirmAction}
-        />} */}
-
-        {/* data lost alert on closing form */}
-        {cancelDialog && (
-          <CloseFormDialog
-            open={cancelDialog}
-            onClose={onCloseCancelDialog}
-            closeForm={onClose}
-          />
-        )}
-
-        {/* no change found to update dialog */}
-        {alertOnUpdate && (
-          <PreventUpdateDialog
-            open={alertOnUpdate}
-            onClose={onClosePreventUpdateDialog}
-          />
-        )}
-      </Fragment>
-    );
-  }, [
-    // updateDialog, actionDialog,
-    cancelDialog,
-    alertOnUpdate,
-  ]);
-
   useEffect(() => {
     if (AcctMSTState?.currentFormctx?.currentFormSubmitted) {
       const steps = AcctMSTState?.tabNameList.filter((tab) => tab.isVisible);
@@ -702,7 +656,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
             })}
         </Grid>
       </Grid>
-      {dialogsMemo}
 
       <RemarksAPIWrapper
         TitleText={"Confirmation"}
