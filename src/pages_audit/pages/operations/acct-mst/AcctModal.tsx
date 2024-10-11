@@ -127,6 +127,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
         message: "confirmed successfully!",
         buttonNames: ["Ok"],
       });
+      if (buttonName === "Ok") {
+        closeForm();
+      }
     },
     onError: async (error: any) => {
       // console.log("data o n error", error)
