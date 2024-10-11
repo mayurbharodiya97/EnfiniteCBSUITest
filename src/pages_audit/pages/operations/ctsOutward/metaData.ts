@@ -1622,26 +1622,19 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
-          dependentFields: ["TRAN_DT", "RANGE_DT"],
-          validate: (currentField, dependentField) => {
-            const currentDate = new Date(currentField?.value);
-            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
-            const transDate = new Date(dependentField?.TRAN_DT?.value);
+          // dependentFields: ["TRAN_DT", "RANGE_DT"],
+          // validate: (currentField, dependentField) => {
+          //   const currentDate = new Date(currentField?.value);
+          //   const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+          //   const transDate = new Date(dependentField?.TRAN_DT?.value);
 
-            if (currentDate < rangeDate || currentDate > transDate) {
-              return `DateShouldBetween ${rangeDate.toLocaleDateString(
-                "en-IN"
-              )} - ${transDate.toLocaleDateString("en-IN")}`;
-            }
-          },
-
-          required: true,
+          //   if (currentDate < rangeDate || currentDate > transDate) {
+          //     return `DateShouldBetween ${rangeDate.toLocaleDateString(
+          //       "en-IN"
+          //     )} - ${transDate.toLocaleDateString("en-IN")}`;
+          //   }
+          // },
           maxLength: 6,
-
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["ChequeDateRequired"] }],
-          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
 
