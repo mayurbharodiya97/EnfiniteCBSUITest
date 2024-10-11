@@ -52,10 +52,7 @@ import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
 // import Document from "./tabComponents/DocumentTab2/Document";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
-import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
-import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
 import { useMutation } from "react-query";
-import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
 import {
   Alert,
   RemarksAPIWrapper,
@@ -81,26 +78,13 @@ const AcctModal = ({ onClose, formmode, from }) => {
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
-  const [updateDialog, setUpdateDialog] = useState(false);
-  const [cancelDialog, setCancelDialog] = useState(false);
-  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false);
-  const [actionDialog, setActionDialog] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<any>(null);
-  const onCloseUpdateDialog = () => {
-    setUpdateDialog(false);
-  };
-  const onCloseCancelDialog = () => {
-    setCancelDialog(false);
-  };
-  const onClosePreventUpdateDialog = () => {
-    setAlertOnUpdate(false);
-  };
 
   // get account form details
   const mutation: any = useMutation(API.getAccountDetails, {
     onSuccess: (data) => {
       handleFormDataonRetrievectx(data[0]);
-      onClosePreventUpdateDialog();
     },
     onError: (error: any) => {},
   });
@@ -120,7 +104,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
       // console.log("data o n save", data)
       // handleFormModalClosectx()
       // closeForm()
-      setActionDialog(false);
+      setIsOpen(false);
       // setConfirmMsgDialog(true)
       let buttonName = await MessageBox({
         messageTitle: "SUCCESS",
@@ -134,7 +118,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
     onError: async (error: any) => {
       // console.log("data o n error", error)
       // setIsUpdated(true)
-      setActionDialog(false);
+      setIsOpen(false);
       setConfirmAction(null);
       // console.log("onerrorrr", error)
       // let buttonName = await MessageBox({
@@ -450,7 +434,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
   };
 
   const openActionDialog = (state: string) => {
-    setActionDialog(true);
+    setIsOpen(true);
     setConfirmAction(state);
   };
 
@@ -660,7 +644,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
       <RemarksAPIWrapper
         TitleText={"Confirmation"}
         onActionNo={() => {
-          setActionDialog(false);
+          setIsOpen(false);
           setConfirmAction(null);
         }}
         onActionYes={(val, rows) => {
@@ -675,7 +659,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
         isEntertoSubmit={true}
         AcceptbuttonLabelText="Ok"
         CanceltbuttonLabelText="Cancel"
-        open={actionDialog}
+        open={isOpen}
         rows={{}}
         isRequired={confirmAction === "Y" ? false : true}
         // isRequired={false}
