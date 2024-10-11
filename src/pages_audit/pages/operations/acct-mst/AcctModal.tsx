@@ -98,6 +98,12 @@ const AcctModal = ({ onClose, formmode, from }) => {
     onError: (error: any) => {},
   });
 
+  // modify new account entry
+  const modifyAcctMutation: any = useMutation(API.accountModify, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
   // confirm acount entry
   const confirmMutation: any = useMutation(API.confirmAccount, {
     onSuccess: async (data) => {
@@ -179,14 +185,21 @@ const AcctModal = ({ onClose, formmode, from }) => {
     handleFormModalClosectx();
     onClose();
   };
-  const onCancelForm = () => {
+  const onCancelForm = async () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if (AcctMSTState?.formmodectx !== "view") {
-      if (
-        Array.isArray(AcctMSTState?.formDatactx) &&
-        Object.keys(AcctMSTState?.formDatactx).length > 0
-      ) {
-        setCancelDialog(true);
+    if (
+      Boolean(AcctMSTState?.formmodectx) &&
+      AcctMSTState?.formmodectx !== "view"
+    ) {
+      if (Object.keys(AcctMSTState?.formDatactx).length > 0) {
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "Your changes will be Lost. Are you Sure?",
+          buttonNames: ["Yes", "No"],
+        });
+        if (buttonName === "Yes") {
+          closeForm();
+        }
       } else {
         closeForm();
       }
@@ -215,14 +228,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
           })
         );
       }
-      // if(displayMode == "new" || displayMode == "edit") {
-      //   if(Object.keys(state?.modifiedFormCols).length >0) {
-      //     setUpdateDialog(true)
-      //     // setCancelDialog(true)
-      //   } else {
-      //     setAlertOnUpdate(true)
-      //   }
-      // }
     },
     [
       AcctMSTState?.currentFormctx.currentFormRefctx,
@@ -301,9 +306,36 @@ const AcctModal = ({ onClose, formmode, from }) => {
             if (typeof updated_tab_format === "object") {
               // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
               if (Object.keys(updated_tab_format)?.length === 0) {
-                setAlertOnUpdate(true);
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message: "You have not made any changes yet.",
+                  buttonNames: ["Ok"],
+                });
               } else if (Object.keys(updated_tab_format)?.length > 0) {
-                setUpdateDialog(true);
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message:
+                    "Are you sure you want to apply changes and update ?",
+                  buttonNames: ["Yes", "No"],
+                });
+                if (buttonName === "Yes") {
+                  const reqPara = {
+                    IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
+                    REQ_CD: AcctMSTState?.req_cd_ctx,
+                    // REQ_FLAG: "F",
+                    REQ_FLAG: AcctMSTState?.acctNumberctx ? "E" : "F",
+                    SAVE_FLAG: "F",
+                    CUSTOMER_ID: AcctMSTState?.customerIDctx,
+                    ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+                    ACCT_CD: AcctMSTState?.acctNumberctx,
+                    COMP_CD: authState?.companyID ?? "",
+                    formData: AcctMSTState?.formDatactx,
+                    OP_DATE: authState?.workingDate,
+                    updated_tab_format: updated_tab_format,
+                    update_type: update_type,
+                  };
+                  modifyAcctMutation.mutate({});
+                }
               }
             }
           };
@@ -609,6 +641,16 @@ const AcctModal = ({ onClose, formmode, from }) => {
                 saveAcctMutation.error?.error_msg ?? "Something went to wrong.."
               }
               errorDetail={saveAcctMutation.error?.error_detail}
+              color="error"
+            />
+          ) : modifyAcctMutation.isError ? (
+            <Alert
+              severity={modifyAcctMutation.error?.severity ?? "error"}
+              errorMsg={
+                modifyAcctMutation.error?.error_msg ??
+                "Something went to wrong.."
+              }
+              errorDetail={modifyAcctMutation.error?.error_detail}
               color="error"
             />
           ) : (
