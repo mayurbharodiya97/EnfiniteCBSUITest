@@ -11,7 +11,7 @@ import {
   GridWrapper,
   Alert,
   ActionTypes,
-  utilFunction,
+  CreateDetailsRequestData,
   usePopupContext,
 } from "@acuteinfo/common-base";
 import { t } from "i18next";
@@ -113,6 +113,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
           variant: "success",
         });
         CloseMessageBox();
+        onClose();
       },
     }
   );
@@ -158,7 +159,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
             // setMode("view");
           } else {
             //@ts-ignore
-            finalResult = utilFunction.CreateDetailsRequestData(finalResult);
+            finalResult = CreateDetailsRequestData(finalResult);
             // Check NEW_INSERT condition and push old data to finalResult.isDeleteRow
             if (!finalResult.isDeleteRow) {
               finalResult.isDeleteRow = [];
@@ -231,7 +232,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
       }
     } else if (data.name === "refresh") {
       const btnName = await MessageBox({
-        message: t("AreYouSureRefreshTransactionDetails?"),
+        message: t("AreYouSureRefreshTransactionDetails"),
         messageTitle: t("Confirmation"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],

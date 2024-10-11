@@ -1407,7 +1407,7 @@ export const en_language_data = {
   IfscDetail: "Ifsc Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
-  AreYouSaveThisRecord: "Are You sure to Save this record?",
+  AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
 
@@ -1773,6 +1773,7 @@ export const en_language_data = {
     "Are You Sure to refresh transaction details?",
   TRNDate: "TRN. Date",
   VNo: "V. No.",
+  SuspiciStatus: "Suspicious Status",
 
   // insurance entry screen
 

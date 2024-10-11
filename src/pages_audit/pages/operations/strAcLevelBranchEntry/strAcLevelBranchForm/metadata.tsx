@@ -281,7 +281,7 @@ export const suspiciousTransactionGridMetaData: GridMetaDataType = {
       columnName: "Remarks",
       sequence: 4,
       alignment: "right",
-      componentType: "default",
+      componentType: "editableTextField",
       width: 200,
       minWidth: 250,
       maxWidth: 280,
