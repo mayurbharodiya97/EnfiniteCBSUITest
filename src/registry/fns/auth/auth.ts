@@ -271,12 +271,7 @@ const authAPI = () => {
           return {
             status: "0",
             message: "",
-            data:
-              data?.ISDATACOMPRESSED === "Y"
-                ? utilFunction?.uncompressApiResponse(
-                    data?.RESPONSE?.[0]?.DATA ?? ""
-                  ) ?? []
-                : data?.RESPONSE ?? [],
+            data,
             messageDetails: "",
             isPrimaryKeyError: false,
           };
@@ -288,7 +283,12 @@ const authAPI = () => {
           return {
             status: String(data.STATUS),
             message: data?.MESSAGE ?? "",
-            data: data?.RESPONSE ?? [],
+            data:
+              data?.ISDATACOMPRESSED === "Y"
+                ? utilFunction?.uncompressApiResponse(
+                    data?.RESPONSE?.[0]?.DATA ?? ""
+                  ) ?? []
+                : data?.RESPONSE ?? [],
             messageDetails: data?.RESPONSEMESSAGE ?? "",
             isPrimaryKeyError:
               String(data.STATUS) === "0"
