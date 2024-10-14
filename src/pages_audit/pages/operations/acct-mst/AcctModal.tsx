@@ -51,7 +51,6 @@ import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
 // import Document from "./tabComponents/DocumentTab2/Document";
-import AdvConfigTab from "./tabComponents/AdvConfigTab";
 import { useMutation } from "react-query";
 import {
   Alert,
@@ -444,8 +443,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
         return <OtherAddTab />;
       case "Documents":
         return <Document />;
-      case "Advance Configuration":
-        return <AdvConfigTab />;
       case "Joint Holder":
         return <JointTab />;
       case "Nominee":
