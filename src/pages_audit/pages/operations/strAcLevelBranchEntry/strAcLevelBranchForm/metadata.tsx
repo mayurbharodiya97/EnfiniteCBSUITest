@@ -110,11 +110,16 @@ export const strLevelBranchEditFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-
+      disableCaching: true,
       options: () => {
         return API.getSuspStatusData();
       },
       _optionsKey: "getSuspStatusData",
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
+      },
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -230,6 +235,8 @@ export const suspiciousTransactionGridMetaData: GridMetaDataType = {
     allowRowSelection: false,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
+    footerNote:
+      "Note - Only Suspicious marked transaction will be included in file.",
   },
   filters: [],
   columns: [

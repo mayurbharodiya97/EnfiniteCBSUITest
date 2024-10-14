@@ -1770,7 +1770,7 @@ export const en_language_data = {
   AtleastOneRecordMustMarkedSuspicious:
     "Atleast one record must be marked suspicious",
   AreYouSureRefreshTransactionDetails:
-    "Are You Sure to refresh transaction details?",
+    "Are you sure to refresh transaction details?",
   TRNDate: "TRN. Date",
   VNo: "V. No.",
   SuspiciStatus: "Suspicious Status",

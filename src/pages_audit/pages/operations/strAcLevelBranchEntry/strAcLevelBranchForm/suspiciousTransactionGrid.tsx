@@ -120,7 +120,7 @@ export const StrMarkAsPerSuspiciousGrid: FC<{
 
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "close") {
-      onClose();
+      onClose("OC");
     } else if (data.name === "save-close") {
       let { hasError, data: dataold } = await myGridRef.current?.validate();
       if (hasError === true) {
