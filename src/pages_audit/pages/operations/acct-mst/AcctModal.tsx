@@ -52,10 +52,7 @@ import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
 // import Document from "./tabComponents/DocumentTab2/Document";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
-import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
-import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
 import { useMutation } from "react-query";
-import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
 import {
   Alert,
   RemarksAPIWrapper,
@@ -81,26 +78,13 @@ const AcctModal = ({ onClose, formmode, from }) => {
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
-  const [updateDialog, setUpdateDialog] = useState(false);
-  const [cancelDialog, setCancelDialog] = useState(false);
-  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false);
-  const [actionDialog, setActionDialog] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<any>(null);
-  const onCloseUpdateDialog = () => {
-    setUpdateDialog(false);
-  };
-  const onCloseCancelDialog = () => {
-    setCancelDialog(false);
-  };
-  const onClosePreventUpdateDialog = () => {
-    setAlertOnUpdate(false);
-  };
 
   // get account form details
   const mutation: any = useMutation(API.getAccountDetails, {
     onSuccess: (data) => {
       handleFormDataonRetrievectx(data[0]);
-      onClosePreventUpdateDialog();
     },
     onError: (error: any) => {},
   });
@@ -114,24 +98,33 @@ const AcctModal = ({ onClose, formmode, from }) => {
     onError: (error: any) => {},
   });
 
+  // modify new account entry
+  const modifyAcctMutation: any = useMutation(API.accountModify, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
   // confirm acount entry
   const confirmMutation: any = useMutation(API.confirmAccount, {
     onSuccess: async (data) => {
       // console.log("data o n save", data)
       // handleFormModalClosectx()
       // closeForm()
-      setActionDialog(false);
+      setIsOpen(false);
       // setConfirmMsgDialog(true)
       let buttonName = await MessageBox({
         messageTitle: "SUCCESS",
         message: "confirmed successfully!",
         buttonNames: ["Ok"],
       });
+      if (buttonName === "Ok") {
+        closeForm();
+      }
     },
     onError: async (error: any) => {
       // console.log("data o n error", error)
       // setIsUpdated(true)
-      setActionDialog(false);
+      setIsOpen(false);
       setConfirmAction(null);
       // console.log("onerrorrr", error)
       // let buttonName = await MessageBox({
@@ -144,6 +137,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
+    return () => {
+      handleFormModalClosectx();
+    };
   }, []);
 
   useEffect(() => {
@@ -189,14 +185,21 @@ const AcctModal = ({ onClose, formmode, from }) => {
     handleFormModalClosectx();
     onClose();
   };
-  const onCancelForm = () => {
+  const onCancelForm = async () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if (AcctMSTState?.formmodectx !== "view") {
-      if (
-        Array.isArray(AcctMSTState?.formDatactx) &&
-        Object.keys(AcctMSTState?.formDatactx).length > 0
-      ) {
-        setCancelDialog(true);
+    if (
+      Boolean(AcctMSTState?.formmodectx) &&
+      AcctMSTState?.formmodectx !== "view"
+    ) {
+      if (Object.keys(AcctMSTState?.formDatactx).length > 0) {
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "Your changes will be Lost. Are you Sure?",
+          buttonNames: ["Yes", "No"],
+        });
+        if (buttonName === "Yes") {
+          closeForm();
+        }
       } else {
         closeForm();
       }
@@ -220,19 +223,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
             return typeof ref === "function"
               ? ref()
               : ref.current &&
-                  ref.current.handleSubmitError &&
+                  ref.current.handleSubmit &&
                   ref.current.handleSubmit(e, "save", false);
           })
         );
       }
-      // if(displayMode == "new" || displayMode == "edit") {
-      //   if(Object.keys(state?.modifiedFormCols).length >0) {
-      //     setUpdateDialog(true)
-      //     // setCancelDialog(true)
-      //   } else {
-      //     setAlertOnUpdate(true)
-      //   }
-      // }
     },
     [
       AcctMSTState?.currentFormctx.currentFormRefctx,
@@ -279,52 +274,6 @@ const AcctModal = ({ onClose, formmode, from }) => {
     AcctMSTState?.modifiedFormCols,
   ]);
 
-  const dialogsMemo = useMemo(() => {
-    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
-    return (
-      <Fragment>
-        {/* confirms before updating */}
-        {updateDialog && (
-          <ConfirmUpdateDialog
-            open={updateDialog}
-            onClose={onCloseUpdateDialog}
-            mutationFormDTL={mutation}
-            setAlertOnUpdate={setAlertOnUpdate}
-          />
-        )}
-
-        {/* confirming action-remark dialog */}
-        {/* {actionDialog && <ActionDialog 
-            open={actionDialog} 
-            setOpen={setActionDialog} 
-            closeForm = {onClose}
-            action= {confirmAction}
-        />} */}
-
-        {/* data lost alert on closing form */}
-        {cancelDialog && (
-          <CloseFormDialog
-            open={cancelDialog}
-            onClose={onCloseCancelDialog}
-            closeForm={onClose}
-          />
-        )}
-
-        {/* no change found to update dialog */}
-        {alertOnUpdate && (
-          <PreventUpdateDialog
-            open={alertOnUpdate}
-            onClose={onClosePreventUpdateDialog}
-          />
-        )}
-      </Fragment>
-    );
-  }, [
-    // updateDialog, actionDialog,
-    cancelDialog,
-    alertOnUpdate,
-  ]);
-
   useEffect(() => {
     if (AcctMSTState?.currentFormctx?.currentFormSubmitted) {
       const steps = AcctMSTState?.tabNameList.filter((tab) => tab.isVisible);
@@ -357,9 +306,36 @@ const AcctModal = ({ onClose, formmode, from }) => {
             if (typeof updated_tab_format === "object") {
               // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
               if (Object.keys(updated_tab_format)?.length === 0) {
-                setAlertOnUpdate(true);
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message: "You have not made any changes yet.",
+                  buttonNames: ["Ok"],
+                });
               } else if (Object.keys(updated_tab_format)?.length > 0) {
-                setUpdateDialog(true);
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message:
+                    "Are you sure you want to apply changes and update ?",
+                  buttonNames: ["Yes", "No"],
+                });
+                if (buttonName === "Yes") {
+                  const reqPara = {
+                    IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
+                    REQ_CD: AcctMSTState?.req_cd_ctx,
+                    // REQ_FLAG: "F",
+                    REQ_FLAG: AcctMSTState?.acctNumberctx ? "E" : "F",
+                    SAVE_FLAG: "F",
+                    CUSTOMER_ID: AcctMSTState?.customerIDctx,
+                    ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+                    ACCT_CD: AcctMSTState?.acctNumberctx,
+                    COMP_CD: authState?.companyID ?? "",
+                    formData: AcctMSTState?.formDatactx,
+                    OP_DATE: authState?.workingDate,
+                    updated_tab_format: updated_tab_format,
+                    update_type: update_type,
+                  };
+                  modifyAcctMutation.mutate({});
+                }
               }
             }
           };
@@ -490,7 +466,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
   };
 
   const openActionDialog = (state: string) => {
-    setActionDialog(true);
+    setIsOpen(true);
     setConfirmAction(state);
   };
 
@@ -667,6 +643,16 @@ const AcctModal = ({ onClose, formmode, from }) => {
               errorDetail={saveAcctMutation.error?.error_detail}
               color="error"
             />
+          ) : modifyAcctMutation.isError ? (
+            <Alert
+              severity={modifyAcctMutation.error?.severity ?? "error"}
+              errorMsg={
+                modifyAcctMutation.error?.error_msg ??
+                "Something went to wrong.."
+              }
+              errorDetail={modifyAcctMutation.error?.error_detail}
+              color="error"
+            />
           ) : (
             confirmMutation.isError && (
               <Alert
@@ -696,12 +682,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
             })}
         </Grid>
       </Grid>
-      {dialogsMemo}
 
       <RemarksAPIWrapper
         TitleText={"Confirmation"}
         onActionNo={() => {
-          setActionDialog(false);
+          setIsOpen(false);
           setConfirmAction(null);
         }}
         onActionYes={(val, rows) => {
@@ -716,7 +701,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
         isEntertoSubmit={true}
         AcceptbuttonLabelText="Ok"
         CanceltbuttonLabelText="Cancel"
-        open={actionDialog}
+        open={isOpen}
         rows={{}}
         isRequired={confirmAction === "Y" ? false : true}
         // isRequired={false}
