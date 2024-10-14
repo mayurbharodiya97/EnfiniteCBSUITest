@@ -35,7 +35,7 @@ export const ClearingBankMstForm = ({
 
   const mutation = useMutation(API.clearingBankMasterDataDML, {
     onError: (error: any) => {},
-    onSuccess: (data) => {},
+    onSuccess: (data, variables) => {},
   });
 
   const onSubmitHandler: SubmitFnType = async (
@@ -87,10 +87,15 @@ export const ClearingBankMstForm = ({
             onError: (error: any) => {
               CloseMessageBox();
             },
-            onSuccess: (data) => {
-              enqueueSnackbar(data, {
-                variant: "success",
-              });
+            onSuccess: (data, variables) => {
+              enqueueSnackbar(
+                Boolean(variables?._isNewRow)
+                  ? t("RecordInsertedMsg")
+                  : t("RecordUpdatedMsg"),
+                {
+                  variant: "success",
+                }
+              );
               isDataChangedRef.current = true;
               CloseMessageBox();
               closeDialog();
@@ -98,7 +103,7 @@ export const ClearingBankMstForm = ({
           }
         );
       } else if (btnName === "No") {
-        endSubmit(true);
+        endSubmit(false);
       }
     }
   };
