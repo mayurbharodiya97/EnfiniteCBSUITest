@@ -992,7 +992,21 @@ export const accountModify = async (reqData) => {
     updated_tab_format,
     OP_DATE,
   } = reqData;
-  const payload = {};
+  let payload = {};
+
+  const ENTRY_TYPE = "";
+  payload = {
+    ...payload,
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID: "",
+    ACCT_TYPE,
+    ACCT_CD: "",
+    COMP_CD,
+    ENTRY_TYPE: "",
+  };
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("SAVEACCOUNTDATA", payload);
   if (status === "0") {
