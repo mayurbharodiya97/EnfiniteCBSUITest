@@ -136,26 +136,8 @@ export const strLevelBranchEditFormMetaData = {
           return false;
         }
       },
-      GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
+      GridProps: { xs: 12, sm: 4.8, md: 4.8, lg: 4.8, xl: 4.8 },
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "REASON_DESC",
-      label: "SuspiciousReasons",
-      GridProps: { xs: 12, sm: 4.9, md: 4.9, lg: 4.9, xl: 4.9 },
-      skipDefaultOption: true,
-      options: (dependentValue, formState, _, authState) => {
-        return API.getSuspReasonData({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-        });
-      },
-      _optionsKey: "getSuspReasonData",
-      isReadOnly: true,
-    },
-
     {
       render: {
         componentType: "amountField",
@@ -165,7 +147,7 @@ export const strLevelBranchEditFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+      GridProps: { xs: 12, sm: 4.1, md: 4.1, lg: 4.1, xl: 4.1 },
     },
     {
       render: {
@@ -174,7 +156,24 @@ export const strLevelBranchEditFormMetaData = {
       name: "PAN_NO",
       label: "PAN_NO",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "REASON_DESC",
+      label: "SuspiciousReasons",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      skipDefaultOption: true,
+      options: (dependentValue, formState, _, authState) => {
+        return API.getSuspReasonData({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        });
+      },
+      _optionsKey: "getSuspReasonData",
+      isReadOnly: true,
     },
     {
       render: {
@@ -193,7 +192,7 @@ export const strLevelBranchEditFormMetaData = {
           return true;
         }
       },
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -204,7 +203,7 @@ export const strLevelBranchEditFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
   ],
 };
