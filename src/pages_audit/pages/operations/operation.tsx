@@ -44,7 +44,9 @@ const InsuranceEntryForm = lazy(() => import("./insuranceEntry"));
 const DailyTransactionImportForm = lazy(
   () => import("./dailyTransactionImport")
 );
-const TellerScreen = lazy(() => import("./denomination/tellerScreen"));
+const TellerScreen = lazy(
+  () => import("./denomination/tellerTransaction/tellerScreen")
+);
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
   () => import("./denomination/singleDenomination/index")

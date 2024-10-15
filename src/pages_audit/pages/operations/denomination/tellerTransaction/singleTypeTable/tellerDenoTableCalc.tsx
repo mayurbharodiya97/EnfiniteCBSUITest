@@ -8,7 +8,7 @@ import {
 import { usePopupContext } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import * as API from "./api";
+import * as API from "../api";
 
 const TellerDenoTableCalc = ({
   displayTable,
@@ -20,6 +20,8 @@ const TellerDenoTableCalc = ({
   initRemainExcess,
   screenRef,
   entityType,
+  setOpenDenoTable,
+  setCount,
 }) => {
   const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(
@@ -62,7 +64,7 @@ const TellerDenoTableCalc = ({
     //display Amout column value (multiplied value of denomination * note count)
     const multipliedValue = [...state?.amount];
     multipliedValue[index] =
-      parseInt(sanitValue) * parseInt(data?.[index]?.DENO_VAL);
+      parseFloat(sanitValue) * parseFloat(data?.[index]?.DENO_VAL);
     dispatch({
       type: SingleTableActionTypes?.SET_AMOUNT_VAL,
       payload: multipliedValue,
@@ -226,7 +228,10 @@ const TellerDenoTableCalc = ({
           message: `Denomination ${data?.[index]?.DENO_VAL} should be less than or equal to Balance`,
         },
       });
-
+      if (Boolean(state?.displayError)) {
+        state.inputVal[index] = "";
+        state.amount[index] = "";
+      }
       //set multiplication is `0` when err0 is occurs according to index
       // setMultiplicationResult((preVal) => {
       //   const updatedRslt = [...preVal];
@@ -271,7 +276,7 @@ const TellerDenoTableCalc = ({
   useEffect(() => {
     const withdrawAmount: any = initRemainExcess;
     const upadatedFinalAmount: any =
-      parseInt(withdrawAmount) - parseInt(state?.columnTotal?.amount);
+      parseFloat(withdrawAmount) - parseFloat(state?.columnTotal?.amount);
     if (!Boolean(haveerror)) {
       dispatch({
         type: SingleTableActionTypes?.SET_REMAINEXCESS_VAL,
@@ -283,6 +288,62 @@ const TellerDenoTableCalc = ({
   const saveDenominationData = useMutation(API.saveDenoData, {
     onSuccess: async (data: any, variables: any) => {
       CloseMessageBox();
+      setOpenDenoTable(false);
+      if (data?.length > 0) {
+        if (data?.[0]?.hasOwnProperty("O_STATUS")) {
+          const getBtnName = async (msgObj) => {
+            let btnNm = await MessageBox(msgObj);
+            return { btnNm, msgObj };
+          };
+          for (let i = 0; i < data?.length; i++) {
+            const status: any = data?.[i]?.O_STATUS;
+            const message = data?.[i]?.O_MESSAGE;
+            if (status === "999") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "ValidationFailed",
+                  message,
+                  icon: "ERROR",
+                });
+                if (btnNm === "Ok") {
+                  setCount((pre) => pre + 1);
+                }
+              }, 0);
+            } else if (status === "99") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "Confirmation",
+                  message,
+                  buttonNames: ["Yes", "No"],
+                  icon: "",
+                });
+                if (btnNm === "No") {
+                  setCount((pre) => pre + 1);
+                }
+              }, 0);
+            } else if (status === "9") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "Alert",
+                  message,
+                });
+              }, 0);
+            }
+          }
+        } else {
+          setTimeout(async () => {
+            const res = await MessageBox({
+              messageTitle: "Generated Voucher No./ Reference No.",
+              message: `${data?.[0]?.TRAN_CD} / ${data?.[0]?.REFERENCE_NO}`,
+              defFocusBtnName: "Ok",
+              icon: "INFO",
+            });
+            if (res === "Ok") {
+              setCount((pre) => pre + 1);
+            }
+          }, 0);
+        }
+      }
     },
     onError: (error: any, variables: any) => {
       CloseMessageBox();
@@ -330,7 +391,7 @@ const TellerDenoTableCalc = ({
             }),
             DENO_DTL: DDT?.map((itemData) => {
               const data = {
-                TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4" ?? "",
+                TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4",
                 DENO_QTY: itemData?.INPUT_VALUE ?? "",
                 DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
                 DENO_VAL: itemData?.DENO_VAL ?? "",

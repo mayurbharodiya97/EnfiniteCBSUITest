@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import { TellerScreenMetadata } from "./metadataTeller";
-import TellerDenoTable from "./tellerDenoTable";
 import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
@@ -20,15 +19,13 @@ import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 // import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
 // import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
-import {
-  SingleTableDataReducer,
-  SingleTableInititalState,
-  SingleTableActionTypes,
-} from "./denoTableActionTypes";
-import DualTableCalc from "./dualTableCalc";
+// import {
+//   SingleTableDataReducer,
+//   SingleTableInititalState,
+//   SingleTableActionTypes,
+// } from "";
 import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
 import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
-import TellerDenoTableCalc from "./tellerDenoTableCalc";
 import { useLocation } from "react-router-dom";
 import {
   usePopupContext,
@@ -42,6 +39,13 @@ import {
   ReportGrid,
   utilFunction,
 } from "@acuteinfo/common-base";
+import {
+  SingleTableActionTypes,
+  SingleTableDataReducer,
+  SingleTableInititalState,
+} from "./singleTypeTable/denoTableActionTypes";
+import TellerDenoTableCalc from "./singleTypeTable/tellerDenoTableCalc";
+import DualTableCalc from "./dualTypeTable/dualTableCalc";
 
 const TellerScreen = () => {
   const formRef: any = useRef(null);
@@ -182,7 +186,7 @@ const TellerScreen = () => {
         setExtraAccDtl((prevExtraAccDtl) => ({
           ...prevExtraAccDtl,
           ...extraAccDtl,
-          TRN_TYPE: data?.TRN === "1" ? `1` : `4` ?? "",
+          TRN_TYPE: data?.TRN === "1" ? `1` : `4`,
           REMARKS: data?.REMARK ?? "",
         }));
       }
@@ -870,6 +874,7 @@ const TellerScreen = () => {
       {state?.displayTable ? (
         <TellerDenoTableCalc
           displayTable={state?.displayTable}
+          setOpenDenoTable={() => {}}
           formData={state?.fieldsData}
           data={data ?? []}
           isLoading={getData?.isLoading}
@@ -888,6 +893,7 @@ const TellerScreen = () => {
           }
           screenRef={""}
           entityType={""}
+          setCount={() => {}}
         />
       ) : null}
       {/* <DualTableCalc data={data ?? []} /> */}

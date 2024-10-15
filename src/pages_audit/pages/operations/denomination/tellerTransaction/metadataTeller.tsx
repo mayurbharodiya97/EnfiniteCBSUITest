@@ -1586,13 +1586,16 @@ export const denoTableMetadataTotal: any = {
               dependentFieldsValues
             ) => {
               return {
-                ACCT_CD: { value: "" },
-                FLAG_HIDE: { value: "" },
-                TRX: { value: "1" },
-                CHQNO: { value: "" },
-                CHQ_DT: { value: authState?.workingDate ?? "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                FLAG_HIDE: { value: "", ignoreUpdate: true },
+                TRX: { value: "1", ignoreUpdate: true },
+                CHQNO: { value: "", ignoreUpdate: true },
+                CHQ_DT: {
+                  value: authState?.workingDate ?? "",
+                  ignoreUpdate: true,
+                },
+                RECEIPT: { value: "", ignoreUpdate: true },
+                PAYMENT: { value: "", ignoreUpdate: true },
               };
             },
             GridProps: {
@@ -1618,13 +1621,16 @@ export const denoTableMetadataTotal: any = {
                   "",
               });
               return {
-                ACCT_CD: { value: "" },
-                FLAG_HIDE: { value: "" },
-                TRX: { value: "1" },
-                CHQNO: { value: "" },
-                CHQ_DT: { value: authState?.workingDate ?? "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                FLAG_HIDE: { value: "", ignoreUpdate: true },
+                TRX: { value: "1", ignoreUpdate: true },
+                CHQNO: { value: "", ignoreUpdate: true },
+                CHQ_DT: {
+                  value: authState?.workingDate ?? "",
+                  ignoreUpdate: true,
+                },
+                RECEIPT: { value: "", ignoreUpdate: true },
+                PAYMENT: { value: "", ignoreUpdate: true },
               };
             },
             GridProps: {
@@ -1688,13 +1694,16 @@ export const denoTableMetadataTotal: any = {
                         });
                         if (btnNm === "Ok") {
                           return {
-                            ACCT_CD: { value: "" },
-                            FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
-                            CHQNO: { value: "" },
-                            CHQ_DT: { value: authState?.workingDate ?? "" },
-                            RECEIPT: { value: "" },
-                            PAYMENT: { value: "" },
+                            ACCT_CD: { value: "", ignoreUpdate: true },
+                            FLAG_HIDE: { value: "", ignoreUpdate: true },
+                            TRX: { value: "1", ignoreUpdate: true },
+                            CHQNO: { value: "", ignoreUpdate: true },
+                            CHQ_DT: {
+                              value: authState?.workingDate ?? "",
+                              ignoreUpdate: true,
+                            },
+                            RECEIPT: { value: "", ignoreUpdate: true },
+                            PAYMENT: { value: "", ignoreUpdate: true },
                           };
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "99") {
@@ -1705,13 +1714,16 @@ export const denoTableMetadataTotal: any = {
                         });
                         if (btnNm === "No") {
                           return {
-                            ACCT_CD: { value: "" },
-                            FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
-                            CHQNO: { value: "" },
-                            CHQ_DT: { value: authState?.workingDate ?? "" },
-                            RECEIPT: { value: "" },
-                            PAYMENT: { value: "" },
+                            ACCT_CD: { value: "", ignoreUpdate: true },
+                            FLAG_HIDE: { value: "", ignoreUpdate: true },
+                            TRX: { value: "1", ignoreUpdate: true },
+                            CHQNO: { value: "", ignoreUpdate: true },
+                            CHQ_DT: {
+                              value: authState?.workingDate ?? "",
+                              ignoreUpdate: true,
+                            },
+                            RECEIPT: { value: "", ignoreUpdate: true },
+                            PAYMENT: { value: "", ignoreUpdate: true },
                           };
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "9") {
@@ -1744,16 +1756,19 @@ export const denoTableMetadataTotal: any = {
                   });
                   formState.previousFieldValue = accountCode;
                   return {
-                    ACCT_CD: { value: accountCode ?? "" },
-                    FLAG_HIDE: { value: "A" },
-                    TRX: { value: "1" },
+                    ACCT_CD: { value: accountCode ?? "", ignoreUpdate: true },
+                    FLAG_HIDE: { value: "A", ignoreUpdate: true },
+                    TRX: { value: "1", ignoreUpdate: true },
                     CHQNO: {
                       value: apiResponse?.CHEQUE_NO ?? "",
                       ignoreUpdate: true,
                     },
-                    CHQ_DT: { value: authState?.workingDate ?? "" },
-                    RECEIPT: { value: "" },
-                    PAYMENT: { value: "" },
+                    CHQ_DT: {
+                      value: authState?.workingDate ?? "",
+                      ignoreUpdate: true,
+                    },
+                    RECEIPT: { value: "", ignoreUpdate: true },
+                    PAYMENT: { value: "", ignoreUpdate: true },
                   };
                 }
               }
@@ -1808,13 +1823,16 @@ export const denoTableMetadataTotal: any = {
           ) => {
             const sdcValue = field?.value === "1" ? "1   " : "4   ";
             return {
-              SCROLL: { value: "" },
-              TOKEN: { value: "" },
-              SDC: { value: sdcValue ?? "" },
-              REMARK: { value: "" },
-              CHQ_DT: { value: authState?.workingDate ?? "" },
-              RECEIPT: { value: "" },
-              PAYMENT: { value: "" },
+              SCROLL: { value: "", ignoreUpdate: true },
+              TOKEN: { value: "", ignoreUpdate: true },
+              SDC: { value: sdcValue ?? "", ignoreUpdate: true },
+              REMARK: { value: "", ignoreUpdate: true },
+              CHQ_DT: {
+                value: authState?.workingDate ?? "",
+                ignoreUpdate: true,
+              },
+              RECEIPT: { value: "", ignoreUpdate: true },
+              PAYMENT: { value: "", ignoreUpdate: true },
             };
           },
           GridProps: {
@@ -2103,12 +2121,14 @@ export const denoTableMetadataTotal: any = {
                       },
                       FLAG_CHQ: {
                         value: "",
+                        ignoreUpdate: true,
                       },
                     };
                   } else if (btnNm === "Yes") {
                     return {
                       FLAG_CHQ: {
                         value: "A",
+                        ignoreUpdate: true,
                       },
                     };
                   }
@@ -2120,12 +2140,14 @@ export const denoTableMetadataTotal: any = {
                   return {
                     FLAG_CHQ: {
                       value: "A",
+                      ignoreUpdate: true,
                     },
                   };
                 } else if (apiResponse[i]?.ERR_CODE === "0") {
                   return {
                     FLAG_CHQ: {
                       value: "A",
+                      ignoreUpdate: true,
                     },
                   };
                 }
@@ -2364,11 +2386,14 @@ export const denoTableMetadataTotal: any = {
               }
               if (field?.value) {
                 return {
-                  RECEIPT_TOTAL: { value: field.value ?? "0" },
+                  RECEIPT_TOTAL: {
+                    value: field.value ?? "0",
+                    ignoreUpdate: true,
+                  },
                 };
               } else {
                 return {
-                  RECEIPT_TOTAL: { value: "" },
+                  RECEIPT_TOTAL: { value: "", ignoreUpdate: true },
                 };
               }
             }
@@ -2521,11 +2546,14 @@ export const denoTableMetadataTotal: any = {
               }
               if (field?.value) {
                 return {
-                  PAYMENT_TOTAL: { value: field.value ?? "0" },
+                  PAYMENT_TOTAL: {
+                    value: field.value ?? "0",
+                    ignoreUpdate: true,
+                  },
                 };
               } else {
                 return {
-                  PAYMENT_TOTAL: { value: "" },
+                  PAYMENT_TOTAL: { value: "", ignoreUpdate: true },
                 };
               }
             }
@@ -2709,298 +2737,6 @@ export const denoTableMetadataTotal: any = {
         lg: 1,
         xl: 1,
       },
-    },
-  ],
-};
-
-export const releaseGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Release",
-    rowIdColumn: "MCT_TRAN_CD",
-    defaultColumnConfig: {
-      width: 150,
-      maxWidth: 250,
-      minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    disableGroupBy: true,
-    enablePagination: true,
-    hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 8,
-    containerHeight: {
-      min: "30vh",
-      max: "30vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    isCusrsorFocused: true,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "ACCT_TYPE",
-      columnName: "Type",
-      sequence: 1,
-      alignment: "left",
-      componentType: "default",
-      width: 76,
-      minWidth: 70,
-      maxWidth: 100,
-    },
-    {
-      accessor: "ACCT_CD",
-      columnName: "Account",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "MCT_TRAN_CD",
-      columnName: "Reference No.",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 150,
-    },
-    {
-      accessor: "TYPE_CD",
-      columnName: "Trx",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 60,
-      minWidth: 60,
-      maxWidth: 80,
-    },
-    {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 5,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 160,
-    },
-    {
-      accessor: "AMOUNT",
-      columnName: "Amount",
-      sequence: 6,
-      alignment: "right",
-      componentType: "currency",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "SDC",
-      columnName: "SDC",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "SCROLL1",
-      columnName: "Scroll1",
-      sequence: 8,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "ENTERED_BY",
-      columnName: "Entered By",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "ENTERED_COMP_CD",
-      columnName: "Tr.Bank",
-      sequence: 10,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-    {
-      accessor: "ENTERED_BRANCH_CD",
-      columnName: "Tr.Branch",
-      sequence: 11,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-  ],
-};
-export const releaseSubGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Release",
-    rowIdColumn: "ROW_ID",
-    defaultColumnConfig: {
-      width: 150,
-      maxWidth: 250,
-      minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    disableGroupBy: true,
-    enablePagination: true,
-    hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 8,
-    containerHeight: {
-      min: "30vh",
-      max: "30vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "ACCT_CD",
-      columnName: "Account No.",
-      sequence: 1,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "MCT_TRAN_CD",
-      columnName: "Reference No.",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 150,
-    },
-    {
-      accessor: "TYPE_CD",
-      columnName: "Trx",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 60,
-      minWidth: 60,
-      maxWidth: 80,
-    },
-    {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 160,
-    },
-    {
-      accessor: "DELETE_FLAG",
-      columnName: "Delete",
-      sequence: 5,
-      alignment: "center",
-      componentType: "editableCheckbox",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "RECEIPT",
-      columnName: "Receipt",
-      sequence: 6,
-      alignment: "right",
-      componentType: "currency",
-      isDisplayTotal: true,
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "PAYMENT",
-      columnName: "Payment",
-      sequence: 7,
-      alignment: "right",
-      componentType: "currency",
-      isDisplayTotal: true,
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "ENTERED_BY",
-      columnName: "Entered By",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "SDC",
-      columnName: "SDC",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "SCROLL1",
-      columnName: "Scroll1",
-      sequence: 10,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "ENTERED_COMP_CD",
-      columnName: "Tr.Bank",
-      sequence: 11,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-    {
-      accessor: "ENTERED_BRANCH_CD",
-      columnName: "Tr.Branch",
-      sequence: 12,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
     },
   ],
 };

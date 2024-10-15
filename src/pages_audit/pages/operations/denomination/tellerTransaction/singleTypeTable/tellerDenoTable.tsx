@@ -19,7 +19,7 @@ import {
   Typography,
   // TextField,
 } from "@mui/material";
-import { useStyles, StyledTableCell } from "./style";
+import { useStyles, StyledTableCell } from "../style";
 
 import { AccDetailContext } from "pages_audit/auth";
 import {
@@ -99,7 +99,7 @@ const TellerDenoTable = ({
       <AppBar
         position="static"
         sx={{
-          height: "auto",
+          maxHeight: "2rem",
           background: "var(--theme-color5)",
           margin: "10px",
           width: "auto",
