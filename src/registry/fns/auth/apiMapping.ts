@@ -2833,6 +2833,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DOPAYSLIPDDTRANSACTIONENTRY",
     packageName: "",
   },
+  GETINTCALCPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
