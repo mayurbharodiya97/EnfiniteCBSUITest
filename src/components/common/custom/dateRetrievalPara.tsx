@@ -192,7 +192,6 @@ export const DateRetrievalDialog = ({
                 loginState.loading ? <CircularProgress size={20} /> : null
               }
               onClick={() => {
-                console.log(selectedFromDate, selectedToDate);
                 if (
                   !greaterThanInclusiveDate(selectedToDate, selectedFromDate)
                 ) {

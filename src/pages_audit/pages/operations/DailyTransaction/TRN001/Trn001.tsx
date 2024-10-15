@@ -215,7 +215,7 @@ export const Trn001 = () => {
     },
   });
 
-  const getSingleAccountInterest = useMutation(API.getSingleAccountInterest, {
+  const getInterestCalculatePara = useMutation(API.getInterestCalculatePara, {
     onSuccess: async (data: any, variables: any) => {
       const rowUnqID = variables?.unqID;
       setLoadingState(rowUnqID, "ACCTNO", false);
@@ -891,7 +891,7 @@ export const Trn001 = () => {
     // Check if Ctrl + I is pressed
     if (event.ctrlKey && (event.key === "i" || event.key === "I")) {
       setLoadingState(unqID, "ACCTNO", true);
-      getSingleAccountInterest.mutate({
+      getInterestCalculatePara.mutate({
         A_COMP_CD: row?.branch?.info?.COMP_CD ?? "",
         A_BRANCH_CD: row?.branch?.value ?? "",
         A_ACCT_TYPE: row?.accType?.value ?? "",
@@ -1050,15 +1050,15 @@ export const Trn001 = () => {
           loginState={{}}
           retrievalParaValues={retrievalParaValues}
           defaultData={{
-            A_FROM_DT: getSingleAccountInterest?.data?.[0]?.FROM_DT
+            A_FROM_DT: getInterestCalculatePara?.data?.[0]?.FROM_DT
               ? format(
-                  new Date(getSingleAccountInterest?.data?.[0]?.FROM_DT),
+                  new Date(getInterestCalculatePara?.data?.[0]?.FROM_DT),
                   "yyyy/MM/dd"
                 )
               : "",
-            A_TO_DT: getSingleAccountInterest?.data?.[0]?.TO_DT
+            A_TO_DT: getInterestCalculatePara?.data?.[0]?.TO_DT
               ? format(
-                  new Date(getSingleAccountInterest?.data?.[0]?.TO_DT),
+                  new Date(getInterestCalculatePara?.data?.[0]?.TO_DT),
                   "yyyy/MM/dd"
                 )
               : "",

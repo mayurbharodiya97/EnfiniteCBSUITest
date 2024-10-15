@@ -201,7 +201,7 @@ export const getParameters = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getSingleAccountInterest = async (reqData) => {
+export const getInterestCalculatePara = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETINTCALCPARA", {
       ...reqData,
