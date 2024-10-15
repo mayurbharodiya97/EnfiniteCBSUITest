@@ -23,10 +23,24 @@ import {
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
-export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
+type StockDtlCustomProps = {
+  setStockDtlOpen?: any;
+  navigate?: any;
+  stockEntryGridData?: any;
+  screenFlag?: any;
+};
+export const ForceExpireStock: React.FC<StockDtlCustomProps> = ({
+  setStockDtlOpen,
+  navigate,
+  stockEntryGridData,
+  screenFlag,
+}) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+  const handleCloseDialog = () => {
+    screenFlag === "stockForTrn" ? setStockDtlOpen(false) : navigate(".");
+  };
 
   let newInitialData = {
     ...rows?.[0]?.data,
@@ -150,21 +164,22 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" && (
-                  <Button
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    // disabled={isSubmitting}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </Button>
-                )}
-                <Button color="primary" onClick={() => navigate(".")}>
+                {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" &&
+                  screenFlag !== "stockForTrn" && (
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      // disabled={isSubmitting}
+                      endIcon={
+                        isSubmitting ? <CircularProgress size={20} /> : null
+                      }
+                      color={"primary"}
+                    >
+                      {t("Save")}
+                    </Button>
+                  )}
+                <Button color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
                 </Button>
               </>

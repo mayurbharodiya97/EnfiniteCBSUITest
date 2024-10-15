@@ -143,7 +143,7 @@ const NRIDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [NRIDTLFormRef.current.handleSubmitError(e, "save", false)];
+    const refs = [NRIDTLFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

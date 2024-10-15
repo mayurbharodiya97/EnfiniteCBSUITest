@@ -32,6 +32,7 @@ export const temporaryODentryMetadata = {
         },
         name: "",
         branchCodeMetadata: {
+          validationRun: "onChange",
           postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
               return {
@@ -59,6 +60,7 @@ export const temporaryODentryMetadata = {
         },
         accountTypeMetadata: {
           isFieldFocused: true,
+          validationRun: "onChange",
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
               COMP_CD: authState?.companyID,
@@ -91,6 +93,10 @@ export const temporaryODentryMetadata = {
         accountCodeMetadata: {
           render: {
             componentType: "textField",
+          },
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
           },
           validate: (columnValue) => {
             let regex = /^[^!&]*$/;
@@ -247,6 +253,7 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "spacer",
         },
+        name: "SPACER",
         GridProps: {
           xs: 12,
           md: 2.5,

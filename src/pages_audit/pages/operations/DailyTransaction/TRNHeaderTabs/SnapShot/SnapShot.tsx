@@ -1,12 +1,10 @@
 import { useCallback, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { snapShotGridMetaData } from "./gridMetadata";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { useSnackbar } from "notistack";
-import { Grid } from "@mui/material";
+import { Dialog, DialogActions, Grid } from "@mui/material";
 //date
 import { useStyles } from "pages_audit/style";
 import {
@@ -14,105 +12,78 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
-  queryClient,
+  GradientButton,
+  LoaderPaperComponent,
 } from "@acuteinfo/common-base";
 import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
+import { format } from "date-fns";
+import { ChequeSignImage } from "pages_audit/pages/operations/inwardClearing/inwardClearingForm/chequeSignImage";
+import { getInwardChequeSignFormData } from "pages_audit/pages/operations/inwardClearing/api";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
+    actionLabel: "View Details",
+    multiple: false,
+    rowDoubleClick: true,
+    alwaysAvailable: false,
+  },
+  {
+    actionName: "back-date",
     actionLabel: "Back Date",
     multiple: false,
-    // rowDoubleClick: true,
+    rowDoubleClick: false,
     alwaysAvailable: true,
   },
 ];
 export const SnapShot = ({ reqData }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
   const [dateDialog, setDateDialog] = useState(false);
-  const [prevDate, setPrevDate] = useState(() => {
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    return oneMonthAgo;
-  });
-  const [nextDate, setNextDate] = useState(new Date());
-  const [dataRow, setDataRow] = useState<any>({});
-  const [credit, setCredit] = useState<any>(0);
-  const [debit, setDebit] = useState<any>(0);
-
-  // api define
-  // const getSnapShotList = useMutation(API.getSnapShotList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getSnapShotList detailssss");
-  //     let debSum = 0;
-  //     let credSum = 0;
-
-  //     data?.map((a, i) => {
-  //       debSum = debSum + Number(a?.debit1);
-  //       credSum = credSum + Number(a?.credit1);
-  //     });
-
-  //     console.log(credSum, debSum, "aaa");
-  //     setCredit(credSum?.toFixed(2));
-  //     setDebit(debSum?.toFixed(2));
-  //     setRows(data);
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //   },
-  // });
-  // console.log(rows, "rows");
-  // const handleGetSnapshot = (prevDate, nextDate) => {
-  //   let obj = reqData;
-  //   obj.FROM_DATE = prevDate;
-  //   obj.TO_DATE = nextDate;
-  //   getSnapShotList.mutate(obj);
-  // };
-
-  // useEffect(() => {
-  //   reqData?.ACCT_CD && handleGetSnapshot("", "");
-  //   setCredit("0.00");
-  //   setDebit("0.00");
-  // }, [reqData]);
+  const [isopenChequeImg, setOpenChequeImg] = useState(false);
+  const reqDataRef = useRef<any>();
+  const [imgData, setImgData] = useState();
+  const [isopenReport, setIsopenReport] = useState(false);
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getSnapShotList", { reqData }], () => API.getSnapShotList(reqData));
 
+  const getChequeImg: any = useMutation(getInwardChequeSignFormData, {
+    onError: (error: any) => {},
+    onSuccess: (data) => {
+      setImgData(data);
+    },
+  });
+
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    setDataRow(row);
-
-    if (data.name === "view-detail") {
+    if (data.name === "back-date") {
       setDateDialog(true);
+    } else if (data.name === "view-detail") {
+      setIsopenReport(true);
     }
   }, []);
 
   const classes = useStyles();
   const retrievalParaValues = (retrievalValues) => {
     setDateDialog(false);
-    setCredit("0.00");
-    setDebit("0.00");
-    // handleGetSnapshot(
-    //   retrievalValues[0]?.value?.value,
-    //   retrievalValues[1]?.value?.value
-    // );
     reqData.FROM_DATE = retrievalValues[0]?.value?.value;
     reqData.TO_DATE = retrievalValues[1]?.value?.value;
   };
   return (
     <>
-      {isError ? (
+      {isError || getChequeImg?.error ? (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Unknown error occured"}
-          errorDetail={error?.error_detail ?? ""}
+          errorMsg={
+            error?.error_msg ||
+            getChequeImg?.error?.error_msg ||
+            "Unknown error occured"
+          }
+          errorDetail={
+            error?.error_detail || getChequeImg?.error?.error_detail || ""
+          }
         />
       ) : null}
 
@@ -121,36 +92,36 @@ export const SnapShot = ({ reqData }) => {
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
-        loading={isLoading}
-        // refetchData={() => {}}
+        loading={isLoading || isFetching}
+        refetchData={() => refetch()}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
         disableMultipleRowSelect={false}
         variant={"standard"}
         enableExport={true}
-      />
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        sx={{
-          position: "relative",
-          top: "-3rem",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "3rem",
-          alignItems: "center",
+        onClickActionEvent={(index, id, currentData) => {
+          if (id === "CHEQUE_IMG") {
+            setOpenChequeImg(true);
+            reqDataRef.current = currentData;
+            getChequeImg.mutate({
+              ENTERED_COMP_CD: reqDataRef?.current?.ENTERED_COMP_CD ?? "",
+              COMP_CD: reqData?.COMP_CD ?? "",
+              BRANCH_CD: reqData?.BRANCH_CD ?? "",
+              ACCT_TYPE: reqData?.ACCT_TYPE ?? "",
+              ACCT_CD: reqData?.ACCT_CD ?? "",
+              DAILY_TRN_CD: "",
+              TRAN_CD: reqDataRef?.current?.REF_TRAN_CD ?? "",
+              TRAN_DT: reqDataRef?.current?.TRAN_DT
+                ? format(new Date(reqDataRef?.current?.TRAN_DT), "dd/MMM/yyyy")
+                : "",
+              TRAN_FLAG: "E",
+              WITH_SIGN: "N",
+              ENTERED_BY: "",
+            });
+          }
         }}
-      >
-        <div></div>
-        <div></div>
-
-        <Grid item sx={{ display: "flex", gap: "5rem" }}>
-          <div> Credit : ₹ {credit} </div>
-          <div>Debit : ₹ {debit}</div>
-        </Grid>
-      </Grid>
+      />
 
       {dateDialog && (
         <DateRetrievalDialog
@@ -162,6 +133,32 @@ export const SnapShot = ({ reqData }) => {
           defaultData={undefined}
         />
       )}
+      {isopenChequeImg ? (
+        <>
+          <Dialog
+            open={isopenChequeImg}
+            PaperProps={{
+              style: {
+                width: "100%",
+              },
+            }}
+            maxWidth="md"
+          >
+            {getChequeImg?.isLoading ? (
+              <LoaderPaperComponent />
+            ) : (
+              <>
+                <DialogActions>
+                  <GradientButton onClick={() => setOpenChequeImg(false)}>
+                    Close
+                  </GradientButton>
+                </DialogActions>
+                <ChequeSignImage imgData={imgData} isVisibleSign={false} />
+              </>
+            )}
+          </Dialog>
+        </>
+      ) : null}
     </>
   );
 };

@@ -1430,9 +1430,10 @@ export const PassbookPrintingInq = {
       },
       name: "BRANCH_CD",
       label: "BranchCode",
-      defaultValue: "099 ",
       placeholder: "BranchCodePlaceHolder",
-      options: "getBranchCodeList",
+      options: GeneralAPI.getBranchCodeList,
+      _optionsKey: "getBranchCodeList",
+      defaultBranchTrue: true,
       required: "true",
       schemaValidation: {
         type: "string",
@@ -1452,7 +1453,7 @@ export const PassbookPrintingInq = {
       options: (dependentValue, formState, _, authState) => {
         return GeneralAPI.get_Account_Type({
           COMP_CD: authState?.companyID,
-          BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          BRANCH_CD: authState?.user?.branchCode,
           USER_NAME: authState?.user?.id,
           DOC_CD: "RPT/430",
         });

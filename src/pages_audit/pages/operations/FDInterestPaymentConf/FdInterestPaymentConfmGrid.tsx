@@ -15,6 +15,7 @@ import {
   GridMetaDataType,
   Transition,
 } from "@acuteinfo/common-base";
+import { useTranslation } from "react-i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -31,6 +32,7 @@ export const FDInterestPaymentConfm = () => {
   const [fDDetailsData, setFDDetailsData] = useState({});
   const [isFDDetailOpen, setIsFDDetailOpen] = useState(false);
   const [rowsData, setRowsData] = useState([]);
+  const { t } = useTranslation();
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -58,6 +60,7 @@ export const FDInterestPaymentConfm = () => {
           message: error?.error_msg ?? "",
           icon: "ERROR",
         });
+        setIsFDDetailOpen(false);
         CloseMessageBox();
       },
     }
@@ -98,7 +101,7 @@ export const FDInterestPaymentConfm = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail ?? ""}
           color="error"
         />

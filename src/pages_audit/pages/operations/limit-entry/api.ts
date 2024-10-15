@@ -751,7 +751,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                           ) ?? ""
                         : (parseInt(field?.value) *
                             parseInt(apiReqPara?.HDN_TAX_RATE)) /
-                            100 ?? "",
+                          100,
                   },
                 };
               }

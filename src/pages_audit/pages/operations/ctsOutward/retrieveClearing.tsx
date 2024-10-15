@@ -110,10 +110,7 @@ export const RetrieveClearing: FC<{
       CHEQUE_AMOUNT: "",
     });
   }, []);
-  if (zoneTranType === "S") {
-    RetrieveFormConfigMetaData.form.label = "Retrieve CTS O/W Clearing Data";
-  } else if (zoneTranType === "R") {
-    RetrieveFormConfigMetaData.form.label = "Retrieve Inward Return Entry Data";
+  if (zoneTranType === "R") {
     RetrieveFormConfigMetaData.fields[2].defaultValue = "10  ";
   }
   return (

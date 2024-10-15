@@ -68,11 +68,118 @@ export const guardianjoint_tab_metadata = {
         },
         {
           render: {
-            componentType: "numberFormat",
+            componentType: "textField",
           },
           name: "CUSTOMER_ID",
-          label: "Customer Id",
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
+          label: "Customer ID",
+          validate: (columnValue, allField, flag) => {
+            if (!Boolean(columnValue?.value)) {
+              return "this field is required";
+            } else return "";
+          },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            if (Boolean(field?.value)) {
+              const data = await API.getCustomerData({
+                CUSTOMER_ID: field.value,
+                ACCT_TYPE: formState?.ACCT_TYPE ?? "",
+                COMP_CD: authState?.companyID ?? "",
+                SCREEN_REF: "MST/002",
+              });
+              let response_messages: any[] = [];
+              if (data && data?.[0]?.MSG && Array.isArray(data?.[0]?.MSG)) {
+                response_messages = data?.[0]?.MSG;
+              }
+              if (response_messages?.length > 0) {
+                const messagebox = async (
+                  msgTitle,
+                  msg,
+                  buttonNames,
+                  status
+                ) => {
+                  let buttonName = await formState.MessageBox({
+                    messageTitle: msgTitle,
+                    message: msg,
+                    buttonNames: buttonNames,
+                  });
+                  return { buttonName, status };
+                };
+
+                for (let i = 0; i < response_messages?.length; i++) {
+                  if (response_messages[i]?.O_STATUS !== "0") {
+                    let btnName = await messagebox(
+                      response_messages[i]?.O_STATUS === "999"
+                        ? "validation fail"
+                        : "Alert",
+                      response_messages[i]?.O_MESSAGE,
+                      response_messages[i]?.O_STATUS === "99"
+                        ? ["Yes", "No"]
+                        : ["Ok"],
+                      response_messages[i]?.O_STATUS
+                    );
+                    if (
+                      btnName?.status === "999" ||
+                      btnName?.buttonName === "No"
+                    ) {
+                      return {
+                        CUSTOMER_ID: { value: "" },
+                      };
+                    }
+                  } else {
+                    if (data?.[0]?.ACCOUNT_DTL) {
+                      const CustomerData = data?.[0]?.ACCOUNT_DTL;
+                      return {
+                        REMARKS: { value: CustomerData?.REMARKS },
+                        PIN_CODE: { value: CustomerData?.PIN_CODE },
+                        COUNTRY_CD: { value: CustomerData?.COUNTRY_CD },
+                        AREA_CD: { value: CustomerData?.AREA_CD },
+                        // CUSTOMER_ID: {value: CustomerData?.CUSTOMER_ID},
+                        CITY_CD: { value: CustomerData?.CITY_CD },
+                        MEM_ACCT_TYPE: { value: CustomerData?.MEM_ACCT_TYPE },
+                        ACCT_NM: { value: CustomerData?.ACCT_NM },
+                        UNIQUE_ID: { value: CustomerData?.UNIQUE_ID },
+                        ADD3: { value: CustomerData?.ADD3 },
+                        ADD1: { value: CustomerData?.ADD1 },
+                        ADD2: { value: CustomerData?.ADD2 },
+                        STATE_CD: { value: CustomerData?.STATE_CD },
+                        MEM_ACCT_CD: { value: CustomerData?.MEM_ACCT_CD },
+                        DISTRICT_CD: { value: CustomerData?.DISTRICT_CD },
+                        GENDER: { value: CustomerData?.GENDER },
+                        FORM_60: { value: CustomerData?.FORM_60 },
+                        PAN_NO: { value: CustomerData?.PAN_NO },
+                      };
+                    }
+                  }
+                }
+              }
+            } else {
+              return {
+                REMARKS: { value: "" },
+                PIN_CODE: { value: "" },
+                COUNTRY_CD: { value: "" },
+                AREA_CD: { value: "" },
+                // CUSTOMER_ID: {value: ""},
+                CITY_CD: { value: "" },
+                MEM_ACCT_TYPE: { value: "" },
+                ACCT_NM: { value: "" },
+                UNIQUE_ID: { value: "" },
+                ADD3: { value: "" },
+                ADD1: { value: "" },
+                ADD2: { value: "" },
+                STATE_CD: { value: "" },
+                MEM_ACCT_CD: { value: "" },
+                DISTRICT_CD: { value: "" },
+                GENDER: { value: "" },
+                FORM_60: { value: "" },
+                PAN_NO: { value: "" },
+              };
+            }
+          },
         },
         // {
         //     render: {

@@ -240,7 +240,7 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spaceer",
+      name: "SPACER4",
       GridProps: {
         xs: 2,
         sm: 2,
@@ -253,7 +253,7 @@ export const RetrievalParameterFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer",
+      name: "SPACER5",
       GridProps: {
         xs: 1,
         sm: 1,
@@ -352,7 +352,7 @@ export const PayslipdetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer2",
+      name: "SPACER6",
       GridProps: { xs: 0, sm: 0, md: 0, lg: 4, xl: 4 },
     },
     {
@@ -360,7 +360,7 @@ export const PayslipdetailsFormMetaData = {
         componentType: "amountField",
       },
       name: "MST_TOTAL",
-      label: "Total ",
+      label: "Total",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -575,7 +575,7 @@ export const AccdetailsFormMetaData = {
                           ignoreUpdate: true,
                         },
                   ACCT_NM: {
-                    value: returnVal?.ACCT_NM ?? "",
+                    value: postData?.ACCT_NM ?? "",
                   },
                   TYPE_CD: {
                     value: postData?.TYPE_CD ?? "",
@@ -707,15 +707,6 @@ export const AccdetailsFormMetaData = {
             componentType: "textField",
           },
           name: "REMARKS",
-          setFieldLabel: (dependenet, currVal) => {
-            return currVal === "C"
-              ? "Cash"
-              : currVal === "T"
-              ? "Transfer"
-              : currVal === "G"
-              ? "Clearing"
-              : null;
-          },
           label: "narration",
           placeholder: "Mode",
           type: "text",
@@ -1272,7 +1263,6 @@ export const DraftdetailsFormMetaData = {
           txtTransform: "uppercase",
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
         },
-
         {
           render: {
             componentType: "numberFormat",
@@ -2271,7 +2261,7 @@ export const TotaldetailsFormMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spaceer",
+      name: "SPACER7",
       GridProps: {
         xs: 0,
         sm: 2,
@@ -2648,7 +2638,7 @@ export const DeleteDialogMetaData = {
       render: {
         componentType: "spacer",
       },
-      name: "spacer3",
+      name: "SPACER3",
       GridProps: {
         xs: 5,
         sm: 5,
@@ -2656,6 +2646,61 @@ export const DeleteDialogMetaData = {
         lg: 9,
         xl: 9,
       },
+    },
+  ],
+};
+export const DDtransactionsMetadata = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Payslip/DD Transaction",
+    rowIdColumn: "DOCCD",
+    defaultColumnConfig: {
+      width: 300,
+      maxWidth: 300,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: true,
+    hideActionBar: true,
+    disableGroupBy: true,
+    enablePagination: false,
+    pageSizes: [30, 50, 100],
+    disableGlobalFilter: true,
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "auto",
+      max: "auto",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+    allowGlobalFilter: false,
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "DOCURL",
+      columnName: "",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 360,
+      minWidth: 60,
+      maxWidth: 500,
+    },
+    {
+      accessor: "OPEN",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "Open",
+      sequence: 2,
+      alignment: "left",
+      width: 70,
+      minWidth: 70,
+      maxWidth: 100,
     },
   ],
 };
