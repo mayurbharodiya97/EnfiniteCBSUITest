@@ -31,10 +31,10 @@ export const DateRetrievalDialog = ({
 }) => {
   const inputButtonRef = useRef<any>(null);
   const [selectedFromDate, setFromDate] = useState(
-    defaultData?.A_FROM_DT ?? new Date(format(new Date(), "yyyy/MM/dd"))
+    defaultData?.A_FROM_DT ? new Date(defaultData?.A_FROM_DT) : new Date() // Default to today's date if undefined
   );
   const [selectedToDate, setToDate] = useState(
-    defaultData?.A_TO_DT ?? new Date(format(new Date(), "yyyy/MM/dd"))
+    defaultData?.A_TO_DT ? new Date(defaultData?.A_TO_DT) : new Date() // Default to today's date if undefined
   );
   const [error, SetError] = useState({ isError: false, error: "" });
   const [fromerror, SetFromError] = useState({ isError: false, error: "" });

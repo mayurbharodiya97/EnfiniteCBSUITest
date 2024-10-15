@@ -25,6 +25,9 @@ import {
   GradientButton,
   utilFunction,
 } from "@acuteinfo/common-base";
+import { useLocation } from "react-router-dom";
+import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
+import { useStyles } from "pages_audit/style";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -65,6 +68,8 @@ export const Trn001 = () => {
   const acctNoRef = useRef<any>(null);
   const carousalCrdLastReq = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [dateDialog, setDateDialog] = useState(false);
+  const classes = useStyles();
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
@@ -206,6 +211,23 @@ export const Trn001 = () => {
       setFieldsError({
         updUnqId: rowUnqID,
         payload: { bugMsgAccNo: error?.error_msg },
+      });
+    },
+  });
+
+  const getSingleAccountInterest = useMutation(API.getSingleAccountInterest, {
+    onSuccess: async (data: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "ACCTNO", false);
+      if (data?.[0]?.OPEN_DATE_PARA === "Y") {
+        setDateDialog(true);
+      }
+    },
+    onError: (error: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "ACCTNO", false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
       });
     },
   });
@@ -666,7 +688,8 @@ export const Trn001 = () => {
     if (
       Boolean(row?.accNo) &&
       Boolean(row?.accType?.value) &&
-      Boolean(row?.branch?.value)
+      Boolean(row?.branch?.value) &&
+      !Boolean(dateDialog)
     ) {
       const data = {
         COMP_CD: row?.branch?.info?.COMP_CD ?? "",
@@ -864,6 +887,29 @@ export const Trn001 = () => {
     });
   };
 
+  const handleKeyUp = (event, unqID) => {
+    // Check if Ctrl + I is pressed
+    if (event.ctrlKey && (event.key === "i" || event.key === "I")) {
+      setLoadingState(unqID, "ACCTNO", true);
+      getSingleAccountInterest.mutate({
+        A_COMP_CD: row?.branch?.info?.COMP_CD ?? "",
+        A_BRANCH_CD: row?.branch?.value ?? "",
+        A_ACCT_TYPE: row?.accType?.value ?? "",
+        A_ACCT_CD: row?.accNo ?? "",
+        A_SCREEN_REF: "TRN/001",
+        WORKING_DATE: authState?.workingDate ?? "",
+        USERNAME: authState?.user?.id ?? "",
+        USERROLE: authState?.role ?? "",
+        unqID: unqID,
+      });
+    }
+  };
+  const retrievalParaValues = (retrievalValues) => {
+    setDateDialog(false);
+    reqData.FROM_DATE = retrievalValues[0]?.value?.value;
+    reqData.TO_DATE = retrievalValues[1]?.value?.value;
+  };
+
   const maxUnqID = (state?.rows ?? [])?.reduce(
     (maxID, row) => Math.max(maxID, row?.unqID),
     0
@@ -874,7 +920,11 @@ export const Trn001 = () => {
   return (
     <>
       <DailyTransTabs
-        heading="Daily Transaction (Maker) (TRN/001)"
+        heading={utilFunction.getDynamicLabel(
+          useLocation().pathname,
+          authState?.menulistdata,
+          true
+        )}
         tabsData={tabsDetails}
         cardsData={cardsData}
         reqData={reqData}
@@ -937,6 +987,7 @@ export const Trn001 = () => {
               ref={acctNoRef}
               removeRow={removeRow}
               handleScrollBlur={handleScrollBlur}
+              onKeyUp={handleKeyUp}
             />
           </Card>
         </>
@@ -989,6 +1040,29 @@ export const Trn001 = () => {
           handleSetCards={handleSetCards}
           handleSetAccInfo={handleSetAccInfo}
           setViewOnly={setViewOnly}
+        />
+      )}
+      {dateDialog && (
+        <DateRetrievalDialog
+          classes={classes}
+          open={dateDialog}
+          handleClose={() => setDateDialog(false)}
+          loginState={{}}
+          retrievalParaValues={retrievalParaValues}
+          defaultData={{
+            A_FROM_DT: getSingleAccountInterest?.data?.[0]?.FROM_DT
+              ? format(
+                  new Date(getSingleAccountInterest?.data?.[0]?.FROM_DT),
+                  "yyyy/MM/dd"
+                )
+              : "",
+            A_TO_DT: getSingleAccountInterest?.data?.[0]?.TO_DT
+              ? format(
+                  new Date(getSingleAccountInterest?.data?.[0]?.TO_DT),
+                  "yyyy/MM/dd"
+                )
+              : "",
+          }}
         />
       )}
     </>
