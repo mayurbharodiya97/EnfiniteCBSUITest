@@ -73,30 +73,14 @@ const Form15GHEntry = ({
     rows?.retrieveData && Object.keys(rows?.retrieveData).length > 0
       ? rows?.retrieveData
       : rows?.[0]?.data || {};
-  const getDynamicLabel = (path: string, data: any, setScreenCode: boolean) => {
-    const relativePath = path.replace("/cbsenfinity/", "");
-    let cleanedPath;
-
-    if (relativePath.includes("/")) {
-      cleanedPath = relativePath.split("/").slice(0, 2).join("/");
-    } else {
-      cleanedPath = relativePath;
-    }
-    let screenList = utilFunction.GetAllChieldMenuData(data, true);
-    const matchingPath = screenList.find((item) => item.href === cleanedPath);
-
-    if (matchingPath) {
-      return setScreenCode
-        ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
-        : `${matchingPath.label}`;
-    }
-
-    return "";
-  };
 
   useEffect(() => {
     if (formMode === "edit" || (formMode === "view" && formData)) {
-      let label = getDynamicLabel(currentPath, authState?.menulistdata, false);
+      let label = utilFunction.getDynamicLabel(
+        currentPath,
+        authState?.menulistdata,
+        false
+      );
       const label2 = `${label ?? ""}\u00A0\u00A0 ${
         formData?.CONFIRMED_DIS ?? ""
       }\u00A0\u00A0 ${t("Uploaded")}: ${
@@ -163,7 +147,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar(t("Success"), {
+      enqueueSnackbar(t("RecordInsertedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -196,7 +180,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -211,7 +195,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("DataUpdatedSuccessfully"), {
+      enqueueSnackbar(t("RecordUpdatedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;

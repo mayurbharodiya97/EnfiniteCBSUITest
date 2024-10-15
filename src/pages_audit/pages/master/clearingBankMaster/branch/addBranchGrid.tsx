@@ -140,15 +140,15 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
         />
       )}
       <Dialog
-        maxWidth="lg"
         open={true}
         PaperProps={{
           style: {
-            width: "70%",
+            width: "60%",
             overflow: "auto",
             padding: "10px",
           },
         }}
+        maxWidth="md"
       >
         <GridWrapper
           key={`addBranchGrid`}

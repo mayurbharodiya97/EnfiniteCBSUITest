@@ -204,6 +204,7 @@ export const ClearingBankMstFormWrapper = ({
         },
       }}
       maxWidth="lg"
+      fullWidth={true}
     >
       <ClearingBankMstForm
         isDataChangedRef={isDataChangedRef}
