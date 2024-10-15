@@ -858,6 +858,7 @@ export const accountSave = async (reqData) => {
     ACCT_CD,
     COMP_CD,
     formData,
+    OP_DATE,
   } = reqData;
 
   // console.log("wefhiwheifhweihf", formData)
@@ -884,7 +885,35 @@ export const accountSave = async (reqData) => {
   if (Object.keys(formData)?.length > 0) {
     Object.keys(formData).forEach((tab: string) => {
       if (tab === "MAIN_DETAIL") {
-        payload["MAIN_DETAIL"] = formData["MAIN_DETAIL"];
+        payload["MAIN_DETAIL"] = {
+          ...formData["MAIN_DETAIL"],
+          SALARIED: formData["MAIN_DETAIL"]?.SALARIED === true ? "Y" : "N",
+          HANDICAP_FLAG:
+            formData["MAIN_DETAIL"]?.HANDICAP_FLAG === true ? "Y" : "N",
+          REG: formData["MAIN_DETAIL"]?.REG === true ? "Y" : "N",
+          INT_SKIP_FLAG:
+            formData["MAIN_DETAIL"]?.INT_SKIP_FLAG === true ? "Y" : "N",
+          OP_DATE: OP_DATE,
+        };
+      }
+      if (tab === "MOBILE_REG_DTL") {
+        let mobileRegDtl = formData["MOBILE_REG_DTL"]?.map((row) => {
+          return {
+            ...row,
+            MOBILE_REG_FLAG: row?.MOBILE_REG_FLAG === true ? "Y" : "N",
+          };
+        });
+        payload["MOBILE_REG_DTL"] = [...mobileRegDtl];
+      }
+      if (tab === "RELATIVE_DTL") {
+        let relativeDtl = formData["RELATIVE_DTL"]?.map((row) => {
+          return {
+            ...row,
+            SALARIED: row?.SALARIED === true ? "Y" : "N",
+            SELF_EMPLOYED: row?.SELF_EMPLOYED === true ? "Y" : "N",
+          };
+        });
+        payload["RELATIVE_DTL"] = [...relativeDtl];
       }
       if (jointTabs.includes(tab)) {
         joint_account_dtl = [...joint_account_dtl, ...formData[tab]];
@@ -901,7 +930,10 @@ export const accountSave = async (reqData) => {
         }
       }
     });
-    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl;
+    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl?.map((row) => ({
+      ...row,
+      IsNewRow: IsNewRow,
+    }));
     payload["PHOTO_DTL"] = [
       {
         IsNewRow: true,
@@ -942,6 +974,45 @@ export const accountSave = async (reqData) => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  }
+};
+
+export const accountModify = async (reqData) => {
+  // console.log("account-modify asdasdasd", reqData)
+  const {
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID,
+    ACCT_TYPE,
+    ACCT_CD,
+    COMP_CD,
+    formData,
+    updated_tab_format,
+    OP_DATE,
+  } = reqData;
+  let payload = {};
+
+  const ENTRY_TYPE = "";
+  payload = {
+    ...payload,
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID: "",
+    ACCT_TYPE,
+    ACCT_CD: "",
+    COMP_CD,
+    ENTRY_TYPE: "",
+  };
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEACCOUNTDATA", payload);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };
 

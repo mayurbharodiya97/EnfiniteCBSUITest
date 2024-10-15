@@ -34,17 +34,8 @@ export const accountFindmetaData = {
       branchCodeMetadata: {
         name: "BRANCH_CD",
         isFieldFocused: true,
-        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
-      },
-      accountTypeMetadata: {
-        name: "ACCT_TYPE",
-        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
-        isFieldFocused: true,
-      },
-      accountCodeMetadata: {
-        name: "ACCT_CD",
-        autoComplete: "off",
-        dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+        validationRun: "onChange",
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -52,21 +43,126 @@ export const accountFindmetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          formState?.handleButtonDisable(true);
-          const reqParameters = {
-            BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
-            ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
-            ACCT_CD: utilFunction.getPadAccountNumber(
-              currentField?.value ?? "",
-              dependentFieldValues?.ACCT_TYPE?.optionData
-            ),
-            SCREEN_REF: formState?.docCD ?? "",
+          return {
+            ACCT_NM: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "" },
           };
+        },
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
+      },
+      accountTypeMetadata: {
+        name: "ACCT_TYPE",
+        isFieldFocused: true,
+        dependentFields: ["BRANCH_CD"],
+        validationRun: "onChange",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+          };
+        },
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
+      },
+      accountCodeMetadata: {
+        name: "ACCT_CD",
+        autoComplete: "off",
+        dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+        runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
 
           if (
+            currentField?.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
             Boolean(dependentFieldValues?.ACCT_TYPE?.value)
           ) {
+            formState?.handleButtonDisable(true);
+            const reqParameters = {
+              BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
+              ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                currentField?.value ?? "",
+                dependentFieldValues?.ACCT_TYPE?.optionData
+              ),
+              SCREEN_REF: formState?.docCD ?? "",
+            };
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             let btn99, returnVal;
             for (let i = 0; i < postData?.MSG.length; i++) {

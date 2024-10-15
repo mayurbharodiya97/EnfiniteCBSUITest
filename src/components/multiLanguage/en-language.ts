@@ -91,8 +91,31 @@ export const en_language_data = {
   PayableAt: "Payable At",
   EnterPayableAt: "Enter Payable At",
   PayslipAndDemandDraft: "Payslip & Demand Draft",
+  PayslipDDTransaction: "Payslip/DD Transaction",
   SelectBillType: "Select Bill Type",
   InfavourOf: "Infavour Of",
+  reValidDate: "Re-valid Date",
+  reValidBy: "Re-valid By",
+  colComm: "Col.Comm.",
+  colGst: "Col. GST.",
+  transferAccNo: "Trf. A/c No",
+  transferBranchCd: "Trf. A/c Branch",
+  transferAcctType: "Trf. A/c Type",
+  transfeAcName: "Trf. A/c Name",
+  realizeDate: "Realize Date",
+  bankCodeName: "Bank Code/Name",
+  documentDate: "Document Date",
+  payslipIsuueBranch: "Payslip Issued From",
+  Revalidate: "Revalidate",
+  selectTransactionMode: "Select Transaction Mode (Cash,Transfer,Clearing)",
+  RevalidateConfPending: "Revalidate Conf. Pending",
+  authoeizationFailed: "You are not authorized",
+  payslipAlreadyConfirmed: "PAYSLIP_NO' is already Confirmed",
+  payslipRealizeconfirmRestrictNSG:
+    "Are you sure to confirm 'Realize Payslip/DD Operation :-",
+  stopPayment: "Stop Payment",
+  realseStoppedPayslip: "Release Stopped Payslip",
+  cancelReturnPending: "Cancel//Return Pending",
   SelectInfavourOf: "Select Infavour Of",
   InfavourOfRequired: "Infavour Of is required",
   EnterInstructionRemarks: "Enter Instruction Remarks",
@@ -864,6 +887,8 @@ export const en_language_data = {
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
   AccountType: "Account Type",
+  stopDate: "Stop Date",
+  realeaseDate: "Realease Date",
   AccountTypeReqired: "Account Type is required",
   AccountTypePlaceHolder: "Select account type",
   AccountNumber: "Account Code",
@@ -881,6 +906,7 @@ export const en_language_data = {
   Yes: "Yes",
   No: "No",
   ValidationFailed: "Validation Failed",
+  tokenNumberValidationMsg: "Enter Value for Token No.",
   RiskCategoryAlert: "Risk Category Alert",
   HNIAlert: "HNI Alert",
   DataConfirmMessage: "Data has been successfully confirmed",
@@ -924,7 +950,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do you want to delete this row?",
+  DoYouWantDeleteRow: "Do You Want to remove this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -1119,6 +1145,11 @@ export const en_language_data = {
 
   InsertStopPaymentMsg:
     "Are you sure you want to stop the selected check-number ?",
+  InsertStopPaymentMsg2:
+    "Are you sure you want to surrender the selected cheque number ?",
+  InsertStopPaymentMsg3:
+    "Are you sure you want to PDC the selected cheque number ?",
+
   AreYouSureToRelease: "Are you sure to Release ?",
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
@@ -1132,7 +1163,7 @@ export const en_language_data = {
   ChequeAmount: "Cheque Amount",
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
-    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
+    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-Cheque.",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1143,7 +1174,8 @@ export const en_language_data = {
   StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
   StopConfirmDeleteTitle:
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
-
+  FromChequenorequired: "From Cheque Number is required",
+  ToChequenorequired: "To Cheque Number is required",
   // stock entry
 
   stockEntry: "Stock Entry",
@@ -1199,6 +1231,7 @@ export const en_language_data = {
   EffectiveDate: "Effective Date",
   RemovalDate: "Removal Date",
   Reason: "Reason",
+  realizedAmountValidationMsg: "Realize Amount Must Be Tally.",
   SelectReason: "Select Reason",
   LienExpiredSuccessfully: "Lien Expired Successfully",
   LienExpire: "Lien Expire",
@@ -1561,7 +1594,11 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  issueBranch: "Issue Branch",
+  entryStatus: "Entry Status",
+  confirmStatus: "Confirmation Status",
   accountType: "Account Type",
+  enterPayslipToretrive: "Enter Payslip No to Retrive",
   accountCode: "Account Code",
   accountName: "Account Name",
   jointDetails: "Joint Details",
@@ -1619,6 +1656,7 @@ export const en_language_data = {
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
   entryType: "Entry Type",
+  typeRequired: "Type is required",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",
@@ -1850,6 +1888,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI:
     "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
@@ -1880,9 +1919,15 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
+  rateRequired: "rate is required",
   normalPremature: "Normal/Premature",
+  realizePending: "Realize Pending",
+  confirmPending: "Confirmation Pending",
+  todayTrns: "Todays Transaction",
   asonDate: "As on Date",
   maturityDate: "Maturity Date",
+  categCdRequired: "Category is required.",
+  definationRequired: "definayion is required.",
   term: "Term",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",

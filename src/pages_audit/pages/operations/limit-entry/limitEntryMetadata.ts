@@ -60,6 +60,7 @@ export const limitEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (field, formState) => {
           if (field?.value) {
             return {
@@ -89,6 +90,11 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -167,7 +173,7 @@ export const limitEntryMetaData = {
                   let btnName = await messagebox(
                     postData[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert message",
+                      : "Alert message",
                     postData[i]?.O_MESSAGE,
                     postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
                   );

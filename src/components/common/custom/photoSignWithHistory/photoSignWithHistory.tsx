@@ -38,6 +38,7 @@ import {
   utilFunction,
   queryClient,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -196,54 +197,14 @@ const PhotoSignWithHistory = ({
                   variant={"h4"}
                   component="div"
                 >
-                  {LatestPhotoSignData?.[0]?.AC_CUST_LEVEL === "A"
-                    ? t("AccountLevelPhotoSignature") +
-                      "" +
-                      t("ACNo") +
-                      ".:".concat(
-                        data?.COMP_CD,
-                        "-",
-                        data?.BRANCH_CD,
-                        "-",
-                        data?.ACCT_TYPE,
-                        "-",
-                        data?.ACCT_CD,
-                        t("Account_Name") + ":",
-                        data?.ACCT_NM ?? "",
-                        " ",
-                        t("ACMode") + ":",
-                        data?.ACCT_MODE ??
-                          LatestPhotoSignData?.[0]?.ACCT_MODE ??
-                          ""
-                      )
-                    : t("CustomerLevelPhotoSignature") +
-                      "" +
-                      t("ACNo") +
-                      ".:".concat(
-                        data?.COMP_CD,
-                        "-",
-                        data?.BRANCH_CD,
-                        "-",
-                        data?.ACCT_TYPE,
-                        "-",
-                        data?.ACCT_CD,
-                        t("Account_Name") + ":",
-                        data?.ACCT_NM,
-                        " ",
-                        t("ACMode") + ":",
-                        data?.ACCT_MODE ??
-                          LatestPhotoSignData?.[0]?.ACCT_MODE ??
-                          ""
-                      )}
+                  {LatestPhotoSignData?.[0]?.TITLE || ""}
                 </Typography>
                 <GradientButton
                   onClick={() => {
                     setAcCustLevel(LatestPhotoSignData[0]?.AC_CUST_LEVEL);
                   }}
                 >
-                  {LatestPhotoSignData[0]?.AC_CUST_LEVEL === "A"
-                    ? t("AccountLevelPhotoSignature")
-                    : t("CustomerLevelPhotoSignature")}
+                  {LatestPhotoSignData[0]?.BT_NAME || ""}
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
@@ -458,7 +419,12 @@ const PhotoSignWithHistory = ({
                                     className={headerClasses.tableCell}
                                   >
                                     <Typography variant="body2">
-                                      {item?.MODIFIED_DATE}
+                                      {item?.MODIFIED_DATE
+                                        ? format(
+                                            new Date(item.MODIFIED_DATE),
+                                            "dd/MMM/yyyy"
+                                          )
+                                        : ""}
                                     </Typography>
                                   </TableCell>
                                 </TableRow>
