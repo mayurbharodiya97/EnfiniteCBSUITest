@@ -48,7 +48,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_TYPE",
-      columnName: "A/c Type",
+      columnName: "AcctType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -58,7 +58,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Account No.",
+      columnName: "AcctNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -68,7 +68,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "A/c Holder Name",
+      columnName: "AcctHolderName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -79,7 +79,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_NO",
-      columnName: "FD No.",
+      columnName: "FDNo",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -99,7 +99,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRN_FLAG_DESC",
-      columnName: "Transaction Type",
+      columnName: "TransactionType",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -109,7 +109,7 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_BY",
-      columnName: "Entered By",
+      columnName: "EnteredBy",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -146,7 +146,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
   columns: [
     {
       accessor: "TRAN_CD",
-      columnName: "Voucher No.",
+      columnName: "VoucherNo",
       sequence: 1,
       alignment: "right",
       componentType: "default",
@@ -166,7 +166,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "ACCT_TYPE",
-      columnName: "A/c Type",
+      columnName: "AccType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -176,7 +176,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Account No.",
+      columnName: "AcctNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -186,7 +186,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "A/c Holder Name",
+      columnName: "AcctHolderName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -197,7 +197,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "FD_NO",
-      columnName: "FD No.",
+      columnName: "FDNo",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -217,7 +217,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque No.",
+      columnName: "ChequeNo",
       sequence: 8,
       alignment: "right",
       componentType: "default",
@@ -259,7 +259,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
     },
     {
       accessor: "SCROLL1",
-      columnName: "Scroll/Token No.",
+      columnName: "ScrollTokenNo",
       sequence: 12,
       alignment: "right",
       componentType: "default",
@@ -327,7 +327,7 @@ export const FDConfUpdatedtlMetadata: GridMetaDataType = {
     },
     {
       accessor: "COLUMN_LABEL",
-      columnName: "Label Name",
+      columnName: "LabelName",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -337,7 +337,7 @@ export const FDConfUpdatedtlMetadata: GridMetaDataType = {
     },
     {
       accessor: "OLD_VALUE",
-      columnName: "Old Value",
+      columnName: "OldValue",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -348,7 +348,7 @@ export const FDConfUpdatedtlMetadata: GridMetaDataType = {
     },
     {
       accessor: "NEW_VALUE",
-      columnName: "New Value",
+      columnName: "NewValue",
       sequence: 5,
       alignment: "left",
       componentType: "default",

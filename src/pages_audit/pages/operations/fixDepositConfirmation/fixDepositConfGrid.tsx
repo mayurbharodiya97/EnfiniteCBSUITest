@@ -22,7 +22,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "viewAll",
-    actionLabel: "View All",
+    actionLabel: "ViewAll",
     multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
@@ -88,7 +88,7 @@ export const FDConfirmationGrid = () => {
         setActionMenu((values) =>
           values.map((item) =>
             item.actionName === "pending"
-              ? { ...item, actionName: "viewAll", actionLabel: "view All" }
+              ? { ...item, actionName: "viewAll", actionLabel: "viewAll" }
               : item
           )
         );

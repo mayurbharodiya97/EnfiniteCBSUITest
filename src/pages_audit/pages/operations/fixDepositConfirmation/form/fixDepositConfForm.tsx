@@ -78,7 +78,6 @@ const actions: ActionTypes[] = [
   },
 ];
 export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
-  const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -461,7 +460,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 disabled={isLoading || isFetching || disableButton}
                 style={{ width: "150px" }}
               >
-                {t("View Master")}
+                {t("ViewMaster")}
               </GradientButton>
 
               {rows?.[0]?.data?.TRN_FLAG === "P" ||
