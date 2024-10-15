@@ -517,7 +517,7 @@ const Form15GHEntry = ({
       });
     } else {
       const confirmation = await MessageBox({
-        message: "DeleteData",
+        message: "RejectFormMessage",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
