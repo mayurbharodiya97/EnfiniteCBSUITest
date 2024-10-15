@@ -126,12 +126,10 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
         <FormWrapper
           key={"Expire-Lien"}
           metaData={lienExpireMetadata as MetaDataType}
-          initialValues={
-            {
-              ...rows?.[0]?.data,
-              LIEN_STATUS: "E",
-            } ?? {}
-          }
+          initialValues={{
+            ...rows?.[0]?.data,
+            LIEN_STATUS: "E",
+          }}
           onSubmitHandler={onSubmitHandler}
           formStyle={{
             background: "white",

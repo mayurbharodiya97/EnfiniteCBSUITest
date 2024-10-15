@@ -911,7 +911,7 @@ export const Form15GHEntryWrapper: React.FC<Form15GHEntryFormWrapperProps> = ({
         style: {
           width: "auto",
           overflow: "auto",
-          padding: "10px",
+          padding: "5px",
         },
       }}
       maxWidth="xl"

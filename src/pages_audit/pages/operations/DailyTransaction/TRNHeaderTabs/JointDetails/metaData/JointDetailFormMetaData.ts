@@ -69,21 +69,12 @@ export const JointDetailFormMetaData = {
     },
     {
       render: {
-        componentType: "typography",
+        componentType: "textField",
       },
-      name: "JOINT_NAME",
-      label: "JOINT NAME",
-      TypographyProps: {
-        variant: "subtitle2",
-        style: {
-          marginTop: "33px",
-          fontSize: "14px",
-          width: "100%",
-          textAlign: "center",
-        },
-      },
+      name: "JOINT_DISC",
+      label: "Type",
       fullWidth: true,
-      GridProps: { xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 },
+      GridProps: { xs: 6, sm: 4, md: 3, lg: 1.5, xl: 1.5 },
     },
     {
       render: {

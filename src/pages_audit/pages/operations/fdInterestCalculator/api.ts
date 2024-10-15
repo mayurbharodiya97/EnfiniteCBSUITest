@@ -71,7 +71,28 @@ export const getCategoryDDWdata = async ({ COMP_CD, BRANCH_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
+export const getFdDefinationDdw = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETRECTOFDDDW", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, DESCRIPTION, ...others }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+          ...others,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getFdinterest = async ({
   COMP_CD,
   BRANCH_CD,
@@ -174,6 +195,7 @@ export const getCompareSheetReport = async ({
   PERIOD_NO,
   AMOUNT,
   FR_DT,
+  TO_DT,
   GD_TODAY,
   SPL_AMT_FLG,
 }) => {
@@ -187,21 +209,14 @@ export const getCompareSheetReport = async ({
       PERIOD_NO: PERIOD_NO,
       AMOUNT: AMOUNT,
       FR_DT: FR_DT,
+      TO_DT: TO_DT,
       GD_TODAY: GD_TODAY,
       SPL_AMT_FLG: SPL_AMT_FLG,
     });
   if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...others }) => {
-        return {
-          value: TRAN_CD,
-          label: DESCRIPTION,
-          ...others,
-        };
-      });
-    }
-    return responseData;
+    console.log(data, "123");
+
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

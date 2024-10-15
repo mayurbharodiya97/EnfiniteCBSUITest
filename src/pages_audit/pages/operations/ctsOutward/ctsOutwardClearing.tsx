@@ -16,7 +16,14 @@ import {
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { AppBar, Collapse, Grid, IconButton, Typography } from "@mui/material";
+import {
+  AppBar,
+  CircularProgress,
+  Collapse,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { AddNewBankMasterForm } from "./addNewBank";
@@ -346,7 +353,7 @@ const CtsOutwardClearingForm: FC<{
             <LoaderPaperComponent />
           </div>
         </div>
-      ) : isError ? (
+      ) : isError || getOutwardClearingData?.isError ? (
         <>
           <div
             style={{
@@ -359,8 +366,16 @@ const CtsOutwardClearingForm: FC<{
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={error?.error_msg ?? "Unknow Error"}
-                errorDetail={error?.error_detail ?? ""}
+                errorMsg={
+                  error?.error_msg ??
+                  getOutwardClearingData?.error?.error_msg ??
+                  "Unknow Error"
+                }
+                errorDetail={
+                  error?.error_detail ??
+                  getOutwardClearingData?.error?.error_detail ??
+                  ""
+                }
                 color="error"
               />
             </AppBar>
@@ -414,9 +429,6 @@ const CtsOutwardClearingForm: FC<{
             setDataOnFieldChange={(action, payload) => {
               if (action === "API_REQ") {
                 setChequeReqData(payload);
-              } else if (action === "ACCT_CD_VALID") {
-                setJointDtlExpand(true);
-                setGridData(payload);
                 setChequeDetailData((old) => {
                   return {
                     ...old,
@@ -424,13 +436,16 @@ const CtsOutwardClearingForm: FC<{
                       ...old.chequeDetails.map((item) => {
                         return {
                           ...item,
-                          ECS_USER_NO: payload?.ACCT_NAME ?? "",
+                          ECS_USER_NO: payload?.[0]?.ACCT_NM ?? "",
                           CHEQUE_DATE: authState?.workingDate ?? "",
                         };
                       }),
                     ],
                   };
                 });
+              } else if (action === "ACCT_CD_VALID") {
+                setJointDtlExpand(true);
+                setGridData(payload);
                 setChequeDtlRefresh((old) => old + 1);
               } else if (action === "ACCT_CD_BLANK") {
                 setGridData([]);
@@ -478,6 +493,19 @@ const CtsOutwardClearingForm: FC<{
                       }}
                     >
                       {t("Retrieve")}
+                    </GradientButton>
+                    <GradientButton
+                      onClick={() => {
+                        let event: any = { preventDefault: () => {} };
+                        myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
+                      }}
+                      endIcon={
+                        mutationOutward?.isLoading ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                    >
+                      {t("Save")}
                     </GradientButton>
                   </>
                 ) : formMode === "view" ? (
@@ -656,7 +684,7 @@ const CtsOutwardClearingForm: FC<{
                   ? {
                       ...chequeDetailData,
                       TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
-                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
+                      RANGE_DT: data?.[0]?.RANGE_FROM_DT ?? "",
                     }
                   : {
                       chequeDetails:
@@ -697,7 +725,25 @@ const CtsOutwardClearingForm: FC<{
           {isOpenAddBankForm ? (
             <AddNewBankMasterForm
               isOpen={isOpenAddBankForm}
-              onClose={() => {
+              onClose={(flag, rowsData) => {
+                if (flag === "save") {
+                  setOpenAddBankForm(false);
+                  setChequeDetailData((old) => {
+                    return {
+                      ...old,
+                      chequeDetails: [
+                        ...old.chequeDetails.map((item) => {
+                          return {
+                            ...item,
+                            BANK_CD: rowsData?.data?.[0]?.BANK_CD ?? "",
+                            CHEQUE_DATE: authState?.workingDate ?? "",
+                          };
+                        }),
+                      ],
+                    };
+                  });
+                  setChequeDtlRefresh((old) => old + 1);
+                }
                 setOpenAddBankForm(false);
               }}
             />

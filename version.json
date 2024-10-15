@@ -1,6 +1,6 @@
 {
-  "software_version": "24.04.00.00.01",
-  "date": "05/10/2024",
+  "software_version": "24.04.00.00.02",
+  "date": "10/10/2024",
   "Microservice_Name": "EnfiniteCBS_UI",
   "version_information": {
     "major_release_aa": "24",
@@ -34,7 +34,7 @@
       "description": "Patch release, Internal minor update"
     },
     "internal_release_ee": {
-      "version": "01",
+      "version": "02",
       "description": "For Internal and development purpose"
     }
   }

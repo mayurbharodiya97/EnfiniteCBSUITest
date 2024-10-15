@@ -1477,6 +1477,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER1",
       GridProps: {
         xs: 0.1,
       },
@@ -1523,6 +1524,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER2",
       GridProps: {
         xs: 0.1,
       },
@@ -1582,6 +1584,7 @@ export const kyc_proof_of_address_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER3",
       GridProps: {
         xs: 0.1,
       },
@@ -2502,6 +2505,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER1",
       GridProps: {
         xs: 0.1,
       },
@@ -2548,6 +2552,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER2",
       GridProps: {
         xs: 0.1,
       },
@@ -2596,6 +2601,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER3",
       GridProps: {
         xs: 0.1,
       },

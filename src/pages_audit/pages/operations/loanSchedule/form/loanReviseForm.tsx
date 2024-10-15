@@ -119,7 +119,9 @@ export const LoanReviseForm = ({
         initialData={{
           ...reviseData,
           VALIDATE_INT_RATE: null,
-          VALIDATE_INST_RS: null,
+          VALIDATE_INST_RS: Boolean(reviseData?.INST_RS)
+            ? Number(reviseData?.INST_RS).toFixed(2).toString()
+            : "",
           HDR_DISBURSEMENT_DT: selectedRowData?.data?.DISBURSEMENT_DT ?? "",
           HDR_DISBURSEMENT_AMT: selectedRowData?.data?.DISBURSEMENT_AMT ?? "",
           HDR_INSTALLMENT_TYPE: selectedRowData?.data?.INST_TYPE_DIS ?? "",

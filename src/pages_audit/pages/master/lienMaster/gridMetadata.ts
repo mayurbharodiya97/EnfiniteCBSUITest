@@ -14,7 +14,7 @@ export const gridMetadata: GridMetaDataType = {
     hideHeader: false,
     disableGroupBy: true,
     enablePagination: true,
-    pageSizes: [15, 30, 50],
+    pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
       min: "67vh",

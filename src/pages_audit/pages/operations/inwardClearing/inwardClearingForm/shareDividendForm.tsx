@@ -197,6 +197,7 @@ export const ShareDividendFormWrapper: FC<{
                     MessageBox({
                       messageTitle: t("ValidationFailed"),
                       message: t("DividendAmountMatch"),
+                      icon: "ERROR",
                     });
                   } else {
                     myRef.current?.handleSubmit(event);

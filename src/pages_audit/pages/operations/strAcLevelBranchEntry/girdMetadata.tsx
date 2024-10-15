@@ -4,7 +4,7 @@ export const strBranchLevelEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "SR_CD",
+    rowIdColumn: "index",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
