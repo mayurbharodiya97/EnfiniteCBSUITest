@@ -2837,6 +2837,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DODAILYLIMITIMPSREGDML",
     packageName: "",
   },
+  GETINTCALCPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
