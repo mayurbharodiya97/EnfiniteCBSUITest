@@ -161,3 +161,15 @@ export const crudDataIMPS = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const crudDayLimitDataIMPS = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DODAILYLIMITIMPSREGDML", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

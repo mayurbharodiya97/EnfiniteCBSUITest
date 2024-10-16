@@ -882,7 +882,9 @@ export const en_language_data = {
   },
 
   // common
-
+  newmode: "new mode",
+  editmode: "edit mode",
+  viewmode: "view mode",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
@@ -989,7 +991,7 @@ export const en_language_data = {
   Apply: "Apply",
   Clear: "Clear",
   AppliedFilters: "Applied Filters",
-  TotalNoofRecords: "Total No. of Records",
+  TotalNoofRecords: "Total No. of ",
   RetrievalParameters: "Retrieval Parameters",
   Searched: "Search",
   Showexportoptions: "Show export options",
@@ -1671,11 +1673,13 @@ export const en_language_data = {
   AmountIsRequired: "Amount is Required.",
   ChequeImage: "Cheque Image",
   ChequeImageIsNotUploaded: "Cheque Image is not uploaded.",
-  RemovalRemarksPositivePay: "Removal Remarks For Positive Pay Confirmation",
+  RemovalRemarksPositivePay:
+    "Enter Removal Remarks For Positive Pay Confirmation (MST/992)",
   Unknownerroroccured: "Unknown error occured",
   dataImportedSuccessfully: "data imported successfully",
   AreYouSureToInsertTheFileData: "Are you sure to Insert the File Data ?",
   PositivePayEntry: "Positive Pay Entry",
+  PositivePayConfirmation: "Positive Pay Confirmation",
   AccCode: "A/c Code",
   AccType: "A/c Type",
   Uploaded: "Uploaded",
@@ -2075,4 +2079,15 @@ export const en_language_data = {
 
   // Cashier Exchange Entry
   TransferDetails: "Transfer Details",
+
+  // fix deposit confirmation
+  ConfirmationHistory: "Confirmation History",
+  AcctNum: "Account No.",
+  AcctHolderName: "A/c Holder Name",
+  VoucherNo: "Voucher No.",
+  Denomination: "Denomination",
+  ScrollTokenNo: "Scroll/Token No.",
+  Sign: "Sign",
+  LabelName: "Label Name",
+  ViewMaster: "View Master",
 };
