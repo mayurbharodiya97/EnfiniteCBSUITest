@@ -560,7 +560,11 @@ export const PositivePayEntry = ({
           >
             <ImageViewer
               blob={imageBlobData}
-              fileName={t("PositivePayEntry")}
+              fileName={
+                screenFlag === "C"
+                  ? t("PositivePayConfirmation")
+                  : t("PositivePayEntry")
+              }
               onClose={() => {
                 setOpenImage(false);
               }}
