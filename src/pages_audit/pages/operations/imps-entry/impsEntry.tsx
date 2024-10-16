@@ -38,14 +38,14 @@ export const ImpsEntryCustom = () => {
     uniqueNo: 0,
   });
   const [formMode, setFormMode] = useState<any>("add");
-  const [retrieveData, setRetrieveData] = useState<any>();
-  const [rowData, setRowData] = useState<any>();
+  const [retrieveData, setRetrieveData] = useState<any>([]);
+  const [rowData, setRowData] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState<any>(0);
   const formRef = useRef<any>(null);
+  const rowDataRef = useRef<any>(null);
   const initialDataRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  console.log("<<<initiak", initialDataRef);
 
   const impsDetails: any = useMutation(
     ["getImpsDetails"],
@@ -62,7 +62,11 @@ export const ImpsEntryCustom = () => {
         } else {
           setRowData([]);
         }
-        setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+        setIsData((old) => ({
+          ...old,
+          uniqueNo: Date.now(),
+          closeAlert: false,
+        }));
       },
       onError(err) {
         setIsData((old) => ({
@@ -81,6 +85,7 @@ export const ImpsEntryCustom = () => {
 
   const accountList: any = useMutation("getRtgsRetrieveData", API.getAcctList, {
     onSuccess: (data) => {
+      setIsData((old) => ({ ...old, closeAlert: false }));
       if (rowData?.length > 0) {
         function isMatch(item1, item2) {
           return (
@@ -93,7 +98,6 @@ export const ImpsEntryCustom = () => {
         let filteredData = data.filter((d2Item) => {
           return !rowData.some((d1Item) => isMatch(d1Item, d2Item));
         });
-
         if (filteredData?.length > 0) {
           messagebox(filteredData);
         }
@@ -112,12 +116,12 @@ export const ImpsEntryCustom = () => {
 
   const crudIMPS: any = useMutation("crudDataIMPS", API.crudDataIMPS, {
     onSuccess: (data, variables) => {
-      console.log("<<<imps", data, variables);
+      setIsData((old) => ({ ...old, closeAlert: false }));
       if (variables?._isNewRow) {
+        initialDataRef.current = {};
+        setRowData([]);
         formRef?.current?.handleFormReset({ preventDefault: () => {} });
         enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
-      } else if (variables?._isDeleteRow) {
-        enqueueSnackbar(t("RecordRemovedMsg"), { variant: "success" });
       } else if (variables?._isUpdateRow) {
         enqueueSnackbar(t("RecordUpdatedMsg"), { variant: "success" });
       }
@@ -137,28 +141,64 @@ export const ImpsEntryCustom = () => {
     API.validateDeleteData,
     {
       onSuccess: (data, variables) => {
+        setIsData((old) => ({ ...old, closeAlert: false }));
         if (data?.[0]?.O_STATUS !== "0") {
           MessageBox({
             messageTitle: "ValidationAlert",
             message: data?.[0]?.O_MESSAGE,
           });
         } else {
-          if (rowData?.length !== currentIndex) {
-            if (variables?.FLAG === "S") {
+          async function deleterData() {
+            if (rowData?.length !== currentIndex) {
+              if (variables?.FLAG === "S") {
+              } else {
+                setCurrentIndex((old) => old + 1);
+                setTimeout(() => {
+                  deleteData({ flag: "A" });
+                }, 1000);
+              }
             } else {
-              setCurrentIndex((old) => old + 1);
-              setTimeout(() => {
-                deleteData({ flag: "A" });
-              }, 1000);
+              console.log(
+                "<<<valodate del",
+                rowData?.length,
+                rowData,
+                currentIndex
+              );
+              let apiReq = {
+                _isNewRow: false,
+                _isDeleteRow: true,
+                _isUpdateRow: false,
+                ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+                ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+                TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+                DETAILS_DATA: {
+                  isNewRow: [],
+                  isDeleteRow: rowData,
+                  isUpdatedRow: [],
+                },
+              };
+              let buttonName = await MessageBox({
+                messageTitle: "confirmation",
+                message: "Are you sure to procced",
+                defFocusBtnName: "Yes",
+                buttonNames: ["Yes", "No"],
+                loadingBtnName: ["Yes"],
+                icon: "INFO",
+              });
+              if (buttonName === "Yes") {
+                crudIMPS.mutate(apiReq, {
+                  onSuccess: (data, variables) => {
+                    if (variables?._isDeleteRow) {
+                      enqueueSnackbar(t("RecordRemovedMsg"), {
+                        variant: "success",
+                      });
+                    }
+                  },
+                });
+              }
             }
-          } else {
-            console.log(
-              "<<<valodate del",
-              rowData?.length,
-              rowData,
-              currentIndex
-            );
           }
+          deleterData();
         }
       },
       onError(err) {
@@ -170,7 +210,7 @@ export const ImpsEntryCustom = () => {
     }
   );
 
-  const deleteData: any = ({ flag, reqData }) => {
+  const deleteData: any = async ({ flag, reqData }) => {
     let apiReq = {
       A_ENTERED_BY: retrieveData?.[0]?.ENTERED_BY ?? "",
       A_CONFIRMED: retrieveData?.[0]?.CONFIRMED ?? "",
@@ -232,11 +272,6 @@ export const ImpsEntryCustom = () => {
   };
 
   const onSubmitHandler = async (data: any, displayData, endSubmit) => {
-    // @ts-ignore
-    endSubmit(true);
-
-    // console.log("<<<onsub", data, retrieveData, rowData, populate);
-
     let messagebox = async (apiReq) => {
       let buttonName = await MessageBox({
         messageTitle: rowData?.length ? "confirmation" : "Alert",
@@ -253,95 +288,119 @@ export const ImpsEntryCustom = () => {
       }
     };
 
-    if (rowData?.length) {
-      let newData = data?.accMapping;
-      let oldData = rowData;
+    let allRowdata = await rowDataRef.current?.getFieldData();
+    if (rowData?.length > 0) {
+      let upd =
+        formMode !== "add"
+          ? {
+              ...(!data?.ACTIVE || data?.ACTIVE === "N"
+                ? {
+                    _OLDROWVALUE: {
+                      DEACTIVE_DT: retrieveData?.[0]?.DEACTIVE_DT,
+                      ACTIVE:
+                        retrieveData?.[0]?.ACTIVE === "Y" ||
+                        Boolean(data?.ACTIVE)
+                          ? "Y"
+                          : "N",
+                    },
+                    _UPDATEDCOLUMNS: ["DEACTIVE_DT", "ACTIVE"],
+                  }
+                : ""),
 
-      let formdata = { ...data };
-      delete formdata?.accMapping;
-      delete formdata?.POPULATE;
-      delete formdata?.ROWDATA_LENGTH;
-      delete formdata?.RETRIEVE_DATA;
-
-      let upd = utilFunction.transformDetailsData(
-        formdata ?? {},
-        retrieveData?.[0] ?? {}
-      );
-
-      let updPara = utilFunction.transformDetailDataForDML(
-        formMode === "add" ? [] : oldData,
-        newData ?? [],
-        ["SR_CD", "ACCT_TYPE", "BRANCH_CD"]
-      );
-      updPara?.isNewRow.map((item) => {
-        item.REG_DT = item?.REG_DT
-          ? format(new Date(item?.REG_DT), "dd/MMM/yyyy")
-          : "";
-        // delete item.TRAN_CD;
-        // delete item.SR_CD;
-
+              ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+              ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+              TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+              ACTIVE: data?.ACTIVE === "Y" || Boolean(data?.ACTIVE) ? "Y" : "N",
+              ...(data?.DEACTIVE_DT &&
+                formMode !== "add" &&
+                !data?.ACTIVE && {
+                  DEACTIVE_DT: format(
+                    new Date(data?.DEACTIVE_DT),
+                    "dd/MMM/yyyy"
+                  ),
+                }),
+            }
+          : {
+              CUSTOMER_ID: data?.CUSTOMER_ID,
+              UNIQUE_ID: data?.UNIQUE_ID,
+              MOB_NO: data?.MOB_NO,
+              CONFIRMED: data?.CONFIRMED,
+              ACTIVE: "Y",
+            };
+      let newData = allRowdata?.accMapping.map((item) => {
+        delete item?.ALLLOW_DELETE;
+        delete item?.PHOTO_SIGN;
+        delete item?.JOINT_DETAILS;
+        delete item?.SPACER_ST;
+        delete item?.REG_DT;
+        return item;
+      });
+      let oldData = rowData.map((item) => {
+        delete item?.OLD_PERDAY_BBPS_LIMIT;
+        delete item?.OLD_PERDAY_IFT_LIMIT;
+        delete item?.OLD_PERDAY_NEFT_LIMIT;
+        delete item?.OLD_PERDAY_OWN_LIMIT;
+        delete item?.OLD_PERDAY_P2A_LIMIT;
+        delete item?.OLD_PERDAY_P2P_LIMIT;
+        delete item?.OLD_PERDAY_PG_AMT;
+        delete item?.OLD_PERDAY_RTGS_LIMIT;
+        delete item?.FULL_ACCT_NO_NM;
+        delete item?.ENTERED_COMP_CD;
+        delete item?.REG_DT;
         return item;
       });
 
-      updPara?.isUpdatedRow?.map((item) => {
-        return {
-          ...item,
-          REG_DT: item?.REG_DT
-            ? format(new Date(item?.REG_DT), "dd/MMM/yyyy")
-            : "",
-        };
-      });
+      let updPara = utilFunction.transformDetailDataForDML(
+        formMode === "add" ? [] : oldData,
+        newData,
+        ["SR_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"]
+      );
+
+      const formatRowData = (item) => {
+        item.REG_DT = item?.REG_DT
+          ? format(new Date(item.REG_DT), "dd/MMM/yyyy")
+          : "";
+        Object.keys(item).forEach((key) => {
+          if (typeof item[key] === "boolean") {
+            item[key] = item[key] ? "Y" : "N";
+          } else if (typeof item[key] === "object" && item[key] !== null) {
+            Object.keys(item[key]).forEach((nestedKey) => {
+              if (typeof item[key][nestedKey] === "boolean") {
+                item[key][nestedKey] = item[key][nestedKey] ? "Y" : "N";
+              }
+            });
+            return item;
+          }
+        });
+      };
+
+      if (Array.isArray(updPara?.isNewRow) && updPara?.isNewRow?.length > 0) {
+        updPara?.isNewRow?.map(formatRowData);
+      }
+      if (
+        Array.isArray(updPara?.isUpdatedRow) &&
+        updPara?.isUpdatedRow?.length > 0
+      ) {
+        updPara?.isUpdatedRow?.map(formatRowData);
+      }
 
       let apiReq = {
         _isNewRow: formMode === "add" ? true : false,
         _isDeleteRow: false,
         _isUpdateRow: formMode !== "add" ? true : false,
-        ...formdata,
-        DEACTIVE_DT: formdata?.DEACTIVE_DT
-          ? format(new Date(formdata?.DEACTIVE_DT), "dd/MMM/yyyy")
-          : "",
-        ACTIVE:
-          formdata?.ACTIVE === "Y" || Boolean(formdata?.ACTIVE) ? "Y" : "N",
-        ...(formMode !== "add" ? upd : {}),
+        ...upd,
         DETAILS_DATA: {
           ...updPara,
         },
       };
+      console.log("<<<aspirwe", apiReq);
       messagebox(apiReq);
     } else {
       messagebox(null);
     }
-
-    // console.log("<<<upd", upd, updPara, apiReq);
+    // @ts-ignore
+    endSubmit(true);
   };
-  // const deleteData: any = async ({ FLAG, DATA }) => {
-  //   const formdata = await formRef?.current?.getFieldData();
-
-  //   let buttonName = await MessageBox({
-  //     messageTitle: "Confirmation",
-  //     message: "Are you sure to proceed",
-  //     buttonNames: ["Yes", "No"],
-  //     loadingBtnName: ["Yes"],
-  //   });
-
-  //   if (buttonName === "Yes") {
-  //     let apiReq = {
-  //       _isNewRow: false,
-  //       _isDeleteRow: true,
-  //       _isUpdateRow: false,
-  //       ENTERED_BRANCH_CD: formdata?.ENTERED_BRANCH_CD,
-  //       ENTERED_COMP_CD: formdata?.ENTERED_COMP_CD,
-  //       TRAN_CD: formdata?.TRAN_CD,
-  //       CONFIRMED: formdata?.CONFIRMED,
-  //       DETAILS_DATA: {
-  //         isNewRow: [],
-  //         isDeleteRow: rowData,
-  //         isUpdatedRow: [],
-  //       },
-  //     };
-  //     crudIMPS.mutate(apiReq);
-  //   }
-  // };
 
   const RowData = (rowData) => {
     if (formMode === "edit") {
@@ -409,12 +468,7 @@ export const ImpsEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
           <FormWrapper
-            key={
-              "imps-entry" +
-              formMode +
-              // retrieveData?. +
-              isData?.uniqueNo
-            }
+            key={"imps-entry" + formMode + isData?.uniqueNo}
             metaData={
               extractMetaData(impsEntryMetadata, formMode) as MetaDataType
             }
@@ -422,7 +476,6 @@ export const ImpsEntryCustom = () => {
               ...(formMode === "add"
                 ? { ...initialDataRef.current }
                 : { ...retrieveData?.[0] }),
-              accMapping: rowData,
               ROWDATA_LENGTH: rowData?.length ?? {},
             }}
             formState={{
@@ -435,8 +488,7 @@ export const ImpsEntryCustom = () => {
             }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
-              height: "166px",
-              // height: "calc(100vh - 576px)",
+              height: "calc(100vh - 586px)",
             }}
             displayMode={formMode}
             ref={formRef}
@@ -451,27 +503,11 @@ export const ImpsEntryCustom = () => {
                   A_LANG: i18n.resolvedLanguage,
                 });
               }
-              if (id === "accMapping[0].ALLLOW_DELETE") {
-                deleteData({
-                  flag: "S",
-                  reqData: {
-                    REG_DATE: dependent?.["accMapping.REG_DATE"]?.value
-                      ? format(
-                          new Date(dependent?.["accMapping.REG_DATE"]?.value),
-                          "dd/MMM/yyyy"
-                        )
-                      : "",
-                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
-                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
-                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
-                  },
-                });
-              }
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                {retrieveData?.length > 0 && (
+                {retrieveData?.length > 0 && rowData?.length > 0 && (
                   <>
                     <Button
                       onClick={() =>
@@ -489,7 +525,7 @@ export const ImpsEntryCustom = () => {
                         initialDataRef.current = {};
                         setFormMode("add");
                         setRetrieveData(null);
-                        setRowData(null);
+                        setRowData([]);
                       }}
                       disabled={
                         accountList?.isLoading || validateDelete?.isLoading
@@ -499,7 +535,12 @@ export const ImpsEntryCustom = () => {
                       {t("New")}
                     </Button>
                     <Button
-                      onClick={() => deleteData({ flag: "M" })}
+                      onClick={() => {
+                        setCurrentIndex(0);
+                        setTimeout(() => {
+                          deleteData({ flag: "M" });
+                        }, 1000);
+                      }}
                       disabled={
                         accountList?.isLoading || validateDelete?.isLoading
                       }
@@ -525,6 +566,47 @@ export const ImpsEntryCustom = () => {
                 </Button>
               </>
             )}
+          </FormWrapper>
+          <FormWrapper
+            key={"impsReg-details" + formMode + isData?.uniqueNo}
+            metaData={extractMetaData(impsRegDetails, formMode) as MetaDataType}
+            initialValues={{
+              accMapping: rowData,
+              ROWDATA_LENGTH: rowData?.length ?? {},
+            }}
+            hideHeader={true}
+            displayMode={formMode}
+            formState={{
+              MessageBox: MessageBox,
+              onArrayFieldRowDoubleClickHandle: RowData,
+            }}
+            onSubmitHandler={() => {}}
+            ref={rowDataRef}
+            onFormButtonClickHandel={(id, dependent) => {
+              if (id === "accMapping[0].ALLLOW_DELETE") {
+                deleteData({
+                  flag: "S",
+                  reqData: {
+                    REG_DATE: dependent?.["accMapping.REG_DATE"]?.value
+                      ? format(
+                          new Date(dependent?.["accMapping.REG_DATE"]?.value),
+                          "dd/MMM/yyyy"
+                        )
+                      : "",
+                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
+                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
+                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
+                  },
+                });
+              }
+            }}
+            formStyle={{
+              height: "calc(100vh - 347px)",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => <></>}
           </FormWrapper>
           <Routes>
             <Route

@@ -66,6 +66,7 @@ const RowsTable = forwardRef<any, any>(
       isCardsLoading,
       removeRow,
       handleScrollBlur,
+      onKeyUp,
     },
     ref
   ) => {
@@ -326,6 +327,7 @@ const RowsTable = forwardRef<any, any>(
                             value: event?.target?.value,
                           })
                         }
+                        onKeyUp={(event) => onKeyUp(event, row?.unqID)}
                         disabled={!Boolean(row?.accType?.value)}
                         onBlur={() => handleAccNoBlur(row?.unqID)}
                         loadingState={loadingStates[row?.unqID]?.["ACCTNO"]}

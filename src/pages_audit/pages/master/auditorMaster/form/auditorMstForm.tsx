@@ -1,4 +1,4 @@
-import { Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AuditorMstFormMetaData } from "./metaData";
@@ -16,6 +16,7 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
 
 export const AuditorMstForm = ({
@@ -31,24 +32,8 @@ export const AuditorMstForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.auditorMstDataDML, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      CloseMessageBox();
-      closeDialog();
-    },
+    onError: (error: any) => {},
+    onSuccess: (data, variables) => {},
   });
 
   const onSubmitHandler: SubmitFnType = async (
@@ -59,7 +44,6 @@ export const AuditorMstForm = ({
     actionFlag
   ) => {
     //@ts-ignore
-    endSubmit(true);
     let newData = {
       ...data,
     };
@@ -89,15 +73,51 @@ export const AuditorMstForm = ({
         loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
-        mutation.mutate({
-          ...isErrorFuncRef.current?.data,
-        });
+        mutation.mutate(
+          {
+            ...isErrorFuncRef.current?.data,
+          },
+          {
+            onError: (error: any) => {
+              CloseMessageBox();
+            },
+            onSuccess: (data, variables) => {
+              enqueueSnackbar(
+                Boolean(variables?._isNewRow)
+                  ? t("RecordInsertedMsg")
+                  : t("RecordUpdatedMsg"),
+                {
+                  variant: "success",
+                }
+              );
+              isDataChangedRef.current = true;
+              CloseMessageBox();
+              closeDialog();
+            },
+          }
+        );
+      } else if (btnName === "No") {
+        endSubmit(false);
       }
     }
   };
 
   return (
     <>
+      {mutation?.isError && (
+        <>
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity={mutation?.error?.severity ?? "error"}
+              errorMsg={
+                mutation?.error?.error_msg ?? "Something went to wrong.."
+              }
+              errorDetail={mutation?.error?.error_detail}
+              color="error"
+            />
+          </AppBar>
+        </>
+      )}
       <FormWrapper
         key={"auditorMstForm" + formMode}
         metaData={AuditorMstFormMetaData as MetaDataType}
