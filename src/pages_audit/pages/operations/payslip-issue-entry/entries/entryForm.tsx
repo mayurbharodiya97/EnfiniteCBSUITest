@@ -690,6 +690,8 @@ const EntryFormView = ({
                                       rowsData?.ENTERED_BRANCH_CD,
                                     TRAN_CD: rowsData?.TRAN_CD,
                                     SR_CD: rowsData?.SR_CD,
+                                    PARA_812: rowsData?.PARA_812,
+                                    A_ENTRY_MODE: rowsData?.RETRIVE_ENTRY_MODE,
                                   });
                                 }
                               }
