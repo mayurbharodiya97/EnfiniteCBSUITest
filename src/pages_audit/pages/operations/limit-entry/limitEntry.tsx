@@ -611,6 +611,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           {isData.isDelete && (
             <RemarksAPIWrapper
               TitleText={"LimitDeleteTitle"}
+              label="Removal Remarks"
               onActionNo={() =>
                 setIsData((old) => ({
                   ...old,

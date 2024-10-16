@@ -175,7 +175,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
 
       {isDelete && (
         <RemarksAPIWrapper
-          TitleText={"RemovalRemarksChequebook"}
+          TitleText={"RemovalRemarksLien"}
           label={"RemovalRemarks"}
           onActionNo={() => setIsDelete(false)}
           onActionYes={(val, rows) => {
