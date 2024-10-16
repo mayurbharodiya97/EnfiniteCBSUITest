@@ -142,6 +142,7 @@ export const DailyTransTabs = ({
       "OP_DATE",
       "PENDING_AMOUNT",
       "ACCT_NM",
+      "STATUS",
     ];
 
     const cardValues = keys?.reduce((acc, key) => {
@@ -250,7 +251,9 @@ export const DailyTransTabs = ({
                   <Snapshot reqData={reqData} />
                 )}
                 {a.TAB_NAME.includes("HOLDCHRG") && (
-                  <HoldCharge reqData={reqData} />
+                  <HoldCharge
+                    reqData={{ ...reqData, STATUS: detail?.STATUS }}
+                  />
                 )}
                 {a.TAB_NAME.includes("DOCS") && (
                   <Document reqData={reqData} isDisplayClose={false} />

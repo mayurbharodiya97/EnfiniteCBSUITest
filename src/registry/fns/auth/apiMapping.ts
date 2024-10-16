@@ -2841,6 +2841,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
     packageName: "",
   },
+  VALIDATEHOLDCHRGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEHOLDCHRGF1",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

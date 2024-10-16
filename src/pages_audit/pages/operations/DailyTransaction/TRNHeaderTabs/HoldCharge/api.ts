@@ -14,11 +14,11 @@ export const getHoldChargeList = async (reqData) => {
       BRANCH_CD: reqData.BRANCH_CD,
     });
   if (status === "0") {
-    let responseData = data;
-    responseData.map((a, i) => {
-      a.index = i;
-      a.sr = i + 1;
-    });
+    let responseData = data.map((item, index) => ({
+      ...item,
+      index: index,
+      sr: index + 1,
+    }));
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -42,6 +42,16 @@ export const getHoldChargeDropDown = async (reqData) => {
       );
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateHoldCharge = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEHOLDCHRGF1", reqData);
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

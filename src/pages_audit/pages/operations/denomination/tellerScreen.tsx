@@ -715,7 +715,7 @@ const TellerScreen = () => {
             }
             if (payload) {
               // console.log(payload, "payload");
-              const { dependentFieldValues, paddedAcctcode } = payload;
+              const { dependentFieldValues, paddedAcctcode, NPA_CD } = payload;
               setCardTabsReq({
                 COMP_CD: authState?.companyID,
                 ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
@@ -726,6 +726,7 @@ const TellerScreen = () => {
                   dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_CODE,
                 BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
                 SCREEN_REF: "TRN/039",
+                NPA_CD: NPA_CD,
               });
             }
           } else if (action === "ACCT_TYPE") {
