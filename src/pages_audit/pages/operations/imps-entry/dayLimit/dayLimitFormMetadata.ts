@@ -620,7 +620,7 @@ export const dayLimitFormMetaData = {
     },
     {
       render: { componentType: "amountField" },
-      name: "PG_AMT",
+      name: "PG_LIMIT",
       type: "text",
       label: "P.Gateway/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },

@@ -78,7 +78,7 @@ export const UserOnboardform = {
       name: "USER_PASSWORD",
       sequence: 2,
       type: "password",
-      label: "New Password",
+      label: "Password",
       required: true,
       maxLength: 16,
       placeholder: "Password",
@@ -117,6 +117,10 @@ export const UserOnboardform = {
           }
         }
       },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["PasswordisRequired"] }],
+      },
       __EDIT__: {
         shouldExclude(fieldData, dependentFieldsValues, formState) {
           return true;
@@ -149,9 +153,7 @@ export const UserOnboardform = {
       fullWidth: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Confirm Password is required."] },
-        ],
+        rules: [{ name: "required", params: ["Confirmpasswordisrequired"] }],
       },
       validate: (currentField, dependentFields) => {
         if (currentField?.value !== dependentFields?.USER_PASSWORD?.value) {

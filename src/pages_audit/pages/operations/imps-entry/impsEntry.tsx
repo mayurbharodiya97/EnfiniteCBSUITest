@@ -24,22 +24,30 @@ import {
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { format } from "date-fns";
+import { enqueueSnackbar } from "notistack";
 
 export const ImpsEntryCustom = () => {
   const { authState } = useContext(AuthContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [isData, setIsData] = useState<any>({
+    closeAlert: true,
+    uniqueNo: 0,
+  });
   const [formMode, setFormMode] = useState<any>("add");
-  const [retrieveData, setRetrieveData] = useState<any>();
-  const [rowData, setRowData] = useState<any>();
+  const [retrieveData, setRetrieveData] = useState<any>([]);
+  const [rowData, setRowData] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState<any>(0);
   const formRef = useRef<any>(null);
+  const rowDataRef = useRef<any>(null);
+  const initialDataRef = useRef<any>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { isError, error, isLoading, isFetching } = useQuery<any, any>(
+  const impsDetails: any = useMutation(
     ["getImpsDetails"],
     () =>
       API.getImpsDetails({
@@ -48,17 +56,36 @@ export const ImpsEntryCustom = () => {
         TRAN_CD: retrieveData?.[0]?.TRAN_CD,
       }),
     {
-      enabled: !!retrieveData?.[0]?.TRAN_CD,
       onSuccess(data) {
         if (Array.isArray(data) && data?.length > 0) {
           setRowData(data);
+        } else {
+          setRowData([]);
         }
+        setIsData((old) => ({
+          ...old,
+          uniqueNo: Date.now(),
+          closeAlert: false,
+        }));
+      },
+      onError(err) {
+        setIsData((old) => ({
+          ...old,
+          closeAlert: true,
+        }));
       },
     }
   );
+  useEffect(() => {
+    setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
+    if (retrieveData?.[0]?.TRAN_CD) {
+      impsDetails.mutate();
+    }
+  }, [retrieveData?.[0]?.TRAN_CD]);
 
   const accountList: any = useMutation("getRtgsRetrieveData", API.getAcctList, {
     onSuccess: (data) => {
+      setIsData((old) => ({ ...old, closeAlert: false }));
       if (rowData?.length > 0) {
         function isMatch(item1, item2) {
           return (
@@ -71,19 +98,41 @@ export const ImpsEntryCustom = () => {
         let filteredData = data.filter((d2Item) => {
           return !rowData.some((d1Item) => isMatch(d1Item, d2Item));
         });
-
         if (filteredData?.length > 0) {
           messagebox(filteredData);
         }
       } else {
         setRowData(data);
+        setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
       }
+    },
+    onError(err) {
+      setIsData((old) => ({
+        ...old,
+        closeAlert: true,
+      }));
     },
   });
 
   const crudIMPS: any = useMutation("crudDataIMPS", API.crudDataIMPS, {
     onSuccess: (data, variables) => {
-      console.log("<<<imps", data, variables);
+      setIsData((old) => ({ ...old, closeAlert: false }));
+      if (variables?._isNewRow) {
+        initialDataRef.current = {};
+        setRowData([]);
+        formRef?.current?.handleFormReset({ preventDefault: () => {} });
+        enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
+      } else if (variables?._isUpdateRow) {
+        enqueueSnackbar(t("RecordUpdatedMsg"), { variant: "success" });
+      }
+      CloseMessageBox();
+    },
+    onError() {
+      CloseMessageBox();
+      setIsData((old) => ({
+        ...old,
+        closeAlert: true,
+      }));
     },
   });
 
@@ -92,25 +141,76 @@ export const ImpsEntryCustom = () => {
     API.validateDeleteData,
     {
       onSuccess: (data, variables) => {
+        setIsData((old) => ({ ...old, closeAlert: false }));
         if (data?.[0]?.O_STATUS !== "0") {
           MessageBox({
             messageTitle: "ValidationAlert",
             message: data?.[0]?.O_MESSAGE,
           });
         } else {
-          if (variables?.FLAG === "S") {
-          } else if (rowData?.length !== currentIndex) {
-            setCurrentIndex((old) => old + 1);
-            setTimeout(() => {
-              deleteData({ flag: "A" });
-            }, 1000);
+          async function deleterData() {
+            if (rowData?.length !== currentIndex) {
+              if (variables?.FLAG === "S") {
+              } else {
+                setCurrentIndex((old) => old + 1);
+                setTimeout(() => {
+                  deleteData({ flag: "A" });
+                }, 1000);
+              }
+            } else {
+              console.log(
+                "<<<valodate del",
+                rowData?.length,
+                rowData,
+                currentIndex
+              );
+              let apiReq = {
+                _isNewRow: false,
+                _isDeleteRow: true,
+                _isUpdateRow: false,
+                ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+                ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+                TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+                DETAILS_DATA: {
+                  isNewRow: [],
+                  isDeleteRow: rowData,
+                  isUpdatedRow: [],
+                },
+              };
+              let buttonName = await MessageBox({
+                messageTitle: "confirmation",
+                message: "Are you sure to procced",
+                defFocusBtnName: "Yes",
+                buttonNames: ["Yes", "No"],
+                loadingBtnName: ["Yes"],
+                icon: "INFO",
+              });
+              if (buttonName === "Yes") {
+                crudIMPS.mutate(apiReq, {
+                  onSuccess: (data, variables) => {
+                    if (variables?._isDeleteRow) {
+                      enqueueSnackbar(t("RecordRemovedMsg"), {
+                        variant: "success",
+                      });
+                    }
+                  },
+                });
+              }
+            }
           }
+          deleterData();
         }
+      },
+      onError(err) {
+        setIsData((old) => ({
+          ...old,
+          closeAlert: true,
+        }));
       },
     }
   );
 
-  const deleteData: any = ({ flag, reqData }) => {
+  const deleteData: any = async ({ flag, reqData }) => {
     let apiReq = {
       A_ENTERED_BY: retrieveData?.[0]?.ENTERED_BY ?? "",
       A_CONFIRMED: retrieveData?.[0]?.CONFIRMED ?? "",
@@ -167,14 +267,140 @@ export const ImpsEntryCustom = () => {
       setRowData((old) => {
         return [...old, ...insertData];
       });
+      setIsData((old) => ({ ...old, uniqueNo: Date.now() }));
     }
   };
 
-  // const onSubmitHandler = ({ data, displayData, endSubmit }) => {
-  //   //@ts-ignore
-  //   endSubmit(true);
+  const onSubmitHandler = async (data: any, displayData, endSubmit) => {
+    let messagebox = async (apiReq) => {
+      let buttonName = await MessageBox({
+        messageTitle: rowData?.length ? "confirmation" : "Alert",
+        message: rowData?.length
+          ? "Are you sure to procced"
+          : "Atleast one row must be in Detail",
+        defFocusBtnName: rowData?.length ? "Yes" : "Ok",
+        buttonNames: rowData?.length ? ["Yes", "No"] : ["Ok"],
+        loadingBtnName: ["Yes"],
+        icon: "INFO",
+      });
+      if (buttonName === "Yes") {
+        crudIMPS.mutate(apiReq);
+      }
+    };
 
-  // };
+    let allRowdata = await rowDataRef.current?.getFieldData();
+    if (rowData?.length > 0) {
+      let upd =
+        formMode !== "add"
+          ? {
+              ...(!data?.ACTIVE || data?.ACTIVE === "N"
+                ? {
+                    _OLDROWVALUE: {
+                      DEACTIVE_DT: retrieveData?.[0]?.DEACTIVE_DT,
+                      ACTIVE:
+                        retrieveData?.[0]?.ACTIVE === "Y" ||
+                        Boolean(data?.ACTIVE)
+                          ? "Y"
+                          : "N",
+                    },
+                    _UPDATEDCOLUMNS: ["DEACTIVE_DT", "ACTIVE"],
+                  }
+                : ""),
+
+              ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+              ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+              TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+              ACTIVE: data?.ACTIVE === "Y" || Boolean(data?.ACTIVE) ? "Y" : "N",
+              ...(data?.DEACTIVE_DT &&
+                formMode !== "add" &&
+                !data?.ACTIVE && {
+                  DEACTIVE_DT: format(
+                    new Date(data?.DEACTIVE_DT),
+                    "dd/MMM/yyyy"
+                  ),
+                }),
+            }
+          : {
+              CUSTOMER_ID: data?.CUSTOMER_ID,
+              UNIQUE_ID: data?.UNIQUE_ID,
+              MOB_NO: data?.MOB_NO,
+              CONFIRMED: data?.CONFIRMED,
+              ACTIVE: "Y",
+            };
+      let newData = allRowdata?.accMapping.map((item) => {
+        delete item?.ALLLOW_DELETE;
+        delete item?.PHOTO_SIGN;
+        delete item?.JOINT_DETAILS;
+        delete item?.SPACER_ST;
+        delete item?.REG_DT;
+        return item;
+      });
+      let oldData = rowData.map((item) => {
+        delete item?.OLD_PERDAY_BBPS_LIMIT;
+        delete item?.OLD_PERDAY_IFT_LIMIT;
+        delete item?.OLD_PERDAY_NEFT_LIMIT;
+        delete item?.OLD_PERDAY_OWN_LIMIT;
+        delete item?.OLD_PERDAY_P2A_LIMIT;
+        delete item?.OLD_PERDAY_P2P_LIMIT;
+        delete item?.OLD_PERDAY_PG_AMT;
+        delete item?.OLD_PERDAY_RTGS_LIMIT;
+        delete item?.FULL_ACCT_NO_NM;
+        delete item?.ENTERED_COMP_CD;
+        delete item?.REG_DT;
+        return item;
+      });
+
+      let updPara = utilFunction.transformDetailDataForDML(
+        formMode === "add" ? [] : oldData,
+        newData,
+        ["SR_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"]
+      );
+
+      const formatRowData = (item) => {
+        item.REG_DT = item?.REG_DT
+          ? format(new Date(item.REG_DT), "dd/MMM/yyyy")
+          : "";
+        Object.keys(item).forEach((key) => {
+          if (typeof item[key] === "boolean") {
+            item[key] = item[key] ? "Y" : "N";
+          } else if (typeof item[key] === "object" && item[key] !== null) {
+            Object.keys(item[key]).forEach((nestedKey) => {
+              if (typeof item[key][nestedKey] === "boolean") {
+                item[key][nestedKey] = item[key][nestedKey] ? "Y" : "N";
+              }
+            });
+            return item;
+          }
+        });
+      };
+
+      if (Array.isArray(updPara?.isNewRow) && updPara?.isNewRow?.length > 0) {
+        updPara?.isNewRow?.map(formatRowData);
+      }
+      if (
+        Array.isArray(updPara?.isUpdatedRow) &&
+        updPara?.isUpdatedRow?.length > 0
+      ) {
+        updPara?.isUpdatedRow?.map(formatRowData);
+      }
+
+      let apiReq = {
+        _isNewRow: formMode === "add" ? true : false,
+        _isDeleteRow: false,
+        _isUpdateRow: formMode !== "add" ? true : false,
+        ...upd,
+        DETAILS_DATA: {
+          ...updPara,
+        },
+      };
+      console.log("<<<aspirwe", apiReq);
+      messagebox(apiReq);
+    } else {
+      messagebox(null);
+    }
+    // @ts-ignore
+    endSubmit(true);
+  };
 
   const RowData = (rowData) => {
     if (formMode === "edit") {
@@ -212,23 +438,27 @@ export const ImpsEntryCustom = () => {
         >
           {accountList?.isLoading ||
           validateDelete?.isLoading ||
-          isLoading ||
-          isFetching ? (
+          impsDetails?.isLoading ? (
             <LinearProgress color="inherit" />
-          ) : accountList?.isError || validateDelete?.isError || isError ? (
+          ) : (accountList?.isError && isData.closeAlert) ||
+            (validateDelete?.isError && isData.closeAlert) ||
+            (crudIMPS?.isError && isData.closeAlert) ||
+            (impsDetails?.isError && isData.closeAlert) ? (
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
                 errorMsg={
                   accountList?.error?.error_msg ??
                   validateDelete?.error?.error_msg ??
-                  error?.error_msg ??
+                  crudIMPS?.error?.error_msg ??
+                  impsDetails?.error?.error_msg ??
                   "Unknow Error"
                 }
                 errorDetail={
                   accountList?.error?.error_detail ??
                   validateDelete?.error?.error_detail ??
-                  error?.error_detail ??
+                  crudIMPS?.error?.error_detail ??
+                  impsDetails?.error?.error_detail ??
                   ""
                 }
                 color="error"
@@ -238,29 +468,27 @@ export const ImpsEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
           <FormWrapper
-            key={"imps-entry" + formMode + rowData}
+            key={"imps-entry" + formMode + isData?.uniqueNo}
             metaData={
               extractMetaData(impsEntryMetadata, formMode) as MetaDataType
             }
             initialValues={{
-              ...retrieveData?.[0],
-              accMapping: rowData,
+              ...(formMode === "add"
+                ? { ...initialDataRef.current }
+                : { ...retrieveData?.[0] }),
               ROWDATA_LENGTH: rowData?.length ?? {},
             }}
             formState={{
               MessageBox: MessageBox,
               onArrayFieldRowDoubleClickHandle: RowData,
               FORM_MODE: formMode,
+              setRowData: setRowData,
+              setIsData: setIsData,
+              initialDataRef: initialDataRef,
             }}
-            onSubmitHandler={(data: any, displayData, endSubmit) => {
-              // @ts-ignore
-              endSubmit(true);
-
-              console.log("<<<onsub", data, retrieveData);
-            }}
+            onSubmitHandler={onSubmitHandler}
             formStyle={{
-              height: "166px",
-              // height: "calc(100vh - 576px)",
+              height: "calc(100vh - 586px)",
             }}
             displayMode={formMode}
             ref={formRef}
@@ -275,27 +503,11 @@ export const ImpsEntryCustom = () => {
                   A_LANG: i18n.resolvedLanguage,
                 });
               }
-              if (id === "accMapping[0].ALLLOW_DELETE") {
-                deleteData({
-                  flag: "S",
-                  reqData: {
-                    REG_DATE: dependent?.["accMapping.REG_DATE"]?.value
-                      ? format(
-                          new Date(dependent?.["accMapping.REG_DATE"]?.value),
-                          "dd/MMM/yyyy"
-                        )
-                      : "",
-                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
-                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
-                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
-                  },
-                });
-              }
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                {retrieveData?.length > 0 && (
+                {retrieveData?.length > 0 && rowData?.length > 0 && (
                   <>
                     <Button
                       onClick={() =>
@@ -310,9 +522,10 @@ export const ImpsEntryCustom = () => {
                     </Button>
                     <Button
                       onClick={() => {
+                        initialDataRef.current = {};
                         setFormMode("add");
                         setRetrieveData(null);
-                        setRowData(null);
+                        setRowData([]);
                       }}
                       disabled={
                         accountList?.isLoading || validateDelete?.isLoading
@@ -322,7 +535,12 @@ export const ImpsEntryCustom = () => {
                       {t("New")}
                     </Button>
                     <Button
-                      onClick={() => deleteData({ flag: "M" })}
+                      onClick={() => {
+                        setCurrentIndex(0);
+                        setTimeout(() => {
+                          deleteData({ flag: "M" });
+                        }, 1000);
+                      }}
                       disabled={
                         accountList?.isLoading || validateDelete?.isLoading
                       }
@@ -348,6 +566,47 @@ export const ImpsEntryCustom = () => {
                 </Button>
               </>
             )}
+          </FormWrapper>
+          <FormWrapper
+            key={"impsReg-details" + formMode + isData?.uniqueNo}
+            metaData={extractMetaData(impsRegDetails, formMode) as MetaDataType}
+            initialValues={{
+              accMapping: rowData,
+              ROWDATA_LENGTH: rowData?.length ?? {},
+            }}
+            hideHeader={true}
+            displayMode={formMode}
+            formState={{
+              MessageBox: MessageBox,
+              onArrayFieldRowDoubleClickHandle: RowData,
+            }}
+            onSubmitHandler={() => {}}
+            ref={rowDataRef}
+            onFormButtonClickHandel={(id, dependent) => {
+              if (id === "accMapping[0].ALLLOW_DELETE") {
+                deleteData({
+                  flag: "S",
+                  reqData: {
+                    REG_DATE: dependent?.["accMapping.REG_DATE"]?.value
+                      ? format(
+                          new Date(dependent?.["accMapping.REG_DATE"]?.value),
+                          "dd/MMM/yyyy"
+                        )
+                      : "",
+                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
+                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
+                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
+                  },
+                });
+              }
+            }}
+            formStyle={{
+              height: "calc(100vh - 347px)",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => <></>}
           </FormWrapper>
           <Routes>
             <Route

@@ -45,6 +45,7 @@ export const StockEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         isReadOnly: true,
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
@@ -78,6 +79,7 @@ export const StockEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (depen, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -112,6 +114,10 @@ export const StockEntryMetaData = {
       accountCodeMetadata: {
         render: {
           componentType: "textField",
+        },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
         validate: (columnValue) => {
           let regex = /^[^!&]*$/;

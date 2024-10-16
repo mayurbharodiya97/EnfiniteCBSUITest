@@ -871,6 +871,7 @@ export const main_tab_metadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER1",
       GridProps: {
         xs: 0.2,
       },
@@ -921,6 +922,7 @@ export const main_tab_metadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER2",
       GridProps: {
         xs: 0.2,
       },
@@ -983,6 +985,7 @@ export const main_tab_metadata = {
       render: {
         componentType: "spacer",
       },
+      name: "SPACER3",
       GridProps: {
         xs: 0.2,
       },

@@ -299,7 +299,7 @@ export const EntryForm = (props) => {
                     isConfirm === "C"
                       ? t("AreYouSureToConfirm")
                       : t("AreYouSureToReject"),
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
                   icon: "WARNING",

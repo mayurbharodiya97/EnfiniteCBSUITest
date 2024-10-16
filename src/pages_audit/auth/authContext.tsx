@@ -189,7 +189,7 @@ export const AuthProvider = ({ children }) => {
   );
   const logout = useCallback(() => {
     let result = localStorage.getItem("authDetails");
-    if (result !== null) {
+    if (result !== null && Boolean(result)) {
       let localStorageAuthState: any = JSON.parse(result);
       if (
         Boolean(localStorageAuthState?.isLoggedIn) &&
@@ -237,7 +237,7 @@ export const AuthProvider = ({ children }) => {
     localStorageKeys.forEach(async (keyNm) => {
       let result = localStorage.getItem(keyNm);
       if (result === null) {
-        //logout();
+        logout();
       } else {
         let checksumdata: any;
         if (keyNm === "specialChar") {
@@ -256,8 +256,7 @@ export const AuthProvider = ({ children }) => {
           timeoutLogout = setTimeout(() => {
             console.log("logout-due-to localStorage change");
             logout();
-          }, 500);
-          return;
+          }, 1500);
         }
       }
     });

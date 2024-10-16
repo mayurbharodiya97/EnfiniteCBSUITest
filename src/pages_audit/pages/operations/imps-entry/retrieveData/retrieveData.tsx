@@ -32,10 +32,10 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
         if (!data?.length) {
           endSubmit(false, t("NoDataFound") ?? "");
         } else if (Array.isArray(data) && data?.length > 0) {
-          setFormMode("view");
-          navigate(".");
           data[0].RETRIEVE_DATA = "Y";
           setRetrieveData(data);
+          navigate(".");
+          setFormMode("view");
         }
       },
       onError: (error: any, { endSubmit }: any) => {

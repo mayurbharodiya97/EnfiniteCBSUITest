@@ -346,6 +346,7 @@ const RtgsEntryForm: FC<{}> = () => {
               const buttonName = await MessageBox({
                 messageTitle: t("ValidationFailed"),
                 message: data[i]?.O_MESSAGE,
+                icon: "ERROR",
               });
             } else if (data[i]?.O_STATUS === "0") {
               if (
@@ -539,6 +540,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotModifyConfirmedTransaction"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else if (
                         !(
@@ -556,6 +558,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotModifyBackDatedEntry"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         setState((old) => ({
@@ -591,6 +594,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotDeleteConfirmedTransaction"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else if (
                         !(
@@ -608,6 +612,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotDeleteBackDatedEntry"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         setState((old) => ({
@@ -675,6 +680,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotDeleteConfirmedTransaction"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else if (
                         !(
@@ -692,6 +698,7 @@ const RtgsEntryForm: FC<{}> = () => {
                           messageTitle: t("ValidationFailed"),
                           message: t("CannotDeleteBackDatedEntry"),
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         setState((old) => ({
@@ -963,6 +970,7 @@ const RtgsEntryForm: FC<{}> = () => {
                             MessageBox({
                               messageTitle: t("ValidationFailed"),
                               message: t("PleaseEnterAcTypeForOrderingAcNo"),
+                              icon: "ERROR",
                             });
                           } else {
                             setState((old) => ({

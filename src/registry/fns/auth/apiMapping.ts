@@ -2813,6 +2813,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/DOGETEMICALCULATEREPORT",
     packageName: "",
   },
+  GETF1HOLDCHRGTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETF1HOLDCHRGTYPEDDW",
+    packageName: "",
+  },
+  GETFDPRINTCONFIGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDPRINTCONFIGDTL",
+    packageName: "",
+  },
   GETPAYSLIPDOCDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
@@ -2839,6 +2847,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETPAYSLIPCANCELCHRG: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCANCELCHRG",
+    packageName: "",
+  },
+  DODAILYLIMITIMPSREGDML: {
+    url: "/commonMasterServiceAPI/DODAILYLIMITIMPSREGDML",
+    packageName: "",
+  },
+  GETINTCALCPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
     packageName: "",
   },
 };

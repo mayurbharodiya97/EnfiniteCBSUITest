@@ -41,7 +41,7 @@ const actions: ActionTypes[] = [
   {
     actionName: "close",
     actionLabel: t("Close"),
-    multiple: false,
+    multiple: undefined,
     alwaysAvailable: true,
   },
 ];

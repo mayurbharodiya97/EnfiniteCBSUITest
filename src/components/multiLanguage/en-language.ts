@@ -882,7 +882,9 @@ export const en_language_data = {
   },
 
   // common
-
+  newmode: "new mode",
+  editmode: "edit mode",
+  viewmode: "view mode",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
@@ -950,7 +952,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You Want to delete this row?",
+  DoYouWantDeleteRow: "Do You want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -989,7 +991,7 @@ export const en_language_data = {
   Apply: "Apply",
   Clear: "Clear",
   AppliedFilters: "Applied Filters",
-  TotalNoofRecords: "Total No. of Records",
+  TotalNoofRecords: "Total No. of ",
   RetrievalParameters: "Retrieval Parameters",
   Searched: "Search",
   Showexportoptions: "Show export options",
@@ -1145,6 +1147,11 @@ export const en_language_data = {
 
   InsertStopPaymentMsg:
     "Are you sure you want to stop the selected check-number ?",
+  InsertStopPaymentMsg2:
+    "Are you sure you want to surrender the selected cheque number ?",
+  InsertStopPaymentMsg3:
+    "Are you sure you want to PDC the selected cheque number ?",
+
   AreYouSureToRelease: "Are you sure to Release ?",
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
@@ -1158,7 +1165,7 @@ export const en_language_data = {
   ChequeAmount: "Cheque Amount",
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
-    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
+    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-Cheque.",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1169,7 +1176,8 @@ export const en_language_data = {
   StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
   StopConfirmDeleteTitle:
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
-
+  FromChequenorequired: "From Cheque Number is required",
+  ToChequenorequired: "To Cheque Number is required",
   // stock entry
 
   stockEntry: "Stock Entry",
@@ -1407,7 +1415,7 @@ export const en_language_data = {
   IfscDetail: "Ifsc Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
-  AreYouSaveThisRecord: "Are You sure to Save this record?",
+  AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
 
@@ -1468,11 +1476,11 @@ export const en_language_data = {
 
   PleaseEnterSlipAmount: "Please Enter Slip Amount",
   PleaseCheckAmount: "Please Check Amount",
-  AreYouSureToAddBank: "Are You sure To Add Bank?",
+  AreYouSureToAddBank: "Are you sure to add Bank?",
   EnterRemovalRemarksForCTSOWCLEARING:
     "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
   EnterRemovalRemarksINWARDRETURNENTRY:
-    "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
+    "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)",
   PresentmentDate: "Presentment Date",
   Zone: "Zone",
   SlipAmount: "Slip Amount",
@@ -1493,7 +1501,6 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  ChequeAmountList: "Cheque Amount List",
   CLGDate: "CLG Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
@@ -1666,11 +1673,13 @@ export const en_language_data = {
   AmountIsRequired: "Amount is Required.",
   ChequeImage: "Cheque Image",
   ChequeImageIsNotUploaded: "Cheque Image is not uploaded.",
-  RemovalRemarksPositivePay: "Removal Remarks For Positive Pay Confirmation",
+  RemovalRemarksPositivePay:
+    "Enter Removal Remarks For Positive Pay Confirmation (MST/992)",
   Unknownerroroccured: "Unknown error occured",
   dataImportedSuccessfully: "data imported successfully",
   AreYouSureToInsertTheFileData: "Are you sure to Insert the File Data ?",
   PositivePayEntry: "Positive Pay Entry",
+  PositivePayConfirmation: "Positive Pay Confirmation",
   AccCode: "A/c Code",
   AccType: "A/c Type",
   Uploaded: "Uploaded",
@@ -1756,11 +1765,11 @@ export const en_language_data = {
 
   // str ac level branch entry
 
-  AsperExtraction: "As per Extraction",
+  AsperExtraction: "Show As per Extracted",
   Suspicious: "Suspicious",
   WhiteListed: "White Listed",
   STRHistory: "STR History",
-  SuspiciousStatus: "Suspicious Status",
+  SuspiciousStatus: "Show Not a Suspicious",
   SuspiciousReasons: "Suspicious Reasons",
   InvestigationDetail: "Investigation Detail",
   EditDetail: "Edit-Detail",
@@ -1771,9 +1780,10 @@ export const en_language_data = {
   AtleastOneRecordMustMarkedSuspicious:
     "Atleast one record must be marked suspicious",
   AreYouSureRefreshTransactionDetails:
-    "Are You Sure to refresh transaction details?",
+    "Are you sure to refresh transaction details?",
   TRNDate: "TRN. Date",
   VNo: "V. No.",
+  SuspiciStatus: "Suspicious Status",
 
   // insurance entry screen
 
@@ -1883,6 +1893,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI:
     "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
@@ -2069,4 +2080,15 @@ export const en_language_data = {
 
   // Cashier Exchange Entry
   TransferDetails: "Transfer Details",
+
+  // fix deposit confirmation
+  ConfirmationHistory: "Confirmation History",
+  AcctNum: "Account No.",
+  AcctHolderName: "A/c Holder Name",
+  VoucherNo: "Voucher No.",
+  Denomination: "Denomination",
+  ScrollTokenNo: "Scroll/Token No.",
+  Sign: "Sign",
+  LabelName: "Label Name",
+  ViewMaster: "View Master",
 };
