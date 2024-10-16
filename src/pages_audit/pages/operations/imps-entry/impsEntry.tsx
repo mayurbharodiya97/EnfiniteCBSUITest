@@ -5,6 +5,7 @@ import {
   Dialog,
   Grid,
   LinearProgress,
+  Paper,
 } from "@mui/material";
 import { t } from "i18next";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -29,6 +30,9 @@ import {
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { format } from "date-fns";
 import { enqueueSnackbar } from "notistack";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import Draggable from "react-draggable";
+import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 
 export const ImpsEntryCustom = () => {
   const { authState } = useContext(AuthContext);
@@ -36,6 +40,7 @@ export const ImpsEntryCustom = () => {
   const [isData, setIsData] = useState<any>({
     closeAlert: true,
     uniqueNo: 0,
+    photoSignJointDtlReq: {},
   });
   const [formMode, setFormMode] = useState<any>("add");
   const [retrieveData, setRetrieveData] = useState<any>([]);
@@ -120,9 +125,17 @@ export const ImpsEntryCustom = () => {
       if (variables?._isNewRow) {
         initialDataRef.current = {};
         setRowData([]);
-        formRef?.current?.handleFormReset({ preventDefault: () => {} });
+        setIsData(() => ({
+          uniqueNo: Date.now(),
+        }));
         enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
-      } else if (variables?._isUpdateRow) {
+      } else if (
+        variables?._isUpdateRow ||
+        variables?.DETAILS_DATA?.isUpdatedRow?.length > 0
+      ) {
+        if (variables?.DETAILS_DATA?.isUpdatedRow?.length > 0) {
+          impsDetails.mutate();
+        }
         enqueueSnackbar(t("RecordUpdatedMsg"), { variant: "success" });
       }
       CloseMessageBox();
@@ -148,57 +161,71 @@ export const ImpsEntryCustom = () => {
             message: data?.[0]?.O_MESSAGE,
           });
         } else {
-          async function deleterData() {
-            if (rowData?.length !== currentIndex) {
-              if (variables?.FLAG === "S") {
-              } else {
-                setCurrentIndex((old) => old + 1);
-                setTimeout(() => {
-                  deleteData({ flag: "A" });
-                }, 1000);
-              }
-            } else {
-              console.log(
-                "<<<valodate del",
-                rowData?.length,
-                rowData,
-                currentIndex
-              );
-              let apiReq = {
-                _isNewRow: false,
-                _isDeleteRow: true,
-                _isUpdateRow: false,
-                ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
-                ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
-                TRAN_CD: retrieveData?.[0]?.TRAN_CD,
-                DETAILS_DATA: {
-                  isNewRow: [],
-                  isDeleteRow: rowData,
-                  isUpdatedRow: [],
+          const apiCall = async () => {
+            let apiReq = {
+              _isNewRow: false,
+              _isDeleteRow: variables?.FLAG === "S" ? false : true,
+              _isUpdateRow: false,
+              ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
+              ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
+              TRAN_CD: retrieveData?.[0]?.TRAN_CD,
+              DETAILS_DATA: {
+                isNewRow: [],
+                isDeleteRow:
+                  variables?.FLAG === "S"
+                    ? variables?.deleteSingleRowData
+                    : rowData,
+                isUpdatedRow: [],
+              },
+            };
+            let buttonName = await MessageBox({
+              messageTitle: "confirmation",
+              message: "Are you sure to procced",
+              defFocusBtnName: "Yes",
+              buttonNames: ["Yes", "No"],
+              loadingBtnName: ["Yes"],
+              icon: "INFO",
+            });
+            if (buttonName === "Yes") {
+              crudIMPS.mutate(apiReq, {
+                onSuccess: (data, variables) => {
+                  if (
+                    variables?.FLAG === "S" &&
+                    variables?.DETAILS_DATA?.isDeleteRow?.length > 0
+                  ) {
+                    impsDetails.mutate();
+                  } else {
+                    initialDataRef.current = {};
+                    setRowData([]);
+                    setFormMode("add");
+                    formRef?.current?.handleFormReset({
+                      preventDefault: () => {},
+                    });
+                  }
+                  if (
+                    variables?._isDeleteRow ||
+                    variables?.DETAILS_DATA?.isDeleteRow?.length > 0
+                  ) {
+                    enqueueSnackbar(t("RecordRemovedMsg"), {
+                      variant: "success",
+                    });
+                  }
                 },
-              };
-              let buttonName = await MessageBox({
-                messageTitle: "confirmation",
-                message: "Are you sure to procced",
-                defFocusBtnName: "Yes",
-                buttonNames: ["Yes", "No"],
-                loadingBtnName: ["Yes"],
-                icon: "INFO",
               });
-              if (buttonName === "Yes") {
-                crudIMPS.mutate(apiReq, {
-                  onSuccess: (data, variables) => {
-                    if (variables?._isDeleteRow) {
-                      enqueueSnackbar(t("RecordRemovedMsg"), {
-                        variant: "success",
-                      });
-                    }
-                  },
-                });
-              }
             }
+          };
+          if (rowData?.length !== currentIndex) {
+            if (variables?.FLAG === "S") {
+              apiCall();
+            } else {
+              setCurrentIndex((old) => old + 1);
+              setTimeout(() => {
+                deleteData({ flag: "A" });
+              }, 1000);
+            }
+          } else {
+            apiCall();
           }
-          deleterData();
         }
       },
       onError(err) {
@@ -210,7 +237,7 @@ export const ImpsEntryCustom = () => {
     }
   );
 
-  const deleteData: any = async ({ flag, reqData }) => {
+  const deleteData: any = async ({ flag, reqData, deleteSingleRowData }) => {
     let apiReq = {
       A_ENTERED_BY: retrieveData?.[0]?.ENTERED_BY ?? "",
       A_CONFIRMED: retrieveData?.[0]?.CONFIRMED ?? "",
@@ -246,6 +273,7 @@ export const ImpsEntryCustom = () => {
             : ""
           : "",
       FLAG: flag,
+      deleteSingleRowData: deleteSingleRowData,
     };
     validateDelete.mutate(apiReq);
   };
@@ -289,36 +317,39 @@ export const ImpsEntryCustom = () => {
     };
 
     let allRowdata = await rowDataRef.current?.getFieldData();
+    let activeupdate =
+      data?.ACTIVE === "Y"
+        ? "Y"
+        : data?.ACTIVE === "N"
+        ? "N"
+        : data?.ACTIVE
+        ? "Y"
+        : !data?.ACTIVE
+        ? "N"
+        : "";
+
     if (rowData?.length > 0) {
-      let upd =
+      let upd: any =
         formMode !== "add"
           ? {
-              ...(!data?.ACTIVE || data?.ACTIVE === "N"
-                ? {
-                    _OLDROWVALUE: {
-                      DEACTIVE_DT: retrieveData?.[0]?.DEACTIVE_DT,
-                      ACTIVE:
-                        retrieveData?.[0]?.ACTIVE === "Y" ||
-                        Boolean(data?.ACTIVE)
-                          ? "Y"
-                          : "N",
-                    },
-                    _UPDATEDCOLUMNS: ["DEACTIVE_DT", "ACTIVE"],
-                  }
-                : ""),
-
+              ...utilFunction.transformDetailsData(
+                {
+                  ACTIVE: activeupdate,
+                  DEACTIVE_DT: activeupdate === "Y" ? "" : data?.DEACTIVE_DT,
+                },
+                {
+                  ACTIVE: retrieveData?.[0]?.ACTIVE,
+                  DEACTIVE_DT:
+                    activeupdate === "Y" ? "" : retrieveData?.[0]?.DEACTIVE_DT,
+                }
+              ),
               ENTERED_COMP_CD: retrieveData?.[0]?.ENTERED_COMP_CD,
               ENTERED_BRANCH_CD: retrieveData?.[0]?.ENTERED_BRANCH_CD,
               TRAN_CD: retrieveData?.[0]?.TRAN_CD,
-              ACTIVE: data?.ACTIVE === "Y" || Boolean(data?.ACTIVE) ? "Y" : "N",
-              ...(data?.DEACTIVE_DT &&
-                formMode !== "add" &&
-                !data?.ACTIVE && {
-                  DEACTIVE_DT: format(
-                    new Date(data?.DEACTIVE_DT),
-                    "dd/MMM/yyyy"
-                  ),
-                }),
+              ACTIVE: activeupdate,
+              ...(activeupdate === "N" && {
+                DEACTIVE_DT: format(new Date(data?.DEACTIVE_DT), "dd/MMM/yyyy"),
+              }),
             }
           : {
               CUSTOMER_ID: data?.CUSTOMER_ID,
@@ -328,11 +359,12 @@ export const ImpsEntryCustom = () => {
               ACTIVE: "Y",
             };
       let newData = allRowdata?.accMapping.map((item) => {
-        delete item?.ALLLOW_DELETE;
+        delete item?.ALLOW_DELETE;
         delete item?.PHOTO_SIGN;
         delete item?.JOINT_DETAILS;
         delete item?.SPACER_ST;
         delete item?.REG_DT;
+        delete item?.ENTERED_COMP_CD;
         return item;
       });
       let oldData = rowData.map((item) => {
@@ -387,13 +419,13 @@ export const ImpsEntryCustom = () => {
       let apiReq = {
         _isNewRow: formMode === "add" ? true : false,
         _isDeleteRow: false,
-        _isUpdateRow: formMode !== "add" ? true : false,
+        _isUpdateRow:
+          formMode !== "add" && upd?._UPDATEDCOLUMNS?.length > 0 ? true : false,
         ...upd,
         DETAILS_DATA: {
           ...updPara,
         },
       };
-      console.log("<<<aspirwe", apiReq);
       messagebox(apiReq);
     } else {
       messagebox(null);
@@ -559,7 +591,11 @@ export const ImpsEntryCustom = () => {
                 </Button>
                 <Button
                   color={"primary"}
-                  disabled={accountList?.isLoading || validateDelete?.isLoading}
+                  disabled={
+                    accountList?.isLoading ||
+                    validateDelete?.isLoading ||
+                    formMode === "view"
+                  }
                   onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                 >
                   {t("Save")}
@@ -583,7 +619,7 @@ export const ImpsEntryCustom = () => {
             onSubmitHandler={() => {}}
             ref={rowDataRef}
             onFormButtonClickHandel={(id, dependent) => {
-              if (id === "accMapping[0].ALLLOW_DELETE") {
+              if (id.includes("ALLOW_DELETE")) {
                 deleteData({
                   flag: "S",
                   reqData: {
@@ -597,7 +633,41 @@ export const ImpsEntryCustom = () => {
                     ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
                     ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
                   },
+                  deleteSingleRowData: [
+                    {
+                      ENTERED_COMP_CD:
+                        dependent?.["accMapping.ENTERED_COMP_CD"]?.value,
+                      ENTERED_BRANCH_CD:
+                        dependent?.["accMapping.ENTERED_BRANCH_CD"]?.value,
+                      TRAN_CD: dependent?.["accMapping.TRAN_CD"]?.value,
+                      SR_CD: dependent?.["accMapping.SR_CD"]?.value,
+                    },
+                  ],
                 });
+              } else if (id.includes("PHOTO_SIGN")) {
+                setIsData((old) => ({
+                  ...old,
+                  photoSignJointDtlReq: {
+                    COMP_CD: dependent?.["accMapping.COMP_CD"]?.value,
+                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
+                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
+                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
+                    SCREEN_REF: "MST/843",
+                  },
+                }));
+                navigate("photo-sign");
+              } else if (id.includes("JOINT_DETAILS")) {
+                setIsData((old) => ({
+                  ...old,
+                  photoSignJointDtlReq: {
+                    COMP_CD: dependent?.["accMapping.COMP_CD"]?.value,
+                    BRANCH_CD: dependent?.["accMapping.BRANCH_CD"]?.value,
+                    ACCT_TYPE: dependent?.["accMapping.ACCT_TYPE"]?.value,
+                    ACCT_CD: dependent?.["accMapping.ACCT_CD"]?.value,
+                    BTN_FLAG: "Y",
+                  },
+                }));
+                navigate("joint-details");
               }
             }}
             formStyle={{
@@ -622,6 +692,43 @@ export const ImpsEntryCustom = () => {
             <Route
               path="daylimit-form/*"
               element={<DayLimit navigate={navigate} />}
+            />
+            <Route
+              path="photo-sign/*"
+              element={
+                <PhotoSignWithHistory
+                  data={isData?.photoSignJointDtlReq ?? {}}
+                  onClose={() => navigate(".")}
+                  screenRef={"MST/846"}
+                />
+              }
+            />
+            <Route
+              path="joint-details/*"
+              element={
+                <Dialog
+                  open={true}
+                  fullWidth={true}
+                  PaperProps={{
+                    style: {
+                      maxWidth: "1130px",
+                      padding: "5px",
+                    },
+                  }}
+                  PaperComponent={(props) => (
+                    <Draggable
+                      handle="#draggable-dialog-title"
+                      cancel={'[class*="MuiDialogContent-root"]'}
+                    >
+                      <Paper {...props} />
+                    </Draggable>
+                  )}
+                >
+                  <div id="draggable-dialog-title">
+                    <JointDetails reqData={isData?.photoSignJointDtlReq} />
+                  </div>
+                </Dialog>
+              }
             />
           </Routes>
         </Grid>

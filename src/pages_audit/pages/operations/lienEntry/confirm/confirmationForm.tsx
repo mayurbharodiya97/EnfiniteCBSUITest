@@ -21,7 +21,6 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const { t } = useTranslation();
-  console.log("<<<rrrr", rows);
 
   const lienConfirm: any = useMutation("lienConfirmation", lienConfirmation, {
     onError: () => {
