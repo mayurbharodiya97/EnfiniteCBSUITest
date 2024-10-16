@@ -1,4 +1,4 @@
-import { Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AdvocateMstFormMetaData } from "./metaData";
@@ -17,6 +17,7 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 export const AdvocateMstForm = ({
@@ -33,24 +34,8 @@ export const AdvocateMstForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.advocateMstDataDML, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      CloseMessageBox();
-      closeDialog();
-    },
+    onError: (error: any) => {},
+    onSuccess: (data, variables) => {},
   });
 
   const onSubmitHandler: SubmitFnType = async (
@@ -61,7 +46,6 @@ export const AdvocateMstForm = ({
     actionFlag
   ) => {
     //@ts-ignore
-    endSubmit(true);
     if (Boolean(data["INACTIVE_DATE"])) {
       data["INACTIVE_DATE"] = format(
         new Date(data["INACTIVE_DATE"]),
@@ -99,9 +83,31 @@ export const AdvocateMstForm = ({
         loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
-        mutation.mutate({
-          ...isErrorFuncRef.current?.data,
-        });
+        mutation.mutate(
+          {
+            ...isErrorFuncRef.current?.data,
+          },
+          {
+            onError: (error: any) => {
+              CloseMessageBox();
+            },
+            onSuccess: (data, variables) => {
+              enqueueSnackbar(
+                Boolean(variables?._isNewRow)
+                  ? t("RecordInsertedMsg")
+                  : t("RecordUpdatedMsg"),
+                {
+                  variant: "success",
+                }
+              );
+              isDataChangedRef.current = true;
+              CloseMessageBox();
+              closeDialog();
+            },
+          }
+        );
+      } else if (btnName === "No") {
+        endSubmit(false);
       }
     }
   };
@@ -116,82 +122,98 @@ export const AdvocateMstForm = ({
   return (
     <>
       {gridData ? (
-        <FormWrapper
-          key={"advocateMstForm" + formMode}
-          metaData={
-            extractMetaData(AdvocateMstFormMetaData, formMode) as MetaDataType
-          }
-          displayMode={formMode}
-          onSubmitHandler={onSubmitHandler}
-          initialValues={
-            formMode === "new"
-              ? { ...rows?.[0]?.data, CODE: incrementCodeByOne }
-              : { ...(rows?.[0]?.data as InitialValuesType) }
-          }
-          formStyle={{
-            background: "white",
-          }}
-          formState={{
-            gridData: gridData,
-            rows: rows?.[0]?.data,
-          }}
-        >
-          {({ isSubmitting, handleSubmit }) => (
+        <>
+          {mutation?.isError && (
             <>
-              {formMode === "edit" ? (
-                <>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    disabled={isSubmitting}
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </GradientButton>
-                  <GradientButton
-                    onClick={() => {
-                      setFormMode("view");
-                    }}
-                    color={"primary"}
-                    disabled={isSubmitting}
-                  >
-                    {t("Cancel")}
-                  </GradientButton>
-                </>
-              ) : formMode === "new" ? (
-                <>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    disabled={isSubmitting}
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </GradientButton>
-                  <GradientButton onClick={closeDialog} color={"primary"}>
-                    {t("Close")}
-                  </GradientButton>
-                </>
-              ) : (
-                <>
-                  <GradientButton
-                    onClick={() => {
-                      setFormMode("edit");
-                    }}
-                    color={"primary"}
-                  >
-                    {t("Edit")}
-                  </GradientButton>
-                  <GradientButton onClick={closeDialog} color={"primary"}>
-                    {t("Close")}
-                  </GradientButton>
-                </>
-              )}
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity={mutation?.error?.severity ?? "error"}
+                  errorMsg={
+                    mutation?.error?.error_msg ?? "Something went to wrong.."
+                  }
+                  errorDetail={mutation?.error?.error_detail}
+                  color="error"
+                />
+              </AppBar>
             </>
           )}
-        </FormWrapper>
+          <FormWrapper
+            key={"advocateMstForm" + formMode}
+            metaData={
+              extractMetaData(AdvocateMstFormMetaData, formMode) as MetaDataType
+            }
+            displayMode={formMode}
+            onSubmitHandler={onSubmitHandler}
+            initialValues={
+              formMode === "new"
+                ? { ...rows?.[0]?.data, CODE: incrementCodeByOne }
+                : { ...(rows?.[0]?.data as InitialValuesType) }
+            }
+            formStyle={{
+              background: "white",
+            }}
+            formState={{
+              gridData: gridData,
+              rows: rows?.[0]?.data,
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                {formMode === "edit" ? (
+                  <>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      {t("Save")}
+                    </GradientButton>
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("view");
+                      }}
+                      color={"primary"}
+                      disabled={isSubmitting}
+                    >
+                      {t("Cancel")}
+                    </GradientButton>
+                  </>
+                ) : formMode === "new" ? (
+                  <>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      {t("Save")}
+                    </GradientButton>
+                    <GradientButton onClick={closeDialog} color={"primary"}>
+                      {t("Close")}
+                    </GradientButton>
+                  </>
+                ) : (
+                  <>
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("edit");
+                      }}
+                      color={"primary"}
+                    >
+                      {t("Edit")}
+                    </GradientButton>
+                    <GradientButton onClick={closeDialog} color={"primary"}>
+                      {t("Close")}
+                    </GradientButton>
+                  </>
+                )}
+              </>
+            )}
+          </FormWrapper>
+        </>
       ) : (
         <LoaderPaperComponent />
       )}

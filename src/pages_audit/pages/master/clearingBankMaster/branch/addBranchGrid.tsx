@@ -1,5 +1,5 @@
 import { AddBranchGridMetaData } from "./gridMetaData";
-import { Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
@@ -16,22 +16,6 @@ import {
   ActionTypes,
   GridMetaDataType,
 } from "@acuteinfo/common-base";
-const actions: ActionTypes[] = [
-  {
-    actionName: "ok",
-    actionLabel: "Ok",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
-  {
-    actionName: "close",
-    actionLabel: "Close",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
-];
 
 export const AddBranchGrid = ({ handleDialogClose }) => {
   const { getEntries } = useContext(ClearCacheContext);
@@ -41,6 +25,15 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
   const myref = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
+  const [actions, setActions] = useState<ActionTypes[]>([
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+  ]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -57,14 +50,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
 
   const mutation = useMutation(API.updateAddBranchData, {
     onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      handleDialogClose();
+      CloseMessageBox();
     },
     onSuccess: (data) => {
       enqueueSnackbar(data, {
@@ -74,6 +60,37 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
       handleDialogClose();
     },
   });
+
+  useEffect(() => {
+    if (Boolean(isError) || Boolean(mutation?.isError)) {
+      setActions([
+        {
+          actionName: "close",
+          actionLabel: "Close",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+      ]);
+    } else {
+      setActions([
+        {
+          actionName: "ok",
+          actionLabel: "Ok",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+        {
+          actionName: "close",
+          actionLabel: "Close",
+          multiple: undefined,
+          rowDoubleClick: false,
+          alwaysAvailable: true,
+        },
+      ]);
+    }
+  }, [isError, mutation?.isError]);
 
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "close") {
@@ -131,14 +148,6 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
 
   return (
     <>
-      {isError && (
-        <Alert
-          severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
-          errorDetail={error?.error_detail}
-          color="error"
-        />
-      )}
       <Dialog
         maxWidth="lg"
         open={true}
@@ -150,8 +159,23 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
           },
         }}
       >
+        {(isError || mutation?.isError) && (
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={
+                (error?.error_msg || mutation?.error?.error_msg) ??
+                "Something went to wrong.."
+              }
+              errorDetail={
+                (error?.error_detail || mutation?.error?.error_detail) ?? ""
+              }
+              color="error"
+            />
+          </AppBar>
+        )}
         <GridWrapper
-          key={`addBranchGrid`}
+          key={`addBranchGrid` + actions}
           finalMetaData={AddBranchGridMetaData as GridMetaDataType}
           data={updatedData ?? []}
           setData={setUpdatedData}

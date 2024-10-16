@@ -1058,6 +1058,7 @@ export const PositivePayImportMetaData: GridColumnType[] = [
   {
     columnName: "SelectCofiguration",
     componentType: "editableSelect",
+    required: true,
     accessor: "DESCRIPTION",
     options: GetPositivePayImportDdwn,
     _optionsKey: "GetPositivePayImportDdwn",
@@ -1066,6 +1067,10 @@ export const PositivePayImportMetaData: GridColumnType[] = [
     width: 350,
     minWidth: 50,
     maxWidth: 600,
+    validation: (values) => {
+      if (!Boolean(values)) return "This field is requried";
+      return "";
+    },
   },
 ];
 

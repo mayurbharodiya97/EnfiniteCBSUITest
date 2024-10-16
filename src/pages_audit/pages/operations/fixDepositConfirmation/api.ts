@@ -42,6 +42,7 @@ export const getFdConfPaymentData = async ({
   ACCT_TYPE,
   ACCT_CD,
   FD_NO,
+  A_FLAG,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDPAYMENTADVICE", {
@@ -50,6 +51,7 @@ export const getFdConfPaymentData = async ({
       ACCT_TYPE: ACCT_TYPE,
       ACCT_CD: ACCT_CD,
       FD_NO: FD_NO,
+      A_FLAG: A_FLAG,
     });
   if (status === "0") {
     return data;
@@ -101,24 +103,20 @@ export const ValidateFDConfirm = async (formData) => {
 };
 
 export const fdConfirmFormData = async (formData) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DOFIXDEPOSITCONFIRMATION",
-    formData
-  );
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOFIXDEPOSITCONFIRMATION", formData);
   if (status === "0") {
-    return message;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
 
 export const fdConfirmationDeleteFormData = async (formData) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DOFDCONFIRMATIONDELETE",
-    formData
-  );
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOFDCONFIRMATIONDELETE", formData);
   if (status === "0") {
-    return message;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
