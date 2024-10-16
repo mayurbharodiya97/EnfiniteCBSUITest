@@ -104,9 +104,9 @@ export const PositivePayEntryFormMetadata = {
             }
           } else {
             return {
-              ACCT_CD: { value: "", isFieldFocused: true },
-              ACCT_NM: { value: "", isFieldFocused: false },
-              CHEQUE_NO: { value: "", isFieldFocused: false },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              CHEQUE_NO: { value: "" },
             };
           }
         },
@@ -388,7 +388,7 @@ export const PositivePayEntryFormMetadata = {
         ) {
           let postData = await await GeneralAPI.getChequeNoValidation({
             COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
+            BRANCH_CD: dependentFieldValues["BRANCH_CD"]?.value ?? "",
             ACCT_TYPE: dependentFieldValues["ACCT_TYPE"]?.value ?? "",
             ACCT_CD: dependentFieldValues["ACCT_CD"]?.value ?? "",
             CHEQUE_NO: currentField?.value,
@@ -1058,6 +1058,7 @@ export const PositivePayImportMetaData: GridColumnType[] = [
   {
     columnName: "SelectCofiguration",
     componentType: "editableSelect",
+    required: true,
     accessor: "DESCRIPTION",
     options: GetPositivePayImportDdwn,
     _optionsKey: "GetPositivePayImportDdwn",
@@ -1066,6 +1067,10 @@ export const PositivePayImportMetaData: GridColumnType[] = [
     width: 350,
     minWidth: 50,
     maxWidth: 600,
+    validation: (values) => {
+      if (!Boolean(values)) return "This field is requried";
+      return "";
+    },
   },
 ];
 
