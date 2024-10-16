@@ -186,18 +186,13 @@ export const commonFormMetaData = {
       //   alignment: "center",
       //   componentType: "buttonRowCell",
       //   shouldExclude: (initialValue, original) => {
-      //     console.log("<<<btttn", initialValue, original);
       //     if (original?.EDIT_STATUS && original?.EDIT_STATUS === "N") {
-      //       console.log("<<<btttn1111");
 
       //       return true;
       //     } else {
-      //       console.log("<<<btttn2222");
       //       if (original.ALLOW_DELETE && original?.ALLOW_DELETE !== "Y") {
-      //         console.log("<<<btttn3333");
       //         return true;
       //       } else {
-      //         console.log("<<<bttt44444");
       //         return false;
       //       }
       //     }

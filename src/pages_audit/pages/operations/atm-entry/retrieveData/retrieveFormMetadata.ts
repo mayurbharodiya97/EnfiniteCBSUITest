@@ -245,8 +245,6 @@ export const retrieveFormMetaData = {
 
             let postData = await API.validateAcctAndCustId(apiRequest);
 
-            console.log("<<<postdat", postData);
-
             let apiRespMSGdata = postData?.[0]?.MSG;
             let isReturn;
             const messagebox = async (msgTitle, msg, buttonNames, status) => {
@@ -271,7 +269,6 @@ export const retrieveFormMetaData = {
                     apiRespMSGdata[i]?.O_STATUS
                   );
 
-                  console.log("<<<buttnnama", btnName);
                   if (btnName.buttonName === "No" || btnName.status === "999") {
                     return {
                       ACCT_CD: { value: "", isFieldFocused: true },

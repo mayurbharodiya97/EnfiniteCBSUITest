@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { RetrieveCfmData } from "../confirm/retrieveCfmData/retrieveCfmData";
 import { impsCfmMetaData } from "./impsConfirmMetadata";
 import { useMutation } from "react-query";
-import { getImpsDetails } from "../api";
+import { confirmIMPSdata, getImpsDetails } from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { DayLimit } from "../dayLimit/dayLimit";
 import {
@@ -15,8 +15,10 @@ import {
   Alert,
   MasterDetailsForm,
   MasterDetailsMetaData,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import { enqueueSnackbar } from "notistack";
 const ImpsConfirmation = () => {
   const actions: ActionTypes[] = [
     {
@@ -29,13 +31,70 @@ const ImpsConfirmation = () => {
   ];
   const navigate = useNavigate();
   const [retrieveData, setRetrieveData] = useState<any>();
+  const [filteredData, setFilteredData] = useState<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const myRef = useRef<any>(null);
+
+  const confirmIMPS: any = useMutation("confirmIMPSdata", confirmIMPSdata, {
+    onSuccess: (data, variables) => {
+      CloseMessageBox();
+
+      if (data?.[0]?.STATUS === "999") {
+        MessageBox({
+          messageTitle: "InvalidConfirmation",
+          message: data?.message || data?.[0]?.MESSAGE,
+          icon: "ERROR",
+        });
+      } else {
+        const updateConfirmation = (data) => {
+          data.map((old) => {
+            if (old?.TRAN_CD === variables?.TRAN_CD) {
+              return { ...old, CONFIRMED: variables?._isConfrimed ? "Y" : "N" };
+            }
+            return old;
+          });
+        };
+
+        setFilteredData(updateConfirmation);
+        setRetrieveData(updateConfirmation);
+
+        enqueueSnackbar(
+          t(
+            variables?._isConfrimed ? "DataConfirmMessage" : "DataRejectMessage"
+          ),
+          { variant: "success" }
+        );
+      }
+    },
+    onError() {
+      CloseMessageBox();
+    },
+  });
+
+  const confirmation = async (flag) => {
+    let buttonName = await MessageBox({
+      messageTitle: t("confirmation"),
+      message:
+        flag === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
+      defFocusBtnName: "Yes",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+      icon: "WARNING",
+    });
+    if (buttonName === "Yes") {
+      let apiReq = {
+        _isConfrimed: flag === "C" ? true : false,
+        ENTERED_BRANCH_CD: retrieveData?.[currentIndex]?.ENTERED_BRANCH_CD,
+        ENTERED_COMP_CD: retrieveData?.[currentIndex]?.ENTERED_COMP_CD,
+        TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
+      };
+      confirmIMPS.mutate(apiReq);
+    }
+  };
 
   const accountList: any = useMutation("getImpsDetails", getImpsDetails, {
     onSuccess: (data) => {
-      console.log("<<<imps", data);
       myRef.current?.setGridData(data ?? []);
     },
   });
@@ -62,23 +121,37 @@ const ImpsConfirmation = () => {
     navigate("retrieve-cfm-form");
   }, []);
 
-  const onSubmitHandler = async ({ data, displayData, endSubmit }) => {
-    //@ts-ignore
-    endSubmit(true);
+  const filerData = (flag) => {
+    if (flag === "REFRESH") {
+      let refreshData = retrieveData?.filter(
+        (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
+      );
+      setRetrieveData(refreshData);
+    } else if (flag === "VIEW_ALL") {
+      setRetrieveData(filteredData);
+    }
   };
-
   return (
     <>
-      {accountList?.isError && (
-        <AppBar position="relative" color="primary">
-          <Alert
-            severity="error"
-            errorMsg={accountList?.error?.error_msg ?? "Unknow Error"}
-            errorDetail={accountList?.error?.error_detail ?? ""}
-            color="error"
-          />
-        </AppBar>
-      )}
+      {accountList?.isError ||
+        (confirmIMPS?.isError && (
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={
+                accountList?.error?.error_msg ??
+                confirmIMPS?.error?.error_msg ??
+                "Unknow Error"
+              }
+              errorDetail={
+                accountList?.error?.error_detail ??
+                confirmIMPS?.error?.error_detail ??
+                ""
+              }
+              color="error"
+            />
+          </AppBar>
+        ))}
 
       <MasterDetailsForm
         key={"imps-cfm-form" + retrieveData + currentIndex}
@@ -92,7 +165,7 @@ const ImpsConfirmation = () => {
         }}
         displayMode={"view"}
         isDetailRowRequire={false}
-        onSubmitData={onSubmitHandler}
+        onSubmitData={() => {}}
         isLoading={accountList?.isLoading || accountList?.isFetching}
         actions={actions}
         handelActionEvent={(data) => {
@@ -134,19 +207,45 @@ const ImpsConfirmation = () => {
                   >
                     {t("Next")}
                   </Button>
-                  <Button disabled={accountList?.isLoading} color="primary">
+                  <Button
+                    disabled={
+                      accountList?.isLoading ||
+                      retrieveData?.[currentIndex]?.CONFIRMED !== "N"
+                    }
+                    onClick={() => {
+                      confirmation("C");
+                    }}
+                    color="primary"
+                  >
                     {t("Confirm")}
                   </Button>
-                  <Button disabled={accountList?.isLoading} color="primary">
+                  <Button
+                    disabled={
+                      accountList?.isLoading ||
+                      retrieveData?.[currentIndex]?.CONFIRMED !== "N"
+                    }
+                    onClick={() => {
+                      confirmation("R");
+                    }}
+                    color="primary"
+                  >
                     {t("Reject")}
                   </Button>
                   <Button disabled={accountList?.isLoading} color={"primary"}>
                     View Changes
                   </Button>
-                  <Button disabled={accountList?.isLoading} color="primary">
+                  <Button
+                    disabled={accountList?.isLoading}
+                    onClick={() => filerData("VIEW_ALL")}
+                    color="primary"
+                  >
                     {t("View All")}
                   </Button>
-                  <Button disabled={accountList?.isLoading} color="primary">
+                  <Button
+                    disabled={accountList?.isLoading}
+                    onClick={() => filerData("REFRESH")}
+                    color="primary"
+                  >
                     {t("Refresh")}
                   </Button>
                   <Button
@@ -187,6 +286,7 @@ const ImpsConfirmation = () => {
               onClose={() => navigate(".")}
               navigate={navigate}
               setRetrieveData={setRetrieveData}
+              setFilteredData={setFilteredData}
             />
           }
         />

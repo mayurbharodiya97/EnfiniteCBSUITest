@@ -1,6 +1,6 @@
 export const dayLimitFormMetaData = {
   form: {
-    name: "day-limit-metadata",
+    name: "day-limit-metadatas",
     label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -254,7 +254,6 @@ export const dayLimitFormMetaData = {
         _,
         dependentFields
       ) => {
-        console.log("<<<rtgs", field, dependentFields);
         if (dependentFields?.DTL_RTGS?.value === "N" && Boolean(field?.value)) {
           return {
             RTGS: { value: false },
@@ -1311,6 +1310,30 @@ export const dayLimitFormMetaData = {
         componentType: "hidden",
       },
       name: "DTL_BBPS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SR_CD",
     },
   ],
 };
