@@ -530,7 +530,7 @@ export const ddTransactionFormMetaData = {
       isFieldFocused: true,
       placeholder: "Select Bill Type",
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
     {
       render: { componentType: "textField" },
@@ -538,7 +538,7 @@ export const ddTransactionFormMetaData = {
       placeholder: "Select Infavour of",
       label: "inFavourOf",
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
     {
       render: {
@@ -646,7 +646,7 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
-        componentType: "datePicker",
+        componentType: "textField",
       },
       name: "REVALID_BY",
       label: "reValidBy",
@@ -976,16 +976,47 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "COLLECT_COMISSION_CHARGE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "COLLECT_COMISSION_FLAGE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "COL_SER_CANCEL_CHARGE",
+    },
+    {
+      render: {
         componentType: "amountField",
       },
       name: "COLLECT_COMISSION",
       label: "colComm",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-      dependentFields: ["SCREENFLAG", "ACCT_CD", "ACCT_TYPE", "REALIZE_AMT"],
+      dependentFields: [
+        "SCREENFLAG",
+        "ACCT_CD",
+        "ACCT_TYPE",
+        "REALIZE_AMT",
+        "COLLECT_COMISSION_CHARGE",
+        "COLLECT_COMISSION_FLAGE",
+      ],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        return dependentFields?.COLLECT_COMISSION_CHARGE?.value;
+      },
       isReadOnly: (fieldValue, dependentFields, formState) => {
+        console.log(dependentFields);
+
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+          dependentFields?.COLLECT_COMISSION_FLAGE?.value === "Y"
         ) {
           return true;
         } else return false;
@@ -1021,7 +1052,6 @@ export const ddTransactionFormMetaData = {
           MODULE: "",
           ASON_DT: authState?.workingDate,
         };
-        console.log(reqParams);
 
         if (
           reqParams.ACCT_CD !== "" &&
@@ -1049,7 +1079,7 @@ export const ddTransactionFormMetaData = {
       name: "COL_SER_CHARGE",
       label: "colGst",
       isReadOnly: true,
-      dependentFields: ["SCREENFLAG"],
+      dependentFields: ["SCREENFLAG", "COL_SER_CANCEL_CHARGE"],
       // isReadOnly: (fieldValue, dependentFields, formState) => {
       //   if (
       //     dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
@@ -1068,6 +1098,9 @@ export const ddTransactionFormMetaData = {
           return false;
         }
         return true;
+      },
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        return dependentFields?.COL_SER_CANCEL_CHARGE?.value;
       },
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
@@ -1165,6 +1198,7 @@ export const ddTransactionFormMetaData = {
             dependent?.C_C_T_SP_C?.value === "T" &&
             (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
               dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
               dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
@@ -1364,7 +1398,7 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "STOP_DATE",
+      name: "STOP_PAY_DATE",
       label: "stopDate",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
@@ -1394,7 +1428,7 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REASON_STOPPAYMENT",
+      name: "STOP_REMARKS",
       label: "Reason",
       type: "text",
       dependentFields: ["SCREENFLAG"],
@@ -1426,135 +1460,148 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "arrayField",
       },
-      name: "BRANCH_CD",
-      label: "branch",
-      isReadOnly: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_TYPE",
-      isReadOnly: true,
-      label: "AccountType",
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "AccountNo",
-      isReadOnly: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REMARKS",
-      label: "narration",
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "TRAN_BAL",
-      label: "balance",
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: { componentType: "textField" },
-      name: "C_C_T",
-      placeholder: "",
-      label: "byTrf",
-      fullWidth: true,
-      setFieldLabel: (dependenet, currVal) => {
-        return currVal === "C"
-          ? { label: "By Cash" }
-          : currVal === "T"
-          ? { label: "By Trf" }
-          : currVal === "R"
-          ? { label: "By Cr. Trf" }
-          : currVal === "G"
-          ? { label: "By CLG" }
-          : null;
-      },
+      name: "PAYSLIP_MST_DTL",
 
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+
+      _fields: [
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "BRANCH_CD",
+          label: "branch",
+          isReadOnly: true,
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_TYPE",
+          isReadOnly: true,
+          label: "AccountType",
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_CD",
+          label: "AccountNo",
+          isReadOnly: true,
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "REMARKS",
+          label: "narration",
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TRAN_BAL",
+          label: "balance",
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: { componentType: "textField" },
+          name: "C_C_T",
+          placeholder: "",
+          label: "byTrf",
+          fullWidth: true,
+          isReadOnly: true,
+          setFieldLabel: (dependenet, currVal) => {
+            return currVal === "C"
+              ? { label: "By Cash" }
+              : currVal === "T"
+              ? { label: "By Trf" }
+              : currVal === "R"
+              ? { label: "By Cr. Trf" }
+              : currVal === "G"
+              ? { label: "By CLG" }
+              : null;
+          },
+
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "CHEQUE_NO_DISP",
+          label: "chequeNo",
+          dependentFields: ["CCTFLAG"],
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "datePicker",
+          },
+          name: "CHEQUE_DATE",
+          label: "chequeDate",
+          isReadOnly: true,
+          format: "dd/MM/yyyy",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "AMOUNT",
+          label: "amount",
+          fullWidth: true,
+          isReadOnly: true,
+          type: "text",
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "COMMISSION",
+          label: "Comm.",
+          fullWidth: true,
+          isReadOnly: true,
+          type: "text",
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "SERVICE_CHARGE",
+          label: "GST",
+          isReadOnly: true,
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_NM",
+          label: "accountName",
+          isReadOnly: true,
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
+        },
+      ],
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHEQUE_NO_DISP",
-      label: "chequeNo",
-      dependentFields: ["CCTFLAG"],
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "CHEQUE_DATE",
-      label: "chequeDate",
-      isReadOnly: true,
-      format: "dd/MM/yyyy",
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "AMOUNT",
-      label: "amount",
-      fullWidth: true,
-      isReadOnly: true,
-      type: "text",
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "COMMISSION",
-      label: "Comm.",
-      fullWidth: true,
-      isReadOnly: true,
-      type: "text",
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "SERVICE_CHARGE",
-      label: "GST",
-      isReadOnly: true,
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_NM",
-      label: "accountName",
-      isReadOnly: true,
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
-    },
+
     {
       render: {
         componentType: "divider",
@@ -1588,30 +1635,48 @@ export const ddTransactionFormMetaData = {
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "REASON_CD",
-      label: "Reason",
-      isFieldFocused: true,
-      required: true,
-      dependentFields: ["SCREENFLAG"],
-      options: (dependentValue, formState, _, authState) => {
-        return getStopPaymentReasonData({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-        });
-      },
-      _optionsKey: "getStopPaymentReason",
-      GridProps: { xs: 3, sm: 4, md: 4, lg: 4, xl: 4 },
-      shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
-          return false;
-        }
-        return true;
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "REASON_CD",
+    //   label: "Reason",
+    //   isFieldFocused: true,
+    //   required: true,
+    //   dependentFields: ["SCREENFLAG"],
+    //   options: (dependentValue, formState, _, authState) => {
+    //     return getStopPaymentReasonData({
+    //       COMP_CD: authState?.companyID,
+    //       BRANCH_CD: authState?.user?.branchCode,
+    //     });
+    //   },
+    //   _optionsKey: "getStopPaymentReason",
+    //   GridProps: { xs: 3, sm: 4, md: 4, lg: 4, xl: 4 },
+    //   shouldExclude: (val1, dependentFields) => {
+    //     if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   postValidationSetCrossFieldValues: async (
+    //     field,
+    //     formState,
+    //     auth,
+    //     dependentFieldsValues
+    //   ) => {
+    //     console.log(formState);
+
+    //     let buttonName = await formState?.MessageBox({
+    //       messageTitle: t("Process"),
+    //       message: t("AreYouSureToProceed"),
+    //       icon: "ERROR",
+    //       buttonNames: ["Yes", "No"],
+    //     });
+
+    //     if (buttonName === "Yes") {
+    //     }
+    //   },
+    // },
     {
       render: {
         componentType: "arrayField",
@@ -1625,6 +1690,7 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "STOPPAYMENT" ||
           dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
@@ -1652,6 +1718,26 @@ export const ddTransactionFormMetaData = {
               return true;
             } else return false;
           },
+          // postValidationSetCrossFieldValues: async (
+          //   field,
+          //   formState,
+          //   auth,
+          //   dependentFieldsValues
+          // ) => {
+          //   console.log(formState);
+          //   if (formState && formState.refID.current) {
+          //     let buttonName = await formState?.MessageBox({
+          //       messageTitle: t("Process"),
+          //       message: t("AreYouSureToProceed"),
+          //       icon: "ERROR",
+          //       buttonNames: ["Yes", "No"],
+          //     });
+
+          //     if (buttonName === "Yes") {
+          //       formState.refID.current.handleSubmit();
+          //     }
+          //   }
+          // },
           GridProps: { xs: 6, sm: 6, md: 7, lg: 7, xl: 7 },
         },
       ],

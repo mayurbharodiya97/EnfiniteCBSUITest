@@ -2817,12 +2817,12 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
   },
-  DOPAYSLIPREALIZEENTRY: {
-    url: "/transactionServiceAPI/DOPAYSLIPREALIZEENTRY",
-    packageName: "",
-  },
   DOPAYSLIPDDTRANSACTIONENTRY: {
     url: "/transactionServiceAPI/DOPAYSLIPDDTRANSACTIONENTRY",
+    packageName: "",
+  },
+  DOPAYSLIPDDTRNCONFIRMATION: {
+    url: "/transactionServiceAPI/DOPAYSLIPDDTRNCONFIRMATION",
     packageName: "",
   },
   GETRETURNREASON: {
@@ -2835,6 +2835,10 @@ export const ActionWiseAPIConfiguration = {
   },
   SAVEFVSCREENDATA: {
     url: "dashboardServiceAPI/SAVEFVSCREENDATA",
+    packageName: "",
+  },
+  GETPAYSLIPCANCELCHRG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCANCELCHRG",
     packageName: "",
   },
 };

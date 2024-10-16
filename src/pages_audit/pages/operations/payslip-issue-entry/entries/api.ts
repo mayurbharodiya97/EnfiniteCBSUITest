@@ -46,9 +46,9 @@ export const retRiveGridData = async ({
       responseData = responseData.map((items, index) => ({
         ...items,
         INDEX: `${index}`,
-        PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
+        // PENDING_FLAG: items.PENDING_FLAG === "Y" ? "Confirmed" : "Pending",
         RETRIVE_ENTRY_MODE: A_ENTRY_MODE,
-        REALIZE_FLAG: items.REALIZE_FLAG === "Y" ? "Confirmed" : "Pending",
+        // REALIZE_FLAG: items.REALIZE_FLAG === "Y" ? "Confirmed" : "Pending",
         TOTAL_AMT: `${totals[items.TRAN_CD]}`,
       }));
     }
@@ -156,7 +156,7 @@ export const ddTransactionSave = async ({ ...reqPara }) => {
 };
 export const payslipRealizeEntrySave = async ({ ...reqPara }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOPAYSLIPREALIZEENTRY", {
+    await AuthSDK.internalFetcher("DOPAYSLIPDDTRANSACTIONENTRY", {
       ...reqPara,
     });
 
@@ -168,7 +168,7 @@ export const payslipRealizeEntrySave = async ({ ...reqPara }) => {
 };
 export const DoddTransactionConfirmation = async ({ ...reqPara }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOPAYSLIPDDTRANSACTIONENTRY", {
+    await AuthSDK.internalFetcher("DOPAYSLIPDDTRNCONFIRMATION", {
       ...reqPara,
     });
 
@@ -184,6 +184,44 @@ export const getReasonData = async ({ COMP_CD, BRANCH_CD, TRAN_CD }) => {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
       TRAN_CD: TRAN_CD,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getPayslipCancelCharge = async ({
+  A_COMP_CD,
+  A_BRANCH_CD,
+  A_ACCT_TYPE,
+  A_ACCT_CD,
+  A_AMOUNT,
+  A_ENT_BRANCH,
+  A_BASE_BRANCH_CD,
+  A_TRAN_TYPE,
+  A_GD_DATE,
+  A_USER,
+  A_USER_LEVEL,
+  A_SCREEN_REF,
+  A_LANG,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPAYSLIPCANCELCHRG", {
+      A_COMP_CD: A_COMP_CD,
+      A_BRANCH_CD: A_BRANCH_CD,
+      A_ACCT_TYPE: A_ACCT_TYPE,
+      A_ACCT_CD: A_ACCT_CD,
+      A_AMOUNT: A_AMOUNT,
+      A_ENT_BRANCH: A_ENT_BRANCH,
+      A_BASE_BRANCH_CD: A_BASE_BRANCH_CD,
+      A_TRAN_TYPE: A_TRAN_TYPE,
+      A_GD_DATE: A_GD_DATE,
+      A_USER: A_USER,
+      A_USER_LEVEL: A_USER_LEVEL,
+      A_SCREEN_REF: A_SCREEN_REF,
+      A_LANG: A_LANG,
     });
 
   if (status === "0") {

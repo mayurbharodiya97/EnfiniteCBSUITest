@@ -25,7 +25,7 @@ import {
   MetaDataType,
   ClearCacheProvider,
 } from "@acuteinfo/common-base";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
@@ -88,6 +88,7 @@ export const RetriveGridForm: FC<{
       onError: (error: any) => {},
     }
   );
+
   const handlePrev = useCallback(() => {
     navigate(".");
     let index = (indexRef.current -= 1);
@@ -158,6 +159,7 @@ export const RetriveGridForm: FC<{
       A_LANG: i18n.resolvedLanguage,
     };
     mutation.mutate(data);
+
     endSubmit(true);
   };
 
@@ -311,6 +313,7 @@ export const RetriveGridForm: FC<{
                     headerLabel={headerLabel}
                     screenFlag={screenFlag}
                     trans_type={trans_type}
+                    apiReqFlag={apiReqFlag}
                   />
                 }
               />
