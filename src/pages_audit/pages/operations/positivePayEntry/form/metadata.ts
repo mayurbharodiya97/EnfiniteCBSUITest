@@ -647,7 +647,7 @@ export const PositivePayEntryFormMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 3, sm: 3, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
