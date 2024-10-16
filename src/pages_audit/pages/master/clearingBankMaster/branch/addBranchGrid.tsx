@@ -149,15 +149,15 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
   return (
     <>
       <Dialog
-        maxWidth="lg"
         open={true}
         PaperProps={{
           style: {
-            width: "70%",
+            width: "60%",
             overflow: "auto",
             padding: "10px",
           },
         }}
+        maxWidth="md"
       >
         {(isError || mutation?.isError) && (
           <AppBar position="relative" color="primary">
