@@ -42,6 +42,7 @@ export const RetrieveCfmDataCustom = ({
   onClose,
   navigate,
   setRetrieveData,
+  setFilteredData,
 }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -55,6 +56,7 @@ export const RetrieveCfmDataCustom = ({
     let newData = data?.rows?.map((item) => item?.data);
     navigate(".", { state: newData });
     setRetrieveData(newData);
+    setFilteredData(newData);
   }, []);
 
   const mutation: any = useMutation(
@@ -132,8 +134,6 @@ export const RetrieveCfmDataCustom = ({
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              console.log("<<<id", id);
-
               if (id === "RETRIEVE") {
                 let event: any = { preventDefault: () => {} };
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -186,13 +186,19 @@ export const RetrieveCfmDataCustom = ({
   );
 };
 
-export const RetrieveCfmData = ({ onClose, navigate, setRetrieveData }) => {
+export const RetrieveCfmData = ({
+  onClose,
+  navigate,
+  setRetrieveData,
+  setFilteredData,
+}) => {
   return (
     <ClearCacheProvider>
       <RetrieveCfmDataCustom
         onClose={onClose}
         navigate={navigate}
         setRetrieveData={setRetrieveData}
+        setFilteredData={setFilteredData}
       />
     </ClearCacheProvider>
   );

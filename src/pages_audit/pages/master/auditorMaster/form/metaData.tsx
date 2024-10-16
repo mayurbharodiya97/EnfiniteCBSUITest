@@ -89,12 +89,12 @@ export const AuditorMstFormMetaData = {
     },
     {
       render: {
-        componentType: "phoneNumberOptional",
+        componentType: "textField",
       },
       name: "CONTACT1",
       label: "PhoneNo",
       placeholder: "EnterPhoneNo",
-      maxLength: 10,
+      maxLength: 15,
       type: "text",
       autoComplete: "off",
       fullWidth: true,
@@ -103,12 +103,12 @@ export const AuditorMstFormMetaData = {
     },
     {
       render: {
-        componentType: "phoneNumberOptional",
+        componentType: "textField",
       },
       name: "CONTACT2",
       label: "MobileNo",
       placeholder: "EnterMobileNo",
-      maxLength: 10,
+      maxLength: 15,
       fullWidth: true,
       type: "text",
       autoComplete: "off",

@@ -212,7 +212,6 @@ const CommonForm = (props) => {
   };
 
   const onSubmitHandler = async ({ data, endSubmit }) => {
-    console.log("<<<osubbbb", data);
     let insertdata = {
       ...data,
       _isDeleteRow: false,

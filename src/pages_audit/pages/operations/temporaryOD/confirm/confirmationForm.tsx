@@ -27,7 +27,6 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
         CloseMessageBox();
       },
       onSuccess: (data, variables) => {
-        console.log("<<<cfcffc", data, variables);
         CloseMessageBox();
         closeDialog();
         result.mutate({

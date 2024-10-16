@@ -98,9 +98,9 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
       ],
     },
     inputProps: {
-      maxLength: 8,
+      maxLength: 20,
       onInput: (event) => {
-        event.target.value = event.target.value.replace(/[^0-9]/g, "");
+        event.target.value = event.target.value.replace(/[^0-9\s]/g, "");
       },
     },
     GridProps: {
@@ -165,7 +165,10 @@ const EntryPoint = () => (
     <CustomPropertiesConfigurationProvider
       config={{
         customExtendedTypes: meta,
-        defaultGridConfig: { variant: "contained" },
+        defaultGridConfig: {
+          variant: "contained",
+          isContainedActionButton: true,
+        },
       }}
     >
       <AuthProvider>

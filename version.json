@@ -1,13 +1,13 @@
 {
-  "software_version": "24.04.00.00.03",
-  "date": "10/10/2024",
+  "software_version": "24.04.00.00.04",
+  "date": "16/10/2024",
   "Microservice_Name": "EnfiniteCBS_UI",
   "version_information": {
     "major_release_aa": "24",
     "minor_release_bb": "04",
     "patch_release_cc": "00",
     "patch_release_dd": "00",
-    "internal_release_ee" : "03"
+    "internal_release_ee" : "04"
   },
   "changes": {
     "feature_addition": "Description of new features added in this version.",
@@ -34,7 +34,7 @@
       "description": "Patch release, Internal minor update"
     },
     "internal_release_ee": {
-      "version": "03",
+      "version": "04",
       "description": "For Internal and development purpose"
     }
   }
