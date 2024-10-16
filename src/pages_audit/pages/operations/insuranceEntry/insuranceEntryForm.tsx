@@ -67,7 +67,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
   const isDataChangedRef = useRef(false);
   const insuranceEntryDtlForTrnmetaData = useRef<any>(null);
   const [insuranceDtlOpen, setInsuranceDtlOpen] = useState(false);
-
+  const [disableButton, setDisableButton] = useState(false);
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "view-detail") {
@@ -235,6 +235,9 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
     myMasterRef.current?.addNewRow(true);
   };
 
+  const handleDisableButton = (data) => {
+    setDisableButton(data); // Update the state directly
+  };
   const onSubmitHandler = ({
     data,
     resultValueObj,
@@ -454,11 +457,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
                   }}
                 >
                   <MasterDetailsForm
-                    key={
-                      "InsuranceEntryForm" +
-                      formDataRefresh +
-                      isRetrieveData.length
-                    }
+                    key={"InsuranceEntryForm" + formDataRefresh}
                     metaData={metadata}
                     // displayMode={"new"}
                     initialData={{
@@ -474,7 +473,10 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
                     onSubmitData={onSubmitHandler}
                     // isLoading={validateInsuranceEntryData?.isLoading}
                     // isNewRow={true}
-                    formState={{ MessageBox: MessageBox }}
+                    formState={{
+                      MessageBox: MessageBox,
+                      handleDisableButton: handleDisableButton,
+                    }}
                     setDataOnFieldChange={(action, payload) => {
                       if (action === "IS_VISIBLE") {
                         setIsData((old) => ({
@@ -512,7 +514,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
 
                           <Button
                             onClick={handleSubmit}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || disableButton}
                             endIcon={
                               validateInsuranceEntryData?.isLoading ? (
                                 <CircularProgress size={20} />

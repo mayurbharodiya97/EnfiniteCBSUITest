@@ -919,6 +919,7 @@ export const en_language_data = {
   CannotModifyConfirmedTransaction: "Cannot Modify Confirmed Transaction",
   CannotModifyBackDatedEntry: "Cannot Modify Back Dated Entry",
   CannotDeleteBackDatedEntry: "Cannot Delete Back Dated Entry",
+  BackDatedEntryCantBeDelete: "Backdated Entry Can't be Delete",
   CannotDeleteConfirmedTransaction: "Cannot Delete Confirmed Transaction",
   EnterRemarks: "Enter Remarks",
   EnteredBy: "Entered By",

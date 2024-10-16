@@ -40,6 +40,7 @@ export const InsuranceDetailFormMetaData = {
         render: {
           componentType: "_accountNumber",
         },
+        name: "",
         branchCodeMetadata: {
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
           runPostValidationHookAlways: true,
@@ -603,6 +604,7 @@ export const InsuranceDetailFormMetaData = {
         render: {
           componentType: "hidden",
         },
+        name: "",
         __EDIT__: {
           render: {
             componentType: "datePicker",

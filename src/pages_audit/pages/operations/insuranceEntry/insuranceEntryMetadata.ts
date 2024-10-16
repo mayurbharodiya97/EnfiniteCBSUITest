@@ -54,6 +54,7 @@ export const InsuranceEntryFormMetaData = {
           isFieldFocused: true,
           defaultfocus: true,
           defaultValue: "",
+          validationRun: "onChange",
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
@@ -69,13 +70,11 @@ export const InsuranceEntryFormMetaData = {
             auth,
             dependentFieldsValues
           ) => {
-            // if (!field?.value) {
-            //   formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-            //   return {
-            //     ACCT_CD: { value: "", ignoreUpdate: true },
-            //     ACCT_NM: { value: "" },
-            //   };
-            // }
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_CD: { value: "", ignoreUpdate: true },
+              ACCT_NM: { value: "" },
+            };
           },
         },
         accountCodeMetadata: {
@@ -112,6 +111,7 @@ export const InsuranceEntryFormMetaData = {
                 BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
                 SCREEN_REF: "RPT/70",
               };
+              formState?.handleDisableButton(true);
               let postData = await GeneralAPI.getAccNoValidation(Apireq);
 
               formState.setDataOnFieldChange("TAB_REQUEST", Apireq);
@@ -126,6 +126,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
@@ -136,6 +137,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
@@ -148,6 +150,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Confirmation",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
@@ -162,6 +165,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: true,
                   });
+                  formState?.handleDisableButton(false);
                   if (btn99 !== "No") {
                     returnVal = postData;
                   } else {
@@ -169,6 +173,7 @@ export const InsuranceEntryFormMetaData = {
                   }
                 }
               }
+              formState?.handleDisableButton(false);
               btn99 = 0;
               return {
                 ACCT_CD:
@@ -189,22 +194,24 @@ export const InsuranceEntryFormMetaData = {
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",
                 },
-                COVER_NOTE: {
-                  value: "",
-                  isFieldFocused: true,
-                },
+                // COVER_NOTE: returnVal !== "" ? {
+                //   value: "",
+                //   isFieldFocused: true,
+                // } :{
+                //   isFieldFocused: false,
+                // },
               };
-            } else {
+            } else if (!field.value) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: false,
               });
+              formState?.handleDisableButton(false);
               return {
-                ACCT_CD: { value: "" },
                 ACCT_NM: { value: "" },
               };
             }
           },
-          // runPostValidationHookAlways: true,
+          runPostValidationHookAlways: true,
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         },
       },
@@ -269,6 +276,7 @@ export const InsuranceEntryFormMetaData = {
         fullWidth: true,
         txtTransform: "uppercase",
         required: true,
+        maxLength: 50,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterCoverNote"] }],
@@ -292,7 +300,6 @@ export const InsuranceEntryFormMetaData = {
         },
         name: "INSURANCE_COMP_CD",
         label: "Company",
-        // defaultValue: "RTGS",
         fullWidth: true,
         required: true,
         schemaValidation: {
@@ -334,6 +341,7 @@ export const InsuranceEntryFormMetaData = {
         label: "PolicyNo",
         fullWidth: true,
         required: true,
+        maxLength: 25,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterPolicyNo"] }],
@@ -449,6 +457,7 @@ export const InsuranceEntryFormMetaData = {
             };
           }
         },
+        runPostValidationHookAlways: true,
       },
 
       {
@@ -499,6 +508,7 @@ export const InsuranceEntryFormMetaData = {
             };
           }
         },
+        runPostValidationHookAlways: true,
       },
       {
         render: {
@@ -1195,6 +1205,7 @@ export const insuranceAccountRetrievemetaData = {
         name: "ACCT_CD",
         autoComplete: "off",
         dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -1299,11 +1310,12 @@ export const insuranceAccountRetrievemetaData = {
               },
             };
           } else {
-            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            // formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
             return {
-              ACCT_CD: {
-                value: "",
-              },
+              // ACCT_CD: {
+              //   value: "",
+              //   ignoreUpdate: true,
+              // },
               ACCT_NM: { value: "" },
             };
           }

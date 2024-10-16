@@ -394,7 +394,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                             if (rows?.[0]?.data?.ALLOW_DELETE === "N") {
                               await MessageBox({
                                 messageTitle: t("ValidationFailed"),
-                                message: t("CannotDeleteBackDatedEntry"),
+                                message: t("BackDatedEntryCantBeDelete"),
                                 buttonNames: ["Ok"],
                               });
                             } else {
