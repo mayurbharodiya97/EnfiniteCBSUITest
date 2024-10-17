@@ -348,10 +348,10 @@ export const impsEntryMetadata = {
       isWorkingDate: true,
       label: "DeActive Date",
       dependentFields: ["ACTIVE", "RETRIEVE_DATA"],
-      shouldExclude: (_, dependent, __) => {
+      shouldExclude: (field, dependent, __) => {
         if (
-          !Boolean(dependent?.ACTIVE?.value) &&
-          dependent?.RETRIEVE_DATA?.value === "Y"
+          !Boolean(dependent?.ACTIVE?.value) ||
+          dependent?.ACTIVE?.value === "N"
         ) {
           return false;
         }
@@ -387,6 +387,7 @@ export const impsEntryMetadata = {
         }
         return true;
       },
+
       GridProps: {
         xs: 12,
         sm: 1,
@@ -572,6 +573,12 @@ export const impsRegDetails = {
             componentType: "hidden",
           },
           name: "ENTERED_BRANCH_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ENTERED_COMP_CD",
         },
         {
           render: { componentType: "checkbox" },
@@ -851,6 +858,8 @@ export const impsRegDetails = {
             componentType: "formbutton",
           },
           name: "JOINT_DETAILS",
+          dependentFields: ["COMP_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+
           label: "Joint Details",
           __VIEW__: {
             render: {
@@ -871,6 +880,7 @@ export const impsRegDetails = {
           },
           name: "PHOTO_SIGN",
           label: "Photo/sign",
+          dependentFields: ["COMP_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
           __VIEW__: {
             render: {
               componentType: "hidden",
@@ -1133,16 +1143,26 @@ export const impsRegDetails = {
         },
         {
           render: {
-            componentType: "formbutton",
+            componentType: "hidden",
           },
-          name: "ALLLOW_DELETE",
+          name: "ALLOW_DELETE",
           label: "Delete",
-          dependentFields: ["REG_DATE", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
-          __VIEW__: {
+          dependentFields: [
+            "REG_DATE",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "ENTERED_BRANCH_CD",
+            "ENTERED_COMP_CD",
+            "TRAN_CD",
+            "SR_CD",
+          ],
+          __EDIT__: {
             render: {
-              componentType: "hidden",
+              componentType: "formbutton",
             },
           },
+
           GridProps: {
             xs: 12,
             sm: 1,

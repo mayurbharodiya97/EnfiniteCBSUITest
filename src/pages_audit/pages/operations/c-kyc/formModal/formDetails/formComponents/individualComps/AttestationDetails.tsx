@@ -29,17 +29,17 @@ import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import _ from "lodash";
-import { CustomerSaveDialog } from "../../../dialog/CustomerSave";
 import TabNavigate from "../TabNavigate";
 import {
   utilFunction,
   Alert,
   GridWrapper,
   GridMetaDataType,
-  PopupRequestWrapper,
   FormWrapper,
   MetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
+import { enqueueSnackbar } from "notistack";
 const actions = [
   {
     actionName: "close",
@@ -53,9 +53,6 @@ const actions = [
 const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [historyDialog, setHistoryDialog] = useState(false);
-  const [updateDialog, setUpdateDialog] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
-  const [saveSuccessDialog, setSaveSuccessDialog] = useState<boolean>(false);
   const {
     state,
     handleFormDataonSavectx,
@@ -67,24 +64,17 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
     handleSavectx,
     handleCurrFormctx,
     handleReqCDctx,
+    handleFormModalClosectx,
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const AttestationDTLFormRef = useRef<any>("");
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const [formStatus, setFormStatus] = useState<any[]>([]);
-  const [docValidateDialog, setDocValidateDialog] = useState<boolean>(false);
-  const [errMsg, setErrMsg] = useState<any>("");
   const [reqCD, setReqCD] = useState<any>(null);
   const onCloseSearchDialog = () => {
     setHistoryDialog(false);
-  };
-  const onCloseUpdateDialog = () => {
-    setUpdateDialog(false);
-    setIsUpdated(false);
-  };
-  const onCloseSaveSuccessDialog = () => {
-    setSaveSuccessDialog(false);
   };
 
   useEffect(() => {
@@ -162,11 +152,20 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
   );
 
   const docValidationMutation: any = useMutation(API.validateDocData, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // console.log("qwiwuiefhqioweuhfd", data?.[0]?.MESSAGE)
       if (data?.[0]?.MESSAGE) {
-        setDocValidateDialog(true);
-        setErrMsg(data?.[0]?.MESSAGE);
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: data?.[0]?.MESSAGE,
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          onSave();
+        } else if (buttonName === "No") {
+          setFormStatus((old) => [...old, false]);
+        }
       } else {
         onSave();
       }
@@ -179,18 +178,22 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
   const mutation: any = useMutation(API.SaveEntry, {
     onSuccess: (data) => {
       // console.log("data on save", data)
+      CloseMessageBox();
       if (data?.[0]?.REQ_CD) {
         if (!Number.isNaN(data?.[0]?.REQ_CD)) {
           setReqCD(parseInt(data?.[0]?.REQ_CD));
           handleReqCDctx(parseInt(data?.[0]?.REQ_CD));
           setFormStatus((old) => [...old, true]);
-          setSaveSuccessDialog(true);
+          enqueueSnackbar("Saved Successfully", { variant: "success" });
+          handleFormModalClosectx();
+          onFormClose();
         }
         // handleReqCDctx(data?.[0]?.REQ_CD)
         // handleColTabChangectx(state?.colTabValuectx+1)
       }
     },
     onError: (error: any) => {
+      CloseMessageBox();
       setFormStatus((old) => [...old, false]);
     },
   });
@@ -256,8 +259,6 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
         // } else {
 
         // }
-        // setUpdateDialog(true)
-        // updateMutation.mutate()
       }
       // if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
       //     setFormStatus(old => [...old, true])
@@ -417,11 +418,6 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
   //     }
   // }, [isAttestDataLoading, attestData])
 
-  const retrieveonupdate: any = useMutation(API.getCustomerDetailsonEdit, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
-
   return (
     <Grid
       container
@@ -433,15 +429,6 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
           severity={mutation.error?.severity ?? "error"}
           errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
           errorDetail={mutation.error?.error_detail}
-          color="error"
-        />
-      ) : retrieveonupdate.isError ? (
-        <Alert
-          severity={retrieveonupdate.error?.severity ?? "error"}
-          errorMsg={
-            retrieveonupdate.error?.error_msg ?? "Something went to wrong.."
-          }
-          errorDetail={retrieveonupdate.error?.error_detail}
           color="error"
         />
       ) : docValidationMutation.isError ? (
@@ -533,52 +520,6 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
           onClose={onCloseSearchDialog}
           data={historyData}
           isLoading={isHistoryDataLoading}
-        />
-      )}
-
-      {/* {updateDialog && <ConfirmUpdateDialog 
-                open={updateDialog} 
-                onClose={onCloseUpdateDialog} 
-                mutationFormDTL={retrieveonupdate}
-                // data={historyData} 
-                // isLoading={!isUpdated} 
-                // setIsLoading={setIsUpdated}
-                // mt={updateMutation}
-            />} */}
-
-      {saveSuccessDialog && (
-        <CustomerSaveDialog
-          open={saveSuccessDialog}
-          onClose={onCloseSaveSuccessDialog}
-          onFormClose={onFormClose}
-          // reqCD={reqCD}
-          // data={historyData}
-          // isLoading={!isUpdated}
-          // setIsLoading={setIsUpdated}
-          // mt={updateMutation}
-        />
-      )}
-
-      {docValidateDialog && (
-        <PopupRequestWrapper
-          MessageTitle={"ALERT"}
-          Message={errMsg}
-          onClickButton={async (rows, buttonNames, ...others) => {
-            // console.log(rows, "kjefeiwqf", buttonNames)
-            if (buttonNames === "Yes") {
-              setDocValidateDialog(false);
-              onSave();
-            } else if (buttonNames === "No") {
-              setDocValidateDialog(false);
-              setFormStatus((old) => [...old, false]);
-            }
-          }}
-          buttonNames={["Yes", "No"]}
-          rows={[]}
-          // Commented Temporary
-          // loading={{ Yes: mutation.isLoading }}
-          // loading={{ Yes: getData?.isLoading, No: false }}
-          open={docValidateDialog}
         />
       )}
     </Grid>

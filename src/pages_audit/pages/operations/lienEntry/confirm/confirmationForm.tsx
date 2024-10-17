@@ -21,7 +21,6 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const { t } = useTranslation();
-  console.log("<<<rrrr", rows);
 
   const lienConfirm: any = useMutation("lienConfirmation", lienConfirmation, {
     onError: () => {
@@ -175,7 +174,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
 
       {isDelete && (
         <RemarksAPIWrapper
-          TitleText={"RemovalRemarksChequebook"}
+          TitleText={"RemovalRemarksLien"}
           label={"RemovalRemarks"}
           onActionNo={() => setIsDelete(false)}
           onActionYes={(val, rows) => {

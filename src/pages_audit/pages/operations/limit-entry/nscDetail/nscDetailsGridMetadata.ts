@@ -104,7 +104,7 @@ export const nscDetailGridData: GridMetaDataType = {
     },
     {
       accessor: "ISSUE_COMPANY",
-      columnName: "IssueCompany",
+      columnName: "IssueBy",
       sequence: 8,
       alignment: "left",
       componentType: "default",
