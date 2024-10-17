@@ -56,3 +56,12 @@ export const validateHoldCharge = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const proceedHoldCharges = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("HOLDCHARGEPROCESSBUTTON", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

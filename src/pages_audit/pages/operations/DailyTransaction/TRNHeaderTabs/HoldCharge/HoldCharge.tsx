@@ -37,6 +37,7 @@ export const HoldCharge = ({ reqData }) => {
   const oldRowsDataRef = useRef<any>([]);
   const PreviousRowsDataRef = useRef<any>([]);
   const previousRow = useRef<any>({});
+  const [prevPaidValues, setPrevPaidValues] = useState<any>([]);
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -102,6 +103,20 @@ export const HoldCharge = ({ reqData }) => {
       }
     },
   });
+  const proceedHoldCharges = useMutation(API.proceedHoldCharges, {
+    onError: async (error: any) => {
+      const btnName = await MessageBox({
+        messageTitle: "ValidationFailed",
+        message: error?.error_msg ?? "",
+        icon: "ERROR",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: async (data) => {
+      CloseMessageBox();
+      refetch();
+    },
+  });
 
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "proceed") {
@@ -127,6 +142,13 @@ export const HoldCharge = ({ reqData }) => {
               `${change.amount} ${change.remarks} ${change.paid}`
           )
           .join("\n");
+        const reqPara = filteredRows?.map((row) => ({
+          ENTERED_COMP_CD: row?.ENTERED_COMP_CD ?? "",
+          ENTERED_BRANCH_CD: row?.ENTERED_BRANCH_CD ?? "",
+          TRAN_CD: row?.TRAN_CD ?? "",
+          SR_CD: row?.SR_CD ?? "",
+          PAID: row?.PAID ?? "",
+        }));
 
         const btnName = await MessageBox({
           message: `Are you sure to apply/waive following transactions? \n\n${message} `,
@@ -135,33 +157,61 @@ export const HoldCharge = ({ reqData }) => {
           loadingBtnName: ["Yes"],
         });
         if (btnName === "Yes") {
+          proceedHoldCharges.mutate({
+            DETAILS_DATA: {
+              isNewRow: reqPara,
+              isDeleteRow: [],
+              isUpdatedRow: [],
+            },
+          });
         }
       }
     }
   }, []);
 
   useEffect(() => {
+    const currentPaidValues = rows.map((row: any) => row.PAID);
+    const isPaidChanged = currentPaidValues.some(
+      (paid, index) => paid !== prevPaidValues[index] && paid !== "N"
+    );
+    if (!isPaidChanged) {
+      return;
+    }
     const previousRows = PreviousRowsDataRef?.current;
+    let lastUpdatedRowIndex = -1; // Variable to track the index of the last updated row
+
     rows.forEach((currentRow: any, index) => {
-      if (previousRow?.current?.PAID !== currentRow?.PAID) {
-        previousRow.current = previousRows[index];
-        validateHoldCharge.mutate({
-          A_COMP_CD: currentRow?.COMP_CD ?? "",
-          A_BRANCH_CD: currentRow?.BRANCH_CD ?? "",
-          A_ACCT_TYPE: currentRow?.ACCT_TYPE ?? "",
-          A_ACCT_CD: currentRow?.ACCT_CD ?? "",
-          A_PAID: currentRow?.PAID ?? "",
-          A_AMOUNT: currentRow?.AMOUNT ?? "",
-          A_STATUS: reqData?.STATUS ?? "",
-          A_NPA_CD: reqData?.NPA_CD ?? "",
-          A_GD_DATE: authState?.workingDate ?? "",
-          A_USER: authState?.user?.id ?? "",
-          A_USER_LEVEL: authState?.role ?? "",
-          A_SCREEN_REF: reqData?.SCREEN_REF ?? "",
-          A_LANG: i18n.resolvedLanguage,
-        });
+      if (previousRows[index]?.PAID !== currentRow?.PAID) {
+        lastUpdatedRowIndex = index;
       }
     });
+
+    if (lastUpdatedRowIndex !== -1) {
+      previousRow.current = previousRows[lastUpdatedRowIndex];
+    }
+
+    const filteredRows = previousRows.filter(
+      (prevRow: any) => prevRow.TRAN_CD === previousRow?.current?.TRAN_CD
+    );
+
+    filteredRows.forEach((filteredRow: any) => {
+      validateHoldCharge.mutate({
+        A_COMP_CD: filteredRow?.COMP_CD ?? "",
+        A_BRANCH_CD: filteredRow?.BRANCH_CD ?? "",
+        A_ACCT_TYPE: filteredRow?.ACCT_TYPE ?? "",
+        A_ACCT_CD: filteredRow?.ACCT_CD ?? "",
+        A_PAID: filteredRow?.PAID ?? "",
+        A_AMOUNT: filteredRow?.AMOUNT ?? "",
+        A_STATUS: reqData?.STATUS ?? "",
+        A_NPA_CD: reqData?.NPA_CD ?? "",
+        A_GD_DATE: authState?.workingDate ?? "",
+        A_USER: authState?.user?.id ?? "",
+        A_USER_LEVEL: authState?.role ?? "",
+        A_SCREEN_REF: reqData?.SCREEN_REF ?? "",
+        A_LANG: i18n.resolvedLanguage,
+      });
+    });
+    setPrevPaidValues(currentPaidValues);
     PreviousRowsDataRef.current = rows;
   }, [rows]);
 

@@ -2849,6 +2849,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEHOLDCHRGF1",
     packageName: "",
   },
+  HOLDCHARGEPROCESSBUTTON: {
+    url: "/transactionServiceAPI/HOLDCHARGEPROCESSBUTTON",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
