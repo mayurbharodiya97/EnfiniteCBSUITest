@@ -731,7 +731,7 @@ export const PositivePayEntryFormWrapper: React.FC<
           overflow: "auto",
         },
       }}
-      maxWidth="md"
+      maxWidth="lg"
     >
       <PositivePayEntry
         isDataChangedRef={isDataChangedRef}

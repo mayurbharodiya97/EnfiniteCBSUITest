@@ -58,7 +58,7 @@ export const PositivePayEntryFormMetadata = {
             CHEQUE_NO: { value: "" },
           };
         },
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountTypeMetadata: {
         dependentFields: ["BRANCH_CD"],
@@ -110,7 +110,7 @@ export const PositivePayEntryFormMetadata = {
             };
           }
         },
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountCodeMetadata: {
         autoComplete: "off",
@@ -244,12 +244,8 @@ export const PositivePayEntryFormMetadata = {
           }
           return {};
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         fullWidth: true,
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 2, xl: 2 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
     },
     {
@@ -259,7 +255,7 @@ export const PositivePayEntryFormMetadata = {
       name: "ACCT_NM",
       label: "AccountName",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -460,11 +456,7 @@ export const PositivePayEntryFormMetadata = {
         }
         return {};
       },
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 1.75, xl: 1.75 },
     },
     {
       render: {
@@ -509,7 +501,7 @@ export const PositivePayEntryFormMetadata = {
         rules: [{ name: "required", params: ["AmountIsRequired"] }],
       },
       autoComplete: "off",
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.25, xl: 2.25 },
     },
     {
       render: {
