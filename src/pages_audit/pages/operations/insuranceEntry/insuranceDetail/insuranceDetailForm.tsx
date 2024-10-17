@@ -203,7 +203,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                 const buttonName = await MessageBox({
                   messageTitle: t("Confirmation"),
                   message: t("ProceedGen"),
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "Yes") {
@@ -241,7 +241,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                 const buttonName = await MessageBox({
                   messageTitle: t("Confirmation"),
                   message: data[i]?.O_MESSAGE,
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "Yes") {
@@ -455,7 +455,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: t("DoYouWantDeleteRow"),
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
                 loadingBtnName: ["Yes"],
               });

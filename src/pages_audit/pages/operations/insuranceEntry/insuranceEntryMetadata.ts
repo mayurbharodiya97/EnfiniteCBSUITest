@@ -160,6 +160,7 @@ export const InsuranceEntryFormMetaData = {
                     messageTitle: "Confirmation",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -1323,6 +1324,7 @@ export const insuranceAccountRetrievemetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
