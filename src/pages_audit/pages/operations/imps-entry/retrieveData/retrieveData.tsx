@@ -24,6 +24,8 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
         ...reqdata,
       });
     };
+
+  //API calling  for retrieve data
   const mutation: any = useMutation(
     "getRtgsData",
     updateFnWrapper(API.retrieveData),
@@ -48,21 +50,7 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
     }
   );
 
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit
-  ) => {
-    endSubmit(true);
-    mutation.mutate({
-      reqdata: {
-        CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
-        COMP_CD: authState?.companyID,
-      },
-      endSubmit,
-    });
-  };
-
+  // for shortcut-key
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
@@ -92,7 +80,16 @@ const RetrieveDataCustom = ({ navigate, setFormMode, setRetrieveData }) => {
             key={`retrieve-Form`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
+            onSubmitHandler={(data: any, displayData, endSubmit) => {
+              endSubmit(true);
+              mutation.mutate({
+                reqdata: {
+                  CUSTOMER_ID: data?.CUSTOMER_ID ?? "",
+                  COMP_CD: authState?.companyID,
+                },
+                endSubmit,
+              });
+            }}
             formStyle={{
               background: "white",
             }}

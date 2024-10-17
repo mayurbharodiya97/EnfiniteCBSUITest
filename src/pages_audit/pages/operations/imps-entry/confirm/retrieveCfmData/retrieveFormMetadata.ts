@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const retrieveFormMetaData = {
   form: {
     name: "imps-retrieve-cfm-metadata",
-    label: "Retrieve Information",
+    label: "RetrieveInformation",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -167,7 +167,7 @@ export const retrieveFormMetaData = {
         componentType: "formbutton",
       },
       name: "VIEW_ALL",
-      label: "View All",
+      label: "ViewAll",
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
   ],
