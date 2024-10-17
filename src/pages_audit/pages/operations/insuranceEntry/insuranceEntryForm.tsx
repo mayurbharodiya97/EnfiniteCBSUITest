@@ -10,7 +10,7 @@ import {
   Tabs,
 } from "@mui/material";
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   DetailInsuranceGridMetaData,
   insuranceAccountRetrievemetaData,
@@ -39,6 +39,7 @@ import {
   MasterDetailsMetaData,
   GridMetaDataType,
   ClearCacheProvider,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
@@ -68,6 +69,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
   const insuranceEntryDtlForTrnmetaData = useRef<any>(null);
   const [insuranceDtlOpen, setInsuranceDtlOpen] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  let currentPath = useLocation().pathname;
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "view-detail") {
@@ -185,9 +187,8 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
       });
       CloseMessageBox();
     },
-
     onSuccess: (data) => {
-      enqueueSnackbar(t("DataSaveSuccessfully"), {
+      enqueueSnackbar(t("RecordInsertedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -292,7 +293,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: t("ProceedGen"),
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
               });
               if (buttonName === "Yes") {
@@ -308,7 +309,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: data[i]?.O_MESSAGE,
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
               });
               if (buttonName === "Yes") {
@@ -330,6 +331,8 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
 
   let metadata: MasterDetailsMetaData = {} as MasterDetailsMetaData;
   metadata = cloneDeep(InsuranceEntryFormMetaData) as MasterDetailsMetaData;
+  InsuranceEntryFormMetaData.masterForm.form.label =
+    utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true);
   return (
     <>
       {screenFlag === "insuranceForTrn" ? (
@@ -491,7 +494,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
                     ref={myMasterRef}
                     formStyle={{
                       background: "white",
-                      height: "43vh",
+                      height: "29vh",
                       overflowY: "auto",
                       overflowX: "hidden",
                     }}

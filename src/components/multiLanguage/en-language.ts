@@ -1825,6 +1825,10 @@ export const en_language_data = {
   EnterRemovalRemarksForInsuranceConfirmation:
     "Enter Removal Remarks For Insurance Confirmation",
   InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+  InsuranceAmountCannotLessPremiumAmount:
+    "Insurance Amount cannot be less than Premium Amount",
+  DueDateShouldGreaterDateInsurance:
+    "Due Date should be Greater than Date of Insurance",
 
   //standing instruction entry
   CommisionType: "Commision Type",
