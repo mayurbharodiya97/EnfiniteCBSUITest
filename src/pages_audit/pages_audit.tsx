@@ -30,6 +30,7 @@ import { Quick_View } from "./appBar/quickView";
 import { Notification_App } from "./appBar/notification";
 import { IconButton, Tooltip } from "@mui/material";
 import { Accountinquiry } from "./acct_Inquiry/acct_inquiry";
+import AllScreensGridWrapper from "./pages/allScreens/index";
 
 export const PagesAudit = (props, { columns }) => {
   const [acctInq, setAcctInq] = useState(false);
@@ -126,6 +127,10 @@ export const PagesAudit = (props, { columns }) => {
                   <Route path="master/*" element={<Master />} />
                   <Route path="operation/*" element={<OperationsMenu />} />
                   <Route path="view-statement/*" element={<AccountDetails />} />
+                  <Route
+                    path="all-screens/*"
+                    element={<AllScreensGridWrapper />}
+                  />
                   <Route path="configuration/*" element={<Configuration />} />
                   <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                   <Route

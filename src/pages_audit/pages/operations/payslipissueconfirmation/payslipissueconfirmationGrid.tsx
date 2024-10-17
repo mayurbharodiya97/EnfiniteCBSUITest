@@ -208,7 +208,7 @@ const PayslipissueconfirmationGrid = () => {
   );
 };
 
-export const payslipissueconfirmation = () => {
+export const Payslipissueconfirmation = () => {
   return (
     <ClearCacheProvider>
       <PayslipissueconfirmationGrid />

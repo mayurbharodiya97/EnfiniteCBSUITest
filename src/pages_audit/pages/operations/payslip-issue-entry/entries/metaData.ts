@@ -1,9 +1,15 @@
 import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
 import { getCalculateGstComm, getRetrievalType, geTrxDdw } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { getGstCalcAmount, getStopPaymentReasonData } from "./api";
+import {
+  getGstCalcAmount,
+  getStopPaymentReasonData,
+  validatePayslipTranType,
+} from "./api";
 import { t } from "i18next";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import i18n from "components/multiLanguage/languagesConfiguration";
+import { format } from "date-fns";
 
 export const RetrieveFormConfigMetaData = {
   form: {
@@ -12,7 +18,6 @@ export const RetrieveFormConfigMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -76,6 +81,7 @@ export const RetrieveFormConfigMetaData = {
       placeholder: "Select Bill Type",
       required: true,
       fullWidth: true,
+      dependentFields: ["BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
         return getRetrievalType({
           COMP_CD: authState?.companyID,
@@ -84,6 +90,11 @@ export const RetrieveFormConfigMetaData = {
         });
       },
       _optionsKey: "getCommonTypeList",
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        let value = dependentFields?.DESCRIPTION?.value;
+
+        return value;
+      },
       GridProps: { xs: 3, sm: 4, md: 2, lg: 2, xl: 2 },
 
       schemaValidation: {
@@ -103,8 +114,8 @@ export const RetrieveFormConfigMetaData = {
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependent) => {
         if (
-          dependent?.SCREEN_REF?.value === "CANCELCONFRM" ||
-          dependent?.SCREEN_REF?.value === "REALIZECONF"
+          dependent?.SCREEN_REF?.value === "CANCELCONFIRM" ||
+          dependent?.SCREEN_REF?.value === "REALIZECONFIRM"
         ) {
           return true;
         }
@@ -159,7 +170,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "CANCEL") {
+        if (dependentFields?.SCREEN_REF?.value === "CANCELENTRY") {
           return false;
         }
         return true;
@@ -190,7 +201,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "REALIZE") {
+        if (dependentFields?.SCREEN_REF?.value === "REALIZEENTRY") {
           return false;
         }
         return true;
@@ -217,7 +228,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "REALIZECONF") {
+        if (dependentFields?.SCREEN_REF?.value === "REALIZECONFIRM") {
           return false;
         }
         return true;
@@ -230,7 +241,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "STOPPAYMENT",
       label: "",
-      defaultValue: "E",
+      defaultValue: "S",
       RadioGroupProps: { row: true },
       options: [
         {
@@ -275,7 +286,7 @@ export const RetrieveFormConfigMetaData = {
       ],
       dependentFields: ["SCREEN_REF"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREEN_REF?.value === "CANCELCONFRM") {
+        if (dependentFields?.SCREEN_REF?.value === "CANCELCONFIRM") {
           return false;
         }
         return true;
@@ -308,7 +319,6 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: false,
     disableSorting: false,
-    // hideHeader: true,
     disableGroupBy: true,
     defaultPageSize: 15,
     containerHeight: {
@@ -343,7 +353,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       alignment: "right",
     },
     {
-      accessor: "PENDING_FLAG",
+      accessor: "PENDING_FLAG_DISP",
       columnName: "entryStatus",
       sequence: 3,
       componentType: "default",
@@ -352,12 +362,12 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 100,
       alignment: "left",
       color: (val, data) => {
-        let PENDING_FLAG = data?.original?.PENDING_FLAG ?? "";
-        return PENDING_FLAG === "Y" ? "red" : "green";
+        let PENDING_FLAG = data?.original?.PENDING_FLAG_DISP ?? "";
+        return PENDING_FLAG === "Pending" ? "red" : "green";
       },
     },
     {
-      accessor: "REALIZE_FLAG",
+      accessor: "REALIZE_FLAG_DISP",
       columnName: "confirmStatus",
       sequence: 4,
       componentType: "default",
@@ -366,8 +376,8 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 150,
       alignment: "left",
       color: (val, data) => {
-        let REALIZE_FLAG = data?.original?.REALIZE_FLAG ?? "";
-        return REALIZE_FLAG === "Y" ? "green" : "red";
+        let REALIZE_FLAG = data?.original?.REALIZE_FLAG_DISP ?? "";
+        return REALIZE_FLAG === "Pending" ? "red" : "green";
       },
     },
     {
@@ -530,7 +540,7 @@ export const ddTransactionFormMetaData = {
       isFieldFocused: true,
       placeholder: "Select Bill Type",
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
     {
       render: { componentType: "textField" },
@@ -538,7 +548,7 @@ export const ddTransactionFormMetaData = {
       placeholder: "Select Infavour of",
       label: "inFavourOf",
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
     {
       render: {
@@ -582,15 +592,16 @@ export const ddTransactionFormMetaData = {
         let cct = dependenet?.CCTFLAG?.value;
 
         return cct === "C"
-          ? "By Cash"
+          ? { label: "By Cash" }
           : cct === "T"
-          ? "By Trf"
+          ? { label: "By Trf" }
           : cct === "R"
-          ? "By Cr. Trf"
+          ? { label: "By Cr. Trf" }
           : cct === "G"
-          ? "By CLG"
+          ? { label: "By CLG" }
           : null;
       },
+
       setValueOnDependentFieldsChange: (dependentFields) => {
         let cct = dependentFields?.CCTFLAG?.value;
 
@@ -645,7 +656,7 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
-        componentType: "datePicker",
+        componentType: "textField",
       },
       name: "REVALID_BY",
       label: "reValidBy",
@@ -796,8 +807,8 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY"
         ) {
           return false;
         }
@@ -813,7 +824,7 @@ export const ddTransactionFormMetaData = {
       label: "Realized but Confirmation Pending",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+        if (dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM") {
           return false;
         }
         return true;
@@ -828,7 +839,7 @@ export const ddTransactionFormMetaData = {
       label: "Cancelled but Confirmation Pending",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "CANCELCONFRM") {
+        if (dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM") {
           return false;
         }
         return true;
@@ -844,18 +855,18 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["SCREENFLAG"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
       },
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -872,18 +883,18 @@ export const ddTransactionFormMetaData = {
       dependentFields: ["CCTFLAG", "SCREENFLAG", "AMOUNT"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
       },
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -927,6 +938,36 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_DT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ISSUE_DT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_TYPE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SCREEN_CODE",
+    },
+    {
+      render: {
         componentType: "autocomplete",
       },
       name: "C_C_T_SP_C",
@@ -936,17 +977,102 @@ export const ddTransactionFormMetaData = {
         { label: "Transfer", value: "T" },
       ],
       label: "",
-      dependentFields: ["CCTFLAG", "SCREENFLAG"],
+      dependentFields: [
+        "CCTFLAG",
+        "SCREENFLAG",
+        "TRAN_DT",
+        "ISSUE_DT",
+        "ENTERED_BRANCH_CD",
+        "REVALID_DT",
+        "SCREEN_CODE",
+        "TRAN_TYPE",
+      ],
       setFieldLabel: (dependenet, currVal) => {
-        let cct = dependenet?.CCTFLAG?.value;
         return currVal === "C"
-          ? "By Cash"
+          ? { label: "By Cash" }
           : currVal === "T"
-          ? "By Transfer"
+          ? { label: "By Transfer" }
           : currVal === "G"
-          ? "By Clearing"
-          : "By";
+          ? { label: "By Clearing" }
+          : { label: "By" };
       },
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFields
+      ) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY"
+        ) {
+          let postData = await validatePayslipTranType({
+            A_COMP_CD: authState?.companyID,
+            A_ENT_BRANCH_CD: dependentFields?.ENTERED_BRANCH_CD?.value,
+            A_TRAN_DT: dependentFields?.TRAN_DT?.value
+              ? format(new Date(dependentFields?.TRAN_DT?.value), "dd/MMM/yyyy")
+              : "",
+
+            A_ISSUE_DT: dependentFields?.ISSUE_DT?.value
+              ? format(
+                  new Date(dependentFields?.ISSUE_DT?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            A_REVALID_DT: dependentFields?.REVALID_DT?.value
+              ? format(
+                  new Date(dependentFields?.REVALID_DT?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            A_C_C_T_SP_C: currentField.value,
+            A_TRAN_TYPE: dependentFields?.TRAN_TYPE?.value,
+            A_GD_DATE: authState?.workingDate,
+            A_USER: authState?.user?.id,
+            A_USER_LEVEL: authState?.role,
+            A_SCREEN_REF: dependentFields?.SCREEN_CODE?.value,
+            A_LANG: i18n.resolvedLanguage,
+          });
+          let btn99;
+
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          for (let i = 0; i < postData.length; i++) {
+            if (postData[i]?.ERR_CODE === "999") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Account Validation Failed",
+                message: postData[i]?.ERR_MSG,
+              });
+              if (btnName === "Ok") {
+              }
+            } else if (postData[i]?.ERR_CODE === "9") {
+              if (btn99 !== "No") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "HNI Alert",
+                  message: postData[i]?.ERR_MSG,
+                });
+              }
+            } else if (postData[i]?.ERR_CODE === "99") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Risk Category Alert",
+                message: postData[i]?.ERR_MSG,
+                buttonNames: ["Yes", "No"],
+              });
+
+              btn99 = btnName;
+              if (btnName === "No") {
+              }
+            } else if (postData[i]?.ERR_CODE === "0") {
+            }
+          }
+        }
+        return {
+          REGION_CD: {},
+        };
+      },
+
       required: "true",
       schemaValidation: {
         type: "string",
@@ -954,18 +1080,18 @@ export const ddTransactionFormMetaData = {
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
       },
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -975,26 +1101,55 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "COLLECT_COMISSION_CHARGE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "COLLECT_COMISSION_FLAGE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "COL_SER_CANCEL_CHARGE",
+    },
+    {
+      render: {
         componentType: "amountField",
       },
       name: "COLLECT_COMISSION",
       label: "colComm",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-      dependentFields: ["SCREENFLAG", "ACCT_CD", "ACCT_TYPE", "REALIZE_AMT"],
+      dependentFields: [
+        "SCREENFLAG",
+        "ACCT_CD",
+        "ACCT_TYPE",
+        "REALIZE_AMT",
+        "COLLECT_COMISSION_CHARGE",
+        "COLLECT_COMISSION_FLAGE",
+      ],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        return dependentFields?.COLLECT_COMISSION_CHARGE?.value;
+      },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+          dependentFields?.COLLECT_COMISSION_FLAGE?.value === "Y"
         ) {
           return true;
         } else return false;
       },
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
@@ -1020,13 +1175,12 @@ export const ddTransactionFormMetaData = {
           MODULE: "",
           ASON_DT: authState?.workingDate,
         };
-        console.log(reqParams);
 
         if (
           reqParams.ACCT_CD !== "" &&
           reqParams.ACCT_TYPE !== "" &&
           reqParams.AMOUNT !== "" &&
-          dependentFieldsValues?.SCREENFLAG?.value === "CANCEL"
+          dependentFieldsValues?.SCREENFLAG?.value === "CANCELENTRY"
         ) {
           const gstApiData = await getGstCalcAmount(reqParams);
 
@@ -1047,26 +1201,21 @@ export const ddTransactionFormMetaData = {
       },
       name: "COL_SER_CHARGE",
       label: "colGst",
-      // isReadOnly: true,
-      dependentFields: ["SCREENFLAG"],
-      isReadOnly: (fieldValue, dependentFields, formState) => {
-        if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
-        ) {
-          return true;
-        } else return false;
-      },
+      isReadOnly: true,
+      dependentFields: ["SCREENFLAG", "COL_SER_CANCEL_CHARGE"],
       shouldExclude: (val1, dependentFields) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZE" ||
-          dependentFields?.SCREENFLAG?.value === "CANCEL" ||
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return false;
         }
         return true;
+      },
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        return dependentFields?.COL_SER_CANCEL_CHARGE?.value;
       },
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
@@ -1082,8 +1231,8 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependent) => {
         if (
           dependent?.C_C_T_SP_C?.value === "T" &&
-          (dependent?.SCREENFLAG?.value === "REALIZE" ||
-            dependent?.SCREENFLAG?.value === "CANCEL" ||
+          (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+            dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
             dependent?.SCREENFLAG?.value === "REALIZECONF")
         ) {
           return false;
@@ -1099,8 +1248,8 @@ export const ddTransactionFormMetaData = {
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (
-            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+            dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
           ) {
             return true;
           } else return false;
@@ -1108,10 +1257,10 @@ export const ddTransactionFormMetaData = {
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
-            (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL" ||
-              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+            (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+              dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1125,8 +1274,8 @@ export const ddTransactionFormMetaData = {
         dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (
-            dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-            dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+            dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+            dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
           ) {
             return true;
           } else return false;
@@ -1134,10 +1283,10 @@ export const ddTransactionFormMetaData = {
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
-            (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL" ||
-              dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+            (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+              dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1155,16 +1304,17 @@ export const ddTransactionFormMetaData = {
           "SCREENFLAG",
         ],
         isReadOnly: (fieldValue, dependentFields, formState) => {
-          if (dependentFields?.SCREENFLAG?.value === "REALIZECONF") {
+          if (dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM") {
             return true;
           } else return false;
         },
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
-            (dependent?.SCREENFLAG?.value === "REALIZE" ||
-              dependent?.SCREENFLAG?.value === "CANCEL" ||
-              dependent?.SCREENFLAG?.value === "REALIZECONF")
+            (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+              dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
+              dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
           ) {
             return false;
           }
@@ -1200,11 +1350,6 @@ export const ddTransactionFormMetaData = {
             let postData = await GeneralAPI.getAccNoValidation(reqParameters);
 
             let btn99, returnVal;
-
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
 
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
@@ -1280,10 +1425,10 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependent) => {
         if (
           dependent?.C_C_T_SP_C?.value === "T" &&
-          (dependent?.SCREENFLAG?.value === "REALIZE" ||
-            dependent?.SCREENFLAG?.value === "CANCEL" ||
-            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-            dependent?.SCREENFLAG?.value === "REALIZECONF")
+          (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+            dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
+            dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
         ) {
           return false;
         }
@@ -1330,8 +1475,8 @@ export const ddTransactionFormMetaData = {
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (
-          dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-          dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
+          dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
         ) {
           return true;
         } else return false;
@@ -1339,10 +1484,10 @@ export const ddTransactionFormMetaData = {
       shouldExclude: (val1, dependent) => {
         if (
           dependent?.C_C_T_SP_C?.value === "C" &&
-          (dependent?.SCREENFLAG?.value === "REALIZE" ||
-            dependent?.SCREENFLAG?.value === "CANCEL" ||
-            dependent?.SCREENFLAG?.value === "CANCELCONFRM" ||
-            dependent?.SCREENFLAG?.value === "REALIZECONF")
+          (dependent?.SCREENFLAG?.value === "REALIZEENTRY" ||
+            dependent?.SCREENFLAG?.value === "CANCELENTRY" ||
+            dependent?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+            dependent?.SCREENFLAG?.value === "REALIZECONFIRM")
         ) {
           return false;
         }
@@ -1368,7 +1513,7 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "STOP_DATE",
+      name: "STOP_PAY_DATE",
       label: "stopDate",
       dependentFields: ["SCREENFLAG"],
       shouldExclude: (val1, dependentFields) => {
@@ -1398,10 +1543,15 @@ export const ddTransactionFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REASON_STOPPAYMENT",
+      name: "STOP_REMARKS",
       label: "Reason",
       type: "text",
       dependentFields: ["SCREENFLAG"],
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["stopRemarksRequired"] }],
+      },
       shouldExclude: (val1, dependentFields) => {
         if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
           return false;
@@ -1430,134 +1580,148 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "arrayField",
       },
-      name: "BRANCH_CD",
-      label: "branch",
-      isReadOnly: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      name: "PAYSLIP_MST_DTL",
+
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+
+      _fields: [
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "BRANCH_CD",
+          label: "branch",
+          isReadOnly: true,
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_TYPE",
+          isReadOnly: true,
+          label: "AccountType",
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_CD",
+          label: "AccountNo",
+          isReadOnly: true,
+          GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "REMARKS",
+          label: "narration",
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TRAN_BAL",
+          label: "balance",
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: { componentType: "textField" },
+          name: "C_C_T",
+          placeholder: "",
+          label: "byTrf",
+          fullWidth: true,
+          isReadOnly: true,
+          setFieldLabel: (dependenet, currVal) => {
+            return currVal === "C"
+              ? { label: "By Cash" }
+              : currVal === "T"
+              ? { label: "By Trf" }
+              : currVal === "R"
+              ? { label: "By Cr. Trf" }
+              : currVal === "G"
+              ? { label: "By CLG" }
+              : null;
+          },
+
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "CHEQUE_NO_DISP",
+          label: "chequeNo",
+          dependentFields: ["CCTFLAG"],
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "datePicker",
+          },
+          name: "CHEQUE_DATE",
+          label: "chequeDate",
+          isReadOnly: true,
+          format: "dd/MM/yyyy",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "AMOUNT",
+          label: "amount",
+          fullWidth: true,
+          isReadOnly: true,
+          type: "text",
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "COMMISSION",
+          label: "Comm.",
+          fullWidth: true,
+          isReadOnly: true,
+          type: "text",
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "SERVICE_CHARGE",
+          label: "GST",
+          isReadOnly: true,
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_NM",
+          label: "accountName",
+          isReadOnly: true,
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 6, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
+        },
+      ],
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_TYPE",
-      isReadOnly: true,
-      label: "AccountType",
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "AccountNo",
-      isReadOnly: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REMARKS",
-      label: "narration",
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "TRAN_BAL",
-      label: "balance",
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: { componentType: "textField" },
-      name: "C_C_T",
-      placeholder: "",
-      label: "byTrf",
-      fullWidth: true,
-      setFieldLabel: (dependenet, currVal) => {
-        return currVal === "C"
-          ? "By Cash"
-          : currVal === "T"
-          ? "By Trf"
-          : currVal === "R"
-          ? "By Cr. Trf"
-          : currVal === "G"
-          ? "By CLG"
-          : null;
-      },
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHEQUE_NO_DISP",
-      label: "chequeNo",
-      dependentFields: ["CCTFLAG"],
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "CHEQUE_DATE",
-      label: "chequeDate",
-      isReadOnly: true,
-      format: "dd/MM/yyyy",
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "AMOUNT",
-      label: "amount",
-      fullWidth: true,
-      isReadOnly: true,
-      type: "text",
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "COMMISSION",
-      label: "Comm.",
-      fullWidth: true,
-      isReadOnly: true,
-      type: "text",
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "SERVICE_CHARGE",
-      label: "GST",
-      isReadOnly: true,
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_NM",
-      label: "accountName",
-      isReadOnly: true,
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
-    },
+
     {
       render: {
         componentType: "divider",
@@ -1575,27 +1739,71 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "divider",
       },
-      name: "REASON_CD",
-      label: "Reason",
-      isFieldFocused: true,
-      required: true,
+      name: "DEVIDER9",
+      label: "Cancel/Return/Revalidate Reason",
       dependentFields: ["SCREENFLAG"],
-      options: (dependentValue, formState, _, authState) => {
-        return getStopPaymentReasonData({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-        });
-      },
-      _optionsKey: "getStopPaymentReason",
-      GridProps: { xs: 3, sm: 4, md: 4, lg: 4, xl: 4 },
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
+        if (
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
+        ) {
           return false;
         }
         return true;
       },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+
+    {
+      render: {
+        componentType: "arrayField",
+      },
+      name: "CANCEL_REASON",
+      __EDIT__: {
+        fixedRows: true,
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
+      dependentFields: ["SCREENFLAG"],
+      shouldExclude: (val1, dependentFields) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "STOPPAYMENT" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM"
+        ) {
+          return false;
+        }
+        return true;
+      },
+      _fields: [
+        {
+          render: {
+            componentType: "autocomplete",
+          },
+          name: "REASON_CD",
+          label: "Reason",
+          isFieldFocused: true,
+          dependentFields: ["SCREENFLAG"],
+          options: (dependentValue, formState, _, authState) => {
+            return getStopPaymentReasonData({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: authState?.user?.branchCode,
+            });
+          },
+          _optionsKey: "getStopPaymentReason",
+          isReadOnly: (fieldValue, dependentFields, formState) => {
+            if (
+              dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependentFields?.SCREENFLAG?.value === "STOPPAYMENT"
+            ) {
+              return true;
+            } else return false;
+          },
+
+          GridProps: { xs: 6, sm: 6, md: 7, lg: 7, xl: 7 },
+        },
+      ],
     },
   ],
 };
