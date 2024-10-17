@@ -399,7 +399,6 @@ export const StopPayEntryMetadata = {
         authState,
         dependentValue
       ) => {
-        console.log("<<<authState", authState);
         if (
           field?.value &&
           dependentValue?.BRANCH_CD?.value &&
@@ -739,19 +738,6 @@ export const StopPayEntryMetadata = {
       },
       name: "CHEQUE_DT",
       label: "ChequeDate",
-      setValueOnDependentFieldsChange(depe) {
-        console.log("<<<datevhb", depe);
-
-        // return apiReqPara?.HDN_CHARGE_AMT;
-      },
-      inputProps: {
-        onInput: (event) => {
-          console.log("<<<evet", event);
-          if (event.target.value.length > 100) {
-            return;
-          }
-        },
-      },
       GridProps: {
         xs: 12,
         md: 2,
