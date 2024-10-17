@@ -542,7 +542,7 @@ export const AccountCloseProcess = () => {
         ACCT_TYPE: data?.ACCT_TYPE ?? "",
         ACCT_CD: data?.ACCT_CD ?? "",
         TRAN_CD: accountCloseRef.current?.TRAN_CD ?? "",
-        PAY_SLIP_NEFT_DTL: [...data?.BENEFIACCTDTL] ?? "",
+        PAY_SLIP_NEFT_DTL: [...data?.BENEFIACCTDTL],
         COMM_TYPE_CD: accountCloseRef.current?.TYPE_CD ?? "",
         TOT_DD_NEFT_AMT: data?.PAYMENT_AMOUNT ?? "",
         PAY_FOR: "",
@@ -626,14 +626,7 @@ export const AccountCloseProcess = () => {
         justifyContent: "space-between",
       }}
     >
-      <h2>
-        {utilFunction.getDynamicLabel(
-          currentPath,
-          authState?.menulistdata,
-          true
-        )}
-        :
-      </h2>
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
       <GradientButton
         onClick={handleRetrieve}
         color={"primary"}
