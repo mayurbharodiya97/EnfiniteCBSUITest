@@ -2873,6 +2873,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
     packageName: "",
   },
+  GETFDDETAILREPORT: {
+    url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

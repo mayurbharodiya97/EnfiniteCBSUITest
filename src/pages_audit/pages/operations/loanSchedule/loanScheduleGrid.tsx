@@ -131,11 +131,6 @@ export const LoanScheduleGrid = () => {
   const loanScheduleHeaderData = useMutation(API.getLoanScheduleHeaderData, {
     onSuccess: (data) => {
       setSrCd(data?.[0]?.SR_CD);
-      // const updateData = data.map((item) => ({
-      //   ...item,
-      //   DISBURSEMENT_AMT: Number(item?.DISBURSEMENT_AMT ?? 0).toFixed(2),
-      //   INST_RS: Number(item?.INST_RS ?? 0).toFixed(2),
-      // }));
       setHeaderGridData(data);
       headerDataRef.current = data;
     },
@@ -233,21 +228,7 @@ export const LoanScheduleGrid = () => {
     loanScheduleHeaderData.mutate(retrieveData);
   };
 
-  const handleRetrieveFormClose = () => {
-    navigate(".");
-  };
-
   const handleDialogClose = useCallback(() => {
-    LoanScheduleGridMetaData.gridConfig.hideHeader = false;
-    LoanScheduleGridMetaData.gridConfig.containerHeight = {
-      min: "28vh",
-      max: "28vh",
-    };
-    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
-      min: "45vh",
-      max: "45vh",
-    };
-    LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
     navigate(".");
   }, [navigate]);
 
@@ -296,7 +277,6 @@ export const LoanScheduleGrid = () => {
         defaultSelectedRowId={
           headerGridData?.length > 0 ? headerGridData?.[0]?.SR_CD : ""
         }
-        // hideActionBar={true}
       />
       {isError && (
         <Alert
@@ -343,6 +323,7 @@ export const LoanScheduleGrid = () => {
               isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               handleFormClose={handleFormClose}
+              formFlag={"RESCHEDULE"}
             />
           }
         />
@@ -350,7 +331,7 @@ export const LoanScheduleGrid = () => {
           path="retrieve/*"
           element={
             <RetrievalFormWrapper
-              closeDialog={handleRetrieveFormClose}
+              closeDialog={handleDialogClose}
               retrievalParaValues={selectedDatas}
             />
           }

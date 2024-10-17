@@ -113,9 +113,10 @@ export const PositivePayEntryGrid = () => {
         setIsDataRetrieved(true);
       } else {
         MessageBox({
-          messageTitle: "Alert",
+          messageTitle: "Information",
           message: "NoRecordFound",
           buttonNames: ["Ok"],
+          icon: "INFO",
         });
         handleDialogClose();
       }

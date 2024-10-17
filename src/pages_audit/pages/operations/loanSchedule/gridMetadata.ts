@@ -17,11 +17,12 @@ export const LoanScheduleGridMetaData: GridMetaDataType = {
     defaultPageSize: 20,
     containerHeight: {
       min: "28vh",
-      max: "28vh",
+      max: "36vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
     hideFooter: true,
+    hideActionBar: true,
   },
   columns: [
     {
