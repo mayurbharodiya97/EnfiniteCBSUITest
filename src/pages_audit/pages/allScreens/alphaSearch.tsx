@@ -36,9 +36,18 @@ export const LetterSearch: FC<LetterSearchTypes> = ({
   }, [dataList]);
 
   return (
-    <Grid container sx={{ background: "var(--theme-color4)" }}>
+    <Grid
+      container
+      sx={{
+        background: "var(--theme-color4)",
+        flexDirection: "column",
+        width: "auto",
+        padding: "3px",
+        alignItems: "flex-start",
+      }}
+    >
       {letterList.map((letter) => (
-        <Grid item>
+        <Grid item key={letter}>
           <Box
             onClick={() => {
               const currData = dataList;
@@ -55,10 +64,10 @@ export const LetterSearch: FC<LetterSearchTypes> = ({
                   letter: letter,
                 });
               }
-              const filterdData = currData.filter(
+              const filteredData = currData.filter(
                 (row: any) => row?.DOC_TITLE?.at(0)?.toUpperCase() === letter
               );
-              setScreens(filterdData);
+              setScreens(filteredData);
             }}
             sx={{
               width: "25px",
@@ -66,7 +75,7 @@ export const LetterSearch: FC<LetterSearchTypes> = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              mt: "2px",
+              mb: "5px", // Add margin-bottom for spacing between letters
               boxShadow: "0 0 0 0.2px var(--theme-color3)",
               backgroundColor:
                 isActive.active && isActive.letter === letter
@@ -77,7 +86,6 @@ export const LetterSearch: FC<LetterSearchTypes> = ({
                   ? "var(--theme-color4)"
                   : "var(--theme-color3)",
               cursor: "pointer",
-              mr: "5px",
               borderRadius: "3px",
               transition: "all 0.3s",
               "&:hover": {

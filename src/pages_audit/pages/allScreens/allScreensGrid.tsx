@@ -26,9 +26,9 @@ import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
-// import { LetterSearch } from "./letterSearch";
 import { enqueueSnackbar } from "notistack";
 import { LetterSearch } from "./alphaSearch";
+
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   title: {
     flex: "1 1 100%",
@@ -53,10 +53,8 @@ const QuickAccessTable = () => {
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [activeButton, setActiveButton] = useState("ALL_SCREENS");
-
   const rowDataRef = useRef<any>(undefined);
   const dialogTitle = useRef("Add to Favourite(s) ?");
-
   const [isOpenSave, setIsOpenSave] = useState(false);
 
   const headerClasses = useHeaderStyles();
@@ -101,7 +99,7 @@ const QuickAccessTable = () => {
     },
     onError: (error: any) => {
       setIsOpenSave(false);
-      enqueueSnackbar(error?.error_msg ?? "Something went to wrong...", {
+      enqueueSnackbar(error?.error_msg ?? "Something went wrong...", {
         variant: "error",
       });
     },
@@ -138,13 +136,13 @@ const QuickAccessTable = () => {
     if (e.target.value === "") {
       setApiData(filteredData);
     } else {
-      const filtredValue = filteredData.filter(
+      const filteredValue = filteredData.filter(
         ({ DOC_NM, USER_DEFINE_CD, DOC_CD }) =>
           [DOC_NM, USER_DEFINE_CD, DOC_CD].some((info) =>
             info.toLowerCase().includes(e.target.value.toLowerCase())
           )
       );
-      setApiData(filtredValue);
+      setApiData(filteredValue);
     }
   };
 
@@ -218,7 +216,7 @@ const QuickAccessTable = () => {
           display: "flex",
           alignItems: "center",
           padding: "3px 10px",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
           background: "var(--theme-color5)",
           borderTopLeftRadius: "5px",
           borderTopRightRadius: "5px",
@@ -232,21 +230,14 @@ const QuickAccessTable = () => {
         >
           {t("All Screens")}
         </Typography>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <div>
-            {matches && (
-              <SearchBar onChange={handleSearch} placeholder={"Search..."} />
-            )}
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {matches && (
+            <SearchBar onChange={handleSearch} placeholder={"Search..."} />
+          )}
           <div style={{ display: "flex", gap: 5 }}>
             {actionButtons.map((button) => (
               <GradientButton
+                key={button.onClickValue}
                 onClick={() => handleButtonClick(button.onClickValue)}
                 textColor={button.color}
                 style={button.styles}
@@ -262,42 +253,44 @@ const QuickAccessTable = () => {
         style={{
           padding: "3px 10px",
           background: "var(--theme-color4)",
+          display: "flex",
+          flexDirection: "row",
         }}
       >
         <LetterSearch
           dataList={isLoading || isFetching ? [] : data}
           setScreens={setApiData}
         />
-      </div>
-      <GridWrapper
-        key={`quickAccessGrid-${activeButton}`}
-        finalMetaData={
-          activeButton === "FAVOURITES"
-            ? FavScreensGridMetaData
-            : (AllScreensGridMetaData as GridMetaDataType)
-        }
-        data={apiData ?? []}
-        setData={setApiData}
-        actions={actions}
-        setAction={setCurrentAction}
-        controlsAtBottom={false}
-        headerToolbarStyle={{
-          backgroundColor: "inherit",
-          color: "black",
-        }}
-        loading={isLoading || isFetching}
-        refetchData={() => refetch()}
-        onClickActionEvent={(...args) => {
-          rowDataRef.current = args?.[2] ?? {};
-          if (rowDataRef.current?.FAVOURITE) {
-            dialogTitle.current = "Remove from Favourite(s) ?";
-          } else {
-            dialogTitle.current = "Add to Favourite(s) ?";
-          }
-          setIsOpenSave(true);
-        }}
-      />
 
+        <GridWrapper
+          key={`quickAccessGrid-${activeButton}`}
+          finalMetaData={
+            activeButton === "FAVOURITES"
+              ? FavScreensGridMetaData
+              : (AllScreensGridMetaData as GridMetaDataType)
+          }
+          data={apiData ?? []}
+          setData={setApiData}
+          actions={actions}
+          setAction={setCurrentAction}
+          controlsAtBottom={false}
+          headerToolbarStyle={{
+            backgroundColor: "inherit",
+            color: "black",
+          }}
+          loading={isLoading || isFetching}
+          refetchData={() => refetch()}
+          onClickActionEvent={(...args) => {
+            rowDataRef.current = args?.[2] ?? {};
+            if (rowDataRef.current?.FAVOURITE) {
+              dialogTitle.current = "Remove from Favourite(s) ?";
+            } else {
+              dialogTitle.current = "Add to Favourite(s) ?";
+            }
+            setIsOpenSave(true);
+          }}
+        />
+      </div>
       {isOpenSave ? (
         <PopupMessageAPIWrapper
           key={"add-fav"}
