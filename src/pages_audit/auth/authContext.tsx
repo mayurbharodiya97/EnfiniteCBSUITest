@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }) => {
   );
   const logout = useCallback(() => {
     let result = localStorage.getItem("authDetails");
-    if (result !== null) {
+    if (result !== null && Boolean(result)) {
       let localStorageAuthState: any = JSON.parse(result);
       if (
         Boolean(localStorageAuthState?.isLoggedIn) &&
@@ -236,12 +236,12 @@ export const AuthProvider = ({ children }) => {
     localStorageKeys.forEach(async (keyNm) => {
       let result = localStorage.getItem(keyNm);
       if (result === null) {
-        //logout();
+        logout();
       } else {
         let checksumdata: any;
         if (keyNm === "specialChar") {
           checksumdata = localStorage.getItem("charchecksum");
-        } else {
+        } else if (keyNm === "authDetails") {
           // localStorage.getItem("tokenchecksum");
           checksumdata = localStorage.getItem("tokenchecksum");
         }
@@ -253,9 +253,9 @@ export const AuthProvider = ({ children }) => {
             clearTimeout(timeoutLogout);
           }
           timeoutLogout = setTimeout(() => {
+            console.log("logout-due-to localStorage change");
             logout();
-          }, 500);
-          return;
+          }, 1500);
         }
       }
     });
@@ -294,6 +294,7 @@ export const AuthProvider = ({ children }) => {
       //   setAuthenticating(false);
       // }
     } else {
+      console.log("logout-due-to localStorage-authDetails not found");
       logout();
       setAuthenticating(false);
     }

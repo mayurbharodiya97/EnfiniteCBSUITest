@@ -94,7 +94,21 @@ export const getPendingAcct = async ({ COMP_CD, BRANCH_CD, REQ_FLAG }) => {
       REQ_FLAG: REQ_FLAG,
     });
   if (status === "0") {
-    return data;
+    let responseData = data;
+    if (REQ_FLAG === "A") {
+      responseData = data?.map((row) => {
+        if (row?.CONFIRMED === "Y") {
+          return { ...row, _rowColor: "rgb(9 132 3 / 51%)" };
+        } else if (row?.CONFIRMED === "R") {
+          return { ...row, _rowColor: "rgb(152 59 70 / 61%)" };
+        } else {
+          return { ...row };
+        }
+      });
+      return responseData;
+    } else {
+      return data;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -689,6 +703,32 @@ export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+// for relative dtl marital status field only
+export const getMaritalStatusOP = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETMARITALSTATUSDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DISPLAY_VALUE, DATA_VALUE, ...other }) => {
+          return {
+            ...other,
+            DISPLAY_VALUE: DISPLAY_VALUE,
+            DATA_VALUE: DATA_VALUE,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
+    }
+    console.log("fiuwheifhweihfwefwef", data);
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 // retrieving document medatory docs in grid for new entry
 export const getKYCDocumentGridData = async ({
   COMP_CD,
@@ -818,6 +858,7 @@ export const accountSave = async (reqData) => {
     ACCT_CD,
     COMP_CD,
     formData,
+    OP_DATE,
   } = reqData;
 
   // console.log("wefhiwheifhweihf", formData)
@@ -844,7 +885,35 @@ export const accountSave = async (reqData) => {
   if (Object.keys(formData)?.length > 0) {
     Object.keys(formData).forEach((tab: string) => {
       if (tab === "MAIN_DETAIL") {
-        payload["MAIN_DETAIL"] = formData["MAIN_DETAIL"];
+        payload["MAIN_DETAIL"] = {
+          ...formData["MAIN_DETAIL"],
+          SALARIED: formData["MAIN_DETAIL"]?.SALARIED === true ? "Y" : "N",
+          HANDICAP_FLAG:
+            formData["MAIN_DETAIL"]?.HANDICAP_FLAG === true ? "Y" : "N",
+          REG: formData["MAIN_DETAIL"]?.REG === true ? "Y" : "N",
+          INT_SKIP_FLAG:
+            formData["MAIN_DETAIL"]?.INT_SKIP_FLAG === true ? "Y" : "N",
+          OP_DATE: OP_DATE,
+        };
+      }
+      if (tab === "MOBILE_REG_DTL") {
+        let mobileRegDtl = formData["MOBILE_REG_DTL"]?.map((row) => {
+          return {
+            ...row,
+            MOBILE_REG_FLAG: row?.MOBILE_REG_FLAG === true ? "Y" : "N",
+          };
+        });
+        payload["MOBILE_REG_DTL"] = [...mobileRegDtl];
+      }
+      if (tab === "RELATIVE_DTL") {
+        let relativeDtl = formData["RELATIVE_DTL"]?.map((row) => {
+          return {
+            ...row,
+            SALARIED: row?.SALARIED === true ? "Y" : "N",
+            SELF_EMPLOYED: row?.SELF_EMPLOYED === true ? "Y" : "N",
+          };
+        });
+        payload["RELATIVE_DTL"] = [...relativeDtl];
       }
       if (jointTabs.includes(tab)) {
         joint_account_dtl = [...joint_account_dtl, ...formData[tab]];
@@ -861,7 +930,10 @@ export const accountSave = async (reqData) => {
         }
       }
     });
-    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl;
+    payload["JOINT_ACCOUNT_DTL"] = joint_account_dtl?.map((row) => ({
+      ...row,
+      IsNewRow: IsNewRow,
+    }));
     payload["PHOTO_DTL"] = [
       {
         IsNewRow: true,
@@ -902,5 +974,58 @@ export const accountSave = async (reqData) => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  }
+};
+
+export const accountModify = async (reqData) => {
+  // console.log("account-modify asdasdasd", reqData)
+  const {
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID,
+    ACCT_TYPE,
+    ACCT_CD,
+    COMP_CD,
+    formData,
+    updated_tab_format,
+    OP_DATE,
+  } = reqData;
+  let payload = {};
+
+  const ENTRY_TYPE = "";
+  payload = {
+    ...payload,
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID: "",
+    ACCT_TYPE,
+    ACCT_CD: "",
+    COMP_CD,
+    ENTRY_TYPE: "",
+  };
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEACCOUNTDATA", payload);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const confirmAccount = async ({ REQUEST_CD, REMARKS, CONFIRMED }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CONFIRMACCTDATA", {
+      REQUEST_CD: REQUEST_CD,
+      REMARKS: REMARKS,
+      CONFIRMED: CONFIRMED,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };

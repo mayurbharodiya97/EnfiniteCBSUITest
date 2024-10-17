@@ -68,19 +68,10 @@ export const GuarantorjointFormMetaData = {
     },
     {
       render: {
-        componentType: "typography",
+        componentType: "textField",
       },
-      name: "GUARANTOR",
-      label: "GUARANTOR",
-      TypographyProps: {
-        variant: "subtitle2",
-        style: {
-          marginTop: "33px",
-          fontSize: "14px",
-          width: "100%",
-          textAlign: "center",
-        },
-      },
+      name: "JOINT_DISC",
+      label: "Type",
       fullWidth: true,
       GridProps: { xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
@@ -206,7 +197,7 @@ export const GuarantorjointFormMetaData = {
       name: "CRDT_WORTHINESS_ignoreField",
       label: "Credit Worthiness",
       type: "text",
-      GridProps: { lg: 1, xl: 1 },
+      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
     {

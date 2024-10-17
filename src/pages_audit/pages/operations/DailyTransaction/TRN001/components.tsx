@@ -133,6 +133,7 @@ export const CustomeAutocomplete = ({
             style={{ width }}
             onBlur={onBlur}
             onKeyDown={onKeyDown}
+            variant="outlined"
             autoFocus={autoFocus}
             InputProps={{
               ...params?.InputProps,
@@ -193,6 +194,7 @@ export const CustomAmountField = ({
         fullWidth={true}
         id="txtRight"
         size={size}
+        variant="outlined"
         disabled={disabled}
         onChange={onChange}
         onBlur={onBlur}
@@ -267,6 +269,7 @@ export const CustomAmountField = ({
 
 interface CustomTextFieldProps {
   value: any;
+  onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   size?: "small" | "medium";
   type?: "text" | "number" | "password" | "email";
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -285,6 +288,7 @@ export const CustomTextField = ({
   type,
   onChange,
   disabled,
+  onKeyUp,
   onBlur,
   loadingState,
   inputRef,
@@ -300,8 +304,10 @@ export const CustomTextField = ({
         size={size}
         type={type}
         onChange={onChange}
+        onKeyUp={onKeyUp}
         disabled={disabled}
         onBlur={onBlur}
+        variant="outlined"
         id={id}
         onFocus={(event) => {
           const input = event.target;
@@ -335,6 +341,7 @@ export const CustomTextField = ({
 
 export const PaperComponent = (props: PaperProps) => {
   return (
+    //@ts-ignore
     <Draggable
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"]'}

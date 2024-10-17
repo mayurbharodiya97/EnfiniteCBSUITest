@@ -98,6 +98,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       alignment: "right",
+      isDisplayTotal: true,
     },
 
     {

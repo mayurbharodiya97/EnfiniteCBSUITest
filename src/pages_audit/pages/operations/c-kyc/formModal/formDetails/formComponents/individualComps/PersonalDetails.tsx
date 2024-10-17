@@ -197,7 +197,7 @@ const PersonalDetails = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -311,8 +311,8 @@ const PersonalDetails = () => {
       isLoading: true,
     });
     const refs = [
-      PDFormRef.current.handleSubmitError(e, "save", false),
-      PODFormRef.current.handleSubmitError(e, "save", false),
+      PDFormRef.current.handleSubmit(e, "save", false),
+      PODFormRef.current.handleSubmit(e, "save", false),
     ];
     handleSavectx(e, refs);
   };

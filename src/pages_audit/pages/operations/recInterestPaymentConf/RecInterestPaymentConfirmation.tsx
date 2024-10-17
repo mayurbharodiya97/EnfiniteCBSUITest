@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { fetchFDPaymentConfAcct } from "../FDInterestPaymentConf/api";
 import { updateRecInterestPaymentEntry } from "../recInterestPayment/api";
-import { RecInterestPaymentMetaData } from "../recInterestPayment/RecInterestPaymentMetaData";
+import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
 import * as API from "./api";
 import {
   ActionTypes,
@@ -18,10 +18,12 @@ import {
   MetaDataType,
   queryClient,
   SubmitFnType,
+  Transition,
   usePopupContext,
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { FdInterestPaymentConfmGridMetaData } from "../FDInterestPaymentConf/FdInterestPaymentConfmMetaData";
+import { enqueueSnackbar } from "notistack";
 
 const actions: ActionTypes[] = [
   {
@@ -60,11 +62,6 @@ export const RecInterestPaymentConf = () => {
         setRecPaymentInstructions(data);
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -75,22 +72,14 @@ export const RecInterestPaymentConf = () => {
     updateRecInterestPaymentEntry,
     {
       onSuccess: async (data) => {
-        const btnName = await MessageBox({
-          messageTitle: "Success",
-          message: "RecordReject",
-          buttonNames: ["Ok"],
-          icon: "SUCCESS",
+        enqueueSnackbar(t("RecordRemovedMsg"), {
+          variant: "success",
         });
         CloseMessageBox();
         handleFDDetailClose();
         refetch();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -101,22 +90,15 @@ export const RecInterestPaymentConf = () => {
     API.doRecPaymentInstruEntryConfm,
     {
       onSuccess: async (...data) => {
-        const btnName = await MessageBox({
-          messageTitle: "Success",
-          message: "confirmMsg",
-          buttonNames: ["Ok"],
-          icon: "SUCCESS",
+        enqueueSnackbar(t("confirmMsg"), {
+          variant: "success",
         });
+
         CloseMessageBox();
         handleFDDetailClose();
         refetch();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -217,7 +199,7 @@ export const RecInterestPaymentConf = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail ?? ""}
           color="error"
         />
@@ -245,52 +227,77 @@ export const RecInterestPaymentConf = () => {
         }}
         maxWidth="lg"
       >
-        {getFDPaymentInstruDetail.isLoading ? (
+        {getFDPaymentInstruDetail?.isLoading ? (
           <LoaderPaperComponent />
         ) : (
-          <FormWrapper
-            key={"RecInterestPaymentConf" + recPaymentInstructions?.length}
-            metaData={RecInterestPaymentMetaData as MetaDataType}
-            formStyle={{
-              background: "white",
-            }}
-            onSubmitHandler={onSubmitHandler}
-            initialValues={{
-              ...recPaymentInstructions?.[0],
-              ACCT_NAME: rowData?.[0]?.data?.ACCT_NM,
-            }}
-            displayMode={"view"}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <Box display="flex" gap="8px">
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Confirm");
-                    }}
-                    disabled={rowData?.[0]?.data?.ALLOW_CONFIRM === "N"}
-                    color={"primary"}
-                  >
-                    {t("Confirm")}
-                  </GradientButton>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Reject");
-                    }}
-                    color={"primary"}
-                  >
-                    {t("Reject")}
-                  </GradientButton>
-                  <GradientButton
-                    onClick={handleFDDetailClose}
-                    color={"primary"}
-                  >
-                    {t("Close")}
-                  </GradientButton>
-                </Box>
-              </>
+          <>
+            {(doRecPaymentInstruEntryConfm?.error ||
+              deleteFDInterestPaymentEntry?.error ||
+              getFDPaymentInstruDetail?.error) && (
+              <Alert
+                severity="error"
+                errorMsg={
+                  doRecPaymentInstruEntryConfm?.error?.error_msg ||
+                  deleteFDInterestPaymentEntry?.error?.error_msg ||
+                  getFDPaymentInstruDetail?.error?.error_msg ||
+                  t("Somethingwenttowrong")
+                }
+                errorDetail={
+                  doRecPaymentInstruEntryConfm?.error?.error_detail ||
+                  deleteFDInterestPaymentEntry?.error?.error_detail ||
+                  getFDPaymentInstruDetail?.error?.error_detail ||
+                  ""
+                }
+                color="error"
+              />
             )}
-          </FormWrapper>
+            <FormWrapper
+              key={"RecInterestPaymentConf" + recPaymentInstructions?.length}
+              metaData={FdInterestPaymentFormMetaData as MetaDataType}
+              formStyle={{
+                background: "white",
+              }}
+              onSubmitHandler={onSubmitHandler}
+              initialValues={{
+                ...recPaymentInstructions?.[0],
+                ACCT_NAME: rowData?.[0]?.data?.ACCT_NM,
+              }}
+              displayMode={"view"}
+              formState={{
+                SCREEN_REF: "MST/940",
+              }}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <Box display="flex" gap={2}>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Confirm");
+                      }}
+                      disabled={rowData?.[0]?.data?.ALLOW_CONFIRM === "N"}
+                      color={"primary"}
+                    >
+                      {t("Confirm")}
+                    </GradientButton>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Reject");
+                      }}
+                      color={"primary"}
+                    >
+                      {t("Reject")}
+                    </GradientButton>
+                    <GradientButton
+                      onClick={handleFDDetailClose}
+                      color={"primary"}
+                    >
+                      {t("Close")}
+                    </GradientButton>
+                  </Box>
+                </>
+              )}
+            </FormWrapper>
+          </>
         )}
       </Dialog>
     </Fragment>

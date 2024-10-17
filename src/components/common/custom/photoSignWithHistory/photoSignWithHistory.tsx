@@ -38,6 +38,7 @@ import {
   utilFunction,
   queryClient,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -99,7 +100,8 @@ const PhotoSignWithHistory = ({
   const [showAll, setShowAll] = useState(false);
   const [isImgPhotoOpen, setIsImagePhotoOpen] = useState<any>(false);
   const [rotateImg, setRotateImg] = useState<number>(0);
-  const [selectedImageUrl, setSelectedImageUrl] = useState("");
+  const [selectedImageUrl, setSelectedImageUrl] = useState<any>("");
+  const [AcCustLevel, setAcCustLevel] = useState<any>("");
   // latest photo/sign data
   const {
     data: LatestPhotoSignData,
@@ -108,7 +110,7 @@ const PhotoSignWithHistory = ({
     isFetching: isLatestDtlFetching,
     refetch: LatestDtlRefetch,
     error: LatestDtlError,
-  } = useQuery<any, any>(["getCustAccountLatestDtl", data], () =>
+  } = useQuery<any, any>(["getCustAccountLatestDtl", data, AcCustLevel], () =>
     GeneralAPI.getCustAccountLatestDtl({
       COMP_CD: data?.COMP_CD ?? "",
       BRANCH_CD: data?.BRANCH_CD ?? "",
@@ -116,6 +118,7 @@ const PhotoSignWithHistory = ({
       ACCT_CD: data?.ACCT_CD ?? "",
       AMOUNT: data?.AMOUNT ?? "",
       SCREEN_REF: screenRef,
+      AC_CUST_LEVEL: AcCustLevel ?? "",
     })
   );
 
@@ -135,7 +138,7 @@ const PhotoSignWithHistory = ({
   });
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getCustAccountLatestDtl", data]);
+      queryClient.removeQueries(["getCustAccountLatestDtl", data, AcCustLevel]);
     };
   }, []);
 
@@ -194,42 +197,15 @@ const PhotoSignWithHistory = ({
                   variant={"h4"}
                   component="div"
                 >
-                  {LatestPhotoSignData[0]?.AC_CUST_LEVEL === "A"
-                    ? t("AccountLevelPhotoSignature") +
-                      "" +
-                      t("ACNo") +
-                      ".:".concat(
-                        data?.COMP_CD,
-                        "-",
-                        data?.BRANCH_CD,
-                        "-",
-                        data?.ACCT_TYPE,
-                        "-",
-                        data?.ACCT_CD,
-                        t("Account_Name") + ":",
-                        data?.ACCT_NM,
-                        " ",
-                        t("ACMode") + ":",
-                        data?.ACCT_MODE
-                      )
-                    : t("CustomerLevelPhotoSignature") +
-                      "" +
-                      t("ACNo") +
-                      ".:".concat(
-                        data?.COMP_CD,
-                        "-",
-                        data?.BRANCH_CD,
-                        "-",
-                        data?.ACCT_TYPE,
-                        "-",
-                        data?.ACCT_CD,
-                        t("Account_Name") + ":",
-                        data?.ACCT_NM,
-                        " ",
-                        t("ACMode") + ":",
-                        data?.ACCT_MODE
-                      )}
+                  {LatestPhotoSignData?.[0]?.TITLE || ""}
                 </Typography>
+                <GradientButton
+                  onClick={() => {
+                    setAcCustLevel(LatestPhotoSignData[0]?.AC_CUST_LEVEL);
+                  }}
+                >
+                  {LatestPhotoSignData[0]?.BT_NAME || ""}
+                </GradientButton>
                 <GradientButton
                   onClick={() => {
                     showAll ? setShowAll(false) : setShowAll(true);
@@ -443,7 +419,12 @@ const PhotoSignWithHistory = ({
                                     className={headerClasses.tableCell}
                                   >
                                     <Typography variant="body2">
-                                      {item?.MODIFIED_DATE}
+                                      {item?.MODIFIED_DATE
+                                        ? format(
+                                            new Date(item.MODIFIED_DATE),
+                                            "dd/MMM/yyyy"
+                                          )
+                                        : ""}
                                     </Typography>
                                   </TableCell>
                                 </TableRow>

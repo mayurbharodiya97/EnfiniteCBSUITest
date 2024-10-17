@@ -214,7 +214,7 @@ const EntityDetails = () => {
       setFormStatus((old) => [...old, true]);
       // handleColTabChangectx(state?.colTabValuectx+1)
       // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
       // setIsNextLoading(false)
     } else {
       handleStepStatusctx({
@@ -241,7 +241,7 @@ const EntityDetails = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [PDFormRef.current.handleSubmitError(e, "save", false)];
+    const refs = [PDFormRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 

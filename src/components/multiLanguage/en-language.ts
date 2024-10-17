@@ -91,8 +91,31 @@ export const en_language_data = {
   PayableAt: "Payable At",
   EnterPayableAt: "Enter Payable At",
   PayslipAndDemandDraft: "Payslip & Demand Draft",
+  PayslipDDTransaction: "Payslip/DD Transaction",
   SelectBillType: "Select Bill Type",
   InfavourOf: "Infavour Of",
+  reValidDate: "Re-valid Date",
+  reValidBy: "Re-valid By",
+  colComm: "Col.Comm.",
+  colGst: "Col. GST.",
+  transferAccNo: "Trf. A/c No",
+  transferBranchCd: "Trf. A/c Branch",
+  transferAcctType: "Trf. A/c Type",
+  transfeAcName: "Trf. A/c Name",
+  realizeDate: "Realize Date",
+  bankCodeName: "Bank Code/Name",
+  documentDate: "Document Date",
+  payslipIsuueBranch: "Payslip Issued From",
+  Revalidate: "Revalidate",
+  selectTransactionMode: "Select Transaction Mode (Cash,Transfer,Clearing)",
+  RevalidateConfPending: "Revalidate Conf. Pending",
+  authoeizationFailed: "You are not authorized",
+  payslipAlreadyConfirmed: "PAYSLIP_NO' is already Confirmed",
+  payslipRealizeconfirmRestrictNSG:
+    "Are you sure to confirm 'Realize Payslip/DD Operation :-",
+  stopPayment: "Stop Payment",
+  realseStoppedPayslip: "Release Stopped Payslip",
+  cancelReturnPending: "Cancel//Return Pending",
   SelectInfavourOf: "Select Infavour Of",
   InfavourOfRequired: "Infavour Of is required",
   EnterInstructionRemarks: "Enter Instruction Remarks",
@@ -816,6 +839,7 @@ export const en_language_data = {
   Address: "Address",
   EnterEmailID: "Enter Email ID",
   InvalidEmailID: "Invalid Email ID.",
+  MobileNumberValidation: " Mobile Number should be of minimum 10 digit.",
 
   // Clearing bank master
   ClearingBankMaster: "Clearing Bank Master",
@@ -858,11 +882,15 @@ export const en_language_data = {
   },
 
   // common
-
+  newmode: "new mode",
+  editmode: "edit mode",
+  viewmode: "view mode",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
   AccountType: "Account Type",
+  stopDate: "Stop Date",
+  realeaseDate: "Realease Date",
   AccountTypeReqired: "Account Type is required",
   AccountTypePlaceHolder: "Select account type",
   AccountNumber: "Account Code",
@@ -880,6 +908,7 @@ export const en_language_data = {
   Yes: "Yes",
   No: "No",
   ValidationFailed: "Validation Failed",
+  tokenNumberValidationMsg: "Enter Value for Token No.",
   RiskCategoryAlert: "Risk Category Alert",
   HNIAlert: "HNI Alert",
   DataConfirmMessage: "Data has been successfully confirmed",
@@ -923,7 +952,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You Want to delete this row?",
+  DoYouWantDeleteRow: "Do You want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -962,7 +991,7 @@ export const en_language_data = {
   Apply: "Apply",
   Clear: "Clear",
   AppliedFilters: "Applied Filters",
-  TotalNoofRecords: "Total No. of Records",
+  TotalNoofRecords: "Total No. of ",
   RetrievalParameters: "Retrieval Parameters",
   Searched: "Search",
   Showexportoptions: "Show export options",
@@ -996,6 +1025,9 @@ export const en_language_data = {
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
   Disagree: "Disagree",
   Agree: "Agree",
+  RecordInsertedMsg: "Record Inserted Successfully.",
+  RecordUpdatedMsg: "Record Updated Successfully.",
+  RecordRemovedMsg: "Record Removed Successfully.",
 
   // cheque book
 
@@ -1038,7 +1070,7 @@ export const en_language_data = {
   Charge: "Charge",
   ChequeSeries: "Cheque Series",
   AutoIssueFlag: "Auto Issue Flag",
-  RetrieveParameters: "Retrieve Parameters",
+  RetrieveParameters: "Parameters",
   ChequeBookConfirmation: "ChequeBook Confirmation",
   BalanceIsLesThanServicecharge: "Balance is less than Service-charge",
   BeforeChequeBookPrinting: "Before Cheque Book Printing",
@@ -1057,7 +1089,8 @@ export const en_language_data = {
   LimitEntry: "Limit Entry",
   LimitDetail: "Limit Detail",
   FDDetail: "FD Detail",
-  NSCDetail: "NSC Detail",
+  BalanceAmount: "Balance Amount",
+  NSCDetail: "NSC/KVP Detail",
   TranBalance: "Tran. Balance",
   SanctionedLimit: "Sanctioned Limit",
   LimitType: "Limit Type",
@@ -1068,25 +1101,26 @@ export const en_language_data = {
   SecurityValue: "Security Value",
   FDDescription: "FD Description",
   ResolutionDate: "Resolution Date",
-  ForceExpireLimit: "Force-Expire Limit",
+  ForceExpireLimit: "ForceExpire Limit Detail",
   FDBranchCode: "FD-Branch Code",
   FDType: "FD-Type",
   FDAccountNumber: "FD-Account No",
   FDNumber: "FD-Number",
   PenalRate: "Penal Rate%",
-  ForcedExpiredDate: "Forced Expired Date",
+  ForcedExpiredDate: "Force Expired Date",
   AccountDescription: "Account Description",
   PrincipalAmount: "Principal Amount",
   Rate: "Rate%",
   MaturityAmount: "Maturity Amount",
   MaturityDate: "Maturity Date",
   DepositDate: "Deposit Date",
-  CertificateNumber: "Cetificate No.",
+  CertificateNumber: "Certificate No.",
   CollateralName: "Collateral Name",
   EnterCollateralName: "Enter Collateral Name",
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
+  IssueBy: "Issue By",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
   Period: "Period",
@@ -1110,11 +1144,17 @@ export const en_language_data = {
   CollateralRemarks: "Collateral Remarks",
   AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
   LimitDeleteTitle: "Enter Removal Remarks For Limit Entry (TRN/046)",
+  DepositeDate: "Deposit Date",
 
   // stop payment
 
   InsertStopPaymentMsg:
     "Are you sure you want to stop the selected check-number ?",
+  InsertStopPaymentMsg2:
+    "Are you sure you want to surrender the selected cheque number ?",
+  InsertStopPaymentMsg3:
+    "Are you sure you want to PDC the selected cheque number ?",
+
   AreYouSureToRelease: "Are you sure to Release ?",
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
@@ -1128,7 +1168,7 @@ export const en_language_data = {
   ChequeAmount: "Cheque Amount",
   ChequeDate: "Cheque Date",
   StopPayFooterNote:
-    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
+    "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-Cheque.",
   Infavour: "Infavour",
   Release: "Release",
   ChequeReleasedSuccessfully: "Cheque Released Successfully",
@@ -1139,7 +1179,8 @@ export const en_language_data = {
   StopDeleteTitle: "Enter Removal Remarks For Cheque Stop Entry (TRN/048)",
   StopConfirmDeleteTitle:
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
-
+  FromChequenorequired: "From Cheque Number is required",
+  ToChequenorequired: "To Cheque Number is required",
   // stock entry
 
   stockEntry: "Stock Entry",
@@ -1170,7 +1211,7 @@ export const en_language_data = {
   DocumentDownload: "Document Download",
   StockConfirmDeleteTitle:
     "Enter Removal Remarks for Stock Confirmation (ETRN/377)",
-  LimitAmount: "LimitAmount",
+  LimitAmount: "Limit Amount",
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
@@ -1195,10 +1236,12 @@ export const en_language_data = {
   EffectiveDate: "Effective Date",
   RemovalDate: "Removal Date",
   Reason: "Reason",
+  realizedAmountValidationMsg: "Realize Amount Must Be Tally.",
   SelectReason: "Select Reason",
   LienExpiredSuccessfully: "Lien Expired Successfully",
   LienExpire: "Lien Expire",
   LienConfirmation: "Lien Confirmation",
+  RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
     "Removal Date should be greter than or Equal to Effective date",
@@ -1376,7 +1419,7 @@ export const en_language_data = {
   IfscDetail: "Ifsc Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
-  AreYouSaveThisRecord: "Are You sure to Save this record?",
+  AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
 
@@ -1437,11 +1480,11 @@ export const en_language_data = {
 
   PleaseEnterSlipAmount: "Please Enter Slip Amount",
   PleaseCheckAmount: "Please Check Amount",
-  AreYouSureToAddBank: "Are You sure To Add Bank?",
+  AreYouSureToAddBank: "Are you sure to add Bank?",
   EnterRemovalRemarksForCTSOWCLEARING:
     "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)",
   EnterRemovalRemarksINWARDRETURNENTRY:
-    "Enter Removal Remarks For INWARD RETURN ENTRY(TRN/028)",
+    "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)",
   PresentmentDate: "Presentment Date",
   Zone: "Zone",
   SlipAmount: "Slip Amount",
@@ -1462,7 +1505,6 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  ChequeAmountList: "Cheque Amount List",
   CLGDate: "CLG Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
@@ -1558,7 +1600,11 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  issueBranch: "Issue Branch",
+  entryStatus: "Entry Status",
+  confirmStatus: "Confirmation Status",
   accountType: "Account Type",
+  enterPayslipToretrive: "Enter Payslip No to Retrive",
   accountCode: "Account Code",
   accountName: "Account Name",
   jointDetails: "Joint Details",
@@ -1616,6 +1662,7 @@ export const en_language_data = {
   billtypeRequired: "Bill Type is Required",
   payslipNoRequired: "Payslip Number is Required",
   entryType: "Entry Type",
+  typeRequired: "Type is required",
   // Positive pay
   AccountNum: "Account Number",
   ChequeNumber: "Cheque Number",
@@ -1630,11 +1677,13 @@ export const en_language_data = {
   AmountIsRequired: "Amount is Required.",
   ChequeImage: "Cheque Image",
   ChequeImageIsNotUploaded: "Cheque Image is not uploaded.",
-  RemovalRemarksPositivePay: "Removal Remarks For Positive Pay Confirmation",
+  RemovalRemarksPositivePay:
+    "Enter Removal Remarks For Positive Pay Confirmation (MST/992)",
   Unknownerroroccured: "Unknown error occured",
   dataImportedSuccessfully: "data imported successfully",
   AreYouSureToInsertTheFileData: "Are you sure to Insert the File Data ?",
   PositivePayEntry: "Positive Pay Entry",
+  PositivePayConfirmation: "Positive Pay Confirmation",
   AccCode: "A/c Code",
   AccType: "A/c Type",
   Uploaded: "Uploaded",
@@ -1674,12 +1723,15 @@ export const en_language_data = {
   ToDateIsRequired: "To Date is required.",
   NoRecordFound: "No Record Found",
   ConfirmFormData: "Are you sure to confirm this Form?",
-  ConfirmRestrictionMessage: "Cannot confirm your own entered Form.",
+  ConfirmRestrictionMessage: "You can not confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
-  CannotDeleteConfirmedForm: "Cannot Delete Confirmed Form.",
+  CannotDeleteConfirmedForm: "You can not to delete Confirmed Form.",
+  RejectFormMessage: "Do you want to delete this Form?",
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  TotalIncomeValidateMessage:
+    "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
 
   // GST Outward Entry
   TranCd: "Tran Cd",
@@ -1717,11 +1769,11 @@ export const en_language_data = {
 
   // str ac level branch entry
 
-  AsperExtraction: "As per Extraction",
+  AsperExtraction: "Show As per Extracted",
   Suspicious: "Suspicious",
   WhiteListed: "White Listed",
   STRHistory: "STR History",
-  SuspiciousStatus: "Suspicious Status",
+  SuspiciousStatus: "Show Not a Suspicious",
   SuspiciousReasons: "Suspicious Reasons",
   InvestigationDetail: "Investigation Detail",
   EditDetail: "Edit-Detail",
@@ -1732,9 +1784,10 @@ export const en_language_data = {
   AtleastOneRecordMustMarkedSuspicious:
     "Atleast one record must be marked suspicious",
   AreYouSureRefreshTransactionDetails:
-    "Are You Sure to refresh transaction details?",
+    "Are you sure to refresh transaction details?",
   TRNDate: "TRN. Date",
   VNo: "V. No.",
+  SuspiciStatus: "Suspicious Status",
 
   // insurance entry screen
 
@@ -1844,6 +1897,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI:
     "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
@@ -1874,9 +1928,15 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
+  rateRequired: "rate is required",
   normalPremature: "Normal/Premature",
+  realizePending: "Realize Pending",
+  confirmPending: "Confirmation Pending",
+  todayTrns: "Todays Transaction",
   asonDate: "As on Date",
   maturityDate: "Maturity Date",
+  categCdRequired: "Category is required.",
+  definationRequired: "definayion is required.",
   term: "Term",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",
@@ -1964,6 +2024,14 @@ export const en_language_data = {
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
 
+  // Daily Transaction Import
+  errors: "Errors",
+  UploadData: "Upload Data",
+  PleaseEnterConfiguration: "Please Enter Configuration",
+  GenerateOppositeEntry: "Generate Opposite Entry",
+  IgnoreInsufficientBalance: "Ignore Insufficient Balance",
+  SelectFile: "Select File",
+  CreditToAccount: "Credit to Account",
   //loan Schedule
   DisbursementDate: "Disbursement Date",
   DisbursementAmount: "Disbursement Amount",
@@ -2013,4 +2081,18 @@ export const en_language_data = {
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
+
+  // Cashier Exchange Entry
+  TransferDetails: "Transfer Details",
+
+  // fix deposit confirmation
+  ConfirmationHistory: "Confirmation History",
+  AcctNum: "Account No.",
+  AcctHolderName: "A/c Holder Name",
+  VoucherNo: "Voucher No.",
+  Denomination: "Denomination",
+  ScrollTokenNo: "Scroll/Token No.",
+  Sign: "Sign",
+  LabelName: "Label Name",
+  ViewMaster: "View Master",
 };

@@ -39,7 +39,6 @@ import {
   MetaDataType,
   GridWrapper,
   GridMetaDataType,
-  MessageBoxWrapper,
   FormWrapper,
 } from "@acuteinfo/common-base";
 
@@ -61,7 +60,6 @@ const KYCDetails = () => {
   const { authState } = useContext(AuthContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
   const [isPoAExpanded, setIsPoAExpanded] = useState(true);
-  const [errMsg, setErrMsg] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const KyCPoIFormRef = useRef<any>("");
   const KyCPoAFormRef = useRef<any>("");
@@ -71,7 +69,6 @@ const KYCDetails = () => {
     proof_of_identity: {},
     proof_of_address: {},
   });
-  const [openDialog, setOpenDialog] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([]);
   const { MessageBox } = usePopupContext();
 
@@ -199,7 +196,7 @@ const KYCDetails = () => {
       // if(state?.isFreshEntryctx) {
       setFormStatus((old) => [...old, true]);
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      // KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // KyCPoAFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
     } else {
       handleStepStatusctx({
@@ -339,8 +336,8 @@ const KYCDetails = () => {
       isLoading: true,
     });
     const refs = [
-      KyCPoIFormRef.current.handleSubmitError(e, "save", false),
-      KyCPoAFormRef.current.handleSubmitError(e, "save", false),
+      KyCPoIFormRef.current.handleSubmit(e, "save", false),
+      KyCPoAFormRef.current.handleSubmit(e, "save", false),
     ];
     handleSavectx(e, refs);
   };
@@ -418,7 +415,7 @@ const KYCDetails = () => {
                   : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN ?? "",
                 MessageBox: MessageBox,
               }}
-              setDataOnFieldChange={(action, payload) => {
+              setDataOnFieldChange={async (action, payload) => {
                 // console.log(payload, "wekjukfhwiuefadw", action)
                 // const result = payload;
                 if (
@@ -429,9 +426,11 @@ const KYCDetails = () => {
                     action === "PASSPORT_NO" ||
                     action === "DRIVING_LICENSE_NO")
                 ) {
-                  console.log("weiufiwuef", payload);
-                  setErrMsg(payload);
-                  setOpenDialog(true);
+                  const buttonName = await MessageBox({
+                    messageTitle: "Duplicate Value",
+                    message: payload ?? "No Message",
+                    buttonNames: ["Ok"],
+                  });
                 }
               }}
             />
@@ -494,11 +493,13 @@ const KYCDetails = () => {
                 REQ_FLAG:
                   state?.isFreshEntryctx || state?.isDraftSavedctx ? "F" : "E",
               }}
-              setDataOnFieldChange={(action, payload) => {
+              setDataOnFieldChange={async (action, payload) => {
                 if (Boolean(payload) && action === "CONTACT2") {
-                  // console.log("weiufiwuef", payload)
-                  setErrMsg(payload);
-                  setOpenDialog(true);
+                  const buttonName = await MessageBox({
+                    messageTitle: "Duplicate Value",
+                    message: payload ?? "No Message",
+                    buttonNames: ["Ok"],
+                  });
                 }
               }}
             />
@@ -567,70 +568,6 @@ const KYCDetails = () => {
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
       />
-
-      {/* // Commented Temporary */}
-      {/* <MessageBoxWrapper
-        MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
-        Message={errMsg ?? "No Message"}
-        onClickButton={() => {
-          setOpenDialog(false);
-          setErrMsg("");
-        }}
-        rows={[]}
-        buttonNames={["OK"]}
-        open={openDialog}
-      />  */}
-      {/* as per common base package */}
-      <MessageBoxWrapper
-        validMessage={errMsg ?? "No Message"}
-        onActionYes={() => {
-          setOpenDialog(false);
-          setErrMsg("");
-        }}
-        rows={[]}
-        isOpen={openDialog}
-        onActionNo={() => {}}
-      />
-      {/* <Dialog
-        open={openDialog}
-        maxWidth={"sm"}
-        PaperProps={{
-          style: {
-            minWidth: "40%",
-            width: "40%",
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            background: "var(--theme-color3)",
-            color: "var(--theme-color2)",
-            letterSpacing: "1.3px",
-            boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-            fontWeight: 500,
-            borderRadius: "inherit",
-            minWidth: "450px",
-            py: 1,
-          }}
-          id="responsive-dialog-title"
-        >
-          ALERT - VALUE ALREADY EXISTS
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ color: "var(--theme-color3)", pl: 2, whiteSpace: "pre-wrap" }} variant={"h6"}>
-            {errMsg}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <GradientButton autoFocus onClick={() => {
-              setOpenDialog(false)
-              setErrMsg("")
-            }}>
-            CANCEL
-          </GradientButton>
-        </DialogActions>
-      </Dialog> */}
     </Grid>
   );
 };

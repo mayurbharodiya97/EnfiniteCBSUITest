@@ -137,10 +137,12 @@ export const CTSOutwardClearingFormMetaData = {
           dependentFieldsValues
         ) => {
           formState.setDataOnFieldChange("ACCT_CD_BLANK");
+
           return {
             ACCT_CD: { value: "", ignoreUpdate: true },
             ACCT_NAME: { value: "" },
             TRAN_BAL: { value: "" },
+            AMOUNT: { value: "" },
           };
         },
       },
@@ -192,18 +194,20 @@ export const CTSOutwardClearingFormMetaData = {
               return { btnName, obj };
             };
             for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
-              console.log("postData", postData?.[0]?.MSG?.length);
               if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
+                formState.setDataOnFieldChange("ACCT_CD_BLANK");
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData?.[0];
@@ -219,6 +223,7 @@ export const CTSOutwardClearingFormMetaData = {
                   returnVal = "";
                 }
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "0") {
+                formState.setDataOnFieldChange("ACCT_CD_VALID", postData?.[0]);
                 if (btn99 !== "No") {
                   returnVal = postData?.[0];
                 } else {
@@ -256,6 +261,7 @@ export const CTSOutwardClearingFormMetaData = {
               },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
+              AMOUNT: { value: "" },
             };
           }
         },
@@ -295,6 +301,7 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       FormatProps: {
         allowNegative: false,
+        allowLeadingZeros: false,
       },
 
       postValidationSetCrossFieldValues: async (
@@ -678,8 +685,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "TRAN_DT",
-      label: "",
-      placeholder: "",
       format: "dd/MM/yyyy",
 
       GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
@@ -689,8 +694,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "RANGE_DT",
-      label: "",
-      placeholder: "",
       format: "dd/MM/yyyy",
 
       GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
@@ -702,7 +705,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
@@ -737,6 +740,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -780,7 +788,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
 
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
-
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -828,11 +840,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                     });
                     if (buttonNames === "Yes") {
                       return {
-                        BANK_CD: {
-                          value: field?.value ?? "",
-                          ignoreUpdate: true,
-                          isFieldFocused: false,
-                        },
                         BANK_NM: {
                           value: postData?.data?.[0]?.BANK_NM ?? "",
                         },
@@ -853,6 +860,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                 }
                 return {
                   BANK_CD: {
+                    value: field?.value,
                     error: postData?.data?.[0]?.ERROR_MSSAGE ?? "",
                     ignoreUpdate: true,
                   },
@@ -904,6 +912,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           name: "ECS_SEQ_NO",
           label: "PayeeACNo",
           runExternalFunction: true,
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -916,11 +929,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           placeholder: "",
           type: "text",
-          required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["PayeeACNorequired"] }],
-          },
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
 
@@ -954,7 +962,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             type: "string",
             rules: [{ name: "required", params: ["ChequeDateRequired"] }],
           },
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
         },
         {
           render: {
@@ -964,6 +972,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
+          maxLength: 100,
           // required: true,
 
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
@@ -1004,6 +1013,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
+          maxLength: 100,
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["PayeeNameRequired"] }],
@@ -1258,7 +1268,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
       name: "ADDNEWROW",
       label: "AddRow",
       endsIcon: "AddCircleOutlineRounded",
-      rotateIcon: "scale(2)",
+      rotateIcon: "scale(1)",
       placeholder: "",
       type: "text",
       tabIndex: "-1",
@@ -1308,6 +1318,11 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             rules: [{ name: "required", params: ["BankCodeRequired"] }],
           },
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -1417,7 +1432,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           required: true,
-
+          maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1486,6 +1501,11 @@ export const inwardReturnChequeDetailFormMetaData: any = {
               return true;
             },
           },
+          textFieldStyle: {
+            "& .MuiInputBase-input": {
+              textAlign: "right",
+            },
+          },
           dependentFields: ["BANK_CD", "TRAN_DT"],
           postValidationSetCrossFieldValues: async (
             field,
@@ -1541,16 +1561,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     message: "AreYouSureContinue",
                     buttonNames: ["Yes", "No"],
                   });
-                  if (continueButtonName === "Yes") {
-                    return {
-                      CHEQUE_NO: {
-                        value: field.value,
-                        ignoreUpdate: true,
-                        isFieldFocused: false,
-                      },
-                      AMOUNT: { isFieldFocused: true },
-                    };
-                  } else {
+                  if (continueButtonName === "No") {
                     return {
                       CHEQUE_NO: {
                         value: "",
@@ -1566,6 +1577,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "9") {
@@ -1573,6 +1585,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = "";
@@ -1590,11 +1603,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                       field
                     );
                   }
-                } else if (postData[i]?.O_STATUS === "0") {
-                  return await handleChequeValidationAndMessages(
-                    formState,
-                    field
-                  );
                 }
               }
             }
@@ -1615,26 +1623,19 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
-          dependentFields: ["TRAN_DT", "RANGE_DT"],
-          validate: (currentField, dependentField) => {
-            const currentDate = new Date(currentField?.value);
-            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
-            const transDate = new Date(dependentField?.TRAN_DT?.value);
+          // dependentFields: ["TRAN_DT", "RANGE_DT"],
+          // validate: (currentField, dependentField) => {
+          //   const currentDate = new Date(currentField?.value);
+          //   const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+          //   const transDate = new Date(dependentField?.TRAN_DT?.value);
 
-            if (currentDate < rangeDate || currentDate > transDate) {
-              return `DateShouldBetween ${rangeDate.toLocaleDateString(
-                "en-IN"
-              )} - ${transDate.toLocaleDateString("en-IN")}`;
-            }
-          },
-
-          required: true,
+          //   if (currentDate < rangeDate || currentDate > transDate) {
+          //     return `DateShouldBetween ${rangeDate.toLocaleDateString(
+          //       "en-IN"
+          //     )} - ${transDate.toLocaleDateString("en-IN")}`;
+          //   }
+          // },
           maxLength: 6,
-
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["ChequeDateRequired"] }],
-          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
 
@@ -1800,7 +1801,7 @@ export const AddNewBankMasterFormMetadata = {
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
-    label: "",
+    label: "Clearing Retrieve Information",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -2050,14 +2051,15 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHQ_AMT_LIST",
-      columnName: "ChequeAmountList",
+      columnName: "ChequeAmount",
       sequence: 5,
       alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 200,
       minWidth: 150,
-      maxWidth: 250,
+      maxWidth: 500,
+      isDisplayTotal: true,
     },
     {
       accessor: "TRAN_DT",

@@ -242,6 +242,7 @@ export const AcctMSTContext = React.createContext<any>({
   handleFormModalOpenctx: () => {},
   handleCurrFormctx: () => {},
   handleStepStatusctx: () => {},
+  onFinalUpdatectx: () => {},
   handleFormDataonSavectx: () => {},
   handlecustomerIDctx: () => {},
   handleModifiedColsctx: () => {},
@@ -445,6 +446,15 @@ const AcctMSTProvider = ({ children }) => {
           ...state?.steps,
           [coltabvalue]: { status: status },
         },
+      },
+    });
+  };
+
+  const onFinalUpdatectx = (val: boolean) => {
+    dispatch({
+      type: "onFinalUpdate",
+      payload: {
+        isFinalUpdatectx: val,
       },
     });
   };
@@ -789,6 +799,7 @@ const AcctMSTProvider = ({ children }) => {
         handleFormModalOpenctx,
         handleCurrFormctx,
         handleStepStatusctx,
+        onFinalUpdatectx,
         handleFormDataonSavectx,
         handlecustomerIDctx,
         handleModifiedColsctx,

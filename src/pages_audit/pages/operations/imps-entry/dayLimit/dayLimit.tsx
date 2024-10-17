@@ -2,24 +2,51 @@ import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
-import { useQuery } from "react-query";
-import { dayLimitData } from "../api";
+import { useMutation, useQuery } from "react-query";
+import { crudDayLimitDataIMPS, dayLimitData } from "../api";
+import { useEffect } from "react";
 import {
   Alert,
   SubmitFnType,
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  ClearCacheProvider,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
-export const DayLimit = ({ navigate }) => {
-  const { state: rows }: any = useLocation();
-  const { MessageBox } = usePopupContext();
+import { enqueueSnackbar } from "notistack";
 
-  const { data, isError, isSuccess, error, isLoading } = useQuery<any, any>(
-    ["daylimit"],
-    () =>
-      dayLimitData({
+const DayLimitCustom = ({ navigate }) => {
+  const { state: rows }: any = useLocation();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+
+  const dailyLimitData: any = useMutation("validateDeleteData", dayLimitData);
+  const crudDayLimit: any = useMutation(
+    "validateDeleteData",
+    crudDayLimitDataIMPS,
+    {
+      onSuccess(data, variables) {
+        CloseMessageBox();
+        navigate(".");
+        if (variables?._isNewRow) {
+          navigate(".");
+          enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
+        } else if (variables?._isDeleteRow) {
+          enqueueSnackbar(t("RecordRemovedMsg"), { variant: "success" });
+        } else if (variables?._isUpdateRow) {
+          enqueueSnackbar(t("RecordUpdatedMsg"), { variant: "success" });
+        }
+      },
+      onError() {
+        CloseMessageBox();
+      },
+    }
+  );
+
+  useEffect(() => {
+    return () => {
+      dailyLimitData.mutate({
         DTL_ROW: [
           {
             REG_DATE: rows?.REG_DATE,
@@ -48,12 +75,9 @@ export const DayLimit = ({ navigate }) => {
           },
         ],
         SCREEN_REF: "MST/843",
-      }),
-    {
-      enabled: !!rows?.TRAN_CD,
-      onSuccess(data) {},
-    }
-  );
+      });
+    };
+  }, []);
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -61,6 +85,49 @@ export const DayLimit = ({ navigate }) => {
     endSubmit
   ) => {
     endSubmit(true);
+    let rowDataLength = Object.keys(rows)?.length !== 0;
+    delete data?.COMMON;
+    delete data?.FLAG;
+
+    let upd: any = rowDataLength
+      ? utilFunction.transformDetailsData(
+          data ?? {},
+          dailyLimitData?.data?.[0] ?? {}
+        )
+      : null;
+
+    let apiReq = {
+      ...data,
+      ...upd,
+    };
+    // If the value is a boolean, convert it to "Y" for true and "N" for false
+    Object.keys(apiReq).forEach((key) => {
+      if (typeof apiReq[key] === "boolean") {
+        apiReq[key] = apiReq[key] ? "Y" : "N";
+      } else if (typeof apiReq[key] === "object" && apiReq[key] !== null) {
+        Object.keys(apiReq[key]).forEach((nestedKey) => {
+          if (typeof apiReq[key][nestedKey] === "boolean") {
+            apiReq[key][nestedKey] = apiReq[key][nestedKey] ? "Y" : "N";
+          }
+        });
+      }
+    });
+    let buttonName = await MessageBox({
+      messageTitle: "confirmation",
+      message: "Do You Want Save Changes ?",
+      defFocusBtnName: "Yes",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+      icon: "INFO",
+    });
+    if (buttonName === "Yes") {
+      crudDayLimit.mutate({
+        ...apiReq,
+        _isNewRow: rowDataLength ? false : true,
+        _isDeleteRow: false,
+        _isUpdateRow: rowDataLength ? true : false,
+      });
+    }
   };
 
   return (
@@ -76,15 +143,23 @@ export const DayLimit = ({ navigate }) => {
             },
           }}
         >
-          {isLoading ? (
+          {dailyLimitData?.isLoading ? (
             <LinearProgress color="secondary" />
-          ) : isError ? (
+          ) : dailyLimitData?.isError || crudDayLimit?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={error?.error_msg ?? "Unknow Error"}
-                  errorDetail={error?.error_detail ?? ""}
+                  errorMsg={
+                    dailyLimitData?.error?.error_msg ??
+                    crudDayLimit?.error?.error_msg ??
+                    "Unknow Error"
+                  }
+                  errorDetail={
+                    dailyLimitData?.error?.error_detail ??
+                    crudDayLimit?.error?.error_detail ??
+                    ""
+                  }
                   color="error"
                 />
               </AppBar>
@@ -94,10 +169,16 @@ export const DayLimit = ({ navigate }) => {
           )}
 
           <FormWrapper
-            key={`day-limit-Form` + isSuccess}
+            key={`day-limit-Forms` + dailyLimitData?.isSuccess}
             metaData={dayLimitFormMetaData as MetaDataType}
-            initialValues={data?.[0] ?? {}}
-            displayMode={data?.[0]?.READ_ONLY === "Y" ? "view" : null}
+            initialValues={dailyLimitData?.data?.[0] ?? {}}
+            displayMode={
+              dailyLimitData?.data?.[0]?.READ_ONLY === "Y" ||
+              rows?.FLAG === "C" ||
+              dailyLimitData?.isLoading
+                ? "view"
+                : null
+            }
             onSubmitHandler={onSubmitHandler}
             formState={{ MessageBox: MessageBox }}
             formStyle={{
@@ -106,19 +187,16 @@ export const DayLimit = ({ navigate }) => {
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                {data?.[0]?.READ_ONLY !== "Y" && (
+                {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
+                rows?.FLAG !== "C" ? (
                   <Button
                     color={"primary"}
-                    // onClick={(event) =>
-                    //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
-                    // }
-                    // endIcon={
-                    //   mutation?.isLoading ? <CircularProgress size={20} /> : null
-                    // }
+                    onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
+                    disabled={isSubmitting}
                   >
                     {t("Save")}
                   </Button>
-                )}
+                ) : null}
 
                 <Button onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
@@ -129,5 +207,13 @@ export const DayLimit = ({ navigate }) => {
         </Dialog>
       </>
     </>
+  );
+};
+
+export const DayLimit = ({ navigate }) => {
+  return (
+    <ClearCacheProvider>
+      <DayLimitCustom navigate={navigate} />
+    </ClearCacheProvider>
   );
 };

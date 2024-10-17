@@ -144,6 +144,7 @@ export const ChequeReturnPostForm: FC<{
           MessageBox({
             messageTitle: t("Alert"),
             message: data[i]?.O_MESSAGE,
+            icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
@@ -184,6 +185,7 @@ export const ChequeReturnPostForm: FC<{
           MessageBox({
             messageTitle: t("ValidationFailed"),
             message: data[i]?.O_MESSAGE,
+            icon: "ERROR",
           });
         }
       }
@@ -256,6 +258,7 @@ export const ChequeReturnPostForm: FC<{
         MessageBox({
           messageTitle: t("ValidationFailed"),
           message: data?.[0]?.O_MESSAGE,
+          icon: "ERROR",
         });
       }
     },
@@ -306,6 +309,7 @@ export const ChequeReturnPostForm: FC<{
           MessageBox({
             messageTitle: t("Alert"),
             message: data[i]?.O_MESSAGE,
+            icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
@@ -323,6 +327,7 @@ export const ChequeReturnPostForm: FC<{
           MessageBox({
             messageTitle: t("ValidationFailed"),
             message: data[i]?.O_MESSAGE,
+            icon: "ERROR",
           });
         }
       }

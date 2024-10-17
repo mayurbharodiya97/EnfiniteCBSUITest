@@ -73,12 +73,17 @@ export const otherAdd_tab_metadata = {
           },
           name: "ADDRESS_TYPE",
           label: "AddressType",
-          placeholder: "",
-          type: "text",
-          //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
           options: () => getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
+          placeholder: "",
+          type: "text",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          },
+          //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.4, xl: 2 },
         },
         {
           render: {

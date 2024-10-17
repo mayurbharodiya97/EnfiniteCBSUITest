@@ -79,9 +79,10 @@ export const chequeGridDTL = async (Apireq) => {
       ...Apireq,
     });
   if (status === "0") {
-    return data.map((item) => {
+    return data.map((item, index) => {
       return {
         ...item,
+        index: index,
         FLAG:
           item.FLAG === "P"
             ? "Processed"
@@ -229,6 +230,36 @@ export const validateCheqbkCfm = async (apireq) => {
     //     CLOSE_DT: "",
     //   },
     // ];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getTodayClearing = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNTODAYCLEARBTN", reqData);
+  if (status === "0") {
+    let responseData = data;
+    responseData.map((item, index) => {
+      item.index = index;
+    });
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getReturnHistory = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNCHQRTNBTN", reqData);
+  if (status === "0") {
+    let responseData = data;
+    responseData.map((item, index) => {
+      item.index = index;
+    });
+
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

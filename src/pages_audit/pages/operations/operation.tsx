@@ -17,10 +17,14 @@ const TemporaryOD = lazy(() => import("./temporaryOD"));
 const AtmEntry = lazy(() => import("./atm-entry"));
 const ImpsEntry = lazy(() => import("./imps-entry"));
 const ATMconfirmation = lazy(() => import("./atm-entry/confirm/confirmation"));
+const IMPSconfirmation = lazy(
+  () => import("./imps-entry/confirm/confirmation")
+);
 const Ckyc = lazy(() => import("./c-kyc"));
 const AcctConfirm = lazy(() => import("./acct-mst/AcctConfirm"));
 // const FixDepositForm = lazy(() => import("./fixDeposit"));
 const FDDetailGrid = lazy(() => import("./fix-deposit"));
+const FDConfirmationGrid = lazy(() => import("./fixDepositConfirmation"));
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const CtsOutwardClearingConfirmGrid = lazy(
   () => import("./ctsOutward/confirmation")
@@ -130,39 +134,36 @@ export const OperationsMenu = () => (
     <Route path="atm-reg-entry/*" element={<AtmEntry />} />
     <Route path="imps-reg-entry/*" element={<ImpsEntry />} />
     <Route path="atm-reg-confirmation/*" element={<ATMconfirmation />} />
+    <Route path="imps-reg-confirmation/*" element={<IMPSconfirmation />} />
     <Route path="dayend-process/*" element={<DayEndProcess />} />
 
     <Route
       path="chequebook-confirmation/*"
-      element={
-        <ConfirmationGridWrapper screenFlag="chequebookCFM" reqData="" />
-      }
+      element={<ConfirmationGridWrapper screenFlag="chequebookCFM" />}
     />
     <Route
       path="limit-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="limitCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="limitCFM" />}
     />
     <Route
       path="stock-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="stockCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="stockCFM" />}
     />
     <Route
       path="stop-pay-confirmation/*"
-      element={
-        <ConfirmationGridWrapper screenFlag="stopPaymentCFM" reqData="" />
-      }
+      element={<ConfirmationGridWrapper screenFlag="stopPaymentCFM" />}
     />
     <Route
       path="lien-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="lienCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="lienCFM" />}
     />
     <Route
       path="tempOd-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="tempOdCFM" />}
     />
     <Route
       path="insurance-confirmation/*"
-      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" reqData="" />}
+      element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
     />
     <Route path="teller/*" element={<TellerScreen />} />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
@@ -261,14 +262,14 @@ export const OperationsMenu = () => (
     /> */}
 
     <Route
-      path="fix-deposit/*"
+      path="fix-deposit-entry/*"
       element={
         <FDContextWrapper>
           <FDDetailGrid />
         </FDContextWrapper>
       }
     />
-
+    <Route path="fix-deposit-confirmation/*" element={<FDConfirmationGrid />} />
     <Route
       path="form-15g-h-entry/*"
       element={<Form15GHEntryGrid screenFlag="E" />}

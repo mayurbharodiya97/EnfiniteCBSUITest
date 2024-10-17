@@ -46,7 +46,7 @@ const PendingAcct = () => {
     API.getPendingAcct({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      REQ_FLAG: "P",
+      REQ_FLAG: "A",
       //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
     })
   );

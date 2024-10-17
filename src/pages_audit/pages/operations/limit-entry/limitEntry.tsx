@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -16,7 +17,7 @@ import React, {
   useState,
 } from "react";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { limitEntryMetaData } from "./limitEntryMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
@@ -41,7 +42,9 @@ import {
   RemarksAPIWrapper,
   MetaDataType,
   FormWrapper,
+  utilFunction,
 } from "@acuteinfo/common-base";
+import { cloneDeep } from "lodash";
 const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
     {
@@ -67,6 +70,8 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const reqDataRef = useRef<any>({});
+  const [limitDtlOpen, setLimitDtlOpen] = useState(false);
+  const limitDtlForTrnmetaData = useRef<any>(null);
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -239,6 +244,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getLimitDTL"]);
+      queryClient.removeQueries(["getLimitList"]);
       queryClient.removeQueries(["securityLimitData"]);
       queryClient.removeQueries(["crudLimitEntryData"]);
       queryClient.removeQueries(["validateInsert"]);
@@ -266,6 +272,11 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
               state: data?.rows,
             });
           }
+        } else if (screenFlag === "limitForTrn") {
+          setLimitDtlOpen(true);
+          navigate("", {
+            state: data?.rows,
+          });
         } else {
           navigate(data?.name, {
             state: data?.rows,
@@ -291,14 +302,37 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+  if (screenFlag === "limitForTrn") {
+    limitDtlForTrnmetaData.current = cloneDeep(limitEntryGridMetaData);
 
-  useEffect(() => {
-    screenFlag === "limitForTrn" ??
-      (limitEntryGridMetaData.gridConfig.containerHeight = {
+    if (limitDtlForTrnmetaData?.current?.gridConfig) {
+      limitDtlForTrnmetaData.current.gridConfig.containerHeight = {
         min: "36vh",
         max: "30vh",
-      });
-  }, [screenFlag]);
+      };
+      limitDtlForTrnmetaData.current.gridConfig.footerNote = "";
+    }
+
+    if (limitDtlForTrnmetaData?.current?.columns) {
+      limitDtlForTrnmetaData.current.columns =
+        limitDtlForTrnmetaData?.current?.columns?.map((column) => {
+          if (column?.componentType === "buttonRowCell") {
+            return {
+              ...column,
+              isVisible: false,
+            };
+          }
+          return column;
+        });
+    }
+  }
+  //     });
+  // }, [screenFlag]);
+  isData.newFormMTdata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
 
   return (
     <>
@@ -313,15 +347,13 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           ) : null}
           <GridWrapper
             key={`limitentrygridMetaData` + screenFlag}
-            finalMetaData={limitEntryGridMetaData as GridMetaDataType}
+            finalMetaData={limitDtlForTrnmetaData?.current as GridMetaDataType}
             data={data ?? []}
             loading={isLoading}
             setData={() => {}}
             actions={actions}
             setAction={setCurrentAction}
-            onClickActionEvent={(index, id, data) => {
-              validateDeleteData.mutate(data);
-            }}
+            refetchData={() => refetch()}
           />
         </>
       ) : (
@@ -578,6 +610,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           {isData.isDelete && (
             <RemarksAPIWrapper
               TitleText={"LimitDeleteTitle"}
+              label="Removal Remarks"
               onActionNo={() =>
                 setIsData((old) => ({
                   ...old,
@@ -585,7 +618,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
                 }))
               }
               onActionYes={(val, rows) => {
-                console.log("<<<delde", val, rows);
                 let deleteReqPara = {
                   _isNewRow: false,
                   _isDeleteRow: true,
@@ -615,6 +647,26 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           )}
         </>
       )}
+      {limitDtlOpen ? (
+        <Dialog
+          open={true}
+          fullWidth={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="md"
+        >
+          <ForceExpire
+            navigate={navigate}
+            getLimitDetail={getLimitDetail}
+            setLimitDtlOpen={setLimitDtlOpen}
+            screenFlag={screenFlag}
+          />
+        </Dialog>
+      ) : null}
     </>
   );
 };

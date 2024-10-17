@@ -54,7 +54,7 @@ export const GstOutwardGrid = ({ screenFlag }) => {
       flag: "A",
       gd_date: authState?.workingDate,
       user_level: authState?.role,
-      user_name: authState?.user?.name,
+      user_name: authState?.user?.id,
     })
   );
   useEffect(() => {
@@ -121,6 +121,7 @@ export const GstOutwardGrid = ({ screenFlag }) => {
               ClosedEventCall={handleDialogClose}
               screenFlag={screenFlag}
               defaultView={"new"}
+              refetchData={refetch}
             />
           }
         />
@@ -131,6 +132,7 @@ export const GstOutwardGrid = ({ screenFlag }) => {
               ClosedEventCall={handleDialogClose}
               defaultView={"edit"}
               screenFlag={screenFlag}
+              refetchData={refetch}
             />
           }
         />

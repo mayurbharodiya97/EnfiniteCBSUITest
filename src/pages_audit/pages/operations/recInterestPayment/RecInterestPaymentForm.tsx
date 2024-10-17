@@ -4,20 +4,21 @@ import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
-import {
-  recAccountFindmetaData,
-  RecInterestPaymentMetaData,
-} from "./RecInterestPaymentMetaData";
 import { AuthContext } from "pages_audit/auth";
 import {
+  Alert,
   FormWrapper,
   GradientButton,
   MetaDataType,
   queryClient,
   SubmitFnType,
+  Transition,
   usePopupContext,
   utilFunction,
 } from "@acuteinfo/common-base";
+import { accountFindmetaData } from "../FDInterestPayment/FdInterestPaymentGridMetaData";
+import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
+import { enqueueSnackbar } from "notistack";
 
 export const RecInterestPaymentForm = () => {
   const [isFormOpen, setFormOpen] = useState(true);
@@ -30,6 +31,7 @@ export const RecInterestPaymentForm = () => {
   const { t } = useTranslation();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   let currentPath = useLocation().pathname;
+  const clearFormRef = useRef<any>(null);
 
   const fetchRecPaymentInstructions: any = useMutation(
     "getRecPaymentInstrudtl",
@@ -50,11 +52,6 @@ export const RecInterestPaymentForm = () => {
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -64,28 +61,25 @@ export const RecInterestPaymentForm = () => {
     {
       onSuccess: async (data, variables) => {
         if (variables.data._isDeleteRow) {
-          const btnName = await MessageBox({
-            messageTitle: "Success",
-            message: "RecordsDeletedMsg",
-            icon: "SUCCESS",
+          enqueueSnackbar(t("RecordRemovedMsg"), {
+            variant: "success",
           });
         } else {
-          const btnName = await MessageBox({
-            messageTitle: "Success",
-            message: "RecordSave",
-            icon: "SUCCESS",
-          });
+          enqueueSnackbar(
+            Boolean(recPaymentInstructions?.PAYMENT_MODE)
+              ? t("RecordUpdatedMsg")
+              : t("RecordInsertedMsg"),
+            {
+              variant: "success",
+            }
+          );
         }
-        CloseMessageBox();
         setFormOpen(true);
-        setRecPaymentInstructions([]);
+        setRecPaymentInstructions({});
+        setBalance({});
+        CloseMessageBox();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -98,9 +92,9 @@ export const RecInterestPaymentForm = () => {
     setFieldError
   ) => {
     setBalance(data);
-    fetchRecPaymentInstructions.mutate(parameterRef.current, {
+    fetchRecPaymentInstructions.mutate(parameterRef?.current, {
       onSettled: () => {
-        if (!fetchRecPaymentInstructions.isLoading) {
+        if (!fetchRecPaymentInstructions?.isLoading) {
           endSubmit(true);
         }
       },
@@ -122,8 +116,8 @@ export const RecInterestPaymentForm = () => {
         data: {
           ...newData,
           ...upd,
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user.branchCode,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
           _isNewRow: !Boolean(recPaymentInstructions?.PAYMENT_MODE)
             ? true
             : false,
@@ -133,7 +127,7 @@ export const RecInterestPaymentForm = () => {
         setFieldError,
       };
 
-      if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length !== 0) {
+      if (isErrorFuncRef?.current?.data?._UPDATEDCOLUMNS.length !== 0) {
         const btnName = await MessageBox({
           messageTitle: "Confirmation",
           message: "SaveData",
@@ -156,40 +150,47 @@ export const RecInterestPaymentForm = () => {
           });
         }
       }
-    } else if (actionFlag === "Delete") {
-      const btnName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: "DoYouWantDeleteRow",
-        buttonNames: ["Yes", "No"],
-        loadingBtnName: ["Yes"],
-      });
-      if (btnName === "Yes") {
-        updateRecInterestPaymentEntry.mutate({
-          data: {
-            COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-            CR_COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-            BRANCH_CD: recPaymentInstructions?.BRANCH_CD ?? "",
-            FD_NO: recPaymentInstructions?.FD_NO ?? "",
-            ACCT_TYPE: recPaymentInstructions?.ACCT_TYPE ?? "",
-            ACCT_CD: recPaymentInstructions?.ACCT_CD ?? "",
-            _isDeleteRow: true,
-          },
-        });
-      }
     }
     endSubmit(true);
   };
   const handleCloseForm = () => {
     setFormOpen(false);
   };
-  const handleRetrieve = async () => {
-    let btnName = await MessageBox({
+  const handleDelete = async () => {
+    const btnName = await MessageBox({
       messageTitle: "Confirmation",
-      message: `RetrieveConfirmation`,
+      message: "DoYouWantDeleteRow",
       buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
     });
     if (btnName === "Yes") {
-      setRecPaymentInstructions([]);
+      updateRecInterestPaymentEntry.mutate({
+        data: {
+          COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
+          CR_COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
+          BRANCH_CD: recPaymentInstructions?.BRANCH_CD ?? "",
+          FD_NO: recPaymentInstructions?.FD_NO ?? "",
+          ACCT_TYPE: recPaymentInstructions?.ACCT_TYPE ?? "",
+          ACCT_CD: recPaymentInstructions?.ACCT_CD ?? "",
+          _isDeleteRow: true,
+        },
+      });
+    }
+  };
+  const handleRetrieve = async () => {
+    if (Object.keys(recPaymentInstructions)?.length > 0) {
+      let btnName = await MessageBox({
+        messageTitle: "Confirmation",
+        message: `RetrieveConfirmation`,
+        buttonNames: ["Yes", "No"],
+      });
+      if (btnName === "Yes") {
+        setRecPaymentInstructions({});
+        setFormOpen(true);
+        setBalance({});
+      }
+    } else {
+      setRecPaymentInstructions({});
       setFormOpen(true);
       setBalance({});
     }
@@ -206,16 +207,16 @@ export const RecInterestPaymentForm = () => {
       "getAccountTypeList",
     ].map((key) => [key, authState?.user?.branchCode]);
     return () => {
-      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+      keysToRemove.forEach((key) => queryClient?.removeQueries(key));
     };
   }, []);
 
-  const metaData = JSON.parse(JSON.stringify(RecInterestPaymentMetaData));
-  metaData.form.label = utilFunction.getDynamicLabel(
+  FdInterestPaymentFormMetaData.form.label = utilFunction.getDynamicLabel(
     currentPath,
     authState?.menulistdata,
     true
   );
+
   return (
     <Fragment>
       <Dialog
@@ -230,9 +231,20 @@ export const RecInterestPaymentForm = () => {
         }}
         maxWidth="sm"
       >
+        {fetchRecPaymentInstructions?.error && (
+          <Alert
+            severity="error"
+            errorMsg={
+              fetchRecPaymentInstructions?.error?.error_msg ||
+              t("Somethingwenttowrong")
+            }
+            errorDetail={fetchRecPaymentInstructions?.error?.error_detail || ""}
+            color="error"
+          />
+        )}
         <FormWrapper
           key={"recAccountFindmetaData"}
-          metaData={recAccountFindmetaData as MetaDataType}
+          metaData={accountFindmetaData as MetaDataType}
           formStyle={{
             background: "white",
           }}
@@ -251,18 +263,18 @@ export const RecInterestPaymentForm = () => {
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Box display="flex" gap="8px">
+              <Box display="flex" gap={2}>
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
                   }}
                   disabled={
                     isSubmitting ||
-                    fetchRecPaymentInstructions.isLoading ||
+                    fetchRecPaymentInstructions?.isLoading ||
                     isButtonDisabled
                   }
                   endIcon={
-                    isSubmitting || fetchRecPaymentInstructions.isLoading ? (
+                    isSubmitting || fetchRecPaymentInstructions?.isLoading ? (
                       <CircularProgress size={20} />
                     ) : null
                   }
@@ -276,7 +288,7 @@ export const RecInterestPaymentForm = () => {
                   color={"primary"}
                   disabled={
                     isSubmitting ||
-                    fetchRecPaymentInstructions.isLoading ||
+                    fetchRecPaymentInstructions?.isLoading ||
                     isButtonDisabled
                   }
                 >
@@ -287,13 +299,25 @@ export const RecInterestPaymentForm = () => {
           )}
         </FormWrapper>
       </Dialog>
-
+      {updateRecInterestPaymentEntry?.error && (
+        <Alert
+          severity="error"
+          errorMsg={
+            updateRecInterestPaymentEntry?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={updateRecInterestPaymentEntry?.error?.error_detail || ""}
+          color="error"
+        />
+      )}
       <FormWrapper
         key={
           "RecInterestPaymentMetaData" +
-          Object.keys(recPaymentInstructions)?.length
+          updateRecInterestPaymentEntry?.isSuccess +
+          Object.keys(recPaymentInstructions)?.length +
+          Object.keys(balance)?.length
         }
-        metaData={metaData as MetaDataType}
+        metaData={FdInterestPaymentFormMetaData as MetaDataType}
         formStyle={{
           background: "white",
         }}
@@ -307,12 +331,14 @@ export const RecInterestPaymentForm = () => {
           MessageBox: MessageBox,
           handleButtonDisable: handleButtonDisable,
           accountDetail: recPaymentInstructions,
+          SCREEN_REF: "MST/894",
         }}
+        ref={clearFormRef}
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
-            <Box display="flex" gap="8px">
-              {Object.keys(recPaymentInstructions).length > 0 && (
+            <Box display="flex" gap={2}>
+              {Object.keys(recPaymentInstructions)?.length > 0 && (
                 <>
                   <GradientButton
                     onClick={(event) => {
@@ -325,9 +351,7 @@ export const RecInterestPaymentForm = () => {
                   </GradientButton>
 
                   <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Delete");
-                    }}
+                    onClick={() => handleDelete()}
                     color={"primary"}
                     disabled={isSubmitting || isButtonDisabled}
                   >

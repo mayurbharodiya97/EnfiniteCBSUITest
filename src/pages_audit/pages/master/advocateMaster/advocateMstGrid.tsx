@@ -166,6 +166,7 @@ export const AdvocateMstGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        enableExport={true}
       />
       <Routes>
         <Route

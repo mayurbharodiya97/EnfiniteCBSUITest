@@ -57,7 +57,6 @@ import Temp from "./OtherTrx/Temp";
 import LienDetail from "./OtherTrx/Lien_Detail";
 import SIDetail from "./OtherTrx/SI_Detail";
 import { makeStyles } from "@mui/styles";
-import { Tab, Tabs } from "@acuteinfo/common-base";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
@@ -77,6 +76,8 @@ import {
 } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import DialogWithAppbar from "components/common/dialogWithAppbar";
+import { Tabs } from "components/tabs";
+import { Tab } from "components/tab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -277,14 +278,20 @@ export const DailyTransTabs = ({
                 {a.TAB_NAME.includes("TODAYS") && (
                   <TodayTransactionForm reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("CHQ") && <CheckBook reqData={reqData} />}
+                {a.TAB_NAME.includes("CHQ") && (
+                  <CheckBook
+                    reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }}
+                  />
+                )}
                 {a.TAB_NAME.includes("SNAPSHOT") && (
                   <Snapshot reqData={reqData} />
                 )}
                 {a.TAB_NAME.includes("HOLDCHRG") && (
                   <HoldCharge reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("DOCS") && <Document reqData={reqData} />}
+                {a.TAB_NAME.includes("DOCS") && (
+                  <Document reqData={reqData} isDisplayClose={false} />
+                )}
                 {a.TAB_NAME.includes("STOP") && <StopPay reqData={reqData} />}
                 {a.TAB_NAME.includes("INSU") && <Insurance reqData={reqData} />}
                 {a.TAB_NAME.includes("DISBDTL") && (

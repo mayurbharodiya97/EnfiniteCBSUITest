@@ -129,6 +129,7 @@ export const InsuranceEntryFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -139,6 +140,7 @@ export const InsuranceEntryFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   }
                   returnVal = postData;
@@ -401,6 +403,7 @@ export const InsuranceEntryFormMetaData = {
                 messageTitle: "Alert",
                 message: `NetPremiumAmountCanGreaterThanInsuranceAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {
@@ -473,6 +476,7 @@ export const InsuranceEntryFormMetaData = {
                 messageTitle: "Alert",
                 message: `GSTShouldLessThanNetPremiumAmount`,
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 return {
@@ -615,15 +619,13 @@ export const InsuranceEntryFormMetaData = {
         },
         _optionsKey: "getSecurityData",
         validation: (value, data, prev) => {
-          // console.log(value,prev,data)
           if (!Boolean(value)) {
             return "PleaseEnterSecurity";
-          }
-          if (Array.isArray(prev)) {
+          } else if (Array.isArray(prev)) {
             let lb_error = false;
             let ls_msg = "";
             prev.forEach((item, index) => {
-              if (value.trim() === item?.SECURITY_CD) {
+              if (value.trim() === item?.SECURITY_CD.trim()) {
                 lb_error = true;
                 ls_msg = "SecurityAlreadyEnteredLine " + (index + 1);
                 return ls_msg;
@@ -1115,7 +1117,7 @@ export const DetailInsuranceGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED",
-      columnName: "Confirmerd",
+      columnName: "Confirmed",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -1125,8 +1127,18 @@ export const DetailInsuranceGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CM_RENEW",
-      columnName: "ConfirmerdStatus",
+      columnName: "ConfirmedStatus",
       sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 150,
+      maxWidth: 190,
+    },
+    {
+      accessor: "INS_DESCRIPTION",
+      columnName: "Description",
+      sequence: 11,
       alignment: "left",
       componentType: "default",
       width: 100,
@@ -1222,6 +1234,7 @@ export const insuranceAccountRetrievemetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -1232,6 +1245,7 @@ export const insuranceAccountRetrievemetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;

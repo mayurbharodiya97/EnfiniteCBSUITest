@@ -182,7 +182,7 @@ const TellerScreen = () => {
         setExtraAccDtl((prevExtraAccDtl) => ({
           ...prevExtraAccDtl,
           ...extraAccDtl,
-          TRN_TYPE: data?.TRN === "1" ? `1` : `4` ?? "",
+          TRN_TYPE: data?.TRN === "1" ? `1` : `4`,
           REMARKS: data?.REMARK ?? "",
         }));
       }
@@ -701,9 +701,9 @@ const TellerScreen = () => {
                 });
             finalScreenRef = Boolean(action === "TRN")
               ? Boolean(data?.value === "1")
-                ? "ETRN/039"
+                ? "TRN/039"
                 : Boolean(data?.value === "P")
-                ? "ETRN/040"
+                ? "TRN/040"
                 : ""
               : "";
           } else if (action === "ACCT_CD") {
@@ -725,7 +725,7 @@ const TellerScreen = () => {
                 PARENT_CODE:
                   dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_CODE,
                 BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
-                SCREEN_REF: "ETRN/039",
+                SCREEN_REF: "TRN/039",
               });
             }
           } else if (action === "ACCT_TYPE") {
@@ -886,6 +886,8 @@ const TellerScreen = () => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
+          screenRef={""}
+          entityType={""}
         />
       ) : null}
       {/* <DualTableCalc data={data ?? []} /> */}
@@ -910,6 +912,8 @@ const TellerScreen = () => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
+          screenRef={"TRN/041"}
+          entityType={"MULTIRECPAY"}
         />
       ) : null}
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}

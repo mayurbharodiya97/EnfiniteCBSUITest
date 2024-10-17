@@ -15,7 +15,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LienGridMetaData } from "./lienEntryGridMetaData";
 import { LienEntryMetadata } from "./lienEntryMetadata";
 import { AuthContext } from "pages_audit/auth";
@@ -37,6 +37,7 @@ import {
   SubmitFnType,
   FormWrapper,
   MetaDataType,
+  utilFunction,
 } from "@acuteinfo/common-base";
 
 const LienEntryCustom = () => {
@@ -117,19 +118,19 @@ const LienEntryCustom = () => {
               btnName(
                 ["Ok"],
                 concatenatedMessages["9"],
-                "ValidationAlert",
+                "ValidationFailed",
                 "Yes"
               );
             } else if (buttonName === "Yes") {
               crudLienData.mutate(apiReq);
             }
           } else if (status["9"]) {
-            btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert", "");
+            btnName(["Ok"], concatenatedMessages["9"], "ValidationFailed", "");
           } else if (status["0"]) {
             let buttonName = await btnName(
               ["Yes", "No"],
               "AreYouSureToProceed",
-              "ValidationSuccessfull",
+              "confirmation",
               "Yes"
             );
             if (buttonName === "Yes") {
@@ -212,6 +213,11 @@ const LienEntryCustom = () => {
     [navigate]
   );
 
+  LienEntryMetadata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       <Box sx={{ width: "100%" }}>

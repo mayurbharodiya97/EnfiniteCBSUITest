@@ -79,18 +79,14 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
 
   accountCode: {
     render: {
-      componentType: "numberFormat",
+      componentType: "textField",
     },
     label: "Account Number",
     name: "ACCT_CD",
     placeholder: "Enter account number",
     required: true,
-    // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    // setValueOnDependentFieldsChange: (dependentFields) => {
-    //   return "";
-    // },
     schemaValidation: {
       type: "string",
       rules: [
@@ -101,25 +97,18 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
         },
       ],
     },
+    inputProps: {
+      maxLength: 20,
+      onInput: (event) => {
+        event.target.value = event.target.value.replace(/[^0-9\s]/g, "");
+      },
+    },
     GridProps: {
       xs: 3,
       md: 3,
       sm: 3,
       lg: 3,
       xl: 3,
-    },
-    FormatProps: {
-      // format: "###########",
-      allowNegative: false,
-      allowLeadingZeros: true,
-      // isNumericString: true,
-
-      isAllowed: (values) => {
-        if (values?.value?.length > 8) {
-          return false;
-        }
-        return true;
-      },
     },
   },
 
@@ -132,6 +121,43 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
       lazy: true,
     },
   },
+
+  fullAccountNumber: {
+    render: {
+      componentType: "textField",
+    },
+    name: "FULL_ACCT_NO",
+    label: "Full Account Number",
+    postValidationSetCrossFieldValues: "retrieveStatementDtlFullAcctNo",
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Full account No is required"] }],
+    },
+    GridProps: {
+      xs: 12,
+      md: 12,
+      sm: 12,
+      lg: 12,
+      xl: 12,
+    },
+    maxLength: 20,
+    FormatProps: {
+      allowNegative: false,
+      allowLeadingZeros: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 20) {
+          return false;
+        }
+        return true;
+      },
+    },
+  },
+  Remark: {
+    render: {
+      componentType: "textField",
+    },
+    maxLength: 100,
+  },
 };
 
 const EntryPoint = () => (
@@ -139,7 +165,10 @@ const EntryPoint = () => (
     <CustomPropertiesConfigurationProvider
       config={{
         customExtendedTypes: meta,
-        defaultGridConfig: { variant: "contained" },
+        defaultGridConfig: {
+          variant: "contained",
+          isContainedActionButton: true,
+        },
       }}
     >
       <AuthProvider>

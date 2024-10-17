@@ -24,3 +24,25 @@ export const getHoldChargeList = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getHoldChargeDropDown = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETF1HOLDCHRGTYPEDDW", reqData);
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData?.map(
+        ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
+          return {
+            ...other,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

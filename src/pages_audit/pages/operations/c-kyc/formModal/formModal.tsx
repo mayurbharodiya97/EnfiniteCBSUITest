@@ -59,22 +59,20 @@ import Document from "./DocumentTab/Document";
 import PhotoSignatureCpy from "./formDetails/formComponents/individualComps/PhotoSignCopy2";
 import { format } from "date-fns";
 import { ckyc_confirmation_form_metadata } from "./formDetails/metadata/confirmation";
-import { CloseFormDialog } from "./dialog/CloseFormDialog";
-import { PreventUpdateDialog } from "./dialog/PreventUpdateDialog";
-import { ConfirmUpdateDialog } from "./dialog/ConfirmUpdateDialog";
 import ExtractedHeader from "./ExtractedHeader";
 import HeaderForm from "./HeaderForm";
 import {
-  MessageBoxWrapper,
   Alert,
   RemarksAPIWrapper,
   GradientButton,
   ActionTypes,
   queryClient,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 
 import PhotoSign from "./formDetails/formComponents/individualComps/PhotoSign";
 import { CustomTab, useDialogStyles } from "./style";
+import { enqueueSnackbar } from "notistack";
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 export const CustomTabLabel = ({
   IconName,
@@ -189,9 +187,12 @@ export default function FormModal({
     handleCurrFormctx,
     handleUpdatectx,
     handleFromFormModectx,
+    handleModifiedColsctx,
+    handleFormDataonSavectx,
   } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const { authState } = useContext(AuthContext);
@@ -201,10 +202,7 @@ export default function FormModal({
     any | null
   >("");
   const [acctTypeState, setAcctTypeState] = useState<any | null>(null);
-  const [updateDialog, setUpdateDialog] = useState(false);
-  const [actionDialog, setActionDialog] = useState(false);
-  const [confirmMsgDialog, setConfirmMsgDialog] = useState(false);
-  const [cancelDialog, setCancelDialog] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   // const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>(null);
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false);
@@ -242,24 +240,74 @@ export default function FormModal({
       // // handleColTabChangectx(0)
       // // handleFormModalOpenOnEditctx(location?.state)
       handleFormDataonRetrievectx(data[0]);
-      onClosePreventUpdateDialog();
     },
     onError: (error: any) => {},
   });
 
+  // modify customer
+  const modifyCustMutation: any = useMutation(API.updateCustomer, {
+    onSuccess: (data: any) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      onFinalUpdatectx(false);
+      // setIsUpdated(true)
+      // console.log("data on save", data)
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+      enqueueSnackbar("Updated Successfully", { variant: "success" });
+
+      // calling this api for getting updated formdata from updated req_cd
+      let reqPayload = {
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        REQUEST_CD: data[0].REQ_CD ?? "",
+        CUSTOMER_ID: "",
+        SCREEN_REF: "MST/707",
+      };
+      mutation.mutate(reqPayload);
+      // if(data?.[0]?.REQ_CD) {
+      //     // handleReqCDctx(data?.[0]?.REQ_CD)
+      //     // handleColTabChangectx(state?.colTabValuectx+1)
+      // }
+    },
+    onError: (error: any) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      onFinalUpdatectx(false);
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+      // console.log("data on error", error)
+      // setIsUpdated(true)
+    },
+  });
+
   const confirmMutation: any = useMutation(API.ConfirmPendingCustomers, {
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       // console.log("data o n save", data)
       // handleFormModalClosectx()
       // closeForm()
-      setActionDialog(false);
-
-      setConfirmMsgDialog(true);
+      setIsOpen(false);
+      const confirmed: string = variables?.CONFIRMED;
+      const reqId = variables?.REQUEST_CD;
+      const message =
+        confirmed === "Y"
+          ? `Request ID ${reqId} confirmed Successfully.`
+          : confirmed === "M"
+          ? `Request ID ${reqId} sent for modificaction successfully.`
+          : confirmed === "R" && `Request ID ${reqId} rejected successfully.`;
+      enqueueSnackbar(message ?? "No Message", { variant: "success" });
+      closeForm();
     },
     onError: (error: any) => {
       // console.log("data o n error", error)
       // setIsUpdated(true)
-      setActionDialog(false);
+      setIsOpen(false);
       setConfirmAction(null);
     },
   });
@@ -306,7 +354,7 @@ export default function FormModal({
     // console.log(state?.formmodectx,"asddsaasddsa", location?.state)
     // setDisplayMode(formmode)
     if (Boolean(location.state)) {
-      if (!state?.isDraftSavedctx) {
+      if (!state?.isDraftSavedctx && Boolean(state?.formmodectx)) {
         if (state?.formmodectx == "new") {
           handleFormModalOpenctx(location?.state?.entityType);
           console.log("statess new", location.state);
@@ -314,28 +362,14 @@ export default function FormModal({
           handleColTabChangectx(0);
           handleFormModalOpenOnEditctx(location?.state);
 
-          let payload: {
-            COMP_CD?: string;
-            BRANCH_CD: string;
-            REQUEST_CD?: string;
-            CUSTOMER_ID?: string;
-          } = {
-            // COMP_CD: authState?.companyID ?? "",
+          let payload = {
+            COMP_CD: authState?.companyID ?? "",
             BRANCH_CD: authState?.user?.branchCode ?? "",
+            REQUEST_CD: location.state?.[0]?.data.REQUEST_ID ?? "",
+            CUSTOMER_ID: location.state?.[0]?.data.CUSTOMER_ID ?? "",
+            SCREEN_REF: "MST/707",
           };
-          if (Array.isArray(location.state) && location.state.length > 0) {
-            const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-            const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-            if (Boolean(reqCD)) {
-              payload["REQUEST_CD"] = reqCD;
-            }
-            if (Boolean(custID)) {
-              payload["CUSTOMER_ID"] = custID;
-            }
-          }
-          if (Object.keys(payload)?.length > 1) {
-            mutation.mutate(payload);
-          }
+          mutation.mutate(payload);
         }
       }
     } else {
@@ -362,21 +396,52 @@ export default function FormModal({
           if (typeof updated_tab_format === "object") {
             // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
             if (Object.keys(updated_tab_format)?.length === 0) {
-              setAlertOnUpdate(true);
+              let buttonName = await MessageBox({
+                messageTitle: "Alert",
+                message: "You have not made any changes yet.",
+                buttonNames: ["Ok"],
+              });
+              if (buttonName === "Ok") {
+                handleCurrFormctx({
+                  currentFormSubmitted: null,
+                  isLoading: false,
+                });
+                onFinalUpdatectx(false);
+                handleModifiedColsctx({});
+                handleFormDataonSavectx({});
+              }
             } else if (Object.keys(updated_tab_format)?.length > 0) {
-              setUpdateDialog(true);
+              let buttonName = await MessageBox({
+                messageTitle: "Alert",
+                message: "Are you sure you want to apply changes and update ?",
+                buttonNames: ["Yes", "No"],
+                loadingBtnName: ["Yes"],
+              });
+              if (buttonName === "Yes") {
+                const payload = {
+                  COMP_CD: authState?.companyID ?? "",
+                  updated_tab_format: updated_tab_format,
+                  update_type: update_type,
+                  CUSTOMER_ID: state?.customerIDctx ?? "",
+                  REQ_CD: state?.req_cd_ctx ?? "",
+                  REQ_FLAG: state?.customerIDctx ? "E" : "F",
+                  SAVE_FLAG: state?.customerIDctx
+                    ? ""
+                    : update_type == "save_as_draft"
+                    ? "D"
+                    : update_type == "full_save"
+                    ? "F"
+                    : "",
+                  IsNewRow: !state?.req_cd_ctx ? true : false,
+                };
+                modifyCustMutation.mutate(payload);
+              }
             }
           }
         };
         getUpdatedTabs().catch((err) =>
           console.log("update error", err.message)
         );
-        // if(Object.keys(state?.modifiedFormCols).length >0) {
-        //   setUpdateDialog(true)
-        //   // setCancelDialog(true)
-        // } else {
-        //   setAlertOnUpdate(true)
-        // }
       } else {
         if (totalTab - 1 > state?.colTabValuectx) {
           handleCurrFormctx({
@@ -590,32 +655,9 @@ export default function FormModal({
     }
   };
 
-  const openUpdateDialog = () => {
-    // if(state?.currentFormRefctx) {
-    //   if(typeof state?.currentFormRefctx.current.handleSubmitError === "function") {
-    //     state?.currentFormRefctx.current.handleSubmitError(e, "save")
-    //   }
-    // }
-    setUpdateDialog(true);
-  };
-  const onCloseUpdateDialog = () => {
-    setUpdateDialog(false);
-  };
-
   const openActionDialog = (state: string) => {
-    setActionDialog(true);
+    setIsOpen(true);
     setConfirmAction(state);
-  };
-  const onCloseActionDialog = () => {
-    setActionDialog(false);
-  };
-
-  const onCloseCancelDialog = () => {
-    setCancelDialog(false);
-  };
-
-  const onClosePreventUpdateDialog = () => {
-    setAlertOnUpdate(false);
   };
 
   const closeForm = () => {
@@ -638,19 +680,11 @@ export default function FormModal({
             return typeof ref === "function"
               ? ref()
               : ref.current &&
-                  ref.current.handleSubmitError &&
-                  ref.current.handleSubmitError(e, "save", false);
+                  ref.current.handleSubmit &&
+                  ref.current.handleSubmit(e, "save", false);
           })
         );
       }
-      // if(displayMode == "new" || displayMode == "edit") {
-      //   if(Object.keys(state?.modifiedFormCols).length >0) {
-      //     setUpdateDialog(true)
-      //     // setCancelDialog(true)
-      //   } else {
-      //     setAlertOnUpdate(true)
-      //   }
-      // }
     },
     [
       state?.currentFormctx.currentFormRefctx,
@@ -660,14 +694,19 @@ export default function FormModal({
     ]
   );
 
-  const onCancelForm = () => {
+  const onCancelForm = async () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if (state?.formmodectx !== "view") {
-      if (
-        Array.isArray(state?.formmodectx) &&
-        Object.keys(state?.formDatactx).length > 0
-      ) {
-        setCancelDialog(true);
+    if (Boolean(state?.formmodectx) && state?.formmodectx !== "view") {
+      if (Object.keys(state?.formDatactx).length > 0) {
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "Your changes will be Lost. Are you Sure?",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          closeForm();
+        }
       } else {
         closeForm();
       }
@@ -779,47 +818,6 @@ export default function FormModal({
     );
   }, [state?.retrieveFormDataApiRes]);
 
-  const dialogsMemo = React.useMemo(() => {
-    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
-    return (
-      <React.Fragment>
-        {/* confirms before updating */}
-        {updateDialog && (
-          <ConfirmUpdateDialog
-            open={updateDialog}
-            onClose={onCloseUpdateDialog}
-            mutationFormDTL={mutation}
-            setAlertOnUpdate={setAlertOnUpdate}
-          />
-        )}
-
-        {/* confirming action-remark dialog */}
-        {/* {actionDialog && <ActionDialog 
-            open={actionDialog} 
-            setOpen={setActionDialog} 
-            closeForm = {onClose}
-            action= {confirmAction}
-        />} */}
-
-        {/* data lost alert on closing form */}
-        {cancelDialog && (
-          <CloseFormDialog
-            open={cancelDialog}
-            onClose={onCloseCancelDialog}
-            closeForm={onClose}
-          />
-        )}
-
-        {/* no change found to update dialog */}
-        {alertOnUpdate && (
-          <PreventUpdateDialog
-            open={alertOnUpdate}
-            onClose={onClosePreventUpdateDialog}
-          />
-        )}
-      </React.Fragment>
-    );
-  }, [updateDialog, actionDialog, cancelDialog, alertOnUpdate]);
   const steps: any = state?.tabsApiResctx.filter((tab) => tab.isVisible);
 
   return (
@@ -1006,6 +1004,16 @@ export default function FormModal({
               errorDetail={mutation.error?.error_detail}
               color="error"
             />
+          ) : modifyCustMutation.isError ? (
+            <Alert
+              severity={modifyCustMutation.error?.severity ?? "error"}
+              errorMsg={
+                modifyCustMutation.error?.error_msg ??
+                "Something went to wrong.."
+              }
+              errorDetail={modifyCustMutation.error?.error_detail}
+              color="error"
+            />
           ) : (
             confirmMutation.isError && (
               <Alert
@@ -1032,12 +1040,11 @@ export default function FormModal({
             })}
         </Grid>
       </Grid>
-      {dialogsMemo}
 
       <RemarksAPIWrapper
         TitleText={"Confirmation"}
         onActionNo={() => {
-          setActionDialog(false);
+          setIsOpen(false);
           setConfirmAction(null);
         }}
         onActionYes={(val, rows) => {
@@ -1052,71 +1059,11 @@ export default function FormModal({
         isEntertoSubmit={true}
         AcceptbuttonLabelText="Ok"
         CanceltbuttonLabelText="Cancel"
-        open={actionDialog}
+        open={isOpen}
         rows={{}}
         isRequired={confirmAction === "Y" ? false : true}
         // isRequired={false}
       />
-
-      {/* Commented Temporary */}
-      {/* <MessageBoxWrapper
-        MessageTitle={"SUCCESS"}
-        // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
-        Message={
-          state?.customerIDctx
-            ? `Customer ID : ${state?.customerIDctx} ${
-                confirmAction === "Y"
-                  ? "Confirmed"
-                  : confirmAction === "M"
-                  ? "Query raised"
-                  : confirmAction === "R"
-                  ? "Rejected"
-                  : "no value"
-              } Sucessfully`
-            : state?.req_cd_ctx
-            ? `Request ID : ${state?.req_cd_ctx} ${
-                confirmAction === "Y"
-                  ? "Confirmed"
-                  : confirmAction === "M"
-                  ? "Query raised"
-                  : confirmAction === "R" && "Rejected"
-              } Sucessfully`
-            : "No Message"
-        }
-        // onClickButton={() => setConfirmMsgDialog(false)}
-        onClickButton={() => {
-          setConfirmAction(null);
-          setConfirmMsgDialog(false);
-          closeForm();
-        }}
-        rows={[]}
-        buttonNames={["OK"]}
-        open={confirmMsgDialog}
-      /> */}
-
-      {/* {updateDialog && <ConfirmUpdateDialog 
-            open={updateDialog} 
-            onClose={onCloseUpdateDialog} 
-            mutationFormDTL={mutation}
-        />}
-
-        {actionDialog && <ActionDialog 
-            open={actionDialog} 
-            onClose={onCloseActionDialog} 
-            closeForm = {onClose}
-            action= {confirmAction}
-        />}
-
-        {cancelDialog && <CloseFormDialog 
-            open={cancelDialog} 
-            onClose={onCloseCancelDialog} 
-            closeForm = {onClose}
-        />}
-
-        {alertOnUpdate && <PreventUpdateDialog 
-            open={alertOnUpdate} 
-            onClose={onClosePreventUpdateDialog} 
-        />} */}
     </Dialog>
     // </div>
   );

@@ -1,8 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction, greaterThanDate } from "@acuteinfo/common-base";
-import * as API from "./api";
+import * as API from "../api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
+import { greaterThanDate, utilFunction } from "@acuteinfo/common-base";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -47,10 +47,18 @@ export const ChequeBookEntryMetaData = {
       },
       branchCodeMetadata: {
         validationRun: "onChange",
+        GridProps: {
+          xs: 12,
+          md: 2,
+          sm: 2,
+          lg: 2,
+          xl: 2,
+        },
+
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
-              ACCT_TYPE: { value: "" },
+              ACCT_TYPE: { value: "", isFieldFocused: true },
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
@@ -85,13 +93,6 @@ export const ChequeBookEntryMetaData = {
         },
 
         runPostValidationHookAlways: true,
-        GridProps: {
-          xs: 12,
-          md: 2,
-          sm: 2,
-          lg: 2,
-          xl: 2,
-        },
       },
       accountTypeMetadata: {
         validationRun: "onChange",
@@ -102,16 +103,21 @@ export const ChequeBookEntryMetaData = {
           lg: 2,
           xl: 2,
         },
+
         isFieldFocused: true,
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/045",
-          });
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
+        options: (dependent, formState, _, authState) => {
+          if (dependent?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependent?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/045",
+            });
+          }
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
 
@@ -134,15 +140,15 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        render: {
+          componentType: "textField",
+        },
         GridProps: {
           xs: 12,
           md: 2.5,
           sm: 2.5,
           lg: 2.5,
           xl: 2.5,
-        },
-        render: {
-          componentType: "textField",
         },
 
         validate: (columnValue) => {
@@ -282,6 +288,9 @@ export const ChequeBookEntryMetaData = {
               TRAN_DT: {
                 value: authState?.workingDate ?? "",
               },
+              SERVICE_TAX: { value: "" },
+              AMOUNT: { value: "" },
+              NO_OF_CHQBK: { value: "1" },
 
               TOOLBAR_DTL: {
                 value:
@@ -482,8 +491,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -564,8 +573,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -662,7 +671,7 @@ export const ChequeBookEntryMetaData = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentFields?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         } else if (!field.value) {
@@ -843,7 +852,19 @@ export const ChequeBookEntryMetaData = {
         xl: 4,
       },
     },
-
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
     {
       render: {
         componentType: "amountField",
@@ -951,6 +972,7 @@ export const ChequeBookEntryMetaData = {
         xl: 4,
       },
     },
+
     {
       render: {
         componentType: "textField",
@@ -1039,6 +1061,107 @@ export const ChequeBookEntryMetaData = {
         componentType: "hidden",
       },
       name: "STATUS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FLAG",
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "AUTO_CHQBK_FLAG",
+      label: "AutoIssueFlag",
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TRAN_DT",
+      fullWidth: true,
+      label: "IssueDate",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_BY",
+      label: "EnteredBy",
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "VERIFIED_BY",
+      fullWidth: true,
+      label: "VerifiedBy",
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.FLAG?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
   ],
 };

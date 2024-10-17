@@ -101,9 +101,6 @@ export const FDDetailForm = forwardRef<any, any>(
         ...rows?.[0]?.data,
       };
       let upd = utilFunction.transformDetailsData(newData, oldData);
-      console.log("upd newData", newData);
-      console.log("upd oldData", oldData);
-      console.log("upd ", upd);
 
       if (defaultView === "view" && screenFlag !== "openLienForm") {
         finalSubmitDataRef.current = {
@@ -123,9 +120,6 @@ export const FDDetailForm = forwardRef<any, any>(
         if (finalSubmitDataRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
           return {};
         } else {
-          console.log("finalSubmitDataRef", {
-            ...finalSubmitDataRef.current?.data,
-          });
           const btnName = await MessageBox({
             messageTitle: "Confirmation",
             message: "Proceed?",

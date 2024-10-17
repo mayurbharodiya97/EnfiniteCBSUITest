@@ -27,7 +27,6 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
         CloseMessageBox();
       },
       onSuccess: (data, variables) => {
-        console.log("<<<cfcffc", data, variables);
         CloseMessageBox();
         closeDialog();
         result.mutate({
@@ -68,7 +67,7 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
       messageTitle: t("confirmation"),
       message:
         Flag === "C" ? t("AreYouSureToConfirm") : t("AreYouSureToReject"),
-      buttonNames: ["No", "Yes"],
+      buttonNames: ["Yes", "No"],
       defFocusBtnName: "Yes",
       loadingBtnName: ["Yes"],
     });

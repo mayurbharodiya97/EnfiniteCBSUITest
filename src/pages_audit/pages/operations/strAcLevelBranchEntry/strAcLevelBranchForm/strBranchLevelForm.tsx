@@ -25,6 +25,7 @@ export const StrBranchLevelForm: FC<{
 }> = ({ onClose, rowsData, isDataChangedRef }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [suspiciousTran, IsSuspiciousTran] = useState<any>(false);
+  const [suspiciousTranRefresh, setSuspiciousTranRefresh] = useState(0);
   const { t } = useTranslation();
 
   const updateBranhcDetailData: any = useMutation(API.updateBranhcDetailData, {
@@ -58,6 +59,11 @@ export const StrBranchLevelForm: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
+
+    data["TRAN_BAL"] = data?.TRAN_BAL.toString().endsWith(".00")
+      ? data.TRAN_BAL.toString().slice(0, -3)
+      : data.TRAN_BAL.toString();
+
     let upd: any = utilFunction.transformDetailsData(data, rowsData ?? {});
     if (upd?._UPDATEDCOLUMNS?.length > 0) {
       const buttonName = await MessageBox({
@@ -84,7 +90,7 @@ export const StrBranchLevelForm: FC<{
     <>
       <>
         <FormWrapper
-          key={`strBranchLevelForm`}
+          key={`strBranchLevelForm` + suspiciousTranRefresh}
           metaData={strLevelBranchEditFormMetaData as unknown as MetaDataType}
           initialValues={rowsData ?? {}}
           onSubmitHandler={onSubmitHandler}
@@ -119,8 +125,11 @@ export const StrBranchLevelForm: FC<{
       {suspiciousTran ? (
         <>
           <StrMarkAsPerSuspiciousGrid
-            onClose={() => {
+            onClose={(action) => {
               IsSuspiciousTran(false);
+              if (action === "OC") {
+                setSuspiciousTranRefresh((old) => old + 1);
+              }
             }}
             rowsData={rowsData}
           />

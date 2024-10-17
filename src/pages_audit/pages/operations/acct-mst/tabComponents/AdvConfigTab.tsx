@@ -21,7 +21,7 @@ const AdvConfigTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
   useEffect(() => {
@@ -74,7 +74,7 @@ const AdvConfigTab = () => {
         onSubmitHandler={onSubmitPDHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
+        key={"acct-mst-adv-config-tab-form" + initialVal}
         metaData={advConnfig_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

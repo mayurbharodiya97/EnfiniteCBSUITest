@@ -25,6 +25,9 @@ import {
   GradientButton,
   utilFunction,
 } from "@acuteinfo/common-base";
+import { useLocation } from "react-router-dom";
+import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
+import { useStyles } from "pages_audit/style";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -65,6 +68,8 @@ export const Trn001 = () => {
   const acctNoRef = useRef<any>(null);
   const carousalCrdLastReq = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [dateDialog, setDateDialog] = useState(false);
+  const classes = useStyles();
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
@@ -210,6 +215,23 @@ export const Trn001 = () => {
     },
   });
 
+  const getInterestCalculatePara = useMutation(API.getInterestCalculatePara, {
+    onSuccess: async (data: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "ACCTNO", false);
+      if (data?.[0]?.OPEN_DATE_PARA === "Y") {
+        setDateDialog(true);
+      }
+    },
+    onError: (error: any, variables: any) => {
+      const rowUnqID = variables?.unqID;
+      setLoadingState(rowUnqID, "ACCTNO", false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
   const getChqValidation = useMutation(GeneralAPI.getChequeNoValidation, {
     onSuccess: async (data: any, variables: any) => {
       const rowUnqID = variables?.unqID;
@@ -326,23 +348,25 @@ export const Trn001 = () => {
       CloseMessageBox();
 
       let finalMessage;
+      const scrollNo = res?.data[0]?.SCROLL1 ?? "";
       if (state?.rows?.length > 1) {
         const getVNo = res?.data?.map((ele) => ele?.TRAN_CD).join("\n");
-        const scrollNo = res?.data[0]?.SCROLL1 ?? "";
 
-        finalMessage = `Scroll No. : ${scrollNo}\nVoucher No. :\n${getVNo}`;
+        finalMessage = `Voucher No. :\n${getVNo}\nScroll Successfully Posted`;
         enqueueSnackbar("Scroll Saved Successfully", {
           variant: "success",
         });
       } else {
-        finalMessage = `Voucher No. ${res?.data[0]?.TRAN_CD ?? ""}`;
+        finalMessage = "Transaction Successfully Posted";
         enqueueSnackbar("Transaction Saved Successfully", {
           variant: "success",
         });
       }
       const msgBoxRes = await MessageBox({
         messageTitle:
-          state?.rows?.length > 0 ? "Scroll Alert" : "Transaction Alert",
+          state?.rows?.length > 1
+            ? `Scroll: ${scrollNo}`
+            : `Transaction: ${res?.data[0]?.TRAN_CD ?? ""}`,
         message: finalMessage ?? "",
         defFocusBtnName: "Ok",
         icon: "INFO",
@@ -640,6 +664,7 @@ export const Trn001 = () => {
         setReqData({});
         setCardsData([]);
         CloseMessageBox();
+        handleSetDefaultBranch(queriesResult?.[0]?.data, authState, 0);
       } else if (msgBoxRes === "No") {
         CloseMessageBox();
       }
@@ -655,6 +680,7 @@ export const Trn001 = () => {
       setTabsDetails([]);
       setReqData({});
       setCardsData([]);
+      handleSetDefaultBranch(queriesResult?.[0]?.data, authState, 0);
     }
   };
 
@@ -662,7 +688,8 @@ export const Trn001 = () => {
     if (
       Boolean(row?.accNo) &&
       Boolean(row?.accType?.value) &&
-      Boolean(row?.branch?.value)
+      Boolean(row?.branch?.value) &&
+      !Boolean(dateDialog)
     ) {
       const data = {
         COMP_CD: row?.branch?.info?.COMP_CD ?? "",
@@ -860,6 +887,29 @@ export const Trn001 = () => {
     });
   };
 
+  const handleKeyUp = (event, unqID) => {
+    // Check if Ctrl + I is pressed
+    if (event.ctrlKey && (event.key === "i" || event.key === "I")) {
+      setLoadingState(unqID, "ACCTNO", true);
+      getInterestCalculatePara.mutate({
+        A_COMP_CD: row?.branch?.info?.COMP_CD ?? "",
+        A_BRANCH_CD: row?.branch?.value ?? "",
+        A_ACCT_TYPE: row?.accType?.value ?? "",
+        A_ACCT_CD: row?.accNo ?? "",
+        A_SCREEN_REF: "TRN/001",
+        WORKING_DATE: authState?.workingDate ?? "",
+        USERNAME: authState?.user?.id ?? "",
+        USERROLE: authState?.role ?? "",
+        unqID: unqID,
+      });
+    }
+  };
+  const retrievalParaValues = (retrievalValues) => {
+    setDateDialog(false);
+    reqData.FROM_DATE = retrievalValues[0]?.value?.value;
+    reqData.TO_DATE = retrievalValues[1]?.value?.value;
+  };
+
   const maxUnqID = (state?.rows ?? [])?.reduce(
     (maxID, row) => Math.max(maxID, row?.unqID),
     0
@@ -870,7 +920,11 @@ export const Trn001 = () => {
   return (
     <>
       <DailyTransTabs
-        heading="Daily Transaction (Maker) (TRN/001)"
+        heading={utilFunction.getDynamicLabel(
+          useLocation().pathname,
+          authState?.menulistdata,
+          true
+        )}
         tabsData={tabsDetails}
         cardsData={cardsData}
         reqData={reqData}
@@ -933,6 +987,7 @@ export const Trn001 = () => {
               ref={acctNoRef}
               removeRow={removeRow}
               handleScrollBlur={handleScrollBlur}
+              onKeyUp={handleKeyUp}
             />
           </Card>
         </>
@@ -964,10 +1019,16 @@ export const Trn001 = () => {
 
       {!Boolean(viewOnly) && (
         <>
-          <GradientButton onClick={() => window.open("Calculator:///")}>
+          <GradientButton
+            onClick={() => window.open("Calculator:///")}
+            sx={{ margin: "5px" }}
+          >
             Calculator
           </GradientButton>
-          <GradientButton onClick={() => setViewOnly(true)}>
+          <GradientButton
+            onClick={() => setViewOnly(true)}
+            sx={{ margin: "5px" }}
+          >
             View All
           </GradientButton>
         </>
@@ -979,6 +1040,29 @@ export const Trn001 = () => {
           handleSetCards={handleSetCards}
           handleSetAccInfo={handleSetAccInfo}
           setViewOnly={setViewOnly}
+        />
+      )}
+      {dateDialog && (
+        <DateRetrievalDialog
+          classes={classes}
+          open={dateDialog}
+          handleClose={() => setDateDialog(false)}
+          loginState={{}}
+          retrievalParaValues={retrievalParaValues}
+          defaultData={{
+            A_FROM_DT: getInterestCalculatePara?.data?.[0]?.FROM_DT
+              ? format(
+                  new Date(getInterestCalculatePara?.data?.[0]?.FROM_DT),
+                  "yyyy/MM/dd"
+                )
+              : "",
+            A_TO_DT: getInterestCalculatePara?.data?.[0]?.TO_DT
+              ? format(
+                  new Date(getInterestCalculatePara?.data?.[0]?.TO_DT),
+                  "yyyy/MM/dd"
+                )
+              : "",
+          }}
         />
       )}
     </>
