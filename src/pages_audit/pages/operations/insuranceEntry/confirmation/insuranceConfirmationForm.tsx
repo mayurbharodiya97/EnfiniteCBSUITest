@@ -135,7 +135,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                         " " +
                         "\n" +
                         t("DoYouWantAllowTheTransaction"),
-                      buttonNames: ["No", "Yes"],
+                      buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
                     });
@@ -158,7 +158,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                       let buttonName = await MessageBox({
                         messageTitle: t("confirmation"),
                         message: t("AreYouSureToConfirm"),
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
                       });
@@ -189,7 +189,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
             const buttonName = await MessageBox({
               messageTitle: t("Confirmation"),
               message: t("DoYouWantDeleteRow"),
-              buttonNames: ["No", "Yes"],
+              buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });

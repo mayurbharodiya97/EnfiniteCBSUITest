@@ -41,6 +41,7 @@ export const documentsListDD = async (reqData) => {
           ...other,
         };
       });
+      responseData.sort((a, b) => a.label.localeCompare(b.label));
     }
 
     return responseData;

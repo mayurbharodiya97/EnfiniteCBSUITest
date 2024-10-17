@@ -417,6 +417,10 @@ export const metaData = {
         { label: "Month(s)", value: "M" },
         { label: "Year(s)", value: "Y" },
       ],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       defaultValue: "D",
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 1, xl: 1 },
@@ -510,6 +514,10 @@ export const metaData = {
       },
       name: "PERIOD_NO_D",
       label: "",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
       dependentFields: [
         "CALCSWITCH",
@@ -614,6 +622,10 @@ export const metaData = {
       name: "PRINCIPAL_AMT_D",
       required: true,
       label: "PrincipalAmount",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["principlerequire"] }],
+      },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -705,6 +717,7 @@ export const metaData = {
       },
       name: "INT_RATE_D",
       label: "Rate ",
+      defaultValue: "0.00",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       required: true,
       schemaValidation: {
@@ -811,6 +824,10 @@ export const metaData = {
         { label: "Half-Yearly", value: "H" },
         { label: "Yearly", value: "Y" },
       ],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["termrequire"] }],
+      },
       defaultValue: "M",
       fullWidth: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 2, lg: 2, xl: 2 },
@@ -1607,6 +1624,10 @@ export const metaData = {
       name: "PRINCIPAL_AMT_P",
       required: true,
       label: "PrincipalAmount",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["principlerequire"] }],
+      },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -1860,6 +1881,10 @@ export const metaData = {
         { label: "Yearly", value: "Y" },
       ],
       defaultValue: "M",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["termrequire"] }],
+      },
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
