@@ -1,25 +1,15 @@
-import {
-  AppBar,
-  Box,
-  Dialog,
-  Grid,
-  List,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Dialog, Paper } from "@mui/material";
 import { t } from "i18next";
-import { ListItemData } from "../inwardClearing/inwardClearing";
 import {
   ActionTypes,
-  GradientButton,
+  Alert,
   GridMetaDataType,
   GridWrapper,
   queryClient,
 } from "@acuteinfo/common-base";
 import { DDtransactionsMetadata } from "./paySlipMetadata";
 import { useCallback, useEffect, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RetrieveEntryGrid } from "./entries/entryGrid";
 import { getDDtransactionScreenList } from "./api";
 import { useQuery } from "react-query";
@@ -39,8 +29,6 @@ export const PayslipDDTransactionsEntry = () => {
 
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "close") {
-      console.log("closed");
-
       navigate("/cbsenfinity/dashboard");
     }
   }, []);
@@ -48,11 +36,9 @@ export const PayslipDDTransactionsEntry = () => {
   const close = () => {
     setScreenOpen(false);
   };
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(["getDDtransactionScreenList"], () =>
-    getDDtransactionScreenList({ FLAG: "E" })
+  const { data, isLoading, isFetching, isError, error } = useQuery<any, any>(
+    ["getDDtransactionScreenList"],
+    () => getDDtransactionScreenList({ FLAG: "E" })
   );
   useEffect(() => {
     return () => {
@@ -75,6 +61,14 @@ export const PayslipDDTransactionsEntry = () => {
         maxWidth="md"
       >
         <Paper sx={{ p: 2 }}>
+          {isError && (
+            <Alert
+              severity="error"
+              errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+              errorDetail={error?.error_detail}
+              color="error"
+            />
+          )}
           <GridWrapper
             key={"DDtransactionsMetadata"}
             finalMetaData={DDtransactionsMetadata as GridMetaDataType}
@@ -86,7 +80,6 @@ export const PayslipDDTransactionsEntry = () => {
             refetchData={null}
             onClickActionEvent={(index, id, currentData) => {
               if (id === "OPEN") {
-                console.log(componentTorender);
                 setComponetToRender([
                   //@ts-ignore
                   currentData?.DOC_CD, //@ts-ignore

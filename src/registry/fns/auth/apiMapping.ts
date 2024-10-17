@@ -2825,6 +2825,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
   },
+  VALIDATEPAYSLIPTRANTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEPAYSLIPTRANTYPE",
+    packageName: "",
+  },
+  GETPAYSLIPSTOPHIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSTOPHIST",
+    packageName: "",
+  },
+  GETEMPLSIGNIMG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLSIGNIMG",
+    packageName: "",
+  },
   DOPAYSLIPDDTRANSACTIONENTRY: {
     url: "/transactionServiceAPI/DOPAYSLIPDDTRANSACTIONENTRY",
     packageName: "",

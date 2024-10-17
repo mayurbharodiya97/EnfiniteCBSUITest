@@ -891,6 +891,7 @@ export const en_language_data = {
   AccountType: "Account Type",
   stopDate: "Stop Date",
   realeaseDate: "Realease Date",
+  Realease: "Realease",
   AccountTypeReqired: "Account Type is required",
   AccountTypePlaceHolder: "Select account type",
   AccountNumber: "Account Code",
@@ -1600,6 +1601,7 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
   entryStatus: "Entry Status",
   confirmStatus: "Confirmation Status",

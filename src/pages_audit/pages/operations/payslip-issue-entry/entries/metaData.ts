@@ -1,9 +1,15 @@
 import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
 import { getCalculateGstComm, getRetrievalType, geTrxDdw } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { getGstCalcAmount, getStopPaymentReasonData } from "./api";
+import {
+  getGstCalcAmount,
+  getStopPaymentReasonData,
+  validatePayslipTranType,
+} from "./api";
 import { t } from "i18next";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import i18n from "components/multiLanguage/languagesConfiguration";
+import { format } from "date-fns";
 
 export const RetrieveFormConfigMetaData = {
   form: {
@@ -12,7 +18,6 @@ export const RetrieveFormConfigMetaData = {
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -76,6 +81,7 @@ export const RetrieveFormConfigMetaData = {
       placeholder: "Select Bill Type",
       required: true,
       fullWidth: true,
+      dependentFields: ["BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
         return getRetrievalType({
           COMP_CD: authState?.companyID,
@@ -84,6 +90,11 @@ export const RetrieveFormConfigMetaData = {
         });
       },
       _optionsKey: "getCommonTypeList",
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        let value = dependentFields?.DESCRIPTION?.value;
+
+        return value;
+      },
       GridProps: { xs: 3, sm: 4, md: 2, lg: 2, xl: 2 },
 
       schemaValidation: {
@@ -230,7 +241,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "STOPPAYMENT",
       label: "",
-      defaultValue: "E",
+      defaultValue: "S",
       RadioGroupProps: { row: true },
       options: [
         {
@@ -308,7 +319,6 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: false,
     disableSorting: false,
-    // hideHeader: true,
     disableGroupBy: true,
     defaultPageSize: 15,
     containerHeight: {
@@ -928,6 +938,36 @@ export const ddTransactionFormMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_DT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ISSUE_DT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_TYPE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SCREEN_CODE",
+    },
+    {
+      render: {
         componentType: "autocomplete",
       },
       name: "C_C_T_SP_C",
@@ -937,7 +977,16 @@ export const ddTransactionFormMetaData = {
         { label: "Transfer", value: "T" },
       ],
       label: "",
-      dependentFields: ["CCTFLAG", "SCREENFLAG"],
+      dependentFields: [
+        "CCTFLAG",
+        "SCREENFLAG",
+        "TRAN_DT",
+        "ISSUE_DT",
+        "ENTERED_BRANCH_CD",
+        "REVALID_DT",
+        "SCREEN_CODE",
+        "TRAN_TYPE",
+      ],
       setFieldLabel: (dependenet, currVal) => {
         return currVal === "C"
           ? { label: "By Cash" }
@@ -946,6 +995,82 @@ export const ddTransactionFormMetaData = {
           : currVal === "G"
           ? { label: "By Clearing" }
           : { label: "By" };
+      },
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFields
+      ) => {
+        if (
+          dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
+          dependentFields?.SCREENFLAG?.value === "CANCELENTRY"
+        ) {
+          let postData = await validatePayslipTranType({
+            A_COMP_CD: authState?.companyID,
+            A_ENT_BRANCH_CD: dependentFields?.ENTERED_BRANCH_CD?.value,
+            A_TRAN_DT: dependentFields?.TRAN_DT?.value
+              ? format(new Date(dependentFields?.TRAN_DT?.value), "dd/MMM/yyyy")
+              : "",
+
+            A_ISSUE_DT: dependentFields?.ISSUE_DT?.value
+              ? format(
+                  new Date(dependentFields?.ISSUE_DT?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            A_REVALID_DT: dependentFields?.REVALID_DT?.value
+              ? format(
+                  new Date(dependentFields?.REVALID_DT?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            A_C_C_T_SP_C: currentField.value,
+            A_TRAN_TYPE: dependentFields?.TRAN_TYPE?.value,
+            A_GD_DATE: authState?.workingDate,
+            A_USER: authState?.user?.id,
+            A_USER_LEVEL: authState?.role,
+            A_SCREEN_REF: dependentFields?.SCREEN_CODE?.value,
+            A_LANG: i18n.resolvedLanguage,
+          });
+          let btn99;
+
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          for (let i = 0; i < postData.length; i++) {
+            if (postData[i]?.ERR_CODE === "999") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Account Validation Failed",
+                message: postData[i]?.ERR_MSG,
+              });
+              if (btnName === "Ok") {
+              }
+            } else if (postData[i]?.ERR_CODE === "9") {
+              if (btn99 !== "No") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: "HNI Alert",
+                  message: postData[i]?.ERR_MSG,
+                });
+              }
+            } else if (postData[i]?.ERR_CODE === "99") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: "Risk Category Alert",
+                message: postData[i]?.ERR_MSG,
+                buttonNames: ["Yes", "No"],
+              });
+
+              btn99 = btnName;
+              if (btnName === "No") {
+              }
+            } else if (postData[i]?.ERR_CODE === "0") {
+            }
+          }
+        }
+        return {
+          REGION_CD: {},
+        };
       },
 
       required: "true",
@@ -1011,8 +1136,6 @@ export const ddTransactionFormMetaData = {
         return dependentFields?.COLLECT_COMISSION_CHARGE?.value;
       },
       isReadOnly: (fieldValue, dependentFields, formState) => {
-        console.log(dependentFields);
-
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
           dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM" ||
@@ -1080,14 +1203,6 @@ export const ddTransactionFormMetaData = {
       label: "colGst",
       isReadOnly: true,
       dependentFields: ["SCREENFLAG", "COL_SER_CANCEL_CHARGE"],
-      // isReadOnly: (fieldValue, dependentFields, formState) => {
-      //   if (
-      //     dependentFields?.SCREENFLAG?.value === "REALIZECONF" ||
-      //     dependentFields?.SCREENFLAG?.value === "CANCELCONFRM"
-      //   ) {
-      //     return true;
-      //   } else return false;
-      // },
       shouldExclude: (val1, dependentFields) => {
         if (
           dependentFields?.SCREENFLAG?.value === "REALIZEENTRY" ||
@@ -1432,6 +1547,11 @@ export const ddTransactionFormMetaData = {
       label: "Reason",
       type: "text",
       dependentFields: ["SCREENFLAG"],
+      required: "true",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["stopRemarksRequired"] }],
+      },
       shouldExclude: (val1, dependentFields) => {
         if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
           return false;
@@ -1635,48 +1755,7 @@ export const ddTransactionFormMetaData = {
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
-    // {
-    //   render: {
-    //     componentType: "autocomplete",
-    //   },
-    //   name: "REASON_CD",
-    //   label: "Reason",
-    //   isFieldFocused: true,
-    //   required: true,
-    //   dependentFields: ["SCREENFLAG"],
-    //   options: (dependentValue, formState, _, authState) => {
-    //     return getStopPaymentReasonData({
-    //       COMP_CD: authState?.companyID,
-    //       BRANCH_CD: authState?.user?.branchCode,
-    //     });
-    //   },
-    //   _optionsKey: "getStopPaymentReason",
-    //   GridProps: { xs: 3, sm: 4, md: 4, lg: 4, xl: 4 },
-    //   shouldExclude: (val1, dependentFields) => {
-    //     if (dependentFields?.SCREENFLAG?.value === "STOPPAYMENT") {
-    //       return false;
-    //     }
-    //     return true;
-    //   },
-    //   postValidationSetCrossFieldValues: async (
-    //     field,
-    //     formState,
-    //     auth,
-    //     dependentFieldsValues
-    //   ) => {
-    //     console.log(formState);
 
-    //     let buttonName = await formState?.MessageBox({
-    //       messageTitle: t("Process"),
-    //       message: t("AreYouSureToProceed"),
-    //       icon: "ERROR",
-    //       buttonNames: ["Yes", "No"],
-    //     });
-
-    //     if (buttonName === "Yes") {
-    //     }
-    //   },
-    // },
     {
       render: {
         componentType: "arrayField",
@@ -1714,30 +1793,14 @@ export const ddTransactionFormMetaData = {
           },
           _optionsKey: "getStopPaymentReason",
           isReadOnly: (fieldValue, dependentFields, formState) => {
-            if (dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM") {
+            if (
+              dependentFields?.SCREENFLAG?.value === "CANCELCONFIRM" ||
+              dependentFields?.SCREENFLAG?.value === "STOPPAYMENT"
+            ) {
               return true;
             } else return false;
           },
-          // postValidationSetCrossFieldValues: async (
-          //   field,
-          //   formState,
-          //   auth,
-          //   dependentFieldsValues
-          // ) => {
-          //   console.log(formState);
-          //   if (formState && formState.refID.current) {
-          //     let buttonName = await formState?.MessageBox({
-          //       messageTitle: t("Process"),
-          //       message: t("AreYouSureToProceed"),
-          //       icon: "ERROR",
-          //       buttonNames: ["Yes", "No"],
-          //     });
 
-          //     if (buttonName === "Yes") {
-          //       formState.refID.current.handleSubmit();
-          //     }
-          //   }
-          // },
           GridProps: { xs: 6, sm: 6, md: 7, lg: 7, xl: 7 },
         },
       ],

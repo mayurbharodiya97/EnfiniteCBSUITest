@@ -1,12 +1,13 @@
 import {
   getInfavourOfData,
+  getRegionDDData,
   getRetrievalType,
   getSignatureDdnData,
 } from "../api";
 
 export const revalidateDDform = {
   form: {
-    name: "ddtransaction",
+    name: "new dd form",
     label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -54,9 +55,7 @@ export const revalidateDDform = {
       },
       name: "DEF_TRAN_CD",
       label: "billType",
-      isFieldFocused: true,
       placeholder: "Select Bill Type",
-      required: true,
       fullWidth: true,
       options: (dependentValue, formState, _, authState) => {
         return getRetrievalType({
@@ -69,37 +68,15 @@ export const revalidateDDform = {
       GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
       dependentFields: ["PENDING_FLAG"],
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "COMM_DISCRIPTION",
-    //   label: "billType",
-    //   isFieldFocused: true,
-    //   placeholder: "Select Bill Type",
-    //   isReadOnly: true,
-    //   GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
-    // },
-    // {
-    //   render: { componentType: "textField" },
-    //   name: "INFAVOUR_OF",
-    //   placeholder: "Select Infavour of",
-    //   label: "inFavourOf",
-    //   isReadOnly: true,
-    //   GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
-    // },
+
     {
       render: { componentType: "autocomplete" },
       name: "INFAVOUR_OF",
-      placeholder: "Select Infavour of",
       label: "inFavourOf",
       options: getInfavourOfData,
       _optionsKey: "getInfavourOfData",
-      defaultOptionLabel: "Select Commition Period",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
       fullWidth: true,
-      required: true,
-      autoComplete: "on",
     },
     {
       render: {
@@ -109,7 +86,6 @@ export const revalidateDDform = {
       label: "instRemarks",
       placeholder: "instRemarks",
       type: "text",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
     {
@@ -118,7 +94,6 @@ export const revalidateDDform = {
       },
       name: "PAYSLIP_NO",
       label: "payslipNumber",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -127,18 +102,51 @@ export const revalidateDDform = {
       },
       name: "AMOUNT",
       label: "amount",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
       render: { componentType: "textField" },
-      name: "REGION",
+      name: "REGION_NM",
       placeholder: "region",
       label: "region",
-      isReadOnly: true,
       type: "text",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
       fullWidth: true,
+    },
+    {
+      render: { componentType: "hidden" },
+      name: "REGION",
+      placeholder: "region",
+      label: "region",
+      disableCaching: true,
+      dependentFields: ["DEF_TRAN_CD", "FORM_MODE"],
+      options: (...arg) => {
+        if (
+          arg?.[3]?.user?.branchCode &&
+          arg?.[3]?.companyID &&
+          arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]?.TYPE_CD
+        ) {
+          return getRegionDDData({
+            BRANCH_CD: arg?.[3]?.user?.branchCode,
+            COMP_CD: arg?.[3]?.companyID,
+            COMM_TYPE_CD:
+              arg?.[2]?.["PAYSLIP_DRAFT_DTL.DEF_TRAN_CD"]?.optionData[0]
+                ?.TYPE_CD,
+            FLAG: "R",
+          });
+        }
+        return [];
+      },
+      _optionsKey: "getRegionDDData",
+      type: "text",
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      fullWidth: true,
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.FORM_MODE?.value !== "view") {
+          return false;
+        }
+        return true;
+      },
     },
     {
       render: {
@@ -146,7 +154,6 @@ export const revalidateDDform = {
       },
       name: "COMMISSION",
       label: "Commision",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -155,7 +162,6 @@ export const revalidateDDform = {
       },
       name: "OTHER_COMISSION",
       label: "otherComm",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -164,7 +170,6 @@ export const revalidateDDform = {
       },
       name: "SERVICE_CHARGE",
       label: "GST",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -173,7 +178,6 @@ export const revalidateDDform = {
       },
       name: "COL_BANK_CD",
       label: "bankCode",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -182,21 +186,19 @@ export const revalidateDDform = {
       },
       name: "BANK_NM",
       label: "bankName",
-      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 4, xl: 4 },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "SIGNATURE1_NM",
-    //   label: "signature1",
-    //   isReadOnly: true,
-    //   GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
-    // },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "textField",
+      },
+      name: "SIGNATURE1_NM",
+      label: "signature1",
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
       },
       name: "SIGNATURE1_CD",
       label: "signature1",
@@ -234,18 +236,17 @@ export const revalidateDDform = {
       },
       GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "SIGNATURE2_NM",
-    //   label: "signature2",
-    //   isReadOnly: true,
-    //   GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
-    // },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "textField",
+      },
+      name: "SIGNATURE2_NM",
+      label: "signature2",
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
       },
       name: "SIGNATURE2_CD",
       label: "signature1",
@@ -290,7 +291,6 @@ export const revalidateDDform = {
       name: "PAYMENT_AMOUNT",
       label: "PaymentAmount",
       placeholder: "",
-      isReadOnly: true,
       type: "text",
       dependentFields: ["AMOUNT"],
       textFieldStyle: {
@@ -327,7 +327,6 @@ export const revalidateDDform = {
       name: "TOTAL_AMOUNT",
       label: "TotalAmount",
       placeholder: "",
-      isReadOnly: true,
       type: "text",
       dependentFields: ["AMOUNT"],
       textFieldStyle: {

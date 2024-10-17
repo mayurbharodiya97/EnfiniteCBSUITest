@@ -230,3 +230,39 @@ export const getPayslipCancelCharge = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const validatePayslipTranType = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEPAYSLIPTRANTYPE", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getPayslipStopPaymentHistory = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPAYSLIPSTOPHIST", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getEnployeSign = async ({ ...reqPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETEMPLSIGNIMG", {
+      ...reqPara,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

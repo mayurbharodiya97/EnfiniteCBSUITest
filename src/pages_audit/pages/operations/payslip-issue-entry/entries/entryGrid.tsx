@@ -80,14 +80,10 @@ export const RetriveGridForm: FC<{
       });
     }
   }, []);
-  const mutation: any = useMutation(
-    "getRtgsRetrieveData",
-    API.retRiveGridData,
-    {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
-    }
-  );
+  const mutation: any = useMutation("retRiveGridData", API.retRiveGridData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
 
   const handlePrev = useCallback(() => {
     navigate(".");

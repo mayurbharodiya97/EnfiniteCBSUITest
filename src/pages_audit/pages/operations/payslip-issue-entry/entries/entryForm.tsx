@@ -6,6 +6,7 @@ import {
   GradientButton,
   LoadingTextAnimation,
   MetaDataType,
+  queryClient,
   RemarksAPIWrapper,
   SubmitFnType,
   usePopupContext,
@@ -100,9 +101,22 @@ const EntryFormView = ({
     ["getReasonData", requestData],
     () => API.getReasonData(requestData)
   );
+
   const { data: draftDtlData, isLoading: isdraftDtlLoading } = useQuery(
     ["draftdata", requestData],
     () => API.getRealizedHeaderData(requestData)
+  );
+  const { data: stopPaymentHistory, isLoading: stopPaymentLoading } = useQuery(
+    ["getPayslipStopPaymentHistory", {}],
+    () =>
+      API.getPayslipStopPaymentHistory({
+        ENTERED_COMP_CD: draftDtlData[0]?.ENTERED_COMP_CD,
+        ENTERED_BRANCH_CD: draftDtlData[0]?.ENTERED_BRANCH_CD,
+        TRAN_CD: rowsData.TRAN_CD,
+      }),
+    {
+      enabled: !isdraftDtlLoading,
+    }
   );
   ddTransactionFormMetaData.form.label = headerLabel;
   const voucherMutation = useMutation(getVoucherList, {
@@ -157,8 +171,6 @@ const EntryFormView = ({
       enabled: !isAcctDtlLoading,
     }
   );
-
-  console.log(cancelChargeData, "cancelChargeData");
 
   const mutation = useMutation(API.payslipRealizeEntrySave, {
     onError: async (error: any) => {
@@ -302,7 +314,7 @@ const EntryFormView = ({
     let buttonName = await MessageBox({
       messageTitle: t("Confirmatiopn"),
       message: t("AreYouSureToProceed"),
-      icon: "ERROR",
+      icon: "INFO",
       buttonNames: ["Yes", "No"],
       defFocusBtnName: "Yes",
       loadingBtnName: ["Yes"],
@@ -539,7 +551,6 @@ const EntryFormView = ({
       }
     }
   };
-  console.log(rowsData);
 
   return (
     <>
@@ -555,11 +566,12 @@ const EntryFormView = ({
       >
         {!isAcctDtlLoading &&
         !isdraftDtlLoading &&
+        !stopPaymentLoading &&
         !isReasonDataLoading &&
         !IScanclChrgDtlLoading ? (
           <>
             <FormWrapper
-              key={"modeMasterForm" + formMode}
+              key={"ddtransactionentrygrid" + formMode}
               metaData={
                 extractMetaData(
                   ddTransactionFormMetaData,
@@ -576,11 +588,12 @@ const EntryFormView = ({
               }}
               initialValues={{
                 SCREENFLAG: screenFlag,
+                SCREEN_CODE: apiReqFlag,
+                TRAN_TYPE: trans_type,
                 CCTFLAG: draftDtlData?.length > 0 ? draftDtlData[0]?.C_C_T : "",
                 REALIZE_AMT:
                   draftDtlData?.length > 0 ? draftDtlData[0]?.AMOUNT : "",
                 REALIZE_DATE_DISP: authState?.workingDate,
-                STOP_DATE: authState?.workingDate,
                 TOKEN_NO:
                   draftDtlData?.length > 0 ? draftDtlData[0]?.CHEQUE_NO : "",
                 TRF_COMP_CD_DISP: authState?.companyID,
@@ -592,8 +605,14 @@ const EntryFormView = ({
                   cancelChargeData[0]?.COLLECT_COMISSION,
                 COLLECT_COMISSION_FLAGE: cancelChargeData[0]?.FLAG_DISABLE,
                 COL_SER_CANCEL_CHARGE: cancelChargeData[0]?.COL_SER_CHARGE,
-                CANCEL_REASON: [...reasonData],
+                //@ts-ignore
+                CANCEL_REASON:
+                  rowsData?.RETRIVE_ENTRY_MODE === "R"
+                    ? [...stopPaymentHistory]
+                    : [...reasonData],
+
                 PAYSLIP_MST_DTL: acctDtlData,
+                STOP_PAY_DATE: authState?.workingDate,
               }}
               formStyle={{
                 background: "white",
@@ -602,147 +621,146 @@ const EntryFormView = ({
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  {gridData?.length !== 1 ? (
+                  <GradientButton
+                    disabled={rowsData === undefined}
+                    onClick={() => {
+                      if (currentIndex && currentIndex !== gridData) {
+                      }
+                      queryClient.clear();
+                      handlePrev();
+                    }}
+                  >
+                    {t("Previous")}
+                  </GradientButton>
+
+                  <GradientButton
+                    disabled={rowsData?.INDEX === undefined}
+                    onClick={() => {
+                      if (currentIndex && currentIndex !== gridData)
+                        handleNext();
+                      queryClient.clear();
+                    }}
+                  >
+                    {t("MoveForward")}
+                  </GradientButton>
+                  {rowsData?.RETRIVE_ENTRY_MODE === "E" ||
+                  rowsData?.RETRIVE_ENTRY_MODE === "D" ||
+                  rowsData?.RETRIVE_ENTRY_MODE === "S" ? (
                     <>
                       <GradientButton
-                        disabled={rowsData === undefined}
+                        disabled={isSubmitting}
+                        endIcon={
+                          mutation?.isLoading ? (
+                            <CircularProgress size={20} />
+                          ) : null
+                        }
                         onClick={() => {
-                          if (currentIndex && currentIndex !== gridData) {
-                          }
-                          handlePrev();
+                          let event: any = { preventDefault: () => {} };
+                          handleSubmit(event, "SAVE");
                         }}
                       >
-                        {t("Previous")}
+                        {t("save")}
                       </GradientButton>
-
-                      <GradientButton
-                        disabled={rowsData?.INDEX === undefined}
-                        onClick={() => {
-                          if (currentIndex && currentIndex !== gridData)
-                            handleNext();
-                        }}
-                      >
-                        {t("MoveForward")}
-                      </GradientButton>
-
-                      {screenFlag === "CANCELCONFIRM" ||
-                      screenFlag === "REALIZECONFIRM" ? (
-                        <>
-                          <GradientButton
-                            onClick={async () => {
-                              if (
-                                trans_type === "TC" &&
-                                rowsData?.PARA_812 === "N" &&
-                                rowsData?.RETRIVE_ENTRY_MODE === "D"
-                              ) {
-                                if (
-                                  draftDtlData[0]?.ENTERED_BY ===
-                                  draftDtlData[0]?.REVALID_BY
-                                ) {
-                                  await MessageBox({
-                                    messageTitle: t("ValidationFailed"),
-                                    message: t("ConfirmRestrictMsg"),
-                                    buttonNames: ["Ok"],
-                                  });
-                                } else {
-                                  if (
-                                    draftDtlData[0]?.ENTERED_BY ===
-                                    draftDtlData[0]?.REALIZE_BY
-                                  ) {
-                                    await MessageBox({
-                                      messageTitle: t("ValidationFailed"),
-                                      message: t("ConfirmRestrictMsg"),
-                                      buttonNames: ["Ok"],
-                                    });
-                                  }
-                                }
-                              } else if (authState?.role === "1") {
-                                const buttonName = await MessageBox({
-                                  messageTitle: t("ValidationFailed"),
-                                  message: t("authoeizationFailed"),
-                                  buttonNames: ["Yes", "No"],
-                                  loadingBtnName: ["Yes"],
-                                });
-                              } else if (rowsData?.REALIZE_FLAG === "Y") {
-                                const buttonName = await MessageBox({
-                                  messageTitle: t("ValidationFailed"),
-                                  message: t("payslipAlreadyConfirmed"),
-                                  buttonNames: ["Ok"],
-                                });
-                              } else {
-                                const buttonName = await MessageBox({
-                                  messageTitle: t("Confirmation"),
-                                  message: `${t(
-                                    "payslipRealizeconfirmRestrictNSG"
-                                  )}PAYSLIP No. ${rowsData?.PAYSLIP_NO}`,
-                                  buttonNames: ["Yes", "No"],
-                                  loadingBtnName: ["Yes"],
-                                });
-                                if (buttonName === "Yes") {
-                                  confirmMutation.mutate({
-                                    _isConfirmed: true,
-                                    TRAN_TYPE: trans_type,
-                                    ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
-                                    PARA_243: rowsData?.PARA_243,
-                                    ENETERED_COMP_CD:
-                                      rowsData?.ENETERED_COMP_CD,
-                                    ENTERED_BRANCH_CD:
-                                      rowsData?.ENTERED_BRANCH_CD,
-                                    TRAN_CD: rowsData?.TRAN_CD,
-                                    SR_CD: rowsData?.SR_CD,
-                                    PARA_812: rowsData?.PARA_812,
-                                    A_ENTRY_MODE: rowsData?.RETRIVE_ENTRY_MODE,
-                                  });
-                                }
-                              }
-                            }}
-                          >
-                            {t("Confirm")}
-                          </GradientButton>
-                          <GradientButton
-                            onClick={() => {
-                              SetDeleteRemark(true);
-                            }}
-                          >
-                            {t("Reject")}
-                          </GradientButton>
-                        </>
-                      ) : (
-                        <GradientButton
-                          disabled={isSubmitting}
-                          endIcon={
-                            mutation?.isLoading ? (
-                              <CircularProgress size={20} />
-                            ) : null
-                          }
-                          onClick={() => {
-                            let event: any = { preventDefault: () => {} };
-                            handleSubmit(event, "SAVE");
-                          }}
-                        >
-                          {t("save")}
-                        </GradientButton>
-                      )}
                     </>
                   ) : (
+                    ""
+                  )}
+                  {screenFlag === "CANCELCONFIRM" ||
+                  screenFlag === "REALIZECONFIRM" ? (
+                    <>
+                      <GradientButton
+                        onClick={async () => {
+                          if (
+                            trans_type === "TC" &&
+                            rowsData?.PARA_812 === "N" &&
+                            rowsData?.RETRIVE_ENTRY_MODE === "D"
+                          ) {
+                            if (
+                              draftDtlData[0]?.ENTERED_BY ===
+                              draftDtlData[0]?.REVALID_BY
+                            ) {
+                              await MessageBox({
+                                messageTitle: t("ValidationFailed"),
+                                message: t("ConfirmRestrictMsg"),
+                                buttonNames: ["Ok"],
+                              });
+                            } else {
+                              if (
+                                draftDtlData[0]?.ENTERED_BY ===
+                                draftDtlData[0]?.REALIZE_BY
+                              ) {
+                                await MessageBox({
+                                  messageTitle: t("ValidationFailed"),
+                                  message: t("ConfirmRestrictMsg"),
+                                  buttonNames: ["Ok"],
+                                });
+                              }
+                            }
+                          } else if (authState?.role === "1") {
+                            const buttonName = await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t("authoeizationFailed"),
+                              buttonNames: ["Yes", "No"],
+                              loadingBtnName: ["Yes"],
+                            });
+                          } else if (rowsData?.REALIZE_FLAG === "Y") {
+                            const buttonName = await MessageBox({
+                              messageTitle: t("ValidationFailed"),
+                              message: t("payslipAlreadyConfirmed"),
+                              buttonNames: ["Ok"],
+                            });
+                          } else {
+                            const buttonName = await MessageBox({
+                              messageTitle: t("Confirmation"),
+                              message: `${t(
+                                "payslipRealizeconfirmRestrictNSG"
+                              )}PAYSLIP No. ${rowsData?.PAYSLIP_NO}`,
+                              buttonNames: ["Yes", "No"],
+                              loadingBtnName: ["Yes"],
+                            });
+                            if (buttonName === "Yes") {
+                              confirmMutation.mutate({
+                                _isConfirmed: true,
+                                TRAN_TYPE: trans_type,
+                                ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
+                                PARA_243: rowsData?.PARA_243,
+                                ENETERED_COMP_CD: rowsData?.ENETERED_COMP_CD,
+                                ENTERED_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD,
+                                TRAN_CD: rowsData?.TRAN_CD,
+                                SR_CD: rowsData?.SR_CD,
+                                PARA_812: rowsData?.PARA_812,
+                                A_ENTRY_MODE: rowsData?.RETRIVE_ENTRY_MODE,
+                              });
+                            }
+                          }
+                        }}
+                      >
+                        {t("Confirm")}
+                      </GradientButton>
+                      <GradientButton
+                        onClick={() => {
+                          SetDeleteRemark(true);
+                        }}
+                      >
+                        {t("Reject")}
+                      </GradientButton>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                  {rowsData?.RETRIVE_ENTRY_MODE === "R" ? (
                     <GradientButton
-                      disabled={isSubmitting}
-                      endIcon={
-                        mutation?.isLoading ? (
-                          <CircularProgress size={20} />
-                        ) : null
-                      }
                       onClick={() => {
-                        let event: any = { preventDefault: () => {} };
-                        handleSubmit(event, "SAVE");
+                        SetDeleteRemark(true);
                       }}
                     >
-                      {t("save")}
+                      {t("Realease")}
                     </GradientButton>
+                  ) : (
+                    ""
                   )}
-
                   <GradientButton onClick={() => onClose()} color={"primary"}>
-                    Close
+                    {t("close")}
                   </GradientButton>
                 </>
               )}
@@ -779,7 +797,6 @@ const EntryFormView = ({
               setFieldError
             ) => {
               const cancleDraftData = ddformRef.current;
-              console.log("cancleDraftData", cancleDraftData);
 
               if (screenFlag === "CANCELENTRY") {
                 const newTransferAccountData = {
@@ -858,7 +875,9 @@ const EntryFormView = ({
                   newdraftData,
                   oldData
                 );
-
+                delete data.SIGNATURE1_NM;
+                delete data.SIGNATURE2_NM;
+                delete data.REGION_NM;
                 isErrorFuncRef.current = {
                   data: {
                     ...newdraftData,
@@ -869,7 +888,7 @@ const EntryFormView = ({
                     PARA_812: rowsData?.PARA_812,
                     PARA_243: rowsData?.PARA_243,
                     TRAN_TYPE: trans_type,
-                    SR_CD: rowsData?.SR_CD,
+                    SR_CD: draftDtlData[0]?.SR_CD,
                     A_ENTRY_MODE: rowsData?.RETRIVE_ENTRY_MODE,
                     COL_SER_CHARGE: cancleDraftData.COL_SER_CHARGE,
                     PAY_SLIP_NEFT_DTL: [
@@ -905,7 +924,6 @@ const EntryFormView = ({
                   endSubmit,
                   setFieldError,
                 };
-                console.log(isErrorFuncRef.current.data);
 
                 mutation.mutate({
                   ...isErrorFuncRef.current?.data,
@@ -919,7 +937,6 @@ const EntryFormView = ({
             formStyle={{
               background: "white",
               height: "auto",
-              // overflow: "scroll",
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -942,219 +959,6 @@ const EntryFormView = ({
               </>
             )}
           </FormWrapper>
-
-          {/* <AppBar position="relative" style={{ marginBottom: "10px" }}>
-            <Toolbar variant="dense" className={headerClasses.root}>
-              <Typography
-                component="span"
-                variant="h5"
-                className={headerClasses.title}
-              >
-                {t("PayslipAndDemandDraft")}
-              </Typography>
-
-              <GradientButton
-                onClick={async (e: any) => {
-                  console.log(
-                    "ddFormSubmitRef.current",
-                    ddFormSubmitRef.current
-                  );
-                  ddFormSubmitRef.current.handleSubmit({ event: "save" });
-                  e.preventDefault(); // Prevent default action
-                  if (ddFormSubmitRef.current) {
-                    await ddFormSubmitRef.current.handleSubmit(); // Await if handleSubmit is asynchronous
-                  }
-                }}
-              >
-                {t("Ok")}
-              </GradientButton>
-              <GradientButton onClick={() => setopenNewDDForm(false)}>
-                {t("Close")}
-              </GradientButton>
-            </Toolbar>
-          </AppBar>
-          <PayslipAndDDForm
-            accountDetailsForPayslip={{
-              PAYMENT_AMOUNT: draftDtlData[0]?.AMOUNT,
-              // PAYSLIPDD: draftDtlData,
-
-              PAYSLIPDD: [
-                {
-                  ...draftDtlData[0],
-                  INSTRUCTION_REMARKS: "Payslip Revalidated",
-                },
-              ],
-
-              // PAYSLIPDD: {
-              //   ...draftDtlData,
-              //   INSTRUCTION_REMARKS: "Payslip Revalidated",
-              // },
-            }}
-            defaultView={"view"}
-            handleDialogClose={() => {
-              setopenNewDDForm(false);
-            }}
-            onSubmitHandler={(
-              data: any,
-              displayData,
-              endSubmit,
-              setFieldError
-            ) => {
-              const cancleDraftData = ddformRef.current;
-              console.log("cancleDraftData", cancleDraftData);
-
-              if (screenFlag === "CANCELENTRY") {
-                const newTransferAccountData = {
-                  TRF_COMP_CD: cancleDraftData?.TRF_COMP_CD_DISP,
-                  TRF_BRANCH_CD: cancleDraftData?.TRF_BRANCH_CD,
-                  TRF_ACCT_TYPE: cancleDraftData?.TRF_ACCT_TYPE,
-                  TRF_ACCT_CD: cancleDraftData?.TRF_ACCT_CD,
-                };
-                const revalidatedDDObj = {
-                  ACCT_TYPE: acctDtlData[0]?.ACCT_TYPE,
-                  ACCT_CD: acctDtlData[0]?.ACCT_CD,
-                  COMM_TYPE_CD: draftDtlData[0]?.COMM_TYPE_CD,
-                  TOT_DD_NEFT_AMT: data?.TOTAL_AMOUNT,
-                  DD_NEFT_PAY_AMT: data?.PAYMENT_AMOUNT,
-                };
-                let newdraftData = {
-                  COLLECT_COMISSION: cancleDraftData?.COLLECT_COMISSION,
-                  REALIZE_AMT: cancleDraftData?.REALIZE_AMT,
-                  C_C_T_SP_C: cancleDraftData?.C_C_T_SP_C,
-                  REALIZE_BRANCH_CD: authState?.user?.branchCode,
-                  REALIZE_COMP_CD: authState?.companyID,
-                  REALIZE_BY: authState?.user?.id,
-                  REALIZE_DATE:
-                    format(
-                      new Date(cancleDraftData?.REALIZE_DATE_DISP),
-                      "dd/MMM/yyyy"
-                    ) ?? "",
-                  PENDING_FLAG: "Y",
-                  ...(data?.C_C_T_SP_C !== "G"
-                    ? { CHEQUE_NO: cancleDraftData?.TOKEN_NO }
-                    : {}),
-                  ...(cancleDraftData?.C_C_T_SP_C === "T"
-                    ? newTransferAccountData
-                    : {}),
-                  ...(cancleDraftData.C_C_T_SP_C === "C"
-                    ? { PENDING_FLAG: "Y" }
-                    : {}),
-
-                  ...(rowsData?.PARA_243 === "Y"
-                    ? {
-                        REALIZE_FLAG: "Y",
-                      }
-                    : {}),
-                };
-
-                const oldTransferAccountData = {
-                  TRF_COMP_CD: draftDtlData[0]?.TRF_COMP_CD,
-                  TRF_BRANCH_CD: draftDtlData[0]?.TRF_BRANCH_CD,
-                  TRF_ACCT_TYPE: draftDtlData[0]?.TRF_ACCT_TYPE,
-                  TRF_ACCT_CD: draftDtlData[0]?.TRF_ACCT_CD,
-                  // TRF_NAME: draftDtlData[0]?.TRF_NAME,
-                };
-
-                const oldData = {
-                  COLLECT_COMISSION: draftDtlData[0]?.COLLECT_COMISSION,
-                  REALIZE_AMT: draftDtlData[0]?.REALIZE_AMT,
-                  C_C_T_SP_C: draftDtlData[0]?.C_C_T_SP_C,
-                  ...(draftDtlData?.C_C_T_SP_C !== "G"
-                    ? { CHEQUE_NO: draftDtlData[0]?.CHEQUE_NO }
-                    : {}),
-                  REALIZE_BY: draftDtlData[0]?.REALIZE_BY,
-                  // REALIZE_DATE_DISP: authState?.workingDate,
-                  REALIZE_DATE: draftDtlData[0]?.REALIZE_DATE,
-                  REALIZE_BRANCH_CD: draftDtlData[0]?.REALIZE_BRANCH_CD,
-                  REALIZE_COMP_CD: draftDtlData[0]?.REALIZE_COMP_CD,
-                  PENDING_FLAG: draftDtlData[0]?.PENDING_FLAG,
-                  ...(data?.C_C_T_SP_C === "T" ? oldTransferAccountData : {}),
-                  ...(rowsData?.PARA_243 === "Y"
-                    ? {
-                        REALIZE_FLAG: rowsData.REALIZE_FLAG,
-                      }
-                    : {}),
-                };
-
-                let upd = utilFunction.transformDetailsData(
-                  newdraftData,
-                  oldData
-                );
-
-                isErrorFuncRef.current = {
-                  data: {
-                    ...newdraftData,
-                    ...upd,
-                    ENTERED_COMP_CD: authState?.companyID,
-                    ENTERED_BRANCH_CD: authState?.user?.branchCode,
-                    TRAN_CD: rowsData?.TRAN_CD,
-                    PARA_812: rowsData?.PARA_812,
-                    PARA_243: rowsData?.PARA_243,
-                    TRAN_TYPE: trans_type,
-                    SR_CD: rowsData?.SR_CD,
-                    A_ENTRY_MODE: rowsData?.RETRIVE_ENTRY_MODE,
-                    COL_SER_CHARGE: cancleDraftData.COL_SER_CHARGE,
-                    PAY_SLIP_NEFT_DTL: [
-                      {
-                        ...data,
-                        COMM_TYPE_CD: "2024",
-                        FROM_CERTI_NO: "",
-                        FROM_ACCT_CD: draftDtlData[0]?.ACCT_CD,
-                        FROM_COMP_CD: draftDtlData[0]?.COMP_CD,
-                        FROM_BRANCH_CD: draftDtlData[0]?.BRANCH_CD,
-                        FROM_ACCT_TYPE: draftDtlData[0]?.ACCT_TYPE,
-                      },
-                    ],
-                    ...revalidatedDDObj,
-                    DETAILS_DATA: {
-                      isNewRow:
-                        cancleDraftData &&
-                        cancleDraftData?.CANCEL_REASON?.length >= 0
-                          ? cancleDraftData.CANCEL_REASON
-                          : [],
-                    },
-                    PAY_FOR: "",
-                    SDC: "",
-                    SCROLL1: "",
-                    THROUGH_CHANNEL: "",
-                    REQUEST_CD: "0",
-                    REMARKS: "",
-                    DD_NEFT: "DD",
-                    SCREEN_REF: apiReqFlag,
-                  },
-                  displayData,
-                  endSubmit,
-                  setFieldError,
-                };
-                console.log(isErrorFuncRef.current.data);
-
-                mutation.mutate({
-                  ...isErrorFuncRef.current?.data,
-                });
-              }
-            }}
-            ref={ddFormSubmitRef}
-          /> */}
-          {/* <div
-            style={{
-              display: "flex",
-              width: "40%",
-              justifyContent: "space-around",
-              padding: "5px",
-            }}
-          >
-            <GradientButton style={{ width: "150px" }} onClick={() => {}}>
-              {t("Ok")}
-            </GradientButton>
-            <GradientButton
-              style={{ width: "150px" }}
-              onClick={() => {
-                setopenNewDDForm(false);
-              }}
-            >
-              {t("Close")}
-            </GradientButton>
-          </div> */}
         </Dialog>
       ) : (
         ""
