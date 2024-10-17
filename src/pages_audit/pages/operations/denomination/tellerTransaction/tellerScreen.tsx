@@ -83,7 +83,6 @@ const TellerScreen = ({ screenFlag }) => {
     "getTabsByParentTypeKeyTrn001",
     CommonApi.getTabsByParentType
   );
-  console.log(currentPath, "currentPath??>>");
 
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
