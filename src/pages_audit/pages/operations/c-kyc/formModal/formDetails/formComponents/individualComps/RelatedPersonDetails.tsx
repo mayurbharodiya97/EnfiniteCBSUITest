@@ -16,14 +16,15 @@ import { AuthContext } from "pages_audit/auth";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
 import {
-  MessageBoxWrapper,
   FormWrapper,
   MetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 const RelatedPersonDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
+  const { MessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const {
     state,
@@ -40,7 +41,6 @@ const RelatedPersonDetails = () => {
   const [isNextLoading, setIsNextLoading] = useState(false);
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const [formStatus, setFormStatus] = useState<any[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded);
   };
@@ -87,7 +87,7 @@ const RelatedPersonDetails = () => {
     }
   }, [formStatus]);
 
-  const RelPersonSubmitHandler2 = (
+  const RelPersonSubmitHandler2 = async (
     data: any,
     displayData,
     endSubmit,
@@ -124,7 +124,11 @@ const RelatedPersonDetails = () => {
           status: "error",
           coltabvalue: state?.colTabValuectx,
         });
-        setOpen(true);
+        let buttonName = await MessageBox({
+          messageTitle: "Data Validation Failed",
+          message: `In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'`,
+          buttonNames: ["Ok"],
+        });
         setFormStatus((old) => [...old, false]);
       } else {
         if (data.RELATED_PERSON_DTL) {
@@ -275,18 +279,6 @@ const RelatedPersonDetails = () => {
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
       />
-      {/* // Commented Temporary */}
-      {/* <MessageBoxWrapper
-        MessageTitle={"Data Validation Failed"}
-        Message={
-          `In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'` ??
-          "No Message"
-        }
-        onClickButton={() => setOpen(false)}
-        rows={[]}
-        buttonNames={["OK"]}
-        open={open}
-      /> */}
     </Grid>
   );
 };

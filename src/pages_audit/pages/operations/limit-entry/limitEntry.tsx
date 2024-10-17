@@ -305,7 +305,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
   if (screenFlag === "limitForTrn") {
     limitDtlForTrnmetaData.current = cloneDeep(limitEntryGridMetaData);
 
-
     if (limitDtlForTrnmetaData?.current?.gridConfig) {
       limitDtlForTrnmetaData.current.gridConfig.containerHeight = {
         min: "36vh",
@@ -619,7 +618,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
                 }))
               }
               onActionYes={(val, rows) => {
-                console.log("<<<delde", val, rows);
                 let deleteReqPara = {
                   _isNewRow: false,
                   _isDeleteRow: true,

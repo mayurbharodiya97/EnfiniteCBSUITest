@@ -205,7 +205,6 @@ export const EntryForm = (props) => {
   }, []);
 
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    console.log("<<<dadadad", data);
     // @ts-ignore
     endSubmit(true);
     let reqPara = {
@@ -242,8 +241,6 @@ export const EntryForm = (props) => {
     }
   };
 
-  console.log("<<<entry ", props);
-
   const handelChange = async (isConfirm) => {
     chequeBkValidateCfm.mutate(
       {
@@ -254,7 +251,6 @@ export const EntryForm = (props) => {
       },
       {
         onSuccess: async (data) => {
-          console.log("<<<dara", data);
           const messagebox = async (msgTitle, msg, buttonNames, icon) => {
             let buttonName = await MessageBox({
               messageTitle: msgTitle,
