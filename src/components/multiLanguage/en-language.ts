@@ -925,6 +925,7 @@ export const en_language_data = {
   CannotModifyConfirmedTransaction: "Cannot Modify Confirmed Transaction",
   CannotModifyBackDatedEntry: "Cannot Modify Back Dated Entry",
   CannotDeleteBackDatedEntry: "Cannot Delete Back Dated Entry",
+  BackDatedEntryCantBeDelete: "Backdated Entry Can't be Delete",
   CannotDeleteConfirmedTransaction: "Cannot Delete Confirmed Transaction",
   EnterRemarks: "Enter Remarks",
   EnteredBy: "Entered By",
@@ -1840,6 +1841,10 @@ export const en_language_data = {
   EnterRemovalRemarksForInsuranceConfirmation:
     "Enter Removal Remarks For Insurance Confirmation",
   InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+  InsuranceAmountCannotLessPremiumAmount:
+    "Insurance Amount cannot be less than Premium Amount",
+  DueDateShouldGreaterDateInsurance:
+    "Due Date should be Greater than Date of Insurance",
 
   //standing instruction entry
   CommisionType: "Commision Type",
