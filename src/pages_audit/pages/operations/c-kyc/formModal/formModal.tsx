@@ -702,7 +702,6 @@ export default function FormModal({
           messageTitle: "Alert",
           message: "Your changes will be Lost. Are you Sure?",
           buttonNames: ["Yes", "No"],
-          loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
           closeForm();
