@@ -524,34 +524,31 @@ export const AccdetailsFormMetaData = {
                   return { btnName, obj };
                 };
 
-                for (let i = 0; i < postData.MSG.length; i++) {
-                  if (postData.MSG[i]?.O_STATUS === "999") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "Validation Failed",
-                      message: postData.MSG[i]?.O_MESSAGE,
+                for (let i = 0; i < postData?.MSG.length; i++) {
+                  if (postData?.MSG[i]?.O_STATUS === "999") {
+                    const btnName = await formState.MessageBox({
+                      messageTitle: "ValidationFailed",
+                      message: postData?.MSG[i]?.O_MESSAGE,
                     });
                     returnVal = "";
-                  } else if (postData.MSG[i]?.O_STATUS === "99") {
-                    const { btnName, obj } = await getButtonName({
+                  } else if (postData?.MSG[i]?.O_STATUS === "99") {
+                    const btnName = await formState.MessageBox({
                       messageTitle: "Confirmation",
-                      message: postData[i]?.O_MESSAGE,
+                      message: postData?.MSG[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
                     btn99 = btnName;
                     if (btnName === "No") {
                       returnVal = "";
                     }
-                  } else if (postData.MSG[i]?.O_STATUS === "9") {
+                  } else if (postData?.MSG[i]?.O_STATUS === "9") {
+                    const btnName = await formState.MessageBox({
+                      messageTitle: "Alert",
+                      message: postData?.MSG[i]?.O_MESSAGE,
+                    });
+                  } else if (postData?.MSG[i]?.O_STATUS === "0") {
                     if (btn99 !== "No") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
-                        message: postData.MSG[i]?.O_MESSAGE,
-                      });
-                    }
-                    returnVal = postData[i];
-                  } else if (postData.MSG[i]?.O_STATUS === "0") {
-                    if (btn99 !== "No") {
-                      returnVal = postData[i];
+                      returnVal = postData;
                     } else {
                       returnVal = "";
                     }
@@ -725,13 +722,13 @@ export const AccdetailsFormMetaData = {
           },
           setFieldLabel: (dependenet, currVal) => {
             return currVal === "C"
-              ? "By Cash"
+              ? { label: "By Cash" }
               : currVal === "T"
-              ? "By Trf"
+              ? { label: "By Trf" }
               : currVal === "R"
-              ? "By Cr. Trf"
+              ? { label: "By Cr. Trf" }
               : currVal === "G"
-              ? "By CLG"
+              ? { label: "By CLG" }
               : null;
           },
           defaultValue: "T",
@@ -1585,57 +1582,41 @@ export const DraftdetailsFormMetaData = {
 
             formState.setDataOnFieldChange("DRAFT_COMM", payload);
             if (formState?.isSubmitting) return {};
+
             if (currentField?.value) {
-              let gstValue =
-                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                  ?.value === "3"
-                  ? Math.floor(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "2"
-                  ? Math.ceil(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]
-                      ?.value === "1"
-                  ? Math.round(
-                      (parseInt(currentField?.value) *
-                        parseInt(
-                          dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                            ?.value
-                        )) /
-                        100
-                    ) ?? ""
-                  : (parseInt(currentField?.value) *
-                      parseInt(
-                        dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]
-                          ?.value
-                      )) /
-                      100 ?? "";
+              const taxRateValue =
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.TAX_RATE"]?.value;
+              const taxRate = parseInt(taxRateValue) || 0; // Default to 0 if undefined or NaN
+
+              let gstValue;
+              const commissionValue = parseInt(currentField.value) || 0; // Default to 0 if undefined or NaN
+              const gstRoundValue =
+                dependentFieldsValues?.["PAYSLIP_DRAFT_DTL.GST_ROUND"]?.value;
+
+              if (gstRoundValue === "3") {
+                gstValue = Math.floor((commissionValue * taxRate) / 100);
+              } else if (gstRoundValue === "2") {
+                gstValue = Math.ceil((commissionValue * taxRate) / 100);
+              } else if (gstRoundValue === "1") {
+                gstValue = Math.round((commissionValue * taxRate) / 100);
+              } else {
+                gstValue = (commissionValue * taxRate) / 100;
+              }
+
               return {
                 SERVICE_CHARGE: {
-                  value: gstValue ?? "",
+                  value: gstValue,
                   ignoreUpdate: true,
                 },
               };
-            } else if (!currentField?.value || currentField?.value === "") {
+            } else {
               return {
                 SERVICE_CHARGE: {
                   value: "0",
                 },
               };
             }
+
             return {};
           },
 
@@ -1858,14 +1839,14 @@ export const DraftdetailsFormMetaData = {
           setFieldLabel: (dependenet, currVal) => {
             const cct = dependenet?.PAYSLIP_MST_DTL[0]?.C_C_T?.value;
             return cct === "C"
-              ? "By Cash"
+              ? { label: "By Cash" }
               : cct === "T"
-              ? "By Transfer"
+              ? { label: "By Transfer" }
               : cct === "G"
-              ? "By Clearing"
+              ? { label: "By Clearing" }
               : cct === "R"
-              ? "By Transfer"
-              : null;
+              ? { label: "By Credit Transfe" }
+              : "Transfer";
           },
         },
         {
@@ -2653,7 +2634,7 @@ export const DDtransactionsMetadata = {
   gridConfig: {
     dense: true,
     gridLabel: "Payslip/DD Transaction",
-    rowIdColumn: "DOCCD",
+    rowIdColumn: "DOC_CD",
     defaultColumnConfig: {
       width: 300,
       maxWidth: 300,
@@ -2682,7 +2663,7 @@ export const DDtransactionsMetadata = {
   filters: [],
   columns: [
     {
-      accessor: "DOCURL",
+      accessor: "DOC_NM",
       columnName: "",
       sequence: 1,
       alignment: "left",

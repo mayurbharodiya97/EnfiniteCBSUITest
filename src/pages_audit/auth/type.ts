@@ -12,6 +12,7 @@ export interface AuthStateType {
   baseCompanyID: string;
   groupName: string;
   menulistdata: any;
+  uniqueAppId: string;
   user: {
     branch: string;
     branchCode: string;
