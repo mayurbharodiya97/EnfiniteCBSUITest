@@ -72,6 +72,7 @@ export const securityDetailMetaData = {
       isReadOnly: true,
       placeholder: "CertificateNumber",
       fullWidth: true,
+      required: true,
       GridProps: {
         xs: 12,
         md: 3,

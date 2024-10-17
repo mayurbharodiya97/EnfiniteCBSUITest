@@ -294,8 +294,9 @@ export const limitEntryMetaData = {
         componentType: "autocomplete",
       },
       name: "SECURITY_CD",
-      label: "SecurityCode",
-      placeholder: "SecurityCode",
+      label: "Security",
+      required: true,
+      placeholder: "Security",
       dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
         if (
@@ -347,6 +348,7 @@ export const limitEntryMetaData = {
       label: "LimitType",
       placeholder: "LimitType",
       defaultValue: "Normal",
+      required: true,
       options: () => {
         return [
           { value: "Normal", label: "Normal Limit" },
@@ -354,6 +356,10 @@ export const limitEntryMetaData = {
         ];
       },
       _optionsKey: "limitTypeList",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       GridProps: {
         xs: 12,
         md: 1.6,

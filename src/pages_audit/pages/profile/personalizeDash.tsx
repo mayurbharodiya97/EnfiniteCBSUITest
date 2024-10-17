@@ -26,7 +26,6 @@ export const PersonalizeDash = () => {
   const dashGridRef = useRef<any>(null);
   const quickGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  // console.log("<<<quickGridData", quickGridData);
   const Dashactions: ActionTypes[] = [
     {
       actionName: "dashSave",
@@ -71,11 +70,9 @@ export const PersonalizeDash = () => {
 
   // useEffect(() => {
   //   setQuickGridData((old) => {
-  //     console.log("<<<old", old, quickGridData);
 
   //     if (Array.isArray(old) && old?.length) {
   //       old?.map((item) => {
-  //         console.log("<<iiiui", item);
   //         if (item._error) {
   //           item._error.DOC_CD = "OPTION ALREADT";
   //         }

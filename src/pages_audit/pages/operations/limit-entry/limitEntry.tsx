@@ -610,6 +610,7 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
           {isData.isDelete && (
             <RemarksAPIWrapper
               TitleText={"LimitDeleteTitle"}
+              label="Removal Remarks"
               onActionNo={() =>
                 setIsData((old) => ({
                   ...old,
@@ -617,7 +618,6 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
                 }))
               }
               onActionYes={(val, rows) => {
-                console.log("<<<delde", val, rows);
                 let deleteReqPara = {
                   _isNewRow: false,
                   _isDeleteRow: true,

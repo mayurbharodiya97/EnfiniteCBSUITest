@@ -2853,6 +2853,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DODAILYLIMITIMPSREGDML",
     packageName: "",
   },
+  DOIMPSREGCONFRIMATION: {
+    url: "/commonMasterServiceAPI/DOIMPSREGCONFRIMATION",
+    packageName: "",
+  },
   GETINTCALCPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
     packageName: "",
