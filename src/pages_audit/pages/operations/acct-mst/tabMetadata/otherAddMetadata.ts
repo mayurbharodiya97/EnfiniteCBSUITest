@@ -136,7 +136,7 @@ export const otherAdd_tab_metadata = {
           render: {
             componentType: "numberFormat",
           },
-          name: "PIN_CODE",
+          name: "PIN_CD",
           label: "PIN",
           required: true,
           schemaValidation: {
@@ -169,11 +169,11 @@ export const otherAdd_tab_metadata = {
           runPostValidationHookAlways: false,
           name: "AREA_CD",
           label: "SubArea",
-          dependentFields: ["PIN_CODE"],
+          dependentFields: ["PIN_CD"],
           disableCaching: true,
           options: (dependentValue, formState, _, authState) =>
             getOptionsOnPinParentArea(
-              _?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value,
+              _?.["OTHER_ADDRESS_DTL.PIN_CD"]?.value,
               formState,
               _,
               authState
@@ -181,7 +181,7 @@ export const otherAdd_tab_metadata = {
           _optionsKey: "indSubareaCollateralOp",
           isReadOnly: (fieldValue, dependentFields, formState) => {
             const pin_code =
-              dependentFields?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value;
+              dependentFields?.["OTHER_ADDRESS_DTL.PIN_CD"]?.value;
             if (!Boolean(pin_code)) {
               return true;
             } else if (Boolean(pin_code) && pin_code.length < 6) {
@@ -191,7 +191,7 @@ export const otherAdd_tab_metadata = {
           },
           setValueOnDependentFieldsChange: (dependentFields) => {
             const pincode =
-              dependentFields?.["OTHER_ADDRESS_DTL.PIN_CODE"]?.value;
+              dependentFields?.["OTHER_ADDRESS_DTL.PIN_CD"]?.value;
             // console.log("siudbcsiudbcisbdc setvalue", pincode)
             if (Boolean(pincode)) {
               if (pincode.length < 6) {
@@ -220,16 +220,16 @@ export const otherAdd_tab_metadata = {
                     : "",
                 },
                 // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                DISTRICT_CD: {
-                  value: field?.optionData[0]?.DISTRICT_CD
-                    ? field?.optionData[0]?.DISTRICT_CD
+                DIST_CD: {
+                  value: field?.optionData[0]?.DIST_CD
+                    ? field?.optionData[0]?.DIST_CD
                     : "",
                 },
                 DISTRICT_ignoreField: {
                   value: field?.optionData[0]?.DISTRICT_NM
                     ? field?.optionData[0]?.DISTRICT_NM
-                    : field?.optionData[0]?.DISTRICT_CD
-                    ? field?.optionData[0]?.DISTRICT_CD
+                    : field?.optionData[0]?.DIST_CD
+                    ? field?.optionData[0]?.DIST_CD
                     : "",
                 },
                 STATE: { value: field?.optionData[0]?.STATE_NM ?? "" },
@@ -250,6 +250,7 @@ export const otherAdd_tab_metadata = {
             componentType: "textField",
           },
           name: "CITY_ignoreField",
+          ignoreInSubmit: true,
           label: "City",
           schemaValidation: {
             type: "string",
@@ -289,6 +290,7 @@ export const otherAdd_tab_metadata = {
             componentType: "textField",
           },
           name: "DISTRICT_ignoreField",
+          ignoreInSubmit: true,
           label: "District Name",
           isReadOnly: true,
           placeholder: "",
@@ -308,7 +310,8 @@ export const otherAdd_tab_metadata = {
           render: {
             componentType: "hidden",
           },
-          name: "DISTRICT_CD",
+          name: "DIST_CD", //DIST_CD
+          ignoreInSubmit: true,
           label: "hidden district",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
@@ -316,7 +319,7 @@ export const otherAdd_tab_metadata = {
               dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
             // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
             if (optionData && optionData.length > 0) {
-              return optionData[0].DISTRICT_CD;
+              return optionData[0].DIST_CD;
             } else return "";
           },
         },
@@ -325,6 +328,7 @@ export const otherAdd_tab_metadata = {
             componentType: "textField",
           },
           name: "STATE",
+          ignoreInSubmit: true,
           label: "State",
           isReadOnly: true,
           placeholder: "",
@@ -345,6 +349,7 @@ export const otherAdd_tab_metadata = {
             componentType: "textField",
           },
           name: "COUNTRY",
+          ignoreInSubmit: true,
           label: "Country",
           isReadOnly: true,
           placeholder: "",
