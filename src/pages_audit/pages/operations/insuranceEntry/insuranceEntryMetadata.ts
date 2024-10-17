@@ -226,6 +226,11 @@ export const InsuranceEntryFormMetaData = {
         name: "INSURANCE_DATE",
         fullWidth: true,
         label: "InsuranceDate",
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["InsuranceRequired"] }],
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
       {
@@ -235,6 +240,11 @@ export const InsuranceEntryFormMetaData = {
         name: "DUE_DATE",
         fullWidth: true,
         label: "DueDate",
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["DueDateRequire"] }],
+        },
         dependentFields: ["INSURANCE_DATE"],
         setValueOnDependentFieldsChange: (dependent) => {
           let date = dependent["INSURANCE_DATE"]?.value;
@@ -881,7 +891,7 @@ export const ViewInsuranceMetaData = {
         componentType: "textField",
       },
       name: "ADD1",
-      label: "Address",
+      label: "Address1",
       type: "text",
       fullWidth: true,
       required: true,

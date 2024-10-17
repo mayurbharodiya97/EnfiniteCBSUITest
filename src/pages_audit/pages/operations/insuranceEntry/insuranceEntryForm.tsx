@@ -289,7 +289,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
               const buttonName = await MessageBox({
                 messageTitle: t("Confirmation"),
                 message: t("ProceedGen"),
-                buttonNames: ["No", "Yes"],
+                buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
               });
               if (buttonName === "Yes") {

@@ -205,15 +205,6 @@ const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
       queryClient.removeQueries(["getSiExecuteDetailViewData"]);
     };
   }, []);
-
-  const proccessedCount = data?.filter(
-    (item) => item.SI_EXECUTE_FLG === "Y" || item.SI_EXECUTE_FLG === "C"
-  ).length;
-
-  const pendingCount = data?.filter(
-    (item) => item.SI_EXECUTE_FLG === "N"
-  ).length;
-
   return (
     <Fragment>
       <Dialog
@@ -246,30 +237,6 @@ const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
             setrows(currentData);
           }}
         />
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          sx={{
-            height: "23px",
-            width: "100%",
-            float: "right",
-            position: "relative",
-            top: "-1.37rem",
-            right: "20%",
-            display: "flex",
-            justifyContent: "right",
-            gap: "4rem",
-            alignItems: "center",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            {"Proccessed"} : {proccessedCount}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            {"Pending"} :{pendingCount}
-          </Typography>
-        </Grid>
         {/* </div> */}
       </Dialog>
       <StandingInstructionEditData

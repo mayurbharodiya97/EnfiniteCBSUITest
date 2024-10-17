@@ -15,7 +15,11 @@ import {
 import * as API from "./api";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
-import { utilFunction, queryClient } from "@acuteinfo/common-base";
+import {
+  utilFunction,
+  queryClient,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import CRC32C from "crc-32";
 import { LinearProgress } from "@mui/material";
@@ -98,6 +102,7 @@ export const AccDetailContext = createContext<any>({
 });
 
 export const AuthProvider = ({ children }) => {
+  const { CloseMessageBox } = usePopupContext();
   const [state, dispatch] = useReducer(authReducer, inititalState);
   const [tempStore, setTempStore]: any = useState({});
   const [cardStore, setCardStore]: any = useState({});
@@ -202,6 +207,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token_status");
     localStorage.removeItem("charchecksum");
     localStorage.removeItem("specialChar");
+    CloseMessageBox();
     dispatch({
       type: "logout",
       payload: {},

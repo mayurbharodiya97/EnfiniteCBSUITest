@@ -1431,8 +1431,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
-          required: true,
-          maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
