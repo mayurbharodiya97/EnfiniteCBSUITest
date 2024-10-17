@@ -601,7 +601,7 @@ import {
   Toolbar,
   IconButton,
 } from "@mui/material";
-import { useStyles, StyledTableCell } from "./style";
+import { useStyles, StyledTableCell } from "../style";
 import { boolean } from "yup";
 import {
   PopupRequestWrapper,
@@ -613,7 +613,7 @@ import {
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import * as API from "./api";
+import * as API from "../api";
 const DualPartTable = ({
   data,
   columnDefinitions,
@@ -1003,9 +1003,8 @@ const DualPartTable = ({
                 }),
                 DENO_DTL: rowsData?.map((itemData) => {
                   const data = {
-                    TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4" ?? "",
+                    TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4",
                     DENO_QTY: itemData?.DENO_QTY ?? "",
-                    DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
                     DENO_VAL: itemData?.DENO_VAL ?? "",
                     AMOUNT: itemData?.AMOUNT?.toString() ?? "",
                   };

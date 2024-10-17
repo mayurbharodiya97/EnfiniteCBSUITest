@@ -15,11 +15,14 @@ import {
   GradientButton,
   GridMetaDataType,
   GridWrapper,
+  queryClient,
 } from "@acuteinfo/common-base";
-import { DDtransactionsMetadata } from "./paySlipMetadata";
-import { useCallback, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { RetrieveEntryGrid } from "./entries/entryGrid";
+import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { getDDtransactionScreenList } from "../payslip-issue-entry/api";
+import { RetrieveEntryGrid } from "../payslip-issue-entry/entries/entryGrid";
+import { DDtransactionsMetadata } from "../payslip-issue-entry/paySlipMetadata";
 const actions: ActionTypes[] = [
   {
     actionName: "close",
@@ -29,7 +32,7 @@ const actions: ActionTypes[] = [
     alwaysAvailable: true,
   },
 ];
-export const PayslipDDTransaction = () => {
+export const PayslipDDTrnsConfirmation = () => {
   const navigate = useNavigate();
   const [componentTorender, setComponetToRender] = useState([]);
   const [screenOpen, setScreenOpen] = useState(false);
@@ -41,86 +44,42 @@ export const PayslipDDTransaction = () => {
       navigate("/cbsenfinity/dashboard");
     }
   }, []);
-  const screens = [
-    { DOCCD: "RPT/14", DOCURL: "Payslip Issue Entry", SCREENREF: "ISSUE" },
-    {
-      DOCCD: "RPT/17",
-      DOCURL: "Payslip Realize Entry",
-      SCREENREF: "REALIZE",
-      TRAN_TYPE: "RE",
-    },
-    {
-      DOCCD: "RPT/20",
-      DOCURL: "Payslip Cancel Entry",
-      SCREENREF: "CANCEL",
-      TRAN_TYPE: "TE",
-    },
-    {
-      DOCCD: "RPT/22",
-      DOCURL: "Payslip Stop Payment",
-      SCREENREF: "STOPPAYMENT",
-      TRAN_TYPE: "S",
-    },
-    {
-      DOCCD: "RPT/21",
-      DOCURL: "Payslip Cancel Confirmation",
-      SCREENREF: "CANCELCONFRM",
-      TRAN_TYPE: "TC",
-    },
-    {
-      DOCCD: "RPT/18",
-      DOCURL: "Payslip Realization Confirmation",
-      SCREENREF: "REALIZECONF",
-      TRAN_TYPE: "RC",
-    },
-  ];
+
   const close = () => {
     setScreenOpen(false);
   };
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getModeMasterDataconf"], () => getDDtransactionScreenList({ FLAG: "C" }));
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getModeMasterDataconf"]);
+    };
+  }, []);
   return (
     <>
       <Dialog
         open={true}
         fullScreen
-        //@ts-ignore
         PaperProps={{
           style: {
             width: "32%",
             height: "auto",
-            // padding: "5px",
             overflow: "hidden",
           },
         }}
         maxWidth="md"
       >
-        {/* <AppBar
-          position="relative"
-          color="secondary"
-          style={{
-            margin: "11px",
-            width: "auto",
-            background: "var(--theme-color5)",
-          }}
-        >
-          <Toolbar variant={"dense"}>
-            <Typography
-              // className={headerClasses.title}
-              color="inherit"
-              variant={"h6"}
-              component="div"
-            >
-              {t("PayslipDDTransaction")}
-            </Typography>
-          </Toolbar>
-        </AppBar> */}
         <Paper sx={{ p: 2 }}>
           <GridWrapper
             key={"DDtransactionsMetadata"}
             finalMetaData={DDtransactionsMetadata as GridMetaDataType}
-            data={screens ?? []}
+            data={data ?? []}
             setData={() => null}
             actions={actions}
-            loading={undefined}
+            loading={isLoading || isFetching}
             setAction={setCurrentAction}
             refetchData={null}
             onClickActionEvent={(index, id, currentData) => {
@@ -128,8 +87,8 @@ export const PayslipDDTransaction = () => {
                 console.log(componentTorender);
                 setComponetToRender([
                   //@ts-ignore
-                  currentData?.DOCCD, //@ts-ignore
-                  currentData?.DOCURL, //@ts-ignore
+                  currentData?.DOC_CD, //@ts-ignore
+                  currentData?.DOC_NM, //@ts-ignore
                   currentData?.SCREENREF, //@ts-ignore
                   currentData?.TRAN_TYPE, //@ts-ignore
                 ]);

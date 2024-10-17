@@ -585,14 +585,7 @@ export const AccountCloseProcess = () => {
         justifyContent: "space-between",
       }}
     >
-      <h2>
-        {utilFunction.getDynamicLabel(
-          currentPath,
-          authState?.menulistdata,
-          true
-        )}
-        :
-      </h2>
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
       <GradientButton
         onClick={handleRetrieve}
         color={"primary"}

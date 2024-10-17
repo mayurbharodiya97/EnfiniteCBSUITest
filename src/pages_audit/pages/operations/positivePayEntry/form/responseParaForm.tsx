@@ -92,7 +92,6 @@ export const ResponseParametersForm = ({
               }}
               disabled={isSubmitting || disableButton}
               color={"primary"}
-              style={{ marginRight: "5px" }}
             >
               {t("Ok")}
             </GradientButton>
