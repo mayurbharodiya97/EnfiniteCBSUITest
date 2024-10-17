@@ -17,7 +17,6 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
-  MessageBoxWrapper,
 } from "@acuteinfo/common-base";
 
 export const CkycConfirm = () => {
@@ -26,9 +25,7 @@ export const CkycConfirm = () => {
   const [rowsData, setRowsData] = useState<any[]>([]);
   const navigate = useNavigate();
   const location: any = useLocation();
-
-  // temporary-use-state
-  const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
+  const { MessageBox } = usePopupContext();
 
   const {
     data: PendingData,
@@ -57,14 +54,18 @@ export const CkycConfirm = () => {
     },
   ];
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
       // console.log("weohhfdwef", data)
       const maker = data.rows?.[0]?.data?.MAKER;
       const loggedinUser = authState?.user?.id;
       // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM, maker, loggedinUser)
       if (maker === loggedinUser) {
-        setPreventConfirmDialog(true);
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "You can not confirm your own posted transaction",
+          buttonNames: ["Ok"],
+        });
       } else {
         // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
         if (
@@ -147,20 +148,6 @@ export const CkycConfirm = () => {
         refetchData={() => PendingRefetch()}
         // ref={myGridRef}
       />
-      {/* Commented Temporary */}
-      {/* <MessageBoxWrapper
-        MessageTitle={"ALERT"}
-        Message={"You can not confirm your own posted transaction"}
-        onClickButton={() => {
-          setPreventConfirmDialog(false);
-          // setConfirmAction(null)
-          // setConfirmMsgDialog(false)
-          // closeForm()
-        }}
-        rows={[]}
-        buttonNames={["OK"]}
-        open={preventConfirmDialog}
-      /> */}
 
       <Routes>
         <Route

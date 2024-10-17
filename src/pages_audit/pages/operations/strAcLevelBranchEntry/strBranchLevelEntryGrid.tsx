@@ -59,7 +59,7 @@ const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
     actionLabel: t("EditDetail"),
-    multiple: false,
+    multiple: undefined,
     rowDoubleClick: true,
   },
   {
@@ -290,11 +290,11 @@ const StrBranchLevelEntryGrid = () => {
                       component="div"
                     >
                       {"GOS Detail" +
-                        "" +
+                        " " +
                         "for" +
                         "-" +
                         rowData?.ACCT_CD_NEW +
-                        "" +
+                        " " +
                         rowData?.ACCT_NM}
                     </Typography>
                     <GradientButton

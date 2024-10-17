@@ -1,6 +1,6 @@
 export const dayLimitFormMetaData = {
   form: {
-    name: "day-limit-metadata",
+    name: "day-limit-metadatas",
     label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -254,7 +254,6 @@ export const dayLimitFormMetaData = {
         _,
         dependentFields
       ) => {
-        console.log("<<<rtgs", field, dependentFields);
         if (dependentFields?.DTL_RTGS?.value === "N" && Boolean(field?.value)) {
           return {
             RTGS: { value: false },
@@ -620,7 +619,7 @@ export const dayLimitFormMetaData = {
     },
     {
       render: { componentType: "amountField" },
-      name: "PG_AMT",
+      name: "PG_LIMIT",
       type: "text",
       label: "P.Gateway/Daily Limit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
@@ -1311,6 +1310,30 @@ export const dayLimitFormMetaData = {
         componentType: "hidden",
       },
       name: "DTL_BBPS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SR_CD",
     },
   ],
 };

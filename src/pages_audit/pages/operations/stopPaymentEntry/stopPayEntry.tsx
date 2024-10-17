@@ -357,8 +357,6 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                       TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
                       _isNewRow: true,
                     };
-                    console.log("<<<onsub", data, reqDataRef);
-
                     validateInsertData.mutate({
                       BRANCH_CD: data?.BRANCH_CD,
                       ACCT_TYPE: data?.ACCT_TYPE,
