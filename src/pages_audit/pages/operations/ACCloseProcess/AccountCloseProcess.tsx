@@ -32,6 +32,7 @@ import {
   MetaDataType,
   usePopupContext,
   queryClient,
+  Alert,
 } from "@acuteinfo/common-base";
 import {
   AccountCloseForm,
@@ -104,11 +105,6 @@ export const AccountCloseProcess = () => {
         setTransactionData(updatedData);
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -144,11 +140,6 @@ export const AccountCloseProcess = () => {
         setHoldTransactionData(updatedData);
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -168,11 +159,6 @@ export const AccountCloseProcess = () => {
         setMembersData(updatedData);
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -188,11 +174,6 @@ export const AccountCloseProcess = () => {
         setParkedChargesData(data);
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -215,6 +196,7 @@ export const AccountCloseProcess = () => {
             messageTitle: "Confirmation",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Yes", "No"],
+            icon: "CONFIRM",
           });
         } else if (data?.[0]?.O_STATUS === "9") {
           const btnName = await MessageBox({
@@ -227,11 +209,6 @@ export const AccountCloseProcess = () => {
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -285,11 +262,6 @@ export const AccountCloseProcess = () => {
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -313,6 +285,7 @@ export const AccountCloseProcess = () => {
               messageTitle: "Confirmation",
               message: data?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "Yes") {
               accountCloseRef.current = {
@@ -365,11 +338,6 @@ export const AccountCloseProcess = () => {
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -393,6 +361,7 @@ export const AccountCloseProcess = () => {
               messageTitle: "Confirmation",
               message: data?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "No") {
               break;
@@ -432,12 +401,6 @@ export const AccountCloseProcess = () => {
         CloseMessageBox();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
-
         CloseMessageBox();
       },
     }
@@ -457,6 +420,7 @@ export const AccountCloseProcess = () => {
         const btnName = await MessageBox({
           messageTitle: `Voucher ${scrollNo}`,
           message: remainingDetails,
+          icon: "SUCCESS",
         });
         setIsopenDDNeft(false);
         setIsFormOpen(true);
@@ -469,11 +433,6 @@ export const AccountCloseProcess = () => {
         CloseMessageBox();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -721,6 +680,16 @@ export const AccountCloseProcess = () => {
         }}
         maxWidth="sm"
       >
+        {getAccountDetails?.error && (
+          <Alert
+            severity="error"
+            errorMsg={
+              getAccountDetails?.error?.error_msg || t("Somethingwenttowrong")
+            }
+            errorDetail={getAccountDetails?.error?.error_detail || ""}
+            color="error"
+          />
+        )}
         <FormWrapper
           key={"accountFindmetaData"}
           metaData={accountFindmetaData as MetaDataType}
@@ -759,20 +728,13 @@ export const AccountCloseProcess = () => {
                 {t("Submit")}
               </GradientButton>
 
-              <GradientButton
-                onClick={handleCloseForm}
-                color={"primary"}
-                disabled={
-                  isSubmitting || getAccountDetails?.isLoading || disableButton
-                }
-              >
+              <GradientButton onClick={handleCloseForm} color={"primary"}>
                 {t("Cancel")}
               </GradientButton>
             </>
           )}
         </FormWrapper>
       </Dialog>
-
       {/* Display account details in card */}
       <DailyTransTabs
         //@ts-ignore
@@ -782,7 +744,29 @@ export const AccountCloseProcess = () => {
         reqData={[]}
         hideCust360Btn={true}
       />
-
+      {(getTransactionTabData?.error ||
+        getHoldTransactionTabData?.error ||
+        getParkedChargesTabData?.error ||
+        getMembersTabData?.error) && (
+        <Alert
+          severity="error"
+          errorMsg={
+            getTransactionTabData?.error?.error_msg ||
+            getHoldTransactionTabData?.error?.error_msg ||
+            getMembersTabData?.error?.error_msg ||
+            getParkedChargesTabData?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            getTransactionTabData?.error?.error_detail ||
+            getHoldTransactionTabData?.error?.error_detail ||
+            getMembersTabData?.error?.error_detail ||
+            getParkedChargesTabData?.error?.error_detail ||
+            ""
+          }
+          color="error"
+        />
+      )}
       <TabContext value={tabValue}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -907,32 +891,79 @@ export const AccountCloseProcess = () => {
 
       {/* ------- Account Close form -------*/}
       {accountDetails && accountDetails.length > 0 ? (
-        <FormWrapper
-          key={`AccountCloseForm`}
-          metaData={AccountCloseForm as MetaDataType}
-          initialValues={{
-            AMOUNT: parameterRef?.current?.AMOUNT ?? 0,
-          }}
-          onSubmitHandler={onAccountClosebtnSubmitHandler}
-          formState={{
-            MessageBox: MessageBox,
-            handleButtonDisable: handleButtonDisable,
-            docCD: "MST/606",
-            TYPE_CD: parameterRef?.current?.TYPE_CD ?? "",
-            accountRef: accountCloseRef?.current ?? "",
-          }}
-          formStyle={{ background: "white", height: "auto" }}
-          hideHeader={true}
-          controlsAtBottom={true}
-        >
-          {({ isSubmitting, handleSubmit }) => (
-            <>
-              {parameterRef?.current?.SETTLE_VISIBLE === "Y" && (
+        <>
+          {(getSettleCharges?.error ||
+            valildateAcctCloseBtn?.error ||
+            ((!Boolean(accountCloseRef?.current?.NEFT) ||
+              !Boolean(accountCloseRef?.current?.PAYSLIP)) &&
+              accountCloseEntry?.error)) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                getSettleCharges?.error?.error_msg ||
+                valildateAcctCloseBtn?.error?.error_msg ||
+                accountCloseEntry?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                getSettleCharges?.error?.error_detail ||
+                valildateAcctCloseBtn?.error?.error_detail ||
+                accountCloseEntry?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
+          <FormWrapper
+            key={`AccountCloseForm`}
+            metaData={AccountCloseForm as MetaDataType}
+            initialValues={{
+              AMOUNT: parameterRef?.current?.AMOUNT ?? 0,
+            }}
+            onSubmitHandler={onAccountClosebtnSubmitHandler}
+            formState={{
+              MessageBox: MessageBox,
+              handleButtonDisable: handleButtonDisable,
+              docCD: "MST/606",
+              TYPE_CD: parameterRef?.current?.TYPE_CD ?? "",
+              accountRef: accountCloseRef?.current ?? "",
+            }}
+            formStyle={{ background: "white", height: "auto" }}
+            hideHeader={true}
+            controlsAtBottom={true}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                {parameterRef?.current?.SETTLE_VISIBLE === "Y" && (
+                  <GradientButton
+                    style={{ marginRight: "5px" }}
+                    onClick={handleSettleCharges}
+                    color={"primary"}
+                    disabled={
+                      getTransactionTabData?.isLoading ||
+                      getHoldTransactionTabData?.isLoading ||
+                      getMembersTabData?.isLoading ||
+                      getParkedChargesTabData?.isLoading ||
+                      getSettleCharges?.isLoading ||
+                      valildateAcctCloseBtn?.isLoading ||
+                      disableButton
+                    }
+                    endIcon={
+                      getSettleCharges?.isLoading ? (
+                        <CircularProgress size={20} />
+                      ) : null
+                    }
+                  >
+                    {t("SettleCharges")}
+                  </GradientButton>
+                )}
                 <GradientButton
-                  style={{ marginRight: "5px" }}
-                  onClick={handleSettleCharges}
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
                   color={"primary"}
                   disabled={
+                    isSubmitting ||
                     getTransactionTabData?.isLoading ||
                     getHoldTransactionTabData?.isLoading ||
                     getMembersTabData?.isLoading ||
@@ -941,43 +972,20 @@ export const AccountCloseProcess = () => {
                     valildateAcctCloseBtn?.isLoading ||
                     disableButton
                   }
+                  endicon="CancelOutlined"
                   endIcon={
-                    getSettleCharges?.isLoading ? (
+                    valildateAcctCloseBtn?.isLoading ? (
                       <CircularProgress size={20} />
                     ) : null
                   }
+                  rotateIcon="scale(1.4) rotateY(360deg)"
                 >
-                  {t("SettleCharges")}
+                  {t("CloseAc")}
                 </GradientButton>
-              )}
-              <GradientButton
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                color={"primary"}
-                disabled={
-                  isSubmitting ||
-                  getTransactionTabData?.isLoading ||
-                  getHoldTransactionTabData?.isLoading ||
-                  getMembersTabData?.isLoading ||
-                  getParkedChargesTabData?.isLoading ||
-                  getSettleCharges?.isLoading ||
-                  valildateAcctCloseBtn?.isLoading ||
-                  disableButton
-                }
-                endicon="CancelOutlined"
-                endIcon={
-                  valildateAcctCloseBtn?.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : null
-                }
-                rotateIcon="scale(1.4) rotateY(360deg)"
-              >
-                {t("CloseAc")}
-              </GradientButton>
-            </>
-          )}
-        </FormWrapper>
+              </>
+            )}
+          </FormWrapper>
+        </>
       ) : (
         ""
       )}
@@ -995,6 +1003,22 @@ export const AccountCloseProcess = () => {
           }}
           maxWidth="lg"
         >
+          {(neftDDValidation?.error || accountCloseEntry?.error) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                neftDDValidation?.error?.error_msg ||
+                accountCloseEntry?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                neftDDValidation?.error?.error_detail ||
+                accountCloseEntry?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
           <AppBar className={classes.appBar}>
             <Toolbar variant="dense" className={classes.headerRoot}>
               <Typography

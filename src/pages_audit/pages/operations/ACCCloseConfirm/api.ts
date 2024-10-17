@@ -5,7 +5,11 @@ export const getAccountCloseConfDetail = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTCLOSECNFDTL", reqData);
   if (status === "0") {
-    return data;
+    let responseData = data;
+    responseData.map((item, index) => {
+      item.INDEX = index;
+    });
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
