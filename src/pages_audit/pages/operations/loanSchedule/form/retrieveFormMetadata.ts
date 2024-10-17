@@ -250,10 +250,6 @@ export const RetrievalFormMetaData = {
           }
           return {};
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         fullWidth: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       },

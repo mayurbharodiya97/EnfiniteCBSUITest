@@ -2093,4 +2093,5 @@ export const en_language_data = {
   Sign: "Sign",
   LabelName: "Label Name",
   ViewMaster: "View Master",
+  Advice: "Advice",
 };

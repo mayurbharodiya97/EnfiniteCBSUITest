@@ -461,10 +461,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         GridProps: { xs: 12, sm: 6, md: 6, lg: 4, xl: 3 },
       },
       {
@@ -538,10 +534,6 @@ export const form15GHEntryMetaData = {
               };
             }
           },
-        },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
         },
         GridProps: { xs: 12, sm: 6, md: 5.5, lg: 4, xl: 3 },
       },
