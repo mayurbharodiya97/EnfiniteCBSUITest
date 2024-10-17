@@ -2825,12 +2825,40 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPDOCDTL",
     packageName: "",
   },
-  DOPAYSLIPREALIZEENTRY: {
-    url: "/transactionServiceAPI/DOPAYSLIPREALIZEENTRY",
+  VALIDATEPAYSLIPTRANTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEPAYSLIPTRANTYPE",
+    packageName: "",
+  },
+  GETPAYSLIPSTOPHIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPSTOPHIST",
+    packageName: "",
+  },
+  GETEMPLSIGNIMG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLSIGNIMG",
     packageName: "",
   },
   DOPAYSLIPDDTRANSACTIONENTRY: {
     url: "/transactionServiceAPI/DOPAYSLIPDDTRANSACTIONENTRY",
+    packageName: "",
+  },
+  DOPAYSLIPDDTRNCONFIRMATION: {
+    url: "/transactionServiceAPI/DOPAYSLIPDDTRNCONFIRMATION",
+    packageName: "",
+  },
+  GETRETURNREASON: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRETURNREASON",
+    packageName: "",
+  },
+  SAVERECENTSCREENDATA: {
+    url: "dashboardServiceAPI/SAVERECENTSCREENDATA",
+    packageName: "",
+  },
+  SAVEFVSCREENDATA: {
+    url: "dashboardServiceAPI/SAVEFVSCREENDATA",
+    packageName: "",
+  },
+  GETPAYSLIPCANCELCHRG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPAYSLIPCANCELCHRG",
     packageName: "",
   },
   DODAILYLIMITIMPSREGDML: {
@@ -2843,6 +2871,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETINTCALCPARA: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
+    packageName: "",
+  },
+  GETFDDETAILREPORT: {
+    url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
     packageName: "",
   },
 };

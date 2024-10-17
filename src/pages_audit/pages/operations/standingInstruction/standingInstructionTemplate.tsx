@@ -113,7 +113,7 @@ const StandingInstruction = ({
         BRANCH_CD: authState?.user?.branchCode,
         DEF_TRAN_CD: data.COMM_TYPE_DESC,
         DESCRIPTION: data.DESCRIPTION,
-        _isNewRow: defaultView === "add" ? true : false,
+        _isNewRow: defaultView === "new" ? true : false,
         SI_SDT: {
           ...updPara2,
         },
@@ -145,7 +145,7 @@ const StandingInstruction = ({
         onSubmitHandler={onSubmitHandler}
         initialValues={
           // data ?? {} ,
-          formMode === "add"
+          formMode === "new"
             ? {
                 ...siDetails,
               }

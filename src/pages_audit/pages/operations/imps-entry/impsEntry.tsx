@@ -52,6 +52,7 @@ export const ImpsEntryCustom = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  // After Retrieve data API is calling for details data
   const impsDetails: any = useMutation(
     ["getImpsDetails"],
     () =>
@@ -88,6 +89,7 @@ export const ImpsEntryCustom = () => {
     }
   }, [retrieveData?.[0]?.TRAN_CD]);
 
+  // API calling on populate button and then set in rowdata
   const accountList: any = useMutation("getRtgsRetrieveData", API.getAcctList, {
     onSuccess: (data) => {
       setIsData((old) => ({ ...old, closeAlert: false }));
@@ -119,6 +121,7 @@ export const ImpsEntryCustom = () => {
     },
   });
 
+  // API calling for data insert and update
   const crudIMPS: any = useMutation("crudDataIMPS", API.crudDataIMPS, {
     onSuccess: (data, variables) => {
       setIsData((old) => ({ ...old, closeAlert: false }));
@@ -149,6 +152,7 @@ export const ImpsEntryCustom = () => {
     },
   });
 
+  //After data is validate succeessfully,  this function is called for Delete single row or Main , if the function is called for single row and API is called successfull for delete so accounlist API is refetching
   const validateDelete: any = useMutation(
     "getRtgsRetrieveData",
     API.validateDeleteData,
@@ -180,7 +184,7 @@ export const ImpsEntryCustom = () => {
             };
             let buttonName = await MessageBox({
               messageTitle: "confirmation",
-              message: "Are you sure to procced",
+              message: "AreYouSureToProcced",
               defFocusBtnName: "Yes",
               buttonNames: ["Yes", "No"],
               loadingBtnName: ["Yes"],
@@ -237,6 +241,7 @@ export const ImpsEntryCustom = () => {
     }
   );
 
+  //common API request for validate data before delete data
   const deleteData: any = async ({ flag, reqData, deleteSingleRowData }) => {
     let apiReq = {
       A_ENTERED_BY: retrieveData?.[0]?.ENTERED_BY ?? "",
@@ -278,6 +283,7 @@ export const ImpsEntryCustom = () => {
     validateDelete.mutate(apiReq);
   };
 
+  // after retrieve data so API calling for accountlist is automatically, then click on populate button so API is called , then compare both APIs response data and same data is removed using this function.and inside the response any message found so message is appear in messagebox.
   const messagebox = async (filterData) => {
     let insertData: any = [];
     if (filterData?.length) {
@@ -434,12 +440,14 @@ export const ImpsEntryCustom = () => {
     endSubmit(true);
   };
 
+  // if you doubleclick on Arrayfield ,so inside function get data
   const RowData = (rowData) => {
     if (formMode === "edit") {
       navigate("daylimit-form", { state: rowData });
     }
   };
 
+  // for shortcut-key
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "s" && event.ctrlKey) {

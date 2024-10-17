@@ -1,9 +1,6 @@
 import { Dialog } from "@mui/material";
-// import { GradientButton } from "components/styledComponent/button";
 import { LoanReviseMetaData } from "./metadata";
 import { t } from "i18next";
-// import { MasterDetailsForm } from "components/formcomponent";
-// import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { saveUpdatedInterestRate } from "../api";
@@ -15,7 +12,6 @@ import {
   MasterDetailsMetaData,
   usePopupContext,
 } from "@acuteinfo/common-base";
-// import { usePopupContext } from "components/custom/popupContext";
 
 export const LoanReviseForm = ({
   isDataChangedRef,
@@ -99,6 +95,7 @@ export const LoanReviseForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         saveMutation.mutate(reqPara);
