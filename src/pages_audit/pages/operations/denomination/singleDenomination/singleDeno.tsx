@@ -318,7 +318,7 @@ export const SingleDeno = () => {
                       ?.optionData?.[0]?.PARENT_CODE,
                   BRANCH_CD:
                     dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value,
-                  SCREEN_REF: "TRN/042",
+                  SCREEN_REF: "TRN/041",
                 });
               }
             } else if (action === "ACCT_TYPE") {

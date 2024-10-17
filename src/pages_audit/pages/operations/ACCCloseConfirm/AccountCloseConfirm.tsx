@@ -230,13 +230,8 @@ export const AccountCloseConfirm = () => {
         zIndex: "-1",
       }}
     >
-      <h2>
-        {utilFunction.getDynamicLabel(
-          currentPath,
-          authState?.menulistdata,
-          true
-        ) + ":"}
-      </h2>
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
+
       <GradientButton onClick={handleRetrieve} color={"primary"}>
         {t("Retrieve")}
       </GradientButton>

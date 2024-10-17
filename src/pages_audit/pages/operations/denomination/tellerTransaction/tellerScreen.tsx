@@ -47,7 +47,7 @@ import {
 import TellerDenoTableCalc from "./singleTypeTable/tellerDenoTableCalc";
 import DualTableCalc from "./dualTypeTable/dualTableCalc";
 
-const TellerScreen = () => {
+const TellerScreen = ({ screenFlag }) => {
   const formRef: any = useRef(null);
   const viewTrnRef = useRef<any>(null);
   const endSubmitRef: any = useRef(null);
@@ -83,6 +83,7 @@ const TellerScreen = () => {
     "getTabsByParentTypeKeyTrn001",
     CommonApi.getTabsByParentType
   );
+  console.log(currentPath, "currentPath??>>");
 
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
@@ -186,7 +187,7 @@ const TellerScreen = () => {
         setExtraAccDtl((prevExtraAccDtl) => ({
           ...prevExtraAccDtl,
           ...extraAccDtl,
-          TRN_TYPE: data?.TRN === "1" ? `1` : `4`,
+          TRN_TYPE: screenFlag === "CASHREC" ? `1` : `4`,
           REMARKS: data?.REMARK ?? "",
         }));
       }
@@ -556,8 +557,8 @@ const TellerScreen = () => {
     "TellerOperation/RECEIPT"
   )[0] as HTMLInputElement;
 
-  const trnField = document.getElementsByName(
-    "TellerOperation/TRN"
+  const branchField = document.getElementsByName(
+    "TellerOperation/BRANCH_CD"
   )[0] as HTMLInputElement;
 
   useEffect(() => {
@@ -565,7 +566,7 @@ const TellerScreen = () => {
       if (event.key === "Tab" && viewTrnRef.current) {
         // console.log(viewTrnRef.current, "viewTrnRef.current");
         // viewTrnRef.current.focus();
-        trnField.focus();
+        branchField.focus();
         // event.preventDefault();
       }
     };
@@ -580,10 +581,6 @@ const TellerScreen = () => {
       }
     };
   }, [textField, viewTrnRef]);
-  // useEffect(() => {
-  //   console.log(cardTabsReq, "cardTabsReq");
-  // }, [cardTabsReq]);
-
   const getCardColumnValue = () => {
     const keys = [
       "WITHDRAW_BAL",
@@ -620,17 +617,54 @@ const TellerScreen = () => {
     }
   }, [cardDetails]);
 
+  const headingWithButton = (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
+      <GradientButton
+        // ref={buttonRef}
+        style={{ marginRight: "5px" }}
+        onClick={(event) => {
+          dispatch({
+            type: SingleTableActionTypes?.SET_VIEWACCTDETAILS_VAL,
+            payload: true,
+          });
+        }}
+        color={"primary"}
+        disabled={false}
+        ref={viewTrnRef}
+      >
+        View Trn
+      </GradientButton>
+    </div>
+  );
+
+  useEffect(() => {
+    setTabsDetails([]);
+    setCardDetails([]);
+    setCardTabsReq({});
+  }, [screenFlag]);
+
+  const setOpenDenoTable = (value) => {
+    dispatch({
+      type: SingleTableActionTypes?.SET_DISP_TABLE,
+      payload: value,
+    });
+  };
+
   return (
     <>
       <DailyTransTabs
-        heading={utilFunction.getDynamicLabel(
-          currentPath,
-          authState?.menulistdata,
-          false
-        )}
+        heading={headingWithButton as any}
         tabsData={tabsDetails}
         cardsData={cardDetails}
         reqData={cardTabsReq}
+        key={screenFlag}
       />
 
       {(isTabsLoading || getData?.isLoading) && (
@@ -639,141 +673,102 @@ const TellerScreen = () => {
           sx={{ margin: "0px 10px 0px 10px" }}
         />
       )}
-      <FormWrapper
-        key={`TellerScreen`}
-        metaData={TellerScreenMetadata as MetaDataType}
-        initialValues={{} as InitialValuesType}
-        onSubmitHandler={onSubmitHandler}
-        formStyle={{
-          background: "white",
-          padding: "0px 10px 10px 10px !important",
-        }}
-        controlsAtBottom={false}
-        onFormButtonClickHandel={(id) => {}}
-        formState={{
-          MessageBox: MessageBox,
-          setCardDetails,
-          docCd: "TRN/039",
-          getCardColumnValue,
-        }}
-        setDataOnFieldChange={async (action, payload) => {
-          if (action === "RECEIPT" || action === "PAYMENT") {
-            let event: any = { preventDefault: () => {} };
-            formRef?.current?.handleSubmit(event, "SAVE");
-            if (denoTableType === "single") {
-              const formattedDate = format(
-                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                "dd/MMM/yyyy"
-              ).toUpperCase();
-              setBtnLoading((pre) => ({ ...pre, table1: true }));
-              getData.mutate({
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: authState?.user?.branchCode,
-                USER_NAME: authState?.user?.id,
-                // TRAN_DT: "03/FEB/2024",
-                TRAN_DT: formattedDate,
-                FLAG: "TABLE1",
-              });
-            } else if (denoTableType === "dual") {
-              const formattedDate = format(
-                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                "dd/MMM/yyyy"
-              ).toUpperCase();
-              setBtnLoading((pre) => ({ ...pre, table2: true }));
-              getData.mutate({
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: authState?.user?.branchCode,
-                USER_NAME: authState?.user?.id,
-                // TRAN_DT: "03/FEB/2024",
-                TRAN_DT: formattedDate,
-                FLAG: "TABLE2",
-              });
-            }
-          } else if (action === "TRN") {
-            TellerScreenMetadata.form.label =
-              payload?.value === "1"
-                ? "Cash Receipt Entry - TRN/039"
-                : "Cash Payment Entry - TRN/040";
-            Boolean(data?.value) && data?.value === "S"
-              ? dispatch({
-                  type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
-                  payload: true,
-                })
-              : dispatch({
-                  type: SingleTableActionTypes?.SET_SINGLEDENO_SHOW,
-                  payload: false,
+      <Paper sx={{ margin: "10px", marginBottom: "15px" }}>
+        <FormWrapper
+          key={`TellerScreen` + screenFlag}
+          metaData={TellerScreenMetadata as MetaDataType}
+          initialValues={{} as InitialValuesType}
+          onSubmitHandler={onSubmitHandler}
+          hideHeader={true}
+          formStyle={{
+            background: "white",
+            padding: "0px 10px 10px 10px !important",
+          }}
+          controlsAtBottom={false}
+          onFormButtonClickHandel={(id) => {}}
+          formState={{
+            MessageBox: MessageBox,
+            setCardDetails,
+            docCd: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
+            getCardColumnValue,
+            screenFlag,
+          }}
+          setDataOnFieldChange={async (action, payload) => {
+            if (action === "RECEIPT" || action === "PAYMENT") {
+              let event: any = { preventDefault: () => {} };
+              formRef?.current?.handleSubmit(event, "SAVE");
+              if (denoTableType === "single") {
+                const formattedDate = format(
+                  parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                  "dd/MMM/yyyy"
+                ).toUpperCase();
+                setBtnLoading((pre) => ({ ...pre, table1: true }));
+                getData.mutate({
+                  COMP_CD: authState?.companyID,
+                  BRANCH_CD: authState?.user?.branchCode,
+                  USER_NAME: authState?.user?.id,
+                  // TRAN_DT: "03/FEB/2024",
+                  TRAN_DT: formattedDate,
+                  FLAG: "TABLE1",
                 });
-            finalScreenRef = Boolean(action === "TRN")
-              ? Boolean(data?.value === "1")
-                ? "TRN/039"
-                : Boolean(data?.value === "P")
-                ? "TRN/040"
-                : ""
-              : "";
-          } else if (action === "ACCT_CD") {
-            if (
-              Boolean(payload?.carousalCardData) &&
-              Boolean(payload?.carousalCardData.length)
-            ) {
-              setCardDetails(payload?.carousalCardData);
-            }
-            if (payload) {
-              // console.log(payload, "payload");
-              const { dependentFieldValues, paddedAcctcode } = payload;
-              setCardTabsReq({
-                COMP_CD: authState?.companyID,
-                ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
-                ACCT_CD: paddedAcctcode,
-                PARENT_TYPE:
-                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE,
-                PARENT_CODE:
-                  dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_CODE,
-                BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
-                SCREEN_REF: "TRN/039",
-              });
-            }
-          } else if (action === "ACCT_TYPE") {
-            setTabsDetails([]);
-            setCardDetails([]);
-            if (Boolean(payload?.currentField?.value)) {
-              const tabApiReqPara = {
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: payload?.branch_cd,
-                ACCT_TYPE: payload?.currentField?.value,
-              };
-              fetchTabsData({
-                cacheId: tabApiReqPara,
-                reqData: tabApiReqPara,
-              });
-            }
-          } else if (action === "BRANCH_CD") {
-            // console.log("csdkjbnvcdiojv");
-            // setTabsDetails([]);
-            // setCardDetails([]);
-          }
-        }}
-        ref={formRef}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            <GradientButton
-              // ref={buttonRef}
-              style={{ marginRight: "5px" }}
-              onClick={(event) => {
-                dispatch({
-                  type: SingleTableActionTypes?.SET_VIEWACCTDETAILS_VAL,
-                  payload: true,
+              } else if (denoTableType === "dual") {
+                const formattedDate = format(
+                  parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                  "dd/MMM/yyyy"
+                ).toUpperCase();
+                setBtnLoading((pre) => ({ ...pre, table2: true }));
+                getData.mutate({
+                  COMP_CD: authState?.companyID,
+                  BRANCH_CD: authState?.user?.branchCode,
+                  USER_NAME: authState?.user?.id,
+                  // TRAN_DT: "03/FEB/2024",
+                  TRAN_DT: formattedDate,
+                  FLAG: "TABLE2",
                 });
-              }}
-              color={"primary"}
-              disabled={false}
-              ref={viewTrnRef}
-            >
-              View Trn
-            </GradientButton>
-          </>
-        )}
-      </FormWrapper>
+              }
+            } else if (action === "ACCT_CD") {
+              if (
+                Boolean(payload?.carousalCardData) &&
+                Boolean(payload?.carousalCardData.length)
+              ) {
+                setCardDetails(payload?.carousalCardData);
+              }
+              if (payload) {
+                // console.log(payload, "payload");
+                const { dependentFieldValues, paddedAcctcode } = payload;
+                setCardTabsReq({
+                  COMP_CD: authState?.companyID,
+                  ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                  ACCT_CD: paddedAcctcode,
+                  PARENT_TYPE:
+                    dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
+                      ?.PARENT_TYPE,
+                  PARENT_CODE:
+                    dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
+                      ?.PARENT_CODE,
+                  BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+                  SCREEN_REF: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
+                });
+              }
+            } else if (action === "ACCT_TYPE") {
+              setTabsDetails([]);
+              setCardDetails([]);
+              if (Boolean(payload?.currentField?.value)) {
+                const tabApiReqPara = {
+                  COMP_CD: authState?.companyID,
+                  BRANCH_CD: payload?.branch_cd,
+                  ACCT_TYPE: payload?.currentField?.value,
+                };
+                fetchTabsData({
+                  cacheId: tabApiReqPara,
+                  reqData: tabApiReqPara,
+                });
+              }
+            }
+          }}
+          ref={formRef}
+        ></FormWrapper>
+      </Paper>
       {/* {Boolean(state?.confirmation) && !Boolean(haveerror) ? (
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}
@@ -874,25 +869,25 @@ const TellerScreen = () => {
       {state?.displayTable ? (
         <TellerDenoTableCalc
           displayTable={state?.displayTable}
-          setOpenDenoTable={() => {}}
+          setOpenDenoTable={setOpenDenoTable}
           formData={state?.fieldsData}
           data={data ?? []}
           isLoading={getData?.isLoading}
           onCloseTable={onCloseTable}
           initRemainExcess={
-            Boolean(state?.fieldsData?.TRN === "1")
+            screenFlag === "CASHREC"
               ? state?.fieldsData?.RECEIPT
-              : Boolean(state?.fieldsData?.TRN === "4")
+              : screenFlag === "CASHPAY"
               ? state?.fieldsData?.PAYMENT
               : "0"
           }
           gridLable={
-            state?.fieldsData?.TRN === "1"
+            screenFlag === "CASHREC"
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
-              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
+              : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Payment Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
-          screenRef={""}
-          entityType={""}
+          screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
+          entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
           setCount={() => {}}
         />
       ) : null}
@@ -914,12 +909,12 @@ const TellerScreen = () => {
               : state?.fieldsData?.PAYMENT) || 0
           }
           gridLable={
-            state?.fieldsData?.TRN === "1"
+            screenFlag === "CASHREC"
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
-          screenRef={"TRN/041"}
-          entityType={"MULTIRECPAY"}
+          screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
+          entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
         />
       ) : null}
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}

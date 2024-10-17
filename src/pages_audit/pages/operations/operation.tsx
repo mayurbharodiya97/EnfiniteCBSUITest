@@ -167,7 +167,14 @@ export const OperationsMenu = () => (
       path="insurance-confirmation/*"
       element={<ConfirmationGridWrapper screenFlag="insuranceCFM" />}
     />
-    <Route path="teller/*" element={<TellerScreen />} />
+    <Route
+      path="cash-receipt/*"
+      element={<TellerScreen screenFlag={"CASHREC"} />}
+    />
+    <Route
+      path="cash-payment/*"
+      element={<TellerScreen screenFlag={"CASHPAY"} />}
+    />
     <Route path="single-denomination/*" element={<SingleDenomination />} />
     <Route
       path="confirm-ckyc/*"
