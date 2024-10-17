@@ -91,7 +91,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
   // save new account entry
   const saveAcctMutation: any = useMutation(API.accountSave, {
     onSuccess: (data) => {
-      enqueueSnackbar("Account Saved Successfully", { variant: "success" });
+      enqueueSnackbar("Saved Successfully", { variant: "success" });
       closeForm();
     },
     onError: (error: any) => {},
@@ -106,19 +106,9 @@ const AcctModal = ({ onClose, formmode, from }) => {
   // confirm acount entry
   const confirmMutation: any = useMutation(API.confirmAccount, {
     onSuccess: async (data) => {
-      // console.log("data o n save", data)
-      // handleFormModalClosectx()
-      // closeForm()
       setIsOpen(false);
-      // setConfirmMsgDialog(true)
-      let buttonName = await MessageBox({
-        messageTitle: "SUCCESS",
-        message: "confirmed successfully!",
-        buttonNames: ["Ok"],
-      });
-      if (buttonName === "Ok") {
-        closeForm();
-      }
+      enqueueSnackbar("Confirmed successfully", { variant: "success" });
+      closeForm();
     },
     onError: async (error: any) => {
       // console.log("data o n error", error)
@@ -333,7 +323,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
                     updated_tab_format: updated_tab_format,
                     update_type: update_type,
                   };
-                  modifyAcctMutation.mutate({});
+                  modifyAcctMutation.mutate(reqPara);
                 }
               }
             }

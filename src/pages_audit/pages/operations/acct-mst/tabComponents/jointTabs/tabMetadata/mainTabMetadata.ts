@@ -107,7 +107,7 @@ export const main_tab_metadata = {
                   //   loadingBtnName: ["Yes"],
                 });
                 if (buttonName === "No") {
-                  formState?.handlecustomerIDctx("");
+                  // formState?.handlecustomerIDctx("");
                   return {
                     CUSTOMER_ID: { value: "", ignoreUpdate: true },
                   };
