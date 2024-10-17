@@ -326,6 +326,7 @@ export const chequeReturnPostFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Validation Failed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "9") {
@@ -333,6 +334,7 @@ export const chequeReturnPostFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = "";
@@ -341,6 +343,7 @@ export const chequeReturnPostFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -1338,6 +1341,7 @@ export const shareDividendMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Validation Failed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
@@ -1346,6 +1350,7 @@ export const shareDividendMetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -1357,6 +1362,7 @@ export const shareDividendMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = "";

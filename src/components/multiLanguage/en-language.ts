@@ -132,6 +132,7 @@ export const en_language_data = {
   InstallmentAmount: "Installment Amount",
   DueAmount: "Due Amount",
   DueDate: "Due Date",
+  DueDateRequire: "Due Date is required.",
   InstallmentDepositedAmount: "Installment Deposited Amount",
   DepositedInstallment: "Deposited Installment",
   Interest: "Interest",
@@ -885,6 +886,9 @@ export const en_language_data = {
   newmode: "new mode",
   editmode: "edit mode",
   viewmode: "view mode",
+  FileName: "File Name",
+  ClearAll: "CLEAR ALL",
+  ViewFile: "VIEW FILE",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
@@ -916,11 +920,13 @@ export const en_language_data = {
   ConfirmationDetail: "Confirmation Detail",
   AreYouSureToConfirm: "Are you sure to Confirm",
   AreYouSureToReject: "Are you sure to Reject",
+  AreYouSureToProcced: "Are you sure to Procced ?",
   Confirm: "Confirm",
-  ConfirmRestrictMsg: "You can not confirm your own posted transaction",
+  ConfirmRestrictMsg: "You can not confirm your own posted transaction.",
   CannotModifyConfirmedTransaction: "Cannot Modify Confirmed Transaction",
   CannotModifyBackDatedEntry: "Cannot Modify Back Dated Entry",
   CannotDeleteBackDatedEntry: "Cannot Delete Back Dated Entry",
+  BackDatedEntryCantBeDelete: "Backdated Entry Can't be Delete",
   CannotDeleteConfirmedTransaction: "Cannot Delete Confirmed Transaction",
   EnterRemarks: "Enter Remarks",
   EnteredBy: "Entered By",
@@ -952,7 +958,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You want to delete this row?",
+  DoYouWantDeleteRow: "Do you want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -991,7 +997,7 @@ export const en_language_data = {
   Apply: "Apply",
   Clear: "Clear",
   AppliedFilters: "Applied Filters",
-  TotalNoofRecords: "Total No. of ",
+  TotalNoofRecords: "Total No. of",
   RetrievalParameters: "Retrieval Parameters",
   Searched: "Search",
   Showexportoptions: "Show export options",
@@ -1020,6 +1026,9 @@ export const en_language_data = {
   Nodatafoundtoexports: "No data found to export!",
   Pleaseselectatleastonecolumn: "Please select atleast one column!",
   ColumnstoExport: "Columns to Export",
+  ExportReportform: "Export Report form",
+  Selectfiletype: "Select file type",
+  ShowHeader: "Show Header",
   AreyousureyouwanttodeletetheselectedRecords:
     "Are you sure you want to delete the selected Records",
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
@@ -1127,9 +1136,9 @@ export const en_language_data = {
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
-  IntrestAmount: "Intrest Amount",
-  IntrestMargin: "Intrest Margin%",
-  SecurityInterstAmount: "Security Interst Amount",
+  IntrestAmount: "Interest Amount",
+  IntrestMargin: "Interest Margin%",
+  SecurityInterstAmount: "Security Interest Amount",
   OverDrawn: "Over Drawn%",
   DocketNumber: "Docket No.",
   GST: "GST",
@@ -1213,14 +1222,14 @@ export const en_language_data = {
     "Enter Removal Remarks for Stock Confirmation (ETRN/377)",
   LimitAmount: "Limit Amount",
   StockConfirmation: "Stock Confirmation",
-  StockAsonDate: "Stock Ason Date",
+  StockAsonDate: "Stock As on Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
   DateShouldBeLessThanEqualToWorkingDT:
     "date should be less than or equal to Working date.",
   StmtTillDateShouldBeGreterThanStmt:
     "Stock Statement Till date should be greter than or equal to Statement date",
   StockDeleteTitle: "Enter Removal Remarks For Stock Entry (TRN/047)",
-
+  Holder: "Holder",
   // Lien Entry
 
   LienEntryNotConfirmed: "Lien Entry Not Confirmed",
@@ -1276,7 +1285,10 @@ export const en_language_data = {
     "Effective From Date should be greater than or equal to working date.",
   ToDateGreaterThanOrEqualToFromDate:
     "Effective To Date should be greater than or equal to From Date.",
-
+  Parametersrequired: "Parameters are required",
+  EffectiveFromDateRequired: "Effective From Date is Required",
+  EffectiveToDateRequired: "Effective To Date is Required",
+  AmountUpToRequired: "Amount Up To is Required",
   // ATM registration Entry
 
   CardDetails: "Card Details",
@@ -1311,6 +1323,40 @@ export const en_language_data = {
   Prev: "Prev",
   New: "New",
   PhotoSign: "Photo/Sign",
+  ViewChanges: "View Changes",
+
+  // IMPS Registration Entry
+  RetrieveInformation: "Retrieve Information",
+  ActivationDate: "Activation Date",
+  DeActiveDateIMPS: "DeActive Date",
+  EnteredBranch: "Entered Branch",
+  LastModifiedBy: "Last Modified By",
+  LastModifiedDate: "Last Modified Date",
+  RegDate: "Reg. Date",
+  IFT: "IFT",
+  IMPS: "IMPS",
+  UPI: "UPI",
+  BBPS: "BBPS",
+  RTGS: "RTGS",
+  OwnAc: "Own A/c",
+  ATM: "ATM",
+  POS: "POS",
+  ECOM: "ECOM",
+  PaymentGateway: "Payment Gateway",
+  IFTDailyLimit: "IFT/Daily Limit",
+  BBPSDailyLimit: "BBPS/Daily Limit",
+  RTGSDayLimit: "RTGS/Day Limit",
+  NEFTDayLimit: "NEFT/Day Limit",
+  OWNDayLimit: "OWN/Day Limit",
+  PGatewayDailyLimit: "P.Gateway/Daily Limit",
+  IMPSP2PDayLimit: "IMPS P2P Day Limit",
+  IMPRP2ADayLimit: "IMPR P2A Day Limit",
+  ATMDailyLimit: "ATM/Daily Limit",
+  POSDailyLimit: "POS/Daily Limit",
+  ECOMDailyLimit: "ECOM/Daily Limit",
+  UPIDailyLimit: "UPI/Daily Limit",
+  DoYouWantSaveChanges: "Do You Want Save Changes ?",
+  limitamountlessthan: "limit amount should be less than",
 
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
@@ -1795,6 +1841,8 @@ export const en_language_data = {
   InsuranceDetail: "Insurance Detail",
   InsuranceEntry: "Insurance Entry",
   InsuranceDate: "Insurance Date",
+  InsuranceRequired: "Insurance Date is required.",
+  ConfirmedStatus: "Confirmed Status",
   CoverNote: "Cover Note",
   PleaseEnterCoverNote: "Please enter Cover Note.",
   Company: "Company",
@@ -1828,6 +1876,10 @@ export const en_language_data = {
   EnterRemovalRemarksForInsuranceConfirmation:
     "Enter Removal Remarks For Insurance Confirmation",
   InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+  InsuranceAmountCannotLessPremiumAmount:
+    "Insurance Amount cannot be less than Premium Amount",
+  DueDateShouldGreaterDateInsurance:
+    "Due Date should be Greater than Date of Insurance",
 
   //standing instruction entry
   CommisionType: "Commision Type",
@@ -1838,9 +1890,9 @@ export const en_language_data = {
   CreditPhotoSign: "Credit Photo/Sign",
   StartDate: "Start Date",
   ExecuteOnDay: "Execute On Day",
-  FrequncyType: "Frequncy Type",
+  FrequncyType: "Frequency Type",
   FrequencyValue: "Frequency Value",
-  DebitBranchCode: "Credit A/C Branch Code",
+  DebitBranchCode: "Debit A/C Branch Code",
   DebitAcctType: "Debit A/C Type",
   DebitAcctNo: "Debit A/c No.",
   DebitPhotoSign: "Debit Photo/Sign",
@@ -1889,7 +1941,7 @@ export const en_language_data = {
     "WRONG ENTRY FROM STANDING INSTRUCTION ENTRY (TRN/394)",
   AllSIasExecuted: "All SI as Executed",
   ConsiderSIasExecuted: "Consider SI as Executed",
-  SearchSI: "SearchSI",
+  SearchSI: "Search SI",
   SIasExecuted: "SI as Executed",
   CannotRevertBack:
     "This Can't be Revert back! Do you want to Consider it as executed?",
@@ -1905,7 +1957,7 @@ export const en_language_data = {
 
   //Recurring Interest Calculator
   Categoryisrequired: "Category is required",
-  IntType: "InterestType",
+  IntType: "Interest Type",
   InstallmentType: "Installment Type",
   InstallmentTypeisrequired: "Installment Type is required",
   InstAmount: "Installment Amount",
@@ -1928,7 +1980,7 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
-  rateRequired: "rate is required",
+  rateRequired: "Rate is required",
   normalPremature: "Normal/Premature",
   realizePending: "Realize Pending",
   confirmPending: "Confirmation Pending",
@@ -1936,8 +1988,10 @@ export const en_language_data = {
   asonDate: "As on Date",
   maturityDate: "Maturity Date",
   categCdRequired: "Category is required.",
-  definationRequired: "definayion is required.",
+  definationRequired: "Defination is required.",
   term: "Term",
+  termrequire: "Term is required",
+  principlerequire: "Principal is required",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",
   Customer: "Customer",

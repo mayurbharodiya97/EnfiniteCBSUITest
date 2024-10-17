@@ -214,7 +214,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
 
   const typeDefaults = {
     R: { defaultValue: "10  ", label: "Inward Return Retrieve Information" },
-    S: { defaultValue: "0   ", label: "CTS O/W Retrieve Information" },
+    S: { defaultValue: "0   ", label: "Clearing Retrieve Information" },
     W: { defaultValue: "18  ", label: "Outward Return Retrieve Information" },
   };
 

@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   AppBar,
   Box,
@@ -19,8 +25,7 @@ import {
   Typography,
   // TextField,
 } from "@mui/material";
-import { useStyles, StyledTableCell } from "./style";
-
+import { useStyles, StyledTableCell } from "../style";
 import { AccDetailContext } from "pages_audit/auth";
 import {
   GradientButton,
@@ -28,6 +33,7 @@ import {
   TextField,
   usePropertiesConfigContext,
   getCurrencySymbol,
+  Alert,
 } from "@acuteinfo/common-base";
 const TellerDenoTable = ({
   displayTable,
@@ -50,6 +56,7 @@ const TellerDenoTable = ({
   // openAcctDtl,
   // handleonFocus,
   gridLable,
+  saveDenominationData,
 }) => {
   const fieldRef = useRef<any>([]);
   const classes = useStyles();
@@ -96,6 +103,15 @@ const TellerDenoTable = ({
   return (
     // <Slide direction="left" in={displayTable} mountOnEnterx unmountOnExit>
     <Dialog open={displayTable && data?.length > 0} maxWidth={"xl"}>
+      {saveDenominationData?.isError ? (
+        <Fragment>
+          <Alert
+            severity={saveDenominationData?.error?.severity ?? "error"}
+            errorMsg={saveDenominationData?.error?.error_msg ?? "Error"}
+            errorDetail={saveDenominationData?.error?.error_detail ?? ""}
+          />
+        </Fragment>
+      ) : null}
       <AppBar
         position="static"
         sx={{
@@ -105,7 +121,7 @@ const TellerDenoTable = ({
           width: "auto",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ minHeight: "48px !important" }}>
           <Typography
             variant="h6"
             style={{ flexGrow: 1 }}

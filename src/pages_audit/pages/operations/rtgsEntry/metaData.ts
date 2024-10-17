@@ -340,6 +340,7 @@ export const RtgsEntryFormMetaData = {
                     messageTitle: "Confirmation",
                     message: postData[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -741,6 +742,7 @@ export const RtgsEntryFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.ERR_MSG,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -960,6 +962,7 @@ export const RtgsEntryFormMetaData = {
                     messageTitle: "Confirmation",
                     message: Validate[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -2324,6 +2327,7 @@ export const AuditBenfiDetailFormMetadata = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;

@@ -11,7 +11,7 @@ import {
 export const TellerScreenMetadata: any = {
   form: {
     name: "TellerOperation",
-    label: "Cash Receipt Entry - TRN/039",
+    label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -52,71 +52,71 @@ export const TellerScreenMetadata: any = {
     },
   },
   fields: [
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      required: true,
-      name: "TRN",
-      label: "Transaction",
-      placeholder: "Select Transaction",
-      isFieldFocused: true,
-      runPostValidationHookAlways: true,
-      options: [
-        { label: "1 - Cash Receipt", value: "1" },
-        { label: "4 - Cash Payment", value: "4" },
-        // { label: " Single Denomination", value: "S" },
-      ],
-      _optionsKey: "defaultOption",
-      postValidationSetCrossFieldValues: (
-        currentField,
-        formState,
-        authState,
-        dependentFieldValue,
-        reqFlag
-      ) => {
-        formState.setDataOnFieldChange("TRN", currentField);
-        if (currentField?.value) {
-          const sdc =
-            currentField?.value === "1"
-              ? "1   "
-              : currentField?.value === "4"
-              ? "4   "
-              : "";
-          return {
-            BRANCH_CD: {
-              value: authState?.user?.branchCode ?? "",
-              ignoreUpdate: true,
-            },
-            ACCT_TYPE: { value: "", ignoreUpdate: true },
-            ACCT_CD: { value: "", ignoreUpdate: true },
-            FLAG: { value: "", ignoreUpdate: true },
-            TOKEN: { value: "", ignoreUpdate: true },
-            SDC: { value: sdc ?? "", ignoreUpdate: true },
-            CHEQUE_NO: { value: "", ignoreUpdate: true },
-            CHEQUE_DT: { value: "", ignoreUpdate: true },
-            RECEIPT: { value: "", ignoreUpdate: true },
-            PAYMENT: { value: "", ignoreUpdate: true },
-          };
-        }
-      },
-      defaultValue: "1",
-      GridProps: {
-        xs: 6,
-        sm: 3,
-        md: 2,
-        lg: 2,
-        xl: 2,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Transaction is required"] }],
-      },
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: false,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   required: true,
+    //   name: "TRN",
+    //   label: "Transaction",
+    //   placeholder: "Select Transaction",
+    //   isFieldFocused: true,
+    //   runPostValidationHookAlways: true,
+    //   options: [
+    //     { label: "1 - Cash Receipt", value: "1" },
+    //     { label: "4 - Cash Payment", value: "4" },
+    //     // { label: " Single Denomination", value: "S" },
+    //   ],
+    //   _optionsKey: "defaultOption",
+    //   postValidationSetCrossFieldValues: (
+    //     currentField,
+    //     formState,
+    //     authState,
+    //     dependentFieldValue,
+    //     reqFlag
+    //   ) => {
+    //     formState.setDataOnFieldChange("TRN", currentField);
+    //     if (currentField?.value) {
+    //       const sdc =
+    //         formState?.screenFlag === "CASHREC"
+    //           ? "1   "
+    //           : formState?.screenFlag === "CASHPAY"
+    //           ? "4   "
+    //           : "";
+    //       return {
+    //         BRANCH_CD: {
+    //           value: authState?.user?.branchCode ?? "",
+    //           ignoreUpdate: true,
+    //         },
+    //         ACCT_TYPE: { value: "", ignoreUpdate: true },
+    //         ACCT_CD: { value: "", ignoreUpdate: true },
+    //         FLAG: { value: "", ignoreUpdate: true },
+    //         TOKEN: { value: "", ignoreUpdate: true },
+    //         SDC: { value: sdc ?? "", ignoreUpdate: true },
+    //         CHEQUE_NO: { value: "", ignoreUpdate: true },
+    //         CHEQUE_DT: { value: "", ignoreUpdate: true },
+    //         RECEIPT: { value: "", ignoreUpdate: true },
+    //         PAYMENT: { value: "", ignoreUpdate: true },
+    //       };
+    //     }
+    //   },
+    //   defaultValue: "1",
+    //   GridProps: {
+    //     xs: 6,
+    //     sm: 3,
+    //     md: 2,
+    //     lg: 2,
+    //     xl: 2,
+    //   },
+    //   schemaValidation: {
+    //     type: "string",
+    //     rules: [{ name: "required", params: ["Transaction is required"] }],
+    //   },
+    //   AlwaysRunPostValidationSetCrossFieldValues: {
+    //     alwaysRun: true,
+    //     touchAndValidate: false,
+    //   },
+    // },
     {
       render: {
         componentType: "_accountNumber",
@@ -134,16 +134,20 @@ export const TellerScreenMetadata: any = {
       // },
       branchCodeMetadata: {
         name: "BRANCH_CD",
-        dependentFields: ["TRN"],
+        isFieldFocused: true,
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: (
           currentField,
           formState,
-          authState,
-          dependentFieldValue,
-          reqFlag
+          authState
         ) => {
           formState.setDataOnFieldChange("BRANCH_CD", currentField);
+          const sdc =
+            formState?.screenFlag === "CASHREC"
+              ? "1   "
+              : formState?.screenFlag === "CASHPAY"
+              ? "4   "
+              : "";
           return {
             ACCT_TYPE: { value: "", ignoreUpdate: true },
             ACCT_CD: { value: "", ignoreUpdate: true },
@@ -153,6 +157,7 @@ export const TellerScreenMetadata: any = {
               value: authState?.workingDate ?? "",
               ignoreUpdate: true,
             },
+            SDC: { value: sdc, ignoreUpdate: true },
             RECEIPT: { value: "", ignoreUpdate: true },
             PAYMENT: { value: "", ignoreUpdate: true },
           };
@@ -167,21 +172,18 @@ export const TellerScreenMetadata: any = {
       },
       accountTypeMetadata: {
         name: "ACCT_TYPE",
-        dependentFields: ["TRN", "BRANCH_CD"],
+        dependentFields: ["BRANCH_CD"],
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
           authState,
-          dependentFieldValues,
-          reqFlag
+          dependentFieldValues
         ) => {
           formState.setDataOnFieldChange("ACCT_TYPE", {
             currentField,
             branch_cd: dependentFieldValues?.BRANCH_CD?.value,
           });
-          const sdcValue =
-            dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
           return {
             ACCT_CD: { value: "", ignoreUpdate: true },
             FLAG: { value: "", ignoreUpdate: true },
@@ -204,7 +206,7 @@ export const TellerScreenMetadata: any = {
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
-        dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE"],
+        dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
         autoComplete: "off",
         GridProps: {
           xs: 6,
@@ -350,8 +352,8 @@ export const TellerScreenMetadata: any = {
                 NPA_CD: postData?.NPA_CD ?? "",
               });
               formState.previousFieldValue = paddedAcctcode;
-              const sdcValue =
-                dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
+              // const sdcValue =
+              //   dependentFieldValues?.TRN?.value === "1" ? "1   " : "4   ";
               return {
                 ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
                 FLAG: { value: "A", ignoreUpdate: true },
@@ -414,9 +416,9 @@ export const TellerScreenMetadata: any = {
         lg: 1,
         xl: 1,
       },
-      dependentFields: ["TRN", "FLAG", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["FLAG", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.TRN?.value === "4") {
+        if (formState?.screenFlag === "CASHPAY") {
           return false;
         } else {
           return true;
@@ -447,7 +449,8 @@ export const TellerScreenMetadata: any = {
             ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
             ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
             TOKEN_NO: currentField?.value ?? "",
-            SCREEN_REF: "TRN/040",
+            SCREEN_REF:
+              formState?.screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
           };
 
           let postData = await API.checkTokenValidate(reqParameters);
@@ -525,7 +528,7 @@ export const TellerScreenMetadata: any = {
         lg: 1,
         xl: 1,
       },
-      dependentFields: ["TRN", "FLAG"],
+      dependentFields: ["FLAG"],
       // postValidationSetCrossFieldValues: async (
       //   field,
       //   formState,
@@ -543,22 +546,6 @@ export const TellerScreenMetadata: any = {
       //     REMARK: { value: sdc },
       //   };
       // },
-      shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (
-          dependentFieldsValues?.TRN?.value === "1" ||
-          dependentFieldsValues?.TRN?.value === "4"
-        ) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      // isReadOnly: (fieldValue, dependentFields, formState) => {
-      //   if (dependentFields?.FLAG?.value === "A") {
-      //     return false;
-      //   }
-      //   return true;
-      // },
     },
     {
       render: {
@@ -575,17 +562,7 @@ export const TellerScreenMetadata: any = {
         lg: 2,
         xl: 2,
       },
-      dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE", "SDC", "FLAG"],
-      shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (
-          dependentFieldsValues?.TRN?.value === "1" ||
-          dependentFieldsValues?.TRN?.value === "4"
-        ) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      dependentFields: ["BRANCH_CD", "ACCT_TYPE", "SDC", "FLAG"],
       // setValueOnDependentFieldsChange: (dependentFields) => {
       //   let sdc;
       //   if (dependentFields?.TRN?.value === "R") {
@@ -637,7 +614,7 @@ export const TellerScreenMetadata: any = {
         lg: 1,
         xl: 1,
       },
-      dependentFields: ["TRN", "FLAG", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["FLAG", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -659,8 +636,14 @@ export const TellerScreenMetadata: any = {
             ACCT_TYPE: acctyType,
             ACCT_CD: acctCd,
             CHEQUE_NO: chequeNo,
-            TYPE_CD: dependentFieldValues?.TRN?.value,
-            SCREEN_REF: "TRN/040",
+            TYPE_CD:
+              formState?.screenFlag === "CASHREC"
+                ? "1   "
+                : formState?.screenFlag === "CASHPAY"
+                ? "4   "
+                : "",
+            SCREEN_REF:
+              formState?.screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
           };
 
           const apiResponse = await API?.getChqValidation(reqParameters);
@@ -765,7 +748,7 @@ export const TellerScreenMetadata: any = {
         }
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.TRN?.value === "4") {
+        if (formState?.screenFlag === "CASHPAY") {
           return false;
         } else {
           return true;
@@ -799,9 +782,9 @@ export const TellerScreenMetadata: any = {
         lg: 1.5,
         xl: 1.5,
       },
-      dependentFields: ["TRN", "FLAG", "BRANCH_CD", "CHEQUE_NO"],
+      dependentFields: ["FLAG", "BRANCH_CD", "CHEQUE_NO"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.TRN?.value === "4") {
+        if (formState?.screenFlag === "CASHPAY") {
           return false;
         } else {
           return true;
@@ -815,7 +798,12 @@ export const TellerScreenMetadata: any = {
       ) => {
         const branchCode = dependentFieldsValues?.BRANCH_CD?.value ?? "";
         const chequeNo = dependentFieldsValues?.CHEQUE_NO?.value ?? "";
-        const typeCd = dependentFieldsValues?.TRN?.value ?? "";
+        const typeCd =
+          formState?.screenFlag === "CASHREC"
+            ? "1   "
+            : formState?.screenFlag === "CASHPAY"
+            ? "4   "
+            : "";
         if (
           !dependentFieldsValues?.ACCT_CD?.error &&
           Boolean(branchCode) &&
@@ -903,7 +891,6 @@ export const TellerScreenMetadata: any = {
       placeholder: "Enter Receipt",
       required: true,
       dependentFields: [
-        "TRN",
         "BRANCH_CD",
         "ACCT_TYPE",
         "ACCT_CD",
@@ -930,7 +917,7 @@ export const TellerScreenMetadata: any = {
         return true;
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.TRN?.value === "1") {
+        if (formState?.screenFlag === "CASHREC") {
           return false;
         } else {
           return true;
@@ -955,7 +942,12 @@ export const TellerScreenMetadata: any = {
             BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
             ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
             ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.TRN?.value ?? "",
+            TYPE_CD:
+              formState?.screenFlag === "CASHREC"
+                ? "1   "
+                : formState?.screenFlag === "CASHPAY"
+                ? "4   "
+                : "",
             COMP_CD: authState?.companyID ?? "",
             CHEQUE_NO: "",
             AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
@@ -977,12 +969,11 @@ export const TellerScreenMetadata: any = {
             PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
             STATUS: cardData?.STATUS,
             TYPE: "C",
-            SCREEN_REF: "TRN/039",
+            SCREEN_REF:
+              formState?.screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
             TRAN_CD: "",
           };
           const postData = await API?.getAmountValidation(reqPara);
-
-          let btn99, returnVal;
           for (let i = 0; i < postData?.length; i++) {
             if (postData?.[i]?.O_STATUS === "999") {
               const btnName = await formState.MessageBox({
@@ -990,17 +981,29 @@ export const TellerScreenMetadata: any = {
                 message: postData?.[i]?.O_MESSAGE,
                 icon: "ERROR",
               });
-              returnVal = "";
+              if (btnName === "Ok") {
+                return {
+                  RECEIPT: {
+                    value: "",
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                };
+              }
             } else if (postData?.[i]?.O_STATUS === "99") {
               const btnName = await formState.MessageBox({
                 messageTitle: "Confirmation",
                 message: postData?.[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
               });
-              btn99 = btnName;
               if (btnName === "No") {
-                returnVal = "";
-                break;
+                return {
+                  RECEIPT: {
+                    value: "",
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                };
               }
             } else if (postData?.[i]?.O_STATUS === "9") {
               const btnName = await formState.MessageBox({
@@ -1009,14 +1012,10 @@ export const TellerScreenMetadata: any = {
                 icon: "WARNING",
               });
             } else if (postData?.[i]?.O_STATUS === "0") {
-              if (btn99 !== "No") {
-                formState.setDataOnFieldChange("RECEIPT", {
-                  field,
-                  dependentFieldsValues,
-                });
-              } else {
-                returnVal = "";
-              }
+              formState.setDataOnFieldChange("RECEIPT", {
+                field,
+                dependentFieldsValues,
+              });
             }
           }
 
@@ -1049,7 +1048,6 @@ export const TellerScreenMetadata: any = {
       placeholder: "Enter Payment",
       required: true,
       dependentFields: [
-        "TRN",
         "BRANCH_CD",
         "ACCT_TYPE",
         "ACCT_CD",
@@ -1082,7 +1080,7 @@ export const TellerScreenMetadata: any = {
         return true;
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.TRN?.value === "4") {
+        if (formState?.screenFlag === "CASHPAY") {
           return false;
         } else {
           return true;
@@ -1107,7 +1105,12 @@ export const TellerScreenMetadata: any = {
             BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
             ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value ?? "",
             ACCT_CD: dependentFieldsValues?.ACCT_CD?.value ?? "",
-            TYPE_CD: dependentFieldsValues?.TRN?.value ?? "",
+            TYPE_CD:
+              formState?.screenFlag === "CASHREC"
+                ? "1   "
+                : formState?.screenFlag === "CASHPAY"
+                ? "4   "
+                : "",
             COMP_CD: authState?.companyID ?? "",
             CHEQUE_NO: dependentFieldsValues?.CHEQUE_NO?.value ?? "",
             AVALIABLE_BAL: cardData?.WITHDRAW_BAL,
@@ -1129,12 +1132,11 @@ export const TellerScreenMetadata: any = {
             PENDING_AMOUNT: cardData?.PENDING_AMOUNT,
             STATUS: cardData?.STATUS,
             TYPE: "C",
-            SCREEN_REF: "TRN/040",
+            SCREEN_REF:
+              formState?.screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
             TRAN_CD: "",
           };
           const postData = await API?.getAmountValidation(reqPara);
-
-          let btn99, returnVal;
           for (let i = 0; i < postData?.length; i++) {
             if (postData?.[i]?.O_STATUS === "999") {
               const btnName = await formState.MessageBox({
@@ -1142,17 +1144,29 @@ export const TellerScreenMetadata: any = {
                 message: postData?.[i]?.O_MESSAGE,
                 icon: "ERROR",
               });
-              returnVal = "";
+              if (btnName === "Ok") {
+                return {
+                  PAYMENT: {
+                    value: "",
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                };
+              }
             } else if (postData?.[i]?.O_STATUS === "99") {
               const btnName = await formState.MessageBox({
                 messageTitle: "Confirmation",
                 message: postData?.[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
               });
-              btn99 = btnName;
               if (btnName === "No") {
-                returnVal = "";
-                break;
+                return {
+                  PAYMENT: {
+                    value: "",
+                    ignoreUpdate: true,
+                    isFieldFocused: false,
+                  },
+                };
               }
             } else if (postData?.[i]?.O_STATUS === "9") {
               const btnName = await formState.MessageBox({
@@ -1161,14 +1175,10 @@ export const TellerScreenMetadata: any = {
                 icon: "WARNING",
               });
             } else if (postData?.[i]?.O_STATUS === "0") {
-              if (btn99 !== "No") {
-                formState.setDataOnFieldChange("PAYMENT", {
-                  field,
-                  dependentFieldsValues,
-                });
-              } else {
-                returnVal = "";
-              }
+              formState.setDataOnFieldChange("PAYMENT", {
+                field,
+                dependentFieldsValues,
+              });
             }
           }
         }
@@ -1587,13 +1597,16 @@ export const denoTableMetadataTotal: any = {
               dependentFieldsValues
             ) => {
               return {
-                ACCT_CD: { value: "" },
-                FLAG_HIDE: { value: "" },
-                TRX: { value: "1" },
-                CHQNO: { value: "" },
-                CHQ_DT: { value: authState?.workingDate ?? "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                FLAG_HIDE: { value: "", ignoreUpdate: true },
+                TRX: { value: "1", ignoreUpdate: true },
+                CHQNO: { value: "", ignoreUpdate: true },
+                CHQ_DT: {
+                  value: authState?.workingDate ?? "",
+                  ignoreUpdate: true,
+                },
+                RECEIPT: { value: "", ignoreUpdate: true },
+                PAYMENT: { value: "", ignoreUpdate: true },
               };
             },
             GridProps: {
@@ -1619,13 +1632,16 @@ export const denoTableMetadataTotal: any = {
                   "",
               });
               return {
-                ACCT_CD: { value: "" },
-                FLAG_HIDE: { value: "" },
-                TRX: { value: "1" },
-                CHQNO: { value: "" },
-                CHQ_DT: { value: authState?.workingDate ?? "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                FLAG_HIDE: { value: "", ignoreUpdate: true },
+                TRX: { value: "1", ignoreUpdate: true },
+                CHQNO: { value: "", ignoreUpdate: true },
+                CHQ_DT: {
+                  value: authState?.workingDate ?? "",
+                  ignoreUpdate: true,
+                },
+                RECEIPT: { value: "", ignoreUpdate: true },
+                PAYMENT: { value: "", ignoreUpdate: true },
               };
             },
             GridProps: {
@@ -1689,13 +1705,16 @@ export const denoTableMetadataTotal: any = {
                         });
                         if (btnNm === "Ok") {
                           return {
-                            ACCT_CD: { value: "" },
-                            FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
-                            CHQNO: { value: "" },
-                            CHQ_DT: { value: authState?.workingDate ?? "" },
-                            RECEIPT: { value: "" },
-                            PAYMENT: { value: "" },
+                            ACCT_CD: { value: "", ignoreUpdate: true },
+                            FLAG_HIDE: { value: "", ignoreUpdate: true },
+                            TRX: { value: "1", ignoreUpdate: true },
+                            CHQNO: { value: "", ignoreUpdate: true },
+                            CHQ_DT: {
+                              value: authState?.workingDate ?? "",
+                              ignoreUpdate: true,
+                            },
+                            RECEIPT: { value: "", ignoreUpdate: true },
+                            PAYMENT: { value: "", ignoreUpdate: true },
                           };
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "99") {
@@ -1706,13 +1725,16 @@ export const denoTableMetadataTotal: any = {
                         });
                         if (btnNm === "No") {
                           return {
-                            ACCT_CD: { value: "" },
-                            FLAG_HIDE: { value: "" },
-                            TRX: { value: "1" },
-                            CHQNO: { value: "" },
-                            CHQ_DT: { value: authState?.workingDate ?? "" },
-                            RECEIPT: { value: "" },
-                            PAYMENT: { value: "" },
+                            ACCT_CD: { value: "", ignoreUpdate: true },
+                            FLAG_HIDE: { value: "", ignoreUpdate: true },
+                            TRX: { value: "1", ignoreUpdate: true },
+                            CHQNO: { value: "", ignoreUpdate: true },
+                            CHQ_DT: {
+                              value: authState?.workingDate ?? "",
+                              ignoreUpdate: true,
+                            },
+                            RECEIPT: { value: "", ignoreUpdate: true },
+                            PAYMENT: { value: "", ignoreUpdate: true },
                           };
                         }
                       } else if (apiResponse?.MSG[i]?.O_STATUS === "9") {
@@ -1745,16 +1767,19 @@ export const denoTableMetadataTotal: any = {
                   });
                   formState.previousFieldValue = accountCode;
                   return {
-                    ACCT_CD: { value: accountCode ?? "" },
-                    FLAG_HIDE: { value: "A" },
-                    TRX: { value: "1" },
+                    ACCT_CD: { value: accountCode ?? "", ignoreUpdate: true },
+                    FLAG_HIDE: { value: "A", ignoreUpdate: true },
+                    TRX: { value: "1", ignoreUpdate: true },
                     CHQNO: {
                       value: apiResponse?.CHEQUE_NO ?? "",
                       ignoreUpdate: true,
                     },
-                    CHQ_DT: { value: authState?.workingDate ?? "" },
-                    RECEIPT: { value: "" },
-                    PAYMENT: { value: "" },
+                    CHQ_DT: {
+                      value: authState?.workingDate ?? "",
+                      ignoreUpdate: true,
+                    },
+                    RECEIPT: { value: "", ignoreUpdate: true },
+                    PAYMENT: { value: "", ignoreUpdate: true },
                   };
                 }
               }
@@ -1809,13 +1834,16 @@ export const denoTableMetadataTotal: any = {
           ) => {
             const sdcValue = field?.value === "1" ? "1   " : "4   ";
             return {
-              SCROLL: { value: "" },
-              TOKEN: { value: "" },
-              SDC: { value: sdcValue ?? "" },
-              REMARK: { value: "" },
-              CHQ_DT: { value: authState?.workingDate ?? "" },
-              RECEIPT: { value: "" },
-              PAYMENT: { value: "" },
+              SCROLL: { value: "", ignoreUpdate: true },
+              TOKEN: { value: "", ignoreUpdate: true },
+              SDC: { value: sdcValue ?? "", ignoreUpdate: true },
+              REMARK: { value: "", ignoreUpdate: true },
+              CHQ_DT: {
+                value: authState?.workingDate ?? "",
+                ignoreUpdate: true,
+              },
+              RECEIPT: { value: "", ignoreUpdate: true },
+              PAYMENT: { value: "", ignoreUpdate: true },
             };
           },
           GridProps: {
@@ -2104,12 +2132,14 @@ export const denoTableMetadataTotal: any = {
                       },
                       FLAG_CHQ: {
                         value: "",
+                        ignoreUpdate: true,
                       },
                     };
                   } else if (btnNm === "Yes") {
                     return {
                       FLAG_CHQ: {
                         value: "A",
+                        ignoreUpdate: true,
                       },
                     };
                   }
@@ -2121,12 +2151,14 @@ export const denoTableMetadataTotal: any = {
                   return {
                     FLAG_CHQ: {
                       value: "A",
+                      ignoreUpdate: true,
                     },
                   };
                 } else if (apiResponse[i]?.ERR_CODE === "0") {
                   return {
                     FLAG_CHQ: {
                       value: "A",
+                      ignoreUpdate: true,
                     },
                   };
                 }
@@ -2365,11 +2397,14 @@ export const denoTableMetadataTotal: any = {
               }
               if (field?.value) {
                 return {
-                  RECEIPT_TOTAL: { value: field.value ?? "0" },
+                  RECEIPT_TOTAL: {
+                    value: field.value ?? "0",
+                    ignoreUpdate: true,
+                  },
                 };
               } else {
                 return {
-                  RECEIPT_TOTAL: { value: "" },
+                  RECEIPT_TOTAL: { value: "", ignoreUpdate: true },
                 };
               }
             }
@@ -2522,11 +2557,14 @@ export const denoTableMetadataTotal: any = {
               }
               if (field?.value) {
                 return {
-                  PAYMENT_TOTAL: { value: field.value ?? "0" },
+                  PAYMENT_TOTAL: {
+                    value: field.value ?? "0",
+                    ignoreUpdate: true,
+                  },
                 };
               } else {
                 return {
-                  PAYMENT_TOTAL: { value: "" },
+                  PAYMENT_TOTAL: { value: "", ignoreUpdate: true },
                 };
               }
             }
@@ -2710,298 +2748,6 @@ export const denoTableMetadataTotal: any = {
         lg: 1,
         xl: 1,
       },
-    },
-  ],
-};
-
-export const releaseGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Release",
-    rowIdColumn: "MCT_TRAN_CD",
-    defaultColumnConfig: {
-      width: 150,
-      maxWidth: 250,
-      minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    disableGroupBy: true,
-    enablePagination: true,
-    hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 8,
-    containerHeight: {
-      min: "30vh",
-      max: "30vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    isCusrsorFocused: true,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "ACCT_TYPE",
-      columnName: "Type",
-      sequence: 1,
-      alignment: "left",
-      componentType: "default",
-      width: 76,
-      minWidth: 70,
-      maxWidth: 100,
-    },
-    {
-      accessor: "ACCT_CD",
-      columnName: "Account",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "MCT_TRAN_CD",
-      columnName: "Reference No.",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 150,
-    },
-    {
-      accessor: "TYPE_CD",
-      columnName: "Trx",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 60,
-      minWidth: 60,
-      maxWidth: 80,
-    },
-    {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 5,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 160,
-    },
-    {
-      accessor: "AMOUNT",
-      columnName: "Amount",
-      sequence: 6,
-      alignment: "right",
-      componentType: "currency",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "SDC",
-      columnName: "SDC",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "SCROLL1",
-      columnName: "Scroll1",
-      sequence: 8,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "ENTERED_BY",
-      columnName: "Entered By",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "ENTERED_COMP_CD",
-      columnName: "Tr.Bank",
-      sequence: 10,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-    {
-      accessor: "ENTERED_BRANCH_CD",
-      columnName: "Tr.Branch",
-      sequence: 11,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-  ],
-};
-export const releaseSubGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Release",
-    rowIdColumn: "ROW_ID",
-    defaultColumnConfig: {
-      width: 150,
-      maxWidth: 250,
-      minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    disableGroupBy: true,
-    enablePagination: true,
-    hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 8,
-    containerHeight: {
-      min: "30vh",
-      max: "30vh",
-    },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "ACCT_CD",
-      columnName: "Account No.",
-      sequence: 1,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "MCT_TRAN_CD",
-      columnName: "Reference No.",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 150,
-    },
-    {
-      accessor: "TYPE_CD",
-      columnName: "Trx",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 60,
-      minWidth: 60,
-      maxWidth: 80,
-    },
-    {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 160,
-    },
-    {
-      accessor: "DELETE_FLAG",
-      columnName: "Delete",
-      sequence: 5,
-      alignment: "center",
-      componentType: "editableCheckbox",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "RECEIPT",
-      columnName: "Receipt",
-      sequence: 6,
-      alignment: "right",
-      componentType: "currency",
-      isDisplayTotal: true,
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "PAYMENT",
-      columnName: "Payment",
-      sequence: 7,
-      alignment: "right",
-      componentType: "currency",
-      isDisplayTotal: true,
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "ENTERED_BY",
-      columnName: "Entered By",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 120,
-      maxWidth: 140,
-    },
-    {
-      accessor: "SDC",
-      columnName: "SDC",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 100,
-    },
-    {
-      accessor: "SCROLL1",
-      columnName: "Scroll1",
-      sequence: 10,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 120,
-    },
-    {
-      accessor: "ENTERED_COMP_CD",
-      columnName: "Tr.Bank",
-      sequence: 11,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
-    },
-    {
-      accessor: "ENTERED_BRANCH_CD",
-      columnName: "Tr.Branch",
-      sequence: 12,
-      alignment: "left",
-      componentType: "default",
-      width: 110,
-      minWidth: 110,
-      maxWidth: 130,
     },
   ],
 };

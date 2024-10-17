@@ -191,7 +191,7 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
     const total = calculateColumnTotals();
     const remaining: any = calculateColumnTotalsforRemain();
     const remainingValue = parseFloat(remaining?.DENO_AMOUNT);
-    const label = remainingValue < 0 ? "Excess: " : "Remain: ";
+    const label = remainingValue < 0 ? "Excess: " : "Remaining: ";
     return (
       <Box>
         <Paper
@@ -272,7 +272,13 @@ const CashierExchangeTable = forwardRef<any, CashierExchangeTableProps>(
                               )
                             : value;
                           return (
-                            <StyledTableCell key={colIndex} align={meta?.align}>
+                            <StyledTableCell
+                              key={colIndex}
+                              align={meta?.align}
+                              style={{
+                                background: !isEditable ? "#e9ecef" : undefined,
+                              }}
+                            >
                               {isEditable ? (
                                 <TextField
                                   variant="standard"
