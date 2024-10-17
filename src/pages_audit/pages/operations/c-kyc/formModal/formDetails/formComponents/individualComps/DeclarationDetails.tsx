@@ -27,10 +27,10 @@ import _ from "lodash";
 import TabNavigate from "../TabNavigate";
 // import { format } from 'date-fns';
 import {
-  PopupRequestWrapper,
   Alert,
   FormWrapper,
   MetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -51,6 +51,7 @@ const DeclarationDetails = () => {
     handleCurrFormctx,
     handleFormDataonRetrievectx,
   } = useContext(CkycContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const DeclarationFormRef = useRef<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const [currentTabFormData, setCurrentTabFormData] = useState({
@@ -58,8 +59,6 @@ const DeclarationDetails = () => {
   });
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const [formStatus, setFormStatus] = useState<any[]>([]);
-  const [shouldDraftSaveDialog, setShouldDraftSaveDialog] =
-    useState<boolean>(false);
 
   //   const {data:saveDraftData, isSuccess, isLoading: isSaveDraftLoading, error, refetch} = useQuery(
   //     ["getSaveDraftData"],
@@ -121,32 +120,21 @@ const DeclarationDetails = () => {
 
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
+      CloseMessageBox();
       if (data?.[0]?.REQ_CD) {
         let req_cd = parseInt(data?.[0]?.REQ_CD) ?? "";
         handleReqCDctx(req_cd);
         handleFromFormModectx({ formmode: "edit", from: "new-draft" });
         onDraftSavectx();
 
-        let payload: {
-          COMP_CD?: string;
-          BRANCH_CD: string;
-          REQUEST_CD?: string;
-          CUSTOMER_ID?: string;
-        } = {
-          // COMP_CD: authState?.companyID ?? "",
+        let payload = {
+          COMP_CD: authState?.companyID ?? "",
           BRANCH_CD: authState?.user?.branchCode ?? "",
+          REQUEST_CD: (req_cd || state?.req_cd_ctx) ?? "",
+          CUSTOMER_ID: state?.customerIDctx ?? "",
+          SCREEN_REF: "MST/707",
         };
-        const reqCD = (req_cd || state?.req_cd_ctx) ?? "";
-        const custID = state?.customerIDctx ?? "";
-        if (Boolean(reqCD)) {
-          payload["REQUEST_CD"] = reqCD;
-        }
-        if (Boolean(custID)) {
-          payload["CUSTOMER_ID"] = custID;
-        }
-        if (Object.keys(payload)?.length > 1) {
-          retrieveMutation.mutate(payload);
-        }
+        retrieveMutation.mutate(payload);
 
         // handleColTabChangectx(state?.colTabValuectx+1)
       } else {
@@ -155,6 +143,7 @@ const DeclarationDetails = () => {
       }
     },
     onError: (error: any) => {
+      CloseMessageBox();
       setFormStatus((old) => [...old, false]);
     },
   });
@@ -181,7 +170,7 @@ const DeclarationDetails = () => {
   //     }
   //   }, [saveDraftData, isSaveDraftLoading])
 
-  const DeclarationSubmitHandler = (
+  const DeclarationSubmitHandler = async (
     data: any,
     displayData,
     endSubmit,
@@ -257,7 +246,29 @@ const DeclarationDetails = () => {
         BRANCH_CD: authState?.user?.branchCode ?? "",
       };
       if (!Boolean(state?.req_cd_ctx)) {
-        setShouldDraftSaveDialog(true);
+        const buttonName = await MessageBox({
+          messageTitle: "Confirm",
+          message: "Do you want to save entry as draft?",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (buttonName === "Yes") {
+          let payload = {
+            CUSTOMER_TYPE: state?.entityTypectx,
+            CATEGORY_CD: state?.categoryValuectx,
+            ACCT_TYPE: state?.accTypeValuectx,
+            KYC_NUMBER: state?.kycNoValuectx,
+            CONSTITUTION_TYPE: state?.constitutionValuectx,
+            // IsNewRow: state?.isFreshEntryctx,
+            IsNewRow: true,
+            PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+          };
+          mutation.mutate(payload);
+        } else if (buttonName === "No") {
+          setFormStatus((old) => [...old, true]);
+        }
       } else {
         setFormStatus((old) => [...old, true]);
       }
@@ -397,41 +408,6 @@ const DeclarationDetails = () => {
         handleSave={handleSave}
         displayMode={state?.formmodectx ?? "new"}
         isNextLoading={isNextLoading}
-      />
-      <PopupRequestWrapper
-        MessageTitle={"CONFIRM"}
-        Message={"Do you want to save entry as draft?"}
-        onClickButton={async (rows, buttonNames, ...others) => {
-          // console.log(rows, "kjefeiwqf", buttonNames)
-          if (buttonNames === "Yes") {
-            setShouldDraftSaveDialog(false);
-            // setDocValidateDialog(false)
-            let payload = {
-              CUSTOMER_TYPE: state?.entityTypectx,
-              CATEGORY_CD: state?.categoryValuectx,
-              ACCT_TYPE: state?.accTypeValuectx,
-              KYC_NUMBER: state?.kycNoValuectx,
-              CONSTITUTION_TYPE: state?.constitutionValuectx,
-              // IsNewRow: state?.isFreshEntryctx,
-              IsNewRow: true,
-              PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: authState?.user?.branchCode ?? "",
-            };
-            mutation.mutate(payload);
-            // mutation.mutate(data)
-          } else if (buttonNames === "No") {
-            // setDocValidateDialog(false)
-            setShouldDraftSaveDialog(false);
-            setFormStatus((old) => [...old, true]);
-          }
-        }}
-        buttonNames={["Yes", "No"]}
-        rows={[]}
-        // Commented Temporary
-        // loading={{ Yes: mutation.isLoading }}
-        // loading={{ Yes: getData?.isLoading, No: false }}
-        open={shouldDraftSaveDialog}
       />
     </Grid>
   );
