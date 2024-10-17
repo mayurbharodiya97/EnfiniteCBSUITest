@@ -306,13 +306,12 @@ const DualTableCalc = ({
     BRANCH_CD: formData?.BRANCH_CD ?? "",
     ACCT_TYPE: formData?.ACCT_TYPE ?? "",
     ACCT_CD: formData?.ACCT_CD ?? "",
-    TYPE_CD:
-      formData?.TRN === "1" ? "1" : formData?.TRN === "4" ? "4" : "" ?? "",
+    TYPE_CD: formData?.TRN === "1" ? "1" : formData?.TRN === "4" ? "4" : "",
     COMP_CD: authState?.companyID,
-    CHEQUE_NO: formData?.CHEQUE_NO ? formData?.CHEQUE_NO : "" ?? "",
+    CHEQUE_NO: formData?.CHEQUE_NO ? formData?.CHEQUE_NO : "",
     SDC: formData?.SDC?.trim() ?? "",
-    SCROLL1: "" ?? "",
-    CHEQUE_DT: formData?.CHEQUE_DT ? formData?.CHEQUE_DT : "" ?? "",
+    SCROLL1: "",
+    CHEQUE_DT: formData?.CHEQUE_DT ? formData?.CHEQUE_DT : "",
     REMARKS: formData?.REMARK ?? "",
     AMOUNT: formData?.RECEIPT ? formData?.RECEIPT : formData?.PAYMENT ?? "",
   };
