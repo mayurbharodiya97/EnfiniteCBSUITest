@@ -261,6 +261,7 @@ export const CTSOutwardClearingFormMetaData = {
               },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
+              AMOUNT: { value: "" },
             };
           }
         },
@@ -787,7 +788,11 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
 
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
-
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -835,11 +840,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                     });
                     if (buttonNames === "Yes") {
                       return {
-                        BANK_CD: {
-                          value: field?.value ?? "",
-                          ignoreUpdate: true,
-                          isFieldFocused: false,
-                        },
                         BANK_NM: {
                           value: postData?.data?.[0]?.BANK_NM ?? "",
                         },
@@ -860,6 +860,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                 }
                 return {
                   BANK_CD: {
+                    value: field?.value,
                     error: postData?.data?.[0]?.ERROR_MSSAGE ?? "",
                     ignoreUpdate: true,
                   },
@@ -1317,6 +1318,11 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             rules: [{ name: "required", params: ["BankCodeRequired"] }],
           },
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -1426,7 +1432,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           required: true,
-
+          maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1597,11 +1603,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                       field
                     );
                   }
-                } else if (postData[i]?.O_STATUS === "0") {
-                  return await handleChequeValidationAndMessages(
-                    formState,
-                    field
-                  );
                 }
               }
             }
@@ -1622,26 +1623,19 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
-          dependentFields: ["TRAN_DT", "RANGE_DT"],
-          validate: (currentField, dependentField) => {
-            const currentDate = new Date(currentField?.value);
-            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
-            const transDate = new Date(dependentField?.TRAN_DT?.value);
+          // dependentFields: ["TRAN_DT", "RANGE_DT"],
+          // validate: (currentField, dependentField) => {
+          //   const currentDate = new Date(currentField?.value);
+          //   const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+          //   const transDate = new Date(dependentField?.TRAN_DT?.value);
 
-            if (currentDate < rangeDate || currentDate > transDate) {
-              return `DateShouldBetween ${rangeDate.toLocaleDateString(
-                "en-IN"
-              )} - ${transDate.toLocaleDateString("en-IN")}`;
-            }
-          },
-
-          required: true,
+          //   if (currentDate < rangeDate || currentDate > transDate) {
+          //     return `DateShouldBetween ${rangeDate.toLocaleDateString(
+          //       "en-IN"
+          //     )} - ${transDate.toLocaleDateString("en-IN")}`;
+          //   }
+          // },
           maxLength: 6,
-
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["ChequeDateRequired"] }],
-          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
 

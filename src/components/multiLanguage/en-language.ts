@@ -952,7 +952,7 @@ export const en_language_data = {
 
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You Want to remove this row?",
+  DoYouWantDeleteRow: "Do You want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -1070,7 +1070,7 @@ export const en_language_data = {
   Charge: "Charge",
   ChequeSeries: "Cheque Series",
   AutoIssueFlag: "Auto Issue Flag",
-  RetrieveParameters: "Retrieve Parameters",
+  RetrieveParameters: "Parameters",
   ChequeBookConfirmation: "ChequeBook Confirmation",
   BalanceIsLesThanServicecharge: "Balance is less than Service-charge",
   BeforeChequeBookPrinting: "Before Cheque Book Printing",
@@ -1089,7 +1089,8 @@ export const en_language_data = {
   LimitEntry: "Limit Entry",
   LimitDetail: "Limit Detail",
   FDDetail: "FD Detail",
-  NSCDetail: "NSC Detail",
+  BalanceAmount: "Balance Amount",
+  NSCDetail: "NSC/KVP Detail",
   TranBalance: "Tran. Balance",
   SanctionedLimit: "Sanctioned Limit",
   LimitType: "Limit Type",
@@ -1100,25 +1101,26 @@ export const en_language_data = {
   SecurityValue: "Security Value",
   FDDescription: "FD Description",
   ResolutionDate: "Resolution Date",
-  ForceExpireLimit: "Force-Expire Limit",
+  ForceExpireLimit: "ForceExpire Limit Detail",
   FDBranchCode: "FD-Branch Code",
   FDType: "FD-Type",
   FDAccountNumber: "FD-Account No",
   FDNumber: "FD-Number",
   PenalRate: "Penal Rate%",
-  ForcedExpiredDate: "Forced Expired Date",
+  ForcedExpiredDate: "Force Expired Date",
   AccountDescription: "Account Description",
   PrincipalAmount: "Principal Amount",
   Rate: "Rate%",
   MaturityAmount: "Maturity Amount",
   MaturityDate: "Maturity Date",
   DepositDate: "Deposit Date",
-  CertificateNumber: "Cetificate No.",
+  CertificateNumber: "Certificate No.",
   CollateralName: "Collateral Name",
   EnterCollateralName: "Enter Collateral Name",
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
+  IssueBy: "Issue By",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
   Period: "Period",
@@ -1142,6 +1144,7 @@ export const en_language_data = {
   CollateralRemarks: "Collateral Remarks",
   AreYouSureToFutureLimit: "Are you sure to enter future limit ?",
   LimitDeleteTitle: "Enter Removal Remarks For Limit Entry (TRN/046)",
+  DepositeDate: "Deposit Date",
 
   // stop payment
 
@@ -1208,7 +1211,7 @@ export const en_language_data = {
   DocumentDownload: "Document Download",
   StockConfirmDeleteTitle:
     "Enter Removal Remarks for Stock Confirmation (ETRN/377)",
-  LimitAmount: "LimitAmount",
+  LimitAmount: "Limit Amount",
   StockConfirmation: "Stock Confirmation",
   StockAsonDate: "Stock Ason Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
@@ -1238,6 +1241,7 @@ export const en_language_data = {
   LienExpiredSuccessfully: "Lien Expired Successfully",
   LienExpire: "Lien Expire",
   LienConfirmation: "Lien Confirmation",
+  RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
     "Removal Date should be greter than or Equal to Effective date",
@@ -1415,7 +1419,7 @@ export const en_language_data = {
   IfscDetail: "Ifsc Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
-  AreYouSaveThisRecord: "Are You sure to Save this record?",
+  AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
 
@@ -1765,11 +1769,11 @@ export const en_language_data = {
 
   // str ac level branch entry
 
-  AsperExtraction: "As per Extraction",
+  AsperExtraction: "Show As per Extracted",
   Suspicious: "Suspicious",
   WhiteListed: "White Listed",
   STRHistory: "STR History",
-  SuspiciousStatus: "Suspicious Status",
+  SuspiciousStatus: "Show Not a Suspicious",
   SuspiciousReasons: "Suspicious Reasons",
   InvestigationDetail: "Investigation Detail",
   EditDetail: "Edit-Detail",
@@ -1780,9 +1784,10 @@ export const en_language_data = {
   AtleastOneRecordMustMarkedSuspicious:
     "Atleast one record must be marked suspicious",
   AreYouSureRefreshTransactionDetails:
-    "Are You Sure to refresh transaction details?",
+    "Are you sure to refresh transaction details?",
   TRNDate: "TRN. Date",
   VNo: "V. No.",
+  SuspiciStatus: "Suspicious Status",
 
   // insurance entry screen
 

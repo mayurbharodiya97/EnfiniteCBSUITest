@@ -328,28 +328,14 @@ const ExtDocument = ({
   });
 
   useEffect(() => {
-    let payload: {
-      COMP_CD?: string;
-      BRANCH_CD: string;
-      REQUEST_CD?: string;
-      CUSTOMER_ID?: string;
-    } = {
-      // COMP_CD: authState?.companyID ?? "",
+    let payload = {
+      COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
+      REQUEST_CD: location.state?.[0]?.data.REQUEST_ID ?? "",
+      CUSTOMER_ID: location.state?.[0]?.data.CUSTOMER_ID ?? "",
+      SCREEN_REF: "MST/707",
     };
-    if (Array.isArray(location.state) && location.state.length > 0) {
-      const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-      const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-      if (Boolean(reqCD)) {
-        payload["REQUEST_CD"] = reqCD;
-      }
-      if (Boolean(custID)) {
-        payload["CUSTOMER_ID"] = custID;
-      }
-    }
-    if (Object.keys(payload)?.length > 1) {
-      retrieveData.mutate(payload);
-    }
+    retrieveData.mutate(payload);
   }, []);
 
   return (

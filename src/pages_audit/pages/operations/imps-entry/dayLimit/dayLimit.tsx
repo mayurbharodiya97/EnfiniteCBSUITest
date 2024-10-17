@@ -27,7 +27,6 @@ const DayLimitCustom = ({ navigate }) => {
     crudDayLimitDataIMPS,
     {
       onSuccess(data, variables) {
-        console.log("<<<varia", variables);
         CloseMessageBox();
         navigate(".");
         if (variables?._isNewRow) {
@@ -85,7 +84,6 @@ const DayLimitCustom = ({ navigate }) => {
     displayData,
     endSubmit
   ) => {
-    console.log("<<<day", data, rows, dailyLimitData?.data?.[0]);
     endSubmit(true);
     let rowDataLength = Object.keys(rows)?.length !== 0;
     delete data?.COMMON;
@@ -97,8 +95,6 @@ const DayLimitCustom = ({ navigate }) => {
           dailyLimitData?.data?.[0] ?? {}
         )
       : null;
-
-    console.log("<<<upd", upd);
 
     let apiReq = {
       ...data,
@@ -116,7 +112,6 @@ const DayLimitCustom = ({ navigate }) => {
         });
       }
     });
-    console.log("<<<apireq", apiReq);
     let buttonName = await MessageBox({
       messageTitle: "confirmation",
       message: "Do You Want Save Changes ?",
@@ -148,7 +143,7 @@ const DayLimitCustom = ({ navigate }) => {
             },
           }}
         >
-          {dailyLimitData?.isLoading || crudDayLimit?.isLoading ? (
+          {dailyLimitData?.isLoading ? (
             <LinearProgress color="secondary" />
           ) : dailyLimitData?.isError || crudDayLimit?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
@@ -174,7 +169,7 @@ const DayLimitCustom = ({ navigate }) => {
           )}
 
           <FormWrapper
-            key={`day-limit-Form` + dailyLimitData?.isSuccess}
+            key={`day-limit-Forms` + dailyLimitData?.isSuccess}
             metaData={dayLimitFormMetaData as MetaDataType}
             initialValues={dailyLimitData?.data?.[0] ?? {}}
             displayMode={
@@ -193,7 +188,7 @@ const DayLimitCustom = ({ navigate }) => {
             {({ isSubmitting, handleSubmit }) => (
               <>
                 {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
-                rows?.FLAG === "C" ? (
+                rows?.FLAG !== "C" ? (
                   <Button
                     color={"primary"}
                     onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
