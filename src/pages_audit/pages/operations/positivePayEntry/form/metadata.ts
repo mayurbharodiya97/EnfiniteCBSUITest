@@ -193,6 +193,7 @@ export const PositivePayEntryFormMetadata = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -425,6 +426,7 @@ export const PositivePayEntryFormMetadata = {
                 messageTitle: "Confirmation",
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
@@ -917,6 +919,7 @@ export const ResponseParameterFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;

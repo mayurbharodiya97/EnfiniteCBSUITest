@@ -146,6 +146,7 @@ export const RetrievalFormMetaData = {
                   message: postData?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   loadingBtnName: ["Yes"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {

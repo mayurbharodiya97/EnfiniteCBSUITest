@@ -119,6 +119,7 @@ export const form15GHEntryMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 formState.setDataOnFieldChange("GRID_DATA", []);
                 if (buttonName === "No") {
@@ -180,6 +181,7 @@ export const form15GHEntryMetaData = {
                       messageTitle: "Confirmation",
                       message: postData2[j]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     btn99 = btnName;
                     if (btnName === "No") {
@@ -668,6 +670,7 @@ export const form15GHEntryMetaData = {
               messageTitle: "Validation Failed",
               message: "ActiveValidationMessage",
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (buttonName === "Ok") {
               return {

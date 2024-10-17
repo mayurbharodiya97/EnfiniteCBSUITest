@@ -249,6 +249,7 @@ export const PositivePayEntry = ({
                   messageTitle: "Confirmation",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "No" && formMode !== "view") {
                   endSubmit(true);
@@ -261,6 +262,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -276,6 +278,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -297,9 +300,10 @@ export const PositivePayEntry = ({
   const setChequeImage = async () => {
     if (!Boolean(formData?.CHEQUE_IMG)) {
       MessageBox({
-        messageTitle: "ChequeImage",
+        messageTitle: "Information",
         message: "ChequeImageIsNotUploaded",
         buttonNames: ["Ok"],
+        icon: "INFO",
       });
     } else if (Boolean(formData?.CHEQUE_IMG)) {
       setOpenImage(true);
@@ -426,6 +430,7 @@ export const PositivePayEntry = ({
                         messageTitle: "Confirmation",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         const confirmData = {
@@ -494,6 +499,7 @@ export const PositivePayEntry = ({
                       message: "RejectMessage",
                       messageTitle: "Confirmation",
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     if (confirmation === "Yes") {
                       setReject(true);
