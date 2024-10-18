@@ -1363,7 +1363,7 @@ export const en_language_data = {
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
   // Ac period Mater
-  PeriodName: "Period-Name",
+  PeriodName: "Period Name",
   InstNo: "Inst. No.",
   InstallmentPeriod: "Installment Period",
 
@@ -1993,7 +1993,7 @@ export const en_language_data = {
   definationRequired: "Defination is required.",
   term: "Term",
   termrequire: "Term is required",
-  principlerequire: "Principal is required",
+  principleAmtrequire: "Principal Amount is required",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",
   Customer: "Customer",

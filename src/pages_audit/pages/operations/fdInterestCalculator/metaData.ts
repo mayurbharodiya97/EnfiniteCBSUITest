@@ -7,6 +7,7 @@ import {
   parse,
 } from "date-fns";
 import * as API from "./api";
+import { Placeholder } from "reactstrap";
 export const metaData = {
   form: {
     name: "",
@@ -624,7 +625,7 @@ export const metaData = {
       label: "PrincipalAmount",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["principlerequire"] }],
+        rules: [{ name: "required", params: ["principleAmtrequire"] }],
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
@@ -716,8 +717,9 @@ export const metaData = {
         componentType: "rateOfInt",
       },
       name: "INT_RATE_D",
-      label: "Rate ",
+      label: "Rate",
       defaultValue: "0.00",
+      Placeholder: "0.00",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       required: true,
       schemaValidation: {
@@ -755,14 +757,15 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
+        let tranDate = dependentFields?.TRAN_DT_D?.value
+          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
+          : "";
+        let maturityDate = dependentFields?.MATURITY_DT_D?.value
+          ? format(
+              new Date(dependentFields?.MATURITY_DT_D?.value),
+              "dd/MMM/yyyy"
+            )
+          : "";
         let reqData = {
           duration,
           period,
@@ -862,14 +865,15 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
+        let tranDate = dependentFields?.TRAN_DT_D?.value
+          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
+          : "";
+        let maturityDate = dependentFields?.MATURITY_DT_D?.value
+          ? format(
+              new Date(dependentFields?.MATURITY_DT_D?.value),
+              "dd/MMM/yyyy"
+            )
+          : "";
         let reqData = {
           duration,
           period,
@@ -1097,6 +1101,7 @@ export const metaData = {
       name: "ACCT_TYPE_P",
       label: "Type",
       validationRun: "onBlur",
+      required: true,
       _optionsKey: "gettypeDDWdata",
       options: (dependentValue, formState, _, authState) => {
         return API.gettypeDDWdata({
@@ -1106,7 +1111,6 @@ export const metaData = {
         });
       },
       fullWidth: true,
-      required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["typeRequired"] }],
@@ -1626,7 +1630,7 @@ export const metaData = {
       label: "PrincipalAmount",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["principlerequire"] }],
+        rules: [{ name: "required", params: ["principleAmtrequire"] }],
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
@@ -1719,6 +1723,8 @@ export const metaData = {
       },
       name: "INT_RATE_P",
       label: "Rate",
+      defaultValue: "0.00",
+      Placeholder: "0.00",
       required: true,
       schemaValidation: {
         type: "string",
@@ -2183,7 +2189,6 @@ export const metaData = {
       name: "TRAN_DT_S",
       label: "asonDate",
       defaultValue: new Date(),
-      isReadOnly: true,
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
