@@ -88,7 +88,7 @@ export const metaData = {
       name: "PERIOD_NM",
       label: "PeriodName",
       placeholder: "PeriodName",
-      maxLength: 40,
+      maxLength: 100,
       type: "text",
       required: true,
       schemaValidation: {
@@ -103,6 +103,7 @@ export const metaData = {
       },
       className: "textInputFromLeft",
       name: "INST_NO",
+      maxLength: 5,
       label: "InstNo",
       placeholder: "InstNo",
       FormatProps: {
