@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Grid,
   LinearProgress,
+  Toolbar,
   // Tab,
   Typography,
 } from "@mui/material";
@@ -142,6 +143,7 @@ export const DailyTransTabs = ({
       "OP_DATE",
       "PENDING_AMOUNT",
       "ACCT_NM",
+      "STATUS",
     ];
 
     const cardValues = keys?.reduce((acc, key) => {
@@ -162,7 +164,43 @@ export const DailyTransTabs = ({
 
   return (
     <div style={{ padding: "8px 8px 0px 8px" }}>
-      {Boolean(heading) && <h2> {heading}</h2>}
+      {Boolean(heading) && (
+        <AppBar
+          position="static"
+          sx={{
+            background: "var(--theme-color5)",
+            margin: "2px",
+            width: "auto",
+            marginBottom: "10px",
+          }}
+        >
+          <Toolbar
+            sx={{
+              paddingLeft: "24px",
+              paddingRight: "24px",
+              minHeight: "48px !important",
+            }}
+          >
+            <Typography
+              style={{ flexGrow: 1 }}
+              sx={{
+                color: "var(--theme-color2)",
+                fontSize: "1.25rem",
+                fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                fontWeight: 500,
+                lineHeight: "1.6px",
+                letterSpacing: "0.0075em",
+              }}
+            >
+              {heading}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+
+      {/* <AppBar component={} sx={{ background: "var(--theme-color5)" }}>
+        {Boolean(heading) && <h4> {heading}</h4>}
+      </AppBar> */}
       <>
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
@@ -250,7 +288,9 @@ export const DailyTransTabs = ({
                   <Snapshot reqData={reqData} />
                 )}
                 {a.TAB_NAME.includes("HOLDCHRG") && (
-                  <HoldCharge reqData={reqData} />
+                  <HoldCharge
+                    reqData={{ ...reqData, STATUS: detail?.STATUS }}
+                  />
                 )}
                 {a.TAB_NAME.includes("DOCS") && (
                   <Document reqData={reqData} isDisplayClose={false} />
@@ -302,7 +342,6 @@ export const DailyTransTabsWithDialog = ({
   rowsData,
   setRowsData,
 }) => {
-  console.log("sjicfbsjbdcjsc", "avcuivhbadavbjbasjdksvbdj");
   const [cardData, setCardsData] = useState<any>([]);
   const [updatedMtdata, setUpdatedMtdata] = useState<any>({});
   const navigate = useNavigate();
@@ -385,9 +424,6 @@ export const DailyTransTabsWithDialog = ({
       setCardsData([]);
     },
   });
-  useEffect(() => {
-    console.log(updatedMtdata, "updatedMtdataupdatedMtdataupdatedMtdata");
-  }, [updatedMtdata]);
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "_rowChanged") {

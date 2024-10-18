@@ -11,7 +11,7 @@ export const getInsuranceTypeData = async (reqData: any) => {
         ({ DESCRIPTION, INSURANCE_TYPE_CD, ...other }) => {
           return {
             value: INSURANCE_TYPE_CD,
-            label: DESCRIPTION,
+            label: INSURANCE_TYPE_CD + "-" + DESCRIPTION,
             ...other,
           };
         }
@@ -32,7 +32,7 @@ export const getInsuranceCompanyData = async (reqData: any) => {
         ({ DESCRIPTION, INSURANCE_COMP_CD, ...other }) => {
           return {
             value: INSURANCE_COMP_CD,
-            label: DESCRIPTION,
+            label: INSURANCE_COMP_CD + "-" + DESCRIPTION,
             ...other,
           };
         }

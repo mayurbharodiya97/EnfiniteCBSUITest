@@ -121,3 +121,15 @@ export const fdConfirmationDeleteFormData = async (formData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const printPaymentAdvice = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDDETAILREPORT", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

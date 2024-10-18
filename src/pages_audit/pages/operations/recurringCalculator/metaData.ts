@@ -232,6 +232,7 @@ export const RecurringCalculatotMetaData = {
       },
       name: "INT_RATE",
       label: "IntRate",
+      defaultValue: "0.00",
       type: "text",
       fullWidth: true,
       className: "textInputFromRight",

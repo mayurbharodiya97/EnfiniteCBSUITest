@@ -117,6 +117,24 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
       minWidth: 130,
       maxWidth: 170,
     },
+    {
+      accessor: "ADVICE",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "Advice",
+      sequence: 14,
+      alignment: "right",
+      width: 100,
+      minWidth: 70,
+      maxWidth: 150,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.TRN_FLAG === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
   ],
 };
 

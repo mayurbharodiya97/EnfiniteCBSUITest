@@ -22,6 +22,8 @@ const DayLimitCustom = ({ navigate }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const dailyLimitData: any = useMutation("validateDeleteData", dayLimitData);
+
+  //API calling for data insert and update
   const crudDayLimit: any = useMutation(
     "validateDeleteData",
     crudDayLimitDataIMPS,
@@ -44,6 +46,7 @@ const DayLimitCustom = ({ navigate }) => {
     }
   );
 
+  // affter doubleclick on row so ope component and API calling for  initial value
   useEffect(() => {
     return () => {
       dailyLimitData.mutate({
@@ -114,7 +117,7 @@ const DayLimitCustom = ({ navigate }) => {
     });
     let buttonName = await MessageBox({
       messageTitle: "confirmation",
-      message: "Do You Want Save Changes ?",
+      message: "DoYouWantSaveChanges",
       defFocusBtnName: "Yes",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],

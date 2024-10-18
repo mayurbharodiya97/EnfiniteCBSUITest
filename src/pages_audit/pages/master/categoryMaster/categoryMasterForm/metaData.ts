@@ -205,6 +205,10 @@ export const CategoryMasterFormMetaData = {
       label: "Rate",
       autoComplete: "off",
       maxLength: 5,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["rateRequired"] }],
+      },
       FormatProps: {
         allowLeadingZeros: false,
         isAllowed: (values) => {
@@ -472,6 +476,10 @@ export const CategoryMasterFormMetaData = {
       label: "Rate",
       autoComplete: "off",
       maxLength: 5,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["rateRequired"] }],
+      },
       FormatProps: {
         allowLeadingZeros: false,
         isAllowed: (values) => {

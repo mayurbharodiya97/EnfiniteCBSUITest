@@ -1568,14 +1568,16 @@ export const PassbookPrintingInq = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Validation Failed",
+                messageTitle: "ValidationFailed",
                 message: postData[i]?.O_MESSAGE,
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.O_MESSAGE,
+                icon: "CONFIRM",
                 buttonNames: ["Yes", "No"],
               });
               btn99 = btnName;
@@ -1587,6 +1589,7 @@ export const PassbookPrintingInq = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               }
             } else if (postData[i]?.O_STATUS === "0") {

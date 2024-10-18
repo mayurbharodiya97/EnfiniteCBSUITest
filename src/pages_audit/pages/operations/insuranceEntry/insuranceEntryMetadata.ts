@@ -1,7 +1,12 @@
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
-import { addMonths, format, subDays } from "date-fns";
-import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { addMonths, format, isValid, subDays } from "date-fns";
+import {
+  GridMetaDataType,
+  lessThanDate,
+  utilFunction,
+} from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 export const InsuranceEntryFormMetaData = {
   masterForm: {
@@ -54,6 +59,7 @@ export const InsuranceEntryFormMetaData = {
           isFieldFocused: true,
           defaultfocus: true,
           defaultValue: "",
+          validationRun: "onChange",
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
@@ -69,13 +75,11 @@ export const InsuranceEntryFormMetaData = {
             auth,
             dependentFieldsValues
           ) => {
-            // if (!field?.value) {
-            //   formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-            //   return {
-            //     ACCT_CD: { value: "", ignoreUpdate: true },
-            //     ACCT_NM: { value: "" },
-            //   };
-            // }
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_CD: { value: "", ignoreUpdate: true },
+              ACCT_NM: { value: "" },
+            };
           },
         },
         accountCodeMetadata: {
@@ -112,6 +116,7 @@ export const InsuranceEntryFormMetaData = {
                 BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
                 SCREEN_REF: "RPT/70",
               };
+              formState?.handleDisableButton(true);
               let postData = await GeneralAPI.getAccNoValidation(Apireq);
 
               formState.setDataOnFieldChange("TAB_REQUEST", Apireq);
@@ -126,6 +131,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "ValidationFailed",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
@@ -136,6 +142,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "Alert",
@@ -148,10 +155,12 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: false,
                   });
+                  formState?.handleDisableButton(false);
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Confirmation",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -162,6 +171,7 @@ export const InsuranceEntryFormMetaData = {
                   formState.setDataOnFieldChange("IS_VISIBLE", {
                     IS_VISIBLE: true,
                   });
+                  formState?.handleDisableButton(false);
                   if (btn99 !== "No") {
                     returnVal = postData;
                   } else {
@@ -169,6 +179,7 @@ export const InsuranceEntryFormMetaData = {
                   }
                 }
               }
+              formState?.handleDisableButton(false);
               btn99 = 0;
               return {
                 ACCT_CD:
@@ -189,22 +200,27 @@ export const InsuranceEntryFormMetaData = {
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",
                 },
-                COVER_NOTE: {
-                  value: "",
-                  isFieldFocused: true,
-                },
+                COVER_NOTE:
+                  returnVal !== ""
+                    ? {
+                        value: "",
+                        isFieldFocused: true,
+                      }
+                    : {
+                        isFieldFocused: false,
+                      },
               };
-            } else {
+            } else if (!field.value) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
                 IS_VISIBLE: false,
               });
+              formState?.handleDisableButton(false);
               return {
-                ACCT_CD: { value: "" },
                 ACCT_NM: { value: "" },
               };
             }
           },
-          // runPostValidationHookAlways: true,
+          runPostValidationHookAlways: true,
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         },
       },
@@ -226,6 +242,11 @@ export const InsuranceEntryFormMetaData = {
         name: "INSURANCE_DATE",
         fullWidth: true,
         label: "InsuranceDate",
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["InsuranceRequired"] }],
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
       {
@@ -235,6 +256,11 @@ export const InsuranceEntryFormMetaData = {
         name: "DUE_DATE",
         fullWidth: true,
         label: "DueDate",
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["DueDateRequire"] }],
+        },
         dependentFields: ["INSURANCE_DATE"],
         setValueOnDependentFieldsChange: (dependent) => {
           let date = dependent["INSURANCE_DATE"]?.value;
@@ -245,6 +271,18 @@ export const InsuranceEntryFormMetaData = {
           } else {
             return null;
           }
+        },
+        validate: (currentField, dependentField) => {
+          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+            return "Mustbeavaliddate";
+          }
+          if (
+            new Date(currentField?.value) <=
+            new Date(dependentField?.INSURANCE_DATE?.value)
+          ) {
+            return `DueDateShouldGreaterDateInsurance`;
+          }
+          return "";
         },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
@@ -269,6 +307,7 @@ export const InsuranceEntryFormMetaData = {
         fullWidth: true,
         txtTransform: "uppercase",
         required: true,
+        maxLength: 50,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterCoverNote"] }],
@@ -292,7 +331,6 @@ export const InsuranceEntryFormMetaData = {
         },
         name: "INSURANCE_COMP_CD",
         label: "Company",
-        // defaultValue: "RTGS",
         fullWidth: true,
         required: true,
         schemaValidation: {
@@ -334,6 +372,7 @@ export const InsuranceEntryFormMetaData = {
         label: "PolicyNo",
         fullWidth: true,
         required: true,
+        maxLength: 25,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterPolicyNo"] }],
@@ -348,6 +387,7 @@ export const InsuranceEntryFormMetaData = {
         label: "Description",
         fullWidth: true,
         txtTransform: "uppercase",
+        maxLength: 100,
         GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
       },
 
@@ -362,6 +402,41 @@ export const InsuranceEntryFormMetaData = {
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterInsuranceAmount"] }],
+        },
+        dependentFields: ["NET_PREMIUM_AMOUNT"],
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (field.value) {
+            if (
+              Number(field.value) <
+              Number(dependentFieldsValues?.NET_PREMIUM_AMOUNT?.value)
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: `InsuranceAmountCannotLessPremiumAmount`,
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+              if (buttonName === "Ok") {
+                return {
+                  INSURANCE_AMOUNT: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  NET_PREMIUM_AMOUNT: {
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            }
+          }
         },
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
       },
@@ -442,13 +517,14 @@ export const InsuranceEntryFormMetaData = {
               return {
                 SERVICE_CHARGE: { value: postData?.[0]?.TAX_AMOUNT },
               };
+            } else if (!field?.value) {
+              return {
+                SERVICE_CHARGE: { value: "" },
+              };
             }
-          } else if (!field?.value) {
-            return {
-              SERVICE_CHARGE: { value: "" },
-            };
           }
         },
+        runPostValidationHookAlways: true,
       },
 
       {
@@ -470,7 +546,7 @@ export const InsuranceEntryFormMetaData = {
           if (field.value) {
             if (
               Number(field.value) >
-              Number(dependentFieldsValues?.SERVICE_CHARGE?.value)
+              Number(dependentFieldsValues?.NET_PREMIUM_AMOUNT?.value)
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "Alert",
@@ -493,12 +569,9 @@ export const InsuranceEntryFormMetaData = {
                 };
               }
             }
-          } else if (!field?.value) {
-            return {
-              SERVICE_CHARGE: { value: "" },
-            };
           }
         },
+        runPostValidationHookAlways: true,
       },
       {
         render: {
@@ -525,6 +598,7 @@ export const InsuranceEntryFormMetaData = {
         label: "Remarks",
         fullWidth: true,
         txtTransform: "uppercase",
+        maxLength: 100,
         GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
       },
       {
@@ -533,6 +607,7 @@ export const InsuranceEntryFormMetaData = {
         },
         name: "PROPOSER1",
         label: "Proposer1",
+        maxLength: 100,
         fullWidth: true,
         GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
       },
@@ -541,6 +616,7 @@ export const InsuranceEntryFormMetaData = {
           componentType: "textField",
         },
         name: "PROPOSER2",
+        maxLength: 100,
         fullWidth: true,
         label: "Proposer2",
         GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
@@ -557,7 +633,7 @@ export const InsuranceEntryFormMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "29vh", max: "29vh" },
+      containerHeight: { min: "22vh", max: "22vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: false,
@@ -881,7 +957,7 @@ export const ViewInsuranceMetaData = {
         componentType: "textField",
       },
       name: "ADD1",
-      label: "Address",
+      label: "Address1",
       type: "text",
       fullWidth: true,
       required: true,
@@ -1195,6 +1271,7 @@ export const insuranceAccountRetrievemetaData = {
         name: "ACCT_CD",
         autoComplete: "off",
         dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -1257,6 +1334,7 @@ export const insuranceAccountRetrievemetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -1299,11 +1377,12 @@ export const insuranceAccountRetrievemetaData = {
               },
             };
           } else {
-            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            // formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
             return {
-              ACCT_CD: {
-                value: "",
-              },
+              // ACCT_CD: {
+              //   value: "",
+              //   ignoreUpdate: true,
+              // },
               ACCT_NM: { value: "" },
             };
           }
