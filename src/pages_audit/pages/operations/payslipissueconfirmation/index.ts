@@ -1,1 +1,1 @@
-export { payslipissueconfirmation as default } from "./payslipissueconfirmationGrid";
+export { PayslipDDTrnsConfirmation as default } from "./PayslipDDTransactionsConfirmation";

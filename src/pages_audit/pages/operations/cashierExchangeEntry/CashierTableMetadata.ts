@@ -9,6 +9,7 @@ export const CashierMetaData: CustomTableMetadataType = {
       componentType: "textField",
       isReadOnly: true,
       isTotalWord: true,
+      isCalculation: true,
     },
     {
       name: "AVAIL_QTY",

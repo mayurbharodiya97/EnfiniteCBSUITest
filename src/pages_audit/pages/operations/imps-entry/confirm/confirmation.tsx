@@ -1,5 +1,5 @@
 import { AppBar, Button } from "@mui/material";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { t } from "i18next";
@@ -8,7 +8,6 @@ import { RetrieveCfmData } from "../confirm/retrieveCfmData/retrieveCfmData";
 import { impsCfmMetaData } from "./impsConfirmMetadata";
 import { useMutation } from "react-query";
 import { confirmIMPSdata, getImpsDetails } from "../api";
-import { AuthContext } from "pages_audit/auth";
 import { DayLimit } from "../dayLimit/dayLimit";
 import {
   ActionTypes,
@@ -36,6 +35,7 @@ const ImpsConfirmation = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const myRef = useRef<any>(null);
 
+  //  Api calling for confirmation
   const confirmIMPS: any = useMutation("confirmIMPSdata", confirmIMPSdata, {
     onSuccess: (data, variables) => {
       CloseMessageBox();
@@ -47,17 +47,19 @@ const ImpsConfirmation = () => {
           icon: "ERROR",
         });
       } else {
+        //  after successfull update confirmed flag
         const updateConfirmation = (data) => {
-          data.map((old) => {
+          const updatedData = data.map((old) => {
             if (old?.TRAN_CD === variables?.TRAN_CD) {
-              return { ...old, CONFIRMED: variables?._isConfrimed ? "Y" : "N" };
+              return { ...old, CONFIRMED: variables?._isConfrimed ? "Y" : "R" };
             }
             return old;
           });
-        };
 
-        setFilteredData(updateConfirmation);
-        setRetrieveData(updateConfirmation);
+          return updatedData;
+        };
+        setFilteredData(updateConfirmation(filteredData));
+        setRetrieveData(updateConfirmation(retrieveData));
 
         enqueueSnackbar(
           t(
@@ -72,6 +74,7 @@ const ImpsConfirmation = () => {
     },
   });
 
+  // common function for API request
   const confirmation = async (flag) => {
     let buttonName = await MessageBox({
       messageTitle: t("confirmation"),
@@ -93,11 +96,13 @@ const ImpsConfirmation = () => {
     }
   };
 
+  // API calling for details data
   const accountList: any = useMutation("getImpsDetails", getImpsDetails, {
     onSuccess: (data) => {
       myRef.current?.setGridData(data ?? []);
     },
   });
+
   useEffect(() => {
     if (retrieveData?.length) {
       accountList.mutate({
@@ -108,6 +113,7 @@ const ImpsConfirmation = () => {
     }
   }, [retrieveData, currentIndex]);
 
+  //  click on prev/next button so chnage current-index number using this function
   const changeIndex = (direction) => {
     setCurrentIndex((prevIndex) => {
       if (direction === "next") {
@@ -121,11 +127,13 @@ const ImpsConfirmation = () => {
     navigate("retrieve-cfm-form");
   }, []);
 
+  // common function for filter data on click view-all and refresh button
   const filerData = (flag) => {
     if (flag === "REFRESH") {
       let refreshData = retrieveData?.filter(
         (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
       );
+      setCurrentIndex(0);
       setRetrieveData(refreshData);
     } else if (flag === "VIEW_ALL") {
       setRetrieveData(filteredData);
@@ -232,7 +240,7 @@ const ImpsConfirmation = () => {
                     {t("Reject")}
                   </Button>
                   <Button disabled={accountList?.isLoading} color={"primary"}>
-                    View Changes
+                    {t("ViewChanges")}
                   </Button>
                   <Button
                     disabled={accountList?.isLoading}

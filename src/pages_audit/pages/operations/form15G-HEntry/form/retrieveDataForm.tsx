@@ -127,7 +127,6 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
                   disabled={isSubmitting}
                   color={"primary"}
                   ref={okButtonRef}
-                  style={{ marginRight: "5px" }}
                 >
                   {t("Ok")}
                 </GradientButton>

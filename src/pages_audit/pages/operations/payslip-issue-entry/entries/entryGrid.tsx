@@ -25,12 +25,13 @@ import {
   MetaDataType,
   ClearCacheProvider,
 } from "@acuteinfo/common-base";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import { PaySlipIssueEntry } from "../paySlipIssueEntryGrid";
 import { EntryForm } from "./entryForm";
+import { Payslipissueconfirmation } from "../../payslipissueconfirmation/payslipissueconfirmationGrid";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -69,8 +70,6 @@ export const RetriveGridForm: FC<{
   const retrievalParaRef = useRef<any>(null);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
-      console.log(data?.rows);
-
       indexRef.current = Number(data?.rows?.[0].id);
       navigate("view-detail", {
         state: {
@@ -81,14 +80,11 @@ export const RetriveGridForm: FC<{
       });
     }
   }, []);
-  const mutation: any = useMutation(
-    "getRtgsRetrieveData",
-    API.retRiveGridData,
-    {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
-    }
-  );
+  const mutation: any = useMutation("retRiveGridData", API.retRiveGridData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
   const handlePrev = useCallback(() => {
     navigate(".");
     let index = (indexRef.current -= 1);
@@ -139,15 +135,15 @@ export const RetriveGridForm: FC<{
       A_PAYSLIP_NO: data?.PAYSLIP_NO,
       A_DEF_TRAN_CD: data?.DEF_TRAN_CD,
       A_ENTRY_MODE:
-        screenFlag === "REALIZE"
+        screenFlag === "REALIZEENTRY"
           ? data?.REALIZE
-          : screenFlag === "CANCEL"
+          : screenFlag === "CANCELENTRY"
           ? data?.CANCEL
           : screenFlag === "STOPPAYMENT"
           ? data?.STOPPAYMENT
-          : screenFlag === "CANCELCONFRM"
+          : screenFlag === "CANCELCONFIRM"
           ? data?.CANCELCONFRM
-          : screenFlag === "REALIZECONF"
+          : screenFlag === "REALIZECONFIRM"
           ? data?.REALIZECONF
           : "",
       ALL_BRANCH: "Y",
@@ -159,10 +155,9 @@ export const RetriveGridForm: FC<{
       A_LANG: i18n.resolvedLanguage,
     };
     mutation.mutate(data);
+
     endSubmit(true);
   };
-
-  console.log(headerLabel);
 
   RetrieveFormConfigMetaData.form.label = headerLabel;
   RetrieveGridMetaData.gridConfig.gridLabel = "Enter Retrival Parameters";
@@ -171,10 +166,11 @@ export const RetriveGridForm: FC<{
     let event: any = { preventDefault: () => {} };
     formRef?.current?.handleSubmit(event, "RETRIEVE");
   };
+
   return (
     <>
       <>
-        {apiReqFlag === "RPT/14" ? (
+        {apiReqFlag === "RPT/15" ? (
           <Dialog
             open={opem}
             PaperProps={{
@@ -202,7 +198,37 @@ export const RetriveGridForm: FC<{
                 </GradientButton>
               </Toolbar>
             </AppBar>
-            <PaySlipIssueEntry />
+            {<Payslipissueconfirmation />}
+          </Dialog>
+        ) : apiReqFlag === "RPT/14" ? (
+          <Dialog
+            open={opem}
+            PaperProps={{
+              style: {
+                overflow: "hidden",
+                height: "100vh",
+              },
+            }}
+            fullScreen
+            maxWidth="xl"
+          >
+            <AppBar position="relative" color="secondary">
+              <Toolbar
+                className={headerClasses.root}
+                variant="dense"
+                sx={{ display: "flex", justifyContent: "end" }}
+              >
+                <GradientButton
+                  onClick={(event) => {
+                    close();
+                  }}
+                  color={"primary"}
+                >
+                  {t("close")}
+                </GradientButton>
+              </Toolbar>
+            </AppBar>
+            {<PaySlipIssueEntry />}
           </Dialog>
         ) : (
           <Dialog
@@ -282,6 +308,8 @@ export const RetriveGridForm: FC<{
                     handleNext={handleNext}
                     headerLabel={headerLabel}
                     screenFlag={screenFlag}
+                    trans_type={trans_type}
+                    apiReqFlag={apiReqFlag}
                   />
                 }
               />

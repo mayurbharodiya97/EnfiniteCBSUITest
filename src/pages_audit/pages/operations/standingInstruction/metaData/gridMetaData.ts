@@ -235,9 +235,9 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       sequence: 13,
       componentType: "currency",
       alignment: "right",
-      width: 150,
-      minWidth: 50,
-      maxWidth: 170,
+      width: 180,
+      minWidth: 150,
+      maxWidth: 200,
       isDisplayTotal: true,
     },
     {
@@ -560,7 +560,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT_ACCOUNT",
-      columnName: "CreditFromAcct",
+      columnName: "CreditToAccount",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -681,7 +681,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
@@ -692,8 +692,8 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       isAutoSequence: true,
-      width: 50,
-      minWidth: 40,
+      width: 80,
+      minWidth: 50,
       maxWidth: 100,
     },
     {
@@ -702,9 +702,18 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "date",
-      width: 100,
-      minWidth: 50,
+      width: 120,
+      minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Proccessed",
+      setFooterValue(total, rows) {
+        const proccessedCount = rows?.filter(
+          ({ original }) =>
+            original.SI_EXECUTE_FLG === "Y" || original.SI_EXECUTE_FLG === "C"
+        ).length;
+        return [proccessedCount ?? 0];
+      },
     },
     {
       accessor: "PROCESS_DT",
@@ -712,9 +721,17 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "date",
-      width: 100,
-      minWidth: 50,
+      width: 120,
+      minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Pending",
+      setFooterValue(total, rows) {
+        const pendingCount = rows?.filter(
+          ({ original }) => original?.SI_EXECUTE_FLG === "N"
+        ).length;
+        return [pendingCount ?? 0];
+      },
     },
     {
       accessor: "SI_EXECUTE_FLG_DIS",

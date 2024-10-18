@@ -1,7 +1,7 @@
 export const retrieveFormMetaData = {
   form: {
     name: "retrieve-imps-metadata",
-    label: "Retrieve Information",
+    label: "RetrieveInformation",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

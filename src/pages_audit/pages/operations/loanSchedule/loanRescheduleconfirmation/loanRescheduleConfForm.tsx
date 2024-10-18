@@ -122,15 +122,17 @@ export const LoanRescheduleConfForm = ({ closeDialog, isDataChangedRef }) => {
         if (rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
           await MessageBox({
             messageTitle: "InvalidConfirmation",
-            message: "You can not confirm your own rescheduled loan.",
+            message: "ConfirmRestrictionMsg",
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
         } else {
           const confirmation = await MessageBox({
-            message: "Are you sure to confirm rescheduling?",
+            message: "ConfirmReschedulingMessage",
             messageTitle: "Confirmation",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
+            icon: "CONFIRM",
           });
           if (confirmation === "Yes") {
             const confirmData = {
@@ -158,10 +160,11 @@ export const LoanRescheduleConfForm = ({ closeDialog, isDataChangedRef }) => {
         }
       } else if (data?.name === "reject") {
         const confirmation = await MessageBox({
-          message: "Are you sure to delete/reject rescheduling?",
+          message: "RejectReschedulingMessage",
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (confirmation === "Yes") {
           const rejectData = {

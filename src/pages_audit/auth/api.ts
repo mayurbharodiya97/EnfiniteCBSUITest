@@ -282,6 +282,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     minDate: data?.MINDATE,
     groupName: data?.GROUP_NAME,
     menulistdata: [],
+    uniqueAppId: data?.UNIQUE_APP_ID,
     user: {
       branch: data?.BRANCH,
       branchCode: data?.BRANCHCODE,
@@ -563,4 +564,32 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
     token
   );
   return { status, data };
+};
+export const saveRecentScreenData = async ({
+  branchCode,
+  docCd,
+  openTime,
+  closeTime,
+  tranDt,
+  flag,
+  uniqueAppId,
+}) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "SAVERECENTSCREENDATA",
+    {
+      BRANCH_CD: branchCode,
+      DOC_CD: docCd,
+      OPEN_TIME: openTime,
+      CLOSE_TIME: closeTime,
+      UNIQUE_APP_ID: uniqueAppId,
+      TRAN_DT: tranDt,
+      FLAG: flag,
+      APP_TRAN_CD: 51,
+    }
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
