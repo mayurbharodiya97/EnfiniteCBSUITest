@@ -22,9 +22,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
     isError,
     error,
     refetch,
-  } = useQuery<any, any>(["getLoginImageData"], () =>
-    API.getLoginImageData({ APP_TRAN_CD: "51" })
-  );
+  } = useQuery<any, any>(["getLoginImageData"], () => API.getImageData());
 
   useEffect(() => {
     GeneralAPI.setDocumentName("Password Reset");
