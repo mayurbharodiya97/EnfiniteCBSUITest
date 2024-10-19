@@ -73,15 +73,21 @@ const DynamicForm: FC<{
     isError,
     error,
     refetch,
-  } = useQuery<any, any>(["getDynamicFormMetaData"], () =>
-    API.getDynamicFormMetaData({
-      DOC_CD: item?.DOC_CD ?? "",
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      SR_CD: item?.FORM_METADATA_SR_CD,
-    })
+  } = useQuery<any, any>(
+    ["getDynamicFormMetaData"],
+    () =>
+      API.getDynamicFormMetaData({
+        DOC_CD: item?.DOC_CD ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        SR_CD: item?.FORM_METADATA_SR_CD,
+      }),
+    {
+      enabled: Boolean(
+        item?.FORM_METADATA_SR_CD && item.FORM_METADATA_SR_CD.length > 0
+      ),
+    }
   );
-
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.getDynamicFormData(docID)),
     {
@@ -115,7 +121,6 @@ const DynamicForm: FC<{
   const onPopupYes = (rows) => {
     mutation.mutate({ data: rows });
   };
-  console.log("existingData", existingData);
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
