@@ -2641,6 +2641,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
     packageName: "",
   },
+  GETERRSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETERRSTATUSDDDW",
+    packageName: "",
+  },
   DOCASHEXCHANGENTRY: {
     url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
     packageName: "",
