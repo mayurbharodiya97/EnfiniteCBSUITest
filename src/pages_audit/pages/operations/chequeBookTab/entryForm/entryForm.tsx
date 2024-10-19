@@ -204,6 +204,7 @@ export const EntryForm = (props) => {
     };
   }, []);
 
+  // common function for calling the API of confirmation
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     // @ts-ignore
     endSubmit(true);
@@ -260,7 +261,15 @@ export const EntryForm = (props) => {
             });
             return buttonName;
           };
-
+          let apiReq = {
+            IS_CONFIMED: isConfirm === "C" ? true : false,
+            FLAG: confirmData?.REQ_FLAG,
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: confirmData?.BRANCH_CD,
+            TRAN_CD: confirmData?.TRAN_CD,
+            AUTO_CHQBK_PRINT_FLAG: confirmData?.AUTO_CHQBK_PRINT_FLAG,
+            LAST_ENTERED_BY: confirmData?.LAST_ENTERED_BY,
+          };
           if (data?.length) {
             for (let i = 0; i < data?.length; i++) {
               let btnName = await messagebox(
@@ -269,8 +278,10 @@ export const EntryForm = (props) => {
                   : data[i]?.O_STATUS === "0"
                   ? "confirmation"
                   : "ALert message",
-                data[i]?.O_STATUS === "0"
-                  ? "Are you sure to proceed"
+                data[i]?.O_STATUS === "0" && isConfirm === "C"
+                  ? t("AreYouSureToConfirm")
+                  : data[i]?.O_STATUS === "0" && isConfirm === "R"
+                  ? t("AreYouSureToReject")
                   : data[i]?.O_MESSAGE,
                 data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
                   ? ["Yes", "No"]
@@ -279,16 +290,7 @@ export const EntryForm = (props) => {
               );
               if (btnName === "No") {
                 break;
-              } else if (btnName === "Ok" && data[i]?.O_STATUS === "0") {
-                let apiReq = {
-                  IS_CONFIMED: isConfirm === "C" ? true : false,
-                  FLAG: confirmData?.REQ_FLAG,
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: confirmData?.BRANCH_CD,
-                  TRAN_CD: confirmData?.TRAN_CD,
-                  AUTO_CHQBK_PRINT_FLAG: confirmData?.AUTO_CHQBK_PRINT_FLAG,
-                  LAST_ENTERED_BY: confirmData?.LAST_ENTERED_BY,
-                };
+              } else if (btnName === "Yes" && data[i]?.O_STATUS === "99") {
                 let res = await MessageBox({
                   messageTitle: t("confirmation"),
                   message:
@@ -303,6 +305,8 @@ export const EntryForm = (props) => {
                 if (res === "Yes") {
                   chequeBkCfm.mutate(apiReq);
                 }
+              } else if (btnName === "Yes" && data[i]?.O_STATUS === "0") {
+                chequeBkCfm.mutate(apiReq);
               }
             }
           }

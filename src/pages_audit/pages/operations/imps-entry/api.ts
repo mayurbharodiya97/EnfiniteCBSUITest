@@ -185,3 +185,15 @@ export const confirmIMPSdata = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const viewChangesData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETATMIMPSAUDRPT", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

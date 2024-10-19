@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
+import { AppBar, Dialog, LinearProgress } from "@mui/material";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
   MetaDataType,
   ClearCacheProvider,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { enqueueSnackbar } from "notistack";
@@ -192,18 +193,18 @@ const DayLimitCustom = ({ navigate }) => {
               <>
                 {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
                 rows?.FLAG !== "C" ? (
-                  <Button
+                  <GradientButton
                     color={"primary"}
                     onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                     disabled={isSubmitting}
                   >
                     {t("Save")}
-                  </Button>
+                  </GradientButton>
                 ) : null}
 
-                <Button onClick={() => navigate(".")} color={"primary"}>
+                <GradientButton onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             )}
           </FormWrapper>

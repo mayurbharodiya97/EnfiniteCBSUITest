@@ -820,6 +820,18 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getDateWithCurrentTime = async (date) => {
+    if (utilFunction?.isValidDate(date)) {
+      const selectedDate = new Date(date);
+      selectedDate.setHours(new Date().getHours());
+      selectedDate.setMinutes(new Date().getMinutes());
+      selectedDate.setSeconds(new Date().getSeconds());
+      const formattedDate = format(selectedDate, "eee MMM dd yyyy HH:mm:ss");
+      return formattedDate;
+    }
+    return "";
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -854,6 +866,7 @@ const GeneralAPISDK = () => {
     getPhotoSignHistory,
     getCustAccountLatestDtl,
     getCalGstAmountData,
+    getDateWithCurrentTime,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

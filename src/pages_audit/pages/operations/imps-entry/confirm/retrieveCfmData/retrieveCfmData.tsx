@@ -1,11 +1,4 @@
-import {
-  FC,
-  useRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useRef, useCallback, useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
@@ -103,12 +96,12 @@ export const RetrieveCfmDataCustom = ({
       <>
         <Dialog
           open={true}
+          fullWidth={true}
           PaperProps={{
             style: {
-              overflow: "hidden",
+              maxWidth: "1245px",
             },
           }}
-          maxWidth="xl"
         >
           <FormWrapper
             key={`impscfm-retrieveForm`}

@@ -1,4 +1,4 @@
-import { Button, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { t } from "i18next";
 import { CardDetailsMetaData } from "./cardDetailsMetadata";
 import { useLocation } from "react-router-dom";
@@ -6,6 +6,7 @@ import {
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 
@@ -125,18 +126,18 @@ export const CardDetails = ({ navigate, parameter, myRef }) => {
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
-            <Button
+            <GradientButton
               onClick={(event) => {
                 handleSubmit(event, "Save");
               }}
               color={"primary"}
             >
               {rows?.length ? t("Update") : t("Add")}
-            </Button>
+            </GradientButton>
 
-            <Button onClick={() => navigate(".")} color={"primary"}>
+            <GradientButton onClick={() => navigate(".")} color={"primary"}>
               {t("Close")}
-            </Button>
+            </GradientButton>
           </>
         )}
       </FormWrapper>
