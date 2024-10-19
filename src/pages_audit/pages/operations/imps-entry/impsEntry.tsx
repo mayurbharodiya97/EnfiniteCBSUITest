@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   Container,
   Dialog,
   Grid,
@@ -26,6 +25,7 @@ import {
   FormWrapper,
   MetaDataType,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { format } from "date-fns";
@@ -549,7 +549,7 @@ export const ImpsEntryCustom = () => {
               <>
                 {retrieveData?.length > 0 && rowData?.length > 0 && (
                   <>
-                    <Button
+                    <GradientButton
                       onClick={() =>
                         setFormMode(formMode === "edit" ? "view" : "edit")
                       }
@@ -559,8 +559,8 @@ export const ImpsEntryCustom = () => {
                       }
                     >
                       {formMode === "edit" ? t("View") : t("Edit")}
-                    </Button>
-                    <Button
+                    </GradientButton>
+                    <GradientButton
                       onClick={() => {
                         initialDataRef.current = {};
                         setFormMode("add");
@@ -573,8 +573,8 @@ export const ImpsEntryCustom = () => {
                       color={"primary"}
                     >
                       {t("New")}
-                    </Button>
-                    <Button
+                    </GradientButton>
+                    <GradientButton
                       onClick={() => {
                         setCurrentIndex(0);
                         setTimeout(() => {
@@ -587,17 +587,17 @@ export const ImpsEntryCustom = () => {
                       color={"primary"}
                     >
                       {t("Delete")}
-                    </Button>
+                    </GradientButton>
                   </>
                 )}
-                <Button
+                <GradientButton
                   onClick={() => navigate("retrieve-form")}
                   color={"primary"}
                   disabled={accountList?.isLoading || validateDelete?.isLoading}
                 >
                   {t("Retrieve")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color={"primary"}
                   disabled={
                     accountList?.isLoading ||
@@ -607,7 +607,7 @@ export const ImpsEntryCustom = () => {
                   onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                 >
                   {t("Save")}
-                </Button>
+                </GradientButton>
               </>
             )}
           </FormWrapper>

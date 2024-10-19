@@ -1346,6 +1346,13 @@ export const en_language_data = {
   UPIDailyLimit: "UPI/Daily Limit",
   DoYouWantSaveChanges: "Do You Want Save Changes ?",
   limitamountlessthan: "limit amount should be less than",
+  ModifiedBy: "Modified By",
+  ModifiedDate: "Modified Date",
+  MachineName: "Machine Name",
+  SrCode: "Sr Code",
+  ViewChangesHederTitle: "Online Transaction Registration changes",
+  ATMConfirmationRetrieveData: "ATM Confirmation Retrieve Data",
+  IMPSConfirmationRetrieveData: "IMPS Confirmation Retrieve Data",
 
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
@@ -1895,7 +1902,7 @@ export const en_language_data = {
   ActivityTime: "Activity Time",
   ColumnName: "Column Name",
   OldValue: "Old Value",
-  NewValue: "NewValue",
+  NewValue: "New Value",
   ColorandSi:
     "Red Color Indicates the Deactivated SI & Double Click to View SI Details",
   EnterCommisionType: "Enter Commision Type",

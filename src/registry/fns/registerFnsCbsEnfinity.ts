@@ -35,3 +35,4 @@ registerFn("getChequeNoValidation", GeneralAPI.getChequeNoValidation);
 registerFn("getPhotoSignHistory", GeneralAPI.getPhotoSignHistory);
 registerFn("getCustAccountLatestDtl", GeneralAPI.getCustAccountLatestDtl);
 registerFn("getCalGstAmountData", GeneralAPI.getCalGstAmountData);
+registerFn("getCalGstAmountData", GeneralAPI.getDateWithCurrentTime);

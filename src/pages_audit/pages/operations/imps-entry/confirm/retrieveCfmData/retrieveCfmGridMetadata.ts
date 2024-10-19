@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "IMPSConfirmationRetrieveData",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
