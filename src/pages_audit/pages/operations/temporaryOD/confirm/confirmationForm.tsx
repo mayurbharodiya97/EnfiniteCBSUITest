@@ -70,6 +70,7 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
       buttonNames: ["Yes", "No"],
       defFocusBtnName: "Yes",
       loadingBtnName: ["Yes"],
+      icon: "CONFIRM",
     });
     if (buttonName === "Yes") {
       tempODConfirm.mutate({

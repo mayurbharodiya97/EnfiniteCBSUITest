@@ -1902,6 +1902,7 @@ export const en_language_data = {
   SICharge: "SI Charge",
   Remark: "Remark",
   ValidUpTo: "Valid UpTo",
+  ValidUpto: "Valid Upto",
   SINumber: "SI Number",
   CreditAcctName: "Credit A/C Name",
   DebitAcctName: "Debit A/C Name",
@@ -1914,7 +1915,7 @@ export const en_language_data = {
   ActivityTime: "Activity Time",
   ColumnName: "Column Name",
   OldValue: "Old Value",
-  NewValue: "NewValue",
+  NewValue: "New Value",
   ColorandSi:
     "Red Color Indicates the Deactivated SI & Double Click to View SI Details",
   EnterCommisionType: "Enter Commision Type",
@@ -1949,8 +1950,7 @@ export const en_language_data = {
     "This Can't be Revert back! Do you want to Consider it as executed?",
   DataNotFound: "Data Not Found",
   TotalNoofActiveSI: "Total No. of Active SI",
-  EnterRemovalRemarksForSI:
-    "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
@@ -2155,4 +2155,8 @@ export const en_language_data = {
   LabelName: "Label Name",
   ViewMaster: "View Master",
   Advice: "Advice",
+  // Parameter Master
+  ModifiedDateTime: "Modified Date-Time",
+  ModifiedMachineName: "Modified Machine Name",
+  VerifiedMachineName: "Verified Machine Name",
 };

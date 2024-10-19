@@ -275,7 +275,11 @@ export const EntryForm = (props) => {
                 data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
                   ? ["Yes", "No"]
                   : ["Ok"],
-                data[i]?.O_STATUS === "999" ? "ERROR" : "WARNING"
+                data[i]?.O_STATUS === "0"
+                  ? "CONFIRM"
+                  : data[i]?.O_STATUS === "999"
+                  ? "ERROR"
+                  : "WARNING"
               );
               if (btnName === "No") {
                 break;

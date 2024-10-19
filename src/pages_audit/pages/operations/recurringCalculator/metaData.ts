@@ -87,11 +87,6 @@ export const RecurringCalculatotMetaData = {
         }),
       _optionsKey: "getcategory",
       GridProps: { xs: 6, sm: 3, md: 4, lg: 4, xl: 4 },
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Categoryisrequired"] }],
-      },
     },
     {
       render: {
@@ -100,6 +95,11 @@ export const RecurringCalculatotMetaData = {
       name: "START_DT",
       label: "StartDate",
       fullWidth: true,
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["StartDateisrequired"] }],
+      },
       GridProps: { xs: 6, sm: 4, md: 2, lg: 2, xl: 2 },
     },
     {
