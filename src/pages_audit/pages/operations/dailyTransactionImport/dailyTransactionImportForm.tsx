@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useMutation, useQuery } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { CircularProgress, Dialog } from "@mui/material";
+import { AppBar, CircularProgress, Dialog } from "@mui/material";
 import {
   SubmitFnType,
   GridWrapper,
@@ -48,7 +48,7 @@ const DailyTransactionImport = () => {
   const gridRef = useRef<any>(null);
   const [actionMenu, setActionMenu] = useState(actions);
   const [filteredGridData, setFilteredGridData] = useState<any>([]);
-  const [paraType, setParaType] = useState("E");
+  const [paraType, setParaType] = useState("A");
   const [reqPara, setReqPara] = useState<any>({});
   const gridDataRef = useRef<any>(false);
   const setCurrentAction = useCallback(async (data) => {
@@ -62,7 +62,7 @@ const DailyTransactionImport = () => {
           }
         });
       });
-      setParaType("A");
+      setParaType("E");
     } else if (data.name === "all") {
       setActionMenu((values: any) => {
         return values.map((item) => {
@@ -77,7 +77,7 @@ const DailyTransactionImport = () => {
           }
         });
       });
-      setParaType("E");
+      setParaType("A");
     }
   }, []);
 
@@ -106,7 +106,7 @@ const DailyTransactionImport = () => {
   useEffect(() => {
     if (Array.isArray(data)) {
       if (paraType === "E") {
-        setFilteredGridData(data.filter((item) => item.STATUS === "Y"));
+        setFilteredGridData(data.filter((item) => !(item.STATUS === "Y")));
       } else if (paraType === "A") {
         setFilteredGridData(data);
       }

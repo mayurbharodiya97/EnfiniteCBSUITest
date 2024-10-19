@@ -29,6 +29,7 @@ export const getDailyTransactionImportData = async (apiReq) => {
     // return data;
     let responseData = data;
     responseData.map((item, i) => {
+      item.index = i;
       item.DEBIT_AC = [
         item.FROM_BRANCH_CD,
         item.FROM_ACCT_TYPE,
