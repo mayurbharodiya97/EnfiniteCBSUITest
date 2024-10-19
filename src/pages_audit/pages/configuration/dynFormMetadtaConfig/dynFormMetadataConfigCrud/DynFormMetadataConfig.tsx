@@ -258,7 +258,7 @@ const DynamicFormMetadataConfig: FC<{
       (isLoading ||
         isFetching ||
         !(fieldRowData && fieldRowData.length > 0) ||
-        !(girdData && girdData.length > 0)) &&
+        !girdData) &&
       !populateClicked ? (
         <div style={{ minHeight: "100px" }}>
           <LoaderPaperComponent />
