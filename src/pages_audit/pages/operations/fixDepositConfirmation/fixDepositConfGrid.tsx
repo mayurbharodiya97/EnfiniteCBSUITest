@@ -166,6 +166,7 @@ export const FDConfirmationGrid = () => {
           closeDialog={() => setOpenAdvice(false)}
           requestData={requestData}
           setOpenAdvice={setOpenAdvice}
+          screenFlag={"FDCONF"}
         />
       )}
     </>

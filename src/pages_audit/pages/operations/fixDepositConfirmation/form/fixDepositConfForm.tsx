@@ -129,6 +129,8 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
     }
   );
 
+  console.log("pay", paymentData);
+
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -494,7 +496,8 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   isFetching ||
                   disableButton ||
                   confirmMutation?.isError ||
-                  validateConfirm?.isError
+                  validateConfirm?.isError ||
+                  !Boolean(paymentData)
                 }
                 endIcon={
                   validateConfirm?.isLoading ? (
@@ -514,7 +517,8 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     isFetching ||
                     disableButton ||
                     deleteMutation?.isError ||
-                    validateDelete?.isError
+                    validateDelete?.isError ||
+                    !Boolean(paymentData)
                   }
                   endIcon={
                     validateDelete?.isLoading ? (
@@ -766,6 +770,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 A_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
               }}
               setOpenAdvice={setOpenAdviceReport}
+              screenFlag={"FDCONF"}
             />
           )}
 

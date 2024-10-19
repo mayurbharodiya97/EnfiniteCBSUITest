@@ -420,7 +420,7 @@ export const PositivePayEntry = ({
                     if (formData?.LAST_ENTERED_BY === authState?.user?.id) {
                       await MessageBox({
                         messageTitle: "InvalidConfirmation",
-                        message: "ConfirmRestrictionMessage",
+                        message: "PositivePayConfirmRestictionMessage",
                         buttonNames: ["Ok"],
                         icon: "WARNING",
                       });

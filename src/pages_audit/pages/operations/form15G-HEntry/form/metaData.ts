@@ -45,6 +45,7 @@ export const form15GHEntryMetaData = {
         placeholder: "EnterCustomerID",
         type: "text",
         autoComplete: "off",
+        maxLength: 13,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["CustomerIDisrequired"] }],
@@ -252,7 +253,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        // disableCaching: true,
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
       },
@@ -590,7 +590,7 @@ export const form15GHEntryMetaData = {
         render: { componentType: "datePicker" },
         name: "LAST_ASS_YEAR",
         label: "IfYesLatestAssessmentDate",
-        placeholder: "",
+        placeholder: "DD/MM/YYYY",
         __EDIT__: { isReadOnly: true },
         __VIEW__: { isReadOnly: true },
         autoComplete: "off",

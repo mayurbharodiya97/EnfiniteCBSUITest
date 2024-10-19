@@ -1737,6 +1737,7 @@ export const en_language_data = {
   Uploaded: "Uploaded",
   ConfirmMessage: "Do you want to confirm this transaction?",
   RejectMessage: "Do you want to reject this transaction?",
+  PositivePayConfirmRestictionMessage: "You can not confirm your own Entry.",
 
   // Form 15GH entry and confirmation
   NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
