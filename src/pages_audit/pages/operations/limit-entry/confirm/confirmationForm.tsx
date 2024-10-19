@@ -145,6 +145,7 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                       buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
+                      icon: "CONFIRM",
                     });
                     if (buttonName === "Yes") {
                       limitCfm.mutate({

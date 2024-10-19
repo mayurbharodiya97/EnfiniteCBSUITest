@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { makeStyles } from "@mui/styles";
 import logo from "assets/images/logo.jpg";
 import {
+  Box,
   Dialog,
   Paper,
   Table,
@@ -173,7 +174,7 @@ const RecurringCalculatorForm = () => {
         }}
         onSubmitHandler={() => showData()}
       ></FormWrapper>
-      <>
+      <Box sx={{ paddingBottom: "10px" }}>
         <GradientButton onClick={showData}>Calculate</GradientButton>
         <GradientButton onClick={resetData}>Reset</GradientButton>
         <PrintButton
@@ -184,7 +185,7 @@ const RecurringCalculatorForm = () => {
           }}
           buttonText="Print"
         />
-      </>
+      </Box>
       <GridWrapper
         key={"RecurringGridData"}
         finalMetaData={RecurringGridMetaData as GridMetaDataType}

@@ -26,9 +26,7 @@ export const AuthLoginController = () => {
     data: imageData,
     isLoading,
     isFetching,
-  } = useQuery<any, any>(["getLoginImageData"], () =>
-    API.getLoginImageData({ APP_TRAN_CD: "51" })
-  );
+  } = useQuery<any, any>(["getLoginImageData"], () => API.getImageData());
   const imageDataString = JSON.stringify(imageData);
   localStorage.setItem("imageData", imageDataString);
 

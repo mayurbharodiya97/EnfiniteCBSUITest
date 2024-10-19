@@ -18,8 +18,8 @@ export const LienReasonMstGridMetaData: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
