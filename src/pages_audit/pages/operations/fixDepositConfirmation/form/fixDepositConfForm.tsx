@@ -129,8 +129,6 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
     }
   );
 
-  console.log("pay", paymentData);
-
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -489,25 +487,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 </GradientButton>
               ) : null}
 
-              <GradientButton
-                color={"primary"}
-                disabled={
-                  isLoading ||
-                  isFetching ||
-                  disableButton ||
-                  confirmMutation?.isError ||
-                  validateConfirm?.isError ||
-                  !Boolean(paymentData)
-                }
-                endIcon={
-                  validateConfirm?.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : null
-                }
-                onClick={handleConfirm}
-              >
-                {t("Confirm")}
-              </GradientButton>
+              {rows?.[0]?.data?.ALLOW_CONFIRM === "Y" ? (
+                <GradientButton
+                  color={"primary"}
+                  disabled={
+                    isLoading ||
+                    isFetching ||
+                    disableButton ||
+                    confirmMutation?.isError ||
+                    validateConfirm?.isError
+                  }
+                  endIcon={
+                    validateConfirm?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
+                  onClick={handleConfirm}
+                >
+                  {t("Confirm")}
+                </GradientButton>
+              ) : null}
 
               {rows?.[0]?.data?.ALLOW_DELETE === "Y" ? (
                 <GradientButton
@@ -517,8 +516,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     isFetching ||
                     disableButton ||
                     deleteMutation?.isError ||
-                    validateDelete?.isError ||
-                    !Boolean(paymentData)
+                    validateDelete?.isError
                   }
                   endIcon={
                     validateDelete?.isLoading ? (

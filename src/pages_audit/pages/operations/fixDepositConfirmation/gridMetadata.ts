@@ -18,8 +18,8 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "72vh",
+      max: "72vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,

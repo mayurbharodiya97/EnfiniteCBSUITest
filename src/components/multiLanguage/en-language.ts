@@ -1779,6 +1779,7 @@ export const en_language_data = {
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
 

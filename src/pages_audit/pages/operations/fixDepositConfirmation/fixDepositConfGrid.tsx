@@ -59,7 +59,7 @@ export const FDConfirmationGrid = () => {
         if (Boolean(displayAction) && displayAction === "V") {
           setGridData(data);
         } else if (Boolean(displayAction) && displayAction === "P") {
-          const filterData = data.filter((item) => item.CONFIRMED !== "Y");
+          const filterData = data.filter((item) => item.ALLOW_CONFIRM === "Y");
           setGridData(filterData);
         } else {
           setGridData(data);
