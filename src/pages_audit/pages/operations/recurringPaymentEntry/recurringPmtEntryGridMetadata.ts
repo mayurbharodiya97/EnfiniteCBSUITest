@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -20,6 +20,7 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       max: "77vh",
     },
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [
@@ -29,9 +30,9 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 60,
-      minWidth: 40,
-      maxWidth: 70,
+      width: 70,
+      minWidth: 60,
+      maxWidth: 100,
       isAutoSequence: true,
     },
     {
@@ -42,7 +43,7 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 80,
       minWidth: 70,
-      maxWidth: 90,
+      maxWidth: 100,
     },
     {
       accessor: "ACCT_TYPE",
@@ -50,9 +51,9 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 90,
-      maxWidth: 110,
+      width: 120,
+      minWidth: 100,
+      maxWidth: 150,
     },
     {
       accessor: "ACCT_CD",
@@ -60,9 +61,9 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 120,
-      minWidth: 110,
-      maxWidth: 130,
+      width: 170,
+      minWidth: 150,
+      maxWidth: 200,
     },
     {
       accessor: "ACCT_NM",
@@ -72,7 +73,7 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 310,
       minWidth: 300,
-      maxWidth: 320,
+      maxWidth: 400,
       showTooltip: true,
     },
     {
@@ -101,9 +102,9 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "right",
       componentType: "currency",
-      width: 170,
+      width: 200,
       minWidth: 160,
-      maxWidth: 180,
+      maxWidth: 250,
     },
     {
       accessor: "CASH_AMT",

@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
@@ -105,15 +105,7 @@ export const getTRN001List = async (reqData) => {
       USER_NAME: reqData?.USER_NAME ?? "",
     });
   if (status === "0") {
-    const responseData = data;
-    if (Boolean(responseData?.length > 0)) {
-      responseData?.map((element) => {
-        if (element?.CONFIRMED === "Y") {
-          element._rowColor = "rgb(9 132 3 / 51%)";
-        }
-      });
-    }
-    return responseData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -203,6 +195,17 @@ export const getAmountValidation = async (reqData) => {
 export const getParameters = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNPARAMF1", { ...reqData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getInterestCalculatePara = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINTCALCPARA", {
+      ...reqData,
+    });
   if (status === "0") {
     return data;
   } else {

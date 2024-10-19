@@ -1,6 +1,4 @@
-import { ContentCutOutlined } from "@mui/icons-material";
-import { constructInitialValuesForArrayFields } from "components/dyanmicForm/utils/constructINITValues";
-import { DefaultErrorObject, utilFunction } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { isEqual, isValid } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -40,7 +38,6 @@ export const getLimitEntryData = async (apiReqPara) => {
 };
 
 export const LimitSecurityData = async (apiReqPara) => {
-  console.log("<<<apireq", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECFIELDDISP", {
       // ...apiReqPara,
@@ -687,8 +684,6 @@ export const LimitSecurityData = async (apiReqPara) => {
               authState,
               dependentFields
             ) => {
-              console.log("<<<LIMIT_AMOUNT", field, dependentFields);
-
               if (
                 typeof field?.value === "string" &&
                 dependentFields?.PENAL_INT_RATE?.value === "Y" &&
@@ -753,7 +748,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                           ) ?? ""
                         : (parseInt(field?.value) *
                             parseInt(apiReqPara?.HDN_TAX_RATE)) /
-                            100 ?? "",
+                          100,
                   },
                 };
               }

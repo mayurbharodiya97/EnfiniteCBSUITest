@@ -1,28 +1,62 @@
-import { utilFunction } from "components/utils/utilFunctions";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import CRC32C from "crc-32";
+export const ResetPassword = async (
+  username,
+  password,
+  newpassword,
+  accessToken,
+  token_type
+) => {
+  const { data, status, message, messageDetails, responseType, access_token } =
+    await AuthSDK.internalFetcherPreLogin(
+      "CHANGEPASSWORD",
+      {
+        USER_ID: username,
+        OLD_PASSWORD: password,
+        NEW_PASSWORD: newpassword,
+      },
+      {
+        Authorization: utilFunction.getAuthorizeTokenText(
+          accessToken,
+          token_type
+        ),
+        USER_ID: username,
+      }
+    );
+  return { status, data, message, messageDetails };
+};
 
 export const getLoginImageData = async ({ APP_TRAN_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLOGINIMGDATA", {
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
       APP_TRAN_CD: APP_TRAN_CD,
     });
   if (status === "0") {
+    // Set special character in local storage
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const validatePasswords = async ({ ...request }:any) => {
+export const validatePasswords = async ({ ...request }: any) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcherPreLogin("VALIDATEPASSWORD", {
-      ...request
+      ...request,
     });
   if (status === "0") {
-    return { validateStatus :status, validateData:data[0]};
+    return { validateStatus: status, validateData: data[0] };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -87,7 +121,7 @@ export const verifyOTP = async (
     "VERIFYOTP",
     {
       USER_ID: username,
-      REQUEST_CD: transactionId || '00',
+      REQUEST_CD: transactionId || "00",
       OTP: otpnumber,
       AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
@@ -101,15 +135,6 @@ export const verifyOTP = async (
     }
   );
   if (status === "0") {
-    const GenerateCRC32 = async (str) => {
-      let fingerprint = await AuthSDK.Getfingerprintdata();
-      return String(CRC32C.str((str || "") + fingerprint));
-    };
-    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
-    localStorage.setItem(
-      "charchecksum",
-      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
-    );
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
@@ -257,6 +282,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     minDate: data?.MINDATE,
     groupName: data?.GROUP_NAME,
     menulistdata: [],
+    uniqueAppId: data?.UNIQUE_APP_ID,
     user: {
       branch: data?.BRANCH,
       branchCode: data?.BRANCHCODE,
@@ -271,9 +297,13 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
       id: data?.ID,
       employeeID: data?.EMP_ID,
     },
-    idealTimer :data?.IDLE_TIMER,
-    hoLogin: data?.BRANCHCODE === data?.BASEBRANCHCODE && data?.COMPANYID === data?.BASECOMPANYID ? "Y" : "N",
-    access: {},  
+    idealTimer: data?.IDLE_TIMER,
+    hoLogin:
+      data?.BRANCHCODE === data?.BASEBRANCHCODE &&
+      data?.COMPANYID === data?.BASECOMPANYID
+        ? "Y"
+        : "N",
+    access: {},
   };
 };
 
@@ -534,4 +564,98 @@ export const biometricStatusUpdate = async (username, token, verifyStatus) => {
     token
   );
   return { status, data };
+};
+export const saveRecentScreenData = async ({
+  branchCode,
+  docCd,
+  openTime,
+  closeTime,
+  tranDt,
+  flag,
+  uniqueAppId,
+}) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "SAVERECENTSCREENDATA",
+    {
+      BRANCH_CD: branchCode,
+      DOC_CD: docCd,
+      OPEN_TIME: openTime,
+      CLOSE_TIME: closeTime,
+      UNIQUE_APP_ID: uniqueAppId,
+      TRAN_DT: tranDt,
+      FLAG: flag,
+      APP_TRAN_CD: 51,
+    }
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000;
+
+const cacheImageData = async (imageURL, cacheName = "image-cache") => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
+      APP_TRAN_CD: "51",
+    });
+  if (status === "0") {
+    if ("caches" in window) {
+      const cache = await caches.open(cacheName);
+
+      const cachedResponse = {
+        data: data,
+        cachedAt: Date.now(),
+      };
+
+      await cache.put(imageURL, new Response(JSON.stringify(cachedResponse)));
+    }
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
+
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+const getCachedImageData = async (imageURL, cacheName = "image-cache") => {
+  if ("caches" in window) {
+    const cache = await caches.open(cacheName);
+    const cachedResponse = await cache.match(imageURL);
+    if (cachedResponse) {
+      const { data, cachedAt } = await cachedResponse.json();
+      const isExpired = Date.now() - cachedAt > CACHE_EXPIRY_TIME;
+
+      if (!isExpired) {
+        return data;
+      } else {
+        await cache.delete(imageURL);
+        return null;
+      }
+    }
+  }
+  return null;
+};
+
+const processImageData = async () => {
+  let data = await getCachedImageData("imageData");
+  if (!data) {
+    data = await cacheImageData("imageData");
+  }
+
+  return data;
+};
+
+export const getImageData = async () => {
+  return await processImageData();
 };

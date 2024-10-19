@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const limitEntryGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -72,6 +72,20 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       width: 114,
       minWidth: 90,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "{0}",
+      footerIsMultivalue: true,
+      setFooterValue(total, rows) {
+        const maxDate: any =
+          rows.length > 0
+            ? new Date(
+                Math.max(
+                  ...rows.map(({ original }) => new Date(original?.EXPIRY_DT))
+                )
+              )
+            : null;
+        return maxDate ? [new Date(maxDate).toLocaleDateString("en-UK")] : [""];
+      },
     },
     {
       accessor: "INT_RATE",
@@ -95,14 +109,24 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       maxWidth: 100,
     },
     {
+      accessor: "PENAL_RATE",
+      columnName: "Over Rate",
+      sequence: 4,
+      alignment: "right",
+      componentType: "default",
+      width: 120,
+      minWidth: 100,
+      maxWidth: 150,
+    },
+    {
       accessor: "SECURITY_VALUE",
       columnName: "SecurityValue",
       sequence: 4,
       alignment: "right",
       componentType: "default",
-      width: 104,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 120,
+      maxWidth: 200,
       isVisible: true,
       isDisplayTotal: true,
       totalDecimalCount: 2,
@@ -115,14 +139,14 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       componentType: "currency",
       isDisplayTotal: true,
       totalDecimalCount: 2,
-      width: 120,
-      minWidth: 90,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 120,
+      maxWidth: 200,
     },
 
     {
       accessor: "FD_DESC",
-      columnName: "FDDescription",
+      columnName: "Description",
       sequence: 4,
       alignment: "left",
       componentType: "default",

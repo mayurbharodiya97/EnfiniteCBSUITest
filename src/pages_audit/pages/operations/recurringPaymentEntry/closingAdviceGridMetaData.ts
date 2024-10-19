@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ClosingAdviceGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -50,6 +50,9 @@ export const ClosingAdviceGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
+      width: 200,
+      minWidth: 180,
+      maxWidth: 300,
       isDisplayTotal: true,
     },
     {
@@ -65,6 +68,9 @@ export const ClosingAdviceGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "right",
       componentType: "currency",
+      width: 200,
+      minWidth: 180,
+      maxWidth: 300,
       isDisplayTotal: true,
     },
     {
@@ -73,6 +79,9 @@ export const ClosingAdviceGridMetaData: GridMetaDataType = {
       sequence: 7,
       alignment: "right",
       componentType: "currency",
+      width: 200,
+      minWidth: 180,
+      maxWidth: 300,
       isDisplayTotal: true,
     },
   ],

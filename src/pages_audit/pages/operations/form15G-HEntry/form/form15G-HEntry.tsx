@@ -1,23 +1,26 @@
 import { Dialog, AppBar, CircularProgress } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import { GradientButton } from "components/styledComponent/button";
 import { form15GHEntryMetaData } from "./metaData";
-import { MasterDetailsForm } from "components/formcomponent";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { cloneDeep } from "lodash";
-import { usePopupContext } from "components/custom/popupContext";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
-import { utilFunction } from "components/utils";
-import { PDFViewer } from "components/fileUpload/preView";
 import { useTranslation } from "react-i18next";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
+
+import {
+  usePopupContext,
+  Alert,
+  PDFViewer,
+  utilFunction,
+  MasterDetailsMetaData,
+  queryClient,
+  MasterDetailsForm,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 interface Form15GHEntryFormWrapperProps {
   isDataChangedRef: any;
@@ -144,7 +147,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar(t("Success"), {
+      enqueueSnackbar(t("RecordInsertedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -155,6 +158,7 @@ const Form15GHEntry = ({
           message: isErrorFuncRef?.current?.data?.PRINT_MSG,
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (confirmation === "Yes") {
           let newTranCD = data?.[0]?.TRAN_CD.endsWith(".00")
@@ -177,7 +181,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -192,7 +196,7 @@ const Form15GHEntry = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("DataUpdatedSuccessfully"), {
+      enqueueSnackbar(t("RecordUpdatedMsg"), {
         variant: "success",
       });
       isDataChangedRef.current = true;
@@ -495,13 +499,15 @@ const Form15GHEntry = ({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
     } else {
       const confirmation = await MessageBox({
-        message: "DeleteData",
+        message: "RejectFormMessage",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (confirmation === "Yes") {
         const deleteData = {
@@ -705,6 +711,7 @@ const Form15GHEntry = ({
                           messageTitle: "InvalidConfirmation",
                           message: "ConfirmRestrictionMessage",
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         const confirmation = await MessageBox({
@@ -712,6 +719,7 @@ const Form15GHEntry = ({
                           messageTitle: "Confirmation",
                           buttonNames: ["Yes", "No"],
                           loadingBtnName: ["Yes"],
+                          icon: "CONFIRM",
                         });
                         if (confirmation === "Yes") {
                           handleSubmit(event, "Confirm");
@@ -726,10 +734,11 @@ const Form15GHEntry = ({
                     color={"primary"}
                     onClick={async (event) => {
                       const confirmation = await MessageBox({
-                        message: "deleteTitle",
                         messageTitle: "DeleteWarning",
+                        message: "RejectFormMessage",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         handleSubmit(event, "Reject");
@@ -810,7 +819,7 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              thirdButton={{
+              optionalActionButton={{
                 callback: handleAnnexureFormData,
                 label: "Annexure",
               }}
@@ -859,7 +868,7 @@ const Form15GHEntry = ({
                     }))
                   : closeDialog()
               }
-              thirdButton={{
+              optionalActionButton={{
                 callback: () => {
                   setState((old) => ({
                     ...old,
@@ -892,7 +901,7 @@ export const Form15GHEntryWrapper: React.FC<Form15GHEntryFormWrapperProps> = ({
         style: {
           width: "auto",
           overflow: "auto",
-          padding: "10px",
+          padding: "5px",
         },
       }}
       maxWidth="xl"

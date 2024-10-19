@@ -1,23 +1,24 @@
 import { CircularProgress, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
-import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
 import { PositivePayEntryFormMetadata } from "./metadata";
-import { ImageViewer } from "components/fileUpload/preView";
 import UploadImageDialogue from "./uploadImage";
 import * as API from "../api";
 import { format } from "date-fns";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { isValidDate } from "components/utils/utilFunctions/function";
-
+import {
+  ImageViewer,
+  RemarksAPIWrapper,
+  GradientButton,
+  usePopupContext,
+  utilFunction,
+  SubmitFnType,
+  MetaDataType,
+  FormWrapper,
+} from "@acuteinfo/common-base";
 interface PositivePayEntryFormWrapperProps {
   isDataChangedRef: any;
   closeDialog: () => void;
@@ -232,19 +233,23 @@ export const PositivePayEntry = ({
                   messageTitle: "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok" && formMode !== "view") {
-                  endSubmit(true);                }
+                  endSubmit(true);
+                }
               } else if (data[i]?.O_STATUS === "9") {
                 const btnName = await MessageBox({
                   messageTitle: "Alert",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
                   messageTitle: "Confirmation",
-                  message: data?.[0]?.O_MESSAGE,
+                  message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "No" && formMode !== "view") {
                   endSubmit(true);
@@ -257,6 +262,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -272,6 +278,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -293,9 +300,10 @@ export const PositivePayEntry = ({
   const setChequeImage = async () => {
     if (!Boolean(formData?.CHEQUE_IMG)) {
       MessageBox({
-        messageTitle: "ChequeImage",
+        messageTitle: "Information",
         message: "ChequeImageIsNotUploaded",
         buttonNames: ["Ok"],
+        icon: "INFO",
       });
     } else if (Boolean(formData?.CHEQUE_IMG)) {
       setOpenImage(true);
@@ -321,7 +329,11 @@ export const PositivePayEntry = ({
         formStyle={{
           background: "white",
         }}
-        formState={{ formMode: formMode, MessageBox: MessageBox }}
+        formState={{
+          formMode: formMode,
+          MessageBox: MessageBox,
+          docCD: "MST/968",
+        }}
         onFormButtonClickHandel={async (id) => {
           if (id === "VIEW") {
             setChequeImage();
@@ -410,18 +422,20 @@ export const PositivePayEntry = ({
                         messageTitle: "InvalidConfirmation",
                         message: "ConfirmRestrictionMessage",
                         buttonNames: ["Ok"],
+                        icon: "WARNING",
                       });
                     } else {
                       const confirmation = await MessageBox({
-                        message: "ConfirmFormData",
+                        message: "ConfirmMessage",
                         messageTitle: "Confirmation",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         const confirmData = {
                           ...rows?.[0]?.data,
-                          ENTERED_DATE: isValidDate(
+                          ENTERED_DATE: utilFunction.isValidDate(
                             rows?.[0]?.data?.ENTERED_DATE
                           )
                             ? format(
@@ -429,25 +443,31 @@ export const PositivePayEntry = ({
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          TRAN_DT: isValidDate(rows?.[0]?.data?.TRAN_DT)
+                          TRAN_DT: utilFunction.isValidDate(
+                            rows?.[0]?.data?.TRAN_DT
+                          )
                             ? format(
                                 new Date(rows?.[0]?.data?.TRAN_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          CHEQUE_DT: isValidDate(rows?.[0]?.data?.CHEQUE_DT)
+                          CHEQUE_DT: utilFunction.isValidDate(
+                            rows?.[0]?.data?.CHEQUE_DT
+                          )
                             ? format(
                                 new Date(rows?.[0]?.data?.CHEQUE_DT),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          ACTIVITY_DATE: isValidDate(authState?.workingDate)
+                          ACTIVITY_DATE: utilFunction.isValidDate(
+                            authState?.workingDate
+                          )
                             ? format(
                                 new Date(authState?.workingDate),
                                 "dd/MMM/yyyy"
                               ) ?? ""
                             : "",
-                          LAST_MODIFIED_DATE: isValidDate(
+                          LAST_MODIFIED_DATE: utilFunction.isValidDate(
                             rows?.[0]?.data?.LAST_MODIFIED_DATE
                           )
                             ? format(
@@ -474,15 +494,87 @@ export const PositivePayEntry = ({
                 </GradientButton>
                 <GradientButton
                   color={"primary"}
+                  endIcon={
+                    validatePositivePayDtlMutation?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
                   onClick={async (event) => {
-                    const confirmation = await MessageBox({
-                      message: "deleteTitle",
-                      messageTitle: "DeleteWarning",
-                      buttonNames: ["Yes", "No"],
+                    const requestPara = {
+                      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+                      ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+                      ACCT_NM: rows?.[0]?.data?.ACCT_NM ?? "",
+                      TYPE_CD: "",
+                      CHEQUE_NO: rows?.[0]?.data?.CHEQUE_NO ?? "",
+                      CHEQUE_DT:
+                        format(
+                          new Date(rows?.[0]?.data?.CHEQUE_DT),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      CHEQUE_AMT: rows?.[0]?.data?.CHEQUE_AMT ?? "",
+                      PAYEE_NM: rows?.[0]?.data?.PAYEE_NM ?? "",
+                      REMARKS: rows?.[0]?.data?.REMARKS ?? "",
+                      ENTERED_DATE:
+                        format(
+                          new Date(rows?.[0]?.data?.ENTERED_DATE),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      TRAN_DT:
+                        format(
+                          new Date(rows?.[0]?.data?.TRAN_DT),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY ?? "",
+                      VIEW: "",
+                      ENT_COMP_CD: authState?.companyID ?? "",
+                      ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                      TRAN_CD: rows?.[0]?.data?.TRAN_CD ?? "",
+                      INS_UPD: "D",
+                      GI_BRANCH: authState?.user?.branchCode ?? "",
+                      SCREEN_REF: "MST/968",
+                      CHEQUE_IMG: rows?.[0]?.data?.CHEQUE_IMG ?? "",
+                      UPLOAD: rows?.[0]?.data?.UPLOAD ?? "",
+                      REQ_CHANNEL: rows?.[0]?.data?.REQ_CHANNEL ?? "",
+                    };
+                    validatePositivePayDtlMutation.mutate(requestPara, {
+                      onSuccess: async (data, variables) => {
+                        for (let i = 0; i < data?.length; i++) {
+                          if (data[i]?.O_STATUS === "999") {
+                            const btnName = await MessageBox({
+                              messageTitle: "ValidationFailed",
+                              message: data[i]?.O_MESSAGE,
+                              buttonNames: ["Ok"],
+                              icon: "ERROR",
+                            });
+                          } else if (data[i]?.O_STATUS === "9") {
+                            const btnName = await MessageBox({
+                              messageTitle: "Alert",
+                              message: data[i]?.O_MESSAGE,
+                              icon: "WARNING",
+                            });
+                          } else if (data[i]?.O_STATUS === "99") {
+                            const btnName = await MessageBox({
+                              messageTitle: "Confirmation",
+                              message: data[i]?.O_MESSAGE,
+                              buttonNames: ["Yes", "No"],
+                            });
+                            if (btnName === "No") {
+                              break;
+                            }
+                          } else if (data[i]?.O_STATUS === "0") {
+                            const confirmation = await MessageBox({
+                              message: "RejectMessage",
+                              messageTitle: "Confirmation",
+                              buttonNames: ["Yes", "No"],
+                              icon: "CONFIRM",
+                            });
+                            if (confirmation === "Yes") {
+                              setReject(true);
+                            }
+                          }
+                        }
+                      },
                     });
-                    if (confirmation === "Yes") {
-                      setReject(true);
-                    }
                   }}
                 >
                   {t("Reject")}
@@ -545,7 +637,11 @@ export const PositivePayEntry = ({
           >
             <ImageViewer
               blob={imageBlobData}
-              fileName={t("PositivePayEntry")}
+              fileName={
+                screenFlag === "C"
+                  ? t("PositivePayConfirmation")
+                  : t("PositivePayEntry")
+              }
               onClose={() => {
                 setOpenImage(false);
               }}
@@ -576,19 +672,21 @@ export const PositivePayEntry = ({
             const rejectData = {
               ...rows,
               INS_UPD: "D",
-              ENTERED_DATE: isValidDate(rows?.ENTERED_DATE)
+              ENTERED_DATE: utilFunction.isValidDate(rows?.ENTERED_DATE)
                 ? format(new Date(rows?.ENTERED_DATE), "dd/MMM/yyyy") ?? ""
                 : "",
-              TRAN_DT: isValidDate(rows?.TRAN_DT)
+              TRAN_DT: utilFunction.isValidDate(rows?.TRAN_DT)
                 ? format(new Date(rows?.TRAN_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              CHEQUE_DT: isValidDate(rows?.CHEQUE_DT)
+              CHEQUE_DT: utilFunction.isValidDate(rows?.CHEQUE_DT)
                 ? format(new Date(rows?.CHEQUE_DT), "dd/MMM/yyyy") ?? ""
                 : "",
-              ACTIVITY_DATE: isValidDate(authState?.workingDate)
+              ACTIVITY_DATE: utilFunction.isValidDate(authState?.workingDate)
                 ? format(new Date(authState?.workingDate), "dd/MMM/yyyy") ?? ""
                 : "",
-              LAST_MODIFIED_DATE: isValidDate(rows?.LAST_MODIFIED_DATE)
+              LAST_MODIFIED_DATE: utilFunction.isValidDate(
+                rows?.LAST_MODIFIED_DATE
+              )
                 ? format(new Date(rows?.LAST_MODIFIED_DATE), "dd/MMM/yyyy") ??
                   ""
                 : "",
@@ -629,11 +727,11 @@ export const PositivePayEntryFormWrapper: React.FC<
       open={true}
       PaperProps={{
         style: {
-          width: "auto",
+          width: "100%",
           overflow: "auto",
         },
       }}
-      maxWidth="md"
+      maxWidth="lg"
     >
       <PositivePayEntry
         isDataChangedRef={isDataChangedRef}

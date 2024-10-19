@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const snapShotGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -29,33 +29,42 @@ export const snapShotGridMetaData: GridMetaDataType = {
     {
       columnName: "Sr.",
       accessor: "sr",
-      sequence: 0,
+      sequence: 1,
       componentType: "default",
       width: 60,
       maxWidth: 100,
       minWidth: 50,
     },
     {
-      columnName: "Date",
+      columnName: "Tran. Date",
       accessor: "TRAN_DT",
-      sequence: 1,
+      sequence: 2,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
       width: 100,
     },
+    {
+      columnName: "Value Date",
+      accessor: "VALUE_DT",
+      sequence: 3,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 130,
+    },
 
     {
       columnName: "Narration ",
       accessor: "REMARKS",
-      sequence: 2,
+      sequence: 4,
       componentType: "default",
       width: 250,
     },
     {
       columnName: "TRX ",
       accessor: "TYPE_CD",
-      sequence: 3,
+      sequence: 5,
       componentType: "default",
       width: 70,
       maxWidth: 100,
@@ -64,33 +73,37 @@ export const snapShotGridMetaData: GridMetaDataType = {
     {
       columnName: "Chq No.",
       accessor: "CHEQUE_NO",
-      sequence: 4,
+      sequence: 6,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Debit",
       accessor: "debit1",
-      sequence: 5,
+      sequence: 7,
       componentType: "currency",
       width: 100,
       color: "red",
       alignment: "right",
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
     },
     {
       columnName: "Credit",
       accessor: "credit1",
-      sequence: 6,
+      sequence: 8,
       componentType: "currency",
       width: 100,
       color: "green",
       alignment: "right",
+      isDisplayTotal: true,
+      totalDecimalCount: 2,
     },
 
     {
       columnName: "Closing Bal",
       accessor: "CL_BAL",
-      sequence: 7,
+      sequence: 9,
       componentType: "currency",
       width: 100,
       alignment: "right",
@@ -98,7 +111,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
     {
       columnName: "Br ",
       accessor: "ENTERED_BRANCH_CD",
-      sequence: 8,
+      sequence: 10,
       componentType: "default",
       width: 70,
       maxWidth: 100,
@@ -107,30 +120,47 @@ export const snapShotGridMetaData: GridMetaDataType = {
     {
       columnName: "SDC ",
       accessor: "SDC",
-      sequence: 9,
+      sequence: 11,
       componentType: "default",
       width: 70,
       maxWidth: 100,
       minWidth: 50,
     },
     {
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "*",
+      accessor: "CHEQUE_IMG",
+      width: 80,
+      sequence: 12,
+      alignment: "center",
+      isVisible: true,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.TYPE_CD === "5") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
       columnName: "Maker ",
       accessor: "MAKER",
-      sequence: 10,
+      sequence: 13,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Checker ",
       accessor: "CHECKER",
-      sequence: 11,
+      sequence: 14,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Entered Date",
-      accessor: "VALUE_DT",
-      sequence: 12,
+      accessor: "ENTRY_DT",
+      sequence: 15,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",

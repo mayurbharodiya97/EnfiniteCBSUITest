@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const parametersListDD = async (PARENT_TYPE) => {
@@ -41,6 +41,7 @@ export const documentsListDD = async (reqData) => {
           ...other,
         };
       });
+      responseData.sort((a, b) => a.label.localeCompare(b.label));
     }
 
     return responseData;

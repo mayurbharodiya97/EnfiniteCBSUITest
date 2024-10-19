@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const LienReasonMstGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -22,6 +22,7 @@ export const LienReasonMstGridMetaData: GridMetaDataType = {
       max: "77vh",
     },
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const ClosedAccountDetailsMetaData: GridMetaDataType = {
   gridConfig: {
@@ -40,7 +40,7 @@ export const ClosedAccountDetailsMetaData: GridMetaDataType = {
       accessor: "ACCT_CD_NEW",
       columnName: "AccountNum",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 200,
       minWidth: 150,
@@ -102,7 +102,7 @@ export const AccountClosedConfirm: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -149,7 +149,7 @@ export const AccountClosedConfirm: GridMetaDataType = {
       accessor: "ACCT_CD_NEW",
       columnName: "AccountNum",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -229,7 +229,7 @@ export const AccountClosedConfirm: GridMetaDataType = {
       accessor: "TRN_BRANCH_CD",
       columnName: "branchCode",
       sequence: 10,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 80,
@@ -239,7 +239,7 @@ export const AccountClosedConfirm: GridMetaDataType = {
       accessor: "TRN_ACCT_TYPE",
       columnName: "TrxAccountType",
       sequence: 11,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 160,
       minWidth: 110,
@@ -249,7 +249,7 @@ export const AccountClosedConfirm: GridMetaDataType = {
       accessor: "TRN_ACCT_CD",
       columnName: "TrxAccountNum",
       sequence: 12,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 160,
       minWidth: 110,

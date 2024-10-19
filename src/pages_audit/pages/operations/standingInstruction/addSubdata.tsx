@@ -1,27 +1,43 @@
-import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { standingInsructionViewGridMetaData } from "./metaData/gridMetaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
-import { CircularProgress, Dialog, Grid, Paper, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Dialog,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { AddSubDataMetaData, EditSubDataMetaData } from "./metaData/metaData";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useMutation, useQuery } from "react-query";
 import SiExecuteDetailView from "./siExecuteDetailView";
-import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { DeleteDialog } from "./deleteDialog";
-import { queryClient } from "cache";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-import { extractMetaData, utilFunction } from "components/utils";
-import { ActionTypes } from "components/dataTable";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import Draggable from "react-draggable";
 import { t } from "i18next";
-
+import {
+  ActionTypes,
+  GridWrapper,
+  GradientButton,
+  extractMetaData,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+  GridMetaDataType,
+  SubmitFnType,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -39,13 +55,13 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
   const [lineId, setLineId] = useState(null);
   const [srCd, setSrCd] = useState(null);
   const tranCd = rows?.[0]?.data?.TRAN_CD;
-  const [opens, setOpens] = useState(false)
-  const [openEdit, setOpenEdit] = useState(false)
-  const [deleteopen, setDeleteOpen] = useState(false)
+  const [opens, setOpens] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [deleteopen, setDeleteOpen] = useState(false);
   const [formMode, setFormMode] = useState("view");
   const isErrorFuncRef = useRef<any>(null);
-  const [currentRowData, setCurrentRowData] = useState(null)
-  const [rowData, setRowData] = useState<any>(null)
+  const [currentRowData, setCurrentRowData] = useState(null);
+  const [rowData, setRowData] = useState<any>(null);
   const [isPhotoSign, setIsPhotoSign] = useState(false);
   const [Acctdata, SetAcctData] = useState({});
   const navigate = useNavigate();
@@ -63,105 +79,107 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
     [navigate, MessageBox]
   );
 
-  const { data, isLoading, isFetching, isError, error, refetch: siRefetch } = useQuery(
-    ["getStandingInstructionInnerData", authController?.authState?.companyID, authController?.authState?.user?.branchCode, tranCd],
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch: siRefetch,
+  } = useQuery(
+    [
+      "getStandingInstructionInnerData",
+      authController?.authState?.companyID,
+      authController?.authState?.user?.branchCode,
+      tranCd,
+    ],
     () => {
       return API.getStandingInstructionInnerData({
         companyID: authController?.authState?.companyID,
         branchCode: authController?.authState?.user?.branchCode,
-        Tran_cd: tranCd
+        Tran_cd: tranCd,
       });
     }
   );
-  const validDataMutation = useMutation(API.validateStandingInstructionData,
-    {
-      onSuccess: async (data) => {
-        if (data?.[0]?.O_STATUS === "0") {
-          const btnName = await MessageBox({
-            message: t("SaveData"),
-            messageTitle: t("Confirmation"),
-            buttonNames: ["Yes", "No"],
-            loadingBtnName: ["Yes"],
-          });
-          if (btnName === "Yes") {
-            mutation.mutate({
-              ...isErrorFuncRef.current?.data
-            });
-          }
-        } else if (data?.[0]?.O_STATUS === "999") {
-          const messages = data.map(item => item.O_MESSAGE).join('\n');
-          MessageBox({
-            messageTitle: t("ValidationFailed"),
-            message: messages,
+  const validDataMutation = useMutation(API.validateStandingInstructionData, {
+    onSuccess: async (data) => {
+      if (data?.[0]?.O_STATUS === "0") {
+        const btnName = await MessageBox({
+          message: t("SaveData"),
+          messageTitle: t("Confirmation"),
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+        });
+        if (btnName === "Yes") {
+          mutation.mutate({
+            ...isErrorFuncRef.current?.data,
           });
         }
-      },
-      onError: (error: any) => {
+      } else if (data?.[0]?.O_STATUS === "999") {
+        const messages = data.map((item) => item.O_MESSAGE).join("\n");
         MessageBox({
-          messageTitle: t("ValidationAlert"),
-          message: error?.error_detail,
+          messageTitle: t("ValidationFailed"),
+          message: messages,
         });
-      },
-    })
+      }
+    },
+    onError: (error: any) => {
+      MessageBox({
+        messageTitle: t("ValidationAlert"),
+        message: error?.error_detail,
+      });
+    },
+  });
 
-  const mutation = useMutation(API.addStandingInstructionTemplate,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar(t("insertSuccessfully"), {
-          variant: "success",
-        }
-        );
-        siRefetch();
-        CloseMessageBox();
-        onClose();
-        mainRefetch();
-      },
-    }
-  );
-  const updateMutation = useMutation(API.addStandingInstructionTemplate,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        enqueueSnackbar(t("insertSuccessfully"), {
-          variant: "success",
-        }
-        );
-        siRefetch();
-        CloseMessageBox();
-        onClose();
-        mainRefetch();
-      },
-    }
-  );
+  const mutation = useMutation(API.addStandingInstructionTemplate, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      siRefetch();
+      CloseMessageBox();
+      onClose();
+      mainRefetch();
+    },
+  });
+  const updateMutation = useMutation(API.addStandingInstructionTemplate, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(t("insertSuccessfully"), {
+        variant: "success",
+      });
+      siRefetch();
+      CloseMessageBox();
+      onClose();
+      mainRefetch();
+    },
+  });
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getStandingInstructionInnerData"]);
     };
   }, []);
 
-  const activeSICount = data?.filter(
-    (item) => item.DOC_STATUS === true
-  ).length;
-
+  const activeSICount = data?.filter((item) => item.DOC_STATUS === true).length;
 
   const saveData: SubmitFnType = async (
     data: any,
@@ -180,7 +198,7 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
         SR_CD: rowData?.SR_CD,
         LINE_ID: rowData?.LINE_ID,
         DOC_STATUS: rowData?.DOC_STATUS === "N",
-      }
+      },
     };
     const btnName = await MessageBox({
       message: t("SaveData"),
@@ -190,15 +208,11 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
     });
 
     if (btnName === "Yes") {
-      updateMutation.mutate(
-        {
-          ...isErrorFuncRef.current?.data
-
-        }
-
-      );
+      updateMutation.mutate({
+        ...isErrorFuncRef.current?.data,
+      });
     }
-  }
+  };
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -237,7 +251,9 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
 
   return (
     <Fragment>
-      <Dialog open={open} PaperProps={{ style: { width: "100%", overflow: "auto" } }}
+      <Dialog
+        open={open}
+        PaperProps={{ style: { width: "100%", overflow: "auto" } }}
         // PaperComponent={(props) => (
         //   <Draggable
         //     handle="#draggable-dialog-title"
@@ -245,12 +261,13 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
         //   >
         //     <Paper {...props} />
         //   </Draggable>
-        // )} 
-        maxWidth="lg">
+        // )}
+        maxWidth="lg"
+      >
         {/* <div id="draggable-dialog-title"> */}
         <FormWrapper
           key={"standingInstructionForm"}
-          metaData={AddSubDataMetaData}
+          metaData={AddSubDataMetaData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
           initialValues={rows?.[0]?.data}
           formStyle={{
@@ -258,7 +275,7 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
           }}
           formState={{
             MessageBox: MessageBox,
-            docCd: "TRN/394"
+            docCd: "TRN/394",
           }}
         >
           {({ isSubmitting, handleSubmit }) => (
@@ -268,7 +285,11 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
                   handleSubmit(event, "Save");
                 }}
                 disabled={isSubmitting}
-                endIcon={validDataMutation.isLoading ? <CircularProgress size={20} /> : null}
+                endIcon={
+                  validDataMutation.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
                 color={"primary"}
               >
                 Add
@@ -298,34 +319,47 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
             }
             if (id === "delete") {
               setDeleteOpen(true);
-              setCurrentRowData(currentData)
+              setCurrentRowData(currentData);
             }
             if (id === "credit") {
-              const { COMP_CD, BRANCH_CD, CR_ACCT_TYPE, CR_ACCT_CD, SI_AMOUNT, CR_ACCT_NM } = currentData
+              const {
+                COMP_CD,
+                BRANCH_CD,
+                CR_ACCT_TYPE,
+                CR_ACCT_CD,
+                SI_AMOUNT,
+                CR_ACCT_NM,
+              } = currentData;
               const payload = {
                 COMP_CD: COMP_CD,
                 BRANCH_CD: BRANCH_CD,
                 ACCT_TYPE: CR_ACCT_TYPE,
                 ACCT_CD: CR_ACCT_CD,
                 AMOUNT: SI_AMOUNT,
-                ACCT_NM: CR_ACCT_NM
-              }
-              setIsPhotoSign(true)
+                ACCT_NM: CR_ACCT_NM,
+              };
+              setIsPhotoSign(true);
               SetAcctData(payload);
             }
             if (id === "debit") {
-              const { COMP_CD, BRANCH_CD, DR_ACCT_TYPE, DR_ACCT_CD, SI_AMOUNT, DR_ACCT_NM } = currentData
+              const {
+                COMP_CD,
+                BRANCH_CD,
+                DR_ACCT_TYPE,
+                DR_ACCT_CD,
+                SI_AMOUNT,
+                DR_ACCT_NM,
+              } = currentData;
               const payload = {
                 COMP_CD: COMP_CD,
                 BRANCH_CD: BRANCH_CD,
                 ACCT_TYPE: DR_ACCT_TYPE,
                 ACCT_CD: DR_ACCT_CD,
                 AMOUNT: SI_AMOUNT,
-                ACCT_NM: DR_ACCT_NM
-              }
-              setIsPhotoSign(true)
+                ACCT_NM: DR_ACCT_NM,
+              };
+              setIsPhotoSign(true);
               SetAcctData(payload);
-
             }
           }}
         />
@@ -356,9 +390,10 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
         {isPhotoSign ? (
           <>
             <div style={{ paddingTop: 10 }}>
-              <PhotoSignWithHistory data={Acctdata}
+              <PhotoSignWithHistory
+                data={Acctdata}
                 onClose={() => {
-                  setIsPhotoSign(false)
+                  setIsPhotoSign(false);
                 }}
                 screenRef={"TRN/394"}
               />
@@ -366,17 +401,18 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
           </>
         ) : null}
       </>
-      <Dialog open={openEdit} PaperProps={{ style: { width: "100%", overflow: "auto" } }}
-
-        maxWidth="lg">
+      <Dialog
+        open={openEdit}
+        PaperProps={{ style: { width: "100%", overflow: "auto" } }}
+        maxWidth="lg"
+      >
         <FormWrapper
           key={"modeMasterForm" + formMode}
           displayMode={formMode}
           onSubmitHandler={saveData}
-          metaData={extractMetaData(
-            EditSubDataMetaData,
-            formMode
-          ) as MetaDataType}
+          metaData={
+            extractMetaData(EditSubDataMetaData, formMode) as MetaDataType
+          }
           initialValues={{
             ...(rowData ?? {}),
           }}
@@ -396,7 +432,9 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -417,7 +455,9 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
                       handleSubmit(event, "Save");
                     }}
                     disabled={isSubmitting}
-                    endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
                     color={"primary"}
                   >
                     Save
@@ -436,7 +476,12 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
                   >
                     Edit
                   </GradientButton>
-                  <GradientButton onClick={() => { setOpenEdit(false) }} color={"primary"}>
+                  <GradientButton
+                    onClick={() => {
+                      setOpenEdit(false);
+                    }}
+                    color={"primary"}
+                  >
                     Close
                   </GradientButton>
                 </>
@@ -453,7 +498,13 @@ const AddSubData = ({ open, onClose, mainRefetch }) => {
         srCd={srCd}
         tran_cd={tranCd}
       />
-      <DeleteDialog open={deleteopen} onClose={() => setDeleteOpen(false)} rowData={currentRowData} siRefetch={siRefetch} mainRefetch={mainRefetch} />
+      <DeleteDialog
+        open={deleteopen}
+        onClose={() => setDeleteOpen(false)}
+        rowData={currentRowData}
+        siRefetch={siRefetch}
+        mainRefetch={mainRefetch}
+      />
     </Fragment>
   );
 };

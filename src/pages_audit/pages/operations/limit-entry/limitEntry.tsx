@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -15,29 +16,36 @@ import React, {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { usePopupContext } from "components/custom/popupContext";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { limitEntryMetaData } from "./limitEntryMetadata";
-import { ActionTypes } from "components/dataTable";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { ForceExpire } from "./forceExpire/forceExpire";
+import { useQuery } from "react-query";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import * as API from "./api";
 import { FdDetails } from "./fdDetail/fdDetails";
 import { NscDetails } from "./nscDetail/nscDetails";
 import { useTranslation } from "react-i18next";
 import { SecurityDetailForm } from "./securityDetail/securityDetail";
 
-const LimitEntryCustom = () => {
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  RemarksAPIWrapper,
+  MetaDataType,
+  FormWrapper,
+  utilFunction,
+} from "@acuteinfo/common-base";
+import { cloneDeep } from "lodash";
+const LimitEntryCustom = ({ screenFlag, reqData }) => {
   const actions: ActionTypes[] = [
     {
       actionName: "forceExpire",
@@ -62,6 +70,8 @@ const LimitEntryCustom = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const reqDataRef = useRef<any>({});
+  const [limitDtlOpen, setLimitDtlOpen] = useState(false);
+  const limitDtlForTrnmetaData = useRef<any>(null);
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -89,6 +99,20 @@ const LimitEntryCustom = () => {
         setIsData((old) => ({ ...old, closeAlert: true }));
       },
     }
+  );
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(
+    ["getLimitList", { reqData }],
+    () =>
+      API.getLimitDTL({
+        ...reqData,
+        GD_TODAY_DT: authState?.workingDate,
+        USER_LEVEL: authState?.role,
+      }),
+    { enabled: Boolean(screenFlag === "limitForTrn") }
   );
 
   const validateInsertData: any = useMutation(
@@ -220,6 +244,7 @@ const LimitEntryCustom = () => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getLimitDTL"]);
+      queryClient.removeQueries(["getLimitList"]);
       queryClient.removeQueries(["securityLimitData"]);
       queryClient.removeQueries(["crudLimitEntryData"]);
       queryClient.removeQueries(["validateInsert"]);
@@ -247,6 +272,11 @@ const LimitEntryCustom = () => {
               state: data?.rows,
             });
           }
+        } else if (screenFlag === "limitForTrn") {
+          setLimitDtlOpen(true);
+          navigate("", {
+            state: data?.rows,
+          });
         } else {
           navigate(data?.name, {
             state: data?.rows,
@@ -272,292 +302,386 @@ const LimitEntryCustom = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+  if (screenFlag === "limitForTrn") {
+    limitDtlForTrnmetaData.current = cloneDeep(limitEntryGridMetaData);
+
+    if (limitDtlForTrnmetaData?.current?.gridConfig) {
+      limitDtlForTrnmetaData.current.gridConfig.containerHeight = {
+        min: "36vh",
+        max: "30vh",
+      };
+      limitDtlForTrnmetaData.current.gridConfig.footerNote = "";
+    }
+
+    if (limitDtlForTrnmetaData?.current?.columns) {
+      limitDtlForTrnmetaData.current.columns =
+        limitDtlForTrnmetaData?.current?.columns?.map((column) => {
+          if (column?.componentType === "buttonRowCell") {
+            return {
+              ...column,
+              isVisible: false,
+            };
+          }
+          return column;
+        });
+    }
+  }
+  //     });
+  // }, [screenFlag]);
+  isData.newFormMTdata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
 
   return (
     <>
-      <Box sx={{ width: "100%" }}>
-        <Tabs
-          sx={{ ml: "15px" }}
-          value={isData.value}
-          onChange={(event, newValue) => {
-            setIsData((old) => ({
-              ...old,
-              value: newValue,
-              closeAlert: false,
-            }));
-            getLimitDetail.data = [];
-            if (newValue === "tab2") {
-              myMasterRef?.current?.getFieldData().then((res) => {
-                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
-                    authState?.companyID +
-                    res?.BRANCH_CD +
-                    res?.ACCT_TYPE +
-                    res?.ACCT_CD
-                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+      {screenFlag === "limitForTrn" ? (
+        <>
+          {isError ? (
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          ) : null}
+          <GridWrapper
+            key={`limitentrygridMetaData` + screenFlag}
+            finalMetaData={limitDtlForTrnmetaData?.current as GridMetaDataType}
+            data={data ?? []}
+            loading={isLoading}
+            setData={() => {}}
+            actions={actions}
+            setAction={setCurrentAction}
+            refetchData={() => refetch()}
+          />
+        </>
+      ) : (
+        <>
+          <Box sx={{ width: "100%" }}>
+            <Tabs
+              sx={{ ml: "15px" }}
+              value={isData.value}
+              onChange={(event, newValue) => {
+                setIsData((old) => ({
+                  ...old,
+                  value: newValue,
+                  closeAlert: false,
+                }));
+                getLimitDetail.data = [];
+                if (newValue === "tab2") {
+                  myMasterRef?.current?.getFieldData().then((res) => {
+                    if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                      limitEntryGridMetaData.gridConfig.subGridLabel = `\u00A0 ${(
+                        authState?.companyID +
+                        res?.BRANCH_CD +
+                        res?.ACCT_TYPE +
+                        res?.ACCT_CD
+                      ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
-                  const limitDTLRequestPara = {
-                    COMP_CD: authState?.companyID,
-                    ACCT_CD: res?.ACCT_CD,
-                    ACCT_TYPE: res?.ACCT_TYPE,
-                    BRANCH_CD: res?.BRANCH_CD,
-                    GD_TODAY_DT: authState?.workingDate,
-                    USER_LEVEL: authState?.role,
-                  };
+                      const limitDTLRequestPara = {
+                        COMP_CD: authState?.companyID,
+                        ACCT_CD: res?.ACCT_CD,
+                        ACCT_TYPE: res?.ACCT_TYPE,
+                        BRANCH_CD: res?.BRANCH_CD,
+                        GD_TODAY_DT: authState?.workingDate,
+                        USER_LEVEL: authState?.role,
+                      };
 
-                  getLimitDetail.mutate(limitDTLRequestPara);
-                }
-              });
-            }
-          }}
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="secondary tabs example"
-        >
-          <Tab value="tab1" label={t("LimitEntry")} />
-          {isData.isVisible && <Tab value="tab2" label={t("LimitDetail")} />}
-        </Tabs>
-      </Box>
-
-      <Container>
-        <Grid
-          sx={{
-            backgroundColor: "var(--theme-color2)",
-            padding: "0px",
-            borderRadius: "10px",
-            boxShadow:
-              "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-          }}
-        >
-          {securityLimitData.isLoading ||
-          validateInsertData?.isLoading ||
-          crudLimitData?.isLoading ||
-          validateDeleteData.isLoading ? (
-            <LinearProgress color="secondary" />
-          ) : (securityLimitData?.isError && isData.closeAlert) ||
-            (validateInsertData?.isError && isData.closeAlert) ||
-            (crudLimitData?.isError && isData.closeAlert) ||
-            (getLimitDetail?.isError && isData.closeAlert) ||
-            (validateDeleteData?.isError && isData.closeAlert) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={
-                    securityLimitData?.error?.error_msg ??
-                    validateInsertData?.error?.error_msg ??
-                    crudLimitData?.error?.error_msg ??
-                    getLimitDetail?.error?.error_msg ??
-                    validateDeleteData?.error?.error_msg ??
-                    "Unknow Error"
-                  }
-                  errorDetail={
-                    securityLimitData?.error?.error_detail ??
-                    validateInsertData?.error?.error_detail ??
-                    crudLimitData?.error?.error_detail ??
-                    getLimitDetail?.error?.error_detail ??
-                    validateDeleteData?.error?.error_detail ??
-                    ""
-                  }
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : (
-            <LinearProgressBarSpacer />
-          )}
-
-          <div
-            style={{ display: isData.value === "tab1" ? "inherit" : "none" }}
-          >
-            <FormWrapper
-              key={"limitEntryForm" + isData.formRefresh}
-              metaData={isData.newFormMTdata as MetaDataType}
-              initialValues={{}}
-              onSubmitHandler={(data: any, displayData, endSubmit) => {
-                //@ts-ignore
-                endSubmit(true);
-                let apiReq = {
-                  ...data,
-                  ...reqDataRef.current.securityDetails,
-                };
-                validateInsertData.mutate(apiReq);
-              }}
-              hideHeader={false}
-              ref={myMasterRef}
-              formState={{ MessageBox: MessageBox }}
-              onFormButtonClickHandel={() => {
-                navigate("security-detail/");
-              }}
-              setDataOnFieldChange={(action, payload) => {
-                if (action === "SECURITY_CODE") {
-                  setIsData((old) => ({
-                    ...old,
-                    closeAlert: false,
-                    newFormMTdata: limitEntryMetaData,
-                  }));
-                  securityLimitData.mutate({
-                    ...payload,
-                    ...reqDataRef.current.acctValidData,
-                    COMP_CD: authState?.companyID,
-                    BRANCH_CD: authState?.user?.branchCode,
-                    WORKING_DATE: authState?.workingDate,
+                      getLimitDetail.mutate(limitDTLRequestPara);
+                    }
                   });
                 }
-                if (action === "NSC_FD_BTN") {
-                  setIsData((old) => ({
-                    ...old,
-                    isVisible: payload?.NSC_FD_BTN,
-                    newFormMTdata: limitEntryMetaData,
-                  }));
-                  reqDataRef.current.acctValidData = payload;
-                }
+              }}
+              textColor="secondary"
+              indicatorColor="secondary"
+              aria-label="secondary tabs example"
+            >
+              <Tab value="tab1" label={t("LimitEntry")} />
+              {isData.isVisible && (
+                <Tab value="tab2" label={t("LimitDetail")} />
+              )}
+            </Tabs>
+          </Box>
+
+          <Container>
+            <Grid
+              sx={{
+                backgroundColor: "var(--theme-color2)",
+                padding: "0px",
+                borderRadius: "10px",
+                boxShadow:
+                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
               }}
             >
-              {({ isSubmitting, handleSubmit }) => {
-                return (
-                  <>
-                    {isData.isVisible ? (
+              {securityLimitData.isLoading ||
+              validateInsertData?.isLoading ||
+              crudLimitData?.isLoading ||
+              validateDeleteData.isLoading ? (
+                <LinearProgress color="secondary" />
+              ) : (securityLimitData?.isError && isData.closeAlert) ||
+                (validateInsertData?.isError && isData.closeAlert) ||
+                (crudLimitData?.isError && isData.closeAlert) ||
+                (getLimitDetail?.isError && isData.closeAlert) ||
+                (validateDeleteData?.isError && isData.closeAlert) ? (
+                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                  <AppBar position="relative" color="primary">
+                    <Alert
+                      severity="error"
+                      errorMsg={
+                        securityLimitData?.error?.error_msg ??
+                        validateInsertData?.error?.error_msg ??
+                        crudLimitData?.error?.error_msg ??
+                        getLimitDetail?.error?.error_msg ??
+                        validateDeleteData?.error?.error_msg ??
+                        "Unknow Error"
+                      }
+                      errorDetail={
+                        securityLimitData?.error?.error_detail ??
+                        validateInsertData?.error?.error_detail ??
+                        crudLimitData?.error?.error_detail ??
+                        getLimitDetail?.error?.error_detail ??
+                        validateDeleteData?.error?.error_detail ??
+                        ""
+                      }
+                      color="error"
+                    />
+                  </AppBar>
+                </div>
+              ) : (
+                <LinearProgressBarSpacer />
+              )}
+
+              <div
+                style={{
+                  display: isData.value === "tab1" ? "inherit" : "none",
+                }}
+              >
+                <FormWrapper
+                  key={"limitEntryForm" + isData.formRefresh}
+                  metaData={isData.newFormMTdata as MetaDataType}
+                  initialValues={{}}
+                  onSubmitHandler={(data: any, displayData, endSubmit) => {
+                    //@ts-ignore
+                    endSubmit(true);
+                    let apiReq = {
+                      ...data,
+                      ...reqDataRef.current.securityDetails,
+                    };
+                    validateInsertData.mutate(apiReq);
+                  }}
+                  hideHeader={false}
+                  ref={myMasterRef}
+                  formState={{ MessageBox: MessageBox }}
+                  onFormButtonClickHandel={() => {
+                    navigate("security-detail/");
+                  }}
+                  setDataOnFieldChange={(action, payload) => {
+                    if (action === "SECURITY_CODE") {
+                      setIsData((old) => ({
+                        ...old,
+                        closeAlert: false,
+                        newFormMTdata: limitEntryMetaData,
+                      }));
+                      securityLimitData.mutate({
+                        ...payload,
+                        ...reqDataRef.current.acctValidData,
+                        COMP_CD: authState?.companyID,
+                        BRANCH_CD: authState?.user?.branchCode,
+                        WORKING_DATE: authState?.workingDate,
+                      });
+                    }
+                    if (action === "NSC_FD_BTN") {
+                      setIsData((old) => ({
+                        ...old,
+                        isVisible: payload?.NSC_FD_BTN,
+                        newFormMTdata: limitEntryMetaData,
+                      }));
+                      reqDataRef.current.acctValidData = payload;
+                    }
+                  }}
+                >
+                  {({ isSubmitting, handleSubmit }) => {
+                    return (
                       <>
+                        {isData.isVisible ? (
+                          <>
+                            <Button
+                              color="primary"
+                              onClick={() => navigate("fd-detail/")}
+                            >
+                              {t("FDDetail")}
+                            </Button>
+                            <Button
+                              color="primary"
+                              onClick={() => navigate("nsc-detail")}
+                            >
+                              {t("NSCDetail")}
+                            </Button>
+                          </>
+                        ) : null}
+
                         <Button
-                          color="primary"
-                          onClick={() => navigate("fd-detail/")}
+                          onClick={(event) => {
+                            handleSubmit(event, "Save");
+                          }}
+                          // disabled={isSubmitting}
+                          // endIcon={
+                          //   isSubmitting ? <CircularProgress size={20} /> : null
+                          // }
+                          color={"primary"}
                         >
-                          {t("FDDetail")}
-                        </Button>
-                        <Button
-                          color="primary"
-                          onClick={() => navigate("nsc-detail")}
-                        >
-                          {t("NSCDetail")}
+                          {t("Save")}
                         </Button>
                       </>
-                    ) : null}
-
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      // disabled={isSubmitting}
-                      // endIcon={
-                      //   isSubmitting ? <CircularProgress size={20} /> : null
-                      // }
-                      color={"primary"}
-                    >
-                      {t("Save")}
-                    </Button>
-                  </>
-                );
-              }}
-            </FormWrapper>
-            <Routes>
-              <Route
-                path="fd-detail/"
-                element={
-                  <FdDetails navigate={navigate} myMasterRef={myMasterRef} />
-                }
-              />
-              <Route
-                path="nsc-detail/*"
-                element={
-                  <NscDetails navigate={navigate} myMasterRef={myMasterRef} />
-                }
-              />
-              <Route
-                path="security-detail/*"
-                element={
-                  <SecurityDetailForm
-                    navigate={navigate}
-                    myMasterRef={myMasterRef}
-                    reqDataRef={reqDataRef}
+                    );
+                  }}
+                </FormWrapper>
+                <Routes>
+                  <Route
+                    path="fd-detail/"
+                    element={
+                      <FdDetails
+                        navigate={navigate}
+                        myMasterRef={myMasterRef}
+                      />
+                    }
                   />
-                }
-              />
-            </Routes>
-          </div>
+                  <Route
+                    path="nsc-detail/*"
+                    element={
+                      <NscDetails
+                        navigate={navigate}
+                        myMasterRef={myMasterRef}
+                      />
+                    }
+                  />
+                  <Route
+                    path="security-detail/*"
+                    element={
+                      <SecurityDetailForm
+                        navigate={navigate}
+                        myMasterRef={myMasterRef}
+                        reqDataRef={reqDataRef}
+                      />
+                    }
+                  />
+                </Routes>
+              </div>
 
-          <div
-            style={{ display: isData.value === "tab2" ? "inherit" : "none" }}
-          >
-            <GridWrapper
-              key={
-                `limitentrygridMetaData` +
-                getLimitDetail.isSuccess +
-                isData.gridRefresh
+              <div
+                style={{
+                  display: isData.value === "tab2" ? "inherit" : "none",
+                }}
+              >
+                <GridWrapper
+                  key={
+                    `limitentrygridMetaData` +
+                    getLimitDetail.isSuccess +
+                    isData.gridRefresh
+                  }
+                  finalMetaData={limitEntryGridMetaData as GridMetaDataType}
+                  data={getLimitDetail.data ?? []}
+                  loading={
+                    getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
+                  }
+                  setData={() => {}}
+                  actions={actions}
+                  setAction={setCurrentAction}
+                  onClickActionEvent={(index, id, data) => {
+                    validateDeleteData.mutate(data);
+                  }}
+                />
+                <Routes>
+                  <Route
+                    path="forceExpire/*"
+                    element={
+                      <ForceExpire
+                        navigate={navigate}
+                        getLimitDetail={getLimitDetail}
+                      />
+                    }
+                  />
+                </Routes>
+              </div>
+            </Grid>
+          </Container>
+
+          {isData.isDelete && (
+            <RemarksAPIWrapper
+              TitleText={"LimitDeleteTitle"}
+              label="Removal Remarks"
+              onActionNo={() =>
+                setIsData((old) => ({
+                  ...old,
+                  isDelete: false,
+                }))
               }
-              finalMetaData={limitEntryGridMetaData as GridMetaDataType}
-              data={getLimitDetail.data ?? []}
-              loading={
-                getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
-              }
-              setData={() => {}}
-              actions={actions}
-              setAction={setCurrentAction}
-              onClickActionEvent={(index, id, data) => {
-                validateDeleteData.mutate(data);
+              onActionYes={(val, rows) => {
+                let deleteReqPara = {
+                  _isNewRow: false,
+                  _isDeleteRow: true,
+                  BRANCH_CD: rows.BRANCH_CD,
+                  TRAN_CD: rows.TRAN_CD,
+                  ACCT_TYPE: rows.ACCT_TYPE,
+                  ACCT_CD: rows.ACCT_CD,
+                  LIMIT_AMOUNT: rows.LIMIT_AMOUNT,
+                  ACTIVITY_TYPE: "LIMIT ENTRY SCREEN",
+                  TRAN_DT: rows.TRAN_DT,
+                  CONFIRMED: rows.CONFIRMED,
+                  ENTERED_BY: rows.ENTERED_BY,
+                  USER_DEF_REMARKS: val
+                    ? val
+                    : "WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)",
+                };
+                crudLimitData.mutate(deleteReqPara);
               }}
+              isLoading={crudLimitData?.isLoading}
+              isEntertoSubmit={true}
+              AcceptbuttonLabelText="Ok"
+              CanceltbuttonLabelText="Cancel"
+              open={isData?.isDelete}
+              rows={reqDataRef.current.deleteReq}
+              defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
             />
-            <Routes>
-              <Route
-                path="forceExpire/*"
-                element={
-                  <ForceExpire
-                    navigate={navigate}
-                    getLimitDetail={getLimitDetail}
-                  />
-                }
-              />
-            </Routes>
-          </div>
-        </Grid>
-      </Container>
-
-      {isData.isDelete && (
-        <RemarksAPIWrapper
-          TitleText={"LimitDeleteTitle"}
-          onActionNo={() =>
-            setIsData((old) => ({
-              ...old,
-              isDelete: false,
-            }))
-          }
-          onActionYes={(val, rows) => {
-            console.log("<<<delde", val, rows);
-            let deleteReqPara = {
-              _isNewRow: false,
-              _isDeleteRow: true,
-              BRANCH_CD: rows.BRANCH_CD,
-              TRAN_CD: rows.TRAN_CD,
-              ACCT_TYPE: rows.ACCT_TYPE,
-              ACCT_CD: rows.ACCT_CD,
-              LIMIT_AMOUNT: rows.LIMIT_AMOUNT,
-              ACTIVITY_TYPE: "LIMIT ENTRY SCREEN",
-              TRAN_DT: rows.TRAN_DT,
-              CONFIRMED: rows.CONFIRMED,
-              ENTERED_BY: rows.ENTERED_BY,
-              USER_DEF_REMARKS: val
-                ? val
-                : "WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)",
-            };
-            crudLimitData.mutate(deleteReqPara);
-          }}
-          isLoading={crudLimitData?.isLoading}
-          isEntertoSubmit={true}
-          AcceptbuttonLabelText="Ok"
-          CanceltbuttonLabelText="Cancel"
-          open={isData?.isDelete}
-          rows={reqDataRef.current.deleteReq}
-          defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
-        />
+          )}
+        </>
       )}
+      {limitDtlOpen ? (
+        <Dialog
+          open={true}
+          fullWidth={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="md"
+        >
+          <ForceExpire
+            navigate={navigate}
+            getLimitDetail={getLimitDetail}
+            setLimitDtlOpen={setLimitDtlOpen}
+            screenFlag={screenFlag}
+          />
+        </Dialog>
+      ) : null}
     </>
   );
 };
 
-export const LimitEntry = () => {
+type LimitEntryCustomProps = {
+  screenFlag?: any;
+  reqData?: any;
+};
+export const LimitEntry: React.FC<LimitEntryCustomProps> = ({
+  screenFlag,
+  reqData,
+}) => {
   return (
     <ClearCacheProvider>
-      <LimitEntryCustom />
+      <LimitEntryCustom screenFlag={screenFlag} reqData={reqData} />
     </ClearCacheProvider>
   );
 };

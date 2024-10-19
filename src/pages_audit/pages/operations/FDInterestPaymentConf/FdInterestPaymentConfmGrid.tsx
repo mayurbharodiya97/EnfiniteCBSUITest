@@ -1,19 +1,21 @@
 import { Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { FdInterestPaymentConfDetail } from "./FdInterestPaymentconfForm";
-import { FdInterestPaymentConfmMetaData } from "./FdInterestPaymentConfmMetaData";
-
+import { FdInterestPaymentConfmGridMetaData } from "./FdInterestPaymentConfmMetaData";
+import {
+  ActionTypes,
+  GridWrapper,
+  Alert,
+  usePopupContext,
+  queryClient,
+  GridMetaDataType,
+  Transition,
+} from "@acuteinfo/common-base";
+import { useTranslation } from "react-i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -24,13 +26,13 @@ const actions: ActionTypes[] = [
 ];
 
 export const FDInterestPaymentConfm = () => {
-  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [fDDetailsData, setFDDetailsData] = useState({});
   const [isFDDetailOpen, setIsFDDetailOpen] = useState(false);
   const [rowsData, setRowsData] = useState([]);
+  const { t } = useTranslation();
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -58,6 +60,7 @@ export const FDInterestPaymentConfm = () => {
           message: error?.error_msg ?? "",
           icon: "ERROR",
         });
+        setIsFDDetailOpen(false);
         CloseMessageBox();
       },
     }
@@ -89,7 +92,7 @@ export const FDInterestPaymentConfm = () => {
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getFDPaymentInstruConfAcctDtl"]);
-      queryClient.removeQueries(["getFDPaymentInstrudtl"]);
+      queryClient.removeQueries(["fetchFDPaymentConfAcct"]);
     };
   }, []);
 
@@ -98,18 +101,18 @@ export const FDInterestPaymentConfm = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
           errorDetail={error?.error_detail ?? ""}
           color="error"
         />
       )}
       <GridWrapper
         key={"FdInterestPaymentConfm"}
-        finalMetaData={FdInterestPaymentConfmMetaData as GridMetaDataType}
+        finalMetaData={FdInterestPaymentConfmGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        ReportExportButton={data?.length > 0 ? true : false}
+        enableExport={data?.length > 0 ? true : false}
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
@@ -117,12 +120,15 @@ export const FDInterestPaymentConfm = () => {
 
       <Dialog
         open={isFDDetailOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
         <FdInterestPaymentConfDetail
           closeDialog={handleFDDetailClose}

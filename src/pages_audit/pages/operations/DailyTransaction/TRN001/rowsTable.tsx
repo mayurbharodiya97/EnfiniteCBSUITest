@@ -30,9 +30,8 @@ import useAutocompleteHandlers, {
   DynFormHelperText,
   CustomTextField,
 } from "./components";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { getCurrencySymbol, formatCurrency } from "@acuteinfo/common-base";
+import { usePropertiesConfigContext } from "@acuteinfo/common-base";
 
 const RowsTable = forwardRef<any, any>(
   (
@@ -67,6 +66,7 @@ const RowsTable = forwardRef<any, any>(
       isCardsLoading,
       removeRow,
       handleScrollBlur,
+      onKeyUp,
     },
     ref
   ) => {
@@ -92,7 +92,7 @@ const RowsTable = forwardRef<any, any>(
       handleDateBlurCtx,
     } = useContext(TRN001Context);
     const { authState } = useContext(AuthContext);
-    const customParameter = useContext(CustomPropertiesConfigurationContext);
+    const customParameter = usePropertiesConfigContext();
 
     const {
       commonDateFormat,
@@ -327,6 +327,7 @@ const RowsTable = forwardRef<any, any>(
                             value: event?.target?.value,
                           })
                         }
+                        onKeyUp={(event) => onKeyUp(event, row?.unqID)}
                         disabled={!Boolean(row?.accType?.value)}
                         onBlur={() => handleAccNoBlur(row?.unqID)}
                         loadingState={loadingStates[row?.unqID]?.["ACCTNO"]}
@@ -575,6 +576,7 @@ const RowsTable = forwardRef<any, any>(
                                   </Fragment>
                                 ),
                               },
+                              variant: "outlined",
                             },
                           }}
                           inputRef={cqDateInputRef}

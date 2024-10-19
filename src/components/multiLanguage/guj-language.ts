@@ -102,8 +102,7 @@ export const guj_language_data = {
   EnterDescription: "વર્ણન દાખલ કરો",
   DuplicateValidation:
     "{{fieldValue}} પહેલાથી જ ક્રમ નંબર: {{rowNumber}} પર દાખલ કરેલ છે",
-    ParentTyperequired: "પિતૃ પ્રકાર જરૂરી છે.",
-
+  ParentTyperequired: "પિતૃ પ્રકાર જરૂરી છે.",
 
   // MST/097
   InsuranceTypeMaster: "વીમા પ્રકાર માસ્ટર MST/097",
@@ -116,10 +115,10 @@ export const guj_language_data = {
   AssetClassificationCode: "A5 સંપત્તિ વર્ગીકરણ કોડ",
   CalculatePenalInterestOn: "દંડાત્મક વ્યાજની ગણત્રી",
   EnterName: "નામ દાખલ કરો",
-  ParentRequired:"પિતૃ જરૂરી છે.",
+  ParentRequired: "પિતૃ જરૂરી છે.",
   Nameisrequired: "નામ જરૂરી છે.",
-  EnterSecureRate:"સુરક્ષિત જોગવાઈ દર દાખલ કરો",
-  EnterUnSecureRate:"અસુરક્ષિત જોગવાઈ દર દાખલ કરો",
+  EnterSecureRate: "સુરક્ષિત જોગવાઈ દર દાખલ કરો",
+  EnterUnSecureRate: "અસુરક્ષિત જોગવાઈ દર દાખલ કરો",
 
   // MST/146
   CourtMaster: "કોર્ટ માસ્ટર (MST/146)",
@@ -138,8 +137,7 @@ export const guj_language_data = {
   EnterPinCode: "પિન કોડ દાખલ કરો",
   EnterAddress: "સરનામું દાખલ કરો",
   EnterContactNumber: "સંપર્ક નંબર દાખલ કરો",
-  PincodeRequired:"પિનકોડ જરૂરી છે",
-
+  PincodeRequired: "પિનકોડ જરૂરી છે",
 
   // Report
   CreditCount: "ક્રેડિટ ગણતરી",
@@ -183,27 +181,27 @@ export const guj_language_data = {
     "એકાઉન્ટ: {{account}}.\n પાસબુક પહેલેથી જ {{date}} સુધી છપાયેલી છે.\n શું તમે ડુપ્લિકેટ/પુનઃપ્રિન્ટ તરીકે વિચારવા માંગો છો?\n હા - ડુપ્લિકેટ\n ના - ફરીથી છાપો",
 
   // Priority master main
-  Code:"કોડ",
-  ParentGroup:"પિતૃ જૂથ",
-  SubPriority:"સબ પ્રાયોરિટી",
-  SanctionFromLimit:"મર્યાદાથી મંજૂરી",
-  SanctionToLimit:"મર્યાદા માટે મંજૂરી",
-  ProvisionSecured:"જોગવાઈ સુરક્ષિત %",
-  ProvisionUnsecured:"જોગવાઈ અસુરક્ષિત %",
-  ToLimitValidation:"મર્યાદા પ્રતિ મર્યાદા કરતા વધારે અથવા બરાબર હોવી જોઈએ",
-  codeisRequired:"કોડ જરૂરી છે",
+  Code: "કોડ",
+  ParentGroup: "પિતૃ જૂથ",
+  SubPriority: "સબ પ્રાયોરિટી",
+  SanctionFromLimit: "મર્યાદાથી મંજૂરી",
+  SanctionToLimit: "મર્યાદા માટે મંજૂરી",
+  ProvisionSecured: "જોગવાઈ સુરક્ષિત %",
+  ProvisionUnsecured: "જોગવાઈ અસુરક્ષિત %",
+  ToLimitValidation: "મર્યાદા પ્રતિ મર્યાદા કરતા વધારે અથવા બરાબર હોવી જોઈએ",
+  codeisRequired: "કોડ જરૂરી છે",
   //priority master sub
-  ParentWeaker:"પેરેંટ વેકર",
+  ParentWeaker: "પેરેંટ વેકર",
   //trade master
-  CKYCGroup:"C-KYC ગ્રુપ",
-  Constitution:"બંધારણ",
+  CKYCGroup: "C-KYC ગ્રુપ",
+  Constitution: "બંધારણ",
   //area master
-  PinCode:"પીન કોડ",
-  City:"શહેર",
-  ParentArea:"પિતૃ વિસ્તાર",
+  PinCode: "પીન કોડ",
+  City: "શહેર",
+  ParentArea: "પિતૃ વિસ્તાર",
 
   //
- 
+
   Loading: "લોડ કરી રહ્યું છે",
   SignIn: "લોગીન",
   SignInWithUserIDandPassword:
@@ -230,7 +228,6 @@ export const guj_language_data = {
   backtologin: "લોગિન પર પાછા",
   Save: "સાચવો",
   Edit: "સુધારો",
-
 
   // For OTP Verify
   otp: {
@@ -498,7 +495,7 @@ export const guj_language_data = {
   Select: "પસંદ કરો",
   DisplayName: "ડિસ્પ્લે નામ",
   CTS: "સીટીએસ",
-  AddBranch:"શાખા ઉમેરો",
+  AddBranch: "શાખા ઉમેરો",
 
   sidebar: {
     Dashboard: "ડેશબોર્ડ",
@@ -629,7 +626,7 @@ export const guj_language_data = {
   Charge: "ચાર્જ",
   ChequeSeries: "ચેક શ્રેણી",
   AutoIssueFlag: "ઓટો ઇશ્યૂ ફ્લેગ",
-  RetrieveParameters: "પરિમાણો પુનઃપ્રાપ્ત કરો",
+  RetrieveParameters: "પરિમાણો",
   ChequeBookConfirmation: "ચેક બુક કન્ફર્મેશન",
   BalanceIsLesThanServicecharge: "બેલેન્સ સર્વિસ-ચાર્જ કરતાં ઓછું છે",
   BeforeChequeBookPrinting: "ચેક બુક પ્રિન્ટીંગ પહેલા",
@@ -704,6 +701,9 @@ export const guj_language_data = {
   // stop payment
 
   InsertStopPaymentMsg: "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર રોકવા માંગો છો ?",
+  InsertStopPaymentMsg2:
+    "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર સરન્ડર કરવા માંગો છો ?",
+  InsertStopPaymentMsg3: "શું તમે ખરેખર પસંદ કરેલ ચેક-નંબર PDC કરવા માંગો છો ?",
   AreYouSureToRelease: "શું તમે ચોક્કસ રિલીઝ કરશો?",
   ChequeStopDetail: "ચેક સ્ટોપ વિગતો",
   ChequeStopEntry: "ચેક સ્ટોપ એન્ટ્રી",
@@ -889,4 +889,7 @@ export const guj_language_data = {
   CannotDeleteConfirmedForm: "કન્ફર્મ કરેલ ફોર્મ ડિલીટ કરી શકાતું નથી.",
   PrintFormConfirmation: "શું તમે ફોર્મ છાપવા માંગો છો?",
   ViewAll: "બધુજ જુઓ",
+
+  // Cashier Exchange Entry
+  TransferDetails: "ટ્રાન્સફર વિગતો",
 };

@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const nscDetailGridData: GridMetaDataType = {
   gridConfig: {
@@ -104,7 +104,7 @@ export const nscDetailGridData: GridMetaDataType = {
     },
     {
       accessor: "ISSUE_COMPANY",
-      columnName: "IssueCompany",
+      columnName: "IssueBy",
       sequence: 8,
       alignment: "left",
       componentType: "default",

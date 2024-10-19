@@ -1,18 +1,22 @@
 import { Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
-import FormWrapper from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { Viewformmetadata } from "./metaData";
-import { GradientButton } from "components/styledComponent/button";
-import { extractMetaData, utilFunction } from "components/utils";
 import * as API from "../api";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
 
+import {
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 export const Prorityform = ({
   isDataChangedRef,
   closeDialog,
@@ -38,7 +42,6 @@ export const Prorityform = ({
       CloseMessageBox();
     },
     onSuccess: () => {
-
       enqueueSnackbar(t("insertSuccessfully"), {
         variant: "success",
       });
@@ -52,7 +55,7 @@ export const Prorityform = ({
     data: any,
     displayData,
     endSubmit,
-    setFieldError,
+    setFieldError
   ) => {
     // @ts-ignore
     endSubmit(true);
@@ -60,8 +63,8 @@ export const Prorityform = ({
       ...reqData?.[0]?.data,
       ACTIVE_FLAG: Boolean(reqData?.[0]?.data?.ACTIVE_FLAG) ? "Y" : "N",
       ACCT_PRIORITY_CD: reqData?.[0]?.data?.ACCT_PRIORITY_CD,
-      HIERACHY_INFO: reqData?.[0]?.data?.HIERACHY_INFO
-    }
+      HIERACHY_INFO: reqData?.[0]?.data?.HIERACHY_INFO,
+    };
     let newData = {
       ...data,
       ACTIVE_FLAG: Boolean(data?.ACTIVE_FLAG) ? "Y" : "N",
@@ -83,7 +86,6 @@ export const Prorityform = ({
         setFieldError,
       };
 
-
       if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
         setFormMode("view");
       } else {
@@ -103,14 +105,13 @@ export const Prorityform = ({
     } else {
       setFormMode("view");
     }
-
   };
 
   return (
     <>
       <FormWrapper
         key={"Prorityform" + formMode}
-        metaData={extractMetaData(Viewformmetadata, formMode)} as MetaDataType
+        metaData={extractMetaData(Viewformmetadata, formMode) as MetaDataType}
         displayMode={formMode}
         formStyle={{
           overflowX: "auto",
@@ -174,7 +175,6 @@ export const Prorityform = ({
           </>
         )}
       </FormWrapper>
-
     </>
   );
 };
@@ -186,10 +186,7 @@ export const ProrityformWrapper = ({
 }) => {
   const { state: data }: any = useLocation();
   return (
-    <Dialog
-      open={true}
-      maxWidth='md'
-    >
+    <Dialog open={true} maxWidth="md">
       <Prorityform
         closeDialog={closeDialog}
         defaultView={defaultView}

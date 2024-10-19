@@ -45,14 +45,12 @@ const getTitleFilters = (
         typeof param.value.value !== "undefined" &&
         param.value.value.toString().trim() !== ""
       ) {
-        const label =
-          typeof param.value?.label !== "undefined"
-            ? param.value.label
-            : param.value.columnName;
-        const value =
-          typeof param.value?.displayValue !== "undefined"
-            ? param.value.displayValue
-            : param.value.value;
+        const label = Boolean(param.value?.label)
+          ? param.value.label
+          : param.value.columnName;
+        const value = Boolean(param.value?.displayValue)
+          ? param.value.displayValue
+          : param.value.value;
         fileTitle += label + ": " + value + " | ";
       }
     });
@@ -60,8 +58,38 @@ const getTitleFilters = (
 
   if (filters.length !== 0) {
     filters.forEach((filter) => {
-      if (filter.value.trim() !== "")
-        fileTitle += columnLabel[filter.id] + ": " + filter.value + "* | ";
+      let filterValue = filter.value.label
+        ? filter.value.label
+        : typeof filter.value === "object"
+        ? filter.value.value
+        : filter.value;
+
+      if (Array.isArray(filterValue)) {
+        fileTitle +=
+          (columnLabel[filter.id] ?? filter?.value?.columnName) +
+          " " +
+          (filter.value?.condition ?? "") +
+          ": ";
+        filterValue.forEach((value, index) => {
+          //check if string is date
+          let updatedValue =
+            isNaN(Number(value)) && !isNaN(new Date(value).getTime())
+              ? dateFns.format(new Date(value), "DD/MM/YYYY")
+              : value;
+          fileTitle += updatedValue;
+          fileTitle += index !== filterValue.length - 1 ? ", " : "";
+        });
+        fileTitle += " | ";
+      } else {
+        if (filterValue.trim() !== "")
+          fileTitle +=
+            columnLabel[filter.id] +
+            " " +
+            (filter.value?.condition ?? "") +
+            ": " +
+            filterValue +
+            "* | ";
+      }
     });
   }
 
@@ -107,7 +135,11 @@ const getDynamicRow = (rows, columns) => {
           } else
             filteredRow[key] = typeof row[key] === "undefined" ? "" : row[key];
         } else {
-          if (!["id", "cname", "cellType", "format"].includes(key))
+          if (
+            !["id", "cname", "cellType", "format", "isAutoSequence"].includes(
+              key
+            )
+          )
             filteredRow[key] = "";
         }
       });

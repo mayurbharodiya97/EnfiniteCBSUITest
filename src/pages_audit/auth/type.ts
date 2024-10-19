@@ -12,6 +12,7 @@ export interface AuthStateType {
   baseCompanyID: string;
   groupName: string;
   menulistdata: any;
+  uniqueAppId: string;
   user: {
     branch: string;
     branchCode: string;
@@ -23,8 +24,8 @@ export interface AuthStateType {
     id: string;
     employeeID: any;
   };
-  hoLogin: string
-  idealTimer :string
+  hoLogin: string;
+  idealTimer: string;
 }
 
 export interface BranchSelectData {

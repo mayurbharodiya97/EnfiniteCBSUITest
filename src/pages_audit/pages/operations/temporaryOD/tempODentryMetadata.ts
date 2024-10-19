@@ -1,13 +1,12 @@
-import { utilFunction } from "components/utils";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
 import { t } from "i18next";
-import { lessThanDate } from "registry/rulesEngine";
+import { lessThanDate, utilFunction } from "@acuteinfo/common-base";
 export const temporaryODentryMetadata = {
   masterForm: {
     form: {
       name: "temporaryOD-entryMetadata",
-      label: "TemporaryODAgainstEntry",
+      label: "",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -33,6 +32,7 @@ export const temporaryODentryMetadata = {
         },
         name: "",
         branchCodeMetadata: {
+          validationRun: "onChange",
           postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
               return {
@@ -60,6 +60,7 @@ export const temporaryODentryMetadata = {
         },
         accountTypeMetadata: {
           isFieldFocused: true,
+          validationRun: "onChange",
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
               COMP_CD: authState?.companyID,
@@ -92,6 +93,10 @@ export const temporaryODentryMetadata = {
         accountCodeMetadata: {
           render: {
             componentType: "textField",
+          },
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
           },
           validate: (columnValue) => {
             let regex = /^[^!&]*$/;
@@ -233,7 +238,7 @@ export const temporaryODentryMetadata = {
         _optionsKey: "parametersListDD",
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["PleaseSelectValue"] }],
+          rules: [{ name: "required", params: ["Parametersrequired"] }],
         },
         GridProps: {
           xs: 12,
@@ -248,6 +253,7 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "spacer",
         },
+        name: "SPACER",
         GridProps: {
           xs: 12,
           md: 2.5,
@@ -283,7 +289,7 @@ export const temporaryODentryMetadata = {
         },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["EffectiveFromDateRequired"] }],
         },
         label: "EffectiveFromDate",
         GridProps: {
@@ -323,7 +329,7 @@ export const temporaryODentryMetadata = {
         },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["EffectiveToDateRequired"] }],
         },
         onFocus: (date) => {
           date.target.select();
@@ -349,7 +355,7 @@ export const temporaryODentryMetadata = {
         required: true,
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["AmountUpToRequired"] }],
         },
         FormatProps: {
           allowNegative: false,

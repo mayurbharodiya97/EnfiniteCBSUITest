@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
+    "@acuteinfo/common-base": "^1.0.47",
+    "@acuteinfo/common-screens": "^1.0.70",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.11.0",
@@ -102,8 +104,8 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "cross-env NODE_OPTIONS='--max-old-space-size=4096' react-app-rewired start",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096' react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "docker:build": "docker build -t acutedocker001/netbanking-admin:1.0 .",
@@ -143,6 +145,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.4",
+    "cross-env": "^7.0.3",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react-app-rewired": "^2.2.1"
   }

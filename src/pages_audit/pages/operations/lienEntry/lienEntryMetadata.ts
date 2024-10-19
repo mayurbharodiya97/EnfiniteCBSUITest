@@ -1,9 +1,8 @@
-import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { isValid } from "date-fns";
-import { lessThanDate } from "registry/rulesEngine";
 import { t } from "i18next";
+import { lessThanDate, utilFunction } from "@acuteinfo/common-base";
 
 export const LienEntryMetadata = {
   form: {
@@ -47,6 +46,7 @@ export const LienEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
@@ -87,6 +87,7 @@ export const LienEntryMetadata = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -135,6 +136,10 @@ export const LienEntryMetadata = {
             return true;
           },
         },
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -176,7 +181,7 @@ export const LienEntryMetadata = {
                   let btnName = await messagebox(
                     apiRespMSGdata[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert message",
+                      : "Alert message",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"
                       ? ["Yes", "No"]
@@ -270,7 +275,7 @@ export const LienEntryMetadata = {
       name: "LIEN_STATUS",
       label: "LienStatus",
       isReadOnly: true,
-      required: true,
+      required: false,
       defaultValue: "A",
       options: () => {
         return [
@@ -448,7 +453,7 @@ export const LienEntryMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      required: true,
+      required: false,
       placeholder: "EnterRemarks",
       schemaValidation: {
         type: "string",

@@ -1,4 +1,3 @@
-import { utilFunction } from "components/utils";
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import {
@@ -6,7 +5,7 @@ import {
   getDividendViewMasterData,
   getInwardAccountDetail,
 } from "../api";
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
 export const chequeReturnPostFormMetaData = {
   form: {
     name: "InwardClearingChequeDetail",
@@ -317,7 +316,7 @@ export const chequeReturnPostFormMetaData = {
             };
 
             let postData = await getInwardAccountDetail(Apireq);
-            let btn99, returnVal
+            let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
               return { btnName, obj };
@@ -327,6 +326,7 @@ export const chequeReturnPostFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Validation Failed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "9") {
@@ -334,6 +334,7 @@ export const chequeReturnPostFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = "";
@@ -342,6 +343,7 @@ export const chequeReturnPostFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -366,15 +368,15 @@ export const chequeReturnPostFormMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  }
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
                   : {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
@@ -1339,6 +1341,7 @@ export const shareDividendMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Validation Failed",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
@@ -1347,6 +1350,7 @@ export const shareDividendMetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -1358,6 +1362,7 @@ export const shareDividendMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = "";
@@ -1394,15 +1399,15 @@ export const shareDividendMetaData = {
               ACCT_CD:
                 returnVal !== ""
                   ? {
-                    value: field?.value.padStart(6, "0")?.padEnd(20, " "),
-                    ignoreUpdate: true,
-                    isFieldFocused: false,
-                  }
+                      value: field?.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                      isFieldFocused: false,
+                    }
                   : {
-                    value: "",
-                    isFieldFocused: true,
-                    ignoreUpdate: true,
-                  },
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
               WARRANT_NO: {
                 value: returnVal?.WARRANT_NO ?? "",
               },

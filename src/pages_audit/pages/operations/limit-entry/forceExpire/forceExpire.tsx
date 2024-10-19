@@ -6,23 +6,42 @@ import {
   LinearProgress,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { crudLimitEntryData } from "../api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
-import { utilFunction } from "components/utils";
+import {
+  utilFunction,
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
-export const ForceExpire = ({ navigate, getLimitDetail }) => {
+type LimitDtlCustomProps = {
+  setLimitDtlOpen?: any;
+  navigate?: any;
+  getLimitDetail?: any;
+  screenFlag?: any;
+};
+export const ForceExpire: React.FC<LimitDtlCustomProps> = ({
+  navigate,
+  getLimitDetail,
+  setLimitDtlOpen,
+  screenFlag,
+}) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+
+  const handleCloseDialog = () => {
+    screenFlag === "limitForTrn" ? setLimitDtlOpen(false) : navigate(".");
+  };
 
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
@@ -104,10 +123,9 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
         )}
         <FormWrapper
           key={"limit-force-exp"}
-          metaData={forceExpireMetaData}
+          metaData={forceExpireMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
           onSubmitHandler={onSubmitHandler}
-          loading={forceExpire.isLoading}
           displayMode={
             rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" ? "edit" : "view"
           }
@@ -136,7 +154,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
                     {t("Save")}
                   </Button>
                 )}
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
                 </Button>
               </>

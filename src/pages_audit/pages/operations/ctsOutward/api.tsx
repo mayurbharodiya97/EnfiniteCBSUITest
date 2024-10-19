@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -62,7 +62,12 @@ export const getRetrievalClearingData = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETCTSCNFRETRIEV`, { ...Apireq });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -75,7 +80,7 @@ export const getOutwardClearingConfigData = async (formData) => {
     return data.map((item) => {
       return {
         ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirmed" : "Pending",
       };
     });
   } else {

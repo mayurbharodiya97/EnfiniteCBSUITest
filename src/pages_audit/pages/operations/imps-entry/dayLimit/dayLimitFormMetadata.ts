@@ -1,6 +1,8 @@
+import { t } from "i18next";
+
 export const dayLimitFormMetaData = {
   form: {
-    name: "day-limit-metadata",
+    name: "day-limit-metadatas",
     label: "",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -46,7 +48,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "datetimePicker" },
       name: "EFFECTIVE_DT",
       type: "date",
-      label: "Effective Date",
+      label: "EffectiveDate",
       format: "dd/MM/yyyy HH:mm:ss",
       required: true,
       isReadOnly: true,
@@ -187,7 +189,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_IFT_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return ` ${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_IFT_LIMIT?.value
           )}`;
         }
@@ -254,7 +256,6 @@ export const dayLimitFormMetaData = {
         _,
         dependentFields
       ) => {
-        console.log("<<<rtgs", field, dependentFields);
         if (dependentFields?.DTL_RTGS?.value === "N" && Boolean(field?.value)) {
           return {
             RTGS: { value: false },
@@ -269,7 +270,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "RTGS_LIMIT",
       type: "text",
-      label: "RTGS/Day Limit",
+      label: "RTGSDayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -291,7 +292,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_RTGS_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_RTGS_LIMIT?.value
           )}`;
         }
@@ -355,7 +356,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "NEFT_LIMIT",
       type: "text",
-      label: "NEFT/Day Limit",
+      label: "NEFTDayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -377,7 +378,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_NEFT_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_NEFT_LIMIT?.value
           )}`;
         }
@@ -417,7 +418,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "checkbox" },
       type: "checkbox",
       name: "OWN_ACT",
-      label: "Own A/c",
+      label: "OwnAc",
       defaultValue: false,
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
       validationRun: "onChange",
@@ -445,7 +446,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "OWN_LIMIT",
       type: "text",
-      label: "OWN/Day Limit",
+      label: "OWNDayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -467,7 +468,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_OWN_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_OWN_LIMIT?.value
           )}`;
         }
@@ -532,7 +533,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "BBPS_LIMIT",
       type: "text",
-      label: "BBPS/Day Limit",
+      label: "BBPSDayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -554,7 +555,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_BBPS_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_BBPS_LIMIT?.value
           )}`;
         }
@@ -595,7 +596,7 @@ export const dayLimitFormMetaData = {
       type: "checkbox",
       name: "PG_TRN",
       defaultValue: false,
-      label: "Payment Gateway",
+      label: "PaymentGateway",
       GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
       validationRun: "onChange",
       dependentFields: ["DTL_PG_TRN"],
@@ -620,9 +621,9 @@ export const dayLimitFormMetaData = {
     },
     {
       render: { componentType: "amountField" },
-      name: "PG_AMT",
+      name: "PG_LIMIT",
       type: "text",
-      label: "P.Gateway/Daily Limit",
+      label: "PGatewayDailyLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -644,7 +645,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_PG_AMT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_PG_AMT?.value
           )}`;
         }
@@ -709,7 +710,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "ATM_LIMIT",
       type: "text",
-      label: "ATM/Daily Limit",
+      label: "ATMDailyLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -731,7 +732,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_ATM_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_ATM_LIMIT?.value
           )}`;
         }
@@ -796,7 +797,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "POS_LIMIT",
       type: "text",
-      label: "POS/Daily Limit",
+      label: "POSDailyLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -818,7 +819,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_POS_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_POS_LIMIT?.value
           )}`;
         }
@@ -883,7 +884,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "ECOM_LIMIT",
       type: "text",
-      label: "ECOM/Daily Limit",
+      label: "ECOMDailyLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -905,7 +906,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_ECOM_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}  ${Number(
             allField?.PERDAY_ECOM_LIMIT?.value
           )}`;
         }
@@ -970,7 +971,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "UPI_LIMIT",
       type: "text",
-      label: "UPI/Daily Limit",
+      label: "UPIDailyLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -992,7 +993,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_UPI_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_UPI_LIMIT?.value
           )}`;
         }
@@ -1056,7 +1057,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "P2P_LIMIT",
       type: "text",
-      label: "IMPS P2P Day Limit",
+      label: "IMPSP2PDayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -1078,7 +1079,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_P2P_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_P2P_LIMIT?.value
           )}`;
         }
@@ -1117,7 +1118,7 @@ export const dayLimitFormMetaData = {
       render: { componentType: "amountField" },
       name: "P2A_LIMIT",
       type: "text",
-      label: "IMPR P2A Day Limit",
+      label: "IMPSP2ADayLimit",
       GridProps: { xs: 12, md: 2, sm: 2, lg: 2, xl: 2 },
       FormatProps: {
         thousandSeparator: false,
@@ -1139,7 +1140,7 @@ export const dayLimitFormMetaData = {
       validate: (columnValue, allField, flag) => {
         let limitValue = Number(allField?.PERDAY_P2A_LIMIT?.value);
         if (Number(columnValue.value) > limitValue && limitValue > 0) {
-          return `limit amount should be less than ${Number(
+          return `${t("limitamountlessthan")}   ${Number(
             allField?.PERDAY_P2A_LIMIT?.value
           )}`;
         }
@@ -1311,6 +1312,30 @@ export const dayLimitFormMetaData = {
         componentType: "hidden",
       },
       name: "DTL_BBPS",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_COMP_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ENTERED_BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SR_CD",
     },
   ],
 };

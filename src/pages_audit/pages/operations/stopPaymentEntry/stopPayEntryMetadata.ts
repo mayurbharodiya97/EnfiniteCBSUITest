@@ -1,4 +1,4 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { t } from "i18next";
@@ -45,6 +45,7 @@ export const StopPayEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
@@ -85,6 +86,7 @@ export const StopPayEntryMetadata = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -119,9 +121,18 @@ export const StopPayEntryMetadata = {
         },
       },
       accountCodeMetadata: {
-        render: {
-          componentType: "textField",
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: false,
         },
+        inputProps: {
+          onInput: (event) => {
+            if (event.target.value.length > 20) {
+              return;
+            }
+          },
+        },
+        maxLength: 20,
         validate: (columnValue) => {
           let regex = /^[^!&]*$/;
           if (!regex.test(columnValue.value)) {
@@ -214,7 +225,7 @@ export const StopPayEntryMetadata = {
                   value: postData?.ACCT_NM ?? "",
                 },
                 TRAN_BAL: {
-                  value: postData?.WIDTH_BAL ?? "",
+                  value: postData?.TRAN_BAL ?? "",
                 },
               };
             }
@@ -293,17 +304,19 @@ export const StopPayEntryMetadata = {
         ];
       },
       _optionsKey: "FLAG",
+      validationRun: "onChange",
       postValidationSetCrossFieldValues: async (field) => {
-        if (field?.value) {
-          return {
-            CHEQUE_FROM: { value: "" },
-            CHEQUE_TO: { value: "" },
-            AMOUNT: { value: "" },
-            SERVICE_TAX: { value: "" },
-            CHEQUE_DT: { value: "" },
-            CHEQUE_AMOUNT: { value: "" },
-          };
-        }
+        // if (field?.value) {
+        return {
+          CHEQUE_FROM: { value: "", error: "" },
+          CHEQUE_TO: { value: "", error: "" },
+          AMOUNT: { value: "" },
+          SERVICE_TAX: { value: "" },
+          CHEQUE_DT: { value: "" },
+          CHEQUE_AMOUNT: { value: "" },
+          REASON_CD: { value: "" },
+        };
+        // }
       },
       GridProps: {
         xs: 12,
@@ -370,7 +383,11 @@ export const StopPayEntryMetadata = {
       dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG", "TYPE_CD"],
       FormatProps: {
         isAllowed: (values, dependentFields, formState) => {
-          if (values.floatValue === 0 || values.value === "-") {
+          if (
+            values.floatValue === 0 ||
+            values.value === "-" ||
+            values?.value?.length > 10
+          ) {
             return false;
           }
           return true;
@@ -382,7 +399,6 @@ export const StopPayEntryMetadata = {
         authState,
         dependentValue
       ) => {
-        console.log("<<<authState", authState);
         if (
           field?.value &&
           dependentValue?.BRANCH_CD?.value &&
@@ -424,11 +440,21 @@ export const StopPayEntryMetadata = {
           } else {
             return {
               CHEQUE_TO: { value: field?.value },
+              SERVICE_TAX: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_C_FLAG: { value: "" },
+              ROUND_OFF_FLAG: { value: "" },
+              GST: { value: "" },
             };
           }
         } else if (!field?.value) {
           return {
             CHEQUE_TO: { value: "", isErrorBlank: true },
+            SERVICE_TAX: { value: "" },
+            AMOUNT: { value: "" },
+            SERVICE_C_FLAG: { value: "" },
+            ROUND_OFF_FLAG: { value: "" },
+            GST: { value: "" },
           };
         }
         return {};
@@ -436,7 +462,7 @@ export const StopPayEntryMetadata = {
       runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FromChequenorequired"] }],
       },
       required: true,
       GridProps: {
@@ -464,7 +490,7 @@ export const StopPayEntryMetadata = {
       ],
       validate: (field, dependentFields) => {
         if (!field?.value) {
-          return "ThisFieldisrequired";
+          return "ToChequenorequired";
         } else if (
           Number(dependentFields?.CHEQUE_FROM?.value) > Number(field?.value)
         ) {
@@ -474,7 +500,11 @@ export const StopPayEntryMetadata = {
       },
       FormatProps: {
         isAllowed: (values, dependentFields, formState) => {
-          if (values.floatValue === 0 || values.value === "-") {
+          if (
+            values.floatValue === 0 ||
+            values.value === "-" ||
+            values?.value?.length > 10
+          ) {
             return false;
           }
           return true;
@@ -521,6 +551,7 @@ export const StopPayEntryMetadata = {
                 SERVICE_TAX: { value: "" },
                 AMOUNT: { value: "" },
                 SERVICE_C_FLAG: { value: "" },
+                ROUND_OFF_FLAG: { value: "" },
                 GST: { value: "" },
               };
             }
@@ -546,6 +577,11 @@ export const StopPayEntryMetadata = {
         } else if (!field?.value) {
           return {
             CHEQUE_TO: { value: dependentValue?.CHEQUE_FROM?.value },
+            SERVICE_TAX: { value: "" },
+            AMOUNT: { value: "" },
+            SERVICE_C_FLAG: { value: "" },
+            ROUND_OFF_FLAG: { value: "" },
+            GST: { value: "" },
           };
         }
         return {};
@@ -602,14 +638,20 @@ export const StopPayEntryMetadata = {
       name: "AMOUNT",
       FormatProps: {
         allowNegative: false,
+        isAllowed: (values) => {
+          if (values?.value?.length > 7) {
+            return false;
+          }
+          return true;
+        },
       },
       label: "ChargeAmount",
       dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
-          return false;
-        } else {
+        if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "Y") {
           return true;
+        } else {
+          return false;
         }
       },
       postValidationSetCrossFieldValues: async (
@@ -642,7 +684,7 @@ export const StopPayEntryMetadata = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentValue?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         }
@@ -747,6 +789,14 @@ export const StopPayEntryMetadata = {
         }
         return "";
       },
+      inputProps: {
+        onInput: (event) => {
+          if (event.target.value.length > 100) {
+            return;
+          }
+        },
+      },
+      maxLength: 100,
       GridProps: {
         xs: 12,
         md: 4,
@@ -768,6 +818,13 @@ export const StopPayEntryMetadata = {
           return t("SpecialCharactersNotAllowedRemarks");
         }
         return "";
+      },
+      inputProps: {
+        onInput: (event) => {
+          if (event.target.value.length > 100) {
+            return;
+          }
+        },
       },
       GridProps: {
         xs: 12,

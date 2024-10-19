@@ -1,7 +1,7 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getPassBookTemplate } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "./api";
 import { format } from "date-fns";
 import { t } from "i18next";
@@ -963,7 +963,6 @@ export const AccountInquiry = {
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value = Number(dependentFieldsValues?.REPRINT?.value);
         return value === 1 ? "Y" : "N";
-
       },
     },
 
@@ -1431,9 +1430,10 @@ export const PassbookPrintingInq = {
       },
       name: "BRANCH_CD",
       label: "BranchCode",
-      defaultValue: "099 ",
       placeholder: "BranchCodePlaceHolder",
-      options: "getBranchCodeList",
+      options: GeneralAPI.getBranchCodeList,
+      _optionsKey: "getBranchCodeList",
+      defaultBranchTrue: true,
       required: "true",
       schemaValidation: {
         type: "string",
@@ -1453,7 +1453,7 @@ export const PassbookPrintingInq = {
       options: (dependentValue, formState, _, authState) => {
         return GeneralAPI.get_Account_Type({
           COMP_CD: authState?.companyID,
-          BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          BRANCH_CD: authState?.user?.branchCode,
           USER_NAME: authState?.user?.id,
           DOC_CD: "RPT/430",
         });
@@ -1568,14 +1568,16 @@ export const PassbookPrintingInq = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Validation Failed",
+                messageTitle: "ValidationFailed",
                 message: postData[i]?.O_MESSAGE,
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.O_MESSAGE,
+                icon: "CONFIRM",
                 buttonNames: ["Yes", "No"],
               });
               btn99 = btnName;
@@ -1587,6 +1589,7 @@ export const PassbookPrintingInq = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               }
             } else if (postData[i]?.O_STATUS === "0") {

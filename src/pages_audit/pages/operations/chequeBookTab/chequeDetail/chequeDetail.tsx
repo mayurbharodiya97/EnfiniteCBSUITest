@@ -1,17 +1,30 @@
 import { AppBar, Dialog, Paper } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { ChequeDtlGridMetaData } from "./chequeDetailGridMetadata";
 import { useQuery } from "react-query";
-import { ActionTypes } from "components/dataTable";
-import { queryClient } from "cache";
 import { chequeGridDTL } from "../api";
-import { Alert } from "components/common/alert";
 import Draggable from "react-draggable";
 
-export const ChequeDtlGrid = ({ navigate }) => {
+import {
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
+
+type ChequebookIssuedDtlCustomProps = {
+  navigate?: any;
+  setChequebookIssueDtlOpen?: any;
+  screenFlag?: any;
+};
+
+export const ChequeDtlGrid: React.FC<ChequebookIssuedDtlCustomProps> = ({
+  navigate,
+  setChequebookIssueDtlOpen,
+  screenFlag,
+}) => {
   const closeAction: ActionTypes[] = [
     {
       actionName: "close",
@@ -42,8 +55,7 @@ export const ChequeDtlGrid = ({ navigate }) => {
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      ChequeDtlGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0 
-      
+      ChequeDtlGridMetaData.gridConfig.subGridLabel = `\u00A0\u00A0
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -92,7 +104,13 @@ export const ChequeDtlGrid = ({ navigate }) => {
           setData={() => {}}
           loading={chequeDTL?.isLoading}
           actions={closeAction}
-          setAction={() => navigate(".")}
+          setAction={() => {
+            if (screenFlag === "chequesDtlForTrn") {
+              setChequebookIssueDtlOpen(false);
+            } else {
+              navigate(".");
+            }
+          }}
         />
       </div>
     </Dialog>

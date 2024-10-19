@@ -7,13 +7,17 @@ import {
   StrictMode,
   useState,
 } from "react";
-import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { usePopupContext } from "components/custom/popupContext";
-import { GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
+import {
+  Alert,
+  ActionTypes,
+  GridWrapper,
+  GridMetaDataType,
+  usePopupContext,
+  ClearCacheProvider,
+  ClearCacheContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -25,7 +29,7 @@ import { stopPayConfirmGridMetaData } from "./MetaData/stopPayConfirmGridMetadat
 import { lienConfirmGridMetaData } from "./MetaData/lienConfirmGridMetadata";
 import { tempODConfirmGridMetaData } from "./MetaData/temporaryODGridMetadata";
 import { RetrieveData } from "../operations/chequeBookTab/confirm/retrieveData";
-import { ChequebookCfmForm } from "../operations/chequeBookTab/confirm/confirmationForm";
+import { ChequebookCfmForm } from "../operations/chequeBookTab/entryForm/entryForm";
 import { LimitConfirmationForm } from "../operations/limit-entry/confirm/confirmationForm";
 import { StockConfirmationForm } from "../operations/stockEntry/confirm/confirmationForm";
 import { StopPayConfirmationForm } from "../operations/stopPaymentEntry/confirm/confirmationForm";
@@ -33,6 +37,7 @@ import { LienConfirmationForm } from "../operations/lienEntry/confirm/confirmati
 import { TempODConfirmationForm } from "../operations/temporaryOD/confirm/confirmationForm";
 import { insuranceEntryConfirmGridMetaData } from "./MetaData/insuranceConfirmGridMetadata";
 import { InsuranceConfirmationFormWrapper } from "../operations/insuranceEntry/confirmation/insuranceConfirmationForm";
+import { Typography } from "@mui/material";
 
 export const Confirmations = ({ screenFlag }) => {
   const actions: ActionTypes[] = [
@@ -107,6 +112,8 @@ export const Confirmations = ({ screenFlag }) => {
     });
   } else if (screenFlag === "limitCFM") {
     gridMetaData = limitConfirmGridMetaData;
+  } else if (screenFlag === "limitForTrn") {
+    gridMetaData = limitConfirmGridMetaData;
   } else if (screenFlag === "stockCFM") {
     gridMetaData = stockConfirmGridMetaData;
   } else if (screenFlag === "stopPaymentCFM") {
@@ -115,7 +122,7 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = lienConfirmGridMetaData;
   } else if (screenFlag === "tempOdCFM") {
     gridMetaData = tempODConfirmGridMetaData;
-  }else if (screenFlag=== "insuranceCFM"){
+  } else if (screenFlag === "insuranceCFM") {
     gridMetaData = insuranceEntryConfirmGridMetaData;
   }
 
@@ -148,6 +155,17 @@ export const Confirmations = ({ screenFlag }) => {
           // }
           ref={myGridRef}
         />
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            color: "rgb(152 59 70 / 61%)",
+            marginLeft: "630px",
+            marginTop: "-43.2px",
+          }}
+          variant="subtitle1"
+        >
+          Double Click To Confirm Entry.
+        </Typography>
         <Routes>
           <Route
             path="view-details/*"
@@ -187,7 +205,7 @@ export const Confirmations = ({ screenFlag }) => {
                   closeDialog={ClosedEventCall}
                   result={result}
                 />
-              ): (
+              ) : (
                 <></>
               )
             }

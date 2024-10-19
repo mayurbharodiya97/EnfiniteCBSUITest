@@ -1,18 +1,27 @@
-import { ClearCacheProvider, queryClient } from 'cache';
-import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
-import { Fragment, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { RetrievedinfoGridMetaData } from './RetrivalInfoGridMetadata';
-import { GridMetaDataType } from 'components/dataTableStatic';
-import { ActionTypes } from 'components/dataTable';
-import { AuthContext } from 'pages_audit/auth';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import * as API from './api';
-import { useMutation, useQuery } from 'react-query';
-import { Alert } from 'components/common/alert';
-import { DataRetrival } from './RetriveData';
-import { PayslipConfirmationFormDetails } from './payslipConfirmationForm';
-import { enqueueSnackbar } from 'notistack';
-
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { RetrievedinfoGridMetaData } from "./RetrivalInfoGridMetadata";
+import { AuthContext } from "pages_audit/auth";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import * as API from "./api";
+import { useMutation, useQuery } from "react-query";
+import { DataRetrival } from "./RetriveData";
+import { PayslipConfirmationFormDetails } from "./payslipConfirmationForm";
+import { enqueueSnackbar } from "notistack";
+import {
+  Alert,
+  GridWrapper,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-all",
@@ -53,7 +62,14 @@ const PayslipissueconfirmationGrid = () => {
   const [gridData, setGridData] = useState<any[]>([]);
   const [isDataRetrieved, setIsDataRetrieved] = useState(false);
 
-  const { data, isLoading, isFetching, isError, error, refetch: slipdataRefetch } = useQuery<PayslipData[]>(
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch: slipdataRefetch,
+  } = useQuery<PayslipData[]>(
     ["getPayslipCnfRetrieveData", activeSiFlag],
     () =>
       API.getPayslipCnfRetrieveData({
@@ -66,8 +82,8 @@ const PayslipissueconfirmationGrid = () => {
         FLAG: activeSiFlag === "Y" ? "P" : "A",
       }),
     {
-      enabled: activeSiFlag === "Y" || activeSiFlag === "N"
-    },
+      enabled: activeSiFlag === "Y" || activeSiFlag === "N",
+    }
   );
 
   const retrieveDataMutation = useMutation(API.getPayslipCnfRetrieveData, {
@@ -86,10 +102,6 @@ const PayslipissueconfirmationGrid = () => {
     },
   });
 
-
-
-
-
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getPayslipCnfRetrieveData"]);
@@ -104,12 +116,14 @@ const PayslipissueconfirmationGrid = () => {
         retrievalParaRef.current = null;
         setGridData([]);
       } else if (name === "view-all" || name === "view-pending") {
-        setActiveSiFlag(prevActiveSiFlag => {
+        setActiveSiFlag((prevActiveSiFlag) => {
           const newActiveSiFlag = prevActiveSiFlag === "Y" ? "N" : "Y";
-          setActionMenu(prevActions => {
+          setActionMenu((prevActions) => {
             const newActions = [...prevActions];
-            newActions[0].actionLabel = newActiveSiFlag === "Y" ? "View All" : "View Pending";
-            newActions[0].actionName = newActiveSiFlag === "Y" ? "view-all" : "view-pending";
+            newActions[0].actionLabel =
+              newActiveSiFlag === "Y" ? "View All" : "View Pending";
+            newActions[0].actionName =
+              newActiveSiFlag === "Y" ? "view-all" : "view-pending";
 
             return newActions;
           });
@@ -123,9 +137,6 @@ const PayslipissueconfirmationGrid = () => {
     },
     [navigate]
   );
-
-
-
 
   const selectedDatas = (dataObj: PayslipData[] | null) => {
     setDateDialog(false);
@@ -157,7 +168,7 @@ const PayslipissueconfirmationGrid = () => {
           severity="error"
           //@ts-ignore
           errorMsg={error?.message ?? "Something went wrong"}
-              //@ts-ignore
+          //@ts-ignore
           errorDetail={error?.message}
           color="error"
         />
@@ -197,7 +208,7 @@ const PayslipissueconfirmationGrid = () => {
   );
 };
 
-export const payslipissueconfirmation = () => {
+export const Payslipissueconfirmation = () => {
   return (
     <ClearCacheProvider>
       <PayslipissueconfirmationGrid />
