@@ -102,6 +102,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                       buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
+                      icon: "CONFIRM",
                     });
                     if (buttonName === "Yes") {
                       lienConfirm.mutate({
