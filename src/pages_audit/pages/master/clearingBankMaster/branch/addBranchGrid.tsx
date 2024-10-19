@@ -111,6 +111,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
           message: "AreYouSureToProceed",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (res === "Yes") {
           mutation.mutate({
@@ -129,6 +130,7 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
           messageTitle: "Alert",
           message: "AtleastOneBranchShouldBeSelected",
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       }
     }

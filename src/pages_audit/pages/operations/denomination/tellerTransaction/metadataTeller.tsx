@@ -262,19 +262,19 @@ export const TellerScreenMetadata: any = {
                       messageTitle: "ValidationFailed",
                       message: postData?.MSG[i]?.O_MESSAGE,
                     });
-                    // if (btnNm === "Ok") {
-                    //   return {
-                    //     ACCT_CD: { value: "", ignoreUpdate: true },
-                    //     FLAG: { value: "", ignoreUpdate: true },
-                    //     CHEQUE_NO: { value: "", ignoreUpdate: true },
-                    //     CHEQUE_DT: {
-                    //       value: authState?.workingDate ?? "",
-                    //       ignoreUpdate: true,
-                    //     },
-                    //     RECEIPT: { value: "", ignoreUpdate: true },
-                    //     PAYMENT: { value: "", ignoreUpdate: true },
-                    //   };
-                    // }
+                    if (btnNm === "Ok") {
+                      return {
+                        ACCT_CD: { value: "", ignoreUpdate: true },
+                        FLAG: { value: "", ignoreUpdate: true },
+                        CHEQUE_NO: { value: "", ignoreUpdate: true },
+                        CHEQUE_DT: {
+                          value: authState?.workingDate ?? "",
+                          ignoreUpdate: true,
+                        },
+                        RECEIPT: { value: "", ignoreUpdate: true },
+                        PAYMENT: { value: "", ignoreUpdate: true },
+                      };
+                    }
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
                     const { btnNm, msgObj } = await getBtnName({
                       messageTitle: "confirmation",
@@ -349,6 +349,7 @@ export const TellerScreenMetadata: any = {
                 paddedAcctcode,
                 dependentFieldValues,
                 carousalCardData,
+                NPA_CD: postData?.NPA_CD ?? "",
               });
               formState.previousFieldValue = paddedAcctcode;
               // const sdcValue =

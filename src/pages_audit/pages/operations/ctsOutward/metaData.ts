@@ -216,6 +216,7 @@ export const CTSOutwardClearingFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -837,6 +838,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                       messageTitle: "Confirmation",
                       message: data?.[0]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     if (buttonNames === "Yes") {
                       return {
@@ -1431,8 +1433,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
-          required: true,
-          maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1554,12 +1554,14 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                   messageTitle: "Information",
                   message: postData?.[0]?.ERR_MSG,
                   buttonNames: ["Ok"],
+                  icon: "INFO",
                 });
                 if (buttonName === "Ok") {
                   let continueButtonName = await formState?.MessageBox({
                     messageTitle: "Confirmation",
                     message: "AreYouSureContinue",
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
                   if (continueButtonName === "No") {
                     return {
@@ -1594,6 +1596,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     messageTitle: "Confirmation",
                     message: postData[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;

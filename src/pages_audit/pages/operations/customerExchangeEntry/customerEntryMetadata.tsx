@@ -50,7 +50,7 @@ export const CustomerFormMetadata = {
       },
       name: "REMARKS",
       defaultValue: "Customer Denomination Exchange",
-      label: "Remark",
+      label: "Remarks",
       GridProps: {
         xs: 12,
         sm: 6,
@@ -143,6 +143,7 @@ export const CustomerEntryTableMetdata: CustomTableMetadataType = {
       isCurrency: true,
       isCalculation: true,
       componentType: "amountField",
+      align: "right",
       isReadOnly: true,
     },
   ],

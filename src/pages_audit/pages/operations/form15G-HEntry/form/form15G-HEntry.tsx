@@ -158,6 +158,7 @@ const Form15GHEntry = ({
           message: isErrorFuncRef?.current?.data?.PRINT_MSG,
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (confirmation === "Yes") {
           let newTranCD = data?.[0]?.TRAN_CD.endsWith(".00")
@@ -498,6 +499,7 @@ const Form15GHEntry = ({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
     } else {
       const confirmation = await MessageBox({
@@ -505,6 +507,7 @@ const Form15GHEntry = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (confirmation === "Yes") {
         const deleteData = {
@@ -708,6 +711,7 @@ const Form15GHEntry = ({
                           messageTitle: "InvalidConfirmation",
                           message: "ConfirmRestrictionMessage",
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         const confirmation = await MessageBox({
@@ -715,6 +719,7 @@ const Form15GHEntry = ({
                           messageTitle: "Confirmation",
                           buttonNames: ["Yes", "No"],
                           loadingBtnName: ["Yes"],
+                          icon: "CONFIRM",
                         });
                         if (confirmation === "Yes") {
                           handleSubmit(event, "Confirm");
@@ -733,6 +738,7 @@ const Form15GHEntry = ({
                         message: "RejectFormMessage",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         handleSubmit(event, "Reject");

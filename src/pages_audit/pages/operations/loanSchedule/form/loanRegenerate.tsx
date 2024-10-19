@@ -1,4 +1,4 @@
-import { Alert, AppBar, Dialog } from "@mui/material";
+import { AppBar, CircularProgress, Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { LoanRegenerateFormMetaData } from "./metadata";
@@ -18,6 +18,7 @@ import {
   LoaderPaperComponent,
   utilFunction,
   queryClient,
+  Alert,
 } from "@acuteinfo/common-base";
 
 export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
@@ -137,6 +138,7 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
               messageTitle: "ValidationFailed",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (btnName === "Ok") {
               endSubmit(true);
@@ -153,6 +155,7 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               loadingBtnName: ["Yes"],
+              icon: "CONFIRM",
             });
             if (btnName === "No") {
               endSubmit(true);
@@ -207,14 +210,7 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
         }
       },
       onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        endSubmit(true);
+        endSubmit(false);
       },
     });
   };
@@ -228,13 +224,24 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
         </div>
       ) : (
         <>
-          {isError && (
+          {(isError || regenerateValidation?.isError) && (
             <AppBar position="relative" color="secondary">
               <Alert
-                severity={error?.severity ?? "error"}
+                severity={
+                  (error?.severity || regenerateValidation?.error?.severity) ??
+                  "error"
+                }
                 //@ts-ignore
-                errorMsg={error?.error_msg ?? "Something went to wrong.."}
-                errorDetail={error?.error_detail ?? ""}
+                errorMsg={
+                  (error?.error_msg ||
+                    regenerateValidation?.error?.error_msg) ??
+                  "Something went to wrong.."
+                }
+                errorDetail={
+                  (error?.error_detail ||
+                    regenerateValidation?.error?.error_detail) ??
+                  ""
+                }
                 color="error"
               />
             </AppBar>
@@ -270,6 +277,11 @@ export const LoanRegenerateForm = ({ isDataChangedRef, closeDialog }) => {
                   }}
                   disabled={isSubmitting}
                   color={"primary"}
+                  endIcon={
+                    regenerateValidation?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
                 >
                   {t("Regenerate")}
                 </GradientButton>

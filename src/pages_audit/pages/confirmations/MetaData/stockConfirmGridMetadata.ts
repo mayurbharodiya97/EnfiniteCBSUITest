@@ -65,7 +65,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "AccountName",
+      columnName: "Holder",
       sequence: 4,
       alignment: "left",
       componentType: "default",

@@ -238,7 +238,7 @@ export const temporaryODentryMetadata = {
         _optionsKey: "parametersListDD",
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["PleaseSelectValue"] }],
+          rules: [{ name: "required", params: ["Parametersrequired"] }],
         },
         GridProps: {
           xs: 12,
@@ -289,7 +289,7 @@ export const temporaryODentryMetadata = {
         },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["EffectiveFromDateRequired"] }],
         },
         label: "EffectiveFromDate",
         GridProps: {
@@ -329,7 +329,7 @@ export const temporaryODentryMetadata = {
         },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["EffectiveToDateRequired"] }],
         },
         onFocus: (date) => {
           date.target.select();
@@ -355,7 +355,7 @@ export const temporaryODentryMetadata = {
         required: true,
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+          rules: [{ name: "required", params: ["AmountUpToRequired"] }],
         },
         FormatProps: {
           allowNegative: false,
