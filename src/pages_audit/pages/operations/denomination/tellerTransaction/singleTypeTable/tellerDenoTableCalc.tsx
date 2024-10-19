@@ -8,7 +8,8 @@ import {
 import { usePopupContext } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import * as API from "../api";
+import * as API from "../../api";
+import { format } from "date-fns";
 
 const TellerDenoTableCalc = ({
   displayTable,
@@ -18,11 +19,14 @@ const TellerDenoTableCalc = ({
   onCloseTable,
   gridLable,
   initRemainExcess,
-  screenRef,
-  entityType,
+  // screenRef,
+  // entityType,
   setOpenDenoTable,
   setCount,
+  screenFlag,
+  typeCode,
 }) => {
+  console.log(screenFlag, "YTYY??", typeCode);
   const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(
     SingleTableDataReducer,
@@ -184,7 +188,7 @@ const TellerDenoTableCalc = ({
     // }
 
     if (
-      screenRef === "TRN/039" &&
+      typeCode === "1" &&
       state?.amount[index] < 0 &&
       Math.abs(state?.amount[index]) > data[index]?.AVAIL_VAL
     ) {
@@ -217,7 +221,7 @@ const TellerDenoTableCalc = ({
 
     //condition for if TRN is Payment and values is +(positive) and greater then of TotalAmount
     else if (
-      screenRef === "TRN/040" &&
+      typeCode === "4" &&
       state?.amount[index] > 0 &&
       state?.amount[index] > data[index]?.AVAIL_VAL
     ) {
@@ -315,7 +319,7 @@ const TellerDenoTableCalc = ({
                   messageTitle: "Confirmation",
                   message,
                   buttonNames: ["Yes", "No"],
-                  icon: "",
+                  icon: "CONFIRM",
                 });
                 if (btnNm === "No") {
                   setCount((pre) => pre + 1);
@@ -326,6 +330,7 @@ const TellerDenoTableCalc = ({
                 const { btnNm, msgObj } = await getBtnName({
                   messageTitle: "Alert",
                   message,
+                  icon: "WARNING",
                 });
               }, 0);
             }
@@ -360,17 +365,16 @@ const TellerDenoTableCalc = ({
         const res = await MessageBox({
           messageTitle: "Confirmation",
           message: "All Transactions are Completed. Do you want to proceed?",
-          //@ts-ignore
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
-          icon: "INFO",
+          icon: "CONFIRM",
         });
         if (res === "Yes") {
           const DDT = getRowData();
           const reqData = {
             TRN_DTL:
-              screenRef === "TRN/041"
+              screenFlag === "SINGLEDENO"
                 ? formData?.singleDenoRow?.map((item) => {
                     const parameters = {
                       BRANCH_CD: item?.BRANCH_CD ?? "",
@@ -396,29 +400,25 @@ const TellerDenoTableCalc = ({
                       BRANCH_CD: formData?.BRANCH_CD ?? "",
                       ACCT_TYPE: formData?.ACCT_TYPE ?? "",
                       ACCT_CD: formData?.ACCT_CD ?? "",
-                      TYPE_CD: screenRef === "TRN/039" ? "1" : "4",
+                      TYPE_CD: typeCode ?? "",
                       COMP_CD: authState?.companyID ?? "",
-                      CHEQUE_NO: formData?.CHEQUE_NO ?? "",
+                      CHEQUE_NO: formData?.CHEQUE_NO ?? "", //
                       SDC: formData?.SDC ?? "",
-                      SCROLL1: "",
-                      CHEQUE_DT: formData?.CHEQUE_DT ?? "",
+                      SCROLL1: formData?.SCROLL1 ?? "",
+                      CHEQUE_DT:
+                        formData?.CHEQUE_DT ??
+                        format(new Date(), "dd/MMM/yyyy"),
                       REMARKS: formData?.REMARK ?? "",
                       AMOUNT:
-                        screenRef === "TRN/039"
+                        screenFlag === "CASHREC"
                           ? formData?.RECEIPT
-                          : formData?.PAYMENT,
+                          : formData?.AMOUNT,
+                      TRAN_CD: formData?.TRAN_CD ?? "",
                     },
                   ],
             DENO_DTL: DDT?.map((itemData) => {
               const data = {
-                TYPE_CD:
-                  screenRef === "TRN/041"
-                    ? formData?.FINAL_AMOUNT > 0
-                      ? "1"
-                      : "4"
-                    : screenRef === "TRN/039"
-                    ? "1"
-                    : "4",
+                TYPE_CD: typeCode ?? "",
                 DENO_QTY: itemData?.INPUT_VALUE ?? "",
                 DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
                 DENO_VAL: itemData?.DENO_VAL ?? "",
@@ -426,8 +426,18 @@ const TellerDenoTableCalc = ({
               };
               return data;
             }),
-            SCREEN_REF: screenRef,
-            ENTRY_TYPE: entityType,
+            SCREEN_REF:
+              screenFlag === "CASHREC"
+                ? "TRN/039"
+                : screenFlag === "CASHPAY"
+                ? "TRN/040"
+                : "TRN/041",
+            ENTRY_TYPE:
+              screenFlag === "CASHREC"
+                ? "SINGLEREC"
+                : screenFlag === "CASHPAY"
+                ? "SINGLEPAY"
+                : "MULTIRECPAY",
           };
           saveDenominationData?.mutate(reqData);
         } else if (res === "No") {

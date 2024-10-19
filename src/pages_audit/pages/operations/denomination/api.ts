@@ -299,3 +299,57 @@ export const getChqDateValidation = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+interface reqObjTypes {
+  reqData: any;
+  controllerFinal?: any;
+}
+
+export const getTabsByParentType = async (reqObj: reqObjTypes) => {
+  const { reqData, controllerFinal } = reqObj;
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(
+      "GETDLYTRNTABFIELDDISP",
+      {
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        BRANCH_CD: reqData?.BRANCH_CD,
+      },
+      {},
+      null,
+      controllerFinal
+    );
+
+  if (status === "0") {
+    data?.map((a, i) => {
+      a.index1 = i;
+    });
+
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getCarousalCards = async (reqObj: reqObjTypes) => {
+  const { reqData, controllerFinal } = reqObj;
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(
+      "DAILYTRNCARDDTL",
+      {
+        PARENT_TYPE: reqData?.PARENT_TYPE,
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        ACCT_CD: reqData?.ACCT_CD,
+        BRANCH_CD: reqData?.BRANCH_CD,
+      },
+      {},
+      null,
+      controllerFinal
+    );
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

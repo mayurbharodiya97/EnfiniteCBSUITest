@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import DualPartTable from "./dualPartTable";
 import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "@acuteinfo/common-base";
+import { useMutation } from "react-query";
+import * as API from "../../api";
 
 const DualTableCalc = ({
   data,
@@ -13,6 +16,8 @@ const DualTableCalc = ({
   initRemainExcess,
   screenRef,
   entityType,
+  setOpenDenoTable,
+  setCount,
 }) => {
   const columnDefinitions = [
     {
@@ -61,6 +66,7 @@ const DualTableCalc = ({
   // const remainExcess: any = useRef({});
   const fixedDataTotal: any = useRef({});
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const inputRestrictions = {
     min: 0,
@@ -135,12 +141,12 @@ const DualTableCalc = ({
   const performCalculation = (newTotalAmounts, currentErrors) => {
     if (currentErrors.length === 0) {
       let calcRemainExcess;
-      if (formData?.TRN === "1") {
+      if (screenRef === "TRN/039") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) -
           parseInt(newTotalAmounts["amount"]) +
           parseInt(newTotalAmounts["amount2"]);
-      } else if (formData?.TRN === "4") {
+      } else if (screenRef === "TRN/040") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) +
           parseInt(newTotalAmounts["amount"]) -
@@ -151,36 +157,121 @@ const DualTableCalc = ({
     setTotalAmounts(newTotalAmounts);
   };
 
-  // useEffect(() => {
-  //   console.log(remainExcess, "remainExcesskasnfckasfnvkasncfkasvnc");
-  // }, [remainExcess]);
-
-  //for open confirmation after match remain/eccess 0
+  const saveDenominationData = useMutation(API.saveDenoData, {
+    onSuccess: async (data: any, variables: any) => {
+      CloseMessageBox();
+      setOpenDenoTable(false);
+      if (data?.length > 0) {
+        if (data?.[0]?.hasOwnProperty("O_STATUS")) {
+          const getBtnName = async (msgObj) => {
+            let btnNm = await MessageBox(msgObj);
+            return { btnNm, msgObj };
+          };
+          for (let i = 0; i < data?.length; i++) {
+            const status: any = data?.[i]?.O_STATUS;
+            const message = data?.[i]?.O_MESSAGE;
+            if (status === "999") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "ValidationFailed",
+                  message,
+                  icon: "ERROR",
+                });
+                if (btnNm === "Ok") {
+                  setCount((pre) => pre + 1);
+                }
+              }, 0);
+            } else if (status === "99") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "Confirmation",
+                  message,
+                  buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
+                });
+                if (btnNm === "No") {
+                  setCount((pre) => pre + 1);
+                }
+              }, 0);
+            } else if (status === "9") {
+              setTimeout(async () => {
+                const { btnNm, msgObj } = await getBtnName({
+                  messageTitle: "Alert",
+                  message,
+                  icon: "WARNING",
+                });
+              }, 0);
+            }
+          }
+        } else {
+          setTimeout(async () => {
+            const res = await MessageBox({
+              messageTitle: "Generated Voucher No./ Reference No.",
+              message: `${data?.[0]?.TRAN_CD} / ${data?.[0]?.REFERENCE_NO}`,
+              defFocusBtnName: "Ok",
+              icon: "INFO",
+            });
+            if (res === "Ok") {
+              setCount((pre) => pre + 1);
+            }
+          }, 0);
+        }
+      }
+    },
+    onError: (error: any, variables: any) => {
+      CloseMessageBox();
+    },
+  });
 
   const getRowData = () => {
     const getRowsViseData = data
       ?.map((apiRow, index) => {
         if (Object?.hasOwn(inputValues, index)) {
-          const { TRN } = formData;
           const newRowsReceipt = {
             ...apiRow,
             DENO_QTY:
-              TRN === "4"
+              screenRef === "TRN/041"
+                ? formData?.FINAL_AMOUNT > 0
+                  ? inputValues[index]?.receipt
+                  : "-" + inputValues[index]?.receipt
+                : screenRef === "TRN/040"
                 ? "-" + inputValues[index]?.receipt
-                : TRN === "1"
+                : screenRef === "TRN/039"
                 ? inputValues[index]?.receipt
                 : "",
-            AMOUNT: inputValues[index]?.amount?.toString(),
+            AMOUNT:
+              screenRef === "TRN/041"
+                ? formData?.FINAL_AMOUNT > 0
+                  ? inputValues[index]?.amount?.toString()
+                  : "-" + inputValues[index]?.amount?.toString()
+                : screenRef === "TRN/040"
+                ? "-" + inputValues[index]?.amount?.toString()
+                : screenRef === "TRN/039"
+                ? inputValues[index]?.amount?.toString()
+                : "",
           };
           const newRowsPayment = {
             ...apiRow,
             DENO_QTY:
-              TRN === "1"
+              screenRef === "TRN/041"
+                ? formData?.FINAL_AMOUNT > 0
+                  ? "-" + inputValues[index]?.payment
+                  : inputValues[index]?.payment
+                : screenRef === "TRN/039"
                 ? "-" + inputValues[index]?.payment
-                : TRN === "4"
+                : screenRef === "TRN/040"
                 ? inputValues[index]?.payment
                 : "",
-            AMOUNT: inputValues[index]?.amount2?.toString(),
+            AMOUNT:
+              screenRef === "TRN/041"
+                ? formData?.FINAL_AMOUNT > 0
+                  ? "-" + inputValues[index]?.amount2?.toString()
+                  : inputValues[index]?.amount2?.toString()
+                : screenRef === "TRN/039"
+                ? "-" + inputValues[index]?.amount2?.toString()
+                : screenRef === "TRN/040"
+                ? inputValues[index]?.amount2?.toString()
+                : "",
           };
 
           const resMinusPay = {
@@ -212,22 +303,99 @@ const DualTableCalc = ({
   const openConfirmation = async () => {
     if (remainExcess === 0 && displayTableDual) {
       setConfirmation(true);
-      //   const res = await MessageBox({
-      //     messageTitle: "Confirmation",
-      //     message: "All Transactions are Completed. Do you want to proceed?",
-      //     buttonNames: ["Yes", "No"],
-      //     defFocusBtnName: "No",
-      //     icon: "INFO",
-      //   });
-      //   if (res === "Yes") {
-      //     console.log("Form Submitted");
-      //     const DDT = getRowData();
-      //     console.log(DDT, "DDtjanbdvjbnjsdbnvjksvdb");
-      //   } else if (res === "No") {
-      //     CloseMessageBox();
-      //   }
-      // } else {
+      // const res = await MessageBox({
+      //   messageTitle: "Confirmation",
+      //   message: "All Transactions are Completed. Do you want to proceed?",
+      //   buttonNames: ["Yes", "No"],
+      //   defFocusBtnName: "No",
+      //   icon: "CONFIRM",
+      // });
+      // if (res === "Yes") {
+      //   console.log("Form Submitted");
+      //   const DDT = getRowData();
+      //   console.log(DDT, "DDtjanbdvjbnjsdbnvjksvdb");
+      // } else if (res === "No") {
       //   CloseMessageBox();
+      // }
+
+      const response = await MessageBox({
+        messageTitle: "Confirmation",
+        message: "All Transactions are Completed. Do you want to proceed?",
+        //@ts-ignore
+        buttonNames: ["Yes", "No"],
+        defFocusBtnName: "Yes",
+        loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
+      });
+      if (response === "Yes") {
+        const DDT = getRowData();
+        const reqData = {
+          TRN_DTL:
+            screenRef === "TRN/041"
+              ? formData?.singleDenoRow?.map((item) => {
+                  const parameters = {
+                    BRANCH_CD: item?.BRANCH_CD ?? "",
+                    ACCT_TYPE: item?.ACCT_TYPE ?? "",
+                    ACCT_CD: item?.ACCT_CD ?? "",
+                    TYPE_CD: item?.TRX ?? "",
+                    COMP_CD: authState?.companyID ?? "",
+                    CHEQUE_NO: item?.CHQNO ?? "",
+                    SDC: item?.SDC ?? "",
+                    SCROLL1: Boolean(item?.SCROLL)
+                      ? item?.SCROLL
+                      : item?.TOKEN ?? "",
+                    CHEQUE_DT: item?.CHQ_DT ?? "",
+                    REMARKS: item?.REMARK ?? "",
+                    AMOUNT: Boolean(item?.RECEIPT)
+                      ? item?.RECEIPT
+                      : item?.PAYMENT ?? "",
+                  };
+                  return parameters;
+                })
+              : [
+                  {
+                    BRANCH_CD: formData?.BRANCH_CD ?? "",
+                    ACCT_TYPE: formData?.ACCT_TYPE ?? "",
+                    ACCT_CD: formData?.ACCT_CD ?? "",
+                    TYPE_CD: screenRef === "TRN/039" ? "1" : "4",
+                    COMP_CD: authState?.companyID ?? "",
+                    CHEQUE_NO: formData?.CHEQUE_NO ?? "",
+                    SDC: formData?.SDC ?? "",
+                    SCROLL1: "",
+                    CHEQUE_DT: formData?.CHEQUE_DT ?? "",
+                    REMARKS: formData?.REMARK ?? "",
+                    AMOUNT:
+                      screenRef === "TRN/039"
+                        ? formData?.RECEIPT
+                        : formData?.PAYMENT,
+                  },
+                ],
+          DENO_DTL: DDT?.map((itemData) => {
+            const data = {
+              TYPE_CD:
+                screenRef === "TRN/041"
+                  ? formData?.FINAL_AMOUNT > 0
+                    ? "1"
+                    : "4"
+                  : screenRef === "TRN/039"
+                  ? "1"
+                  : "4",
+              DENO_QTY: itemData?.DENO_QTY ?? "",
+              DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
+              DENO_VAL: itemData?.DENO_VAL ?? "",
+              AMOUNT: itemData?.AMOUNT ?? "",
+            };
+            return data;
+          }),
+          SCREEN_REF: screenRef,
+          ENTRY_TYPE: entityType,
+        };
+        saveDenominationData?.mutate(reqData);
+      } else if (response === "No") {
+        CloseMessageBox();
+      }
+    } else {
+      CloseMessageBox();
     }
   };
 
@@ -240,7 +408,6 @@ const DualTableCalc = ({
 
   const handleChange = (e, index, fieldName) => {
     const { value } = e.target;
-    const { TRN } = formData;
     setInputValues((prevInputValues) => {
       const updatedValues = {
         ...prevInputValues,
@@ -292,28 +459,9 @@ const DualTableCalc = ({
     setTotalAmounts({});
     setErrors([]);
   }, [onCloseTable]);
-  // useEffect(() => {
-  //   // console.log(remainExcess, "remianExcesssdsereefef");
-  // }, [remainExcess]);
 
   const closeConfirmation = () => {
     setConfirmation(false);
-    // Reset remainExcess state here
-    // setRemainExcess(finalReceiptPayment);
-  };
-
-  const datasa = {
-    BRANCH_CD: formData?.BRANCH_CD ?? "",
-    ACCT_TYPE: formData?.ACCT_TYPE ?? "",
-    ACCT_CD: formData?.ACCT_CD ?? "",
-    TYPE_CD: formData?.TRN === "1" ? "1" : formData?.TRN === "4" ? "4" : "",
-    COMP_CD: authState?.companyID,
-    CHEQUE_NO: formData?.CHEQUE_NO ? formData?.CHEQUE_NO : "",
-    SDC: formData?.SDC?.trim() ?? "",
-    SCROLL1: "",
-    CHEQUE_DT: formData?.CHEQUE_DT ? formData?.CHEQUE_DT : "",
-    REMARKS: formData?.REMARK ?? "",
-    AMOUNT: formData?.RECEIPT ? formData?.RECEIPT : formData?.PAYMENT ?? "",
   };
 
   return (

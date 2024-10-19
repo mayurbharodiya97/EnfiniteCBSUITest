@@ -7,16 +7,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { TellerScreenMetadata } from "./metadataTeller";
+import { TellerScreenMetadata } from "./metaData";
 import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
-import * as API from "./api";
+import * as API from "../../api";
 import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
-import { cashReportMetaData } from "./metadataTeller";
+import { cashReportMetaData } from "./metaData";
 import { format, parse } from "date-fns";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
-import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
+import * as CommonApi from "../../api";
 // import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
 // import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
 // import {
@@ -43,9 +43,9 @@ import {
   SingleTableActionTypes,
   SingleTableDataReducer,
   SingleTableInititalState,
-} from "./singleTypeTable/denoTableActionTypes";
-import TellerDenoTableCalc from "./singleTypeTable/tellerDenoTableCalc";
-import DualTableCalc from "./dualTypeTable/dualTableCalc";
+} from "../singleTypeTable/denoTableActionTypes";
+import TellerDenoTableCalc from "../singleTypeTable/tellerDenoTableCalc";
+import DualTableCalc from "../dualTypeTable/dualTableCalc";
 
 const TellerScreen = ({ screenFlag }) => {
   const formRef: any = useRef(null);
@@ -79,10 +79,7 @@ const TellerScreen = ({ screenFlag }) => {
     fetchData: fetchTabsData,
     isError: isTabsError,
     isLoading: isTabsLoading,
-  } = useCacheWithMutation(
-    "getTabsByParentTypeKeyTrn001",
-    CommonApi.getTabsByParentType
-  );
+  } = useCacheWithMutation("cashReceiptEntry", CommonApi.getTabsByParentType);
 
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
@@ -93,7 +90,7 @@ const TellerScreen = ({ screenFlag }) => {
           details?.COL_LABEL === "Name" ||
           details?.COL_LABEL === "A/c Number"
         ) {
-          result[details.COL_LABEL] = details.COL_VALUE ?? "";
+          result[details?.COL_LABEL] = details?.COL_VALUE ?? "";
         }
         return result;
       }, {});
@@ -656,6 +653,13 @@ const TellerScreen = ({ screenFlag }) => {
     });
   };
 
+  const setOpenDualTable = (value) => {
+    dispatch({
+      type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+      payload: value,
+    });
+  };
+
   return (
     <>
       <DailyTransTabs
@@ -887,8 +891,10 @@ const TellerScreen = ({ screenFlag }) => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Payment Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
-          screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
-          entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
+          // screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
+          // entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
+          screenFlag={screenFlag}
+          typeCode={"1"}
           setCount={() => {}}
         />
       ) : null}
@@ -916,6 +922,8 @@ const TellerScreen = ({ screenFlag }) => {
           }
           screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
           entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
+          setOpenDenoTable={setOpenDualTable}
+          setCount={() => {}}
         />
       ) : null}
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}

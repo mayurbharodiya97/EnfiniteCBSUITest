@@ -1,9 +1,9 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { denoTableMetadataTotal } from "../tellerTransaction/metadataTeller";
+import { denoTableMetadataTotal } from "./metadata";
 import { AuthContext } from "pages_audit/auth";
 import DailyTransTabs from "../../DailyTransaction/TRNHeaderTabs";
 import { useCacheWithMutation } from "../../DailyTransaction/TRNHeaderTabs/cacheMutate";
-import * as CommonApi from "./api";
+import * as CommonApi from "../api";
 import { LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
@@ -21,7 +21,7 @@ import {
 } from "@acuteinfo/common-base";
 import ReleaseMainGrid from "./release/releaseMainGrid";
 
-export const SingleDeno = () => {
+export const SingleDeno = ({ screenFlag }) => {
   const myFormRef = useRef<any>(null);
   const prevCardReq = useRef<any>(null);
   const endSubmitRef = useRef<any>(null);
@@ -123,11 +123,6 @@ export const SingleDeno = () => {
           Boolean(Number(data?.FINAL_AMOUNT) > 0)) ||
         (Boolean(data?.FINAL_AMOUNT) && Boolean(Number(data?.FINAL_AMOUNT) < 0))
       ) {
-        if (data?.FINAL_AMOUNT > 0) {
-          data.TRN = "1";
-        } else if (data?.FINAL_AMOUNT < 0) {
-          data.TRN = "4";
-        }
         setFormData(data);
         const formattedDate = format(
           parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
@@ -375,6 +370,8 @@ export const SingleDeno = () => {
           onCloseTable={() => setOpenDenoTable(false)}
           screenRef={"TRN/041"}
           entityType={"MULTIRECPAY"}
+          setCount={() => {}}
+          setOpenDenoTable={() => {}}
         />
       )}
       {openDenoTable && denoTableType === "single" && (
@@ -396,9 +393,11 @@ export const SingleDeno = () => {
           }
           isLoading={getData?.isLoading}
           onCloseTable={() => setOpenDenoTable(false)}
-          screenRef={"TRN/041"}
-          entityType={"MULTIRECPAY"}
+          // screenRef={"TRN/041"}
+          // entityType={"MULTIRECPAY"}
+          screenFlag={screenFlag}
           setCount={setCount}
+          typeCode={formData?.FINAL_AMOUNT > 0 ? "1" : "4"}
         />
       )}
     </>

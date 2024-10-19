@@ -79,6 +79,7 @@ const ReleaseSubGrid = ({ handleRlsSubClose, refetchMainGrid }) => {
               messageTitle: "Confirmation",
               message,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
 
             if (btnNm === "No") {
@@ -128,12 +129,12 @@ const ReleaseSubGrid = ({ handleRlsSubClose, refetchMainGrid }) => {
         const gridData = releaseSubRef?.current?.cleanData?.();
         if (gridData?.some((record) => record?.DELETE_FLAG === "Y")) {
           const msgBoxRes = await MessageBox({
-            messageTitle: "Alert",
+            messageTitle: "Confirmation",
             message: `Are you sure to release Reference No.${
               gridData?.[0]?.MCT_TRAN_CD ?? ""
             }?`,
             defFocusBtnName: "Yes",
-            icon: "INFO",
+            icon: "CONFIRM",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });

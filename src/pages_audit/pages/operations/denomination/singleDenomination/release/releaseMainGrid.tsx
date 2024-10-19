@@ -31,7 +31,6 @@ const actions: ActionTypes[] = [
 ];
 
 const ReleaseMainGrid = ({ setOpenGrid }) => {
-  const [releaseData, setReleaseData] = useState<any>([]);
   const navigate = useNavigate();
   const { authState } = useContext(AuthContext);
   const reqObject = {
@@ -48,12 +47,6 @@ const ReleaseMainGrid = ({ setOpenGrid }) => {
   } = useQuery<any, any>(["releaseMainData", { ...reqObject }], () =>
     API?.getReleaseGridData({ ...reqObject })
   );
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      setReleaseData(data);
-    }
-  }, [data]);
 
   const setCurrentAction = useCallback(
     (data) => {
@@ -92,7 +85,7 @@ const ReleaseMainGrid = ({ setOpenGrid }) => {
         <GridWrapper
           key={`releaseGridMetaData`}
           finalMetaData={releaseGridMetaData as GridMetaDataType}
-          data={releaseData ?? []}
+          data={data ?? []}
           loading={isLoading || isFetching}
           setData={() => {}}
           actions={actions}
