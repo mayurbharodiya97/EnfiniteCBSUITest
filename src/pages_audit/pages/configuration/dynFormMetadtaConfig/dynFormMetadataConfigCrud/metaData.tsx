@@ -1198,7 +1198,6 @@ export const PropsComponentFormMetaData: any = {
           dependentFields: ["PROPS_ID"],
           options: "getDependentFieldList",
           _optionsKey: "getDependentFieldList",
-          requestProps: "DOC_CD",
           disableCaching: true,
         },
         {
@@ -1259,7 +1258,6 @@ export const PropsComponentFormMetaData: any = {
           dependentFields: ["PROPS_ID"],
           options: "getDependentFieldList",
           _optionsKey: "getDependentFieldList",
-          requestProps: "DOC_CD",
           disableCaching: true,
         },
         {
