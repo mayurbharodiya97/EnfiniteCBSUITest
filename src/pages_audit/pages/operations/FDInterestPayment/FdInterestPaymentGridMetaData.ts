@@ -512,9 +512,9 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
     },
     {
       accessor: "INT_RATE",

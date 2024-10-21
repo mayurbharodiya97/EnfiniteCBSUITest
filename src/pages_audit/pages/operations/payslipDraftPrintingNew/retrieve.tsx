@@ -7,7 +7,7 @@ import { AuthContext } from "pages_audit/auth";
 import { RetrieveGridMetadata } from "./retrieveGridMetadata";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import PlaySlipDraftPrintingNew from "./ddPrinting/playslipDraftPrinting";
+import PlaySlipDraftPrintingNew from "./ddPrinting/payslipDraftPrinting";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import {
   usePopupContext,
@@ -44,6 +44,7 @@ const PlaySlipRetrieve = () => {
   const [dilogueOpen, setDilogueOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
   const { MessageBox } = usePopupContext();
+  const [printingData, setPrintingData] = useState([]);
   const updateFnWrapper =
     (update) =>
     async ({ data }) => {
@@ -68,7 +69,6 @@ const PlaySlipRetrieve = () => {
       }),
     {
       onSuccess: (data) => {
-        // Update the ref when data is successfully fetched
         paraRef.current = data;
       },
     }
@@ -93,7 +93,7 @@ const PlaySlipRetrieve = () => {
           setGridData(filteredData);
         }
       },
-      onError: (error: any, { endSubmit }) => {
+      onError: (error: any, { endSubmit }: any) => {
         let errorMsg = t("UnknownErrorOccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
@@ -102,13 +102,59 @@ const PlaySlipRetrieve = () => {
       },
     }
   );
+  const printingDTL = useMutation(
+    "getPayslipPrintConfigDTL",
+    API.getPayslipPrintConfigDTL,
+    {
+      onSuccess: (data: any) => {
+        console.log("data", data);
+        setPrintingData(data);
+      },
+      onError: (error: any, { endSubmit }: any) => {
+        endSubmit(
+          false,
+          error?.error_msg ?? t("UnknownErrorOccured"),
+          error?.error_detail ?? ""
+        );
+      },
+    }
+  );
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       if (data.name === "print") {
         setComponentToShow("ViewDetail");
         setDilogueOpen(true);
         setSelectedRowsData(data?.rows);
         // rowsDataRef.current = data?.rows?.[0]?.data;
+        const FormRefData = await formRef?.current?.getFieldData();
+        console.log("FormRefData", FormRefData);
+        console.log("data.rows", data.rows);
+        // const MapSelectedRecord = data.rows.map((row) => {
+        //   return {
+        //     // A_ENT_COMP_CD: row?.data?.COMP_CD,
+        //     // format(new Date(FormRefData?.FROM), "dd/MMM/yyyy"),
+        //     // A_ENT_BRANCH_CD: row?.data.BRANCH_CD,
+        //     // A_COMM_TYPE_CD: row?.data.COMM_TYPE_CD,
+        //     // A_PRINT_DTL_CLOB: row?.data.ACCT_CD,
+        //     TRAN_DT: format(new Date(row?.data?.TRAN_DT))
+        //   };
+        // });
+        const MapSelectedRecord = data.rows.map((row) => {
+          const transactionDate = row?.data?.TRAN_DT;
+          return {
+            TRAN_DT: transactionDate
+              ? format(new Date(transactionDate), "dd/MMM/yyyy")
+              : null,
+            TRAN_CD: row?.data?.TRAN_CD,
+            SR_CD: row?.data?.SR_CD,
+          };
+        });
+        printingDTL.mutate({
+          A_ENT_COMP_CD: authState?.companyID ?? "",
+          A_ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+          A_COMM_TYPE_CD: "2024",
+          A_PRINT_DTL_CLOB: [...MapSelectedRecord],
+        });
       } else if (data.name === "view-all") {
       } else {
         navigate(data?.name, {
@@ -171,9 +217,10 @@ const PlaySlipRetrieve = () => {
       />
       {componentToShow === "ViewDetail" && Boolean(dilogueOpen) ? (
         <PlaySlipDraftPrintingNew
-          SelectedRowData={selectedRowsData}
+          // SelectedRowData={selectedRowsData}
           handleClose={handleClose}
-          navigate={navigate}
+          // navigate={navigate}
+          PrintingData={printingData}
         />
       ) : null}
     </>

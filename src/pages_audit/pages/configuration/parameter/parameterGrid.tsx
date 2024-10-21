@@ -5,6 +5,7 @@ import {
   GridMetaDataType,
   ActionTypes,
   GridWrapper,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import {
   Fragment,
@@ -16,7 +17,7 @@ import {
 } from "react";
 import * as API from "./api";
 import { ParametersGridMetaData } from "./gridMetadata";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EditDetail from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "@acuteinfo/common-base";
@@ -45,6 +46,7 @@ const actions: ActionTypes[] = [
 
 const Parameters = () => {
   const navigate = useNavigate();
+  let currentPath = useLocation().pathname;
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
@@ -105,8 +107,18 @@ const Parameters = () => {
   };
   ParametersGridMetaData.gridConfig.gridLabel =
     paraType === "H"
-      ? "Parameter Master [HO Level]"
-      : "Parameter Master [Global Level]";
+      ? // ? "Parameter Master [HO Level]"
+        // : "Parameter Master [Global Level]";
+        `${utilFunction.getDynamicLabel(
+          currentPath,
+          authState?.menulistdata,
+          true
+        )} [HO Level]`
+      : `${utilFunction.getDynamicLabel(
+          currentPath,
+          authState?.menulistdata,
+          true
+        )} [Global Level]`;
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];
@@ -151,17 +163,6 @@ const Parameters = () => {
           onClose={() => setOpenDilogue(false)}
         />
       ) : null}
-      <Typography
-        sx={{
-          fontWeight: "bold",
-          color: "rgb(152 59 70 / 61%)",
-          marginLeft: "900px",
-          marginTop: "-36.2px",
-        }}
-        variant="subtitle1"
-      >
-        Parameters In Red Colour Indicates Pending For Confirmation
-      </Typography>
       {componentToShow === "editDetail" ? (
         <EditDetail
           rowsData={rowsData}

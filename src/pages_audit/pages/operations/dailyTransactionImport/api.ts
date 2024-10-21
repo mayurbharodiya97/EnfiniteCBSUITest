@@ -29,6 +29,7 @@ export const getDailyTransactionImportData = async (apiReq) => {
     // return data;
     let responseData = data;
     responseData.map((item, i) => {
+      item.index = i;
       item.DEBIT_AC = [
         item.FROM_BRANCH_CD,
         item.FROM_ACCT_TYPE,
@@ -91,5 +92,23 @@ export const dailyTranimportFileData = async ({ ...reqData }) => {
     }
   } catch (error) {
     throw error;
+  }
+};
+export const getDailyTranStatus = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETERRSTATUSDDDW", {});
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DATA_VAL, DISP_VAL }) => {
+        return {
+          value: DATA_VAL,
+          label: DISP_VAL,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };
