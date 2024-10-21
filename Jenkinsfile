@@ -61,9 +61,9 @@ pipeline {
             }
         }
 
-        stage('Extract and Increment Image Tag') {
+        tage('Extract Version') {
             steps {
-                extractAndIncrementImageTag()
+                versionExtarct()
             }
         }
 
@@ -72,14 +72,16 @@ pipeline {
                 buildAndPushDockerImage(env.IMAGE_NAME, env.NEW_TAG)
             }
         }
+        
         stage('Update Manifest and K8s Deployment') {
             steps {
                 updateManifestDeploy(env.FILENAME, env.NEW_TAG, env.IMAGE_NAME)
             }
         }
+
         stage('Push Deployment File to Git') {
             steps {
-                pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL, )
+                pushDeploymentFileToGit(env.FILENAME, env.NEW_TAG, env.BRANCH, env.GIT_CREDENTIALS, env.GIT_REPO_URL,)
             }
         }
         stage('Trivy Image Scan') {
