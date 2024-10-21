@@ -642,7 +642,6 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       isDisplayTotal: true,
       footerLabel: "Total Debit",
       setFooterValue(total, rows) {
-        // Filter rows where TYPE_CD is 1, 2, or 3
         const filteredRows = rows?.filter(({ original }) =>
           [4, 5, 6].includes(Number(original.TYPE_CD))
         );
