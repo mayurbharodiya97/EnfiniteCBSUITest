@@ -281,11 +281,7 @@ export const PositivePayEntryFormMetadata = {
       type: "text",
       maxLength: 10,
       autoComplete: "off",
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value.length > 10) {
