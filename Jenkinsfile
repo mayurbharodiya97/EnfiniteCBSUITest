@@ -61,7 +61,7 @@ pipeline {
             }
         }
 
-        tage('Extract Version') {
+        stage('Extract Version') {
             steps {
                 versionExtarct()
             }
