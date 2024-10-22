@@ -57,7 +57,6 @@ export const metaData = {
         rules: [{ name: "required", params: ["CodeisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
-      __EDIT__: { isReadOnly: true },
       preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
@@ -89,7 +88,7 @@ export const metaData = {
       name: "PERIOD_NM",
       label: "PeriodName",
       placeholder: "PeriodName",
-      maxLength: 40,
+      maxLength: 100,
       type: "text",
       required: true,
       schemaValidation: {
@@ -104,6 +103,7 @@ export const metaData = {
       },
       className: "textInputFromLeft",
       name: "INST_NO",
+      maxLength: 5,
       label: "InstNo",
       placeholder: "InstNo",
       FormatProps: {
@@ -120,6 +120,7 @@ export const metaData = {
           return true;
         },
       },
+      required: true,
       GridProps: { xs: 12, sm: 12, md: 12, lg: 6, xl: 6 },
       schemaValidation: {
         type: "string",
