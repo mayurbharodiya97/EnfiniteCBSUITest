@@ -1,18 +1,26 @@
-// import { Dialog } from "@material-ui/core";
+import { ReportGrid } from "@acuteinfo/common-base";
+import Dialog from "@mui/material/Dialog";
 import * as API from "../../api";
 import { fundTrfSubDetailsMetaData } from "./metadata/fundTrfSubDetails";
 import { merchantRevSubDetailsMetaData } from "./metadata/merchantRevSubDetail";
-import {
-  schduleDetailMetaData,
-  schedulePaymentDetailMetaData,
-} from "./metadata/scheduledetail";
-import { useState } from "react";
-import { format } from "date-fns";
-// import { constructInitialValue } from "components/dynamicForm/utils/constructINITValues";
+import { schduleDetailMetaData } from "./metadata/scheduledetail";
+import { useMemo, useState } from "react";
 import { ScheduleDetailReports } from "./scheduledetailAPIResponse/scheduleDtlAPIResponse";
 import { virtualSubDetailsMetaData } from "./metadata/virtualSubDetails";
-import { Dialog } from "@mui/material";
-import { ReportGrid } from "@acuteinfo/common-base";
+import { utilityBillPayAPIResMetaData } from "./metadata/utilityBillPayAPIResponse";
+import { applyForFixedDepositeMetaData } from "./metadata/applyForFixedDeposite";
+import { cardPaayDetailMetaData } from "./metadata/cardPaymentDetail";
+import { InsurancePrimiDetailMetaData } from "./metadata/insurancePremimumPaymentDetail";
+import { format } from "date-fns";
+import { mobEmailUpdLogDetailsMetaData } from "./metadata/mobEmailUpdLogDetails";
+import { useTranslation } from "react-i18next";
+function isValidDate(dateString) {
+  if (/^\d+$/.test(dateString)) {
+    return false;
+  }
+  const date: any = new Date(dateString);
+  return !isNaN(date) && dateString.trim() !== "";
+}
 
 export const StaticAdminUserDetailsReports = ({
   screenFlag,
@@ -23,8 +31,62 @@ export const StaticAdminUserDetailsReports = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState<any>({});
   const [isOpenSchedule, setIsOpenSchedule] = useState<any>(false);
+  const { t } = useTranslation();
+  let selectedKeys;
 
-  const [buttonName, setButtonName] = useState<any>({});
+  if (buttonNames === "SCHEDULE_RESPONSE")
+    selectedKeys = [
+      "CUSTOM_USER_NM",
+      "TRAN_DT",
+      "LAST_PROCESS_DT",
+      "TRN_TYPE",
+      "STATUS",
+      "TRN_STATUS",
+      "PAYMENT_FREQUENCY",
+      "PAYMENT_TYPE",
+      "NO_OF_PAYMENT",
+    ];
+  else if (buttonNames === "API_RESPONSE")
+    selectedKeys = [
+      "USER_NAME",
+      "TRN_TYPE",
+      "TRAN_TYPE",
+      "FROM_ACCT_NO",
+      "TO_ACCT_NO",
+      "TRN_STATUS",
+      "STATUS",
+    ];
+
+  const columnLabel = useMemo(() => {
+    return rows._metaData.reduce((accu, item) => {
+      return { ...accu, [item?.accessor]: item?.columnName };
+    }, {});
+  }, []);
+
+  const defaultFilter = useMemo(() => {
+    return Object.entries(rows)
+      .filter(([key]) => selectedKeys.includes(key))
+      .map(([key, value]) => {
+        return {
+          id: key,
+          value: {
+            columnName: columnLabel[key] ?? key,
+            value: isValidDate(value)
+              ? format(new Date(String(value)), "dd/MM/yyyy HH:mm:ss")
+              : value,
+          },
+        };
+      });
+  }, [rows, columnLabel, selectedKeys]);
+
+  defaultFilter.sort((a, b) => {
+    const indexA = selectedKeys.indexOf(a.id);
+    const indexB = selectedKeys.indexOf(b.id);
+
+    return indexA - indexB;
+  });
+
+  // const [buttonName, setButtonName] = useState<any>({});
   let metaData;
   let reportID;
   let otherAPIRequestPara;
@@ -35,7 +97,7 @@ export const StaticAdminUserDetailsReports = ({
       metaData = fundTrfSubDetailsMetaData;
       reportID = "FUNDTRANSFERDTL";
       otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
-    } else if (screenFlag === "MERCHANTREVERSETRN") {
+    } else if (screenFlag === "PAYGATEWAY") {
       metaData = merchantRevSubDetailsMetaData;
       reportID = "MERCHANTPAYMENTDTL";
       otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
@@ -43,8 +105,29 @@ export const StaticAdminUserDetailsReports = ({
       metaData = virtualSubDetailsMetaData;
       reportID = "VIRTUALCARDREQDTLRPT";
       otherAPIRequestPara = { TRAN_CD: rows?.TRAN_CD };
+    } else if (screenFlag === "UTILITYBILLRPT") {
+      metaData = utilityBillPayAPIResMetaData;
+      reportID = "UTILITYBILLDTL";
+      otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
+    } else if (screenFlag === "FDDEPOSITEREQ") {
+      metaData = applyForFixedDepositeMetaData;
+      reportID = "FDDEPOSITEDTL";
+      otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
+    } else if (screenFlag === "CARDPAYTRN") {
+      metaData = cardPaayDetailMetaData;
+      reportID = "CARDPAYDETAIL";
+      otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
+    } else if (screenFlag === "INSURANCEPAYTRNRPT") {
+      metaData = InsurancePrimiDetailMetaData;
+      reportID = "INSURANCEPAYDTLRPT";
+      otherAPIRequestPara = { A_TRAN_CD: rows?.TRAN_CD };
+    } else if (screenFlag === "GETSMSEMAILUPDFRMCITYTOUCHRPT") {
+      metaData = mobEmailUpdLogDetailsMetaData;
+      reportID = "GETSMSEMAILUPDFRMCITYDTLRPT";
+      apiURL = "commonServiceAPI/GETDYNAMICDATA/";
+      otherAPIRequestPara = { TRAN_CD: rows?.TRAN_CD };
     }
-  } else if (buttonNames === "DETAIL_RESPONSE") {
+  } else if (buttonNames === "SCHEDULE_RESPONSE") {
     if (screenFlag === "GETSCHDPAYRPT") {
       metaData = schduleDetailMetaData;
       reportID = "GETSCHDPAYDTLRPT";
@@ -56,6 +139,7 @@ export const StaticAdminUserDetailsReports = ({
   } else {
     return <></>;
   }
+
   return (
     <>
       <Dialog fullWidth={false} maxWidth={"md"} open={open}>
@@ -67,18 +151,24 @@ export const StaticAdminUserDetailsReports = ({
             reportName={reportID}
             dataFetcher={API.getReportData}
             metaData={metaData}
-            maxHeight={window.innerHeight - 250}
-            title={metaData?.title ?? ""}
+            // disableFilters
+            maxHeight={window.innerHeight - 280}
+            title={t(metaData?.title ?? "")}
+            defaultFilter={[...(rows?.__queryFilters ?? []), ...defaultFilter]}
+            hideStatusBar={true}
             options={{
               disableGroupBy: metaData?.disableGroupBy ?? "",
             }}
             hideFooter={metaData?.hideFooter ?? ""}
             hideAmountIn={metaData?.hideAmountIn ?? ""}
+            hideShowFiltersSwitch={metaData?.hideShowFiltersSwitch ?? false}
             retrievalType={metaData?.retrievalType ?? ""}
             initialState={{
               groupBy: metaData?.groupBy ?? [],
             }}
+            // screenFlag={reportID}
             onClose={onClose}
+            // buttonNames={buttonNames}
             otherAPIRequestPara={otherAPIRequestPara}
             autoFetch={metaData?.autoFetch ?? true}
             onClickActionEvent={(index, id, data) => {
@@ -93,7 +183,7 @@ export const StaticAdminUserDetailsReports = ({
                 };
                 setIsOpenSchedule(true);
                 setSelectedRow(rowData);
-                setButtonName(id);
+                // setButtonName(id);
               }
             }}
           />

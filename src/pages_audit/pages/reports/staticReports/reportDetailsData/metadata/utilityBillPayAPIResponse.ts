@@ -1,32 +1,9 @@
 import { components } from "@acuteinfo/common-base";
-export const fundTrfSubDetailsMetaData = {
+export const utilityBillPayAPIResMetaData = {
   title: "APIResponseDetailsReport",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
-  // retrievalType: "FUNDTRAN",
-  // filters: [
-  //   {
-  //     accessor: "FROM_DT",
-  //     columnName: "From Date",
-  //     filterComponentType: "valueDateFilter",
-  //     gridProps: {
-  //       xs: 12,
-  //       md: 12,
-  //       sm: 12,
-  //     },
-  //   },
-  //   {
-  //     accessor: "TO_DT",
-  //     columnName: "To Date",
-  //     filterComponentType: "valueDateFilter",
-  //     gridProps: {
-  //       xs: 12,
-  //       md: 12,
-  //       sm: 12,
-  //     },
-  //   },
-  // ],
   columns: [
     {
       columnName: "LoginID",
@@ -35,9 +12,20 @@ export const fundTrfSubDetailsMetaData = {
       type: "default",
     },
     {
-      columnName: "TransactionType",
-      accessor: "TRN_TYPE",
+      columnName: "ResponseDate",
+      accessor: "REQ_DATE",
+      width: 160,
+      Cell: components.DateTimeCell,
+    },
+    {
+      columnName: "ApiName",
+      accessor: "API_NAME",
       width: 180,
+    },
+    {
+      columnName: "Status",
+      accessor: "STATUS",
+      width: 150,
     },
     {
       columnName: "FromACNo",
@@ -49,23 +37,6 @@ export const fundTrfSubDetailsMetaData = {
       accessor: "TO_ACCT_NO",
       width: 170,
     },
-    {
-      columnName: "ResponseDate",
-      accessor: "REQ_DATE",
-      width: 160,
-      Cell: components.DateTimeCell,
-    },
-    {
-      columnName: "ApiName",
-      accessor: "API_NAME",
-      width: 150,
-    },
-    {
-      columnName: "Status",
-      accessor: "STATUS",
-      width: 150,
-    },
-
     {
       columnName: "RespCode",
       accessor: "RESPONSE_CODE",

@@ -1,9 +1,11 @@
 import { components } from "@acuteinfo/common-base";
 export const virtualSubDetailsMetaData = {
-  title: "Report Details",
+  title: "APIResponseDetailsReport",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
+  hideShowFiltersSwitch: true,
+
   // retrievalType: "FUNDTRAN",
   // filters: [
   //   {
@@ -29,34 +31,29 @@ export const virtualSubDetailsMetaData = {
   // ],
   columns: [
     {
-      columnName: "User Name",
+      columnName: "LoginID",
       accessor: "USER_NAME",
       width: 140,
       type: "default",
     },
     {
-      columnName: "Transaction Type",
-      accessor: "TRN_TYPE",
-      width: 180,
-    },
-    {
-      columnName: "From A/C No.",
+      columnName: "FromACNo",
       accessor: "FROM_ACCT_NO",
       width: 170,
     },
     {
-      columnName: "To A/C No.",
+      columnName: "ToACNo",
       accessor: "TO_ACCT_NO",
       width: 170,
     },
     {
-      columnName: "Response Date",
+      columnName: "ResponseDate",
       accessor: "REQ_DATE",
       width: 160,
-      // Cell: components.DateTimeCell,
+      Cell: components.DateTimeCell,
     },
     {
-      columnName: "Api Name",
+      columnName: "ApiName",
       accessor: "API_NAME",
       width: 150,
     },
@@ -67,17 +64,17 @@ export const virtualSubDetailsMetaData = {
     },
 
     {
-      columnName: "Resp. Code",
+      columnName: "RespCode",
       accessor: "RESPONSE_CODE",
       width: 150,
     },
     {
-      columnName: "Ref.Tran.ID",
+      columnName: "RefTranID",
       accessor: "REF_TRAN_ID",
       width: 150,
     },
     {
-      columnName: "Response Message",
+      columnName: "ResponseMessage",
       accessor: "RESPONSE_MSG",
       width: 180,
     },

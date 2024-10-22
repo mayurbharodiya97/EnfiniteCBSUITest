@@ -1,31 +1,9 @@
-// import {
-//   Dialog,
-//   IconButton,
-//   Paper,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableRow,
-//   Toolbar,
-//   Typography,
-//   makeStyles,
-// } from "@material-ui";
-import CloseIcon from "@mui/icons-material/Close";
-import * as API from "../../../api";
-import "./styles.css";
-import logo from "assets/images/logo.jpg";
-import { useContext, useRef, useState } from "react";
-import { AuthContext } from "pages_audit/auth";
 import {
-  Tooltip,
   useDialogStyles,
   PrintButton,
-  LoaderPaperComponent,
+  Tooltip,
+  ReportGrid,
 } from "@acuteinfo/common-base";
-
-import { schedulePaymentDetailMetaData } from "../metadata/scheduledetail";
-import { clone, merge } from "lodash";
 import {
   Dialog,
   IconButton,
@@ -39,11 +17,19 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { ReportGrid } from "@acuteinfo/common-base";
-const useTypeStyles = makeStyles((theme) => ({
+import { Theme } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close";
+import * as API from "../../../api";
+import "./styles.css";
+import { LoaderPaperComponent } from "@acuteinfo/common-base";
+import { useContext, useMemo, useRef, useState } from "react";
+import { AuthContext } from "pages_audit/auth";
+import { useTranslation } from "react-i18next";
+import { schedulePaymentDetailMetaData } from "../metadata/scheduledetail";
+const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
-    // paddingLeft: theme.spacing(1.5),
-    // paddingRight: theme.spacing(1.5),
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
     background: "var(--theme-color1)",
     boxShadow:
       "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
@@ -88,9 +74,9 @@ const useTypeStyles = makeStyles((theme) => ({
     justifyContent: "center",
     padding: "2rem",
     // background: "var(--theme-color2)",
-    // [theme.breakpoints.down("sm")]: {
-    //   display: "none",
-    // },
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
   },
 }));
 
@@ -106,7 +92,7 @@ export const ScheduleDetailReports = ({
   const printRef = useRef<HTMLDivElement | null>(null);
   const { authState } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(false);
-
+  const { t } = useTranslation();
   let reportID;
   let metaData;
   let otherAPIRequestPara;
@@ -119,6 +105,38 @@ export const ScheduleDetailReports = ({
       A_SR_CD: rows?.A_SR_CD ?? "",
     };
   }
+  const defaultFilter = useMemo(() => {
+    return [
+      {
+        id: "CUSTOM_USER_NM",
+        value: {
+          columnName: "User name",
+          value: rows?.CUSTOM_USER_NM,
+        },
+      },
+      {
+        id: "TRN_TYPE",
+        value: {
+          columnName: "Transaction Type",
+          value: rows?.TRN_TYPE,
+        },
+      },
+      {
+        id: "FROM_ACCT_NO",
+        value: {
+          columnName: "From Account No",
+          value: rows?.FROM_ACCT_NO,
+        },
+      },
+      {
+        id: "TO_BEN_NO",
+        value: {
+          columnName: "To Account No",
+          value: rows?.TO_BEN_NO,
+        },
+      },
+    ];
+  }, []);
 
   return (
     <>
@@ -150,7 +168,7 @@ export const ScheduleDetailReports = ({
               variant={"h6"}
               component="div"
             >
-              Response Detail
+              {t("ResponseDetail")}
             </Typography>
             <PrintButton
               content={() => {
@@ -159,7 +177,7 @@ export const ScheduleDetailReports = ({
             />
 
             {typeof onClose === "function" ? (
-              <Tooltip title={"Close"} arrow={true}>
+              <Tooltip title={t("Close")} arrow={true}>
                 <IconButton onClick={onClose} size="small">
                   <CloseIcon style={{ color: "var(--white)" }} />
                 </IconButton>
@@ -182,7 +200,9 @@ export const ScheduleDetailReports = ({
                     }}
                   >
                     <img
-                      src={logo}
+                      src={`${
+                        new URL(window.location.href).origin
+                      }/bank-logo.jpg`}
                       alt="Logo"
                       width="70px"
                       height="auto"
@@ -191,7 +211,7 @@ export const ScheduleDetailReports = ({
                     <h1>{authState.user.branch}</h1>
                   </div>
                   <h1>
-                    <span>Response Detail</span>
+                    <span>{t("ResponseDetail")}</span>
                   </h1>
                 </div>
                 <TableContainer component={Paper}>
@@ -205,7 +225,7 @@ export const ScheduleDetailReports = ({
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                           component="div"
                         >
-                          User Name :
+                          {t("UserName")} :
                         </TableCell>
                         <TableCell
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -216,7 +236,7 @@ export const ScheduleDetailReports = ({
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                           component="div"
                         >
-                          Transaction Type :
+                          {t("TransactionType")} :
                         </TableCell>
                         <TableCell
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -232,7 +252,7 @@ export const ScheduleDetailReports = ({
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                           component="div"
                         >
-                          From Account No :
+                          {t("FromAccountNo")} :
                         </TableCell>
                         <TableCell
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -243,7 +263,7 @@ export const ScheduleDetailReports = ({
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                           component="div"
                         >
-                          To Account No:
+                          {t("ToAccountNo")}:
                         </TableCell>
                         <TableCell
                           className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -262,14 +282,21 @@ export const ScheduleDetailReports = ({
                     reportName={screenFlag}
                     dataFetcher={API.getReportData}
                     metaData={metaData}
+                    defaultFilter={defaultFilter}
                     maxHeight={240}
-                    title={metaData?.title ?? ""}
+                    hideStatusBar={true}
+                    title={
+                      metaData?.title.length === 0
+                        ? t("ResponseDetail")
+                        : metaData?.title
+                    }
                     options={{
                       disableGroupBy: metaData?.disableGroupBy ?? "",
                     }}
                     hideFooter={metaData?.hideFooter ?? ""}
                     hideAmountIn={metaData?.hideAmountIn ?? ""}
                     otherAPIRequestPara={otherAPIRequestPara}
+                    // screenFlag={reportID}
                   />
                 </div>
               </div>

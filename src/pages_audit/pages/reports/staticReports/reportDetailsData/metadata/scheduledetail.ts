@@ -1,50 +1,51 @@
 import { components } from "@acuteinfo/common-base";
 export const schduleDetailMetaData = {
-  title: "Report Details",
+  title: "ScheduleDetailsReport",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
 
   columns: [
+    // {
+    //   columnName: "Sr.No.",
+    //   accessor: "SR_CD",
+    //   width: 140,
+    //   type: "default",
+    // },
     {
-      columnName: "Sr.No.",
-      accessor: "SR_CD",
-      width: 140,
-      type: "default",
-    },
-    {
-      columnName: "Schedule Date",
+      columnName: "ScheduleDate",
       accessor: "EXECUTE_DT",
       width: 180,
+      Cell: components.DateTimeCell,
     },
     {
-      columnName: "From Source",
+      columnName: "FromSource",
       accessor: "FROM_SOURCE",
       width: 170,
     },
     {
-      columnName: "From Account No.",
+      columnName: "FromAccountNo",
       accessor: "FROM_ACCT_NO",
       width: 170,
     },
     {
-      columnName: "From Account Name",
+      columnName: "FromAccountName",
       accessor: "FROM_ACCT_NM",
       width: 160,
       // Cell: components.DateTimeCell,
     },
     {
-      columnName: "To Source",
+      columnName: "ToSource",
       accessor: "TO_SOURCE",
       width: 150,
     },
     {
-      columnName: "To Account No",
+      columnName: "ToAccountNo",
       accessor: "TO_BEN_NO",
       width: 150,
     },
     {
-      columnName: "To Account Name",
+      columnName: "ToAccountName",
       accessor: "TO_ACCT_NM",
       width: 150,
     },
@@ -52,6 +53,7 @@ export const schduleDetailMetaData = {
       columnName: "Amount",
       accessor: "AMOUNT",
       width: 150,
+      isTotalWithCurrency: true,
       Cell: components.NumberCell,
       alignment: "right",
     },
@@ -61,17 +63,18 @@ export const schduleDetailMetaData = {
       width: 150,
     },
     {
-      columnName: "Process Date",
+      columnName: "ProcessDate",
       accessor: "PROCESS_DT",
       width: 180,
+      Cell: components.DateTimeCell,
     },
     {
-      columnName: "Ben. Contact No.",
+      columnName: "BenContactNo",
       accessor: "TO_MOBILE_NO",
       width: 180,
     },
     {
-      columnName: "Ben. Email ID.",
+      columnName: "BenEmailID",
       accessor: "TO_EMAIL_ID",
       width: 180,
     },
@@ -81,20 +84,21 @@ export const schduleDetailMetaData = {
       width: 180,
     },
     {
-      columnName: "Ref. Tran. ID",
+      columnName: "RefTranID",
       accessor: "REF_TRAN_ID",
       width: 180,
     },
     {
-      columnName: "Ref. Date",
+      columnName: "RefDate",
       accessor: "REF_TRAN_DATE",
       width: 180,
+      Cell: components.DateTimeCell,
     },
     {
-      columnName: "Api_Response",
+      columnName: "APIResponse",
       accessor: "API_RESPONSE",
       width: 170,
-      // Cell: components.ButtonRowCell,
+      Cell: components.ButtonRowCell,
       type: "default",
     },
   ],
@@ -108,13 +112,14 @@ export const schedulePaymentDetailMetaData = {
 
   columns: [
     {
-      columnName: "Response Date",
+      columnName: "ResponseDate",
       accessor: "REQ_DATE",
       width: 170,
+      Cell: components.DateTimeCell,
       type: "default",
     },
     {
-      columnName: "API Name",
+      columnName: "ApiName",
       accessor: "API_NAME",
       width: 170,
       type: "default",
@@ -138,19 +143,19 @@ export const schedulePaymentDetailMetaData = {
     //   type: "default",
     // },
     {
-      columnName: "Resp. Code",
+      columnName: "RespCode",
       accessor: "RESPONSE_CODE",
       width: 130,
       type: "default",
     },
     {
-      columnName: "Ref. Tran. ID ",
+      columnName: "RefTranID",
       accessor: "REF_TRAN_ID",
       width: 140,
       type: "default",
     },
     {
-      columnName: "Response Message",
+      columnName: "ResponseMessage",
       accessor: "RESPONSE_MSG",
       width: 200,
       type: "default",

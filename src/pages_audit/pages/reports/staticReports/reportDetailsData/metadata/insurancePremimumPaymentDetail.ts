@@ -1,45 +1,17 @@
 import { components } from "@acuteinfo/common-base";
-export const merchantRevSubDetailsMetaData = {
+export const InsurancePrimiDetailMetaData = {
   title: "APIResponseDetailsReport",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
-  // retrievalType: "FUNDTRAN",
-  // filters: [
-  //   {
-  //     accessor: "FROM_DT",
-  //     columnName: "From Date",
-  //     filterComponentType: "valueDateFilter",
-  //     gridProps: {
-  //       xs: 12,
-  //       md: 12,
-  //       sm: 12,
-  //     },
-  //   },
-  //   {
-  //     accessor: "TO_DT",
-  //     columnName: "To Date",
-  //     filterComponentType: "valueDateFilter",
-  //     gridProps: {
-  //       xs: 12,
-  //       md: 12,
-  //       sm: 12,
-  //     },
-  //   },
-  // ],
+  hideShowFiltersSwitch: true,
+
   columns: [
-    // {
-    //   columnName: "Sr. No.",
-    //   accessor: "SR_CD",
-    //   width: 100,
-    //   type: "default",
-    // },
     {
       columnName: "ResponseDate",
       accessor: "REQ_DATE",
-      width: 160,
+      width: 170,
       Cell: components.DateTimeCell,
-      type: "default",
     },
     {
       columnName: "ApiName",
@@ -49,7 +21,17 @@ export const merchantRevSubDetailsMetaData = {
     {
       columnName: "Status",
       accessor: "STATUS",
-      width: 170,
+      width: 160,
+    },
+    {
+      columnName: "FromAccount",
+      accessor: "FROM_ACCT_NO",
+      width: 150,
+    },
+    {
+      columnName: "ToAccount",
+      accessor: "TO_ACCT_NO",
+      width: 150,
     },
     {
       columnName: "RespCode",
