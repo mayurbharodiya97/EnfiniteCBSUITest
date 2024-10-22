@@ -83,7 +83,12 @@ export const getChequeSearchData = async ({ ...reqData }) => {
     });
   if (status === "0") {
     let responseData = data;
-
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map((items, index) => ({
+        ...items,
+        DISPLAY_ACC_NO: `${items.COMP_CD}-${items.BRANCH_CD}-${items.ACCT_TYPE}-${items.ACCT_CD}`,
+      }));
+    }
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

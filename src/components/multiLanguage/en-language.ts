@@ -137,7 +137,7 @@ export const en_language_data = {
   DepositedInstallment: "Deposited Installment",
   Interest: "Interest",
   InterestDetail: "Interest Detail",
-  NoOfDays: "No of Day(s)",
+  NoOfDays: "No. of Days",
   LastProvisionDate: "Last Provision Date",
   ProvisionalAmount: "Provisional Amount",
   DateFrom: "Date From",
@@ -1020,7 +1020,8 @@ export const en_language_data = {
   Futuredatesarenotallowed: "Future dates are not allowed.",
   FromDateshouldbelessthanorequaltoToDate:
     "From Date should be less than or equal to To Date.",
-
+  ClearingDateshouldbelessthanorequaltoGdDate:
+    "Clearing Date should be less than or equal to Working Date.",
   Whichformatdoyouwanttodownload: "Which format do you want to download?",
   Excel: "Excel",
   CSV: "CSV",

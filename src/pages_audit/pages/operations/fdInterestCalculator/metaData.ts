@@ -7,7 +7,7 @@ import {
   parse,
 } from "date-fns";
 import * as API from "./api";
-import { Placeholder } from "reactstrap";
+import { Label, Placeholder } from "reactstrap";
 export const metaData = {
   form: {
     name: "",
@@ -511,10 +511,11 @@ export const metaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "PERIOD_NO_D",
       label: "",
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -599,14 +600,15 @@ export const metaData = {
       },
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_CD_D?.value;
+        console.log(duration);
 
         return duration === "D"
-          ? "Day(s)"
+          ? { label: "Day(s)" }
           : duration === "M"
-          ? "Month(s)"
+          ? { label: "Month(s)" }
           : duration === "Y"
-          ? "Year(s)"
-          : "Day(s)";
+          ? { label: "Year(s)" }
+          : { label: "Day(s)" };
       },
 
       shouldExclude: (val1, dependent) => {
@@ -1480,9 +1482,7 @@ export const metaData = {
       validate: (currentField, dependentField) => {
         if (
           new Date(currentField?.value) <
-            new Date(dependentField?.TRAN_DT_D?.value) ||
-          new Date(currentField?.value) ===
-            new Date(dependentField?.TRAN_DT_D?.value)
+          new Date(dependentField?.TRAN_DT_P?.value)
         ) {
           return "maturityDateValidationMsg";
         }
@@ -1502,7 +1502,9 @@ export const metaData = {
       label: "Period",
       defaultValue: "Day",
       fullWidth: true,
+
       isReadOnly: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
 
@@ -2223,23 +2225,24 @@ export const metaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "PERIOD_NO_S",
       label: "",
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       dependentFields: ["CALCSWITCH", "PERIOD_NO_DISP_S"],
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_NO_DISP_S?.value;
         console.log(duration);
 
         return duration === "D"
-          ? "Day(s)"
+          ? { label: "Day(s)" }
           : duration === "M"
-          ? "Month(s)"
+          ? { label: "Month(s)" }
           : duration === "Y"
-          ? "Year(s)"
-          : "Day(s)";
+          ? { label: "Year(s)" }
+          : { label: "Day(s)" };
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
@@ -2428,7 +2431,7 @@ export const metaData = {
         componentType: "autocomplete",
       },
       name: "RATE_DEFINATION_F",
-      label: "rateDefination",
+      label: "Defination",
       _optionsKey: "getFdDefinationDdw",
       options: (dependentValue, formState, _, authState) => {
         return API.getFdDefinationDdw({
@@ -2455,7 +2458,6 @@ export const metaData = {
         componentType: "textField",
       },
       name: "REMARK_F",
-      required: true,
       defaultValue: "Customer",
       label: "proposedto",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
