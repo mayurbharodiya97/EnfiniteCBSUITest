@@ -275,6 +275,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         ),
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         confirmation.mutate({
@@ -468,14 +469,17 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         ? t("EnterRemovalRemarksINWARDRETURNCONFIRMATION")
                         : t("EnterRemovalRemarksOUTWARDRETURNCONFIRMATION")
                     }
+                    label="RemovalRemarks"
+                    isRequired={true}
                     onActionNo={() => SetDeleteRemark(false)}
                     onActionYes={async (val, rows) => {
                       const buttonName = await MessageBox({
-                        messageTitle: t("Confirmation"),
+                        messageTitle: t("DeleteWarning"),
                         message: t("DoYouWantDeleteRow"),
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         deleteMutation.mutate({

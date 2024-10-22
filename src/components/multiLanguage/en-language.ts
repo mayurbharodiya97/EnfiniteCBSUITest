@@ -241,6 +241,7 @@ export const en_language_data = {
   TotalRecords: "Total Records",
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
+  SelectPaymentmode: "Select Payment Mode",
 
   // GridWrapper
   Search: "Search",
@@ -1030,6 +1031,8 @@ export const en_language_data = {
   ColumnstoExport: "Columns to Export",
   ExportReportform: "Export Report form",
   Selectfiletype: "Select file type",
+  Selectpagesize: "Select page size",
+  Selectorientation: "Select orientation",
   ShowHeader: "Show Header",
   AreyousureyouwanttodeletetheselectedRecords:
     "Are you sure you want to delete the selected Records",
@@ -1560,7 +1563,7 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  CLGDate: "CLG Date",
+  CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
 
@@ -1571,7 +1574,7 @@ export const en_language_data = {
   EnterRemovalRemarksINWARDRETURNCONFIRMATION:
     "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
   EnterRemovalRemarksOUTWARDRETURNCONFIRMATION:
-    "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
+    "Enter Removal Remarks for Outward Return Confirmation (TRN/346)",
   ClearingRetrieveInformation: "Clearing Retrieve Information",
 
   // date clearing transfer
@@ -1972,6 +1975,8 @@ export const en_language_data = {
   InstallmentTypeisrequired: "Installment Type is required",
   InstAmount: "Installment Amount",
   RunningIntAmt: "Running Int. Amt.",
+  SelectCategoryPlaceHolder: "Select Category",
+  SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
   InterestFunded: "Interest Funded",
@@ -2087,6 +2092,10 @@ export const en_language_data = {
   BeneficiaryAccountName: "Beneficiary Account Name",
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
+  EnterBranchCode: "Enter Branch Code",
+  EnterAccountName: "Enter Account Name",
+  EnterDepositeDate: "Enter Deposite Date",
+  EnterMaturityDate: "Enter Maturity Date",
 
   // Daily Transaction Import
   errors: "Errors",
@@ -2142,9 +2151,9 @@ export const en_language_data = {
   EnterOrderingAcName: "Enter Ordering A/c Name",
   EnterOrderingAcAddress: "Enter Ordering A/c Address",
   EnterOrderingAcContact: "Enter Ordering A/c Contact",
-  EnterBeneficiaryAccountType: "Enter Beneficiary Account Type",
+  EnterBeneficiaryAccountType: "Select Beneficiary Account Type",
   EnterBeneficiaryContact: "Enter Beneficiary Contact",
-  EnterBeneficiaryAccountNumber: "Enter Beneficiary Account Number",
+  EnterBeneficiaryAccountNumber: "Select Beneficiary Account Number",
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
@@ -2167,4 +2176,6 @@ export const en_language_data = {
   ModifiedDateTime: "Modified Date-Time",
   ModifiedMachineName: "Modified Machine Name",
   VerifiedMachineName: "Verified Machine Name",
+  //FD Interest Payment Confirmation
+  CompanyCode: "Company Code",
 };
