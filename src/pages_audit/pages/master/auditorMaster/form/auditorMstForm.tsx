@@ -147,7 +147,6 @@ export const AuditorMstForm = ({
                     setFormMode("view");
                   }}
                   color={"primary"}
-                  disabled={isSubmitting}
                 >
                   {t("Cancel")}
                 </GradientButton>

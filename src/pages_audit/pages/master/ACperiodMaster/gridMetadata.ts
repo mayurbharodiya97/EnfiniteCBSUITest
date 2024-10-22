@@ -13,7 +13,6 @@ export const gridMetadata: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
@@ -60,7 +59,7 @@ export const gridMetadata: GridMetaDataType = {
       accessor: "INST_NO",
       columnName: "InstNo",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 300,
       minWidth: 100,

@@ -1433,6 +1433,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
+          maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1913,7 +1914,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {

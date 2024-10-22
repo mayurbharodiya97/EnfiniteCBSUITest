@@ -89,6 +89,24 @@ export const AllScreensGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 200,
     },
+    {
+      accessor: "OPEN",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "View Query",
+      sequence: 14,
+      alignment: "center",
+      width: 120,
+      minWidth: 100,
+      maxWidth: 100,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.IS_REPORTFLAG === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
   ],
 };
 
@@ -160,6 +178,26 @@ export const FavScreensGridMetaData: GridMetaDataType = {
       width: 180,
       minWidth: 120,
       maxWidth: 200,
+    },
+    {
+      accessor: "OPEN",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "View Query",
+      sequence: 14,
+      alignment: "center",
+      width: 120,
+      minWidth: 100,
+      maxWidth: 100,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        console.log(original);
+
+        if (original?.IS_REPORTFLAG === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
   ],
 };

@@ -44,6 +44,7 @@ export const RetrieveCfmDataCustom = ({
   navigate,
   setRetrieveData,
   setFormMode,
+  setFilteredData,
 }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -58,6 +59,7 @@ export const RetrieveCfmDataCustom = ({
     setFormMode("view");
     navigate(".", { state: newData });
     setRetrieveData(newData);
+    setFilteredData(newData);
   }, []);
 
   const mutation: any = useMutation("cfmRetrieveData", getCfmRetrieveData, {
@@ -74,29 +76,14 @@ export const RetrieveCfmDataCustom = ({
     onError: (error: any) => {},
   });
 
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    endSubmit(true);
+  useEffect(() => {
     mutation.mutate({
-      FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
-      TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+      FROM_DT: authState?.workingDate,
+      TO_DT: authState?.workingDate,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
     });
-  };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: authState?.workingDate,
-  //     TO_DT: authState?.workingDate,
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //   });
-  // }, []);
+  }, []);
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
@@ -126,13 +113,19 @@ export const RetrieveCfmDataCustom = ({
             key={`AtmCfmretrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
+            onSubmitHandler={(data: any, displayData, endSubmit) => {
+              endSubmit(true);
+              mutation.mutate({
+                FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
+                TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+                COMP_CD: authState.companyID,
+                BRANCH_CD: authState.user.branchCode,
+              });
+            }}
             formStyle={{
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              console.log("<<<id", id);
-
               if (id === "RETRIEVE") {
                 let event: any = { preventDefault: () => {} };
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -190,6 +183,7 @@ export const RetrieveCfmData = ({
   navigate,
   setRetrieveData,
   setFormMode,
+  setFilteredData,
 }) => {
   return (
     <ClearCacheProvider>
@@ -197,6 +191,7 @@ export const RetrieveCfmData = ({
         onClose={onClose}
         navigate={navigate}
         setRetrieveData={setRetrieveData}
+        setFilteredData={setFilteredData}
         setFormMode={setFormMode}
       />
     </ClearCacheProvider>

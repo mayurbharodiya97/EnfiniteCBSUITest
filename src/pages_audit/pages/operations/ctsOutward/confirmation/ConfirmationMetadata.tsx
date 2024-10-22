@@ -106,7 +106,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {
@@ -284,7 +283,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "CONFIRMED_FLAG",
-      columnName: "ConfirmStatus",
+      columnName: "Status",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -406,7 +405,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_BY",
-      columnName: "EnterBy",
+      columnName: "User",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -668,7 +667,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "textField",
       },
       name: "CONFIRMED",
-      label: "ConfirmStatus",
+      label: "status",
       placeholder: "",
       type: "text",
       fullWidth: true,

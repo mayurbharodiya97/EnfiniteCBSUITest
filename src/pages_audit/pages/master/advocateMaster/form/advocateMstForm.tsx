@@ -176,7 +176,6 @@ export const AdvocateMstForm = ({
                         setFormMode("view");
                       }}
                       color={"primary"}
-                      disabled={isSubmitting}
                     >
                       {t("Cancel")}
                     </GradientButton>

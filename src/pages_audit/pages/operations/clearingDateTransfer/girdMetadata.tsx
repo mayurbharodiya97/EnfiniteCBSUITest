@@ -107,7 +107,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {
@@ -121,7 +120,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {

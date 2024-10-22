@@ -593,3 +593,69 @@ export const saveRecentScreenData = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000;
+
+const cacheImageData = async (imageURL, cacheName = "image-cache") => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLOGINPAGEDTL", {
+      APP_TRAN_CD: "51",
+    });
+  if (status === "0") {
+    if ("caches" in window) {
+      const cache = await caches.open(cacheName);
+
+      const cachedResponse = {
+        data: data,
+        cachedAt: Date.now(),
+      };
+
+      await cache.put(imageURL, new Response(JSON.stringify(cachedResponse)));
+    }
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    localStorage.setItem(
+      "charchecksum",
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+    );
+
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+const getCachedImageData = async (imageURL, cacheName = "image-cache") => {
+  if ("caches" in window) {
+    const cache = await caches.open(cacheName);
+    const cachedResponse = await cache.match(imageURL);
+    if (cachedResponse) {
+      const { data, cachedAt } = await cachedResponse.json();
+      const isExpired = Date.now() - cachedAt > CACHE_EXPIRY_TIME;
+
+      if (!isExpired) {
+        return data;
+      } else {
+        await cache.delete(imageURL);
+        return null;
+      }
+    }
+  }
+  return null;
+};
+
+const processImageData = async () => {
+  let data = await getCachedImageData("imageData");
+  if (!data) {
+    data = await cacheImageData("imageData");
+  }
+
+  return data;
+};
+
+export const getImageData = async () => {
+  return await processImageData();
+};

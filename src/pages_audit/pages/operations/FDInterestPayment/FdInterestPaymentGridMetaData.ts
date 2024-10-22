@@ -406,6 +406,16 @@ export const FdInterestPaymentGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 250,
     },
+    {
+      accessor: "PAY_MODE_DISPLAY",
+      columnName: "Instruction",
+      sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 200,
+      minWidth: 150,
+      maxWidth: 250,
+    },
   ],
 };
 export const PaidFDGridMetaData: GridMetaDataType = {
@@ -512,9 +522,9 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
     },
     {
       accessor: "INT_RATE",

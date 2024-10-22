@@ -19,8 +19,8 @@ export const InsuTypeMasterGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "80vh",
-      max: "80vh",
+      min: "70vh",
+      max: "70vh",
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,

@@ -137,12 +137,6 @@ export const DynFormMetadataConfig = () => {
   }, [isLoading, isFetching]);
   useEffect(() => {
     return () => {
-      let entries = getEntries() as any[];
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach((one) => {
-          queryClient.removeQueries(one);
-        });
-      }
       queryClient.removeQueries(["getDynMetadataGridConfigData"]);
     };
   }, [getEntries]);

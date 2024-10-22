@@ -47,32 +47,52 @@ export const ReturnChequeForm = ({ open, onclose }) => {
     setFieldError,
     actionFlag
   ) => {
-    const reqPara: any = {
-      // ...data,
-      COMP_CD: rows[0]?.data?.COMP_CD,
-      BRANCH_CD: rows[0]?.data?.BRANCH_CD,
-      ACCT_CD: data?.ACCT_CD,
-      ACCT_TYPE: data?.ACCT_TYPE,
-      TRAN_CD: rows[0]?.data?.TRAN_CD,
-      AMOUNT: rows[0]?.data?.AMOUNT,
-      CHEQUE_NO: data?.CHEQUE_NO,
-      CHEQUE_DATE: format(new Date(rows[0]?.data?.CHEQUE_DATE), "dd/MMM/yyyy"),
-      BANK_CD: rows[0]?.data?.BANK_CD,
-      TRAN_TYPE: rows[0]?.data?.TRAN_TYPE,
-      ZONE: data?.ZONE_CD,
-      REASON: data?.REASON,
-      CHQ_MICR_CD: rows[0]?.data?.CHQ_MICR_CD,
-      ACCT_NM: data?.ACCT_NM,
-      SLIP_CD: rows[0]?.data?.SLIP_CD,
-      BRANCH: rows[0]?.data?.BRANCH,
-      OW_ENT_BR: rows[0]?.data?.ENTERED_BRANCH_CD,
-      DTL2_SR_CD: rows[0]?.data?.DTL2_SR_CD,
-      DESCRIPTION: data?.DESCRIPTION,
-      RBI_CLG_TRAN: "0",
-      SCREEN_REF: "TRN/038",
-    };
-
-    returnChequeMutation.mutate(reqPara);
+    if (data?.REASON === "") {
+      const btnName = await MessageBox({
+        message: "Please Enter Proper Reason",
+        messageTitle: "Error",
+        buttonNames: ["Ok"],
+        icon: "ERROR",
+      });
+    } else {
+      const reqPara: any = {
+        // ...data,
+        COMP_CD: rows[0]?.data?.COMP_CD,
+        BRANCH_CD: rows[0]?.data?.BRANCH_CD,
+        ACCT_CD: data?.ACCT_CD,
+        ACCT_TYPE: data?.ACCT_TYPE,
+        TRAN_CD: rows[0]?.data?.TRAN_CD,
+        AMOUNT: rows[0]?.data?.AMOUNT,
+        CHEQUE_NO: data?.CHEQUE_NO,
+        CHEQUE_DATE: format(
+          new Date(rows[0]?.data?.CHEQUE_DATE),
+          "dd/MMM/yyyy"
+        ),
+        BANK_CD: rows[0]?.data?.BANK_CD,
+        TRAN_TYPE: rows[0]?.data?.TRAN_TYPE,
+        ZONE: data?.ZONE_CD,
+        REASON: data?.REASON,
+        CHQ_MICR_CD: rows[0]?.data?.CHQ_MICR_CD,
+        ACCT_NM: data?.ACCT_NM,
+        SLIP_CD: rows[0]?.data?.SLIP_CD,
+        BRANCH: rows[0]?.data?.BRANCH,
+        OW_ENT_BR: rows[0]?.data?.ENTERED_BRANCH_CD,
+        DTL2_SR_CD: rows[0]?.data?.DTL2_SR_CD,
+        DESCRIPTION: data?.DESCRIPTION,
+        RBI_CLG_TRAN: "0",
+        SCREEN_REF: "TRN/038",
+      };
+      const btnName = await MessageBox({
+        message: "SaveData",
+        messageTitle: "Confirmation",
+        buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
+        loadingBtnName: ["Yes"],
+      });
+      if (btnName === "Yes") {
+        returnChequeMutation.mutate(reqPara);
+      }
+    }
     endSubmit(true);
   };
 
@@ -105,15 +125,7 @@ export const ReturnChequeForm = ({ open, onclose }) => {
             <>
               <GradientButton
                 onClick={async (event) => {
-                  const btnName = await MessageBox({
-                    message: "SaveData",
-                    messageTitle: "Confirmation",
-                    buttonNames: ["Yes", "No"],
-                    loadingBtnName: ["Yes"],
-                  });
-                  if (btnName === "Yes") {
-                    handleSubmit(event, "Save");
-                  }
+                  handleSubmit(event, "Save");
                 }}
                 disabled={isSubmitting}
                 endIcon={

@@ -18,8 +18,8 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
     pageSizes: [20, 50, 100],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,

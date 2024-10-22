@@ -60,6 +60,16 @@ export const standingInsructionGridMetaData: GridMetaDataType = {
       minWidth: 160,
       maxWidth: 200,
     },
+    {
+      accessor: "ENTERED_BY",
+      columnName: "EnteredBy",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 80,
+      maxWidth: 120,
+    },
   ],
 };
 

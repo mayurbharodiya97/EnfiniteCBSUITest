@@ -59,7 +59,7 @@ const LienMasterForm = ({
   const codeArr = gridData?.map((ele: any) => ele?.LEAN_CD);
   const filterNumbers = codeArr?.filter((ele) => !isNaN(ele));
   const codeIncrement =
-    filterNumbers?.length > 0 ? Math.max(...filterNumbers) + 1 : "";
+    filterNumbers?.length > 0 ? Math.max(...filterNumbers) + 1 : "1";
   const codeIncreByOne =
     String(codeIncrement)?.length < 5 ? String(codeIncrement) : "";
 

@@ -185,16 +185,12 @@ export const PropsConfigForm: FC<{
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
+    // console.log("isErrorFuncRef.current", isErrorFuncRef.current);
   };
 
-  if (PropsComponentFormMetaData?.fields?.[0]?._fields?.[6]) {
-    PropsComponentFormMetaData.fields[0]._fields[6].requestProps =
-      PropsData?.[0]?.DOC_CD ?? "";
-  }
   if (PropsComponentFormMetaData.form.label) {
     PropsComponentFormMetaData.form.label =
-      "Props Configuration" + " For " + reqDataRef.current?.FIELD_NAME ?? "";
+      "Props Configuration" + " For " + reqDataRef.current?.FIELD_NAME;
   }
   return (
     <>
@@ -223,6 +219,7 @@ export const PropsConfigForm: FC<{
             formStyle={{
               background: "white",
             }}
+            formState={{ docCD: PropsData?.[0]?.DOC_CD ?? "" }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
