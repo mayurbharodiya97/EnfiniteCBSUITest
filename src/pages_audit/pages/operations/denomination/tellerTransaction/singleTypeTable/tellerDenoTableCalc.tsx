@@ -26,7 +26,6 @@ const TellerDenoTableCalc = ({
   screenFlag,
   typeCode,
 }) => {
-  console.log(screenFlag, "YTYY??", typeCode);
   const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(
     SingleTableDataReducer,
@@ -390,8 +389,8 @@ const TellerDenoTableCalc = ({
                       CHEQUE_DT: item?.CHQ_DT ?? "",
                       REMARKS: item?.REMARK ?? "",
                       AMOUNT: Boolean(item?.RECEIPT)
-                        ? item?.RECEIPT
-                        : item?.PAYMENT ?? "",
+                        ? item?.RECEIPT ?? "0"
+                        : item?.PAYMENT ?? "0",
                     };
                     return parameters;
                   })
@@ -408,11 +407,11 @@ const TellerDenoTableCalc = ({
                       CHEQUE_DT:
                         formData?.CHEQUE_DT ??
                         format(new Date(), "dd/MMM/yyyy"),
-                      REMARKS: formData?.REMARK ?? "",
+                      REMARKS: formData?.REMARKS ?? "",
                       AMOUNT:
                         screenFlag === "CASHREC"
-                          ? formData?.RECEIPT
-                          : formData?.AMOUNT,
+                          ? formData?.RECEIPT ?? "0"
+                          : formData?.AMOUNT ?? "0",
                       TRAN_CD: formData?.TRAN_CD ?? "",
                     },
                   ],

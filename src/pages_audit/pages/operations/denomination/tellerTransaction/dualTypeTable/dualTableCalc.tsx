@@ -4,6 +4,7 @@ import { AuthContext } from "pages_audit/auth";
 import { usePopupContext } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import * as API from "../../api";
+import { format } from "date-fns";
 
 const DualTableCalc = ({
   data,
@@ -14,8 +15,10 @@ const DualTableCalc = ({
   gridLable,
   formData,
   initRemainExcess,
-  screenRef,
-  entityType,
+  // screenRef,
+  // entityType,
+  screenFlag,
+  typeCode,
   setOpenDenoTable,
   setCount,
 }) => {
@@ -141,12 +144,12 @@ const DualTableCalc = ({
   const performCalculation = (newTotalAmounts, currentErrors) => {
     if (currentErrors.length === 0) {
       let calcRemainExcess;
-      if (screenRef === "TRN/039") {
+      if (typeCode === "1") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) -
           parseInt(newTotalAmounts["amount"]) +
           parseInt(newTotalAmounts["amount2"]);
-      } else if (screenRef === "TRN/040") {
+      } else if (typeCode === "4") {
         calcRemainExcess =
           parseInt(finalReceiptPayment) +
           parseInt(newTotalAmounts["amount"]) -
@@ -230,48 +233,62 @@ const DualTableCalc = ({
           const newRowsReceipt = {
             ...apiRow,
             DENO_QTY:
-              screenRef === "TRN/041"
-                ? formData?.FINAL_AMOUNT > 0
-                  ? inputValues[index]?.receipt
-                  : "-" + inputValues[index]?.receipt
-                : screenRef === "TRN/040"
-                ? "-" + inputValues[index]?.receipt
-                : screenRef === "TRN/039"
+              typeCode === "1"
                 ? inputValues[index]?.receipt
-                : "",
+                : "-" + inputValues[index]?.receipt,
+
+            // screenRef === "TRN/041"
+            //   ? formData?.FINAL_AMOUNT > 0
+            //     ? inputValues[index]?.receipt
+            //     : "-" + inputValues[index]?.receipt
+            //   : screenRef === "TRN/040"
+            //   ? "-" + inputValues[index]?.receipt
+            //   : screenRef === "TRN/039"
+            //   ? inputValues[index]?.receipt
+            //   : "",
             AMOUNT:
-              screenRef === "TRN/041"
-                ? formData?.FINAL_AMOUNT > 0
-                  ? inputValues[index]?.amount?.toString()
-                  : "-" + inputValues[index]?.amount?.toString()
-                : screenRef === "TRN/040"
-                ? "-" + inputValues[index]?.amount?.toString()
-                : screenRef === "TRN/039"
+              typeCode === "1"
                 ? inputValues[index]?.amount?.toString()
-                : "",
+                : "-" + inputValues[index]?.amount?.toString(),
+
+            // screenRef === "TRN/041"
+            //   ? formData?.FINAL_AMOUNT > 0
+            //     ? inputValues[index]?.amount?.toString()
+            //     : "-" + inputValues[index]?.amount?.toString()
+            //   : screenRef === "TRN/040"
+            //   ? "-" + inputValues[index]?.amount?.toString()
+            //   : screenRef === "TRN/039"
+            //   ? inputValues[index]?.amount?.toString()
+            //   : "",
           };
           const newRowsPayment = {
             ...apiRow,
             DENO_QTY:
-              screenRef === "TRN/041"
-                ? formData?.FINAL_AMOUNT > 0
-                  ? "-" + inputValues[index]?.payment
-                  : inputValues[index]?.payment
-                : screenRef === "TRN/039"
+              typeCode === "1"
                 ? "-" + inputValues[index]?.payment
-                : screenRef === "TRN/040"
-                ? inputValues[index]?.payment
-                : "",
+                : inputValues[index]?.payment,
+            // screenRef === "TRN/041"
+            //   ? formData?.FINAL_AMOUNT > 0
+            //     ? "-" + inputValues[index]?.payment
+            //     : inputValues[index]?.payment
+            //   : screenRef === "TRN/039"
+            //   ? "-" + inputValues[index]?.payment
+            //   : screenRef === "TRN/040"
+            //   ? inputValues[index]?.payment
+            //   : "",
             AMOUNT:
-              screenRef === "TRN/041"
-                ? formData?.FINAL_AMOUNT > 0
-                  ? "-" + inputValues[index]?.amount2?.toString()
-                  : inputValues[index]?.amount2?.toString()
-                : screenRef === "TRN/039"
+              typeCode === "1"
                 ? "-" + inputValues[index]?.amount2?.toString()
-                : screenRef === "TRN/040"
-                ? inputValues[index]?.amount2?.toString()
-                : "",
+                : inputValues[index]?.amount2?.toString(),
+            // screenRef === "TRN/041"
+            //   ? formData?.FINAL_AMOUNT > 0
+            //     ? "-" + inputValues[index]?.amount2?.toString()
+            //     : inputValues[index]?.amount2?.toString()
+            //   : screenRef === "TRN/039"
+            //   ? "-" + inputValues[index]?.amount2?.toString()
+            //   : screenRef === "TRN/040"
+            //   ? inputValues[index]?.amount2?.toString()
+            //   : "",
           };
 
           const resMinusPay = {
@@ -331,7 +348,7 @@ const DualTableCalc = ({
         const DDT = getRowData();
         const reqData = {
           TRN_DTL:
-            screenRef === "TRN/041"
+            screenFlag === "SINGLEDENO"
               ? formData?.singleDenoRow?.map((item) => {
                   const parameters = {
                     BRANCH_CD: item?.BRANCH_CD ?? "",
@@ -347,8 +364,8 @@ const DualTableCalc = ({
                     CHEQUE_DT: item?.CHQ_DT ?? "",
                     REMARKS: item?.REMARK ?? "",
                     AMOUNT: Boolean(item?.RECEIPT)
-                      ? item?.RECEIPT
-                      : item?.PAYMENT ?? "",
+                      ? item?.RECEIPT ?? "0"
+                      : item?.PAYMENT ?? "0",
                   };
                   return parameters;
                 })
@@ -357,29 +374,24 @@ const DualTableCalc = ({
                     BRANCH_CD: formData?.BRANCH_CD ?? "",
                     ACCT_TYPE: formData?.ACCT_TYPE ?? "",
                     ACCT_CD: formData?.ACCT_CD ?? "",
-                    TYPE_CD: screenRef === "TRN/039" ? "1" : "4",
+                    TYPE_CD: typeCode ?? "",
                     COMP_CD: authState?.companyID ?? "",
                     CHEQUE_NO: formData?.CHEQUE_NO ?? "",
                     SDC: formData?.SDC ?? "",
-                    SCROLL1: "",
-                    CHEQUE_DT: formData?.CHEQUE_DT ?? "",
-                    REMARKS: formData?.REMARK ?? "",
+                    SCROLL1: formData?.SCROLL1 ?? "",
+                    CHEQUE_DT:
+                      formData?.CHEQUE_DT ?? format(new Date(), "dd/MMM/yyyy"),
+                    REMARKS: formData?.REMARKS ?? "",
                     AMOUNT:
-                      screenRef === "TRN/039"
-                        ? formData?.RECEIPT
-                        : formData?.PAYMENT,
+                      screenFlag === "CASHREC"
+                        ? formData?.RECEIPT ?? "0"
+                        : formData?.AMOUNT ?? "0",
+                    TRAN_CD: formData?.TRAN_CD ?? "",
                   },
                 ],
           DENO_DTL: DDT?.map((itemData) => {
             const data = {
-              TYPE_CD:
-                screenRef === "TRN/041"
-                  ? formData?.FINAL_AMOUNT > 0
-                    ? "1"
-                    : "4"
-                  : screenRef === "TRN/039"
-                  ? "1"
-                  : "4",
+              TYPE_CD: typeCode ?? "",
               DENO_QTY: itemData?.DENO_QTY ?? "",
               DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
               DENO_VAL: itemData?.DENO_VAL ?? "",
@@ -387,8 +399,18 @@ const DualTableCalc = ({
             };
             return data;
           }),
-          SCREEN_REF: screenRef,
-          ENTRY_TYPE: entityType,
+          SCREEN_REF:
+            screenFlag === "CASHREC"
+              ? "TRN/039"
+              : screenFlag === "CASHPAY"
+              ? "TRN/040"
+              : "TRN/041",
+          ENTRY_TYPE:
+            screenFlag === "CASHREC"
+              ? "SINGLEREC"
+              : screenFlag === "CASHPAY"
+              ? "SINGLEPAY"
+              : "MULTIRECPAY",
         };
         saveDenominationData?.mutate(reqData);
       } else if (response === "No") {
@@ -489,8 +511,6 @@ const DualTableCalc = ({
       closeConfirmation={closeConfirmation}
       getRowData={getRowData}
       formData={formData}
-      screenRef={screenRef}
-      entityType={entityType}
     />
   );
 };

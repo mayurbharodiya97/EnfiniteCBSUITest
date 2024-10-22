@@ -1,9 +1,12 @@
 import {
   ActionTypes,
+  formatCurrency,
+  getCurrencySymbol,
   GridMetaDataType,
   GridWrapper,
   queryClient,
   usePopupContext,
+  usePropertiesConfigContext,
   utilFunction,
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
@@ -19,6 +22,7 @@ import { Box } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { format, parse } from "date-fns";
 import TellerDenoTableCalc from "../singleTypeTable/tellerDenoTableCalc";
+import DualTableCalc from "../dualTypeTable/dualTableCalc";
 
 const actions: ActionTypes[] = [
   {
@@ -38,6 +42,7 @@ const CashPayment = ({ screenFlag }) => {
   const controllerRef = useRef<AbortController>();
   const currentPath = useLocation()?.pathname;
   const { authState } = useContext(AuthContext);
+  const customParameter = usePropertiesConfigContext();
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const {
     clearCache: clearTabsCache,
@@ -48,6 +53,8 @@ const CashPayment = ({ screenFlag }) => {
     isError: isTabsError,
     isLoading: isTabsLoading,
   } = useCacheWithMutation("cashPaymentEntry", CommonAPI.getTabsByParentType);
+  const { denoTableType, dynamicAmountSymbol, currencyFormat, decimalCount } =
+    customParameter;
 
   const {
     data,
@@ -73,7 +80,6 @@ const CashPayment = ({ screenFlag }) => {
 
   const getDenoData: any = useMutation(CommonAPI.CashReceiptEntrysData, {
     onSuccess: (response: any, variables?: any) => {
-      console.log(response, "response");
       CloseMessageBox();
       setOpenDeno(true);
       if (response?.length > 0) {
@@ -135,7 +141,6 @@ const CashPayment = ({ screenFlag }) => {
         controllerFinal: controllerRef.current,
       });
     } else if (data?.name === "denomination") {
-      console.log(row, "data??>>");
       const msgBoxRes = await MessageBox({
         messageTitle: "Confirmation",
         message: "Proceed?",
@@ -201,6 +206,21 @@ const CashPayment = ({ screenFlag }) => {
   const denoTableClose = () => {
     setOpenDeno(false);
   };
+
+  const onSaveData = (value) => {
+    setOpenDeno(value);
+    refetchMainGrid();
+  };
+
+  const getFomattedCurrency = (values) => {
+    const formatedValue = formatCurrency(
+      parseFloat(values || "0"),
+      getCurrencySymbol(dynamicAmountSymbol),
+      currencyFormat,
+      decimalCount
+    );
+    return formatedValue;
+  };
   return (
     <>
       <DailyTransTabs
@@ -232,11 +252,10 @@ const CashPayment = ({ screenFlag }) => {
         />
       </Box>
 
-      <>{console.log(rowData, "rowData>>??")}</>
-      {Boolean(openDeno) ? (
+      {Boolean(openDeno) && denoTableType === "single" ? (
         <TellerDenoTableCalc
           displayTable={openDeno}
-          setOpenDenoTable={setOpenDeno}
+          setOpenDenoTable={onSaveData}
           formData={rowData}
           data={denoData ?? []}
           isLoading={false}
@@ -265,6 +284,26 @@ const CashPayment = ({ screenFlag }) => {
           screenFlag={screenFlag}
           typeCode={"4"}
           setCount={() => {}}
+        />
+      ) : null}
+      {Boolean(openDeno) && denoTableType === "dual" ? (
+        <DualTableCalc
+          data={denoData ?? []}
+          displayTableDual={openDeno}
+          // displayTable={openDenoTable}
+          formData={rowData}
+          initRemainExcess={rowData?.AMOUNT ?? "0"}
+          gridLable={`Payment Single Denomination : ${getFomattedCurrency(
+            rowData?.AMOUNT
+          )}`}
+          isLoading={false}
+          onCloseTable={denoTableClose}
+          // screenRef={"TRN/041"}
+          // entityType={"MULTIRECPAY"}
+          screenFlag={screenFlag}
+          typeCode={"4"}
+          setCount={() => {}}
+          setOpenDenoTable={onSaveData}
         />
       ) : null}
     </>

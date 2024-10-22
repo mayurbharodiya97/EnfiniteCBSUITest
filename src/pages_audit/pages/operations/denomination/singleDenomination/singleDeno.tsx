@@ -368,10 +368,12 @@ export const SingleDeno = ({ screenFlag }) => {
           }
           isLoading={false}
           onCloseTable={() => setOpenDenoTable(false)}
-          screenRef={"TRN/041"}
-          entityType={"MULTIRECPAY"}
-          setCount={() => {}}
-          setOpenDenoTable={() => {}}
+          // screenRef={"TRN/041"}
+          // entityType={"MULTIRECPAY"}
+          screenFlag={screenFlag}
+          typeCode={formData?.FINAL_AMOUNT > 0 ? "1" : "4"}
+          setCount={setCount}
+          setOpenDenoTable={setOpenDenoTable}
         />
       )}
       {openDenoTable && denoTableType === "single" && (

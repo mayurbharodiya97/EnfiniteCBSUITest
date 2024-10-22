@@ -61,6 +61,7 @@ const TellerScreen = ({ screenFlag }) => {
   const [cardDetails, setCardDetails] = useState([]);
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
+  const [count, setCount] = useState(0);
   const { authState }: any = useContext(AuthContext);
   let currentPath = useLocation().pathname;
   const customParameter = usePropertiesConfigContext();
@@ -678,7 +679,7 @@ const TellerScreen = ({ screenFlag }) => {
       )}
       <Paper sx={{ margin: "10px", marginBottom: "15px" }}>
         <FormWrapper
-          key={`TellerScreen` + screenFlag}
+          key={`TellerScreen` + screenFlag + count}
           metaData={TellerScreenMetadata as MetaDataType}
           initialValues={{} as InitialValuesType}
           onSubmitHandler={onSubmitHandler}
@@ -895,7 +896,7 @@ const TellerScreen = ({ screenFlag }) => {
           // entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
           screenFlag={screenFlag}
           typeCode={"1"}
-          setCount={() => {}}
+          setCount={setCount}
         />
       ) : null}
       {/* <DualTableCalc data={data ?? []} /> */}
@@ -920,10 +921,10 @@ const TellerScreen = ({ screenFlag }) => {
               ? `Cash Receipt [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.RECEIPT} - Limit:${extraAccDtl?.LIMIT}`
               : `Cash Payment [${extraAccDtl?.TRN_TYPE}]- Remarks: ${extraAccDtl?.REMARKS} - A/C No.: ${extraAccDtl?.["A/c Number"]} - ${extraAccDtl?.Name} - Receipt Amount:${state?.fieldsData?.PAYMENT} - Limit:${extraAccDtl?.LIMIT}`
           }
-          screenRef={screenFlag === "CASHREC" ? "TRN/039" : "TRN/040"}
-          entityType={screenFlag === "CASHREC" ? "SINGLEREC" : "SINGLEPAY"}
+          screenFlag={screenFlag}
+          typeCode={"1"}
           setOpenDenoTable={setOpenDualTable}
-          setCount={() => {}}
+          setCount={setCount}
         />
       ) : null}
       {/* {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null} */}

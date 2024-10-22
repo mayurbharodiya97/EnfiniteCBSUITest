@@ -634,8 +634,6 @@ const DualPartTable = ({
   closeConfirmation,
   getRowData,
   formData,
-  screenRef,
-  entityType,
 }) => {
   const classes = useStyles();
   const inputRefs = useRef<any>({});

@@ -590,7 +590,7 @@ export const denoTableMetadataTotal: any = {
           name: "CHQNO",
           label: "Chq.No",
           placeholder: "Chq.No",
-          defaultValue: "0",
+          defaultValue: "",
           type: "number",
           GridProps: { xs: 6, sm: 3, md: 2, lg: 1, xl: 1 },
           dependentFields: ["TRX", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
@@ -690,6 +690,10 @@ export const denoTableMetadataTotal: any = {
                     };
                   } else if (btnNm === "Yes") {
                     return {
+                      CHQNO: {
+                        value: chequeNo ?? "",
+                        ignoreUpdate: true,
+                      },
                       FLAG_CHQ: {
                         value: "A",
                         ignoreUpdate: true,
@@ -703,6 +707,10 @@ export const denoTableMetadataTotal: any = {
                     icon: "WARNING",
                   });
                   return {
+                    CHQNO: {
+                      value: chequeNo ?? "",
+                      ignoreUpdate: true,
+                    },
                     FLAG_CHQ: {
                       value: "A",
                       ignoreUpdate: true,
@@ -710,6 +718,10 @@ export const denoTableMetadataTotal: any = {
                   };
                 } else if (apiResponse[i]?.ERR_CODE === "0") {
                   return {
+                    CHQNO: {
+                      value: chequeNo ?? "",
+                      ignoreUpdate: true,
+                    },
                     FLAG_CHQ: {
                       value: "A",
                       ignoreUpdate: true,
@@ -1245,16 +1257,9 @@ export const denoTableMetadataTotal: any = {
           dependentFields?.RECEIPT_TOTAL?.value ||
           dependentFields?.PAYMENT_TOTAL?.value
         ) {
-          console.log(
-            dependentFields?.RECEIPT_TOTAL?.value,
-            "RECE",
-            dependentFields?.PAYMENT_TOTAL?.value,
-            "PAYM"
-          );
           const returnFinalAmount =
             dependentFields?.RECEIPT_TOTAL?.value -
             dependentFields?.PAYMENT_TOTAL?.value;
-          console.log(returnFinalAmount, "returnFinalAmount");
 
           return returnFinalAmount;
         } else {

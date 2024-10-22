@@ -556,7 +556,7 @@ export const TellerScreenMetadata: any = {
       render: {
         componentType: "textField",
       },
-      name: "REMARK",
+      name: "REMARKS",
       label: "Remark",
       placeholder: "Enter Remark",
       defaultValue: "",
