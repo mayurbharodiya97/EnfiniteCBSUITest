@@ -219,6 +219,8 @@ export const RtgsEntryFormMetaData = {
               },
             ],
           },
+          validationRun: "onChange",
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: (
             field,
             formState,
@@ -235,6 +237,7 @@ export const RtgsEntryFormMetaData = {
               ADD1: { value: "" },
               TRAN_BAL: { value: "" },
               ACCT_CD: { value: "" },
+              ACCT_TYPE: { value: "" },
             };
           },
         },
@@ -243,7 +246,7 @@ export const RtgsEntryFormMetaData = {
           isFieldFocused: true,
           defaultfocus: true,
           defaultValue: "",
-
+          validationRun: "onChange",
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
@@ -263,6 +266,19 @@ export const RtgsEntryFormMetaData = {
             ],
           },
           _optionsKey: "get_Account_Type",
+          postValidationSetCrossFieldValues: (field, formState) => {
+            return {
+              ACCT_NM: { value: "" },
+              LIMIT_AMOUNT: { value: "" },
+              ACCT_NAME: { value: "" },
+              CONTACT_INFO: { value: "" },
+              ACCT_MODE: { value: "" },
+              ADD1: { value: "" },
+              TRAN_BAL: { value: "" },
+              PARA_BNFCRY: { value: "" },
+              TYPE_CD: { value: "" },
+            };
+          },
         },
         accountCodeMetadata: {
           fullWidth: true,
@@ -595,14 +611,21 @@ export const RtgsEntryFormMetaData = {
 
     {
       render: {
-        componentType: "phoneNumber",
+        componentType: "phoneNumberOptional",
       },
       name: "CONTACT_INFO",
       label: "ContactNo",
       placeholder: "Mobile Number",
       type: "string",
+      startsIcon: "PhoneAndroidSharp",
+      iconStyle: {
+        color: "var(--theme-color3)",
+        height: 20,
+        width: 20,
+      },
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
       required: true,
+      maxLength: 10,
       schemaValidation: {
         type: "string",
         rules: [
@@ -611,6 +634,16 @@ export const RtgsEntryFormMetaData = {
             params: ["PleaseEnterOrderingAcContactInformation"],
           },
         ],
+      },
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 0) {
+          return "";
+        } else if (columnValue.value.length >= 11) {
+          return "The length of your Mobile Number is greater than 10 character";
+        } else if (columnValue.value.length <= 9) {
+          return "The length of your Mobile Number is less than 10 character";
+        }
+        return "";
       },
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],
@@ -785,6 +818,21 @@ export const RtgsEntryFormMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      dependentFields: ["TRAN_DT"],
+      validate: (currentField, dependentField) => {
+        const currentDate = new Date(currentField?.value);
+        const rangeDate = new Date(dependentField?.TRAN_DT?.value);
+        const transDate = new Date(dependentField?.TRAN_DT?.value);
+
+        if (currentDate < rangeDate || currentDate > transDate) {
+          return (
+            "DateShouldBetween" +
+            rangeDate.toLocaleDateString("en-IN") +
+            " - " +
+            transDate.toLocaleDateString("en-IN")
+          );
+        }
+      },
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],
         isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -2469,12 +2517,19 @@ export const AuditBenfiDetailFormMetadata = {
 
     {
       render: {
-        componentType: "phoneNumber",
+        componentType: "phoneNumberOptional",
       },
       name: "TO_CONTACT_NO",
       label: "Mobile Number",
       placeholder: "",
       type: "text",
+      startsIcon: "PhoneAndroidSharp",
+      iconStyle: {
+        color: "var(--theme-color3)",
+        height: 20,
+        width: 20,
+      },
+      maxLength: 10,
       __NEW__: {
         schemaValidation: {
           type: "string",
@@ -2484,6 +2539,16 @@ export const AuditBenfiDetailFormMetadata = {
               params: ["Please enter the Beneficiary A/c Mobile No."],
             },
           ],
+        },
+        validate: (columnValue, allField, flag) => {
+          if (columnValue.value.length <= 0) {
+            return "";
+          } else if (columnValue.value.length >= 11) {
+            return "The length of your Mobile Number is greater than 10 character";
+          } else if (columnValue.value.length <= 9) {
+            return "The length of your Mobile Number is less than 10 character";
+          }
+          return "";
         },
       },
       __EDIT__: {
