@@ -18,8 +18,8 @@ export const EntryDescMasterGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "79vh",
-      max: "79vh",
+      min: "70vh",
+      max: "70vh",
     },
     allowColumnHiding: true,
     isCusrsorFocused: true,

@@ -32,7 +32,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "view-details",
-    actionLabel: "ViewDetail",
+    actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -137,7 +137,6 @@ const ACperiodMasterGrid = () => {
         loading={isLoading || isFetching}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
-        defaultSortOrder={[{ id: "LEAN_CD", desc: false }]}
       />
       <Routes>
         <Route

@@ -16,8 +16,8 @@ export const CategoryMasterGridMetaData: GridMetaDataType = {
     pageSizes: [10, 30, 50],
     defaultPageSize: 10,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,

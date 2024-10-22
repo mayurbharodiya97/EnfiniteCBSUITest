@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   LinearProgress,
@@ -37,8 +36,10 @@ import {
   MasterDetailsForm,
   MasterDetailsMetaData,
   usePopupContext,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import { ViewChanges } from "../../imps-entry/confirm/viewChanges/viewChanges";
 const CommonForm = (props) => {
   const actions: ActionTypes[] = [
     {
@@ -85,6 +86,7 @@ const CommonForm = (props) => {
   });
 
   const [retrieveData, setRetrieveData] = useState<any>();
+  const [filteredData, setFilteredData] = useState<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [formMode, setFormMode] = useState<any>("add");
   const myRef = useRef<any>(null);
@@ -138,14 +140,35 @@ const CommonForm = (props) => {
   const atmConfirmation: any = useMutation("confirmData", confirmData, {
     onSuccess(data, variables) {
       CloseMessageBox();
-      if (Boolean(variables?._isConfrimed)) {
-        enqueueSnackbar(t("DataConfirmMessage"), { variant: "success" });
-      } else if (!Boolean(variables?._isConfrimed)) {
-        enqueueSnackbar(t("DataRejectMessage"), { variant: "success" });
+
+      if (data?.[0]?.STATUS === "999") {
+        MessageBox({
+          messageTitle: "InvalidConfirmation",
+          message: data?.message || data?.[0]?.MESSAGE,
+          icon: "ERROR",
+        });
+      } else {
+        //  after successfull update confirmed flag
+        const updateConfirmation = (data) => {
+          const updatedData = data.map((old) => {
+            if (old?.TRAN_CD === variables?.TRAN_CD) {
+              return { ...old, CONFIRMED: variables?._isConfrimed ? "Y" : "R" };
+            }
+            return old;
+          });
+
+          return updatedData;
+        };
+        setFilteredData(updateConfirmation(filteredData));
+        setRetrieveData(updateConfirmation(retrieveData));
+
+        enqueueSnackbar(
+          t(
+            variables?._isConfrimed ? "DataConfirmMessage" : "DataRejectMessage"
+          ),
+          { variant: "success" }
+        );
       }
-      setRetrieveData((old) => {
-        return old.filter((item) => item?.TRAN_CD !== variables?.TRAN_CD);
-      });
     },
     onError() {
       setIsData((old) => ({
@@ -302,19 +325,17 @@ const CommonForm = (props) => {
     });
   };
 
-  const filterData: any = async ({ flag }) => {
-    // if (flag === "all") {
-    //   if (Array.isArray(rows) && rows?.length) {
-    //     setRetrieveData(rows);
-    //   }
-    // } else if (flag === "refresh") {
-    //   if (Array.isArray(rowsData) && rowsData?.length) {
-    //     let refreshData = rowsData.filter(
-    //       (item) => item?.data?.CONFIRMED === "N"
-    //     );
-    //     setRetrieveData(refreshData);
-    //   }
-    // }
+  // common function for filter data on click view-all and refresh button
+  const filterData = (flag) => {
+    if (flag === "REFRESH") {
+      let refreshData = retrieveData?.filter(
+        (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
+      );
+      setCurrentIndex(0);
+      setRetrieveData(refreshData);
+    } else if (flag === "VIEW_ALL") {
+      setRetrieveData(filteredData);
+    }
   };
 
   useEffect(() => {
@@ -516,7 +537,7 @@ const CommonForm = (props) => {
         {({ isSubmitting, handleSubmit }) => {
           return (
             <>
-              <Button
+              <GradientButton
                 sx={{
                   display:
                     formMode === "view" && retrieveData?.length > 0
@@ -534,8 +555,8 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("Prev")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     formMode === "view" && retrieveData?.length > 0
@@ -553,9 +574,9 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("Next")}
-              </Button>
+              </GradientButton>
 
-              <Button
+              <GradientButton
                 sx={{
                   display:
                     FLAG === "C" && retrieveData?.length > 0
@@ -567,8 +588,8 @@ const CommonForm = (props) => {
                 onClick={() => confirmedData({ flag: "cfm" })}
               >
                 {t("Confirm")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG === "C" && retrieveData?.length > 0
@@ -580,8 +601,8 @@ const CommonForm = (props) => {
                 onClick={() => confirmedData({ flag: "rj" })}
               >
                 {t("Reject")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG !== "C" && retrieveData?.length > 0
@@ -595,8 +616,8 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {formMode === "edit" ? t("View") : t("Edit")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG !== "C" && retrieveData?.length > 0
@@ -617,8 +638,8 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("New")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG === "C" && retrieveData?.length > 0
@@ -626,38 +647,49 @@ const CommonForm = (props) => {
                       : "none",
                 }}
                 disabled={validateInsert?.isLoading}
+                onClick={() =>
+                  navigate("view-changes", {
+                    state: {
+                      COMP_CD: retrieveData?.[currentIndex]?.ENTERED_COMP_CD,
+                      BRANCH_CD:
+                        retrieveData?.[currentIndex]?.ENTERED_BRANCH_CD,
+                      TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
+                      DOC_CD: "MST/847",
+                    },
+                  })
+                }
                 color={"primary"}
               >
-                View Changes
-              </Button>
-              <Button
+                {t("ViewChanges")}
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG === "C" && retrieveData?.length > 0
                       ? "inline-flex"
                       : "none",
                 }}
-                onClick={() => filterData({ flag: "all" })}
+                onClick={() => filterData("VIEW_ALL")}
                 disabled={validateInsert?.isLoading}
                 color="primary"
               >
                 {t("View All")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     FLAG === "C" && retrieveData?.length > 0
                       ? "inline-flex"
                       : "none",
                 }}
-                onClick={() => filterData({ flag: "refresh" })}
+                onClick={() => filterData("REFRESH")}
                 disabled={validateInsert?.isLoading}
                 color="primary"
               >
                 {t("Refresh")}
-              </Button>
+              </GradientButton>
 
-              <Button
+              <GradientButton
                 sx={{
                   display:
                     isData?.isVisible || retrieveData?.length
@@ -669,8 +701,8 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("JointDetails")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display:
                     isData?.isVisible || retrieveData?.length
@@ -682,9 +714,9 @@ const CommonForm = (props) => {
                 onClick={() => navigate("photo-sign")}
               >
                 {t("PhotoSign")}
-              </Button>
+              </GradientButton>
 
-              <Button
+              <GradientButton
                 sx={{
                   display:
                     FLAG !== "C" && retrieveData?.length > 0
@@ -696,9 +728,8 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("Delete")}
-              </Button>
-              <Button
-                // sx={{ display: FLAG !== "C" ? "inline-flex" : "none" }}
+              </GradientButton>
+              <GradientButton
                 onClick={() =>
                   navigate(FLAG === "C" ? "retrieve-cfm-form" : "retrieve-form")
                 }
@@ -706,20 +737,17 @@ const CommonForm = (props) => {
                 color={"primary"}
               >
                 {t("Retrieve")}
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 sx={{
                   display: FLAG !== "C" ? "inline-flex" : "none",
                 }}
                 color={"primary"}
                 onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                 disabled={validateInsert?.isLoading}
-                // endIcon={
-                //   mutation?.isLoading ? <CircularProgress size={20} /> : null
-                // }
               >
                 {t("Save")}
-              </Button>
+              </GradientButton>
             </>
           );
         }}
@@ -800,9 +828,14 @@ const CommonForm = (props) => {
               onClose={() => navigate(".")}
               navigate={navigate}
               setRetrieveData={setRetrieveData}
+              setFilteredData={setFilteredData}
               setFormMode={setFormMode}
             />
           }
+        />
+        <Route
+          path="view-changes/*"
+          element={<ViewChanges navigate={navigate} />}
         />
       </Routes>
       {isData?.isOpenCard && (

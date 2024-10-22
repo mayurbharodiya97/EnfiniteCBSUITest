@@ -137,7 +137,7 @@ export const en_language_data = {
   DepositedInstallment: "Deposited Installment",
   Interest: "Interest",
   InterestDetail: "Interest Detail",
-  NoOfDays: "No of Day(s)",
+  NoOfDays: "No. of Days",
   LastProvisionDate: "Last Provision Date",
   ProvisionalAmount: "Provisional Amount",
   DateFrom: "Date From",
@@ -241,6 +241,7 @@ export const en_language_data = {
   TotalRecords: "Total Records",
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
+  SelectPaymentmode: "Select Payment Mode",
 
   // GridWrapper
   Search: "Search",
@@ -1020,7 +1021,8 @@ export const en_language_data = {
   Futuredatesarenotallowed: "Future dates are not allowed.",
   FromDateshouldbelessthanorequaltoToDate:
     "From Date should be less than or equal to To Date.",
-
+  ClearingDateshouldbelessthanorequaltoGdDate:
+    "Clearing Date should be less than or equal to Working Date.",
   Whichformatdoyouwanttodownload: "Which format do you want to download?",
   Excel: "Excel",
   CSV: "CSV",
@@ -1029,6 +1031,8 @@ export const en_language_data = {
   ColumnstoExport: "Columns to Export",
   ExportReportform: "Export Report form",
   Selectfiletype: "Select file type",
+  Selectpagesize: "Select page size",
+  Selectorientation: "Select orientation",
   ShowHeader: "Show Header",
   AreyousureyouwanttodeletetheselectedRecords:
     "Are you sure you want to delete the selected Records",
@@ -1358,12 +1362,19 @@ export const en_language_data = {
   UPIDailyLimit: "UPI/Daily Limit",
   DoYouWantSaveChanges: "Do You Want Save Changes ?",
   limitamountlessthan: "limit amount should be less than",
+  ModifiedBy: "Modified By",
+  ModifiedDate: "Modified Date",
+  MachineName: "Machine Name",
+  SrCode: "Sr Code",
+  ViewChangesHederTitle: "Online Transaction Registration changes",
+  ATMConfirmationRetrieveData: "ATM Confirmation Retrieve Data",
+  IMPSConfirmationRetrieveData: "IMPS Confirmation Retrieve Data",
 
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
   // Ac period Mater
-  PeriodName: "Period-Name",
+  PeriodName: "Period Name",
   InstNo: "Inst. No.",
   InstallmentPeriod: "Installment Period",
 
@@ -1552,7 +1563,7 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  CLGDate: "CLG Date",
+  CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
 
@@ -1563,7 +1574,7 @@ export const en_language_data = {
   EnterRemovalRemarksINWARDRETURNCONFIRMATION:
     "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
   EnterRemovalRemarksOUTWARDRETURNCONFIRMATION:
-    "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
+    "Enter Removal Remarks for Outward Return Confirmation (TRN/346)",
   ClearingRetrieveInformation: "Clearing Retrieve Information",
 
   // date clearing transfer
@@ -1904,6 +1915,7 @@ export const en_language_data = {
   SICharge: "SI Charge",
   Remark: "Remark",
   ValidUpTo: "Valid UpTo",
+  ValidUpto: "Valid Upto",
   SINumber: "SI Number",
   CreditAcctName: "Credit A/C Name",
   DebitAcctName: "Debit A/C Name",
@@ -1916,7 +1928,7 @@ export const en_language_data = {
   ActivityTime: "Activity Time",
   ColumnName: "Column Name",
   OldValue: "Old Value",
-  NewValue: "NewValue",
+  NewValue: "New Value",
   ColorandSi:
     "Red Color Indicates the Deactivated SI & Double Click to View SI Details",
   EnterCommisionType: "Enter Commision Type",
@@ -1951,8 +1963,7 @@ export const en_language_data = {
     "This Can't be Revert back! Do you want to Consider it as executed?",
   DataNotFound: "Data Not Found",
   TotalNoofActiveSI: "Total No. of Active SI",
-  EnterRemovalRemarksForSI:
-    "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
@@ -1966,6 +1977,8 @@ export const en_language_data = {
   InstallmentTypeisrequired: "Installment Type is required",
   InstAmount: "Installment Amount",
   RunningIntAmt: "Running Int. Amt.",
+  SelectCategoryPlaceHolder: "Select Category",
+  SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
   InterestFunded: "Interest Funded",
@@ -1995,7 +2008,7 @@ export const en_language_data = {
   definationRequired: "Defination is required.",
   term: "Term",
   termrequire: "Term is required",
-  principlerequire: "Principal is required",
+  principleAmtrequire: "Principal Amount is required",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",
   Customer: "Customer",
@@ -2081,6 +2094,10 @@ export const en_language_data = {
   BeneficiaryAccountName: "Beneficiary Account Name",
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
+  EnterBranchCode: "Enter Branch Code",
+  EnterAccountName: "Enter Account Name",
+  EnterDepositeDate: "Enter Deposite Date",
+  EnterMaturityDate: "Enter Maturity Date",
 
   // Daily Transaction Import
   errors: "Errors",
@@ -2136,9 +2153,9 @@ export const en_language_data = {
   EnterOrderingAcName: "Enter Ordering A/c Name",
   EnterOrderingAcAddress: "Enter Ordering A/c Address",
   EnterOrderingAcContact: "Enter Ordering A/c Contact",
-  EnterBeneficiaryAccountType: "Enter Beneficiary Account Type",
+  EnterBeneficiaryAccountType: "Select Beneficiary Account Type",
   EnterBeneficiaryContact: "Enter Beneficiary Contact",
-  EnterBeneficiaryAccountNumber: "Enter Beneficiary Account Number",
+  EnterBeneficiaryAccountNumber: "Select Beneficiary Account Number",
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
@@ -2157,4 +2174,10 @@ export const en_language_data = {
   LabelName: "Label Name",
   ViewMaster: "View Master",
   Advice: "Advice",
+  // Parameter Master
+  ModifiedDateTime: "Modified Date-Time",
+  ModifiedMachineName: "Modified Machine Name",
+  VerifiedMachineName: "Verified Machine Name",
+  //FD Interest Payment Confirmation
+  CompanyCode: "Company Code",
 };

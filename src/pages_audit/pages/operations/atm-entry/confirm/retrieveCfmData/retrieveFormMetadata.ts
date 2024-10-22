@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 export const retrieveFormMetaData = {
   form: {
     name: "atm-retrieve-cfm-metadata",
-    label: "Retrieve Information",
+    label: "RetrieveInformation",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
