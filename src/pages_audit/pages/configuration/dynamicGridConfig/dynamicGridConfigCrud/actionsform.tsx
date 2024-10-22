@@ -136,14 +136,10 @@ export const ActionFormWrapper = ({
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-  if (ActionsMetaData?.fields?.[0]?._fields?.[2]) {
-    ActionsMetaData.fields[0]._fields[2].requestProps =
-      reqData[0]?.data?.DOC_CD ?? "";
-  }
 
   if (ActionsMetaData.form.label) {
     ActionsMetaData.form.label =
-      "Actions" + " for " + reqData[0]?.data?.DESCRIPTION ?? "";
+      "Actions" + " for " + reqData[0]?.data?.DESCRIPTION;
   }
 
   return (
@@ -172,6 +168,9 @@ export const ActionFormWrapper = ({
             // hideHeader={true}
             formStyle={{
               background: "white",
+            }}
+            formState={{
+              docCD: reqData[0]?.data?.DOC_CD ?? "",
             }}
           >
             {({ isSubmitting, handleSubmit }) => (

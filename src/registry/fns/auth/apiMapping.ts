@@ -2641,6 +2641,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/DELETEIMPORTEDDATA",
     packageName: "",
   },
+  GETERRSTATUSDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETERRSTATUSDDDW",
+    packageName: "",
+  },
   DOCASHEXCHANGENTRY: {
     url: "/transactionServiceAPI/DOCASHEXCHANGENTRY",
     packageName: "",
@@ -2875,6 +2879,26 @@ export const ActionWiseAPIConfiguration = {
   },
   GETREPORTDETAIL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETREPORTDETAIL",
+    packageName: "",
+  },
+  GETATMIMPSAUDRPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMIMPSAUDRPT",
+    packageName: "",
+  },
+  VALIDATEHOLDCHRGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEHOLDCHRGF1",
+    packageName: "",
+  },
+  HOLDCHARGEPROCESSBUTTON: {
+    url: "/transactionServiceAPI/HOLDCHARGEPROCESSBUTTON",
+    packageName: "",
+  },
+  GETFDDETAILREPORT: {
+    url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
+    packageName: "",
+  },
+  GETDDPRINTCONFIGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTCONFIGDTL",
     packageName: "",
   },
 };

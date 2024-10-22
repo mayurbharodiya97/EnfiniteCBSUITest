@@ -95,6 +95,7 @@ const ChequeSearchMain = () => {
           message: t("GenerateOutwardReturnEntry"),
           icon: "CONFIRM",
           buttonNames: ["Yes", "No"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           setReturnChequeForm(true);

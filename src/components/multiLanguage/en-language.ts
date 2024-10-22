@@ -850,7 +850,7 @@ export const en_language_data = {
   RBICodeIsRequired: "RBI Code is required.",
   EnterBankName: "Enter Bank Name",
   BankNameIsRequired: "Bank Name is required.",
-  AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected",
+  AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected.",
   Select: "Select",
   DisplayName: "Display Name",
   CTS: "CTS",
@@ -1359,6 +1359,13 @@ export const en_language_data = {
   UPIDailyLimit: "UPI/Daily Limit",
   DoYouWantSaveChanges: "Do You Want Save Changes ?",
   limitamountlessthan: "limit amount should be less than",
+  ModifiedBy: "Modified By",
+  ModifiedDate: "Modified Date",
+  MachineName: "Machine Name",
+  SrCode: "Sr Code",
+  ViewChangesHederTitle: "Online Transaction Registration changes",
+  ATMConfirmationRetrieveData: "ATM Confirmation Retrieve Data",
+  IMPSConfirmationRetrieveData: "IMPS Confirmation Retrieve Data",
 
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
@@ -1770,7 +1777,7 @@ export const en_language_data = {
   FinInterest: "Fin Interest",
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
-  NoRecordFound: "No Record Found",
+  NoRecordFound: "No Record Found.",
   ConfirmFormData: "Are you sure to confirm this Form?",
   ConfirmRestrictionMessage: "You can not confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
@@ -1903,6 +1910,7 @@ export const en_language_data = {
   SICharge: "SI Charge",
   Remark: "Remark",
   ValidUpTo: "Valid UpTo",
+  ValidUpto: "Valid Upto",
   SINumber: "SI Number",
   CreditAcctName: "Credit A/C Name",
   DebitAcctName: "Debit A/C Name",
@@ -1915,7 +1923,7 @@ export const en_language_data = {
   ActivityTime: "Activity Time",
   ColumnName: "Column Name",
   OldValue: "Old Value",
-  NewValue: "NewValue",
+  NewValue: "New Value",
   ColorandSi:
     "Red Color Indicates the Deactivated SI & Double Click to View SI Details",
   EnterCommisionType: "Enter Commision Type",
@@ -1950,8 +1958,7 @@ export const en_language_data = {
     "This Can't be Revert back! Do you want to Consider it as executed?",
   DataNotFound: "Data Not Found",
   TotalNoofActiveSI: "Total No. of Active SI",
-  EnterRemovalRemarksForSI:
-    "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
 
   //standing instruction Confirmation
@@ -2118,6 +2125,9 @@ export const en_language_data = {
   FinalInstallment: "Final Installment",
   ResolutionNo: "Resolution No.",
   Subsidy: "Subsidy",
+  ConfirmRestrictionMsg: "You can not confirm your own rescheduled loan",
+  ConfirmReschedulingMessage: "Are you sure to confirm rescheduling?",
+  RejectReschedulingMessage: "Are you sure to delete/reject rescheduling?",
   confirmMsg: "Record has been confirmed.",
   FDRDDtl: "FD/RD Detail",
   OrderingNameRequired: "Ordering A/c Name is Required",
@@ -2152,4 +2162,9 @@ export const en_language_data = {
   Sign: "Sign",
   LabelName: "Label Name",
   ViewMaster: "View Master",
+  Advice: "Advice",
+  // Parameter Master
+  ModifiedDateTime: "Modified Date-Time",
+  ModifiedMachineName: "Modified Machine Name",
+  VerifiedMachineName: "Verified Machine Name",
 };

@@ -119,6 +119,7 @@ export const form15GHEntryMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 formState.setDataOnFieldChange("GRID_DATA", []);
                 if (buttonName === "No") {
@@ -180,6 +181,7 @@ export const form15GHEntryMetaData = {
                       messageTitle: "Confirmation",
                       message: postData2[j]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     btn99 = btnName;
                     if (btnName === "No") {
@@ -459,10 +461,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         GridProps: { xs: 12, sm: 6, md: 6, lg: 4, xl: 3 },
       },
       {
@@ -536,10 +534,6 @@ export const form15GHEntryMetaData = {
               };
             }
           },
-        },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
         },
         GridProps: { xs: 12, sm: 6, md: 5.5, lg: 4, xl: 3 },
       },
@@ -668,6 +662,7 @@ export const form15GHEntryMetaData = {
               messageTitle: "Validation Failed",
               message: "ActiveValidationMessage",
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (buttonName === "Ok") {
               return {

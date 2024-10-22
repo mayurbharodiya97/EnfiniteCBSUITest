@@ -249,6 +249,7 @@ export const PositivePayEntry = ({
                   messageTitle: "Confirmation",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "No" && formMode !== "view") {
                   endSubmit(true);
@@ -261,6 +262,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -276,6 +278,7 @@ export const PositivePayEntry = ({
                     messageTitle: "Confirmation",
                     buttonNames: ["Yes", "No"],
                     loadingBtnName: ["Yes"],
+                    icon: "CONFIRM",
                   });
                   if (btnName === "Yes") {
                     mutation.mutate({
@@ -297,9 +300,10 @@ export const PositivePayEntry = ({
   const setChequeImage = async () => {
     if (!Boolean(formData?.CHEQUE_IMG)) {
       MessageBox({
-        messageTitle: "ChequeImage",
+        messageTitle: "Information",
         message: "ChequeImageIsNotUploaded",
         buttonNames: ["Ok"],
+        icon: "INFO",
       });
     } else if (Boolean(formData?.CHEQUE_IMG)) {
       setOpenImage(true);
@@ -426,6 +430,7 @@ export const PositivePayEntry = ({
                         messageTitle: "Confirmation",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         const confirmData = {
@@ -489,15 +494,87 @@ export const PositivePayEntry = ({
                 </GradientButton>
                 <GradientButton
                   color={"primary"}
+                  endIcon={
+                    validatePositivePayDtlMutation?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
                   onClick={async (event) => {
-                    const confirmation = await MessageBox({
-                      message: "RejectMessage",
-                      messageTitle: "Confirmation",
-                      buttonNames: ["Yes", "No"],
+                    const requestPara = {
+                      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+                      ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+                      ACCT_NM: rows?.[0]?.data?.ACCT_NM ?? "",
+                      TYPE_CD: "",
+                      CHEQUE_NO: rows?.[0]?.data?.CHEQUE_NO ?? "",
+                      CHEQUE_DT:
+                        format(
+                          new Date(rows?.[0]?.data?.CHEQUE_DT),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      CHEQUE_AMT: rows?.[0]?.data?.CHEQUE_AMT ?? "",
+                      PAYEE_NM: rows?.[0]?.data?.PAYEE_NM ?? "",
+                      REMARKS: rows?.[0]?.data?.REMARKS ?? "",
+                      ENTERED_DATE:
+                        format(
+                          new Date(rows?.[0]?.data?.ENTERED_DATE),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      TRAN_DT:
+                        format(
+                          new Date(rows?.[0]?.data?.TRAN_DT),
+                          "dd/MMM/yyyy"
+                        ) ?? "",
+                      ENTERED_BY: rows?.[0]?.data?.ENTERED_BY ?? "",
+                      VIEW: "",
+                      ENT_COMP_CD: authState?.companyID ?? "",
+                      ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                      TRAN_CD: rows?.[0]?.data?.TRAN_CD ?? "",
+                      INS_UPD: "D",
+                      GI_BRANCH: authState?.user?.branchCode ?? "",
+                      SCREEN_REF: "MST/968",
+                      CHEQUE_IMG: rows?.[0]?.data?.CHEQUE_IMG ?? "",
+                      UPLOAD: rows?.[0]?.data?.UPLOAD ?? "",
+                      REQ_CHANNEL: rows?.[0]?.data?.REQ_CHANNEL ?? "",
+                    };
+                    validatePositivePayDtlMutation.mutate(requestPara, {
+                      onSuccess: async (data, variables) => {
+                        for (let i = 0; i < data?.length; i++) {
+                          if (data[i]?.O_STATUS === "999") {
+                            const btnName = await MessageBox({
+                              messageTitle: "ValidationFailed",
+                              message: data[i]?.O_MESSAGE,
+                              buttonNames: ["Ok"],
+                              icon: "ERROR",
+                            });
+                          } else if (data[i]?.O_STATUS === "9") {
+                            const btnName = await MessageBox({
+                              messageTitle: "Alert",
+                              message: data[i]?.O_MESSAGE,
+                              icon: "WARNING",
+                            });
+                          } else if (data[i]?.O_STATUS === "99") {
+                            const btnName = await MessageBox({
+                              messageTitle: "Confirmation",
+                              message: data[i]?.O_MESSAGE,
+                              buttonNames: ["Yes", "No"],
+                            });
+                            if (btnName === "No") {
+                              break;
+                            }
+                          } else if (data[i]?.O_STATUS === "0") {
+                            const confirmation = await MessageBox({
+                              message: "RejectMessage",
+                              messageTitle: "Confirmation",
+                              buttonNames: ["Yes", "No"],
+                              icon: "CONFIRM",
+                            });
+                            if (confirmation === "Yes") {
+                              setReject(true);
+                            }
+                          }
+                        }
+                      },
                     });
-                    if (confirmation === "Yes") {
-                      setReject(true);
-                    }
                   }}
                 >
                   {t("Reject")}
@@ -654,7 +731,7 @@ export const PositivePayEntryFormWrapper: React.FC<
           overflow: "auto",
         },
       }}
-      maxWidth="md"
+      maxWidth="lg"
     >
       <PositivePayEntry
         isDataChangedRef={isDataChangedRef}

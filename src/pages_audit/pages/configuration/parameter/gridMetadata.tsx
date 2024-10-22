@@ -24,6 +24,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
+    footerNote: "Parameters In Red Colour Indicates Pending For Confirmation",
   },
   filters: [
     {
@@ -70,7 +71,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -142,7 +143,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED_STATUS",
-      columnName: "Confirm Status",
+      columnName: "ConfirmStatus",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -170,7 +171,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_MODIFIED_DATE",
-      columnName: "Modified Date",
+      columnName: "ModifiedDateTime",
       sequence: 9,
       alignment: "center",
       componentType: "date",
@@ -246,7 +247,7 @@ export const AuditMetadata: GridMetaDataType = {
     },
     {
       accessor: "MACHINE_NM",
-      columnName: "Modified Machine",
+      columnName: "ModifiedMachineName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -277,7 +278,7 @@ export const AuditMetadata: GridMetaDataType = {
     },
     {
       accessor: "VERIFIED_MACHINE_NM",
-      columnName: "Verified Machine",
+      columnName: "VerifiedMachineName",
       sequence: 5,
       alignment: "left",
       componentType: "default",

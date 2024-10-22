@@ -38,13 +38,66 @@ export const accountFindmetaData = {
         name: "BRANCH_CD",
         isReadOnly: true,
         runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          return {
+            ACCT_NM: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "" },
+          };
+        },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
       },
       accountTypeMetadata: {
         name: "ACCT_TYPE",
-        runPostValidationHookAlways: true,
-        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
         isFieldFocused: true,
+        dependentFields: ["BRANCH_CD"],
+        validationRun: "onChange",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+          };
+        },
+        GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
@@ -58,6 +111,16 @@ export const accountFindmetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
           const reqParameters = {
             BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
             ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value ?? "",
@@ -67,8 +130,32 @@ export const accountFindmetaData = {
             ),
             SCREEN_REF: "MST/606",
           };
-
           if (
+            currentField?.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             dependentFieldValues?.BRANCH_CD?.value &&
             dependentFieldValues?.ACCT_TYPE?.value
           ) {
@@ -92,6 +179,7 @@ export const accountFindmetaData = {
                   messageTitle: "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -230,10 +318,10 @@ export const TransactionGridMetaData: GridMetaDataType = {
       accessor: "ACCT_NO",
       columnName: "AccountNum",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
-      width: 120,
-      minWidth: 100,
+      width: 150,
+      minWidth: 120,
       maxWidth: 200,
     },
     {
@@ -322,7 +410,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "ACCT_TYPE",
       columnName: "DrType",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 130,
       minWidth: 80,
@@ -332,7 +420,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "ACCT_CD",
       columnName: "DrAcNo",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -342,7 +430,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "TO_BRANCH_CD",
       columnName: "CrBr",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 50,
@@ -352,7 +440,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "TO_ACCT_TYPE",
       columnName: "CrType",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 140,
       minWidth: 90,
@@ -362,7 +450,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "TO_ACCT_CD",
       columnName: "CrAcNo",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 160,
       minWidth: 110,
@@ -426,7 +514,7 @@ export const TransactionHoldGridMetaData: GridMetaDataType = {
       accessor: "ENTERED_BRANCH_CD",
       columnName: "EnterBranch",
       sequence: 11,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 70,
@@ -465,7 +553,7 @@ export const MembersGridMetaData: GridMetaDataType = {
       accessor: "SR_NO",
       columnName: "SrNo",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 80,
       minWidth: 100,
@@ -476,7 +564,7 @@ export const MembersGridMetaData: GridMetaDataType = {
       accessor: "ACCT_NO",
       columnName: "AccountNum",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -496,8 +584,8 @@ export const MembersGridMetaData: GridMetaDataType = {
       accessor: "TRAN_BAL",
       columnName: "balance",
       sequence: 4,
-      alignment: "left",
-      componentType: "default",
+      alignment: "right",
+      componentType: "currency",
       isDisplayTotal: true,
       totalDecimalCount: 2,
       width: 140,
@@ -559,7 +647,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "ACCT_TYPE",
       columnName: "DrType",
       sequence: 1,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 130,
       minWidth: 80,
@@ -569,7 +657,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "ACCT_CD",
       columnName: "DrAcNo",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 150,
       minWidth: 100,
@@ -579,7 +667,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "TO_BRANCH_CD",
       columnName: "CrBr",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 100,
       minWidth: 50,
@@ -589,7 +677,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "TO_ACCT_TYPE",
       columnName: "CrType",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 140,
       minWidth: 90,
@@ -599,7 +687,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "TO_ACCT_CD",
       columnName: "CrAcNo",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 160,
       minWidth: 110,
@@ -609,8 +697,9 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "TRAN_DT",
       columnName: "TransactionDate",
       sequence: 6,
-      alignment: "left",
-      componentType: "default",
+      alignment: "center",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy",
       width: 120,
       minWidth: 70,
       maxWidth: 170,
@@ -619,7 +708,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "TYPE_CD",
       columnName: "Trx",
       sequence: 7,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 70,
@@ -671,7 +760,7 @@ export const ParkedChargesGridMetaData: GridMetaDataType = {
       accessor: "ENTERED_BRANCH_CD",
       columnName: "EnterBranch",
       sequence: 12,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 70,
@@ -801,6 +890,21 @@ export const AccountCloseForm = {
       },
       branchCodeMetadata: {
         name: "TRN_BRANCH_CD",
+        validationRun: "onChange",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          return {
+            TRN_ACCT_NM: { value: "" },
+            TRN_ACCT_TYPE: { value: "" },
+            TRN_ACCT_CD: { value: "" },
+          };
+        },
         GridProps: { xs: 12, sm: 4, md: 1.5, lg: 1.5, xl: 1.5 },
         dependentFields: ["TYPE_CD", "PAYSLIP", "NEFT"],
         shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -819,7 +923,47 @@ export const AccountCloseForm = {
       accountTypeMetadata: {
         name: "TRN_ACCT_TYPE",
         GridProps: { xs: 12, sm: 4, md: 1.75, lg: 1.75, xl: 1.75 },
-        dependentFields: ["TYPE_CD", "PAYSLIP", "NEFT"],
+        dependentFields: ["TYPE_CD", "PAYSLIP", "NEFT", "TRN_BRANCH_CD"],
+        validationRun: "onChange",
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.TRN_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TRN_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TRN_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
+          return {
+            TRN_ACCT_CD: { value: "" },
+            TRN_ACCT_NM: { value: "" },
+          };
+        },
         shouldExclude(fieldData, dependentFieldsValues, formState) {
           if (
             dependentFieldsValues?.TYPE_CD?.value === "4" ||
@@ -844,6 +988,7 @@ export const AccountCloseForm = {
           "TRN_BRANCH_CD",
           "TRN_ACCT_TYPE",
         ],
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -851,6 +996,16 @@ export const AccountCloseForm = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              TRN_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
           const reqParameters = {
             BRANCH_CD: dependentFieldValues?.TRN_BRANCH_CD?.value ?? "",
             COMP_CD: authState?.companyID ?? "",
@@ -861,8 +1016,32 @@ export const AccountCloseForm = {
             ),
             SCREEN_REF: "MST/606",
           };
-
           if (
+            currentField?.value &&
+            dependentFieldValues?.TRN_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TRN_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TRN_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             Boolean(dependentFieldValues?.TRN_BRANCH_CD?.value) &&
             Boolean(dependentFieldValues?.TRN_ACCT_TYPE?.value)
           ) {

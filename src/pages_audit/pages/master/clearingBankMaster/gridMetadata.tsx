@@ -18,8 +18,8 @@ export const ClearingBankMstGridMetaData: GridMetaDataType = {
     pageSizes: [30, 50, 100],
     defaultPageSize: 30,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,

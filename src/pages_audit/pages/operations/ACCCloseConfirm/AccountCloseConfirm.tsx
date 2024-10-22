@@ -95,28 +95,29 @@ export const AccountCloseConfirm = () => {
       onSuccess: async (data) => {
         let ConfirmMSG = data;
         for (let i = 0; i < ConfirmMSG.length; i++) {
-          if (ConfirmMSG[i]?.O_STATUS === "999") {
+          if (ConfirmMSG?.[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
               messageTitle: "ValidationFailed",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "ERROR",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "99") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "99") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Confirmation",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "9") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "9") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Alert",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "WARNING",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "0") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "0") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Success",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "SUCCESS",
               buttonNames: ["Ok"],
             });
@@ -209,7 +210,7 @@ export const AccountCloseConfirm = () => {
     };
   }, []);
   useEffect(() => {
-    if (confirmationData.length === 0) {
+    if (confirmationData?.length === 0) {
       setAccountDetails([]);
       setVoucherDetails([]);
     }
@@ -242,12 +243,12 @@ export const AccountCloseConfirm = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg || t("Somethingwenttowrong")}
           errorDetail={error?.error_detail ?? ""}
           color="error"
         />
       )}
-      {fetchAccountDetails.isLoading ? <LoaderPaperComponent /> : null}
+      {fetchAccountDetails?.isLoading ? <LoaderPaperComponent /> : null}
       <DailyTransTabs
         //@ts-ignore
         heading={headingWithButton}
@@ -257,12 +258,12 @@ export const AccountCloseConfirm = () => {
         hideCust360Btn={true}
       />
       <GridWrapper
-        key={"ClosedAccountDetails" + voucherDetails.length}
+        key={"ClosedAccountDetails" + voucherDetails?.length}
         finalMetaData={ClosedAccountDetailsMetaData}
         data={voucherDetails ?? []}
         setData={() => null}
         loading={
-          fetchVoucherDetails.isLoading || fetchVoucherDetails.isFetching
+          fetchVoucherDetails?.isLoading || fetchVoucherDetails?.isFetching
         }
         actions={detailActions}
         setAction={DetailsetCurrentAction}
@@ -290,6 +291,7 @@ export const AccountCloseConfirm = () => {
                   message: "AcCloseConfMsg",
                   buttonNames: ["Yes", "No", "Cancel"],
                   loadingBtnName: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "Yes") {
                   handleAccountCloseConfirmation.mutate({
@@ -332,6 +334,7 @@ export const AccountCloseConfirm = () => {
                 message: "ReOpenConfMsg",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "CONFIRM",
               });
               if (btnName === "Yes") {
                 handleAccountCloseConfirmation.mutate({

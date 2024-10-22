@@ -50,6 +50,7 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
         message: `Press 'Yes' - to view Lien Marked FD(s) against this A/c.\nPress 'No' - to view all the FD(s) of  this Customer.`,
         buttonNames: ["Yes", "No", "Cancel"],
         loadingBtnName: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (buttonName === "Yes" || buttonName === "No") {
         myMasterRef?.current?.getFieldData().then((res) => {

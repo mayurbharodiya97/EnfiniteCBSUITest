@@ -1,4 +1,4 @@
-import { AppBar, Button } from "@mui/material";
+import { AppBar } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { RetrieveCfmData } from "../confirm/retrieveCfmData/retrieveCfmData";
 import { impsCfmMetaData } from "./impsConfirmMetadata";
 import { useMutation } from "react-query";
-import { confirmIMPSdata, getImpsDetails } from "../api";
+import { confirmIMPSdata, getImpsDetails, viewChangesData } from "../api";
 import { DayLimit } from "../dayLimit/dayLimit";
 import {
   ActionTypes,
@@ -15,9 +15,11 @@ import {
   MasterDetailsForm,
   MasterDetailsMetaData,
   usePopupContext,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import { enqueueSnackbar } from "notistack";
+import { ViewChanges } from "./viewChanges/viewChanges";
 const ImpsConfirmation = () => {
   const actions: ActionTypes[] = [
     {
@@ -128,7 +130,7 @@ const ImpsConfirmation = () => {
   }, []);
 
   // common function for filter data on click view-all and refresh button
-  const filerData = (flag) => {
+  const filterData = (flag) => {
     if (flag === "REFRESH") {
       let refreshData = retrieveData?.filter(
         (item) => item.CONFIRMED !== "Y" && item.CONFIRMED !== "R"
@@ -196,15 +198,15 @@ const ImpsConfirmation = () => {
             <>
               {retrieveData?.length > 0 && (
                 <>
-                  <Button
+                  <GradientButton
                     startIcon={<ArrowBackIosNewIcon />}
                     disabled={1 === currentIndex + 1 || accountList?.isLoading}
                     onClick={() => changeIndex("previous")}
                     color={"primary"}
                   >
                     {t("Prev")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     endIcon={<ArrowForwardIosIcon />}
                     disabled={
                       currentIndex + 1 === retrieveData?.length ||
@@ -214,8 +216,8 @@ const ImpsConfirmation = () => {
                     color={"primary"}
                   >
                     {t("Next")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     disabled={
                       accountList?.isLoading ||
                       retrieveData?.[currentIndex]?.CONFIRMED !== "N"
@@ -226,8 +228,8 @@ const ImpsConfirmation = () => {
                     color="primary"
                   >
                     {t("Confirm")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     disabled={
                       accountList?.isLoading ||
                       retrieveData?.[currentIndex]?.CONFIRMED !== "N"
@@ -238,40 +240,55 @@ const ImpsConfirmation = () => {
                     color="primary"
                   >
                     {t("Reject")}
-                  </Button>
-                  <Button disabled={accountList?.isLoading} color={"primary"}>
-                    {t("ViewChanges")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     disabled={accountList?.isLoading}
-                    onClick={() => filerData("VIEW_ALL")}
+                    onClick={() =>
+                      navigate("view-changes", {
+                        state: {
+                          COMP_CD:
+                            retrieveData?.[currentIndex]?.ENTERED_COMP_CD,
+                          BRANCH_CD:
+                            retrieveData?.[currentIndex]?.ENTERED_BRANCH_CD,
+                          TRAN_CD: retrieveData?.[currentIndex]?.TRAN_CD,
+                          DOC_CD: "MST/844",
+                        },
+                      })
+                    }
+                    color={"primary"}
+                  >
+                    {t("ViewChanges")}
+                  </GradientButton>
+                  <GradientButton
+                    disabled={accountList?.isLoading}
+                    onClick={() => filterData("VIEW_ALL")}
                     color="primary"
                   >
                     {t("View All")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     disabled={accountList?.isLoading}
-                    onClick={() => filerData("REFRESH")}
+                    onClick={() => filterData("REFRESH")}
                     color="primary"
                   >
                     {t("Refresh")}
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     disabled={accountList?.isLoading}
                     color="primary"
                     onClick={() => navigate("photo-sign")}
                   >
                     {t("PhotoSign")}
-                  </Button>
+                  </GradientButton>
                 </>
               )}
-              <Button
+              <GradientButton
                 disabled={accountList?.isLoading}
                 onClick={() => navigate("retrieve-cfm-form")}
                 color={"primary"}
               >
                 {t("Retrieve")}
-              </Button>
+              </GradientButton>
             </>
           );
         }}
@@ -301,6 +318,10 @@ const ImpsConfirmation = () => {
         <Route
           path="daylimit-form/*"
           element={<DayLimit navigate={navigate} />}
+        />
+        <Route
+          path="view-changes/*"
+          element={<ViewChanges navigate={navigate} />}
         />
       </Routes>
     </>

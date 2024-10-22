@@ -130,7 +130,9 @@ const StandingInstruction = ({
       VALID_UPTO: format(new Date(data.SI_SDT[0].VALID_UPTO), "dd/MMM/yyyy"),
     });
   };
-
+  StandingInstructionMainMetaData.form.label = `Standing Instruction Entry ${t(
+    "EnteredBy"
+  )}: ${authState?.user?.id}`;
   return (
     <>
       <FormWrapper

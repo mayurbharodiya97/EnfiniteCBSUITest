@@ -734,7 +734,8 @@ const TellerScreen = ({ screenFlag }) => {
               }
               if (payload) {
                 // console.log(payload, "payload");
-                const { dependentFieldValues, paddedAcctcode } = payload;
+                const { dependentFieldValues, paddedAcctcode, NPA_CD } =
+                  payload;
                 setCardTabsReq({
                   COMP_CD: authState?.companyID,
                   ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
@@ -747,6 +748,7 @@ const TellerScreen = ({ screenFlag }) => {
                       ?.PARENT_CODE,
                   BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
                   SCREEN_REF: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
+                  NPA_CD: NPA_CD,
                 });
               }
             } else if (action === "ACCT_TYPE") {
