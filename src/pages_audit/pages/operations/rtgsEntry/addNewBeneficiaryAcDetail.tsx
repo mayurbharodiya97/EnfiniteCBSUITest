@@ -209,7 +209,7 @@ export const AddNewBeneficiaryDetail: FC<{
         formMode === "new"
           ? t("AreYouSaveThisRecord")
           : t("AreYouSureInactiveThisRecord"),
-      buttonNames: ["No", "Yes"],
+      buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
     });
     if (buttonName === "Yes") {
