@@ -47,7 +47,6 @@ export const InsuranceEntryFormMetaData = {
         },
         branchCodeMetadata: {
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
-          runPostValidationHookAlways: true,
           render: {
             componentType: "textField",
           },
@@ -60,6 +59,7 @@ export const InsuranceEntryFormMetaData = {
           defaultfocus: true,
           defaultValue: "",
           validationRun: "onChange",
+          required: true,
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
@@ -200,15 +200,6 @@ export const InsuranceEntryFormMetaData = {
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",
                 },
-                COVER_NOTE:
-                  returnVal !== ""
-                    ? {
-                        value: "",
-                        isFieldFocused: true,
-                      }
-                    : {
-                        isFieldFocused: false,
-                      },
               };
             } else if (!field.value) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
@@ -234,6 +225,33 @@ export const InsuranceEntryFormMetaData = {
         isReadOnly: true,
         fullWidth: true,
         GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "COVER_NOTE",
+        label: "CoverNote",
+        type: "text",
+        fullWidth: true,
+        txtTransform: "uppercase",
+        required: true,
+        maxLength: 50,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["PleaseEnterCoverNote"] }],
+        },
+        validate: (columnValue, allField, flag) => {
+          let regex = /^[a-zA-Z0-9 ]*$/;
+          // special-character not allowed
+          if (columnValue.value) {
+            if (!regex.test(columnValue.value)) {
+              return "PleaseEnterAlphanumericValue";
+            }
+          }
+          return "";
+        },
+        GridProps: { xs: 12, sm: 3.1, md: 3.1, lg: 3.1, xl: 3.1 },
       },
       {
         render: {
@@ -295,34 +313,6 @@ export const InsuranceEntryFormMetaData = {
         isReadOnly: true,
         label: "EntryDate",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      },
-
-      {
-        render: {
-          componentType: "textField",
-        },
-        name: "COVER_NOTE",
-        label: "CoverNote",
-        type: "text",
-        fullWidth: true,
-        txtTransform: "uppercase",
-        required: true,
-        maxLength: 50,
-        schemaValidation: {
-          type: "string",
-          rules: [{ name: "required", params: ["PleaseEnterCoverNote"] }],
-        },
-        validate: (columnValue, allField, flag) => {
-          let regex = /^[a-zA-Z0-9 ]*$/;
-          // special-character not allowed
-          if (columnValue.value) {
-            if (!regex.test(columnValue.value)) {
-              return "PleaseEnterAlphanumericValue";
-            }
-          }
-          return "";
-        },
-        GridProps: { xs: 12, sm: 3.1, md: 3.1, lg: 3.1, xl: 3.1 },
       },
 
       {
@@ -403,6 +393,19 @@ export const InsuranceEntryFormMetaData = {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterInsuranceAmount"] }],
         },
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         dependentFields: ["NET_PREMIUM_AMOUNT"],
         postValidationSetCrossFieldValues: async (
           field,
@@ -449,6 +452,19 @@ export const InsuranceEntryFormMetaData = {
         fullWidth: true,
         label: "NetPremium",
         required: true,
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         schemaValidation: {
           type: "string",
           rules: [
@@ -515,7 +531,7 @@ export const InsuranceEntryFormMetaData = {
                 ASON_DT: auth?.workingDate,
               });
               return {
-                SERVICE_CHARGE: { value: postData?.[0]?.TAX_AMOUNT },
+                SERVICE_CHARGE: { value: postData?.[0]?.TAX_AMOUNT ?? "" },
               };
             } else if (!field?.value) {
               return {
@@ -536,6 +552,19 @@ export const InsuranceEntryFormMetaData = {
         label: "GST",
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
         dependentFields: ["NET_PREMIUM_AMOUNT"],
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -561,11 +590,11 @@ export const InsuranceEntryFormMetaData = {
                     isFieldFocused: true,
                     ignoreUpdate: true,
                   },
-                  TOTAL_PRE: {
-                    value: "",
-                    isFieldFocused: false,
-                    ignoreUpdate: true,
-                  },
+                  // TOTAL_PRE: {
+                  //   value: "",
+                  //   isFieldFocused: false,
+                  //   ignoreUpdate: true,
+                  // },
                 };
               }
             }
@@ -743,12 +772,20 @@ export const InsuranceEntryFormMetaData = {
             return true;
           },
         },
+        isDisplayTotal: true,
+        footerLabel: "Total Amount",
       },
       {
         columnName: "Action",
         componentType: "deleteRowCell",
         accessor: "_hidden",
         sequence: 5,
+        shouldExclude: (initialValue, original) => {
+          if (Boolean(original?._isNewRow)) {
+            return false;
+          }
+          return true;
+        },
       },
     ],
   },

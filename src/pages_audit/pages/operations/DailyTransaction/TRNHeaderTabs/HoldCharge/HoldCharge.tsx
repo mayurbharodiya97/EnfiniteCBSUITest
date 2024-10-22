@@ -19,6 +19,7 @@ import {
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import i18n from "components/multiLanguage/languagesConfiguration";
+import { useTranslation } from "react-i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -38,26 +39,39 @@ export const HoldCharge = ({ reqData }) => {
   const PreviousRowsDataRef = useRef<any>([]);
   const previousRow = useRef<any>({});
   const [prevPaidValues, setPrevPaidValues] = useState<any>([]);
+  const { t } = useTranslation();
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getHoldChargeList", { reqData }], () => API.getHoldChargeList(reqData), {
-    onSuccess: (data) => {
+    onSuccess: (data) => {},
+  });
+  useEffect(() => {
+    if (data?.length > 0) {
       setRows(data);
       oldRowsDataRef.current = data;
       PreviousRowsDataRef.current = data;
-    },
-  });
+    }
+  }, [data]);
   const validateHoldCharge = useMutation(API.validateHoldCharge, {
     onError: async (error: any) => {
-      const btnName = await MessageBox({
-        messageTitle: "ValidationFailed",
-        message: error?.error_msg ?? "",
-        icon: "ERROR",
-      });
+      let updatedRows = [...rows];
+      const rowIndex: any = previousRow.current?.index;
+      if (rowIndex !== undefined && rowIndex !== null) {
+        const rowToUpdate: any = updatedRows.find(
+          (row: any) => row.index === rowIndex
+        );
+
+        if (rowToUpdate) {
+          // Update the state with the modified rows
+          rowToUpdate.PAID = previousRow.current?.PAID;
+          setRows(updatedRows);
+        }
+      }
+
       CloseMessageBox();
     },
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       let updatedRows = [...rows];
       for (let i = 0; i < data.length; i++) {
         if (data[i]?.O_STATUS === "999") {
@@ -99,6 +113,16 @@ export const HoldCharge = ({ reqData }) => {
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "0") {
+          const rowIndex: any = previousRow.current?.index;
+          if (rowIndex !== undefined && rowIndex !== null) {
+            const rowToUpdate: any = updatedRows.find(
+              (row: any) => row.index === rowIndex
+            );
+            if (rowToUpdate) {
+              // Update the state with the modified rows
+              setRows(updatedRows);
+            }
+          }
         }
       }
     },
@@ -121,8 +145,8 @@ export const HoldCharge = ({ reqData }) => {
   const setCurrentAction = useCallback(async (data) => {
     if (data?.name === "proceed") {
       const updatedRows = myGridRef.current?.cleanData(true);
-      const filteredRows = updatedRows?.filter((row) => row.PAID !== "N");
-      const paidChanges = filteredRows.map((updatedRow) => ({
+      const paidUpdatedRows = updatedRows?.filter((row) => row.PAID !== "N");
+      const paidChanges = paidUpdatedRows.map((updatedRow) => ({
         amount: parseFloat(updatedRow.AMOUNT).toFixed(2),
         remarks: updatedRow.REMARKS,
         paid:
@@ -142,7 +166,7 @@ export const HoldCharge = ({ reqData }) => {
               `${change.amount} ${change.remarks} ${change.paid}`
           )
           .join("\n");
-        const reqPara = filteredRows?.map((row) => ({
+        const reqPara = paidUpdatedRows?.map((row) => ({
           ENTERED_COMP_CD: row?.ENTERED_COMP_CD ?? "",
           ENTERED_BRANCH_CD: row?.ENTERED_BRANCH_CD ?? "",
           TRAN_CD: row?.TRAN_CD ?? "",
@@ -170,8 +194,8 @@ export const HoldCharge = ({ reqData }) => {
   }, []);
 
   useEffect(() => {
-    const currentPaidValues = rows.map((row: any) => row.PAID);
-    const isPaidChanged = currentPaidValues.some(
+    const currentPaidValues = rows?.map((row: any) => row?.PAID);
+    const isPaidChanged = currentPaidValues?.some(
       (paid, index) => paid !== prevPaidValues[index] && paid !== "N"
     );
     if (!isPaidChanged) {
@@ -210,6 +234,17 @@ export const HoldCharge = ({ reqData }) => {
         A_SCREEN_REF: reqData?.SCREEN_REF ?? "",
         A_LANG: i18n.resolvedLanguage,
       });
+
+      setRows((prevRows: any) =>
+        prevRows.map((row: any) => {
+          return row.TRAN_CD === filteredRow.TRAN_CD
+            ? {
+                ...row,
+                FLAG: "Y",
+              }
+            : row;
+        })
+      );
     });
     setPrevPaidValues(currentPaidValues);
     PreviousRowsDataRef.current = rows;
@@ -227,19 +262,28 @@ export const HoldCharge = ({ reqData }) => {
 
   return (
     <>
-      {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
-      ) : null}
+      {(isError || validateHoldCharge?.error) && (
+        <Alert
+          severity="error"
+          errorMsg={
+            error?.error_msg ||
+            validateHoldCharge?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            error?.error_detail || validateHoldCharge?.error?.error_detail || ""
+          }
+          color="error"
+        />
+      )}
+
       <GridWrapper
-        key={`HoldChargeGridMetaData` + rows?.length}
+        key={
+          `HoldChargeGridMetaData` +
+          rows?.length +
+          validateHoldCharge?.isLoading +
+          validateHoldCharge?.isSuccess
+        }
         finalMetaData={HoldChargeGridMetaData as GridMetaDataType}
         data={rows ?? []}
         setData={setRows}
