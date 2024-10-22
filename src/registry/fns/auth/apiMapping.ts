@@ -2885,14 +2885,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
     packageName: "",
   },
-  GETBRANCHDDDW: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
-    packageName: "",
-  },
-  GETBRANCHVALIDATE: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHVALIDATE",
-    packageName: "",
-  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
