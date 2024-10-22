@@ -44,15 +44,6 @@ const actions: ActionTypes[] = [
     actionLabel: "Delete",
     multiple: false,
     rowDoubleClick: false,
-    shouldExclude: (data, authDetails) => {
-      if (Array.isArray(data) && data.length > 0) {
-        if (Boolean(data[0]?.data?.STATUS)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    },
   },
 ];
 
