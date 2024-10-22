@@ -75,6 +75,7 @@ const actions: ActionTypes[] = [
 
 const initialState = {
   OtpuserMessage: "",
+  otpSentText: "",
   otpmodelClose: false,
   loading: false,
   otploading: false,
@@ -130,6 +131,7 @@ const reducer = (state, action) => {
         branchCD: action?.payload?.branchCD,
         username: action?.payload?.username,
         OtpuserMessage: "",
+        otpSentText: action?.payload?.otpSentText,
         otpmodelClose: false,
         otpValidFor: action?.payload?.otpValidFor,
         sentDate: action?.payload?.sentDate,
@@ -239,6 +241,7 @@ const RtgsBranchHoConfirmationForm: FC<{
             recieveOtp: data?.[0]?.OTP,
             sentDate: data?.[0]?.SENT_DATE,
             contactUser: result[0]?.data?.hdrData?.CONTACT_INFO,
+            otpSentText: data?.[0]?.OTP_SENT_TEXT,
           },
         });
         setIsOTP(true);
@@ -246,7 +249,6 @@ const RtgsBranchHoConfirmationForm: FC<{
       onError: (error: any) => {},
     }
   );
-
   const boConfirmation: any = useMutation(
     "getRtgsBranchConfirmtion",
     API.getRtgsBranchConfirmtion,
@@ -260,6 +262,10 @@ const RtgsBranchHoConfirmationForm: FC<{
         CloseMessageBox();
       },
       onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
         CloseMessageBox();
       },
     }
@@ -277,6 +283,10 @@ const RtgsBranchHoConfirmationForm: FC<{
         CloseMessageBox();
       },
       onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
         CloseMessageBox();
       },
     }
@@ -590,6 +600,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                                     result[0]?.data?.hdrData?.BRANCH_CD,
                                   TRN_DT: result[0]?.data?.hdrData?.TRAN_DT,
                                   SCREEN_REF: "MST/553",
+                                  CONFIRMED: "0",
+                                  TRN_FLAG: "RTGS/NEFT",
+                                  TYPE_CD: "",
                                 });
                               } else if (
                                 result[0]?.data?.acBalanceData
@@ -800,6 +813,22 @@ const RtgsBranchHoConfirmationForm: FC<{
                     </AppBar>
                   </div>
                 </>
+              ) : boConfirmation?.isError || hoConfirmation?.isError ? (
+                <>
+                  <Alert
+                    severity="error"
+                    errorMsg={
+                      (boConfirmation?.error?.error_msg ||
+                        hoConfirmation?.error?.error_msg) ??
+                      "Something went to wrong.."
+                    }
+                    errorDetail={
+                      boConfirmation?.error?.error_detail ||
+                      hoConfirmation?.error?.error_detail
+                    }
+                    color="error"
+                  />
+                </>
               ) : (
                 <>
                   <FormWrapper
@@ -886,6 +915,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                           PaperProps={{
                             style: {
                               width: "36%",
+                              height: "55%",
                             },
                           }}
                         >
@@ -905,7 +935,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                                 sx={{
                                   fontWeight: 700,
                                   color: "var(--theme-color2)",
-                                  fontSize: "1.2rem",
+                                  fontSize: "1.3rem",
                                 }}
                               >
                                 {t("RTGSHOConfirmation")}

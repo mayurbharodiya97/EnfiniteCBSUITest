@@ -183,7 +183,7 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
-              {loginState?.authType === "OTP"
+              {loginState?.authType === "OTP" || resendFlag === "RN_HO_CONF"
                 ? loginState?.otpSentText ?? ""
                 : loginState?.authType === "TOTP"
                 ? t("otp.PleaseEnterOTP")
@@ -208,17 +208,17 @@ export const OTPModel = ({
                 ? loginState.username.charAt(0).toUpperCase() +
                   loginState.username.slice(1)
                 : null}
-              {loginState?.authType === "OTP" && (
-                <ResendOTP
-                  // onResendClick={() => setbtnshow(false)}
-                  onResendClick={handleResendClick}
-                  // onTimerComplete={() => setbtnshow(true)}
-                  renderButton={renderButton}
-                  renderTime={renderTime}
-                  maxTime={loginState?.otpValidFor ?? 60}
-                  className={classes.resendOTPalign}
-                />
-              )}
+              {/* {loginState?.authType === "OTP" && ( */}
+              <ResendOTP
+                // onResendClick={() => setbtnshow(false)}
+                onResendClick={handleResendClick}
+                // onTimerComplete={() => setbtnshow(true)}
+                renderButton={renderButton}
+                renderTime={renderTime}
+                maxTime={loginState?.otpValidFor ?? 60}
+                className={classes.resendOTPalign}
+              />
+              {/* )} */}
             </div>
             <div
               className={classes.divflex}
@@ -271,12 +271,19 @@ export const OTPModel = ({
               <></>
             )}
             <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                margin: "42px 0 0 42px",
-                width: "60%",
-              }}
+              className={
+                resendFlag === "RN_HO_CONF"
+                  ? classes.rtgsHoClass
+                  : classes.otpNormalClass
+              }
+              // style={{
+              //   display:"flex",
+              //   gap:  resendFlag==="RN_HO_CONF" ? "0" : "10px",
+              //   marginTop: resendFlag==="RN_HO_CONF" ? "5px !important" :"42px",
+              //   width: resendFlag==="RN_HO_CONF" ?"80%":"60%",
+              //   marginRight :resendFlag==="RN_HO_CONF" ? "0" : "42px",
+              //   margin : resendFlag==="RN_HO_CONF" ?"0 auto" :""
+              // }}
             >
               <GradientButton
                 // fullWidth

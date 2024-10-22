@@ -1470,7 +1470,7 @@ export const en_language_data = {
   TotalBenificiaryAmount: "Total Benificiary Amount",
   AuditTrail: "Audit Trail",
   RemittanceInfo: "Remittance Info.",
-  IfscDetail: "Ifsc Detail",
+  IfscDetail: "IFSC Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are you sure to save this record?",
