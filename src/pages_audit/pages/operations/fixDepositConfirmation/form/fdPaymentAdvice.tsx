@@ -1,12 +1,12 @@
 import { AppBar, Dialog } from "@mui/material";
 import {
-  Alert,
   LoaderPaperComponent,
   PDFViewer,
+  queryClient,
   usePopupContext,
   utilFunction,
 } from "@acuteinfo/common-base";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { printPaymentAdvice } from "../api";
 import { AuthContext } from "pages_audit/auth";
@@ -16,15 +16,13 @@ export const FdPaymentAdvicePrint = ({
   closeDialog,
   requestData,
   setOpenAdvice,
+  screenFlag,
 }) => {
   const { authState } = useContext(AuthContext);
   const [fileBlobData, setFileBlobData]: any = useState(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const { data, isLoading, isError, error, isFetching, refetch } = useQuery<
-    any,
-    any
-  >(
+  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["printPaymentAdvice", authState?.user?.branchCode],
     () => printPaymentAdvice(requestData),
     {
@@ -33,9 +31,9 @@ export const FdPaymentAdvicePrint = ({
         if (blobData) {
           setFileBlobData(blobData);
         }
-        // CloseMessageBox();
       },
       onError: async (error) => {
+        console.log("error", error, error?.error_msg);
         await MessageBox({
           messageTitle: "ValidationFailed",
           message: error?.error_msg ?? "",
@@ -45,6 +43,27 @@ export const FdPaymentAdvicePrint = ({
       },
     }
   );
+  console.log("requestData", requestData);
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries([
+        "printPaymentAdvice",
+        authState?.user?.branchCode,
+      ]);
+    };
+  }, []);
+
+  const printFormFileName =
+    screenFlag === "FDCONF"
+      ? "Fix Deposit Confirmation" +
+        `\u00A0\u00A0\u00A0\u00A0` +
+        "FD No.:" +
+        requestData?.FD_NO
+      : "Fix Deposit Entry" +
+        `\u00A0\u00A0\u00A0\u00A0` +
+        "FD No.:" +
+        requestData?.FD_NO;
   return (
     <>
       {isLoading || isFetching ? (
@@ -78,7 +97,7 @@ export const FdPaymentAdvicePrint = ({
           >
             <PDFViewer
               blob={fileBlobData}
-              fileName={``}
+              fileName={`${printFormFileName}`}
               onClose={() => closeDialog()}
             />
           </Dialog>

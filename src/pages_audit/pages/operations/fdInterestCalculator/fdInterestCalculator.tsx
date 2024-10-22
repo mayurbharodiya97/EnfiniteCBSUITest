@@ -13,15 +13,33 @@ import { metaData } from "./metaData";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation } from "react-query";
-import { Dialog } from "@mui/material";
+import { AppBar, Dialog, Toolbar, Typography } from "@mui/material";
 import { format } from "date-fns";
+import { Theme } from "@mui/system";
+import { makeStyles } from "@mui/styles";
+import { useLocation } from "react-router-dom";
+
+const useTypeStyles: any = makeStyles((theme: Theme) => ({
+  root: {
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    background: "var(--theme-color5)",
+  },
+  title: {
+    flex: "1 1 100%",
+    color: "var(--white)",
+    letterSpacing: "1px",
+    fontSize: "1.5rem",
+  },
+}));
 const FdInterestCalculator = () => {
+  let currentPath = useLocation().pathname;
   const [formMode, setFormMode] = useState("add");
   const [calcSwitch, setCalcSwitch] = useState("P");
   const { authState } = useContext(AuthContext);
   const isErrorFuncRef = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-
+  const headerClasses = useTypeStyles();
   const [formKey, setFormKey] = useState(Date.now());
   const [fileBlob, setFileBlob] = useState<any>(null);
   const [openPrint, setOpenPrint] = useState<any>(null);
@@ -131,6 +149,22 @@ const FdInterestCalculator = () => {
 
   return (
     <>
+      <AppBar position="relative" color="secondary">
+        <Toolbar className={headerClasses.root} variant="dense">
+          <Typography
+            className={headerClasses.title}
+            color="inherit"
+            variant="h6"
+            component="div"
+          >
+            {utilFunction.getDynamicLabel(
+              currentPath,
+              authState?.menulistdata,
+              true
+            )}
+          </Typography>
+        </Toolbar>
+      </AppBar>
       <FormWrapper
         key={formKey}
         ref={formRef}
@@ -146,6 +180,7 @@ const FdInterestCalculator = () => {
         formState={{
           MessageBox: MessageBox,
         }}
+        hideHeader={true}
         formStyle={{
           background: "white",
         }}

@@ -160,7 +160,6 @@ export const ClearingBankMstForm = ({
                         setFormMode("view");
                       }}
                       color={"primary"}
-                      disabled={isSubmitting}
                     >
                       {t("Cancel")}
                     </GradientButton>
