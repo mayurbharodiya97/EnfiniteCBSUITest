@@ -287,11 +287,7 @@ export const LoanRegenerateFormMetaData = {
       placeholder: "",
       fullWidth: true,
       autoComplete: "off",
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       maxLength: 5,
       FormatProps: {
         allowNegative: false,
@@ -889,11 +885,7 @@ export const LoanRescheduleFormMetaData = {
           return true;
         },
       },
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       placeholder: "",
       type: "text",
       fullWidth: true,
@@ -1043,11 +1035,7 @@ export const LoanRescheduleFormMetaData = {
       placeholder: "",
       fullWidth: true,
       isReadOnly: true,
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 1 },
     },
     {

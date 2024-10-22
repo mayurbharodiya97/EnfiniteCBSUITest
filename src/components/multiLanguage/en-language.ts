@@ -888,8 +888,8 @@ export const en_language_data = {
   editmode: "edit mode",
   viewmode: "view mode",
   FileName: "File Name",
-  ClearAll: "CLEAR ALL",
-  ViewFile: "VIEW FILE",
+  ClearAll: "Clear All",
+  ViewFile: "View File",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
@@ -1748,6 +1748,7 @@ export const en_language_data = {
   Uploaded: "Uploaded",
   ConfirmMessage: "Do you want to confirm this transaction?",
   RejectMessage: "Do you want to reject this transaction?",
+  PositivePayConfirmRestictionMessage: "You can not confirm your own Entry.",
 
   // Form 15GH entry and confirmation
   NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
@@ -1789,6 +1790,7 @@ export const en_language_data = {
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
 

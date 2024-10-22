@@ -84,7 +84,7 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
             display: "flex",
             flexDirection: "column",
             height: "100%",
-            padding: "10px",
+            padding: "5px",
           }}
           onKeyDown={handleKeyDown}
         >
