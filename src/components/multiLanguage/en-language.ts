@@ -345,6 +345,7 @@ export const en_language_data = {
   PassbookStatementPreview: "Passbook Statement Preview",
   PassbookUpdateMessage:
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
+  TemplateReqired: "Template Reqired",
 
   //for priority master main
   ParentGroup: "Parent Group",
