@@ -107,6 +107,14 @@ export const collateraljoint_tab_metadata = {
                     messageTitle: msgTitle,
                     message: msg,
                     buttonNames: buttonNames,
+                    icon:
+                      status === "9"
+                        ? "WARNING"
+                        : status === "99"
+                        ? "CONFIRM"
+                        : status === "999"
+                        ? "ERROR"
+                        : status === "0" && "SUCCESS",
                   });
                   return { buttonName, status };
                 };
@@ -115,7 +123,9 @@ export const collateraljoint_tab_metadata = {
                   if (response_messages[i]?.O_STATUS !== "0") {
                     let btnName = await messagebox(
                       response_messages[i]?.O_STATUS === "999"
-                        ? "validation fail"
+                        ? "ValidationFailed"
+                        : response_messages[i]?.O_STATUS === "99"
+                        ? "Confirmation"
                         : "Alert",
                       response_messages[i]?.O_MESSAGE,
                       response_messages[i]?.O_STATUS === "99"
