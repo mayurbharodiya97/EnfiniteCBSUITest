@@ -204,7 +204,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: t("ValidationSuccessful"),
             message: t("AreYouSurePostThisCheque"),
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -232,7 +232,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -279,7 +279,7 @@ export const InwardClearing = () => {
               t("DoYouWantAllowTransactionVoucherNo") +
               variables?.DAILY_TRN_CD +
               "?",
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -306,7 +306,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {

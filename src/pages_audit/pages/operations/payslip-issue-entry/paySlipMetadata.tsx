@@ -32,7 +32,7 @@ export const RetrieveGridMetaData = {
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "67vh",
+      min: "80vh",
       max: "67vh",
     },
     allowFilter: false,
@@ -1895,6 +1895,7 @@ export const DraftdetailsFormMetaData = {
             componentType: "textField",
           },
           name: "DISP_SIGN1",
+          label: "signature1",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
             if (dependentFields?.FORM_MODE?.value === "view") {
@@ -1970,6 +1971,7 @@ export const DraftdetailsFormMetaData = {
             componentType: "textField",
           },
           name: "DISP_SIGN2",
+          label: "signature2",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
             if (dependentFields?.FORM_MODE?.value === "view") {
@@ -2039,6 +2041,7 @@ export const DraftdetailsFormMetaData = {
             componentType: "textField",
           },
           name: "DISP_REGION",
+          label: "region",
           dependentFields: ["FORM_MODE"],
           shouldExclude: (val1, dependentFields) => {
             if (dependentFields?.FORM_MODE?.value === "view") {
@@ -2497,7 +2500,7 @@ export const SlipJoinDetailGridMetaData = {
     },
     {
       accessor: "JOINT_DISC",
-      columnName: "jointType",
+      columnName: "type",
       sequence: 4,
       alignment: "left",
       componentType: "default",

@@ -60,7 +60,7 @@ export const RetrievedinfoGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED_FLG",
-      columnName: "status",
+      columnName: "ConfirmStatus",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -84,7 +84,7 @@ export const RetrievedinfoGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "date",
+      columnName: "Tran Date",
       sequence: 5,
       alignment: "left",
       componentType: "date",

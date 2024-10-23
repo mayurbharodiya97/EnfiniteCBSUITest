@@ -32,9 +32,15 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "retrive",
-    actionLabel: "Retrive",
+    actionLabel: "Retrival",
     multiple: undefined,
     rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+  {
+    actionName: "close",
+    actionLabel: "close",
+    multiple: undefined,
     alwaysAvailable: true,
   },
   {
@@ -51,7 +57,7 @@ interface PayslipData {
   TOTAL_AMT?: number; // Optional because it's calculated
 }
 
-const PayslipissueconfirmationGrid = () => {
+const PayslipissueconfirmationGrid = ({ onClose }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dateDialog, setDateDialog] = useState(true); // Changed to false to not show dialog initially
@@ -115,6 +121,8 @@ const PayslipissueconfirmationGrid = () => {
         setDateDialog(true);
         retrievalParaRef.current = null;
         setGridData([]);
+      } else if (name === "close") {
+        onClose();
       } else if (name === "view-all" || name === "view-pending") {
         setActiveSiFlag((prevActiveSiFlag) => {
           const newActiveSiFlag = prevActiveSiFlag === "Y" ? "N" : "Y";
@@ -208,10 +216,10 @@ const PayslipissueconfirmationGrid = () => {
   );
 };
 
-export const Payslipissueconfirmation = () => {
+export const Payslipissueconfirmation = ({ onClose }) => {
   return (
     <ClearCacheProvider>
-      <PayslipissueconfirmationGrid />
+      <PayslipissueconfirmationGrid onClose={onClose} />
     </ClearCacheProvider>
   );
 };

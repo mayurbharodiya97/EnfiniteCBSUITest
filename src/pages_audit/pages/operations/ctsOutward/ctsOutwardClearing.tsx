@@ -236,7 +236,7 @@ const CtsOutwardClearingForm: FC<{
       const buttonName = await MessageBox({
         messageTitle: t("Confirmation"),
         message: t("ProceedGen"),
-        buttonNames: ["No", "Yes"],
+        buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
       if (buttonName === "Yes") {
@@ -780,7 +780,7 @@ const CtsOutwardClearingForm: FC<{
                 const buttonName = await MessageBox({
                   messageTitle: t("Confirmation"),
                   message: t("DoYouWantDeleteRow"),
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
                 });
