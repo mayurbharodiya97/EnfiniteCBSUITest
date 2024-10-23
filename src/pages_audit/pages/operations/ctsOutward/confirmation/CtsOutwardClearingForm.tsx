@@ -197,15 +197,13 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             buttonNames: ["Ok"],
           });
         } else if (
-          !(
-            format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-            format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-          )
+          new Date(rowsData?.TRAN_DT) !== new Date(authState?.workingDate)
         ) {
           await MessageBox({
             messageTitle: t("ValidationFailed"),
             message: t("CannotDeleteBackDatedEntry"),
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
         } else {
           SetDeleteRemark(true);
@@ -309,13 +307,14 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         buttonNames: ["Ok"],
                       });
                     } else if (
-                      format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-                      format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+                      new Date(rowsData?.TRAN_DT) !==
+                      new Date(authState?.workingDate)
                     ) {
                       await MessageBox({
                         messageTitle: t("Validation Failed"),
                         message: t("CannotDeleteBackDatedEntry"),
                         buttonNames: ["Ok"],
+                        icon: "ERROR",
                       });
                     } else {
                       SetDeleteRemark(true);
@@ -473,9 +472,10 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
                         message: t("DoYouWantDeleteRow"),
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         deleteMutation.mutate({
