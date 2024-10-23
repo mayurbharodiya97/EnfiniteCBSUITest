@@ -399,7 +399,7 @@ export const introductorjoint_tab_metadata = {
                     : "",
                 },
                 // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                DISTRICT_CD: {
+                DIST_CD: {
                   value: field?.optionData[0]?.DISTRICT_CD
                     ? field?.optionData[0]?.DISTRICT_CD
                     : "",
@@ -484,7 +484,7 @@ export const introductorjoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
-          name: "DISTRICT_CD",
+          name: "DIST_CD",
           label: "hidden district",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {

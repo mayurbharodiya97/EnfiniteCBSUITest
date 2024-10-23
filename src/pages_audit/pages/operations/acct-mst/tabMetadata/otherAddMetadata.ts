@@ -221,15 +221,15 @@ export const otherAdd_tab_metadata = {
                 },
                 // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                 DIST_CD: {
-                  value: field?.optionData[0]?.DIST_CD
-                    ? field?.optionData[0]?.DIST_CD
+                  value: field?.optionData[0]?.DISTRICT_CD
+                    ? field?.optionData[0]?.DISTRICT_CD
                     : "",
                 },
                 DISTRICT_ignoreField: {
                   value: field?.optionData[0]?.DISTRICT_NM
                     ? field?.optionData[0]?.DISTRICT_NM
-                    : field?.optionData[0]?.DIST_CD
-                    ? field?.optionData[0]?.DIST_CD
+                    : field?.optionData[0]?.DISTRICT_CD
+                    ? field?.optionData[0]?.DISTRICT_CD
                     : "",
                 },
                 STATE: { value: field?.optionData[0]?.STATE_NM ?? "" },
@@ -319,7 +319,7 @@ export const otherAdd_tab_metadata = {
               dependentFields?.["OTHER_ADDRESS_DTL.AREA_CD"]?.optionData;
             // console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
             if (optionData && optionData.length > 0) {
-              return optionData[0].DIST_CD;
+              return optionData[0].DISTRICT_CD;
             } else return "";
           },
         },

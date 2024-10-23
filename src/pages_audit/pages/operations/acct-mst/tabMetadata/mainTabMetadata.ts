@@ -164,7 +164,7 @@ export const main_tab_metadata = {
                     STATE_CD: { value: CustomerData?.STATE_CD },
                     TRADE_CD: { value: CustomerData?.TRADE_CD },
                     MEM_ACCT_CD: { value: CustomerData?.MEM_ACCT_CD },
-                    DISTRICT_CD: { value: CustomerData?.DISTRICT_CD },
+                    DIST_CD: { value: CustomerData?.DISTRICT_CD },
                     GENDER: { value: CustomerData?.GENDER },
                     CONTACT3: { value: CustomerData?.CONTACT3 },
                     CONTACT2: { value: CustomerData?.CONTACT2 },
@@ -242,7 +242,7 @@ export const main_tab_metadata = {
             STATE_CD: { value: "" },
             TRADE_CD: { value: "" },
             MEM_ACCT_CD: { value: "" },
-            DISTRICT_CD: { value: "" },
+            DIST_CD: { value: "" },
             GENDER: { value: "" },
             CONTACT3: { value: "" },
             CONTACT2: { value: "" },
@@ -743,7 +743,7 @@ export const main_tab_metadata = {
                 : "",
             },
             // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-            DISTRICT_CD: {
+            DIST_CD: {
               value: field?.optionData[0]?.DISTRICT_CD
                 ? field?.optionData[0]?.DISTRICT_CD
                 : "",
@@ -828,7 +828,7 @@ export const main_tab_metadata = {
       render: {
         componentType: "hidden",
       },
-      name: "DISTRICT_CD",
+      name: "DIST_CD",
       label: "hidden district",
       dependentFields: ["AREA_CD"],
       setValueOnDependentFieldsChange: (dependentFields) => {
