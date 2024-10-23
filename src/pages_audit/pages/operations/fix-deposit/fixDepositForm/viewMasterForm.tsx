@@ -2,7 +2,6 @@ import { Dialog, Paper } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
-import { FDContext } from "../context/fdContext";
 import { ViewMasterMetadata } from "./metaData/viewMasterMetaData";
 import { useQuery } from "react-query";
 import * as API from "../api";
@@ -15,6 +14,7 @@ import {
   InitialValuesType,
   FormWrapper,
   MetaDataType,
+  extractMetaData,
 } from "@acuteinfo/common-base";
 
 interface ViewMasterFormProps {
@@ -26,10 +26,9 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
   requestData,
 }) => {
   const { authState } = useContext(AuthContext);
-  const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
 
-  //Api for get View detail form data
+  //Api for get View master detail form data
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -55,10 +54,10 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
 
   //Form Header title
   ViewMasterMetadata.form.label = `View Master of A/c No.: ${
-    requestData?.BRANCH_CD ?? ""
-  }-${requestData?.ACCT_TYPE ?? ""}-${requestData?.ACCT_CD ?? ""} ${
-    requestData?.ACCT_NM ?? ""
-  }`;
+    requestData?.BRANCH_CD?.trim() ?? ""
+  }-${requestData?.ACCT_TYPE?.trim() ?? ""}-${
+    requestData?.ACCT_CD?.trim() ?? ""
+  } ${requestData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog
@@ -88,13 +87,14 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
             color="error"
           />
         )}
-
         {isLoading ? (
           <LoaderPaperComponent />
         ) : (
           <FormWrapper
             key={"ViewMasterForm"}
-            metaData={ViewMasterMetadata as MetaDataType}
+            metaData={
+              extractMetaData(ViewMasterMetadata, "view") as MetaDataType
+            }
             initialValues={
               {
                 ...data?.[0],
@@ -106,12 +106,14 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
                     : data?.[0]?.FORM_60 === "N"
                     ? "N"
                     : "",
-                BRANCH_CD: requestData?.BRANCH_CD ?? "",
-                ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
-                ACCT_CD: requestData?.ACCT_CD ?? "",
+                CATEGORY_VAL: `${data?.[0]?.CATEG_CD?.trim()} - ${data?.[0]?.CATEG_NM?.trim()}`,
+                MODE_VAL: `${data?.[0]?.ACCT_MODE?.trim()} - ${data?.[0]?.MODE_NM?.trim()}`,
+                BRANCH_VAL: `${data?.[0]?.BRANCH_CD?.trim()} - ${data?.[0]?.BRANCH_NM?.trim()}`,
+                ACCT_TYPE_VAL: `${data?.[0]?.ACCT_TYPE?.trim()} - ${data?.[0]?.TYPE_NM?.trim()}`,
               } as InitialValuesType
             }
             onSubmitHandler={() => {}}
+            displayMode={"view"}
             formStyle={{
               background: "white",
             }}

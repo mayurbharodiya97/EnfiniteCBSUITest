@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import { PayslipAndDDFormMetaData } from "./metaData/payslipAndDDMetaData";
 import {
   InitialValuesType,
@@ -25,6 +25,17 @@ export const PayslipAndDDForm = forwardRef<any, any>(
     const { MessageBox } = usePopupContext();
     const [formMode, setFormMode] = useState(defaultView);
     const { t } = useTranslation();
+
+    //Form Header title
+    useEffect(() => {
+      PayslipAndDDFormMetaData.form.label = `${
+        accountDetailsForPayslip?.SCREEN_NAME
+      } for A/C No.:\u00A0${
+        accountDetailsForPayslip?.BRANCH_CD?.trim() ?? ""
+      }-${accountDetailsForPayslip?.ACCT_TYPE.trim() ?? ""}-${
+        accountDetailsForPayslip?.ACCT_CD.trim() ?? ""
+      } `;
+    }, []);
 
     return (
       <>

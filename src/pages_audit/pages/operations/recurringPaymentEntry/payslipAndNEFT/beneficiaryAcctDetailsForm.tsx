@@ -63,6 +63,15 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
       };
     }, []);
 
+    //Form Header title
+    useEffect(() => {
+      BeneficiaryAcctDetailsFormMetaData.form.label = `${
+        accountDetailsForBen?.SCREEN_NAME
+      } for A/C No.:\u00A0${accountDetailsForBen?.BRANCH_CD?.trim() ?? ""}-${
+        accountDetailsForBen?.ACCT_TYPE.trim() ?? ""
+      }-${accountDetailsForBen?.ACCT_CD.trim() ?? ""} `;
+    }, []);
+
     return (
       <>
         {isLoading ? (

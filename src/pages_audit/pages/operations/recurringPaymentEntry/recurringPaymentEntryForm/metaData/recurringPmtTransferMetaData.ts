@@ -173,7 +173,7 @@ export const RecurringPaymentTransferFormMetaData = {
       },
       name: "RECPAYTRANS",
       isScreenStyle: true,
-      displayCountName: "TransferToAccount",
+      displayCountName: "Record",
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.RECPAYTRANS)
           ? data?.RECPAYTRANS

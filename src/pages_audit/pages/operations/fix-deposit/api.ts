@@ -126,6 +126,30 @@ export const getPeriodDDWData = async (reqData) => {
   }
 };
 
+export const getMatureInstDDWData = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETMATUREINSTDTL", {
+      ...reqData,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData?.map(
+        ({ MATURE_INST, DESCRIPTION, DEFAULT_VALUE }) => {
+          return {
+            value: MATURE_INST,
+            label: DESCRIPTION,
+            defaultVal: DEFAULT_VALUE,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const getFDIntRate = async (currField, dependentFields, auth) => {
   let currFieldName = currField?.name?.split(".");
   let fieldName = currFieldName[currFieldName.length - 1];
@@ -166,13 +190,11 @@ export const getFDIntRate = async (currField, dependentFields, auth) => {
         ACCT_TYPE: dependentFields?.["FDDTL.ACCT_TYPE"]?.value ?? "",
         ACCT_CD: dependentFields?.["FDDTL.ACCT_CD"]?.value ?? "",
         CATEG_CD: dependentFields?.["FDDTL.CATEG_CD"]?.value ?? "",
-        TRAN_DT: format(tranDate, "dd-MMM-yyyy"),
+        TRAN_DT: tranDate ? format(tranDate, "dd-MMM-yyyy") : "",
         TRSF_AMT: transAmt,
         PERIOD_CD: periodCode,
         PERIOD_NO: periodNo,
-        MATURITY_DT: dependentFields?.["FDDTL.MATURITY_DT"]?.value
-          ? format(dependentFields?.["FDDTL.MATURITY_DT"]?.value, "dd-MMM-yyyy")
-          : "",
+        MATURITY_DT: "",
         PRE_INT_FLAG: "N",
         PRINCIPAL_AMT: principalAmt,
       }
@@ -180,8 +202,7 @@ export const getFDIntRate = async (currField, dependentFields, auth) => {
     if (status === "0") {
       return {
         INT_RATE: {
-          value: data?.[0]?.INT_RATE ?? "",
-          ignoreUpdate: true,
+          value: parseFloat(data?.[0]?.INT_RATE ?? "")?.toFixed(2),
         },
         MATURITY_DT: {
           value: data?.[0]?.MATURITY_DT ?? "",
@@ -262,10 +283,9 @@ export const getFDMaturityAmt = async (currField, dependentFields, auth) => {
         ACCT_TYPE: dependentFields?.["FDDTL.ACCT_TYPE"]?.value ?? "",
         ACCT_CD: dependentFields?.["FDDTL.ACCT_CD"]?.value ?? "",
         CATEG_CD: dependentFields?.["FDDTL.CATEG_CD"]?.value ?? "",
-        TRAN_DT: format(
-          dependentFields?.["FDDTL.TRAN_DT"]?.value,
-          "dd-MMM-yyyy"
-        ),
+        TRAN_DT: dependentFields?.["FDDTL.TRAN_DT"]?.value
+          ? format(dependentFields?.["FDDTL.TRAN_DT"]?.value, "dd-MMM-yyyy")
+          : "",
         TRSF_AMT: transAmt,
         PERIOD_CD: dependentFields?.["FDDTL.PERIOD_CD"]?.value ?? "",
         PERIOD_NO: dependentFields?.["FDDTL.PERIOD_NO"]?.value ?? "",
@@ -321,6 +341,16 @@ export const validateFDDepAmt = async (reqData) => {
   }
 };
 
+export const getFDRenewMaturityAmt = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDMATURITYAMT", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const checkLienAcct = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHECKLIEN", reqData);
@@ -361,7 +391,6 @@ export const saveFDDetails = async (reqData) => {
   }
 };
 
-//payment
 export const checkAllowFDPay = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHECKALLOWFDPAY", { ...reqData });
@@ -412,15 +441,34 @@ export const saveFDPaymentDtls = async (reqData) => {
   }
 };
 
-////////Old api
-export const getFDAccountsDetail = async (Apireq) => {
+export const getFDRenewData = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERFDACCOUNTS", { ...Apireq });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  return { data, status, message, messageDetails };
-  // }
+    await AuthSDK.internalFetcher("GETFDRENEWDATA", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const saveFDRenewDepositDtl = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSAVEPAYMENTANDFDDEPOSITEDTL", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const saveFDLienEntryDtl = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVELIENENTRYDTL", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
 
 export const validateAccountAndGetDetail = async (reqData) => {
@@ -434,102 +482,6 @@ export const validateAccountAndGetDetail = async (reqData) => {
     });
   if (status === "0") {
     return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-// export const validateAccountAndGetDetail = async (
-//   companyCode,
-//   branchCode,
-//   accountType,
-//   accountCode,
-//   screenReference
-// ) => {
-//   if (!Boolean(companyCode)) return { status: "-1" };
-//   if (!Boolean(branchCode)) return { status: "-1" };
-//   if (!Boolean(accountType)) return { status: "-1" };
-//   if (!Boolean(accountCode)) return { status: "-1" };
-//   if (!Boolean(screenReference)) return { status: "-1" };
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("VALIDATEACCOUNT", {
-//       COMP_CD: companyCode,
-//       BRANCH_CD: branchCode,
-//       ACCT_TYPE: accountType,
-//       ACCT_CD: accountCode,
-//       SCREEN_REF: screenReference,
-//     });
-//   return { data, status, message, messageDetails };
-// };
-
-// export const valiateFDAccounts = async (Apireq) => {
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("VALIDATEFDACCOUNTS", { ...Apireq });
-//   if (status === "0") {
-//     return data;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-
-export const doFixDepositCreation = async (Apireq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOFDDEPOSIT", { ...Apireq });
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getFDSchemeData = async (fdTranCode, categCode) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFDSCHEMELIST", {
-      FD_DOUBLE_TRAN_CD: fdTranCode,
-      CATEG_CD: categCode,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getFDOperationData = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFDOPERATION", {});
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ DISP_VAL, DATA_VAL, ...others }) => {
-        return {
-          ...others,
-          value: DATA_VAL,
-          label: DISP_VAL,
-        };
-      });
-    }
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getFDOperationMode = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETFDOPERMODE", {});
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ DISP_VAL, DATA_VAL, ...others }) => {
-        return {
-          ...others,
-          value: DATA_VAL,
-          label: DISP_VAL,
-        };
-      });
-    }
-    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
