@@ -44,6 +44,7 @@ export const PositivePayEntry = ({
   const [uploadImage, setUploadImage] = useState(false);
   const [loadingAction, setLoadingAction] = useState<any>(null);
   const [isReject, setReject] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const formData =
     rows?.retrieveData && Object.keys(rows?.retrieveData).length > 0
@@ -314,6 +315,9 @@ export const PositivePayEntry = ({
     }
   };
 
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
+  };
   return (
     <>
       <FormWrapper
@@ -333,6 +337,7 @@ export const PositivePayEntry = ({
           formMode: formMode,
           MessageBox: MessageBox,
           docCD: "MST/968",
+          handleButtonDisable: handleButtonDisable,
         }}
         onFormButtonClickHandel={async (id) => {
           if (id === "VIEW") {
@@ -351,7 +356,9 @@ export const PositivePayEntry = ({
                   onClick={(event) => {
                     handleSubmit(event, "Remove");
                   }}
-                  disabled={validatePositivePayDtlMutation?.isLoading}
+                  disabled={
+                    validatePositivePayDtlMutation?.isLoading || disableButton
+                  }
                   endIcon={
                     loadingAction === "Remove" &&
                     validatePositivePayDtlMutation?.isLoading ? (
@@ -366,7 +373,9 @@ export const PositivePayEntry = ({
                     handleSubmit(event, "Save");
                   }}
                   color={"primary"}
-                  disabled={validatePositivePayDtlMutation?.isLoading}
+                  disabled={
+                    validatePositivePayDtlMutation?.isLoading || disableButton
+                  }
                   endIcon={
                     loadingAction === "Save" &&
                     validatePositivePayDtlMutation?.isLoading ? (
@@ -392,7 +401,9 @@ export const PositivePayEntry = ({
                   onClick={(event) => {
                     handleSubmit(event, "Save");
                   }}
-                  disabled={validatePositivePayDtlMutation?.isLoading}
+                  disabled={
+                    validatePositivePayDtlMutation?.isLoading || disableButton
+                  }
                   endIcon={
                     loadingAction === "Save" &&
                     validatePositivePayDtlMutation?.isLoading ? (
@@ -420,7 +431,7 @@ export const PositivePayEntry = ({
                     if (formData?.LAST_ENTERED_BY === authState?.user?.id) {
                       await MessageBox({
                         messageTitle: "InvalidConfirmation",
-                        message: "ConfirmRestrictionMessage",
+                        message: "PositivePayConfirmRestictionMessage",
                         buttonNames: ["Ok"],
                         icon: "WARNING",
                       });
@@ -590,7 +601,9 @@ export const PositivePayEntry = ({
                   onClick={(event) => {
                     handleSubmit(event, "Remove");
                   }}
-                  disabled={validatePositivePayDtlMutation?.isLoading}
+                  disabled={
+                    validatePositivePayDtlMutation?.isLoading || disableButton
+                  }
                   endIcon={
                     loadingAction === "Remove" &&
                     validatePositivePayDtlMutation?.isLoading ? (

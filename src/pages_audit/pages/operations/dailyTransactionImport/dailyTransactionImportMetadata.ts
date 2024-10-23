@@ -93,6 +93,7 @@ export const DailyTransactionImportMetadata = {
           auth,
           dependentFieldsValues
         ) => {
+          formState.setDataOnFieldChange("GRID_DETAIL", []);
           return {
             FROM_ACCT_CD: { value: "", ignoreUpdate: true },
             ACCT_NM: { value: "" },
@@ -150,7 +151,6 @@ export const DailyTransactionImportMetadata = {
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
-                formState.setDataOnFieldChange("GRID_DETAIL", []);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
@@ -558,6 +558,11 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 220,
       minWidth: 150,
       maxWidth: 290,
+      isDisplayTotal: true,
+      footerLabel: "Total Entries",
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "SDC",
@@ -568,6 +573,14 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 80,
       minWidth: 50,
       maxWidth: 120,
+      isDisplayTotal: true,
+      footerLabel: "Total Errors",
+      setFooterValue(total, rows) {
+        const proccessedCount = rows?.filter(
+          ({ original }) => !(original.STATUS === "Y")
+        ).length;
+        return [proccessedCount ?? 0];
+      },
     },
     {
       accessor: "TYPE_CD",
@@ -600,6 +613,21 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 150,
       minWidth: 150,
       maxWidth: 180,
+      isDisplayTotal: true,
+      footerLabel: "Total Credit",
+      setFooterValue(total, rows) {
+        // Filter rows where TYPE_CD is 1, 2, or 3
+        const filteredRows = rows?.filter(({ original }) =>
+          [1, 2, 3].includes(Number(original.TYPE_CD))
+        );
+        const sum =
+          filteredRows?.reduce(
+            (acc, { original }) => acc + Number(original.AMOUNT),
+            0
+          ) ?? 0;
+        const formattedSum = sum.toFixed(2);
+        return [formattedSum];
+      },
     },
 
     {
@@ -611,6 +639,20 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 220,
       minWidth: 150,
       maxWidth: 290,
+      isDisplayTotal: true,
+      footerLabel: "Total Debit",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(({ original }) =>
+          [4, 5, 6].includes(Number(original.TYPE_CD))
+        );
+        const sum =
+          filteredRows?.reduce(
+            (acc, { original }) => acc + Number(original.AMOUNT),
+            0
+          ) ?? 0;
+        const formattedSum = sum.toFixed(2);
+        return [formattedSum];
+      },
     },
     {
       accessor: "STATUS",

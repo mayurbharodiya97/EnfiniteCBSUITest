@@ -91,7 +91,7 @@ export const metaData = {
       name: "LEAN_NM",
       label: "Description",
       placeholder: "Description",
-      maxLength: 40,
+      maxLength: 50,
       type: "text",
       required: true,
       txtTransform: "uppercase",

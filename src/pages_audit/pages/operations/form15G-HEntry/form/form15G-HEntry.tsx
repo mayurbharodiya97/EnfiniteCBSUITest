@@ -81,11 +81,11 @@ const Form15GHEntry = ({
         authState?.menulistdata,
         false
       );
-      const label2 = `${label ?? ""}\u00A0\u00A0 ${
-        formData?.CONFIRMED_DIS ?? ""
-      }\u00A0\u00A0 ${t("Uploaded")}: ${
-        formData?.UPLOAD_DIS ?? ""
-      }\u00A0\u00A0`;
+      const label2 = `${label ?? ""}\u00A0\u00A0||\u00A0 ${t(
+        "ConfirmStatus"
+      )}: ${formData?.CONFIRMED_DIS ?? ""}\u00A0\u00A0||\u00A0\u00A0${t(
+        "Uploaded"
+      )}: ${formData?.UPLOAD_DIS ?? ""}\u00A0\u00A0`;
       setMetadata((prevMetadata) => {
         const newMetadata = cloneDeep(prevMetadata);
         newMetadata.masterForm.form.label = label2;

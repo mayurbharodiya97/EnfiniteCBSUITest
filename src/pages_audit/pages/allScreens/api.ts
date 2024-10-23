@@ -41,3 +41,36 @@ export const addToFavorite = async (payload: any) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getrReportSqlQuery = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETREPORTDETAIL", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const generateReportMetadata = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEFVSCREENDATA", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const saveReportConfiguration = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEFVSCREENDATA", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
