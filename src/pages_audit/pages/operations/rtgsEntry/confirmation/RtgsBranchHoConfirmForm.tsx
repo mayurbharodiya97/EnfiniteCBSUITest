@@ -426,10 +426,7 @@ const RtgsBranchHoConfirmationForm: FC<{
             icon: "ERROR",
           });
         } else if (
-          !(
-            format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-            format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-          )
+          new Date(rowsData?.TRAN_DT) !== new Date(authState?.workingDate)
         ) {
           await MessageBox({
             messageTitle: t("ValidationFailed"),
@@ -675,16 +672,8 @@ const RtgsBranchHoConfirmationForm: FC<{
                             icon: "ERROR",
                           });
                         } else if (
-                          !(
-                            format(
-                              new Date(rowsData?.TRAN_DT),
-                              "dd/MMM/yyyy"
-                            ) ===
-                            format(
-                              new Date(authState?.workingDate),
-                              "dd/MMM/yyyy"
-                            )
-                          )
+                          new Date(rowsData?.TRAN_DT) !==
+                          new Date(authState?.workingDate)
                         ) {
                           await MessageBox({
                             messageTitle: t("ValidationFailed"),

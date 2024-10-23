@@ -268,7 +268,7 @@ export const RtgsEntryFormMetaData = {
           _optionsKey: "get_Account_Type",
           postValidationSetCrossFieldValues: (field, formState) => {
             return {
-              ACCT_NM: { value: "" },
+              ACCT_CD: { value: "" },
               LIMIT_AMOUNT: { value: "" },
               ACCT_NAME: { value: "" },
               CONTACT_INFO: { value: "" },
