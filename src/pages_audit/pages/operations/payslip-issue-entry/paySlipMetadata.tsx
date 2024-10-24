@@ -28,7 +28,7 @@ export const RetrieveGridMetaData = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {

@@ -1659,6 +1659,7 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",
   stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
   entryStatus: "Entry Status",

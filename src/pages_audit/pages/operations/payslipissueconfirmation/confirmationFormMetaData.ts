@@ -76,11 +76,7 @@ export const PayslipdetailsFormMetaData = {
       placeholder: "Mode",
       type: "text",
       isReadOnly: true,
-      textFieldStyle: {
-        "& .MuiInputBase-root": {
-          color: "red",
-        },
-      },
+
       GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
     },
     {
@@ -492,6 +488,7 @@ export const AccdetailsFormMetaData = {
           placeholder: "",
           type: "text",
           fullWidth: true,
+          isReadOnly: true,
           GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           __EDIT__: { isReadOnly: true },
           __NEW__: { isReadOnly: false },
@@ -501,6 +498,7 @@ export const AccdetailsFormMetaData = {
             componentType: "amountField",
           },
           name: "LIMIT_AMOUNT",
+          isReadOnly: true,
           label: "limitamount",
           placeholder: "",
           type: "text",
@@ -515,6 +513,7 @@ export const AccdetailsFormMetaData = {
           },
           name: "DRAWING_POWER",
           label: "drawingPower",
+          isReadOnly: true,
           placeholder: "",
           type: "text",
           fullWidth: true,
