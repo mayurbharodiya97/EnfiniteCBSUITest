@@ -5,6 +5,7 @@ import {
   GradientButton,
   MetaDataType,
   FormWrapper,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
@@ -14,6 +15,7 @@ import { enqueueSnackbar } from "notistack";
 import { format, parse } from "date-fns";
 import CashierExchangeTable from "./tableComponent/tableComponent";
 import { CashierMetaData } from "./CashierTableMetadata";
+import { useLocation } from "react-router-dom";
 const CashierExchangeEntry = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const submitEventRef = useRef(null);
@@ -21,6 +23,7 @@ const CashierExchangeEntry = () => {
   const TableRef = useRef<any>([]);
   const { authState } = useContext(AuthContext);
   const [tableData, setTableData] = useState([]);
+  let currentPath = useLocation().pathname;
   const getData: any = useMutation(API.getCashDeno, {
     onSuccess: (data) => {
       setTableData(data);
@@ -86,6 +89,11 @@ const CashierExchangeEntry = () => {
       insertCashierEntry.mutate(Request);
     }
   };
+  cashierEntryFormMetaData.form.label = utilFunction.getDynamicLabel(
+    currentPath,
+    authState?.menulistdata,
+    true
+  );
   return (
     <Fragment>
       <FormWrapper

@@ -106,6 +106,14 @@ export const nomineejoint_tab_metadata = {
                     messageTitle: msgTitle,
                     message: msg,
                     buttonNames: buttonNames,
+                    icon:
+                      status === "9"
+                        ? "WARNING"
+                        : status === "99"
+                        ? "CONFIRM"
+                        : status === "999"
+                        ? "ERROR"
+                        : status === "0" && "SUCCESS",
                   });
                   return { buttonName, status };
                 };
@@ -114,7 +122,9 @@ export const nomineejoint_tab_metadata = {
                   if (response_messages[i]?.O_STATUS !== "0") {
                     let btnName = await messagebox(
                       response_messages[i]?.O_STATUS === "999"
-                        ? "validation fail"
+                        ? "ValidationFailed"
+                        : response_messages[i]?.O_STATUS === "99"
+                        ? "Confirmation"
                         : "Alert",
                       response_messages[i]?.O_MESSAGE,
                       response_messages[i]?.O_STATUS === "99"
@@ -148,7 +158,7 @@ export const nomineejoint_tab_metadata = {
                         ADD2: { value: CustomerData?.ADD2 },
                         STATE_CD: { value: CustomerData?.STATE_CD },
                         MEM_ACCT_CD: { value: CustomerData?.MEM_ACCT_CD },
-                        DISTRICT_CD: { value: CustomerData?.DISTRICT_CD },
+                        DIST_CD: { value: CustomerData?.DISTRICT_CD },
                         GENDER: { value: CustomerData?.GENDER },
                         FORM_60: { value: CustomerData?.FORM_60 },
                         PAN_NO: { value: CustomerData?.PAN_NO },
@@ -173,7 +183,7 @@ export const nomineejoint_tab_metadata = {
                 ADD2: { value: "" },
                 STATE_CD: { value: "" },
                 MEM_ACCT_CD: { value: "" },
-                DISTRICT_CD: { value: "" },
+                DIST_CD: { value: "" },
                 GENDER: { value: "" },
                 FORM_60: { value: "" },
                 PAN_NO: { value: "" },
@@ -512,7 +522,7 @@ export const nomineejoint_tab_metadata = {
                     : "",
                 },
                 // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                DISTRICT_CD: {
+                DIST_CD: {
                   value: field?.optionData[0]?.DISTRICT_CD
                     ? field?.optionData[0]?.DISTRICT_CD
                     : "",
@@ -597,7 +607,7 @@ export const nomineejoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
-          name: "DISTRICT_CD",
+          name: "DIST_CD",
           label: "hidden district",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
@@ -615,6 +625,7 @@ export const nomineejoint_tab_metadata = {
           name: "STATE",
           label: "State",
           isReadOnly: true,
+          ignoreInSubmit: true,
           placeholder: "",
           type: "text",
           dependentFields: ["AREA_CD"],
@@ -634,6 +645,7 @@ export const nomineejoint_tab_metadata = {
           name: "COUNTRY",
           label: "Country",
           isReadOnly: true,
+          ignoreInSubmit: true,
           placeholder: "",
           type: "text",
           dependentFields: ["AREA_CD"],

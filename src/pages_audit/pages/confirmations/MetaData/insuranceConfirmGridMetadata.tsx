@@ -92,10 +92,10 @@ export const insuranceEntryConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "TOTAL_PRE",
+      accessor: "TOT_PREMIUM",
       columnName: "TotalPremium",
       sequence: 6,
-      alignment: "left",
+      alignment: "right",
       componentType: "currency",
       width: 100,
       minWidth: 150,

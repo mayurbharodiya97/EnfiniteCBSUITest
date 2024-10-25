@@ -4,6 +4,7 @@ import {
   utilFunction,
 } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
+import LoaderImg from "./Loader.gif";
 
 export const getHoldChargeList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -18,6 +19,8 @@ export const getHoldChargeList = async (reqData) => {
       ...item,
       index: index,
       sr: index + 1,
+      PROCESS: LoaderImg,
+      FLAG: "N",
     }));
     return responseData;
   } else {

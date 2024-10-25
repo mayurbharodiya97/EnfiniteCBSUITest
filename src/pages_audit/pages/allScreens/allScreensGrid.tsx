@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useMutation, useQuery } from "react-query";
+import { QueryClient, useMutation, useQuery } from "react-query";
 import { Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "pages_audit/auth";
@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { enqueueSnackbar } from "notistack";
 import { LetterSearch } from "./alphaSearch";
+import { ReportConfiguration } from "./reportConfiguration";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -56,11 +57,14 @@ const QuickAccessTable = () => {
   const rowDataRef = useRef<any>(undefined);
   const dialogTitle = useRef("Add to Favourite(s) ?");
   const [isOpenSave, setIsOpenSave] = useState(false);
+  const [openReportConfig, setOpenReportConfig] = useState(false);
+  const [rowData, setRowData] = useState<any>({});
 
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
   const theme = useTheme();
+  const [queryData, setQueryData] = useState();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
   const navigate = useNavigate();
 
@@ -103,6 +107,12 @@ const QuickAccessTable = () => {
         variant: "error",
       });
     },
+  });
+  const sqlQueryMutation = useMutation(API.getrReportSqlQuery, {
+    onSuccess: (data) => {
+      setQueryData(data[0]);
+    },
+    onError: (error: any) => {},
   });
 
   useEffect(() => {
@@ -281,13 +291,24 @@ const QuickAccessTable = () => {
           loading={isLoading || isFetching}
           refetchData={() => refetch()}
           onClickActionEvent={(...args) => {
-            rowDataRef.current = args?.[2] ?? {};
-            if (rowDataRef.current?.FAVOURITE) {
-              dialogTitle.current = "Remove from Favourite(s) ?";
+            if (args?.[1] === "OPEN") {
+              setRowData({ ...args?.[2] });
+              // if (rowData?.IS_REPORTFLAG === "Y") {
+              sqlQueryMutation.mutate({
+                DOC_CD: args?.[2]?.DOC_CD, // Removed curly braces to access the value directly
+              });
+              // }
+
+              setOpenReportConfig(true);
             } else {
-              dialogTitle.current = "Add to Favourite(s) ?";
+              rowDataRef.current = args?.[2] ?? {};
+              if (rowDataRef.current?.FAVOURITE) {
+                dialogTitle.current = "Remove from Favourite(s) ?";
+              } else {
+                dialogTitle.current = "Add to Favourite(s) ?";
+              }
+              setIsOpenSave(true);
             }
-            setIsOpenSave(true);
           }}
         />
       </div>
@@ -303,6 +324,20 @@ const QuickAccessTable = () => {
           open={isOpenSave}
         />
       ) : null}
+      {openReportConfig ? (
+        <ReportConfiguration
+          OpenDialogue={openReportConfig}
+          closeDialogue={() => {
+            setOpenReportConfig(false);
+            queryClient.removeQueries(["getrReportSqlQuery"]);
+          }}
+          rowData={rowData ? rowData : {}}
+          queryData={queryData}
+          loading={sqlQueryMutation}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 };

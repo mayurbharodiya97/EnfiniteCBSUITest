@@ -2877,6 +2877,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINTCALCPARA",
     packageName: "",
   },
+  GETREPORTDETAIL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETREPORTDETAIL",
+    packageName: "",
+  },
   GETATMIMPSAUDRPT: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETATMIMPSAUDRPT",
     packageName: "",

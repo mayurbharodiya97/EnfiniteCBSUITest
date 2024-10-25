@@ -174,4 +174,16 @@ export const useStyles = makeStyles((theme: any) => ({
       background: "var(--theme-color1) !important",
     },
   },
+  otpNormalClass: {
+    display: "flex",
+    gap: "10px",
+    margin: "42px 0 0 42px",
+    width: "60%",
+  },
+  rtgsHoClass: {
+    gap: "0",
+    marginTop: "25px",
+    margin: " 0 auto",
+    display: "flex",
+  },
 }));

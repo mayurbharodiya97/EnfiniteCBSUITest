@@ -267,6 +267,19 @@ export const InsuranceDetailFormMetaData = {
         fullWidth: true,
         required: true,
         dependentFields: ["NET_PREMIUM_AMOUNT"],
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -322,6 +335,19 @@ export const InsuranceDetailFormMetaData = {
           rules: [
             { name: "required", params: ["PleaseEnterNetPremiumAmount"] },
           ],
+        },
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
         },
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
         dependentFields: [
@@ -402,6 +428,19 @@ export const InsuranceDetailFormMetaData = {
         fullWidth: true,
         label: "GST",
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         dependentFields: ["NET_PREMIUM_AMOUNT"],
         postValidationSetCrossFieldValues: async (
           field,
@@ -636,11 +675,6 @@ export const InsuranceDetailFormMetaData = {
           }
           return "";
         },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "required", params: ["This field is required"] }],
-        // },
-        // isReadOnly: true,
         __EDIT__: { isReadOnly: false },
         __VIEW__: { isReadOnly: true },
         __NEW__: { isReadOnly: false },
@@ -667,7 +701,7 @@ export const InsuranceDetailFormMetaData = {
           decimalScale: 2,
           fixedDecimalScale: true,
           isAllowed: (values) => {
-            if (values?.value?.length > 14) {
+            if (values?.value?.length > 15) {
               return false;
             }
             if (values.floatValue === 0) {
@@ -676,15 +710,8 @@ export const InsuranceDetailFormMetaData = {
             return true;
           },
         },
-        // validation: (value, data) => {
-        //   if (!Boolean(value) || !Boolean(data["MAX_AMT"])) {
-        //     return "";
-        //   }
-        //   if (Number.parseFloat(value) > Number.parseFloat(data["MAX_AMT"])) {
-        //     return "Minimum Amount should be Less than or equal To Maximum Amount.";
-        //   }
-        //   return "";
-        // },
+        isDisplayTotal: true,
+        footerLabel: "Total Amount",
       },
       {
         columnName: "Action",

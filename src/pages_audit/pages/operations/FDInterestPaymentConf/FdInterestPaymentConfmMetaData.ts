@@ -38,7 +38,7 @@ export const FdInterestPaymentConfmGridMetaData = {
     },
     {
       accessor: "COMP_CD",
-      columnName: "CompanyID",
+      columnName: "CompanyCode",
       sequence: 2,
       alignment: "right",
       componentType: "default",
