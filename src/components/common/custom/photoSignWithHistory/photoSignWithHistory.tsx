@@ -322,7 +322,7 @@ const PhotoSignWithHistory = ({
                                         </Typography>
                                         <Typography
                                           variant="body2"
-                                          sx={{ marginLeft: 6 }}
+                                          sx={{ marginLeft: 3 }}
                                         >
                                           {item?.FROM_LIMIT}
                                         </Typography>
@@ -422,7 +422,7 @@ const PhotoSignWithHistory = ({
                                       {item?.MODIFIED_DATE
                                         ? format(
                                             new Date(item.MODIFIED_DATE),
-                                            "dd/MMM/yyyy"
+                                            "dd/MM/yyyy"
                                           )
                                         : ""}
                                     </Typography>

@@ -18,7 +18,7 @@ export const RetrieveGridMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
