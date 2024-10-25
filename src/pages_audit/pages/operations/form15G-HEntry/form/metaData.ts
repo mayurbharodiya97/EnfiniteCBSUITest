@@ -830,6 +830,7 @@ export const form15GHEntryMetaData = {
       containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       disableLoader: false,
+      paginationText: "FDs",
     },
     columns: [
       {
