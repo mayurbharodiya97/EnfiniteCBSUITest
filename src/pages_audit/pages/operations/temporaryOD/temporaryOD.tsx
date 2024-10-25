@@ -249,7 +249,10 @@ export const TemporaryOD = () => {
               onSubmitData={onSubmitHandler}
               isNewRow={false}
               onClickActionEvent={() => {}}
-              formState={{ MessageBox: MessageBox }}
+              formState={{
+                MessageBox: MessageBox,
+                WORKING_DATE: authState?.workingDate,
+              }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
                   setIsData((old) => ({
@@ -264,7 +267,7 @@ export const TemporaryOD = () => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "23vh",
+                height: "25vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}

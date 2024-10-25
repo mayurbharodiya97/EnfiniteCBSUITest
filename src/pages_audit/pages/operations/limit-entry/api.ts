@@ -133,7 +133,6 @@ export const LimitSecurityData = async (apiReqPara) => {
               "FD_BRANCH_CD",
               "PANEL_FLAG",
             ];
-
             item.postValidationSetCrossFieldValues = async (
               field,
               formState,
@@ -328,6 +327,8 @@ export const LimitSecurityData = async (apiReqPara) => {
                 };
 
                 let postData = await getFDdetailBFD(ApiReq);
+
+                console.log("<<<postdata", postData);
 
                 if (postData?.[0]?.RESTRICTION) {
                   let buttonName = await formState.MessageBox({
@@ -792,6 +793,14 @@ export const LimitSecurityData = async (apiReqPara) => {
               let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Resolution No.";
+              }
+              return "";
+            };
+          } else if (item.name === "INT_RATE") {
+            item.required = true;
+            item.validate = (columnValue) => {
+              if (Number(columnValue.value) <= 0) {
+                return "Interest rate should  be greater than zero.";
               }
               return "";
             };

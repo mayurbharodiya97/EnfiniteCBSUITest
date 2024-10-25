@@ -84,6 +84,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
     }
   }, [rows?.[0]?.data]);
 
+  console.log("<<<rows ", rows);
   return (
     <Dialog
       open={true}
@@ -139,7 +140,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                         FLAG: "Y",
                         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
                         TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+                        LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
                       });
                     }
                   }}
@@ -155,7 +156,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                       let buttonName = await MessageBox({
                         messageTitle: "confirmation",
                         message: "AreYouSureToConfirm",
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
                       });

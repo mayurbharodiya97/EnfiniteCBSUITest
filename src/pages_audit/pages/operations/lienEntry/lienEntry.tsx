@@ -179,10 +179,16 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    validateInsertData.mutate(data);
-
-    //@ts-ignore
-    endSubmit(true);
+    validateInsertData.mutate(data, {
+      onSuccess: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+      onError: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+    });
   };
 
   const setCurrentAction = useCallback(

@@ -1254,7 +1254,7 @@ export const en_language_data = {
   RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
-    "Removal Date should be greter than or Equal to Effective date",
+    "Removal Date should be greater than or Equal to Effective date",
 
   // Temporary OD
 

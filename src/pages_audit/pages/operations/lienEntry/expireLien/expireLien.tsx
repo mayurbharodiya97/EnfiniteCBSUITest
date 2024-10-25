@@ -90,10 +90,16 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
       REMARKS: data?.REMARKS,
       ...upd,
     };
-    expireLienData.mutate(apiReq);
-
-    //@ts-ignore
-    endSubmit(true);
+    expireLienData.mutate(apiReq, {
+      onSuccess: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+      onError: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+    });
   };
   return (
     <Dialog
@@ -145,7 +151,7 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
                   onClick={(event) => {
                     handleSubmit(event, "Save");
                   }}
-                  // disabled={isSubmitting}
+                  disabled={isSubmitting}
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
                 >
