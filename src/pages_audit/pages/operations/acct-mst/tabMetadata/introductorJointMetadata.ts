@@ -782,17 +782,6 @@ export const introductorjoint_tab_metadata = {
         },
         {
           render: {
-            componentType: "numberFormat",
-          },
-          name: "DIN_NO",
-          label: "DIN",
-          isReadOnly: (fieldValue, dependentFields, formState) =>
-            API.isReadOnlyonParam320({ formState }),
-          maxLength: 8,
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-        },
-        {
-          render: {
             componentType: "textField",
           },
           name: "REMARKS",

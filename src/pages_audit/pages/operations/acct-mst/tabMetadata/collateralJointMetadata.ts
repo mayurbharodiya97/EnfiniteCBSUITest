@@ -780,15 +780,6 @@ export const collateraljoint_tab_metadata = {
           // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
           maxLength: 10,
         },
-        // {
-        //     render: {
-        //         componentType: "numberFormat"
-        //     },
-        //     name: "DIN_NO",
-        //     label: "DIN",
-        //     maxLength: 8,
-        //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-        // },
         {
           render: {
             componentType: "textField",
