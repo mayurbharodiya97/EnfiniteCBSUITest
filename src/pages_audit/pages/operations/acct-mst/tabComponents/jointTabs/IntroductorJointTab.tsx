@@ -109,7 +109,6 @@ const IntroductorJointTab = () => {
             return {
               ...formData,
               // J_TYPE: "I",
-              CUSTOMER_ID: AcctMSTState?.customerIDctx,
             };
           }
         );

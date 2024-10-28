@@ -108,7 +108,6 @@ const GuardianJointTab = () => {
           return {
             ...formData,
             // J_TYPE: "U",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
         newData["JOINT_GUARDIAN_DTL"] = [...newFormatOtherAdd];

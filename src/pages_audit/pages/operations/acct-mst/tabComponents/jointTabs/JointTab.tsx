@@ -109,7 +109,6 @@ const JointTab = () => {
           return {
             ...formData,
             // J_TYPE: "J",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
         newData["JOINT_HOLDER_DTL"] = [...newFormatOtherAdd];

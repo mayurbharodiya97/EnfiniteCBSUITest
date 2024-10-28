@@ -108,7 +108,6 @@ const NomineeJointTab = () => {
           return {
             ...formData,
             // J_TYPE: "N",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
         newData["JOINT_NOMINEE_DTL"] = [...newFormatOtherAdd];

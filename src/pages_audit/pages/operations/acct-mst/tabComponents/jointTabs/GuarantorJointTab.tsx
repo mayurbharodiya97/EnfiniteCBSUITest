@@ -109,7 +109,6 @@ const GuarantorJointTab = () => {
           return {
             ...formData,
             // J_TYPE: "G",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
         newData["JOINT_GUARANTOR_DTL"] = [...newFormatOtherAdd];

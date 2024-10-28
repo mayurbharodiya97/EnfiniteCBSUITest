@@ -108,7 +108,6 @@ const SignatoryJointTab = () => {
           return {
             ...formData,
             // J_TYPE: "S",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
         newData["JOINT_SIGNATORY_DTL"] = [...newFormatOtherAdd];
