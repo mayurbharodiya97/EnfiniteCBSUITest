@@ -60,6 +60,13 @@ export const collateraljoint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          defaultValue: "M   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",

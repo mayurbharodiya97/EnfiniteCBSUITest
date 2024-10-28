@@ -65,6 +65,13 @@ export const introductorjoint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          defaultValue: "I   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",

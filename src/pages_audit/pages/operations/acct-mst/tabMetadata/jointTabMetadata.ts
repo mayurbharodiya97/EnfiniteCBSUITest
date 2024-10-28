@@ -65,6 +65,13 @@ export const joint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          defaultValue: "J   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",

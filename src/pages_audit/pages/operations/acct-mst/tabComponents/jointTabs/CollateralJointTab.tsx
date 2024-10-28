@@ -109,7 +109,7 @@ const CollateralJointTab = () => {
             );
             return {
               ...formData,
-              J_TYPE: "M",
+              // J_TYPE: "M",
               CUSTOMER_ID: AcctMSTState?.customerIDctx,
             };
           }

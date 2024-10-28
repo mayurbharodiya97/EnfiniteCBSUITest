@@ -107,7 +107,7 @@ const IntroductorJointTab = () => {
             const formData = _.pick(data?.JOINT_INTRODUCTOR_DTL[i], formFields);
             return {
               ...formData,
-              J_TYPE: "I",
+              // J_TYPE: "I",
               CUSTOMER_ID: AcctMSTState?.customerIDctx,
             };
           }

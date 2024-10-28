@@ -106,7 +106,7 @@ const NomineeJointTab = () => {
           const formData = _.pick(data?.JOINT_NOMINEE_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "N",
+            // J_TYPE: "N",
             CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });

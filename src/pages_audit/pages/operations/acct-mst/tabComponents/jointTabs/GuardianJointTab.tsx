@@ -106,7 +106,7 @@ const GuardianJointTab = () => {
           const formData = _.pick(data?.JOINT_GUARDIAN_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "U",
+            // J_TYPE: "U",
             CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });

@@ -107,7 +107,7 @@ const GuarantorJointTab = () => {
           const formData = _.pick(data?.JOINT_GUARANTOR_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "G",
+            // J_TYPE: "G",
             CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });

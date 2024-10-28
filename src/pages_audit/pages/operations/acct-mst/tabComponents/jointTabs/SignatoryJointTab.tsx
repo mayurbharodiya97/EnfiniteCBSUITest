@@ -106,7 +106,7 @@ const SignatoryJointTab = () => {
           const formData = _.pick(data?.JOINT_SIGNATORY_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "S",
+            // J_TYPE: "S",
             CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });

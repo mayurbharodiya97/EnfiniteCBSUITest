@@ -107,7 +107,7 @@ const JointTab = () => {
           const formData = _.pick(data?.JOINT_HOLDER_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "J",
+            // J_TYPE: "J",
             CUSTOMER_ID: AcctMSTState?.customerIDctx,
           };
         });
