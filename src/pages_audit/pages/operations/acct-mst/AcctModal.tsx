@@ -185,6 +185,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           messageTitle: "Alert",
           message: "Your changes will be Lost. Are you Sure?",
           buttonNames: ["Yes", "No"],
+          icon: "WARNING",
         });
         if (buttonName === "Yes") {
           closeForm();
@@ -299,6 +300,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
                   messageTitle: "Alert",
                   message: "You have not made any changes yet.",
                   buttonNames: ["Ok"],
+                  icon: "WARNING",
                 });
               } else if (Object.keys(updated_tab_format)?.length > 0) {
                 let buttonName = await MessageBox({
@@ -306,6 +308,8 @@ const AcctModal = ({ onClose, formmode, from }) => {
                   message:
                     "Are you sure you want to apply changes and update ?",
                   buttonNames: ["Yes", "No"],
+                  loadingBtnName: ["Yes"],
+                  icon: "WARNING",
                 });
                 if (buttonName === "Yes") {
                   const reqPara = {
