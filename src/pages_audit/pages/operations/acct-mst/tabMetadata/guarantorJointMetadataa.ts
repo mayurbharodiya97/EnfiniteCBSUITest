@@ -382,16 +382,6 @@ export const guarantorjoint_tab_metadata = {
         },
         {
           render: {
-            componentType: "rateOfInt",
-          },
-          name: "SHARE_PER",
-          label: "Share %",
-          placeholder: "",
-          type: "text",
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-        },
-        {
-          render: {
             componentType: "textField",
           },
           name: "REF_PERSON_NAME",

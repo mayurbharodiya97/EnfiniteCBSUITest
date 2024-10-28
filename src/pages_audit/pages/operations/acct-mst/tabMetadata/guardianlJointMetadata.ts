@@ -340,16 +340,6 @@ export const guardianjoint_tab_metadata = {
           label: "",
           GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
         },
-        // {
-        //     render: {
-        //     componentType: "rateOfInt",
-        //     },
-        //     name: "SHARE_PER",
-        //     label: "Share %",
-        //     placeholder: "",
-        //     type: "text",
-        //     GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-        // },
         {
           render: {
             componentType: "textField",
