@@ -264,14 +264,6 @@ export const signatoryjoint_tab_metadata = {
         //     label: "Guardian Name",
         //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         // },
-        // {
-        //     render: {
-        //         componentType: "numberFormat"
-        //     },
-        //     name: "MORTGAGE_ID",
-        //     label: "Mortgage No",
-        //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
-        // },
 
         {
           render: {

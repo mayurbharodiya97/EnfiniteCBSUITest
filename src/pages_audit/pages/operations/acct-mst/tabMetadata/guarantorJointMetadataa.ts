@@ -62,6 +62,16 @@ export const guarantorjoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
           defaultValue: "G   ",
           name: "J_TYPE",
         },
@@ -249,16 +259,6 @@ export const guarantorjoint_tab_metadata = {
         //     label: "Guardian Name",
         //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         // },
-        {
-          render: {
-            componentType: "numberFormat",
-          },
-          name: "MORTGAGE_ID",
-          label: "Mortgage No",
-          isReadOnly: (fieldValue, dependentFields, formState) =>
-            API.isReadOnlyonParam320({ formState }),
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-        },
         {
           render: {
             componentType: "divider",
