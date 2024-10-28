@@ -812,7 +812,7 @@ export const introductorjoint_tab_metadata = {
           render: {
             componentType: "textField",
           },
-          name: "mort_description",
+          name: "MORT_DESCRIPTION",
           label: "Description",
           maxLength: 200,
           GridProps: { xs: 12, sm: 6, md: 6, lg: 4.7, xl: 4 },
