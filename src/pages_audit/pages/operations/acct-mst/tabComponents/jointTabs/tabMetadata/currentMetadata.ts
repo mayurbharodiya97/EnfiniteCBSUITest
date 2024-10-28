@@ -1,4 +1,4 @@
-import * as API from "../api";
+import * as API from "../../../api";
 import { getPMISCData } from "../../../../c-kyc/api";
 
 export const current_tab_metadata = {
