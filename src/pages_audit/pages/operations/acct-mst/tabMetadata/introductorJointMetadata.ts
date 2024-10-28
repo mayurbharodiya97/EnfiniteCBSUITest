@@ -67,6 +67,16 @@ export const introductorjoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
           defaultValue: "I   ",
           name: "J_TYPE",
         },

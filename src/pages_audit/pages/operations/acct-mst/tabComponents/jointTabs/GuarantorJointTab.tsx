@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import {
+  extractMetaData,
   FormWrapper,
   MetaDataType,
   usePopupContext,
@@ -176,7 +177,12 @@ const GuarantorJointTab = () => {
       <FormWrapper
         key={"acct-mst-joint-guarantor-form" + initialVal}
         ref={formRef}
-        metaData={guarantorjoint_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            guarantorjoint_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         onSubmitHandler={onFormSubmitHandler}
         formState={{
           PARAM320: AcctMSTState?.param320,

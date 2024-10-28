@@ -67,6 +67,16 @@ export const signatoryjoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
           defaultValue: "S   ",
           name: "J_TYPE",
         },

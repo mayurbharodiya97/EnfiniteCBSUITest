@@ -67,6 +67,16 @@ export const joint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
           defaultValue: "J   ",
           name: "J_TYPE",
         },

@@ -62,6 +62,16 @@ export const collateraljoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
           defaultValue: "M   ",
           name: "J_TYPE",
         },

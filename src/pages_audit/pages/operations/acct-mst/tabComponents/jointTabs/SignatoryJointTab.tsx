@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import {
+  extractMetaData,
   FormWrapper,
   MetaDataType,
   usePopupContext,
@@ -175,7 +176,12 @@ const SignatoryJointTab = () => {
       <FormWrapper
         key={"acct-mst-joint-signatory-form" + initialVal}
         ref={formRef}
-        metaData={signatoryjoint_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            signatoryjoint_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         onSubmitHandler={onFormSubmitHandler}
         formState={{
           PARAM320: AcctMSTState?.param320,
