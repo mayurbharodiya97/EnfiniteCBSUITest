@@ -18,7 +18,7 @@ const initialState: any = {
 
   isSidebarExpandedctx: false,
 
-  colTabValuectx: 0,
+  colTabValuectx: false,
   // handleColTabChangectx: () => {},
 
   isCustomerDatactx: false,
