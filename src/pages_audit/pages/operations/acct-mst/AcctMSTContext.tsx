@@ -3,7 +3,7 @@ import _ from "lodash";
 import React, { useCallback, useReducer } from "react";
 
 const initialState: any = {
-  acctModectx: "",
+  acctModectx: null,
   acctNumberctx: "",
   isLoading: false,
   param320: "",
@@ -32,6 +32,7 @@ const initialState: any = {
   categoryValuectx: null,
   constitutionValuectx: null,
   accTypeValuectx: null,
+  parentCodectx: null,
   kycNoValuectx: null,
   AccTypeOptionsctx: [],
 
@@ -276,7 +277,7 @@ const AcctMSTProvider = ({ children }) => {
     dispatch({
       type: "handleFormModalClose",
       payload: {
-        acctModectx: "",
+        acctModectx: null,
         acctNumberctx: "",
         isLoading: false,
         param320: "",
@@ -289,6 +290,7 @@ const AcctMSTProvider = ({ children }) => {
         categoryValuectx: null,
         constitutionValuectx: null,
         accTypeValuectx: null,
+        parentCodectx: null,
         tabsApiResctx: [],
         isFreshEntryctx: false,
         tabNameList: [],
@@ -305,7 +307,7 @@ const AcctMSTProvider = ({ children }) => {
 
         modifiedFormCols: {},
         updateFormDatactx: {},
-        confirmFlagctx: "",
+        confirmFlagctx: null,
         update_casectx: "",
         currentFormctx: {
           currentFormRefctx: [],
@@ -332,14 +334,18 @@ const AcctMSTProvider = ({ children }) => {
   }, [state.isSidebarExpandedctx]);
 
   interface handleHeaderFormSubmitType {
-    acctType: any;
-    reqID: any;
+    acctType: string;
+    reqID: string;
+    parentCode: string;
   }
   const handleHeaderFormSubmit = useCallback(
     (reqObj: handleHeaderFormSubmitType) => {
       let payload: any = {};
       if (Boolean(reqObj.acctType)) {
         payload.accTypeValuectx = reqObj.acctType;
+      }
+      if (Boolean(reqObj.parentCode)) {
+        payload.parentCodectx = reqObj.parentCode;
       }
       if (Boolean(reqObj.reqID)) {
         payload.req_cd_ctx = reqObj.reqID;
@@ -406,6 +412,7 @@ const AcctMSTProvider = ({ children }) => {
         accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
         isFormModalOpenctx: true,
         isFreshEntryctx: false,
+        confirmFlagctx: recordData[0]?.data?.CONFIRMED,
       };
       dispatch({
         type: "handleCategoryChangectx",
@@ -489,6 +496,10 @@ const AcctMSTProvider = ({ children }) => {
   const handleFormDataonRetrievectx = (data) => {
     let retrieveApiRes = data;
     let payload = {};
+    if (Boolean(data?.MAIN_DETAIL)) {
+      payload["parentCodectx"] = data?.MAIN_DETAIL?.PARENT_CODE ?? "";
+      payload["acctModectx"] = data?.MAIN_DETAIL?.ACCT_MODE ?? "";
+    }
     if (
       Array.isArray(data?.JOINT_ACCOUNT_DTL) &&
       data?.JOINT_ACCOUNT_DTL?.length > 0
