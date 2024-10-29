@@ -3,7 +3,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FDRetriveForm } from "./fixDepositForm/fdRetriveForm";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FixDepositForm } from "./fixDepositForm/fdStepperForm";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { PaidFDGrid } from "./paidFDGrid";
 import { Dialog, Paper } from "@mui/material";
@@ -23,6 +23,7 @@ import {
   utilFunction,
   GridMetaDataType,
   Alert,
+  queryClient,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { FDPayment } from "./fixDepositForm/fdPayment";
@@ -59,6 +60,24 @@ export const FDDetailGrid = () => {
   let currentPath = useLocation().pathname;
   const { t } = useTranslation();
 
+  //Api for get FD Action button's label
+  const {
+    data: actionButtonData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getFDButtons", authState?.user?.branchCode], () =>
+    API.getFDButtons()
+  );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getFDButtons"]);
+    };
+  }, []);
+
   const actions: ActionTypes[] = !Boolean(displayAllActions)
     ? [
         {
@@ -70,44 +89,59 @@ export const FDDetailGrid = () => {
       ]
     : [
         {
-          actionName: "view-master",
-          actionLabel: "View Master",
+          actionName: actionButtonData?.find((item) => item.FLAG === "VIEWM")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "VIEWM")
+            ?.ACTIONLABEL,
+
           multiple: undefined,
           alwaysAvailable: true,
         },
         ...(Number(FDState?.acctNoData?.PAID_FD_CNT) > 0
           ? [
               {
-                actionName: "paid-fd",
-                actionLabel: `Paid FD(s)  (${
-                  FDState?.acctNoData?.PAID_FD_CNT ?? ""
-                })`,
+                actionName: actionButtonData?.find(
+                  (item) => item.FLAG === "PAIDFD"
+                )?.ACTIONNAME,
+                actionLabel: `${
+                  actionButtonData?.find((item) => item.FLAG === "PAIDFD")
+                    ?.ACTIONLABEL
+                }  (${FDState?.acctNoData?.PAID_FD_CNT ?? ""})`,
+
                 multiple: undefined,
                 alwaysAvailable: true,
               },
             ]
           : []),
         {
-          actionName: "joint-dtl",
-          actionLabel: "Joint",
+          actionName: actionButtonData?.find((item) => item.FLAG === "JOINT")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "JOINT")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "int-paid-dtl",
-          actionLabel: "Int Paid Dtl",
+          actionName: actionButtonData?.find((item) => item.FLAG === "INTPAID")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "INTPAID")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "docs",
-          actionLabel: "Docs",
+          actionName: actionButtonData?.find((item) => item.FLAG === "DOC")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "DOC")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "new-fd",
-          actionLabel: "New FD",
+          actionName: actionButtonData?.find((item) => item.FLAG === "NEWFD")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "NEWFD")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
@@ -254,16 +288,54 @@ export const FDDetailGrid = () => {
         resetAllData();
         setDisplayAllActions(false);
         navigate("retrieve");
-      } else if (data.name === "paid-fd") {
-        navigate("paid-fd");
-      } else if (data.name === "int-paid-dtl") {
-        navigate("int-paid-dtl");
-      } else if (data.name === "joint-dtl") {
-        navigate("joint-dtl");
-      } else if (data.name === "view-master") {
-        navigate("view-master");
-      } else if (data.name === "docs") {
-        navigate("docs");
+      } else if (
+        data.name ===
+        `${
+          actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+        }`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${
+          actionButtonData?.find((item) => item.FLAG === "INTPAID")?.ACTIONNAME
+        }`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "INTPAID")
+              ?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME}`
+        );
       } else if (data?.name === "view-details") {
         checkAllowModifyFDDataMutation.mutate(
           {
@@ -497,14 +569,10 @@ export const FDDetailGrid = () => {
             },
           }
         );
-      } else if (data?.name === "new-fd") {
-        // updateFDDetailsFormData([
-        //   {
-        //     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-        //     BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-        //     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
-        //   },
-        // ]);
+      } else if (
+        data?.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME}`
+      ) {
         navigate(data?.name, {
           state: [],
         });
@@ -625,7 +693,7 @@ export const FDDetailGrid = () => {
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
         loading={getFDViewDtlMutation?.isLoading}
-        actions={actions}
+        actions={actionButtonData && actions}
         setAction={setCurrentAction}
         enableExport={true}
         onClickActionEvent={async (index, id, data) => {
@@ -742,7 +810,9 @@ export const FDDetailGrid = () => {
 
       <Routes>
         <Route
-          path="new-fd/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME
+          }/*`}
           element={
             <FixDepositForm
               isDataChangedRef={isDataChangedRef}
@@ -773,7 +843,9 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="joint-dtl/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME
+          }/*`}
           element={
             <Dialog
               open={true}
@@ -809,7 +881,9 @@ export const FDDetailGrid = () => {
         />
 
         <Route
-          path="view-master/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME
+          }/*`}
           element={
             <ViewMasterForm
               handleDialogClose={handleDialogClose}
@@ -821,11 +895,16 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="paid-fd/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+          }/*`}
           element={<PaidFDGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
-          path="int-paid-dtl/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "INTPAID")
+              ?.ACTIONNAME
+          }/*`}
           element={<IntPaidDtlGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
@@ -838,7 +917,9 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="docs/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME
+          }/*`}
           element={
             <Dialog
               open={true}

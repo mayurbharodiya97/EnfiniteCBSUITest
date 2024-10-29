@@ -36,6 +36,12 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 100,
       isAutoSequence: true,
+      isDisplayTotal: true,
+      footerIsMultivalue: true,
+      footerLabel: "Total :",
+      setFooterValue(total, rows) {
+        return "";
+      },
     },
     {
       accessor: "TRAN_DT",

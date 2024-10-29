@@ -692,7 +692,9 @@ export const FDDetailForm = forwardRef<any, any>(
               }}
             />
           )
-        ) : matureInstDataIsLoading ? (
+        ) : matureInstDataIsLoading ||
+          tenorDataIsLoading ||
+          paraDtlDataIsLoading ? (
           <LoaderPaperComponent />
         ) : (
           <FormWrapper

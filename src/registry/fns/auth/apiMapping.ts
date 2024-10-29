@@ -2913,6 +2913,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/SAVELIENENTRYDTL",
     packageName: "",
   },
+  GETFDBUTTONS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDBUTTONS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

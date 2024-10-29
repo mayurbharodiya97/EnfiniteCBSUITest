@@ -487,3 +487,13 @@ export const validateAccountAndGetDetail = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getFDButtons = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDBUTTONS", {});
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
