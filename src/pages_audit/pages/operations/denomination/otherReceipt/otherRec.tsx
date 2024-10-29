@@ -1,7 +1,9 @@
 import {
   ActionTypes,
+  Alert,
   formatCurrency,
   getCurrencySymbol,
+  GradientButton,
   GridMetaDataType,
   GridWrapper,
   queryClient,
@@ -9,20 +11,27 @@ import {
   usePropertiesConfigContext,
   utilFunction,
 } from "@acuteinfo/common-base";
-import { AuthContext } from "pages_audit/auth";
-import DailyTransTabs from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs";
-import { useCacheWithMutation } from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/cacheMutate";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import * as API from "./api";
-import * as CommonAPI from "../../api";
-import { cashPaymentMetadata } from "./metadata";
 import { useMutation, useQuery } from "react-query";
-import { Box } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
+import { AuthContext } from "pages_audit/auth";
+import { otherReceiptMetadata } from "./metadata";
+import DailyTransTabs from "../../DailyTransaction/TRNHeaderTabs";
+import { useLocation } from "react-router-dom";
+import { useCacheWithMutation } from "../../DailyTransaction/TRNHeaderTabs/cacheMutate";
+import * as CommonAPI from "../api";
 import { format, parse } from "date-fns";
-import TellerDenoTableCalc from "../singleTypeTable/tellerDenoTableCalc";
-import DualTableCalc from "../dualTypeTable/dualTableCalc";
+import { enqueueSnackbar } from "notistack";
+import { Box, Paper } from "@mui/material";
+import TellerDenoTableCalc from "../tellerTransaction/singleTypeTable/tellerDenoTableCalc";
+import DualTableCalc from "../tellerTransaction/dualTypeTable/dualTableCalc";
 
 const actions: ActionTypes[] = [
   {
@@ -33,17 +42,19 @@ const actions: ActionTypes[] = [
   },
 ];
 
-const CashPayment = ({ screenFlag }) => {
-  const [cardDetails, setCardDetails] = useState([]);
-  const [cardTabsReq, setCardTabsReq] = useState({});
-  const [openDeno, setOpenDeno] = useState(false);
-  const [denoData, setDenoData] = useState([]);
+const OtherReceipt = ({ screenFlag, setCloseOthRec }) => {
   const [rowData, setRowData] = useState<any>([]);
+  const [cardTabsReq, setCardTabsReq] = useState({});
+  const [cardDetails, setCardDetails] = useState([]);
+  const [openDeno, setOpenDeno] = useState(false);
+  const [denoData, setDenoData] = useState(false);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { authState } = useContext(AuthContext);
   const controllerRef = useRef<AbortController>();
   const currentPath = useLocation()?.pathname;
-  const { authState } = useContext(AuthContext);
   const customParameter = usePropertiesConfigContext();
-  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { denoTableType, dynamicAmountSymbol, currencyFormat, decimalCount } =
+    customParameter;
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
@@ -53,43 +64,19 @@ const CashPayment = ({ screenFlag }) => {
     isError: isTabsError,
     isLoading: isTabsLoading,
   } = useCacheWithMutation("cashPaymentEntry", CommonAPI.getTabsByParentType);
-  const { denoTableType, dynamicAmountSymbol, currencyFormat, decimalCount } =
-    customParameter;
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    refetch: refetchMainGrid,
-    error,
-    isError,
-  } = useQuery<any, any>(
-    [
-      "releaseMainData",
-      {
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-      },
-    ],
-    () =>
-      API?.getCashPaymentData({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-      })
+  const otherRecGridReq = {
+    COMP_CD: authState?.companyID ?? "",
+    BRANCH_CD: authState?.user?.branchCode ?? "",
+    WORKING_DATE: authState?.workingDate ?? "",
+  };
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["otherReceiptData", otherRecGridReq], () =>
+    API?.getOtherReceipt(otherRecGridReq)
   );
-
-  const getDenoData: any = useMutation(CommonAPI.CashReceiptEntrysData, {
-    onSuccess: (response: any, variables?: any) => {
-      CloseMessageBox();
-      setOpenDeno(true);
-      if (response?.length > 0) {
-        setDenoData(response);
-      }
-    },
-    onError: (error: any, variables?: any) => {
-      CloseMessageBox();
-    },
-  });
 
   const getCarousalCards = useMutation(CommonAPI.getCarousalCards, {
     onSuccess: (data) => {
@@ -108,8 +95,21 @@ const CashPayment = ({ screenFlag }) => {
     },
   });
 
+  const getDenoData: any = useMutation(CommonAPI.CashReceiptEntrysData, {
+    onSuccess: (response: any, variables?: any) => {
+      CloseMessageBox();
+      setOpenDeno(true);
+      if (response?.length > 0) {
+        setDenoData(response);
+      }
+    },
+    onError: (error: any, variables?: any) => {
+      CloseMessageBox();
+    },
+  });
+
   const setCurrentAction = useCallback(async (data) => {
-    let row = data.rows[0]?.data;
+    let row = data?.rows[0]?.data;
     setRowData(row);
     if (data?.name === "_rowChanged") {
       let obj: any = {
@@ -164,53 +164,20 @@ const CashPayment = ({ screenFlag }) => {
     }
   }, []);
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries([
-        "cashPaymentEntry",
-        {
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: authState?.user?.branchCode ?? "",
-        },
-      ]);
-    };
-  }, []);
-
-  const headingWithButton = (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
-      {/* <GradientButton
-        // ref={buttonRef}
-        style={{ marginRight: "5px" }}
-        onClick={(event) => {
-          dispatch({
-            type: SingleTableActionTypes?.SET_VIEWACCTDETAILS_VAL,
-            payload: true,
-          });
-        }}
-        color={"primary"}
-        disabled={false}
-        ref={viewTrnRef}
-      >
-        View Trn
-      </GradientButton> */}
-    </div>
-  );
+  const onSaveData = (value) => {
+    setOpenDeno(value);
+    refetch();
+  };
 
   const denoTableClose = () => {
     setOpenDeno(false);
   };
 
-  const onSaveData = (value) => {
-    setOpenDeno(value);
-    refetchMainGrid();
-  };
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["otherReceiptData", otherRecGridReq]);
+    };
+  }, []);
 
   const getFomattedCurrency = (values) => {
     const formatedValue = formatCurrency(
@@ -221,6 +188,24 @@ const CashPayment = ({ screenFlag }) => {
     );
     return formatedValue;
   };
+
+  const headingWithButton = (
+    <Box
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
+      <Box>
+        <GradientButton onClick={() => setCloseOthRec(false)}>
+          Normal Receipt
+        </GradientButton>
+      </Box>
+    </Box>
+  );
+
   return (
     <>
       <DailyTransTabs
@@ -229,10 +214,19 @@ const CashPayment = ({ screenFlag }) => {
         cardsData={cardDetails}
         reqData={cardTabsReq}
       />
-      <Box margin={"10px"}>
+      {isError ? (
+        <Fragment>
+          <Alert
+            severity={error?.severity ?? "error"}
+            errorMsg={error?.error_msg ?? "Error"}
+            errorDetail={error?.error_detail ?? ""}
+          />
+        </Fragment>
+      ) : null}
+      <Paper sx={{ margin: "10px" }}>
         <GridWrapper
-          key={`cashPaymentEntry${isLoading}`}
-          finalMetaData={cashPaymentMetadata as GridMetaDataType}
+          key={`otherReceipt` + isLoading}
+          finalMetaData={otherReceiptMetadata as GridMetaDataType}
           data={data ?? []}
           loading={
             isLoading ||
@@ -245,13 +239,12 @@ const CashPayment = ({ screenFlag }) => {
           setAction={setCurrentAction}
           hideHeader={false}
           controlsAtBottom={true}
-          refetchData={() => refetchMainGrid()}
+          refetchData={() => refetch()}
           disableMultipleRowSelect={true}
           enableExport={true}
           defaultSelectedRowId={data?.length > 0 ? data?.[0]?.TRAN_CD : ""}
         />
-      </Box>
-
+      </Paper>
       {Boolean(openDeno) && denoTableType === "single" ? (
         <TellerDenoTableCalc
           displayTable={openDeno}
@@ -262,7 +255,7 @@ const CashPayment = ({ screenFlag }) => {
           onCloseTable={denoTableClose}
           initRemainExcess={rowData?.AMOUNT ?? "0"}
           gridLable={
-            "Cash Payment" +
+            "Cash Receipt" +
             `[${rowData?.TYPE_CD?.trim()}]` +
             "-" +
             "Remarks:" +
@@ -276,13 +269,13 @@ const CashPayment = ({ screenFlag }) => {
             "-" +
             rowData?.ACCT_NM +
             "-" +
-            "Payment Amount:" +
+            "Receipt Amount:" +
             getFomattedCurrency(rowData?.AMOUNT)
           }
           // screenRef={"TRN/040"}
           // entityType={"SINGLEPAY"}
           screenFlag={screenFlag}
-          typeCode={"4"}
+          typeCode={"1"}
           setCount={() => {}}
         />
       ) : null}
@@ -301,7 +294,7 @@ const CashPayment = ({ screenFlag }) => {
           // screenRef={"TRN/041"}
           // entityType={"MULTIRECPAY"}
           screenFlag={screenFlag}
-          typeCode={"4"}
+          typeCode={"1"}
           setCount={() => {}}
           setOpenDenoTable={onSaveData}
         />
@@ -309,4 +302,5 @@ const CashPayment = ({ screenFlag }) => {
     </>
   );
 };
-export default CashPayment;
+
+export default OtherReceipt;

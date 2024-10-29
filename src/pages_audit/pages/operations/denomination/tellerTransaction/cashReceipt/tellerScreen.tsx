@@ -11,7 +11,14 @@ import { TellerScreenMetadata } from "./metaData";
 import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "../../api";
-import { Dialog, Grid, LinearProgress, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  Grid,
+  LinearProgress,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { cashReportMetaData } from "./metaData";
 import { format, parse } from "date-fns";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
@@ -46,6 +53,7 @@ import {
 } from "../singleTypeTable/denoTableActionTypes";
 import TellerDenoTableCalc from "../singleTypeTable/tellerDenoTableCalc";
 import DualTableCalc from "../dualTypeTable/dualTableCalc";
+import OtherReceipt from "../../otherReceipt/otherRec";
 
 const TellerScreen = ({ screenFlag }) => {
   const formRef: any = useRef(null);
@@ -62,6 +70,7 @@ const TellerScreen = ({ screenFlag }) => {
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [extraAccDtl, setExtraAccDtl] = useState<any>({});
   const [count, setCount] = useState(0);
+  const [otherReceipt, setOtherReceipt] = useState(false);
   const { authState }: any = useContext(AuthContext);
   let currentPath = useLocation().pathname;
   const customParameter = usePropertiesConfigContext();
@@ -615,7 +624,7 @@ const TellerScreen = ({ screenFlag }) => {
   }, [cardDetails]);
 
   const headingWithButton = (
-    <div
+    <Box
       style={{
         display: "flex",
         alignItems: "center",
@@ -623,22 +632,34 @@ const TellerScreen = ({ screenFlag }) => {
       }}
     >
       {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
-      <GradientButton
-        // ref={buttonRef}
-        style={{ marginRight: "5px" }}
-        onClick={(event) => {
-          dispatch({
-            type: SingleTableActionTypes?.SET_VIEWACCTDETAILS_VAL,
-            payload: true,
-          });
-        }}
-        color={"primary"}
-        disabled={false}
-        ref={viewTrnRef}
-      >
-        View Trn
-      </GradientButton>
-    </div>
+      <Box>
+        <GradientButton
+          // ref={buttonRef}
+          style={{ marginRight: "5px" }}
+          onClick={(event) => {
+            dispatch({
+              type: SingleTableActionTypes?.SET_VIEWACCTDETAILS_VAL,
+              payload: true,
+            });
+          }}
+          color={"primary"}
+          disabled={false}
+          ref={viewTrnRef}
+        >
+          View Trn
+        </GradientButton>
+        <GradientButton
+          // ref={buttonRef}
+          style={{ marginRight: "5px" }}
+          onClick={() => setOtherReceipt(true)}
+          color={"primary"}
+          disabled={false}
+          ref={viewTrnRef}
+        >
+          Other Receipt
+        </GradientButton>
+      </Box>
+    </Box>
   );
 
   useEffect(() => {
@@ -663,118 +684,128 @@ const TellerScreen = ({ screenFlag }) => {
 
   return (
     <>
-      <DailyTransTabs
-        heading={headingWithButton as any}
-        tabsData={tabsDetails}
-        cardsData={cardDetails}
-        reqData={cardTabsReq}
-        key={screenFlag}
-      />
+      {!Boolean(otherReceipt) ? (
+        <>
+          <DailyTransTabs
+            heading={headingWithButton as any}
+            tabsData={tabsDetails}
+            cardsData={cardDetails}
+            reqData={cardTabsReq}
+            key={screenFlag}
+          />
 
-      {(isTabsLoading || getData?.isLoading) && (
-        <LinearProgress
-          color="secondary"
-          sx={{ margin: "0px 10px 0px 10px" }}
+          {(isTabsLoading || getData?.isLoading) && (
+            <LinearProgress
+              color="secondary"
+              sx={{ margin: "0px 10px 0px 10px" }}
+            />
+          )}
+          <Paper sx={{ margin: "10px", marginBottom: "15px" }}>
+            <FormWrapper
+              key={`TellerScreen` + screenFlag + count}
+              metaData={TellerScreenMetadata as MetaDataType}
+              initialValues={{} as InitialValuesType}
+              onSubmitHandler={onSubmitHandler}
+              hideHeader={true}
+              formStyle={{
+                background: "white",
+                padding: "0px 10px 10px 10px !important",
+              }}
+              controlsAtBottom={false}
+              onFormButtonClickHandel={(id) => {}}
+              formState={{
+                MessageBox: MessageBox,
+                setCardDetails,
+                docCd: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
+                getCardColumnValue,
+                screenFlag,
+              }}
+              setDataOnFieldChange={async (action, payload) => {
+                if (action === "RECEIPT" || action === "PAYMENT") {
+                  let event: any = { preventDefault: () => {} };
+                  formRef?.current?.handleSubmit(event, "SAVE");
+                  if (denoTableType === "single") {
+                    const formattedDate = format(
+                      parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                      "dd/MMM/yyyy"
+                    ).toUpperCase();
+                    setBtnLoading((pre) => ({ ...pre, table1: true }));
+                    getData.mutate({
+                      COMP_CD: authState?.companyID,
+                      BRANCH_CD: authState?.user?.branchCode,
+                      USER_NAME: authState?.user?.id,
+                      // TRAN_DT: "03/FEB/2024",
+                      TRAN_DT: formattedDate,
+                      FLAG: "TABLE1",
+                    });
+                  } else if (denoTableType === "dual") {
+                    const formattedDate = format(
+                      parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                      "dd/MMM/yyyy"
+                    ).toUpperCase();
+                    setBtnLoading((pre) => ({ ...pre, table2: true }));
+                    getData.mutate({
+                      COMP_CD: authState?.companyID,
+                      BRANCH_CD: authState?.user?.branchCode,
+                      USER_NAME: authState?.user?.id,
+                      // TRAN_DT: "03/FEB/2024",
+                      TRAN_DT: formattedDate,
+                      FLAG: "TABLE2",
+                    });
+                  }
+                } else if (action === "ACCT_CD") {
+                  if (
+                    Boolean(payload?.carousalCardData) &&
+                    Boolean(payload?.carousalCardData.length)
+                  ) {
+                    setCardDetails(payload?.carousalCardData);
+                  }
+                  if (payload) {
+                    // console.log(payload, "payload");
+                    const { dependentFieldValues, paddedAcctcode, NPA_CD } =
+                      payload;
+                    setCardTabsReq({
+                      COMP_CD: authState?.companyID,
+                      ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                      ACCT_CD: paddedAcctcode,
+                      PARENT_TYPE:
+                        dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
+                          ?.PARENT_TYPE,
+                      PARENT_CODE:
+                        dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
+                          ?.PARENT_CODE,
+                      BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+                      SCREEN_REF:
+                        screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
+                      NPA_CD: NPA_CD,
+                    });
+                  }
+                } else if (action === "ACCT_TYPE") {
+                  setTabsDetails([]);
+                  setCardDetails([]);
+                  if (Boolean(payload?.currentField?.value)) {
+                    const tabApiReqPara = {
+                      COMP_CD: authState?.companyID,
+                      BRANCH_CD: payload?.branch_cd,
+                      ACCT_TYPE: payload?.currentField?.value,
+                    };
+                    fetchTabsData({
+                      cacheId: tabApiReqPara,
+                      reqData: tabApiReqPara,
+                    });
+                  }
+                }
+              }}
+              ref={formRef}
+            ></FormWrapper>
+          </Paper>
+        </>
+      ) : (
+        <OtherReceipt
+          screenFlag={"CASHRECOTHER"}
+          setCloseOthRec={setOtherReceipt}
         />
       )}
-      <Paper sx={{ margin: "10px", marginBottom: "15px" }}>
-        <FormWrapper
-          key={`TellerScreen` + screenFlag + count}
-          metaData={TellerScreenMetadata as MetaDataType}
-          initialValues={{} as InitialValuesType}
-          onSubmitHandler={onSubmitHandler}
-          hideHeader={true}
-          formStyle={{
-            background: "white",
-            padding: "0px 10px 10px 10px !important",
-          }}
-          controlsAtBottom={false}
-          onFormButtonClickHandel={(id) => {}}
-          formState={{
-            MessageBox: MessageBox,
-            setCardDetails,
-            docCd: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
-            getCardColumnValue,
-            screenFlag,
-          }}
-          setDataOnFieldChange={async (action, payload) => {
-            if (action === "RECEIPT" || action === "PAYMENT") {
-              let event: any = { preventDefault: () => {} };
-              formRef?.current?.handleSubmit(event, "SAVE");
-              if (denoTableType === "single") {
-                const formattedDate = format(
-                  parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                  "dd/MMM/yyyy"
-                ).toUpperCase();
-                setBtnLoading((pre) => ({ ...pre, table1: true }));
-                getData.mutate({
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: authState?.user?.branchCode,
-                  USER_NAME: authState?.user?.id,
-                  // TRAN_DT: "03/FEB/2024",
-                  TRAN_DT: formattedDate,
-                  FLAG: "TABLE1",
-                });
-              } else if (denoTableType === "dual") {
-                const formattedDate = format(
-                  parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                  "dd/MMM/yyyy"
-                ).toUpperCase();
-                setBtnLoading((pre) => ({ ...pre, table2: true }));
-                getData.mutate({
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: authState?.user?.branchCode,
-                  USER_NAME: authState?.user?.id,
-                  // TRAN_DT: "03/FEB/2024",
-                  TRAN_DT: formattedDate,
-                  FLAG: "TABLE2",
-                });
-              }
-            } else if (action === "ACCT_CD") {
-              if (
-                Boolean(payload?.carousalCardData) &&
-                Boolean(payload?.carousalCardData.length)
-              ) {
-                setCardDetails(payload?.carousalCardData);
-              }
-              if (payload) {
-                // console.log(payload, "payload");
-                const { dependentFieldValues, paddedAcctcode, NPA_CD } =
-                  payload;
-                setCardTabsReq({
-                  COMP_CD: authState?.companyID,
-                  ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
-                  ACCT_CD: paddedAcctcode,
-                  PARENT_TYPE:
-                    dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
-                      ?.PARENT_TYPE,
-                  PARENT_CODE:
-                    dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
-                      ?.PARENT_CODE,
-                  BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
-                  SCREEN_REF: screenFlag === "CASHREC" ? "TRN/039" : "TRN/040",
-                  NPA_CD: NPA_CD,
-                });
-              }
-            } else if (action === "ACCT_TYPE") {
-              setTabsDetails([]);
-              setCardDetails([]);
-              if (Boolean(payload?.currentField?.value)) {
-                const tabApiReqPara = {
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: payload?.branch_cd,
-                  ACCT_TYPE: payload?.currentField?.value,
-                };
-                fetchTabsData({
-                  cacheId: tabApiReqPara,
-                  reqData: tabApiReqPara,
-                });
-              }
-            }
-          }}
-          ref={formRef}
-        ></FormWrapper>
-      </Paper>
       {/* {Boolean(state?.confirmation) && !Boolean(haveerror) ? (
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}

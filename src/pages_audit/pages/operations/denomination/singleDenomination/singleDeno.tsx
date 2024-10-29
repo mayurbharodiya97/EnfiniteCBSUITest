@@ -20,6 +20,9 @@ import {
   usePropertiesConfigContext,
 } from "@acuteinfo/common-base";
 import ReleaseMainGrid from "./release/releaseMainGrid";
+import OtherReceipt from "../otherReceipt/otherRec";
+
+////////////////////PENDING TO IMPLEMENT MULTI SROW SELECTION IN OTHER RECEIPT IN SINGLE DENOMINATION SCREEN/////////////////////////////
 
 export const SingleDeno = ({ screenFlag }) => {
   const myFormRef = useRef<any>(null);
@@ -42,7 +45,7 @@ export const SingleDeno = ({ screenFlag }) => {
   });
   const [arrFieldData, setArrFieldData] = useState<any>({});
   const [openGrid, setOpenGrid] = useState<any>(false);
-
+  const [openOthRec, setOpenOthRec] = useState<any>(false);
   const [count, setCount] = useState(0);
   const {
     clearCache: clearTabsCache,
@@ -242,99 +245,113 @@ export const SingleDeno = ({ screenFlag }) => {
 
   return (
     <>
-      <DailyTransTabs
-        heading="Single Denomination(TRN/042)"
-        cardsData={cardDetails}
-        reqData={cardTabsReq}
-        tabsData={tabsDetails}
-      />
-      {isTabsLoading || getCarousalCards?.isLoading || getData?.isLoading ? (
-        <LinearProgress
-          color="secondary"
-          sx={{ margin: "0px 10px 0px 10px" }}
-        />
-      ) : null}
-      {!Boolean(openGrid) ? (
-        <FormWrapper
-          onSubmitHandler={handleSubmit}
-          initialValues={singleDenoRows ?? {}}
-          key={"single-deno" + denoTableMetadataTotal + singleDenoRows + count}
-          metaData={denoTableMetadataTotal as MetaDataType}
-          formStyle={{}}
-          hideHeader={true}
-          formState={{
-            MessageBox: MessageBox,
-            onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
-            setCardDetails,
-            docCD: "TRN/042",
-            getCardColumnValue,
-          }}
-          onFormButtonClickHandel={(buttonId) => {
-            if (buttonId === "DENOBTN") {
-              let event: any = { preventDefault: () => {} };
-              myFormRef?.current?.handleSubmit(event, "SAVE");
-            } else if (buttonId === "RELEASE") {
-              setOpenGrid(true);
-            }
-            // else if (id === "ADDNEWROW") {
-            //   //@ts-ignore
-            //   setSingleDenoRows((oldRow) => {
-            //     console.log(oldRow,'oldROW>>',oldRow?.singleDenoRow[0]);
-            //     return {
-            //       ...oldRow,
-            //       singleDenoRow: [
-            //         ...oldRow?.singleDenoRow,
-            //         {
-            //           ...oldRow?.singleDenoRow[0],
-            //           BRANCH_CD: authState?.user?.branchCode,
-            //         },
-            //       ],
-            //     };
-            //   });
-            // }
-          }}
-          setDataOnFieldChange={(action, payload) => {
-            if (action === "ACCT_CD") {
-              if (payload?.carousalCardData) {
-                setCardDetails(payload?.carousalCardData);
-              }
-              if (payload) {
-                const { dependentFieldValues, accountCode } = payload;
-                setCardTabsReq({
-                  COMP_CD: authState?.companyID,
-                  ACCT_TYPE:
-                    dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value,
-                  ACCT_CD: accountCode,
-                  PARENT_TYPE:
-                    dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-                      ?.optionData?.[0]?.PARENT_TYPE,
-                  PARENT_CODE:
-                    dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-                      ?.optionData?.[0]?.PARENT_CODE,
-                  BRANCH_CD:
-                    dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value,
-                  SCREEN_REF: "TRN/041",
-                });
-              }
-            } else if (action === "ACCT_TYPE") {
-              // console.log(action, payload, "polod");
-              if (Boolean(payload?.currentField?.value)) {
-                const tabApiReqPara = {
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: payload?.branchCode,
-                  ACCT_TYPE: payload?.currentField?.value,
-                };
-                fetchTabsData({
-                  cacheId: tabApiReqPara,
-                  reqData: tabApiReqPara,
-                });
-              }
-            }
-          }}
-          ref={myFormRef}
+      {Boolean(openGrid) ? (
+        <ReleaseMainGrid setOpenGrid={setOpenGrid} />
+      ) : Boolean(openOthRec) ? (
+        <OtherReceipt
+          screenFlag={"SINGLERECOTHER"}
+          setCloseOthRec={setOpenOthRec}
         />
       ) : (
-        <ReleaseMainGrid setOpenGrid={setOpenGrid} />
+        <>
+          <DailyTransTabs
+            heading="Single Denomination(TRN/042)"
+            cardsData={cardDetails}
+            reqData={cardTabsReq}
+            tabsData={tabsDetails}
+          />
+          {isTabsLoading ||
+          getCarousalCards?.isLoading ||
+          getData?.isLoading ? (
+            <LinearProgress
+              color="secondary"
+              sx={{ margin: "0px 10px 0px 10px" }}
+            />
+          ) : null}
+
+          <FormWrapper
+            onSubmitHandler={handleSubmit}
+            initialValues={singleDenoRows ?? {}}
+            key={
+              "single-deno" + denoTableMetadataTotal + singleDenoRows + count
+            }
+            metaData={denoTableMetadataTotal as MetaDataType}
+            formStyle={{}}
+            hideHeader={true}
+            formState={{
+              MessageBox: MessageBox,
+              onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
+              setCardDetails,
+              docCD: "TRN/042",
+              getCardColumnValue,
+            }}
+            onFormButtonClickHandel={(buttonId) => {
+              if (buttonId === "DENOBTN") {
+                let event: any = { preventDefault: () => {} };
+                myFormRef?.current?.handleSubmit(event, "SAVE");
+              } else if (buttonId === "RELEASE") {
+                setOpenGrid(true);
+              } else if (buttonId === "OTHER_REC") {
+                setOpenOthRec(true);
+              }
+              // else if (id === "ADDNEWROW") {
+              //   //@ts-ignore
+              //   setSingleDenoRows((oldRow) => {
+              //     console.log(oldRow,'oldROW>>',oldRow?.singleDenoRow[0]);
+              //     return {
+              //       ...oldRow,
+              //       singleDenoRow: [
+              //         ...oldRow?.singleDenoRow,
+              //         {
+              //           ...oldRow?.singleDenoRow[0],
+              //           BRANCH_CD: authState?.user?.branchCode,
+              //         },
+              //       ],
+              //     };
+              //   });
+              // }
+            }}
+            setDataOnFieldChange={(action, payload) => {
+              if (action === "ACCT_CD") {
+                if (payload?.carousalCardData) {
+                  setCardDetails(payload?.carousalCardData);
+                }
+                if (payload) {
+                  const { dependentFieldValues, accountCode } = payload;
+                  setCardTabsReq({
+                    COMP_CD: authState?.companyID,
+                    ACCT_TYPE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value,
+                    ACCT_CD: accountCode,
+                    PARENT_TYPE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
+                        ?.optionData?.[0]?.PARENT_TYPE,
+                    PARENT_CODE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
+                        ?.optionData?.[0]?.PARENT_CODE,
+                    BRANCH_CD:
+                      dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value,
+                    SCREEN_REF: "TRN/041",
+                  });
+                }
+              } else if (action === "ACCT_TYPE") {
+                // console.log(action, payload, "polod");
+                if (Boolean(payload?.currentField?.value)) {
+                  const tabApiReqPara = {
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: payload?.branchCode,
+                    ACCT_TYPE: payload?.currentField?.value,
+                  };
+                  fetchTabsData({
+                    cacheId: tabApiReqPara,
+                    reqData: tabApiReqPara,
+                  });
+                }
+              }
+            }}
+            ref={myFormRef}
+          />
+        </>
       )}
       {/* <DialogActions>
         {" "}

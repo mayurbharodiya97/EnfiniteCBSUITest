@@ -1328,5 +1328,35 @@ export const denoTableMetadataTotal: any = {
         xl: 1,
       },
     },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "OTHER_REC",
+      label: "Other Receipt",
+      endsIcon: "",
+      rotateIcon: "",
+      placeholder: "",
+      type: "text",
+      // dependentFields: ["BTN_DIS_R", "BTN_DIS_P"],
+      // shouldExclude(fieldData, dependentVal, formState) {
+      //   console.log(dependentVal, "dependentValdependentVal?/");
+      //   if (
+      //     Boolean(dependentVal?.BTN_DIS_R?.value === "Y") ||
+      //     Boolean(dependentVal?.BTN_DIS_P?.value === "Y")
+      //   ) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      GridProps: {
+        xs: 2.5,
+        sm: 1.5,
+        md: 1.5,
+        lg: 1,
+        xl: 1,
+      },
+    },
   ],
 };

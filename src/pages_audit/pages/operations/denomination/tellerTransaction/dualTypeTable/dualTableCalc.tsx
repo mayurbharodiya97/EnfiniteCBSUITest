@@ -22,6 +22,7 @@ const DualTableCalc = ({
   setOpenDenoTable,
   setCount,
 }) => {
+  //Defined the table metadata
   const columnDefinitions = [
     {
       label: "Denomination",
@@ -71,18 +72,13 @@ const DualTableCalc = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
-  const inputRestrictions = {
-    min: 0,
-    step: 1,
-    pattern: "\\d*",
-  };
-
+  //Get total of AVAIL_QTY and AVAIL_VAL column data
   useEffect(() => {
     const newTotalAmounts = { ...totalAmounts };
 
     ["AVAIL_QTY", "AVAIL_VAL"].forEach((fieldName) => {
-      newTotalAmounts[fieldName] = data.reduce((total, item) => {
-        const value = item[fieldName] || "0";
+      newTotalAmounts[fieldName] = data?.reduce((total, item) => {
+        const value = item[fieldName] ?? "0";
         return total + parseFloat(value);
       }, 0);
     });
@@ -90,29 +86,34 @@ const DualTableCalc = ({
     fixedDataTotal.current = newTotalAmounts;
   }, [data]);
 
-  const finalReceiptPayment = initRemainExcess;
+  // const finalReceiptPayment = initRemainExcess;
 
+  //This useEffect set the initial remainExcess amount in state
   useEffect(() => {
     if (Boolean(formData)) {
       // remainExcess.current = finalReceiptPayment;
-      setRemainExcess(finalReceiptPayment);
+      setRemainExcess(initRemainExcess);
     }
-  }, [formData, finalReceiptPayment]);
+  }, [formData, initRemainExcess]);
 
+  //This function for manage the deno. table calculation and validations
   const handleBlur = (event, fieldName, index) => {
     if (data) {
-      const { value = "0" } = event?.target || {};
+      // const { value = "0" } = event?.target || {};
       // console.log(fieldName, "fieldNamefieldName54514552");
       const newTotalAmounts = { ...totalAmounts };
-      columnDefinitions.forEach((column) => {
-        const fieldName = column.fieldName;
-        newTotalAmounts[fieldName] = data.reduce((total, item, i) => {
-          const value = inputValues[i]?.[fieldName] || item[fieldName] || "0";
+      columnDefinitions?.forEach((column) => {
+        const fieldName = column?.fieldName;
+        newTotalAmounts[fieldName] = data?.reduce((total, item, index) => {
+          const value =
+            inputValues[index]?.[fieldName] || //For get Input value
+            item?.[fieldName] || //For get API data field values
+            "0";
           return total + parseFloat(value);
         }, 0);
       });
 
-      // Check if the error exists and update the state accordingly
+      // Check if the error exists so update the state accordingly
       if (
         fieldName === "payment" &&
         inputValues[index]?.amount2 > data[index]?.AVAIL_VAL
@@ -131,8 +132,9 @@ const DualTableCalc = ({
         });
       } else {
         setErrors((prevErrors) => {
-          const updatedErrors = prevErrors.filter(
-            (error) => !(error.index === index && error.fieldName === fieldName)
+          const updatedErrors = prevErrors?.filter(
+            (error) =>
+              !(error.index === index && error?.fieldName === fieldName)
           );
           performCalculation(newTotalAmounts, updatedErrors);
           return updatedErrors;
@@ -146,14 +148,14 @@ const DualTableCalc = ({
       let calcRemainExcess;
       if (typeCode === "1") {
         calcRemainExcess =
-          parseInt(finalReceiptPayment) -
-          parseInt(newTotalAmounts["amount"]) +
-          parseInt(newTotalAmounts["amount2"]);
+          parseFloat(initRemainExcess) -
+          parseFloat(newTotalAmounts["amount"]) +
+          parseFloat(newTotalAmounts["amount2"]);
       } else if (typeCode === "4") {
         calcRemainExcess =
-          parseInt(finalReceiptPayment) +
-          parseInt(newTotalAmounts["amount"]) -
-          parseInt(newTotalAmounts["amount2"]);
+          parseFloat(initRemainExcess) +
+          parseFloat(newTotalAmounts["amount"]) -
+          parseFloat(newTotalAmounts["amount2"]);
       }
       setRemainExcess(calcRemainExcess);
     }
@@ -400,17 +402,25 @@ const DualTableCalc = ({
             return data;
           }),
           SCREEN_REF:
-            screenFlag === "CASHREC"
+            screenFlag === "CASHREC" || screenFlag === "CASHRECOTHER"
               ? "TRN/039"
               : screenFlag === "CASHPAY"
               ? "TRN/040"
-              : "TRN/041",
+              : screenFlag === "SINGLEDENO" || screenFlag === "SINGLERECOTHER"
+              ? "TRN/041"
+              : "",
           ENTRY_TYPE:
             screenFlag === "CASHREC"
               ? "SINGLEREC"
               : screenFlag === "CASHPAY"
               ? "SINGLEPAY"
-              : "MULTIRECPAY",
+              : screenFlag === "SINGLEDENO"
+              ? "MULTIRECPAY"
+              : screenFlag === "CASHRECOTHER"
+              ? "SINGLEOTHREC"
+              : screenFlag === "SINGLERECOTHER"
+              ? "MULTIOTHREC"
+              : "",
         };
         saveDenominationData?.mutate(reqData);
       } else if (response === "No") {
@@ -490,7 +500,6 @@ const DualTableCalc = ({
     <DualPartTable
       data={data || []}
       columnDefinitions={columnDefinitions}
-      isLoading={isLoading}
       displayTableDual={displayTableDual}
       // openAcctDtl={openAcctDtl}
       onCloseTable={onCloseTable}
@@ -503,14 +512,9 @@ const DualTableCalc = ({
       }
       gridLable={gridLable}
       handleBlur={handleBlur}
-      inputRestrictions={inputRestrictions}
       remainExcess={remainExcess}
       remainExcessLable={remainExcess >= 0 ? "Remaining " : "Excess "}
       errors={errors}
-      confirmation={confirmation}
-      closeConfirmation={closeConfirmation}
-      getRowData={getRowData}
-      formData={formData}
     />
   );
 };

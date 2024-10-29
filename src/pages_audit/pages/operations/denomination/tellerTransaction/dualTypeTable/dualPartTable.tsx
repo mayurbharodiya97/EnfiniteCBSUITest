@@ -617,7 +617,6 @@ import * as API from "../../api";
 const DualPartTable = ({
   data,
   columnDefinitions,
-  isLoading,
   displayTableDual,
   // openAcctDtl,
   onCloseTable,
@@ -626,14 +625,9 @@ const DualPartTable = ({
   totalAmounts,
   gridLable,
   handleBlur,
-  inputRestrictions,
   remainExcess,
   remainExcessLable,
   errors,
-  confirmation,
-  closeConfirmation,
-  getRowData,
-  formData,
 }) => {
   const classes = useStyles();
   const inputRefs = useRef<any>({});
