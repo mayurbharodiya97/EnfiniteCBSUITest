@@ -2901,6 +2901,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTCONFIGDTL",
     packageName: "",
   },
+  VALIDATEACCOUNTDTL: {
+    url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

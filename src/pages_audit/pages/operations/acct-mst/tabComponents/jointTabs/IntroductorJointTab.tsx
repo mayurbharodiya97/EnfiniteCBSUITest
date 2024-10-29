@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import {
+  extractMetaData,
   FormWrapper,
   MetaDataType,
   usePopupContext,
@@ -107,8 +108,7 @@ const IntroductorJointTab = () => {
             const formData = _.pick(data?.JOINT_INTRODUCTOR_DTL[i], formFields);
             return {
               ...formData,
-              J_TYPE: "I",
-              CUSTOMER_ID: AcctMSTState?.customerIDctx,
+              // J_TYPE: "I",
             };
           }
         );
@@ -177,7 +177,12 @@ const IntroductorJointTab = () => {
       <FormWrapper
         key={"acct-mst-joint-introductor-form" + initialVal}
         ref={formRef}
-        metaData={introductorjoint_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            introductorjoint_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         onSubmitHandler={onFormSubmitHandler}
         formState={{
           PARAM320: AcctMSTState?.param320,
