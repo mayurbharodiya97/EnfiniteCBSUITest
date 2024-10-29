@@ -1,3 +1,4 @@
+import { icon } from "@fortawesome/fontawesome-svg-core";
 import { isValid, parse } from "date-fns";
 import { enqueueSnackbar } from "notistack";
 import {
@@ -286,6 +287,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -314,12 +316,14 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                shouldCallCarousalCards = false;
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
                 dispatch({
@@ -348,6 +352,7 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                shouldCallCarousalCards = false;
               } else if (btnNm === "Yes") {
                 dispatch({
                   type: "UPDATE_ROW",
@@ -381,6 +386,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -456,6 +462,7 @@ const TRN001Provider = ({ children }) => {
           const { btnNm, msgObj } = await getBtnName({
             messageTitle: "ValidationFailed",
             message: "Transfer not allowed.",
+            icon: "ERROR",
           });
           if (btnNm === "Ok") {
             dispatch({
@@ -617,6 +624,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -633,9 +641,10 @@ const TRN001Provider = ({ children }) => {
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
                 dispatch({
@@ -654,8 +663,8 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
-            } else if (status === "0") {
             }
           }
         }
@@ -819,6 +828,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -840,12 +850,14 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                returnFlag = false;
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
                 dispatch({
@@ -867,6 +879,7 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                returnFlag = false;
               } else if (btnNm === "Yes") {
                 dispatch({
                   type: "UPDATE_ROW",
@@ -891,6 +904,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -1023,6 +1037,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -1041,12 +1056,14 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                returnFlag = false;
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
                 dispatch({
@@ -1065,6 +1082,7 @@ const TRN001Provider = ({ children }) => {
                     }),
                   },
                 });
+                returnFlag = false;
               } else if (btnNm === "Yes") {
                 dispatch({
                   type: "UPDATE_ROW",
@@ -1086,6 +1104,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -1315,6 +1334,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
               if (btnNm === "Ok") {
                 dispatch({
@@ -1335,9 +1355,10 @@ const TRN001Provider = ({ children }) => {
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
                 dispatch({
@@ -1361,6 +1382,7 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
             } else if (status === "0") {
               if (Boolean(rowData)) {
@@ -1458,14 +1480,18 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "ValidationFailed",
                 message,
+                icon: "ERROR",
               });
+              returnFlag = false;
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "RiskCategoryAlert",
+                messageTitle: "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (btnNm === "No") {
+                returnFlag = false;
                 break;
               } else if (btnNm === "Yes") {
                 returnFlag = true;
@@ -1474,18 +1500,13 @@ const TRN001Provider = ({ children }) => {
               const { btnNm, msgObj } = await getBtnName({
                 messageTitle: "Alert",
                 message,
+                icon: "WARNING",
               });
               if (btnNm === "Ok") {
                 returnFlag = true;
               }
             } else if (status === "0") {
-              const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "Alert",
-                message,
-              });
-              if (btnNm === "Ok") {
-                returnFlag = true;
-              }
+              returnFlag = true;
             }
           }
         }

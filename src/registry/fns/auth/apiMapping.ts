@@ -2897,8 +2897,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
     packageName: "",
   },
+  GETCASHPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHPAYMENT",
+    packageName: "",
+  },
   GETDDPRINTCONFIGDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTCONFIGDTL",
+    packageName: "",
+  },
+  GETOTHERCASHRECEIPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETOTHERCASHRECEIPT",
     packageName: "",
   },
   VALIDATEACCOUNTDTL: {
