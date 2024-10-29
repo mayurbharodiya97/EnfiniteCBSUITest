@@ -10,6 +10,7 @@ import {
   extractMetaData,
   FormWrapper,
   MetaDataType,
+  queryClient,
 } from "@acuteinfo/common-base";
 
 const AcctHeaderForm = React.memo(function HeaderForm() {
@@ -30,7 +31,11 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
     actionFlag,
     hasError
   ) => {
-    handleHeaderFormSubmit({ acctType: data?.ACCT_TYPE, reqID: data?.REQ_ID });
+    handleHeaderFormSubmit({
+      acctType: data?.ACCT_TYPE,
+      parentCode: data?.PARENT_CODE,
+      reqID: data?.REQ_ID,
+    });
     endSubmit(true);
   };
 
@@ -56,16 +61,36 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
     isError: isTabError,
     error: TabError,
     refetch,
-  } = useQuery<any, any>(["getTabsDetail", AcctMSTState?.accTypeValuectx], () =>
-    API.getTabsDetail({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      ACCT_TYPE: AcctMSTState?.accTypeValuectx,
-      ACCT_MODE: AcctMSTState?.acctModectx,
-      ALLOW_EDIT: "NEW",
-      // isFreshEntry: state?.isFreshEntryctx,
-    })
+  } = useQuery<any, any>(
+    ["getTabsDetail", AcctMSTState?.accTypeValuectx],
+    () =>
+      API.getTabsDetail({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+        ACCT_MODE: AcctMSTState?.acctModectx,
+        ALLOW_EDIT: AcctMSTState?.isFreshEntryctx
+          ? "NEW"
+          : Boolean(AcctMSTState?.confirmFlagctx)
+          ? AcctMSTState?.confirmFlagctx === "Y"
+            ? "EDIT"
+            : "NEW"
+          : "EDIT",
+        // isFreshEntry: state?.isFreshEntryctx,
+      }),
+    {
+      enabled: Boolean(AcctMSTState?.accTypeValuectx),
+    }
   );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries([
+        "getTabsDetail",
+        AcctMSTState?.accTypeValuectx,
+      ]);
+    };
+  }, []);
 
   useEffect(() => {
     // if() {
