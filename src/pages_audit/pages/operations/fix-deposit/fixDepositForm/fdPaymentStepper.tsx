@@ -156,9 +156,9 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     BENEFIACCTDTL: [
       {
         AMOUNT: Boolean(openRenew)
-          ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL) -
+          ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
             Number(FDState?.renewTrnsFormData?.RENEW_AMT)
-          : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL),
+          : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
         REMARKS: `FD PAYMENT ${authState?.companyID?.trim() ?? ""}${
           rows?.[0]?.data?.BRANCH_CD?.trim() ?? ""
         }${rows?.[0]?.data?.ACCT_TYPE?.trim() ?? ""}${
@@ -167,9 +167,9 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       },
     ],
     PAYMENT_AMOUNT: Boolean(openRenew)
-      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL) -
+      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
         Number(FDState?.renewTrnsFormData?.RENEW_AMT)
-      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL),
+      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
     ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
     BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
     ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
@@ -190,9 +190,9 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       },
     ],
     PAYMENT_AMOUNT: Boolean(openRenew)
-      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL) -
+      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
         Number(FDState?.renewTrnsFormData?.RENEW_AMT)
-      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL),
+      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
     ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
     BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
     ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
@@ -227,7 +227,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       TOT_DD_NEFT_AMT:
         Boolean(FDState?.fdSavedPaymentData.PAYSLIP) ||
         Boolean(FDState?.fdSavedPaymentData.RTGS_NEFT)
-          ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0
+          ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0
           : "",
       PAY_FOR: "",
       SDC: "",
@@ -241,7 +241,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       DD_NEFT_PAY_AMT:
         Boolean(FDState?.fdSavedPaymentData.PAYSLIP) ||
         Boolean(FDState?.fdSavedPaymentData.RTGS_NEFT)
-          ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0
+          ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0
           : "",
       SCROLL1: FDState?.validatePaymetEntryData?.SCROLL1 ?? "",
       REQUEST_CD: "0",
@@ -425,8 +425,8 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     };
 
     updateRenewTrnsFormData({
-      PAYMENT_AMOUNT: data?.TRANSFER_TOTAL ?? 0,
-      RENEW_AMT: data?.TRANSFER_TOTAL ?? 0,
+      PAYMENT_AMOUNT: data?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0,
+      RENEW_AMT: data?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0,
     });
 
     updateFdSavedPaymentData({
@@ -791,10 +791,10 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
         }
       }
     } else if (Boolean(openRenewTrnsForm)) {
+      updateRenewTrnsFormData(data);
       if (
         parseFloat(data?.PAYMENT_AMOUNT ?? 0) > parseFloat(data?.RENEW_AMT ?? 0)
       ) {
-        updateRenewTrnsFormData(data);
         const buttonName = await MessageBox({
           messageTitle: "Confirmation",
           message: `Are you sure to renew less than ${data?.PAYMENT_AMOUNT}?`,
@@ -1325,7 +1325,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
             ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
             ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
             FD_NO: rows?.[0]?.data?.FD_NO ?? "",
-            A_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
+            A_FLAG: "P",
           }}
           setOpenAdvice={setOpenPaymentAdvice}
           screenFlag={"FDEntry"}

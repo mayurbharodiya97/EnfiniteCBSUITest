@@ -36,6 +36,12 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 100,
       isAutoSequence: true,
+      isDisplayTotal: true,
+      footerIsMultivalue: true,
+      footerLabel: "Total :",
+      setFooterValue(total, rows) {
+        return "";
+      },
     },
     {
       accessor: "ACCT_CD",
@@ -110,6 +116,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "PAID_INT_AMT",
@@ -121,6 +128,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "TDS_INT_AMT",
@@ -132,6 +140,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "CR_AC_NO",

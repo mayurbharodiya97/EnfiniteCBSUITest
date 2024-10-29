@@ -627,6 +627,7 @@ export const FDDetailGrid = () => {
         loading={getFDViewDtlMutation?.isLoading}
         actions={actions}
         setAction={setCurrentAction}
+        enableExport={true}
         onClickActionEvent={async (index, id, data) => {
           if (id === "LEAN_FLAG") {
             let rowData = data;

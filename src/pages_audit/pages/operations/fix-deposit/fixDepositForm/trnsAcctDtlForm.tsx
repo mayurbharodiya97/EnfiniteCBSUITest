@@ -49,7 +49,7 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
         ? Number(renewTrnsVal)
         : (!Boolean(renewTrnsVal) || Number(renewTrnsVal) === 0) &&
           Boolean(openTrnsForm)
-        ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL
+        ? FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM
         : totalFDAmt;
 
     if (

@@ -111,26 +111,36 @@ export const FDDetailForm = forwardRef<any, any>(
       {
         enabled:
           Boolean(paraDtlData) &&
+          Boolean(tenorData) &&
           (defaultView === "new" || Boolean(openDepositForRenew)),
+
+        onSuccess: (data) => {
+          updateFDDetailsFormData([
+            {
+              ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
+              BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
+              ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+              FD_NO_DISABLED: paraDtlData?.[0]?.FD_NO_DISABLED ?? "",
+              INT_RATE_DISABLED: paraDtlData?.[0]?.INT_RATE_DISABLED ?? "",
+              MATURITY_AMT_DISABLED:
+                paraDtlData?.[0]?.MATURITY_AMT_DISABLED ?? "",
+              TERM_CD_DISABLED: paraDtlData?.[0]?.TERM_CD_DISABLED ?? "",
+              TRAN_DT_DISABLED: paraDtlData?.[0]?.TRAN_DT_DISABLED ?? "",
+              FD_NO: paraDtlData?.[0]?.FD_NO ?? "",
+              TERM_CD: paraDtlData?.[0]?.TERM_CD ?? "",
+              SPL_AMT: paraDtlData?.[0]?.SPL_AMT ?? "",
+              DOUBLE_TRAN: paraDtlData?.[0]?.DOUBLE_TRAN ?? "",
+              COMP_CD: authState?.companyID ?? "",
+              PERIOD_CD: tenorData?.[0]?.defaultVal ?? "",
+              MATURE_INST: data?.[0]?.defaultVal ?? "",
+              CATEG_CD: FDState?.acctNoData?.ACCT_CD ?? "",
+              AGG_DEP_CUSTID: FDState?.acctNoData?.ACCT_CD ?? "",
+              DEP_FAC: FDState?.acctNoData?.ACCT_CD ?? "",
+            },
+          ]);
+        },
       }
     );
-
-    //Api for get account number details
-    const validateAcctDtlMutation = useMutation(API.validateAcctDtl, {
-      onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "Error",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: () => {},
-    });
 
     //Api for get FD renew data
     const {
@@ -156,8 +166,9 @@ export const FDDetailForm = forwardRef<any, any>(
           PERIOD_CD: rows?.[0]?.data?.PERIOD_CD ?? "",
           PERIOD_NO: rows?.[0]?.data?.PERIOD_NO ?? "",
           PRINCIPAL_AMT:
-            Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0) -
-            Number(FDState?.renewTrnsFormData?.RENEW_AMT ?? 0),
+            Number(
+              FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0
+            ) - Number(FDState?.renewTrnsFormData?.RENEW_AMT ?? 0),
           WORKING_DATE: authState?.workingDate ?? "",
         }),
       { enabled: Boolean(paraDtlData) && Boolean(openDepositForRenew) }
@@ -183,7 +194,9 @@ export const FDDetailForm = forwardRef<any, any>(
           TRAN_DT: renewData?.[0]?.TRAN_DT
             ? format(new Date(renewData?.TRAN_DT), "dd/MMM/yyyy")
             : "",
-          TRSF_AMT: Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0),
+          TRSF_AMT: Number(
+            FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0
+          ),
           PERIOD_CD: rows?.[0]?.data?.PERIOD_CD ?? "",
           PERIOD_NO: rows?.[0]?.data?.PERIOD_NO ?? "",
           MATURITY_DT: renewData?.[0]?.MATURITY_DT
@@ -191,12 +204,12 @@ export const FDDetailForm = forwardRef<any, any>(
             : "",
           PRE_INT_FLAG: "N",
           PRINCIPAL_AMT: Number(
-            FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? 0
+            FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM ?? 0
           ),
           TERM_CD: paraDtlData?.[0]?.TERM_CD ?? "",
           INT_RATE: renewData?.[0]?.INT_RATE ?? "",
         }),
-      { enabled: Boolean(paraDtlData) }
+      { enabled: Boolean(paraDtlData) && Boolean(openDepositForRenew) }
     );
 
     //Mutation for Validate and Update FD details
@@ -519,75 +532,6 @@ export const FDDetailForm = forwardRef<any, any>(
     }, []);
 
     useEffect(() => {
-      if (tenorData && matureInstData && defaultView === "new") {
-        validateAcctDtlMutation?.mutate(
-          {
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-            ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-            ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
-            SCREEN_REF: "RPT/401",
-            DOUBLE_FAC: FDState?.fdParaDetailData?.DOUBLE_FAC ?? "",
-            TRAN_CD: FDState?.fdParaDetailData?.DOUBLE_TRAN ?? "",
-          },
-          {
-            onSuccess: async (data) => {
-              for (const response of data?.[0]?.MSG ?? []) {
-                if (response?.O_STATUS === "999") {
-                  await MessageBox({
-                    messageTitle: "ValidationFailed",
-                    message: response?.O_MESSAGE ?? "",
-                    icon: "ERROR",
-                  });
-                } else if (response?.O_STATUS === "9") {
-                  await MessageBox({
-                    messageTitle: "Alert",
-                    message: response?.O_MESSAGE ?? "",
-                    icon: "WARNING",
-                  });
-                } else if (response?.O_STATUS === "99") {
-                  const buttonName = await MessageBox({
-                    messageTitle: "Confirmation",
-                    message: response?.O_MESSAGE ?? "",
-                    buttonNames: ["Yes", "No"],
-                    defFocusBtnName: "Yes",
-                  });
-                } else if (response?.O_STATUS === "0") {
-                  updateFDDetailsFormData([
-                    {
-                      ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-                      BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-                      ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
-                      FD_NO_DISABLED: paraDtlData?.[0]?.FD_NO_DISABLED ?? "",
-                      INT_RATE_DISABLED:
-                        paraDtlData?.[0]?.INT_RATE_DISABLED ?? "",
-                      MATURITY_AMT_DISABLED:
-                        paraDtlData?.[0]?.MATURITY_AMT_DISABLED ?? "",
-                      TERM_CD_DISABLED:
-                        paraDtlData?.[0]?.TERM_CD_DISABLED ?? "",
-                      TRAN_DT_DISABLED:
-                        paraDtlData?.[0]?.TRAN_DT_DISABLED ?? "",
-                      FD_NO: paraDtlData?.[0]?.FD_NO ?? "",
-                      TERM_CD: paraDtlData?.[0]?.TERM_CD ?? "",
-                      SPL_AMT: paraDtlData?.[0]?.SPL_AMT ?? "",
-                      DOUBLE_TRAN: paraDtlData?.[0]?.DOUBLE_TRAN ?? "",
-                      COMP_CD: authState?.companyID ?? "",
-                      PERIOD_CD: tenorData?.[0]?.defaultVal ?? "",
-                      MATURE_INST: matureInstData?.[0]?.defaultVal ?? "",
-                      CATEG_CD: data?.[0]?.CATEG_CD ?? "",
-                      AGG_DEP_CUSTID: data?.[0]?.AGG_DEP_CUSTID ?? "",
-                      DEP_FAC: data?.[0]?.DEP_FAC ?? "",
-                    },
-                  ]);
-                }
-              }
-            },
-          }
-        );
-      }
-    }, [tenorData, matureInstData]);
-
-    useEffect(() => {
       if (defaultView === "view" || Boolean(openDepositForRenew)) {
         FixDepositDetailFormMetadata.fields[6].isDisplayCount = false;
         FixDepositDetailFormMetadata.fields[6].isRemoveButton = false;
@@ -720,10 +664,10 @@ export const FDDetailForm = forwardRef<any, any>(
                       MATURITY_DT: renewData?.[0]?.MATURITY_DT ?? "",
                       INT_RATE: renewData?.[0]?.INT_RATE ?? "",
                       MATURITY_AMT: maturityAmtData?.MATURITY_AMT ?? "",
-                      TRSF_AMT:
-                        FDState?.fdSavedPaymentData?.TRANSFER_TOTAL ?? "",
+                      TRSF_AMT: FDState?.renewTrnsFormData.RENEW_AMT ?? "",
                       PERIOD_CD: tenorData?.[0]?.defaultVal ?? "",
                       MATURE_INST: matureInstData?.[0]?.defaultVal ?? "",
+                      CASH_AMT: "",
                     },
                   ],
                 } as InitialValuesType
@@ -748,9 +692,7 @@ export const FDDetailForm = forwardRef<any, any>(
               }}
             />
           )
-        ) : !Boolean(
-            FDState?.fdDetailFormData?.FDDTL?.[0]?.ACCT_TYPE?.trim()
-          ) ? (
+        ) : matureInstDataIsLoading ? (
           <LoaderPaperComponent />
         ) : (
           <FormWrapper

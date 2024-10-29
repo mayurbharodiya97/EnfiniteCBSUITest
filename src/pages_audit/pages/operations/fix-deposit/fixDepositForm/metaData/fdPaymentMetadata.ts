@@ -2552,11 +2552,11 @@ export const FDPaymentMetadata = {
       },
       fullWidth: true,
       GridProps: {
-        xs: 8,
-        sm: 8,
-        md: 8,
-        lg: 8,
-        xl: 8,
+        xs: 6.2,
+        sm: 6.2,
+        md: 6.2,
+        lg: 6.2,
+        xl: 6.2,
         sx: { paddingTop: "0px !important" },
       },
     },
@@ -2700,6 +2700,35 @@ export const FDPaymentMetadata = {
         md: 1.5,
         lg: 1.5,
         xl: 1.5,
+      },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRANSFER_TOTAL_FOR_NEXT_FORM",
+      label: "",
+      isReadOnly: true,
+      dependentFields: ["TDS_INT_TRF", "SUR_TDS_TRF", "TRANSFER_TOTAL"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value =
+          Number(dependentFieldsValues?.TRANSFER_TOTAL?.value ?? 0) -
+          (Number(dependentFieldsValues?.TDS_INT_TRF?.value ?? 0) +
+            Number(dependentFieldsValues?.SUR_TDS_TRF?.value ?? 0));
+        return value;
+      },
+      FormatProps: {
+        allowNegative: true,
+      },
+      fullWidth: true,
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
       },
     },
 

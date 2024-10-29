@@ -58,6 +58,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 130,
       maxWidth: 250,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "PAID_DT",
@@ -151,6 +152,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 130,
       maxWidth: 250,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "ENTERED_DATE",
@@ -184,6 +186,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 130,
       maxWidth: 250,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "TOT_TDS_RECO_INT_AMT",
@@ -195,6 +198,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 250,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "RENEW_REMARK",
@@ -228,6 +232,17 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       minWidth: 200,
       maxWidth: 280,
       showTooltip: true,
+    },
+
+    {
+      columnName: "",
+      componentType: "buttonRowCell",
+      accessor: "VIEW_ADVICE",
+      sequence: 20,
+      buttonLabel: "View Advice",
+      width: 100,
+      minWidth: 80,
+      maxWidth: 110,
     },
   ],
 };

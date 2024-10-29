@@ -10,6 +10,7 @@ export const getFDViewDtl = async (reqData) => {
       const updatedItem = {
         ...item,
         INT_RATE: Number(item?.INT_RATE ?? 0).toFixed(2),
+        TOT_AMT: Number(item?.TOT_AMT ?? 0).toFixed(2),
       };
       if (updatedItem?.LEAN_FLAG.trim() === "Y") {
         updatedItem._rowColor = "rgb(255, 225, 225)";
