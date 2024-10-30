@@ -8,7 +8,6 @@ import React, {
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -39,6 +38,7 @@ import {
   MasterDetailsForm,
   GridWrapper,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
@@ -275,7 +275,7 @@ export const TemporaryOD = () => {
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    <Button
+                    <GradientButton
                       onClick={handleSubmit}
                       disabled={isSubmitting}
                       // endIcon={
@@ -284,7 +284,7 @@ export const TemporaryOD = () => {
                       color={"primary"}
                     >
                       {t("Save")}
-                    </Button>
+                    </GradientButton>
                   </>
                 );
               }}

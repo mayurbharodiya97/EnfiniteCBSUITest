@@ -61,6 +61,7 @@ export const limitEntryMetaData = {
       },
       branchCodeMetadata: {
         validationRun: "onChange",
+        isReadOnly: true,
         postValidationSetCrossFieldValues: async (field, formState) => {
           if (field?.value) {
             return {
@@ -90,18 +91,24 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
-        validationRun: "onChange",
+        validationRun: "all",
         isFieldFocused: true,
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/046",
-          });
+          if (dependentValue?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/046",
+            });
+          }
+          return [];
         },
         // _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: async (field, formState) => {
+          console.log("<<<parent ", field);
           formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
           return {
             PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
@@ -311,15 +318,24 @@ export const limitEntryMetaData = {
       },
       disableCaching: true,
       _optionsKey: "getSecurityListData",
-      postValidationSetCrossFieldValues: async (field, formState) => {
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        __,
+        dependentValue
+      ) => {
         if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
             SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
           });
           return {
-            SECURITY_TYPE_DISPLAY: {
-              value: field?.optionData?.[0]?.DISPLAY_NM,
+            SECURITY_TYPE: {
+              value: field?.value,
+            },
+            PARENT_TYPE: {
+              value:
+                dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
             },
           };
         }
@@ -411,7 +427,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "SECURITY_TYPE_DISPLAY",
+      name: "SECURITY_TYPE",
     },
     {
       render: {

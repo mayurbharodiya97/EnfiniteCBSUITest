@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
 import { useLocation } from "react-router-dom";
@@ -15,6 +15,7 @@ import {
   FormWrapper,
   queryClient,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const StopPayConfirmationForm = ({ closeDialog, result }) => {
@@ -123,7 +124,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -146,8 +147,8 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     if (rows?.[0]?.data?.RELEASE_DATE === "") {
@@ -174,10 +175,10 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

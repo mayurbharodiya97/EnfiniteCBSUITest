@@ -18,14 +18,15 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
     pageSizes: [15, 25, 50],
     defaultPageSize: 15,
     containerHeight: {
-      min: "73vh",
-      max: "73vh",
+      min: "67vh",
+      max: "67vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
     searchPlaceholder: "Records of Chequebook Confirmation",
+    footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
   columns: [
