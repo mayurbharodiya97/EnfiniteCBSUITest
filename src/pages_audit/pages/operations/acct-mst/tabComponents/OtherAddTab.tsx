@@ -1,4 +1,8 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  extractMetaData,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -171,7 +175,12 @@ const OtherAddTab = () => {
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         key={"acct-mst-other-add-tab-form" + initialVal}
-        metaData={otherAdd_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            otherAdd_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}

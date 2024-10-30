@@ -165,6 +165,7 @@ export const releaseSubGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    isCusrsorFocused: true,
   },
   filters: [],
   columns: [

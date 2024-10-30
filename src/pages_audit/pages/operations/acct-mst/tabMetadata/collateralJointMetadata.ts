@@ -60,6 +60,23 @@ export const collateraljoint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          defaultValue: "M   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",
@@ -326,16 +343,6 @@ export const collateraljoint_tab_metadata = {
           name: "PersonaldtlDivider_ignoreField",
           label: "personaldtlDivider",
           GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-        },
-        {
-          render: {
-            componentType: "rateOfInt",
-          },
-          name: "SHARE_PER",
-          label: "Share %",
-          placeholder: "",
-          type: "text",
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
@@ -790,15 +797,6 @@ export const collateraljoint_tab_metadata = {
           // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
           maxLength: 10,
         },
-        // {
-        //     render: {
-        //         componentType: "numberFormat"
-        //     },
-        //     name: "DIN_NO",
-        //     label: "DIN",
-        //     maxLength: 8,
-        //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-        // },
         {
           render: {
             componentType: "textField",
@@ -831,7 +829,7 @@ export const collateraljoint_tab_metadata = {
           render: {
             componentType: "textField",
           },
-          name: "mort_description",
+          name: "MORT_DESCRIPTION",
           label: "Description",
           maxLength: 200,
           GridProps: { xs: 12, sm: 6, md: 6, lg: 4.7, xl: 4 },

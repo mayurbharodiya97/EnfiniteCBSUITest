@@ -89,9 +89,7 @@ export const acctMSTHeaderFormMetadata = {
       _optionsKey: "acctTypesOp",
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
-        ],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -99,6 +97,19 @@ export const acctMSTHeaderFormMetadata = {
         md: 3,
         lg: 3,
         xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_CODE",
+      dependentFields: ["ACCT_TYPE"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        const optionData = dependentFields?.ACCT_TYPE?.optionData;
+        if (Array.isArray(optionData) && optionData.length > 0) {
+          return optionData[0]?.PARENT_CODE;
+        } else return "";
       },
     },
     {
@@ -130,7 +141,7 @@ export const acctMSTHeaderFormMetadata = {
         shouldExclude: () => {
           return false;
         },
-      }
-    }
+      },
+    },
   ],
 };

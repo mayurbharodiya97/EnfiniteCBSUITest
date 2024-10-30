@@ -65,6 +65,23 @@ export const signatoryjoint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          defaultValue: "S   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",
@@ -247,14 +264,6 @@ export const signatoryjoint_tab_metadata = {
         //     label: "Guardian Name",
         //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         // },
-        // {
-        //     render: {
-        //         componentType: "numberFormat"
-        //     },
-        //     name: "MORTGAGE_ID",
-        //     label: "Mortgage No",
-        //     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
-        // },
 
         {
           render: {
@@ -330,16 +339,6 @@ export const signatoryjoint_tab_metadata = {
           name: "PersonaldtlDivider_ignoreField",
           label: "",
           GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-        },
-        {
-          render: {
-            componentType: "rateOfInt",
-          },
-          name: "SHARE_PER",
-          label: "Share %",
-          placeholder: "",
-          type: "text",
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
