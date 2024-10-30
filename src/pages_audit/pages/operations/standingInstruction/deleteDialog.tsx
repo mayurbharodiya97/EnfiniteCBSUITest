@@ -44,6 +44,7 @@ export const DeleteDialog = ({
       <RemarksAPIWrapper
         TitleText={t("EnterRemovalRemarksForSI")}
         onActionNo={onClose}
+        customRequiredMessage="RemovalRemarkRequire"
         onActionYes={async (val, rows) => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),

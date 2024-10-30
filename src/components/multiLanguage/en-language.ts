@@ -885,9 +885,9 @@ export const en_language_data = {
   },
 
   // common
-  newmode: "new mode",
-  editmode: "edit mode",
-  viewmode: "view mode",
+  newmode: "New Mode",
+  editmode: "Edit Mode",
+  viewmode: "View Mode",
   FileName: "File Name",
   ClearAll: "Clear All",
   ViewFile: "View File",
@@ -1966,6 +1966,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
+  RemovalRemarkRequire: "Removal Remarks are required",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
