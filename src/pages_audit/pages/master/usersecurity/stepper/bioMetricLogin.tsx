@@ -158,7 +158,7 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView, userId }, ref) => {
   useEffect(() => {
     if (userState?.grid5?.isNewRow?.length > 0) {
       const contextData = userState?.grid5?.isNewRow;
-      const combined = [...data, ...contextData];
+      const combined = [...(data ?? ""), ...(contextData ?? "")];
       setGridData(combined);
     } else {
       setGridData(data);
