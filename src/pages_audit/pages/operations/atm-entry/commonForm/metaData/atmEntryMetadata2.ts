@@ -313,10 +313,6 @@ export const atmentrymetadata = {
         runPostValidationHookAlways: true,
       },
       accountCodeMetadata: {
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         label: "SBAccountCode",
         name: "SB_ACCT_CD",
         fullWidth: true,
@@ -528,10 +524,7 @@ export const atmentrymetadata = {
       },
       accountCodeMetadata: {
         fullWidth: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         // disableCaching: true,
         GridProps: {
           xs: 12,
@@ -752,10 +745,7 @@ export const atmentrymetadata = {
       },
       accountCodeMetadata: {
         fullWidth: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         // disableCaching: true,
         GridProps: {
           xs: 12,

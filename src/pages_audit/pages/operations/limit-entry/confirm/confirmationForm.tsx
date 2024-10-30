@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { limitconfirmFormMetaData } from "./confirmFormMetadata";
@@ -15,6 +15,7 @@ import {
   MetaDataType,
   FormWrapper,
   queryClient,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const LimitConfirmationForm = ({ closeDialog, result }) => {
@@ -136,7 +137,7 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -159,18 +160,18 @@ export const LimitConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color="primary"
                   onClick={() => {
                     setDeletePopup(true);
                   }}
                 >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}
