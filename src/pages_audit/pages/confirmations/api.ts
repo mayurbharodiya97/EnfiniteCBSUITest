@@ -48,6 +48,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
       item.SERVICE_TAX = item.SERVICE_TAX
         ? parseFloat(item.SERVICE_TAX).toFixed(2)
         : "0.00";
+      item.AMOUNT = item.AMOUNT ? parseFloat(item.AMOUNT).toFixed(2) : "0.00";
       item.FULL_ACCT_NO =
         item.BRANCH_CD + " " + item.ACCT_TYPE + " " + item.ACCT_CD;
 
@@ -109,6 +110,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
           : item.LIEN_STATUS === "E"
           ? "Expired"
           : null;
+      item.UNIQUE_NUM = Math.floor(Math.random() * 100000) + item?.SR_CD;
 
       // temporary OD against
 

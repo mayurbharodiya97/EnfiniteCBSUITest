@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -38,6 +37,7 @@ import {
   FormWrapper,
   MetaDataType,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 const LienEntryCustom = () => {
@@ -179,10 +179,16 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    validateInsertData.mutate(data);
-
-    //@ts-ignore
-    endSubmit(true);
+    validateInsertData.mutate(data, {
+      onSuccess: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+      onError: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+    });
   };
 
   const setCurrentAction = useCallback(
@@ -322,7 +328,7 @@ const LienEntryCustom = () => {
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -331,7 +337,7 @@ const LienEntryCustom = () => {
                     color={"primary"}
                   >
                     {t("Save")}
-                  </Button>
+                  </GradientButton>
                 </>
               )}
             </FormWrapper>

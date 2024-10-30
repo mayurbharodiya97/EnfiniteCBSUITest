@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   LinearProgress,
@@ -20,6 +19,7 @@ import {
   Alert,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
@@ -166,7 +166,7 @@ export const ForceExpireStock: React.FC<StockDtlCustomProps> = ({
               <>
                 {rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG === "Y" &&
                   screenFlag !== "stockForTrn" && (
-                    <Button
+                    <GradientButton
                       onClick={(event) => {
                         handleSubmit(event, "Save");
                       }}
@@ -177,11 +177,11 @@ export const ForceExpireStock: React.FC<StockDtlCustomProps> = ({
                       color={"primary"}
                     >
                       {t("Save")}
-                    </Button>
+                    </GradientButton>
                   )}
-                <Button color="primary" onClick={handleCloseDialog}>
+                <GradientButton color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

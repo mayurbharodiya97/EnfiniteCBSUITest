@@ -88,10 +88,12 @@ export const StopPayEntryMetadata = {
       accountTypeMetadata: {
         validationRun: "onChange",
         isFieldFocused: true,
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             USER_NAME: authState?.user?.id,
             DOC_CD: "TRN/048",
           });
@@ -121,10 +123,6 @@ export const StopPayEntryMetadata = {
         },
       },
       accountCodeMetadata: {
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         inputProps: {
           onInput: (event) => {
             if (event.target.value.length > 20) {

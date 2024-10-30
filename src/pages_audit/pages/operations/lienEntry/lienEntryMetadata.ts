@@ -60,6 +60,7 @@ export const LienEntryMetadata = {
               SERVICE_TAX: { value: "" },
               CHEQUE_DT: { value: "" },
               CHEQUE_AMOUNT: { value: "" },
+              LIEN_CD: { value: "" },
             };
           } else if (!field.value) {
             formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
@@ -74,6 +75,7 @@ export const LienEntryMetadata = {
               SERVICE_TAX: { value: "" },
               CHEQUE_DT: { value: "" },
               CHEQUE_AMOUNT: { value: "" },
+              LIEN_CD: { value: "" },
             };
           }
         },
@@ -111,6 +113,7 @@ export const LienEntryMetadata = {
             SERVICE_TAX: { value: "" },
             CHEQUE_DT: { value: "" },
             CHEQUE_AMOUNT: { value: "" },
+            LIEN_CD: { value: "" },
           };
         },
         runPostValidationHookAlways: true,
@@ -136,10 +139,7 @@ export const LienEntryMetadata = {
             return true;
           },
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         postValidationSetCrossFieldValues: async (
           field,
           formState,

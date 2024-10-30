@@ -958,7 +958,7 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
-
+  FooterNoteMsgCfmRej: "Note :- Double-click the record to confirm or reject",
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do you want to delete this row?",
@@ -1025,6 +1025,7 @@ export const en_language_data = {
   ClearingDateshouldbelessthanorequaltoGdDate:
     "Clearing Date should be less than or equal to Working Date.",
   Whichformatdoyouwanttodownload: "Which format do you want to download?",
+  PleaseEnterValidDate: "Please Enter Valid Date",
   Excel: "Excel",
   CSV: "CSV",
   Nodatafoundtoexports: "No data found to export!",
@@ -1135,10 +1136,12 @@ export const en_language_data = {
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
+  IssuedBy: "Issued By",
   IssueBy: "Issue By",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
   Period: "Period",
+  PeriodType: "Period Type",
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
@@ -1259,7 +1262,7 @@ export const en_language_data = {
   RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
-    "Removal Date should be greter than or Equal to Effective date",
+    "Removal Date should be greater than or Equal to Effective date",
 
   // Temporary OD
 
