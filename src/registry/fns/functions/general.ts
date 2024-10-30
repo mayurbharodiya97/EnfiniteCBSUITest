@@ -714,7 +714,7 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
               label: ACCT_TYPE + " - " + other.DESCRIPTION,

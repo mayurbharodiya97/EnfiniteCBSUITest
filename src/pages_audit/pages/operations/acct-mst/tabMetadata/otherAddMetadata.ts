@@ -61,6 +61,16 @@ export const otherAdd_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "AddDivider_ignoreField",

@@ -50,6 +50,8 @@ const CombinedStepper = ({ defaultView }) => {
     setIsBackButton,
     dispatchCommon,
   } = useContext(SecurityContext);
+  const userRef = useRef(userState);
+  userRef.current = userState;
   const { state: rows } = useLocation();
   const UserName = rows?.[0]?.data?.USER_NAME;
   const check = rows?.[0]?.data?.LAST_ENTERED_BY;
@@ -167,12 +169,12 @@ const CombinedStepper = ({ defaultView }) => {
     if (btnName === "Yes") {
       if (defaultView === "new") {
         addMutation.mutate({
-          onboard: userState.formData,
-          applicationdata: userState.appContextData,
-          branchdata: userState.branchContextData,
-          productdata: userState.productContextData,
-          loginshiftdata: userState.grid4,
-          biometricdata: userState.grid5,
+          onboard: userRef.current.formData,
+          applicationdata: userRef.current.appContextData,
+          branchdata: userRef.current.branchContextData,
+          productdata: userRef.current.productContextData,
+          loginshiftdata: userRef.current.grid4,
+          biometricdata: userRef.current.grid5,
         });
       } else {
         editMutation.mutate({
@@ -332,13 +334,6 @@ const CombinedStepper = ({ defaultView }) => {
           filtered,
           ["FINGER_NM"]
         );
-        // const updatedData = {
-        //   DETAILS_DATA: {
-        //     isNewRow: filtered ?? [],
-        //     isUpdateRow: [],
-        //     isDeleteRow: [],
-        //   },
-        // };
         dispatchCommon("commonType", { grid5: CompareData });
         SaveData();
       }
@@ -417,7 +412,8 @@ const CombinedStepper = ({ defaultView }) => {
         );
         const UpdatedNewRecords = FinalGridData.filter(
           (row) =>
-            (row._isNewRow === true && row.LOGIN_ACCESS === true) ||
+            row._isNewRow === true &&
+            row.LOGIN_ACCESS === true &&
             row.REPORT_ACCESS === true
         ).map((row) => {
           return row;

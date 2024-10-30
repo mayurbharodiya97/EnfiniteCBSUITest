@@ -985,29 +985,8 @@ export const main_tab_metadata = {
       render: {
         componentType: "numberFormat",
       },
-      name: "STD_1",
-      label: "PhoneO",
-      isReadOnly: (fieldValue, dependentFields, formState) =>
-        API.isReadOnlyonParam320({ formState }),
-      placeholder: "",
-      type: "text",
-      maxLength: 5,
-      GridProps: { xs: 12, sm: 4, md: 0.7, lg: 0.7, xl: 0.6 },
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 5) {
-            return false;
-          }
-          return true;
-        },
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
       name: "CONTACT1",
-      label: "",
+      label: "PhoneO",
       isReadOnly: (fieldValue, dependentFields, formState) =>
         API.isReadOnlyonParam320({ formState }),
       placeholder: "",
@@ -1041,29 +1020,8 @@ export const main_tab_metadata = {
       render: {
         componentType: "numberFormat",
       },
-      name: "STD_4",
-      label: "PhoneR",
-      isReadOnly: (fieldValue, dependentFields, formState) =>
-        API.isReadOnlyonParam320({ formState }),
-      placeholder: "",
-      maxLength: 5,
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 5) {
-            return false;
-          }
-          return true;
-        },
-      },
-      type: "text",
-      GridProps: { xs: 12, sm: 4, md: 0.7, lg: 0.7, xl: 0.6 },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
       name: "CONTACT4",
-      label: "",
+      label: "PhoneR",
       isReadOnly: (fieldValue, dependentFields, formState) =>
         API.isReadOnlyonParam320({ formState }),
       placeholder: "",
@@ -1092,32 +1050,6 @@ export const main_tab_metadata = {
       render: {
         componentType: "numberFormat",
       },
-      name: "STD_2",
-      label: "MobileNo",
-      isReadOnly: (fieldValue, dependentFields, formState) =>
-        API.isReadOnlyonParam320({ formState }),
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
-      placeholder: "",
-      maxLength: 3,
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 3) {
-            return false;
-          }
-          return true;
-        },
-      },
-      type: "text",
-      GridProps: { xs: 12, sm: 4, md: 0.7, lg: 0.7, xl: 0.6 },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
       name: "CONTACT2",
       isReadOnly: (fieldValue, dependentFields, formState) =>
         API.isReadOnlyonParam320({ formState }),
@@ -1125,7 +1057,7 @@ export const main_tab_metadata = {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
-      label: "",
+      label: "MobileNo",
       required: true,
       placeholder: "",
       maxLength: 20,
@@ -1155,32 +1087,6 @@ export const main_tab_metadata = {
       render: {
         componentType: "numberFormat",
       },
-      name: "STD_3",
-      label: "Alternate Phone",
-      isReadOnly: (fieldValue, dependentFields, formState) =>
-        API.isReadOnlyonParam320({ formState }),
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
-      placeholder: "",
-      maxLength: 3,
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 3) {
-            return false;
-          }
-          return true;
-        },
-      },
-      type: "text",
-      GridProps: { xs: 12, sm: 4, md: 0.7, lg: 0.7, xl: 0.6 },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
       name: "CONTACT3",
       isReadOnly: (fieldValue, dependentFields, formState) =>
         API.isReadOnlyonParam320({ formState }),
@@ -1188,7 +1094,7 @@ export const main_tab_metadata = {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
-      label: "",
+      label: "Alternate Phone",
       required: true,
       placeholder: "",
       maxLength: 20,
