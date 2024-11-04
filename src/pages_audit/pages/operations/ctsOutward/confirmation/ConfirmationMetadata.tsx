@@ -1040,7 +1040,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "REASON_DESCRIPTION",
+          name: "REASON_CODE_DESCRIPTION",
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
         },

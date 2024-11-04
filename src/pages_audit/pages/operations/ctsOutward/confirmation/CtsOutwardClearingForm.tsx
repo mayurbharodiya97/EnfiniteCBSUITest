@@ -264,7 +264,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
                         message: t(
-                          "DoYouWantToAllowTheTransaction" +
+                          t("DoYouWantToAllowTheTransaction") +
                             " - " +
                             "Slip No." +
                             data?.[0]?.SLIP_CD +
@@ -325,16 +325,18 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
-                    if (currentIndex && currentIndex !== totalData)
+                    if (currentIndex && currentIndex !== totalData) {
                       handleNext();
+                    }
                   }}
                 >
                   {t("MoveForward")}
                 </GradientButton>
                 <GradientButton
-                  onClick={() => {
-                    if (currentIndex && currentIndex !== totalData)
+                  onClick={(e) => {
+                    if (currentIndex && currentIndex > 0) {
                       handlePrev();
+                    }
                   }}
                 >
                   {t("Previous")}
@@ -417,7 +419,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             ) : (
               <>
                 <FormWrapper
-                  key={"CTSOutwardClearingConfirm"}
+                  key={"CTSOutwardClearingConfirm" + currentIndex}
                   metaData={
                     extractMetaData(
                       CTSOutwardClearingConfirmMetaData,
@@ -435,7 +437,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   }}
                 />
                 <FormWrapper
-                  key={`ChequeDetails` + formMode}
+                  key={`ChequeDetails` + formMode + currentIndex}
                   metaData={
                     extractMetaData(
                       zoneTranType === "S"
