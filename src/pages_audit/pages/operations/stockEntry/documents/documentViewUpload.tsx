@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -272,11 +271,11 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    <Button onClick={AddNewRow} color={"primary"}>
+                    <GradientButton onClick={AddNewRow} color={"primary"}>
                       {t("AddNewDocument")}
-                    </Button>
+                    </GradientButton>
 
-                    <Button
+                    <GradientButton
                       onClick={handleSubmit}
                       // disabled={isSubmitting}
                       endIcon={
@@ -285,14 +284,14 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                       color={"primary"}
                     >
                       {t("Save")}
-                    </Button>
-                    <Button
+                    </GradientButton>
+                    <GradientButton
                       onClick={() => navigate(".")}
                       // disabled={isSubmitting}
                       color={"primary"}
                     >
                       {t("Close")}
-                    </Button>
+                    </GradientButton>
                   </>
                 );
               }}

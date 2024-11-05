@@ -33,6 +33,7 @@ export const temporaryODentryMetadata = {
         name: "",
         branchCodeMetadata: {
           validationRun: "onChange",
+          isReadOnly: true,
           postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
               return {
@@ -94,10 +95,7 @@ export const temporaryODentryMetadata = {
           render: {
             componentType: "textField",
           },
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: true,
-            touchAndValidate: false,
-          },
+
           validate: (columnValue) => {
             let regex = /^[^!&]*$/;
             if (!regex.test(columnValue.value)) {
@@ -143,9 +141,13 @@ export const temporaryODentryMetadata = {
                 for (let i = 0; i < apiRespMSGdata?.length; i++) {
                   if (apiRespMSGdata[i]?.O_STATUS !== "0") {
                     let btnName = await messagebox(
-                      apiRespMSGdata[i]?.O_STATUS === "999"
-                        ? "validation fail"
-                        : "ALert message",
+                      apiRespMSGdata[i]?.O_MSG_TITLE
+                        ? apiRespMSGdata[i]?.O_MSG_TITLE
+                        : apiRespMSGdata[i]?.O_STATUS === "999"
+                        ? "ValidationFailed"
+                        : apiRespMSGdata[i]?.O_STATUS === "99"
+                        ? "confirmation"
+                        : "ALert",
                       apiRespMSGdata[i]?.O_MESSAGE,
                       apiRespMSGdata[i]?.O_STATUS === "99"
                         ? ["Yes", "No"]
@@ -166,6 +168,7 @@ export const temporaryODentryMetadata = {
                           isFieldFocused: true,
                           ignoreUpdate: true,
                         },
+                        ACCT_NM: { value: "" },
                       };
                     } else {
                       formState.setDataOnFieldChange("IS_VISIBLE", {
@@ -191,6 +194,8 @@ export const temporaryODentryMetadata = {
                     ignoreUpdate: true,
                     isFieldFocused: false,
                   },
+
+                  ACCT_NM: { value: postData?.ACCT_NM },
                 };
               }
             } else if (!field.value) {
@@ -199,6 +204,7 @@ export const temporaryODentryMetadata = {
               });
               return {
                 AMOUNT_UPTO: { value: "" },
+                ACCT_NM: { value: "" },
                 FROM_EFF_DATE: { value: authState?.workingDate },
                 TO_EFF_DATE: { value: authState?.workingDate },
               };
@@ -214,6 +220,22 @@ export const temporaryODentryMetadata = {
             lg: 2.5,
             xl: 2.5,
           },
+        },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        label: "AccountName",
+        name: "ACCT_NM",
+        isReadOnly: true,
+        fullWidth: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+          lg: 3,
+          xl: 3,
         },
       },
       {
@@ -242,26 +264,13 @@ export const temporaryODentryMetadata = {
         },
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
-          lg: 3,
-          xl: 3,
-        },
-      },
-
-      {
-        render: {
-          componentType: "spacer",
-        },
-        name: "SPACER",
-        GridProps: {
-          xs: 12,
           md: 2.5,
           sm: 2.5,
           lg: 2.5,
           xl: 2.5,
         },
       },
+
       {
         render: {
           componentType: "datePicker",
@@ -271,17 +280,15 @@ export const temporaryODentryMetadata = {
         isWorkingDate: true,
         required: true,
         isMinWorkingDate: true,
-        validate: (currentField, dependentField) => {
-          // if (
-          //   Boolean(currentField?.value) &&
-          //   !isValid(currentField?.value)
-          // ) {
-          //   return t("Mustbeavaliddate");
-          // }
+        validate: (currentField, dependentField, formState) => {
           if (
-            lessThanDate(currentField?.value, currentField?._minDt, {
-              ignoreTime: true,
-            })
+            lessThanDate(
+              currentField?.value,
+              new Date(formState?.WORKING_DATE),
+              {
+                ignoreTime: true,
+              }
+            )
           ) {
             return t("FromDateGreaterThanOrEqualToWorkingDate");
           }
@@ -307,6 +314,7 @@ export const temporaryODentryMetadata = {
         name: "TO_EFF_DATE",
         fullWidth: true,
         required: true,
+        isWorkingDate: true,
         validate: (currentField, dependentField) => {
           // if (
           //   Boolean(currentField?.value) &&
@@ -376,7 +384,6 @@ export const temporaryODentryMetadata = {
         name: "FLAG",
         label: "Flag",
         fullWidth: true,
-        isReadOnly: true,
         defaultValue: "Y",
         GridProps: {
           xs: 12,
@@ -399,7 +406,7 @@ export const temporaryODentryMetadata = {
       disableGroupBy: true,
       enablePagination: false,
       disableGlobalFilter: true,
-      containerHeight: { min: "30vh", max: "30vh" },
+      containerHeight: { min: "29vh", max: "29vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: true,

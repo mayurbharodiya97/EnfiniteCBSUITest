@@ -212,7 +212,7 @@ export const TRN001_Table = ({
         ACCT_TYPE: dataRow?.ACCT_TYPE ?? "",
         ACCT_CD: dataRow?.ACCT_CD ?? "",
         TRAN_AMOUNT: dataRow?.AMOUNT ?? "",
-        ACTIVITY_TYPE: "DAILY TRANSACTION" ?? "",
+        ACTIVITY_TYPE: "DAILY TRANSACTION",
         TRAN_DT: dataRow?.TRAN_DT ?? "",
         CONFIRMED: dataRow?.CONFIRMED ?? "",
         USER_DEF_REMARKS: input ?? "",
@@ -232,12 +232,12 @@ export const TRN001_Table = ({
     setScrollDialog(false);
     if (gridData?.length > 0) {
       const msgBoxRes = await MessageBox({
-        messageTitle: "Alert",
+        messageTitle: "Confirmation",
         message: `Are you sure you want to remove ${
           gridData?.length ?? ""
         } records?`,
         defFocusBtnName: "Yes",
-        icon: "INFO",
+        icon: "CONFIRM",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });

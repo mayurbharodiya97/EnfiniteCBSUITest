@@ -65,6 +65,23 @@ export const introductorjoint_tab_metadata = {
       _fields: [
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+          ignoreInSubmit: false,
+          __NEW__: {
+            ignoreInSubmit: true,
+          },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          defaultValue: "I   ",
+          name: "J_TYPE",
+        },
+        {
+          render: {
             componentType: "divider",
           },
           name: "referenceDivider_ignoreField",
@@ -111,6 +128,14 @@ export const introductorjoint_tab_metadata = {
                     messageTitle: msgTitle,
                     message: msg,
                     buttonNames: buttonNames,
+                    icon:
+                      status === "9"
+                        ? "WARNING"
+                        : status === "99"
+                        ? "CONFIRM"
+                        : status === "999"
+                        ? "ERROR"
+                        : status === "0" && "SUCCESS",
                   });
                   return { buttonName, status };
                 };
@@ -119,7 +144,9 @@ export const introductorjoint_tab_metadata = {
                   if (response_messages[i]?.O_STATUS !== "0") {
                     let btnName = await messagebox(
                       response_messages[i]?.O_STATUS === "999"
-                        ? "validation fail"
+                        ? "ValidationFailed"
+                        : response_messages[i]?.O_STATUS === "99"
+                        ? "Confirmation"
                         : "Alert",
                       response_messages[i]?.O_MESSAGE,
                       response_messages[i]?.O_STATUS === "99"
@@ -153,7 +180,7 @@ export const introductorjoint_tab_metadata = {
                         ADD2: { value: CustomerData?.ADD2 },
                         STATE_CD: { value: CustomerData?.STATE_CD },
                         MEM_ACCT_CD: { value: CustomerData?.MEM_ACCT_CD },
-                        DISTRICT_CD: { value: CustomerData?.DISTRICT_CD },
+                        DIST_CD: { value: CustomerData?.DISTRICT_CD },
                         GENDER: { value: CustomerData?.GENDER },
                         DIN_NO: { value: CustomerData?.DIN_NO },
                         FORM_60: { value: CustomerData?.FORM_60 },
@@ -179,7 +206,7 @@ export const introductorjoint_tab_metadata = {
                 ADD2: { value: "" },
                 STATE_CD: { value: "" },
                 MEM_ACCT_CD: { value: "" },
-                DISTRICT_CD: { value: "" },
+                DIST_CD: { value: "" },
                 GENDER: { value: "" },
                 DIN_NO: { value: "" },
                 FORM_60: { value: "" },
@@ -316,16 +343,6 @@ export const introductorjoint_tab_metadata = {
           name: "PersonaldtlDivider_ignoreField",
           label: "",
           GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-        },
-        {
-          render: {
-            componentType: "rateOfInt",
-          },
-          name: "SHARE_PER",
-          label: "Share %",
-          placeholder: "",
-          type: "text",
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
@@ -512,7 +529,7 @@ export const introductorjoint_tab_metadata = {
                     : "",
                 },
                 // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                DISTRICT_CD: {
+                DIST_CD: {
                   value: field?.optionData[0]?.DISTRICT_CD
                     ? field?.optionData[0]?.DISTRICT_CD
                     : "",
@@ -597,7 +614,7 @@ export const introductorjoint_tab_metadata = {
           render: {
             componentType: "hidden",
           },
-          name: "DISTRICT_CD",
+          name: "DIST_CD",
           label: "hidden district",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
@@ -615,6 +632,7 @@ export const introductorjoint_tab_metadata = {
           name: "STATE",
           label: "State",
           isReadOnly: true,
+          ignoreInSubmit: true,
           placeholder: "",
           type: "text",
           dependentFields: ["AREA_CD"],
@@ -634,6 +652,7 @@ export const introductorjoint_tab_metadata = {
           name: "COUNTRY",
           label: "Country",
           isReadOnly: true,
+          ignoreInSubmit: true,
           placeholder: "",
           type: "text",
           dependentFields: ["AREA_CD"],
@@ -780,17 +799,6 @@ export const introductorjoint_tab_metadata = {
         },
         {
           render: {
-            componentType: "numberFormat",
-          },
-          name: "DIN_NO",
-          label: "DIN",
-          isReadOnly: (fieldValue, dependentFields, formState) =>
-            API.isReadOnlyonParam320({ formState }),
-          maxLength: 8,
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-        },
-        {
-          render: {
             componentType: "textField",
           },
           name: "REMARKS",
@@ -821,7 +829,7 @@ export const introductorjoint_tab_metadata = {
           render: {
             componentType: "textField",
           },
-          name: "mort_description",
+          name: "MORT_DESCRIPTION",
           label: "Description",
           maxLength: 200,
           GridProps: { xs: 12, sm: 6, md: 6, lg: 4.7, xl: 4 },

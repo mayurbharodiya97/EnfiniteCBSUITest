@@ -324,14 +324,14 @@ export const Profile = () => {
                           />
                           <Tab
                             value="tab2"
-                            label={t("profile.AllowedAccess")}
-                            icon={<HowToRegOutlinedIcon />}
+                            label={t("profile.ActivityDetail")}
+                            icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                           />
                           <Tab
                             value="tab3"
-                            label={t("profile.ActivityDetail")}
-                            icon={<ArticleOutlinedIcon />}
+                            label={t("profile.AllowedAccess")}
+                            icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                           />
 
