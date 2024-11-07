@@ -123,6 +123,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "BRANCH_CD",
       label: "branchCode",
       type: "text",
+      placeholder: "EnterBranchCode",
       ignoreInSubmit: true,
       isReadOnly: true,
       fullWidth: true,
@@ -145,6 +146,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "ACCT_TYPE",
       label: "accountType",
       type: "text",
+      placeholder: "EnterAccountType",
       ignoreInSubmit: true,
       isReadOnly: true,
       fullWidth: true,
@@ -167,6 +169,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "ACCT_CD",
       label: "AccountNum",
       type: "text",
+      placeholder: "EnterAccountNumber",
       ignoreInSubmit: true,
       isReadOnly: true,
       fullWidth: true,
@@ -189,6 +192,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "ACCT_NAME",
       label: "AccountName",
       type: "text",
+      placeholder: "EnterAccountName",
       ignoreInSubmit: true,
       isReadOnly: true,
       fullWidth: true,
@@ -228,7 +232,7 @@ export const FdInterestPaymentFormMetaData = {
       render: {
         componentType: "divider",
       },
-      label: "FDRDDetail",
+      label: "FDRDDtl",
       name: "FDRDDtl",
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (
@@ -248,7 +252,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "PAYMENT_MODE",
       label: "PaymentMode",
-      defaultOptionLabel: "Select Option",
+      defaultOptionLabel: "SelectPaymentmode",
       options: API.getPMISCData,
       _optionsKey: "getPMISCData",
       required: true,
@@ -479,6 +483,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "TRAN_DT",
       label: "DepositDate",
       type: "text",
+      placeholder: "EnterDepositeDate",
       ignoreInSubmit: true,
       isReadOnly: true,
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -523,6 +528,7 @@ export const FdInterestPaymentFormMetaData = {
       name: "MATURITY_DT",
       label: "MaturityDate",
       type: "text",
+      placeholder: "EnterMaturityDate",
       ignoreInSubmit: true,
       isReadOnly: true,
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -1113,6 +1119,7 @@ export const FdInterestPaymentFormMetaData = {
       label: "Bank",
       isReadOnly: true,
       type: "text",
+      placeholder: "EnterBankName",
       required: true,
       dependentFields: ["PAYMENT_MODE"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -1231,7 +1238,7 @@ export const FdInterestPaymentFormMetaData = {
       },
       name: "TO_ACCT_TYPE",
       label: "BeneficiaryAccountType",
-      placeholder: "EnterBeneficiaryAccountType",
+      defaultOptionLabel: "EnterBeneficiaryAccountType",
       type: "text",
       options: API.getAccountTypeList,
       _optionsKey: "getAccountTypeList",

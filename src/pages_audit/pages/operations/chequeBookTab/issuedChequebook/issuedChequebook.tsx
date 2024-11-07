@@ -1,4 +1,4 @@
-import { AppBar, Dialog, Paper } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";

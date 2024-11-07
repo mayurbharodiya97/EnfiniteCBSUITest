@@ -291,12 +291,7 @@ export const forceExpireMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "EnterRemarks",
-
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 4,

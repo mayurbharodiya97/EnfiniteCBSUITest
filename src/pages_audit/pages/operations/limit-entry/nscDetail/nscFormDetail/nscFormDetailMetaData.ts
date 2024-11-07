@@ -87,10 +87,41 @@ export const nscDetailFormMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DISPLAY_PERIOD_CD",
+      label: "PeriodType",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PERIOD_NO",
+      label: "PeriodNumber",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -108,22 +139,6 @@ export const nscDetailFormMetaData = {
         xl: 2.4,
       },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "PERIOD_NO",
-      label: "PeriodNumber",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
     {
       render: {
         componentType: "amountField",

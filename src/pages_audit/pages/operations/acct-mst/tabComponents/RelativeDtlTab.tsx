@@ -1,4 +1,9 @@
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  extractMetaData,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -165,7 +170,12 @@ const RelativeDtlTab = () => {
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
         key={"acct-mst-relative-dtl-tab-form" + initialVal}
-        metaData={relativeDtl_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            relativeDtl_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}

@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Dialog,
   Grid,
@@ -43,6 +42,7 @@ import {
   MetaDataType,
   FormWrapper,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { cloneDeep } from "lodash";
 const LimitEntryCustom = ({ screenFlag, reqData }) => {
@@ -52,6 +52,26 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
       actionLabel: "ForceExpire",
       multiple: false,
       rowDoubleClick: true,
+      shouldExclude: (data) => {
+        if (data?.[0]?.data?.ALLOW_FORCE_EXP === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      actionName: "forceExpire",
+      actionLabel: "ViewDetail",
+      multiple: false,
+      rowDoubleClick: true,
+      shouldExclude: (data) => {
+        if (data?.[0]?.data?.ALLOW_FORCE_EXP !== "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
   ];
 
@@ -506,33 +526,30 @@ const LimitEntryCustom = ({ screenFlag, reqData }) => {
                       <>
                         {isData.isVisible ? (
                           <>
-                            <Button
+                            <GradientButton
                               color="primary"
                               onClick={() => navigate("fd-detail/")}
                             >
                               {t("FDDetail")}
-                            </Button>
-                            <Button
+                            </GradientButton>
+                            <GradientButton
                               color="primary"
                               onClick={() => navigate("nsc-detail")}
                             >
                               {t("NSCDetail")}
-                            </Button>
+                            </GradientButton>
                           </>
                         ) : null}
 
-                        <Button
+                        <GradientButton
                           onClick={(event) => {
                             handleSubmit(event, "Save");
                           }}
-                          // disabled={isSubmitting}
-                          // endIcon={
-                          //   isSubmitting ? <CircularProgress size={20} /> : null
-                          // }
+                          disabled={isSubmitting}
                           color={"primary"}
                         >
                           {t("Save")}
-                        </Button>
+                        </GradientButton>
                       </>
                     );
                   }}

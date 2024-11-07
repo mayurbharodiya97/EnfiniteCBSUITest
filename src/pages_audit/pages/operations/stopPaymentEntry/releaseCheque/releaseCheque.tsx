@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   LinearProgress,
@@ -19,6 +18,7 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
@@ -129,7 +129,7 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
             return (
               <>
                 {rows?.[0]?.data?.ALLOW_RELEASE === "Y" && (
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -140,12 +140,12 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
                     color={"primary"}
                   >
                     {t("Release")}
-                  </Button>
+                  </GradientButton>
                 )}
 
-                <Button color="primary" onClick={() => navigate(".")}>
+                <GradientButton color="primary" onClick={() => navigate(".")}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

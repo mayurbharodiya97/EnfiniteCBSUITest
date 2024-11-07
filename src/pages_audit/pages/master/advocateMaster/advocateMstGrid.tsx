@@ -70,6 +70,7 @@ export const AdvocateMstGrid = () => {
         if (btnName === "Yes") {
           deleteMutation.mutate({
             ...isDeleteDataRef.current?.data,
+            STATUS: Boolean(isDeleteDataRef.current?.data?.STATUS) ? "I" : "A",
             _isDeleteRow: true,
           });
         }

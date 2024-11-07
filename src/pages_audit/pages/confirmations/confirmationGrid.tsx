@@ -155,17 +155,6 @@ export const Confirmations = ({ screenFlag }) => {
           // }
           ref={myGridRef}
         />
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            color: "rgb(152 59 70 / 61%)",
-            marginLeft: "630px",
-            marginTop: "-43.2px",
-          }}
-          variant="subtitle1"
-        >
-          Double Click To Confirm Entry.
-        </Typography>
         <Routes>
           <Route
             path="view-details/*"

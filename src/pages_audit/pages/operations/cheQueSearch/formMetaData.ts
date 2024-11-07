@@ -1,4 +1,6 @@
+import { format } from "date-fns";
 import { getClearingTypeDDW, getClgZoneData, getReasonDdwData } from "./api";
+import { t } from "i18next";
 
 export const RetrievalParameterFormMetaData = {
   form: {
@@ -56,12 +58,14 @@ export const RetrievalParameterFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["FromDateRequired."] }],
       },
-      // validate: (value) => {
-      //   if (Boolean(value?.value)) {
-      //     return "Mustbeavaliddate";
-      //   }
-      //   return "";
-      // },
+      dependentFields: ["TO_DT"],
+      validate: (currentField, dependentField) => {
+        if (
+          new Date(currentField?.value) > new Date(dependentField?.TO_DT?.value)
+        ) {
+          return "ClearingDateshouldbelessthanorequaltoGdDate";
+        }
+      },
     },
     {
       render: {
@@ -76,19 +80,18 @@ export const RetrievalParameterFormMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["ToDateRequired"] }],
       },
-      // validate: (currentField, dependentField) => {
-      //   if (Boolean(currentField?.value)) {
-      //     return "Mustbeavaliddate";
-      //   }
-      //   if (
-      //     new Date(currentField?.value) <
-      //     new Date(dependentField?.FROM_DT?.value)
-      //   ) {
-      //     return "ToDateshouldbegreaterthanorequaltoFromDate";
-      //   }
-      //   return "";
-      // },
       dependentFields: ["FROM_DT"],
+      validate: (currentField, dependentField) => {
+        console.log(currentField?.value);
+
+        if (
+          new Date(currentField?.value) <
+          new Date(dependentField?.FROM_DT?.value)
+        ) {
+          return "ToDateshouldbegreaterthanorequaltoFromDate";
+        }
+        return "";
+      },
       runValidationOnDependentFieldsChange: true,
       GridProps: { xs: 2, sm: 2, md: 2, lg: 1.4, xl: 1.4 },
     },
@@ -172,12 +175,12 @@ export const returnChequeFormMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_CD",
-      label: "AccountNo",
+      name: "COMP_CD",
+      label: "",
+      type: "text",
       isReadOnly: true,
       fullWidth: true,
-      dateFormat: "dd/MM/yyyy",
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 2 },
     },
     {
       render: {
@@ -188,7 +191,7 @@ export const returnChequeFormMetaData = {
       type: "text",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 2 },
     },
     {
       render: {
@@ -201,6 +204,7 @@ export const returnChequeFormMetaData = {
       fullWidth: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
     },
+
     {
       render: {
         componentType: "numberFormat",
@@ -221,7 +225,7 @@ export const returnChequeFormMetaData = {
       type: "text",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 5, xl: 5 },
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 6, xl: 6 },
     },
     {
       render: {
@@ -243,18 +247,19 @@ export const returnChequeFormMetaData = {
     },
     {
       render: {
-        componentType: "amountField",
+        componentType: "numberFormat",
       },
       name: "PHONE",
       label: "phone",
       type: "text",
+      maxlength: 10,
       isReadOnly: true,
       fullWidth: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 5, xl: 5 },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "BANK_CD",
       label: "Bank",
@@ -265,19 +270,18 @@ export const returnChequeFormMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "CHEQUE_NO",
       label: "Chequeno",
       type: "text",
       isReadOnly: true,
       fullWidth: true,
-      className: "textInputFromRight",
       GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "ENTERED_BRANCH_CD",
       label: "from",
@@ -331,6 +335,7 @@ export const returnChequeFormMetaData = {
       },
       name: "DESCRIPTION",
       label: "Description",
+      maxLength: 25,
       type: "text",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
