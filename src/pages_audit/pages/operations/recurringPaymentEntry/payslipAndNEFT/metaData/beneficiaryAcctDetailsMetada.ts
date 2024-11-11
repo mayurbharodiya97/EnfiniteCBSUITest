@@ -249,6 +249,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
                   messageTitle: "ValidationFailed",
                   message: validateIFSC?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (buttonName === "Ok") {
                   return {

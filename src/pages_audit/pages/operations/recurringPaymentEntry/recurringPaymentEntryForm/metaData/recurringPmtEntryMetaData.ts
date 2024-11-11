@@ -239,10 +239,10 @@ export const RecurringPaymentEntryFormMetaData = {
               dependentFieldValues?.BRANCH_CD?.value?.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: "ValidationFailed",
                 message: "Enter Account Branch.",
                 buttonNames: ["Ok"],
-                icon: "WARNING",
+                icon: "ERROR",
               });
 
               if (buttonName === "Ok") {
@@ -291,10 +291,10 @@ export const RecurringPaymentEntryFormMetaData = {
               dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: "ValidationFailed",
                 message: "Enter Account Type.",
                 buttonNames: ["Ok"],
-                icon: "WARNING",
+                icon: "ERROR",
               });
 
               if (buttonName === "Ok") {
@@ -333,7 +333,9 @@ export const RecurringPaymentEntryFormMetaData = {
               if (postData?.status === "999") {
                 let btnName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: postData?.messageDetails ?? "Somethingwenttowrong",
+                  message: postData?.messageDetails?.length
+                    ? postData?.messageDetails
+                    : "Somethingwenttowrong",
                   icon: "ERROR",
                 });
                 if (btnName === "Ok") {
@@ -362,7 +364,9 @@ export const RecurringPaymentEntryFormMetaData = {
               for (let i = 0; i < postData.length; i++) {
                 if (postData[i]?.O_STATUS === "999") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "ValidationFailed",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "ValidationFailed",
                     message: postData[i]?.O_MESSAGE ?? "",
                     icon: "ERROR",
                   });
@@ -389,7 +393,9 @@ export const RecurringPaymentEntryFormMetaData = {
                 } else if (postData[i]?.O_STATUS === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert",
+                      messageTitle: postData[i]?.O_MSG_TITLE?.length
+                        ? postData[i]?.O_MSG_TITLE
+                        : "Alert",
                       message: postData[i]?.O_MESSAGE ?? "",
                       icon: "WARNING",
                     });
@@ -398,7 +404,9 @@ export const RecurringPaymentEntryFormMetaData = {
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "99") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Confirmation",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Confirmation",
                     message: postData[i]?.O_MESSAGE ?? "",
                     buttonNames: ["Yes", "No"],
                     icon: "CONFIRM",
@@ -1039,6 +1047,10 @@ export const RecurringPaymentEntryFormMetaData = {
           }
         },
       },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 2.5,
@@ -1549,14 +1561,18 @@ export const RecurringPaymentEntryFormMetaData = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "Confirmation",
                 message: postData[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 icon: "CONFIRM",
@@ -1568,7 +1584,9 @@ export const RecurringPaymentEntryFormMetaData = {
             } else if (postData[i]?.O_STATUS === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE?.length
+                    ? postData[i]?.O_MSG_TITLE
+                    : "Alert",
                   message: postData[i]?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
