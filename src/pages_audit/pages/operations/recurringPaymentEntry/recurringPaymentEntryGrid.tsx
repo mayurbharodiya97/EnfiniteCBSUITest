@@ -126,6 +126,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
@@ -146,14 +147,16 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     API.validateDeleteRecurData,
     {
       onSuccess: async (data) => {},
-      onError: (error: any) => {
+      onError: async (error: any) => {
         setDeleteMessageBox(false);
         let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+        await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -319,11 +322,13 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                       await MessageBox({
                         messageTitle: "ValidationFailed",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "ERROR",
                       });
                     } else if (response?.O_STATUS === "9") {
                       await MessageBox({
                         messageTitle: "Alert",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "WARNING",
                       });
                     } else if (response?.O_STATUS === "99") {
                       const buttonName = await MessageBox({
@@ -331,6 +336,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                         message: response?.O_MESSAGE ?? "",
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "No") {
                         break;
@@ -342,6 +348,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         entryDeleteMutation.mutate({
