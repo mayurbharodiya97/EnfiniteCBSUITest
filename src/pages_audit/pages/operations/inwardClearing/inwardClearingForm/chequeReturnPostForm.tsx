@@ -48,6 +48,7 @@ export const ChequeReturnPostForm: FC<{
   const [acImageData, setAcImageData] = useState<any>(null);
   const [isDividend, setIsDividend] = useState(false);
   const [isPositivePay, setIsPositvePay] = useState(false);
+  const [isPositivePayData, setIsPositvePayData] = useState<any>({});
   // const [noFlag, setNoFlag] = useState(false);
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
@@ -525,6 +526,9 @@ export const ChequeReturnPostForm: FC<{
         TRAN_CD: inwardGridData?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
       });
+    } else if (actionFlag === "POSITIVE_PAY") {
+      setIsPositvePayData({ ...data, COMP_CD: inwardGridData?.COMP_CD ?? "" });
+      setIsPositvePay(true);
     }
   };
   return (
@@ -598,7 +602,7 @@ export const ChequeReturnPostForm: FC<{
             } else if (id === "RETURN") {
               formRef?.current?.handleSubmit(event, "RETURN");
             } else if (id === "POSITIVE_PAY") {
-              setIsPositvePay(true);
+              formRef?.current?.handleSubmit(event, "POSITIVE_PAY");
             } else if (id === "CONFIRM") {
               formRef?.current?.handleSubmit(event, "CONFIRM");
             }
@@ -677,7 +681,7 @@ export const ChequeReturnPostForm: FC<{
             onClose={() => {
               setIsPositvePay(false);
             }}
-            positiveData={inwardGridData}
+            positiveData={isPositivePayData}
           />
         ) : null}
 

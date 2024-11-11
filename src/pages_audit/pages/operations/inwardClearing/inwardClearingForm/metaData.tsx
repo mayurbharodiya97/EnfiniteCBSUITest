@@ -576,7 +576,7 @@ export const chequeReturnPostFormMetaData = {
       rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
-      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: { xs: 12, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
     },
     {
       render: {
@@ -1157,7 +1157,7 @@ export const positivePayFormMetaData = {
       fullWidth: true,
       required: true,
 
-      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: { xs: 12, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
     },
     {
       render: {
@@ -1170,6 +1170,16 @@ export const positivePayFormMetaData = {
       required: true,
 
       GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "VIEW",
+      label: "View Image",
+      type: "text",
+
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
   ],
 };
