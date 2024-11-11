@@ -44,11 +44,11 @@ export const UserOnboardform = {
       name: "USER_NAME",
       sequence: 1,
       type: "text",
-      label: "User ID",
+      label: "UserID",
       placeholder: "User ID",
       autoComplete: "off",
       txtTransform: "lowercase",
-      maxLength: 15,
+      maxLength: 16,
       isFieldFocused: true,
       __EDIT__: { isReadOnly: true },
       __NEW__: {
@@ -62,7 +62,7 @@ export const UserOnboardform = {
         },
         schemaValidation: {
           type: "string",
-          rules: [{ name: "required", params: ["User ID is required."] }],
+          rules: [{ name: "required", params: ["UsernameisRequired"] }],
         },
       },
       GridProps: {
@@ -144,10 +144,10 @@ export const UserOnboardform = {
       name: "CNF_PASSWORD",
       sequence: 3,
       type: "password",
-      label: "Confirm Password",
+      label: "ConfirmPassword",
       required: true,
       dependentFields: ["USER_PASSWORD"],
-      placeholder: "Confirm Password",
+      placeholder: "EnterConfirmPassword",
       allowToggleVisiblity: true,
       ignoreInSubmit: false,
       fullWidth: true,
@@ -187,14 +187,15 @@ export const UserOnboardform = {
       name: "DESCRIPTION",
       sequence: 4,
       type: "text",
-      label: "Username",
+      label: "UserName",
       txtTransform: "uppercase",
       required: true,
-      placeholder: "User Name",
+      maxLength: 32,
+      placeholder: "EnterUsernames",
       autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["User Name is required."] }],
+        rules: [{ name: "required", params: ["UsernameRequired"] }],
       },
       __EDIT__: {
         GridProps: {
@@ -218,9 +219,9 @@ export const UserOnboardform = {
         componentType: "select",
       },
       name: "GROUP_NAME",
-      label: "Group Name",
+      label: "GroupName",
       sequence: 5,
-      placeholder: "Select Group",
+      placeholder: "SelectGroupName",
       type: "text",
       options: () => API.getsecmstgrpdrpdwn(),
       _optionsKey: "GetGroupList",
@@ -240,10 +241,16 @@ export const UserOnboardform = {
       sequence: 6,
       maxLength: 10,
       type: "text",
-      label: "Mobile Number",
+      label: "MobileNo",
       StartAdornment: "+91",
-      placeholder: "",
+      placeholder: "EnterMobileNo",
       autoComplete: "off",
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 9) {
+          return "MobileNumberValidation";
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -258,11 +265,19 @@ export const UserOnboardform = {
       sequence: 7,
       type: "text",
       maxLength: 12,
-      label: "Customer ID",
+      label: "CustomerId",
       required: false,
-      placeholder: "Customer ID",
+      placeholder: "EnterCustomerID",
       schemaValidation: {},
       autoComplete: "off",
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 12) {
+            return false;
+          }
+          return true;
+        },
+      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -270,10 +285,20 @@ export const UserOnboardform = {
         dependentFields
       ) => {
         if (currentField?.value.length > 0) {
-          return API.getCustomerId(currentField, {
+          const CustomerIdAPI = await API.getCustomerId(currentField, {
             COMP_CD: authState?.companyID,
             CUSTOMER_ID: currentField?.value,
           });
+          return {
+            ACCT_NM: {
+              value: CustomerIdAPI?.data?.[0]?.ACCT_NM ?? "",
+              ignoreUpdate: true,
+            },
+            CONTACT2: {
+              value: CustomerIdAPI?.data?.[0]?.CONTACT2 ?? "",
+              ignoreUpdate: true,
+            },
+          };
         }
       },
       GridProps: {
@@ -289,9 +314,8 @@ export const UserOnboardform = {
       name: "ACCT_NM",
       sequence: 8,
       type: "text",
-      label: "Customer id name",
+      label: "CustomerIdName",
       isReadOnly: true,
-      placeholder: "Customer id Name",
       dependentFields: ["CUSTOMER_ID"],
       GridProps: {
         xs: 12,
@@ -306,8 +330,9 @@ export const UserOnboardform = {
       name: "REPORTING_NM",
       sequence: 9,
       type: "text",
-      maxLength: 20,
-      label: "Reporting Name",
+      maxLength: 100,
+      label: "ReportingName",
+      placeholer: "EnterReportingName",
       GridProps: {
         xs: 12,
         sm: 2,
@@ -321,7 +346,7 @@ export const UserOnboardform = {
       name: "USER_LEVEL",
       sequence: 10,
       type: "text",
-      label: "User Level",
+      label: "UserLevel",
       required: true,
       options: [
         { label: "AUDITOR", value: "-2" },
@@ -331,11 +356,11 @@ export const UserOnboardform = {
         { label: "MANAGER", value: "3" },
         { label: "ADMIN", value: "4" },
       ],
-      placeholder: "Default Branch",
+      placeholder: "EnterUserLevel",
       __NEW__: { defaultValue: "1" },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["User Level is required."] }],
+        rules: [{ name: "required", params: ["UserLevelRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -350,15 +375,20 @@ export const UserOnboardform = {
         componentType: "autocomplete",
       },
       name: "DEF_COMP_CD",
-      label: "Default Bank",
+      label: "DefaultBank",
       sequence: 11,
-      placeholder: "Select Bank",
+      placeholder: "SelectDefaultBank",
       type: "text",
+      required: true,
       options: API.getSecmstBankcd,
       _optionsKey: "GetBankList",
       defaultValue: "132 ",
       disableCaching: true,
       autoComplete: "off",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["DefaultBankRequired"] }],
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -372,13 +402,18 @@ export const UserOnboardform = {
         componentType: "autocomplete",
       },
       name: "DEF_BRANCH_CD",
-      label: "Default Branch",
+      label: "DefaultBranch",
       sequence: 12,
-      placeholder: "Select Bank",
+      placeholder: "SelectDefaultBranch",
       type: "text",
+      required: true,
       options: API.getSecmstBranchcd,
       _optionsKey: "GetBranchList",
       autoComplete: "off",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["DefaultBranchRequired"] }],
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -393,7 +428,7 @@ export const UserOnboardform = {
       sequence: 13,
       type: "text",
       maxLength: 5,
-      label: "Clg.slip.No.Start From",
+      label: "ClgSlipNoStartFrom",
       placeholder: "",
       autoComplete: "off",
       FormatProps: {
@@ -428,7 +463,7 @@ export const UserOnboardform = {
       maxLength: 14,
       type: "text",
       ignoreInSubmit: true,
-      label: "Employee Id",
+      label: "EmployeeId",
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 14) {
@@ -470,7 +505,7 @@ export const UserOnboardform = {
         componentType: "autocomplete",
       },
       name: "DOC_SIGN_CONFIG",
-      label: "Digital Sign Config",
+      label: "DigitalSignConfig",
       sequence: 15,
       options: (dependentValue, formState, _, authState) =>
         API.getDigitalSignConfigddw(
@@ -502,14 +537,14 @@ export const UserOnboardform = {
       name: "ADUSER_NAME",
       sequence: 16,
       type: "text",
-      label: "Ad Username",
+      label: "ADUsername",
       required: true,
       ignoreInSubmit: true,
       placeholder: "username@domain name",
       autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Ad User Name is required."] }],
+        rules: [{ name: "required", params: ["ADUsernameRequire"] }],
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (formState?.sharing) {
@@ -534,7 +569,7 @@ export const UserOnboardform = {
       render: { componentType: "checkbox" },
       name: "SIGN_VIEW",
       sequence: 17,
-      label: "View Signature",
+      label: "ViewSignature",
       autoComplete: "off",
       __EDIT__: {
         GridProps: {
@@ -557,7 +592,7 @@ export const UserOnboardform = {
       render: { componentType: "checkbox" },
       name: "ALLOW_RELEASE",
       sequence: 18,
-      label: " Allow Release",
+      label: " AllowRelease",
       autoComplete: "off",
       GridProps: {
         xs: 12,
@@ -571,7 +606,7 @@ export const UserOnboardform = {
       render: { componentType: "checkbox" },
       name: "ALLOW_DOC_SIGN",
       sequence: 19,
-      label: "Allow Digital Sign",
+      label: "AllowDigitalSign",
       autoComplete: "off",
       GridProps: {
         xs: 12,
@@ -604,7 +639,7 @@ export const UserOnboardform = {
       render: { componentType: "checkbox" },
       name: "MULTI_APP_ACCESS",
       sequence: 21,
-      label: "Allow Concurrent App. Login",
+      label: "AllowConcurrentAppLogin",
       autoComplete: "off",
       __EDIT__: {
         GridProps: {
@@ -627,7 +662,7 @@ export const UserOnboardform = {
       render: { componentType: "datePicker" },
       name: "INACTIVE_DATE",
       sequence: 22,
-      label: "Inactive Date",
+      label: "InactiveDate",
       type: "text",
       __EDIT__: {
         ignoreInSubmit: (dependentFieldsValues) => {
@@ -696,10 +731,27 @@ export const UserOnboardform = {
       name: "DR_CASH_LIMIT",
       sequence: 23,
       type: "text",
-      label: "Debit Cash Limit",
+      label: "DebitCashLimit",
       maxLength: 14,
       autoComplete: "off",
-      placeholder: "Debit Cash Limit",
+      placeholder: "",
+      showMaxLength: true,
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -713,10 +765,27 @@ export const UserOnboardform = {
       name: "DR_CLG_LIMIT",
       sequence: 24,
       type: "text",
-      label: "Debit Clearing Limit",
+      label: "DebitClearingLimit",
       maxLength: 14,
       autoComplete: "off",
       placeholder: "",
+      showMaxLength: true,
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -730,10 +799,27 @@ export const UserOnboardform = {
       name: "DR_TRF_LIMIT",
       sequence: 25,
       type: "text",
-      label: "Debit Transfer Limit",
+      label: "DebitTransferLimit",
       maxLength: 14,
       autoComplete: "off",
-      placeholder: "Credit Cash Limit",
+      placeholder: "",
+      showMaxLength: true,
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -748,9 +834,26 @@ export const UserOnboardform = {
       sequence: 26,
       type: "text",
       maxLength: 14,
-      label: "Credit Cash Limit",
+      label: "CreditCashLimit",
+      showMaxLength: true,
       placeholder: "",
       autoComplete: "off",
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -764,10 +867,27 @@ export const UserOnboardform = {
       name: "CR_CLG_LIMIT",
       sequence: 27,
       type: "text",
-      label: "Credit Clearing Limit",
+      label: "CreditClearingLimit",
       maxLength: 14,
       autoComplete: "off",
-      placeholder: " ",
+      placeholder: "",
+      showMaxLength: true,
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -781,10 +901,27 @@ export const UserOnboardform = {
       name: "CR_TRF_LIMIT",
       sequence: 28,
       type: "text",
-      label: "Credit Transfer Limit",
+      label: "CreditTransferLimit",
       maxLength: 14,
       autoComplete: "off",
-      placeholder: "Credit Cash Limit",
+      placeholder: "",
+      showMaxLength: true,
+      FormatProps: {
+        thousandSeparator: true,
+        thousandsGroupStyle: "thousand",
+        allowNegative: true,
+        allowLeadingZeros: false,
+        decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 14) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 2,

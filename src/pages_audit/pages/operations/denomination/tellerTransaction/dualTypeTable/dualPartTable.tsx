@@ -613,11 +613,10 @@ import {
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import * as API from "../api";
+import * as API from "../../api";
 const DualPartTable = ({
   data,
   columnDefinitions,
-  isLoading,
   displayTableDual,
   // openAcctDtl,
   onCloseTable,
@@ -626,16 +625,9 @@ const DualPartTable = ({
   totalAmounts,
   gridLable,
   handleBlur,
-  inputRestrictions,
   remainExcess,
   remainExcessLable,
   errors,
-  confirmation,
-  closeConfirmation,
-  getRowData,
-  formData,
-  screenRef,
-  entityType,
 }) => {
   const classes = useStyles();
   const inputRefs = useRef<any>({});
@@ -671,15 +663,6 @@ const DualPartTable = ({
       };
     }
   }, [refsReady, displayTableDual, data]);
-
-  const saveDenominationData = useMutation(API.saveDenoData, {
-    onSuccess: async (data: any, variables: any) => {
-      CloseMessageBox();
-    },
-    onError: (error: any, variables: any) => {
-      CloseMessageBox();
-    },
-  });
 
   const renderTableHeader = () => {
     return (
@@ -876,7 +859,7 @@ const DualPartTable = ({
           width: "auto",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ minHeight: "48px !important" }}>
           <Typography
             variant="h6"
             style={{ flexGrow: 1 }}
@@ -972,41 +955,69 @@ const DualPartTable = ({
           </Paper>{" "}
         </Paper>
       </DialogContent>
-      {Boolean(confirmation) ? (
+      {/* {Boolean(confirmation) ? (
         <PopupRequestWrapper
           MessageTitle={"Confirmation"}
           Message={"All Transaction are Completed Want to Proceed"}
           onClickButton={(buttonNames) => {
             if (Boolean(buttonNames === "Yes")) {
               const rowsData = getRowData();
-
               const reqData = {
-                TRN_DTL: formData?.singleDenoRow?.map((item) => {
-                  const parameters = {
-                    BRANCH_CD: item?.BRANCH_CD ?? "",
-                    ACCT_TYPE: item?.ACCT_TYPE ?? "",
-                    ACCT_CD: item?.ACCT_CD ?? "",
-                    TYPE_CD: item?.TRX ?? "",
-                    COMP_CD: authState?.companyID ?? "",
-                    CHEQUE_NO: item?.CHQNO ?? "",
-                    SDC: item?.SDC ?? "",
-                    SCROLL1: Boolean(item?.SCROLL)
-                      ? item?.SCROLL
-                      : item?.TOKEN ?? "",
-                    CHEQUE_DT: item?.CHQ_DT ?? "",
-                    REMARKS: item?.REMARK ?? "",
-                    AMOUNT: Boolean(item?.RECEIPT)
-                      ? item?.RECEIPT
-                      : item?.PAYMENT ?? "",
-                  };
-                  return parameters;
-                }),
+                TRN_DTL:
+                  screenRef === "TRN/041"
+                    ? formData?.singleDenoRow?.map((item) => {
+                        const parameters = {
+                          BRANCH_CD: item?.BRANCH_CD ?? "",
+                          ACCT_TYPE: item?.ACCT_TYPE ?? "",
+                          ACCT_CD: item?.ACCT_CD ?? "",
+                          TYPE_CD: item?.TRX ?? "",
+                          COMP_CD: authState?.companyID ?? "",
+                          CHEQUE_NO: item?.CHQNO ?? "",
+                          SDC: item?.SDC ?? "",
+                          SCROLL1: Boolean(item?.SCROLL)
+                            ? item?.SCROLL
+                            : item?.TOKEN ?? "",
+                          CHEQUE_DT: item?.CHQ_DT ?? "",
+                          REMARKS: item?.REMARK ?? "",
+                          AMOUNT: Boolean(item?.RECEIPT)
+                            ? item?.RECEIPT
+                            : item?.PAYMENT ?? "",
+                        };
+                        return parameters;
+                      })
+                    : [
+                        {
+                          BRANCH_CD: formData?.BRANCH_CD ?? "",
+                          ACCT_TYPE: formData?.ACCT_TYPE ?? "",
+                          ACCT_CD: formData?.ACCT_CD ?? "",
+                          TYPE_CD: screenRef === "TRN/039" ? "1" : "4",
+                          COMP_CD: authState?.companyID ?? "",
+                          CHEQUE_NO: formData?.CHEQUE_NO ?? "",
+                          SDC: formData?.SDC ?? "",
+                          SCROLL1: formData?.TOKEN ?? "",
+                          CHEQUE_DT: formData?.CHEQUE_DT ?? "",
+                          REMARKS: formData?.REMARK ?? "",
+                          AMOUNT:
+                            screenRef === "TRN/039"
+                              ? formData?.RECEIPT
+                              : formData?.PAYMENT,
+                        },
+                      ],
                 DENO_DTL: rowsData?.map((itemData) => {
+                  console.log(itemData, "itemData>>??");
                   const data = {
-                    TYPE_CD: formData?.FINAL_AMOUNT > 0 ? "1" : "4",
+                    TYPE_CD:
+                      screenRef === "TRN/041"
+                        ? formData?.FINAL_AMOUNT > 0
+                          ? "1"
+                          : "4"
+                        : screenRef === "TRN/039"
+                        ? "1"
+                        : "4",
                     DENO_QTY: itemData?.DENO_QTY ?? "",
+                    DENO_TRAN_CD: itemData?.TRAN_CD ?? "",
                     DENO_VAL: itemData?.DENO_VAL ?? "",
-                    AMOUNT: itemData?.AMOUNT?.toString() ?? "",
+                    AMOUNT: itemData?.AMOUNT ?? "",
                   };
                   return data;
                 }),
@@ -1026,7 +1037,7 @@ const DualPartTable = ({
           loadingBtnName={"Yes"}
           icon={"INFO"}
         />
-      ) : null}
+      ) : null} */}
     </Dialog>
   );
 };

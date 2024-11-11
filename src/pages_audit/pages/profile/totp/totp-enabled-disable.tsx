@@ -141,7 +141,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
       setOTPError("");
       mutationAuth.mutate({
         otpNumber: OTP,
-        secretToken: responseRef.current?.SECRET,
+        secretToken: responseRef.current?.SECRET_TOCKEN,
         userID: authCtx?.authState?.user?.id,
       });
     }
@@ -212,7 +212,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                               maxWidth: "100%",
                               width: "100%",
                             }}
-                            value={responseRef.current?.SECRET_QR ?? ""}
+                            value={responseRef.current?.SECRET_TOCKEN_QR ?? ""}
                             viewBox={`0 0 150 150`}
                           />
                         </div>

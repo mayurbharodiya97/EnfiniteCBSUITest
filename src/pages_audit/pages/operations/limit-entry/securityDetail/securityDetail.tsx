@@ -1,13 +1,16 @@
-import { Button, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import { securityDetailMetaData } from "./securityDetailFormMetaData";
 
 export const SecurityDetailForm = ({ navigate, myMasterRef, reqDataRef }) => {
   const [data, setData] = useState();
   const { t } = useTranslation();
-
   useEffect(() => {
     myMasterRef?.current?.getFieldData().then((res) => {
       setData(res);
@@ -44,15 +47,15 @@ export const SecurityDetailForm = ({ navigate, myMasterRef, reqDataRef }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={(e) => handleSubmit(e, "Save")}
                 >
                   {t("Save")}
-                </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => navigate(".")}>
                   {t("Cancel")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -39,6 +38,7 @@ import {
   FormWrapper,
   MetaDataType,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { cloneDeep } from "lodash";
 
@@ -387,7 +387,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                 >
                   {({ isSubmitting, handleSubmit }) => (
                     <>
-                      <Button
+                      <GradientButton
                         onClick={(event) => {
                           handleSubmit(event, "Save");
                         }}
@@ -396,7 +396,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                         color={"primary"}
                       >
                         {t("Save")}
-                      </Button>
+                      </GradientButton>
                     </>
                   )}
                 </FormWrapper>

@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { lienconfirmFormMetaData } from "./confirmFormMetadata";
@@ -13,6 +13,7 @@ import {
   RemarksAPIWrapper,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const LienConfirmationForm = ({ closeDialog, result }) => {
@@ -93,7 +94,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -126,47 +127,18 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color="primary"
                   onClick={() => {
                     setIsDelete(true);
-                    // if (rows?.[0]?.data?.LIEN_STATUS === "A") {
-                    // } else if (rows?.[0]?.data?.LIEN_STATUS === "E") {
-                    //   let buttonName = await MessageBox({
-                    //     messageTitle: t("confirmation"),
-                    //     message: t("AreYouSureToConfirm"),
-                    //     buttonNames: ["No", "Yes"],
-                    //     defFocusBtnName: "Yes",
-                    //     loadingBtnName: ["Yes"],
-                    //   });
-                    //   if (buttonName === "Yes") {
-                    //     lienConfirm.mutate({
-                    //       IS_CONFIMED: false,
-                    //       COMP_CD: authState?.companyID,
-                    //       BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-                    //       ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
-                    //       ACCT_CD: rows?.[0]?.data?.ACCT_CD,
-                    //       LIEN_STATUS: rows?.[0]?.data?.LIEN_STATUS,
-                    //       ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
-                    //       SR_CD: rows?.[0]?.data?.SR_CD,
-                    //       REMOVAL_DT: rows?.[0]?.data?.REMOVAL_DT,
-                    //       CONFIRMED: rows?.[0]?.data?.CONFIRMED,
-                    //       USER_DEF_REMARKS:
-                    //         "WRONG ENTRY FROM LIEN CONFIRMATION  (TRN/665)",
-                    //       ACTIVITY_TYPE: "LIEN CONFIRMATION SCREEN",
-                    //       LIEN_AMOUNT: rows?.[0]?.data?.LIEN_AMOUNT,
-                    //       EFECTIVE_DT: rows?.[0]?.data?.EFECTIVE_DT,
-                    //     });
-                    //   }
-                    // }
                   }}
                 >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

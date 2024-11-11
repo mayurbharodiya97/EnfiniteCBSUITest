@@ -4,7 +4,6 @@ import { multipleChequebookGridData } from "./multipleChequebookMetadata";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import {
-  Alert,
   GridWrapper,
   GridMetaDataType,
   ActionTypes,

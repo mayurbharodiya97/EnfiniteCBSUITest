@@ -1,7 +1,11 @@
-import { Button, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import React from "react";
 
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import {
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { useLocation } from "react-router-dom";
 import { nscDetailFormMetaData } from "./nscFormDetailMetaData";
 import { useTranslation } from "react-i18next";
@@ -15,7 +19,7 @@ export const NSCFormDetail = ({ navigate }) => {
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "950px",
+          maxWidth: "1090px",
         },
       }}
     >
@@ -34,9 +38,9 @@ export const NSCFormDetail = ({ navigate }) => {
         >
           {({ isSubmitting, handleSubmit }) => {
             return (
-              <Button color="primary" onClick={() => navigate(".")}>
+              <GradientButton color="primary" onClick={() => navigate(".")}>
                 {t("Close")}
-              </Button>
+              </GradientButton>
             );
           }}
         </FormWrapper>
