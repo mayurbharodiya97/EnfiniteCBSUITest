@@ -1797,7 +1797,7 @@ export const en_language_data = {
   ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
