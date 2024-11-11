@@ -1099,7 +1099,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETPOSITIVEPAYDTL: {
-    url: "chequeServiceAPI/GETPOSITIVEPAYDTL",
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYDTL",
     packageName: "",
   },
   DOPOSTDML: {
@@ -1136,10 +1136,6 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCONFIMEDHISTORY: {
     url: "chequeServiceAPI/GETCONFIMEDHISTORY",
-    packageName: "",
-  },
-  GETINWZONEDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
     packageName: "",
   },
   GETINWREASONMSTDDW: {

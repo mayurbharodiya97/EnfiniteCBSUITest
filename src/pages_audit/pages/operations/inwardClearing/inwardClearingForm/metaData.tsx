@@ -324,7 +324,7 @@ export const chequeReturnPostFormMetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Validation Failed",
+                  messageTitle: postData[i]?.O_MSG_TITLE,
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -332,7 +332,7 @@ export const chequeReturnPostFormMetaData = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                    messageTitle: postData[i]?.O_MSG_TITLE,
                     message: postData[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -340,7 +340,7 @@ export const chequeReturnPostFormMetaData = {
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData[i]?.O_MSG_TITLE,
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -614,7 +614,7 @@ export const chequeReturnPostFormMetaData = {
         let ApiReq = {
           BRANCH_CD: authState?.user?.branchCode,
           COMP_CD: authState?.companyID,
-          ZONE_TRAN_TYPE: "N",
+          ZONE_TRAN_TYPE: "R",
         };
         return API.getInwardZoneTypeList(ApiReq);
       },
@@ -647,7 +647,7 @@ export const chequeReturnPostFormMetaData = {
           };
         }
       },
-      runPostValidationHookAlways: false,
+      runPostValidationHookAlways: true,
       placeholder: "",
       type: "text",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
@@ -1339,7 +1339,7 @@ export const shareDividendMetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Validation Failed",
+                  messageTitle: postData[i]?.O_MSG_TITLE,
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -1347,7 +1347,7 @@ export const shareDividendMetaData = {
               } else if (postData[i]?.O_STATUS === "99") {
                 formState.setDataOnFieldChange("TAB_CHANGED");
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData[i]?.O_MSG_TITLE,
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -1360,7 +1360,7 @@ export const shareDividendMetaData = {
                 formState.setDataOnFieldChange("TAB_CHANGED");
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                    messageTitle: postData[i]?.O_MSG_TITLE,
                     message: postData[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });

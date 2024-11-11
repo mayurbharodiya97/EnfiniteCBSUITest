@@ -108,7 +108,7 @@ export const ChequeReturnPostForm: FC<{
           const buttonName = await MessageBox({
             messageTitle: t("ValidationSuccessful"),
             message: t("AreYouSurePostThisCheque"),
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -142,15 +142,15 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: t("Alert"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: t("Confirmation"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -183,7 +183,7 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "999") {
           MessageBox({
-            messageTitle: t("ValidationFailed"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "ERROR",
           });
@@ -206,7 +206,7 @@ export const ChequeReturnPostForm: FC<{
         const buttonName = await MessageBox({
           messageTitle: t("ValidationSuccessful"),
           message: t("AreYouReturnThisCheque"),
-          buttonNames: ["No", "Yes"],
+          buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
         if (buttonName === "Yes") {
@@ -256,7 +256,7 @@ export const ChequeReturnPostForm: FC<{
         }
       } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
         MessageBox({
-          messageTitle: t("ValidationFailed"),
+          messageTitle: data[0]?.O_MSG_TITLE,
           message: data?.[0]?.O_MESSAGE,
           icon: "ERROR",
         });
@@ -297,7 +297,7 @@ export const ChequeReturnPostForm: FC<{
               t("DoYouWantAllowTransactionVoucherNo") +
               variables?.DAILY_TRN_CD +
               "?",
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -307,15 +307,15 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: t("Alert"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: t("Confirmation"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -540,7 +540,7 @@ export const ChequeReturnPostForm: FC<{
       ) : ( */}
       <>
         <FormWrapper
-          key={`chequeReturnPost`}
+          key={`chequeReturnPost` + currentIndex}
           metaData={chequeReturnPostFormMetaData as unknown as MetaDataType}
           initialValues={inwardGridData}
           // initialValues={{
@@ -624,8 +624,10 @@ export const ChequeReturnPostForm: FC<{
           {({ isSubmitting, handleSubmit }) => (
             <>
               <GradientButton
-                onClick={() => {
-                  if (currentIndex && currentIndex !== totalData) handlePrev();
+                onClick={(e) => {
+                  if (currentIndex && currentIndex > 0) {
+                    handlePrev();
+                  }
                 }}
               >
                 {t("Previous")}
@@ -665,6 +667,7 @@ export const ChequeReturnPostForm: FC<{
             <ChequeSignImage
               imgData={result?.[0]?.data}
               acSignImage={acImageData}
+              formData={inwardGridData}
             />
           </>
         )}

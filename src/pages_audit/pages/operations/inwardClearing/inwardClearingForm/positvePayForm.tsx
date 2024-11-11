@@ -17,11 +17,11 @@ export const PositivePayFormWrapper: FC<{
     any
   >(["getPositivePayData", { ...positiveData }], () =>
     API.getPositivePayData({
-      COMP_CD: positiveData?.COMP_CD,
-      BRANCH_CD: positiveData?.BRANCH_CD,
-      ACCT_TYPE: positiveData?.ACCT_TYPE,
-      ACCT_CD: positiveData?.ACCT_CD,
-      CHEQUE_NO: positiveData?.CHEQUE_NO,
+      A_COMP_CD: positiveData?.COMP_CD,
+      A_BRANCH_CD: positiveData?.BRANCH_CD,
+      A_ACCT_TYPE: positiveData?.ACCT_TYPE,
+      A_ACCT_CD: positiveData?.ACCT_CD,
+      A_CHEQUE_NO: positiveData?.CHEQUE_NO,
     })
   );
   return (
