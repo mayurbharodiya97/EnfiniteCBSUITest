@@ -24,6 +24,7 @@ export const UserSecurity: GridMetaDataType = {
     allowColumnHiding: true,
     isCusrsorFocused: true,
     allowRowSelection: false,
+    footerNote: "DoubleClickForEditDetail",
   },
   filters: [
     {

@@ -50,10 +50,10 @@ export const applicationAccess: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 125,
       isReadOnly: false,
-      // __VIEW__: {
-      //     isReadOnly: true,
-      //     enableColumnSelection: false
-      // },
+      __VIEW__: {
+        isReadOnly: true,
+        enableColumnSelection: false,
+      },
     },
   ],
 };
@@ -123,10 +123,10 @@ export const userAccessbranch = {
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
-      // __VIEW__: {
-      //     isReadOnly: true,
-      //     enableColumnSelection: false
-      // },
+      __VIEW__: {
+        isReadOnly: true,
+        enableColumnSelection: false,
+      },
     },
     {
       accessor: "REPORT_ACCESS",
@@ -139,10 +139,10 @@ export const userAccessbranch = {
       minWidth: 160,
       maxWidth: 200,
       isReadOnly: false,
-      // __VIEW__: {
-      //     isReadOnly: true,
-      //     enableColumnSelection: false
-      // },
+      __VIEW__: {
+        isReadOnly: true,
+        enableColumnSelection: false,
+      },
     },
   ],
 };

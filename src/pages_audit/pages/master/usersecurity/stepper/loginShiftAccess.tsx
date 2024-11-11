@@ -21,7 +21,9 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 const LoginShift = forwardRef<any, any>(
   ({ defaultView, username, userId }, ref) => {
@@ -103,7 +105,7 @@ const LoginShift = forwardRef<any, any>(
           ["SR_CD"]
         );
         dispatchCommon("commonType", {
-          grid4: upd,
+          grid4: { DETAILS_DATA: upd },
         });
         dispatchCommon("commonType", {
           oldData4: upd,
@@ -124,6 +126,14 @@ const LoginShift = forwardRef<any, any>(
     return (
       <Fragment>
         {isLoading && <LinearProgress color="secondary" />}
+        {isError && (
+          <Alert
+            severity="error"
+            errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+            errorDetail={error?.error_detail}
+            color="error"
+          />
+        )}
         <FormWrapper
           key={"LoginShift" + combinedData + MainData}
           metaData={extractMetaData(metaData, defaultView) as MetaDataType}
