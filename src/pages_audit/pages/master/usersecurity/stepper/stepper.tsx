@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useRef } from "react";
+import React, { Fragment, useContext, useEffect, useRef } from "react";
 import {
   AppBar,
   Box,
@@ -83,8 +83,8 @@ const CombinedStepper = ({ defaultView }) => {
   const FormData = useRef<any>(null);
   const { data } = useQuery<any, any>(["getAduserParavalue"], () =>
     API.getAduserParavalue({
-      comp_cd: authState?.companyID,
-      branch_cd: authState?.user?.branchCode,
+      comp_cd: authState?.companyID ?? "",
+      branch_cd: authState?.user?.branchCode ?? "",
     })
   );
   const addMutation = useMutation(API.saveuserdata, {
@@ -169,21 +169,21 @@ const CombinedStepper = ({ defaultView }) => {
     if (btnName === "Yes") {
       if (defaultView === "new") {
         addMutation.mutate({
-          onboard: userRef.current.formData,
-          applicationdata: userRef.current.appContextData,
-          branchdata: userRef.current.branchContextData,
-          productdata: userRef.current.productContextData,
-          loginshiftdata: userRef.current.grid4,
-          biometricdata: userRef.current.grid5,
+          onboard: userRef?.current?.formData,
+          applicationdata: userRef?.current?.appContextData,
+          branchdata: userRef?.current?.branchContextData,
+          productdata: userRef?.current?.productContextData,
+          loginshiftdata: userRef?.current?.grid4,
+          biometricdata: userRef?.current?.grid5,
         });
       } else {
         editMutation.mutate({
-          onboard: userState.formData,
-          applicationdata: userState.appContextData,
-          branchdata: userState.branchContextData,
-          productdata: userState.productContextData,
-          loginshiftdata: userState.grid4,
-          biometricdata: userState.grid5,
+          onboard: userRef?.current?.formData,
+          applicationdata: userRef?.current?.appContextData,
+          branchdata: userRef?.current?.branchContextData,
+          productdata: userRef?.current?.productContextData,
+          loginshiftdata: userRef?.current?.grid4,
+          biometricdata: userRef?.current?.grid5,
         });
       }
     }
@@ -200,14 +200,14 @@ const CombinedStepper = ({ defaultView }) => {
       const Accept = await MessageBox({
         messageTitle: "Confirmation",
         message: "Do you want to accept this Request?",
-        icon: "INFO",
-        buttonNames: ["Ok", "Cancel"],
-        loadingBtnName: ["Ok"],
+        icon: "CONFIRM",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
       });
-      if (Accept === "Ok") {
+      if (Accept === "Yes") {
         confirmation.mutate({
           confirm: "Y",
-          usera_name: UserName,
+          usera_name: UserName ?? "",
         });
       }
     }
@@ -224,14 +224,14 @@ const CombinedStepper = ({ defaultView }) => {
       const Accept = await MessageBox({
         messageTitle: "Confirmation",
         message: "Do you want to reject this Request?",
-        icon: "INFO",
-        buttonNames: ["Ok", "Cancel"],
-        loadingBtnName: ["Ok"],
+        icon: "CONFIRM",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
       });
-      if (Accept === "Ok") {
+      if (Accept === "Yes") {
         confirmation.mutate({
           confirm: "R",
-          usera_name: UserName,
+          usera_name: UserName ?? "",
         });
       }
     }
@@ -239,21 +239,23 @@ const CombinedStepper = ({ defaultView }) => {
   const handleComplete = async (e) => {
     submitEventRef.current = e;
     if (defaultView === "new") {
-      if (userState.activeStep === 0) {
-        FormData.current?.handleSubmit(e);
-      } else if (userState.activeStep === 1) {
+      if (userState?.activeStep === 0) {
+        FormData?.current?.handleSubmit(e);
+      } else if (userState?.activeStep === 1) {
         let appData = appGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { appUpdatedData: appData });
         const UpdatedNewRecords = appData
-          .filter((row) => row.LOGIN_ACCESS === true)
+          .filter(
+            (row) => row?.LOGIN_ACCESS === true || row?.LOGIN_ACCESS === "Y"
+          )
           .map((row) => {
             return row;
           });
         const filtered = UpdatedNewRecords.map((row) => ({
           USER_NAME: UserId,
-          APP_NM: row.APP_NM,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : row.LOGIN_ACCESS,
-          APP_TRAN_CD: row.TRAN_CD,
+          APP_NM: row?.APP_NM,
+          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : row?.LOGIN_ACCESS,
+          APP_TRAN_CD: row?.TRAN_CD,
         }));
         let OldData = [];
         const CompareData = utilFunction.transformDetailDataForDML(
@@ -263,27 +265,31 @@ const CombinedStepper = ({ defaultView }) => {
         );
         dispatchCommon("commonType", { appContextData: CompareData });
         if (filtered.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         } else {
           return;
         }
-      } else if (userState.activeStep === 2) {
+      } else if (userState?.activeStep === 2) {
         let branchData = branchGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { branchUpdatedData: branchData });
         let OldRecord = [];
         const UpdatedNewRecords = branchData
           .filter(
-            (row) => row.LOGIN_ACCESS === true || row.REPORT_ACCESS === true
+            (row) =>
+              row?.LOGIN_ACCESS === true ||
+              row?.LOGIN_ACCESS === "Y" ||
+              row?.REPORT_ACCESS === true ||
+              row?.REPORT_ACCESS === "Y"
           )
           .map((row) => {
             return row;
           });
         const filteredUpdatedrecords = UpdatedNewRecords.map((row) => ({
-          COMP_CD: row.COMP_CD,
+          COMP_CD: row?.COMP_CD,
           USER_NAME: UserId,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : "N",
-          REPORT_ACCESS: row.REPORT_ACCESS ? "Y" : "N",
-          BRANCH_CD: row.BRANCH_CD,
+          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : "N",
+          REPORT_ACCESS: row?.REPORT_ACCESS ? "Y" : "N",
+          BRANCH_CD: row?.BRANCH_CD,
         }));
         const CompareData = utilFunction.transformDetailDataForDML(
           OldRecord ?? [],
@@ -292,23 +298,23 @@ const CombinedStepper = ({ defaultView }) => {
         );
         dispatchCommon("commonType", { branchContextData: CompareData });
         if (filteredUpdatedrecords.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 3) {
+      } else if (userState?.activeStep === 3) {
         let proData = prodGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { productUpdatedData: proData });
         let OldRecord = [];
         const UpdatedNewRecords = proData
-          .filter((row) => row.ACCESS === true)
+          .filter((row) => row?.ACCESS === "Y" || row?.ACCESS === true)
           .map((row) => {
             return row;
           });
         const filtered = UpdatedNewRecords.map((row) => ({
           USER_NAME: UserId,
-          COMP_CD: row.COMP_CD,
-          BRANCH_CD: row.BRANCH_CD,
-          ACCESS: row.ACCESS ? "Y" : "N",
-          ACCT_TYPE: row.ACCT_TYPE,
+          COMP_CD: row?.COMP_CD,
+          BRANCH_CD: row?.BRANCH_CD,
+          ACCESS: row?.ACCESS ? "Y" : "N",
+          ACCT_TYPE: row?.ACCT_TYPE,
         }));
         const CompareData = utilFunction.transformDetailDataForDML(
           OldRecord ?? [],
@@ -317,17 +323,17 @@ const CombinedStepper = ({ defaultView }) => {
         );
         dispatchCommon("commonType", { productContextData: CompareData });
         if (filtered.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 4) {
+      } else if (userState?.activeStep === 4) {
         loginShiftGridRef.current?.handleSubmit(e);
-      } else if (userState.activeStep === 5) {
+      } else if (userState?.activeStep === 5) {
         let FinalGridData = loginBiometricRef?.current?.cleanData?.();
         let OldRecord = [];
         const filtered = FinalGridData.map((row) => ({
-          USER_NAME: row.USER_NAME,
-          FINGER_NM: row.FINGER_NM,
-          FINGER_BIO: row.FINGER_BIO,
+          USER_NAME: row?.USER_NAME,
+          FINGER_NM: row?.FINGER_NM,
+          FINGER_BIO: row?.FINGER_BIO,
         }));
         const CompareData = utilFunction.transformDetailDataForDML(
           OldRecord ?? [],
@@ -338,27 +344,32 @@ const CombinedStepper = ({ defaultView }) => {
         SaveData();
       }
     } else if (defaultView === "edit") {
-      if (userState.activeStep === 0) {
+      if (userState?.activeStep === 0) {
         FormData.current?.handleSubmit(e);
-      } else if (userState.activeStep === 1) {
+      } else if (userState?.activeStep === 1) {
         let FinalGridData = appGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { appUpdatedData: FinalGridData });
         const Newfiltered = FinalGridData.filter(
-          (row) => !row._isNewRow === true
+          (row) => !row?._isNewRow === true
         ).map((row) => {
           return row;
         });
         const NewFilter = Newfiltered.map((row) => ({
-          APP_NM: row.APP_NM,
-          APP_TRAN_CD: row.APP_TRAN_CD,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : "N",
-          USER_NAME: UserId,
+          APP_NM: row?.APP_NM,
+          APP_TRAN_CD: row?.APP_TRAN_CD,
+          LOGIN_ACCESS:
+            row?.LOGIN_ACCESS === true
+              ? "Y"
+              : row?.LOGIN_ACCESS === false
+              ? "N"
+              : row?.LOGIN_ACCESS,
+          USER_NAME: UserId ?? "",
         }));
         const Oldfiltered = (userState?.oldappContextData || []).map((row) => ({
-          APP_NM: row.APP_NM,
-          APP_TRAN_CD: row.APP_TRAN_CD,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : "N",
-          USER_NAME: row.USER_NAME,
+          APP_NM: row?.APP_NM,
+          APP_TRAN_CD: row?.APP_TRAN_CD,
+          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : "N",
+          USER_NAME: row?.USER_NAME ?? "",
         }));
         const CompareData = utilFunction.transformDetailDataForDML(
           Oldfiltered ?? [],
@@ -366,43 +377,53 @@ const CombinedStepper = ({ defaultView }) => {
           ["APP_NM"]
         );
         const UpdatedNewRecords = FinalGridData.filter(
-          (row) => row._isNewRow === true && row.LOGIN_ACCESS === true
+          (row) => row?._isNewRow === true && row?.LOGIN_ACCESS === "Y"
         ).map((row) => {
           return row;
         });
         const UpdatedNewRecordFiltered = UpdatedNewRecords.map((row) => ({
-          APP_NM: row.APP_NM,
-          APP_TRAN_CD: row.APP_TRAN_CD,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : "N",
-          USER_NAME: row.USER_NAME,
+          APP_NM: row?.APP_NM,
+          APP_TRAN_CD: row?.APP_TRAN_CD,
+          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : "N",
+          USER_NAME: UserId ?? "",
         }));
         CompareData["isNewRow"] = [...UpdatedNewRecordFiltered];
         dispatchCommon("commonType", { appContextData: CompareData });
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 2) {
+      } else if (userState?.activeStep === 2) {
         let FinalGridData = branchGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { branchUpdatedData: FinalGridData });
         const Newfiltered = FinalGridData.filter(
-          (row) => !row._isNewRow === true
+          (row) => !row?._isNewRow === true
         ).map((row) => {
           return row;
         });
         const NewFilter = Newfiltered.map((row) => ({
-          COMP_CD: row.COMP_CD,
+          COMP_CD: row?.COMP_CD,
           USER_NAME: UserId,
-          LOGIN_ACCESS: row.LOGIN_ACCESS,
-          REPORT_ACCESS: row.REPORT_ACCESS,
-          BRANCH_CD: row.BRANCH_CD,
+          LOGIN_ACCESS:
+            row?.LOGIN_ACCESS === true
+              ? "Y"
+              : row?.LOGIN_ACCESS === false
+              ? "N"
+              : row?.LOGIN_ACCESS,
+          REPORT_ACCESS:
+            row?.REPORT_ACCESS === true
+              ? "Y"
+              : row?.REPORT_ACCESS === false
+              ? "N"
+              : row?.REPORT_ACCESS,
+          BRANCH_CD: row?.BRANCH_CD,
         }));
         const Oldfiltered = (userState?.oldbranchContextData || []).map(
           (row) => ({
-            COMP_CD: row.COMP_CD,
-            USER_NAME: row.USER_NAME,
-            LOGIN_ACCESS: row.LOGIN_ACCESS,
-            REPORT_ACCESS: row.REPORT_ACCESS,
-            BRANCH_CD: row.BRANCH_CD,
+            COMP_CD: row?.COMP_CD,
+            USER_NAME: row?.USER_NAME,
+            LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : "N",
+            REPORT_ACCESS: row?.REPORT_ACCESS ? "Y" : "N",
+            BRANCH_CD: row?.BRANCH_CD,
           })
         );
         const CompareData = utilFunction.transformDetailDataForDML(
@@ -412,83 +433,87 @@ const CombinedStepper = ({ defaultView }) => {
         );
         const UpdatedNewRecords = FinalGridData.filter(
           (row) =>
-            row._isNewRow === true &&
-            row.LOGIN_ACCESS === true &&
-            row.REPORT_ACCESS === true
+            (row?._isNewRow === true && row?.LOGIN_ACCESS === "Y") ||
+            row?.REPORT_ACCESS === "Y"
         ).map((row) => {
           return row;
         });
         const UpdatedNewRecordFiltered = UpdatedNewRecords.map((row) => ({
-          COMP_CD: row.COMP_CD,
-          USER_NAME: row.USER_NAME,
-          LOGIN_ACCESS: row.LOGIN_ACCESS ? "Y" : "N",
-          REPORT_ACCESS: row.REPORT_ACCESS ? "Y" : "N",
-          BRANCH_CD: row.BRANCH_CD,
+          COMP_CD: row?.COMP_CD,
+          USER_NAME: UserId,
+          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : "N",
+          REPORT_ACCESS: row?.REPORT_ACCESS ? "Y" : "N",
+          BRANCH_CD: row?.BRANCH_CD,
         }));
         CompareData["isNewRow"] = [...UpdatedNewRecordFiltered];
         dispatchCommon("commonType", { branchContextData: CompareData });
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         } else {
           return;
         }
-      } else if (userState.activeStep === 3) {
+      } else if (userState?.activeStep === 3) {
         let FinalGridData = prodGridRef?.current?.cleanData?.();
         dispatchCommon("commonType", { productUpdatedData: FinalGridData });
         const Newfiltered = FinalGridData.filter(
-          (row) => !row._isNewRow === true
+          (row) => !row?._isNewRow === true
         ).map((row) => {
           return row;
         });
         const NewFilter = Newfiltered.map((row) => ({
           USER_NAME: UserId,
-          COMP_CD: row.COMP_CD,
-          BRANCH_CD: row.BRANCH_CD,
-          ACCESS: row.ACCESS,
-          ACCT_TYPE: row.ACCT_TYPE,
+          COMP_CD: row?.COMP_CD,
+          BRANCH_CD: row?.BRANCH_CD,
+          ACCESS:
+            row?.ACCESS === true
+              ? "Y"
+              : row?.ACCESS === false
+              ? "N"
+              : row?.ACCESS,
+          ACCT_TYPE: row?.ACCT_TYPE,
         }));
         const Oldfiltered = (userState?.oldproductContextData || []).map(
           (row) => ({
-            USER_NAME: row.USER_NAME,
-            COMP_CD: row.COMP_CD,
-            BRANCH_CD: row.BRANCH_CD,
-            ACCESS: row.ACCESS,
-            ACCT_TYPE: row.ACCT_TYPE,
+            USER_NAME: row?.USER_NAME,
+            COMP_CD: row?.COMP_CD,
+            BRANCH_CD: row?.BRANCH_CD,
+            ACCESS: row?.ACCESS ? "Y" : "N",
+            ACCT_TYPE: row?.ACCT_TYPE,
           })
         );
         const CompareData = utilFunction.transformDetailDataForDML(
           Oldfiltered ?? [],
           NewFilter,
-          ["ACCT_TYPE"]
+          ["ACCT_TYPE", "ACCESS"]
         );
         const UpdatedNewRecords = FinalGridData.filter(
-          (row) => row._isNewRow === true && row.ACCESS === true
+          (row) => row?._isNewRow === true && row?.ACCESS === "Y"
         ).map((row) => {
           return row;
         });
         const UpdatedNewRecordFiltered = UpdatedNewRecords.map((row) => ({
-          USER_NAME: row.USER_NAME,
-          COMP_CD: row.COMP_CD,
-          BRANCH_CD: row.BRANCH_CD,
-          ACCESS: row.ACCESS ? "Y" : "N",
-          ACCT_TYPE: row.ACCT_TYPE,
+          USER_NAME: UserId ?? "",
+          COMP_CD: row?.COMP_CD,
+          BRANCH_CD: row?.BRANCH_CD,
+          ACCESS: row?.ACCESS ? "Y" : "N",
+          ACCT_TYPE: row?.ACCT_TYPE,
         }));
         CompareData["isNewRow"] = [...UpdatedNewRecordFiltered];
         dispatchCommon("commonType", { productContextData: CompareData });
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         } else {
           return;
         }
-      } else if (userState.activeStep === 4) {
+      } else if (userState?.activeStep === 4) {
         loginShiftGridRef.current?.handleSubmit(e);
-      } else if (userState.activeStep === 5) {
+      } else if (userState?.activeStep === 5) {
         let FinalGridData = loginBiometricRef?.current?.cleanData?.();
         const filtered = (FinalGridData || []).map((row) => ({
-          SR_CD: row.SR_CD,
-          USER_NAME: row.USER_NAME,
-          FINGER_NM: row.FINGER_NM,
-          FINGER_BIO: row.FINGER_BIO,
+          SR_CD: row?.SR_CD,
+          USER_NAME: row?.USER_NAME,
+          FINGER_NM: row?.FINGER_NM,
+          FINGER_BIO: row?.FINGER_BIO,
         }));
         const CompareData = utilFunction.transformDetailDataForDML(
           userState.oldData3 ?? [],
@@ -499,29 +524,29 @@ const CombinedStepper = ({ defaultView }) => {
         SaveData();
       }
     } else if (defaultView === "view") {
-      if (userState.activeStep === 0) {
-        setActiveStep(userState.activeStep + 1);
-      } else if (userState.activeStep === 1) {
+      if (userState?.activeStep === 0) {
+        setActiveStep(userState?.activeStep + 1);
+      } else if (userState?.activeStep === 1) {
         const FinalGridData = appGridRef?.current?.cleanData?.();
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 2) {
+      } else if (userState?.activeStep === 2) {
         const FinalGridData = branchGridRef?.current?.cleanData?.();
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 3) {
+      } else if (userState?.activeStep === 3) {
         const FinalGridData = prodGridRef?.current?.cleanData?.();
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
-      } else if (userState.activeStep === 4) {
-        setActiveStep(userState.activeStep + 1);
-      } else if (userState.activeStep === 5) {
+      } else if (userState?.activeStep === 4) {
+        setActiveStep(userState?.activeStep + 1);
+      } else if (userState?.activeStep === 5) {
         const FinalGridData = loginBiometricRef?.current?.cleanData?.();
         if (FinalGridData.length > 0) {
-          setActiveStep(userState.activeStep + 1);
+          setActiveStep(userState?.activeStep + 1);
         }
       }
     }
@@ -541,6 +566,17 @@ const CombinedStepper = ({ defaultView }) => {
     setActiveStep(0);
     navigate("/cbsenfinity/master/security-user/add");
   };
+  const onStepClickHandle = (tabIndex) => {
+    if (defaultView === "edit" || defaultView === "view") {
+      setActiveStep(tabIndex);
+    }
+  };
+  useEffect(() => {
+    return () => {
+      setActiveStep(0);
+      resetAllData();
+    };
+  }, []);
   return (
     <Fragment>
       <AppBar position="relative" style={{ marginBottom: "10px" }}>
@@ -571,7 +607,7 @@ const CombinedStepper = ({ defaultView }) => {
               </>
             ) : defaultView === "view" ? (
               <>
-                {userState.activeStep === steps.length - 1 && (
+                {userState?.activeStep === steps.length - 1 && (
                   <>
                     <GradientButton onClick={accept}>Accept</GradientButton>
                     <GradientButton onClick={reject}>Reject</GradientButton>
@@ -586,7 +622,7 @@ const CombinedStepper = ({ defaultView }) => {
       <Stack sx={{ width: "100%" }} spacing={5}>
         <Stepper
           alternativeLabel
-          activeStep={userState.activeStep}
+          activeStep={userState?.activeStep}
           connector={<ColorlibConnector />}
         >
           {steps.map((label, index) => (
@@ -595,8 +631,15 @@ const CombinedStepper = ({ defaultView }) => {
                 StepIconComponent={ColorlibStepIcon}
                 componentsProps={{
                   label: {
-                    style: { marginTop: "2px", color: "var(--theme-color1)" },
+                    style: {
+                      marginTop: "2px",
+                      color: "var(--theme-color1)",
+                      cursor: "pointer",
+                    },
                   },
+                }}
+                onClick={() => {
+                  onStepClickHandle(index);
                 }}
               >
                 {label}
@@ -605,32 +648,32 @@ const CombinedStepper = ({ defaultView }) => {
           ))}
         </Stepper>
         <Box style={{ marginTop: "0px" }}>
-          {userState.activeStep === 0 ? (
+          {userState?.activeStep === 0 ? (
             <OnBoard
               ref={FormData}
               username={rows?.[0]?.data}
               defaultView={defaultView}
               sharing={data}
             />
-          ) : userState.activeStep === 1 ? (
+          ) : userState?.activeStep === 1 ? (
             <AccessWrapper
               ref={appGridRef}
               username={rows?.[0]?.data}
               defaultView={defaultView}
             />
-          ) : userState.activeStep === 2 ? (
+          ) : userState?.activeStep === 2 ? (
             <BranchAccessRights
               ref={branchGridRef}
               username={rows?.[0]?.data}
               defaultView={defaultView}
             />
-          ) : userState.activeStep === 3 ? (
+          ) : userState?.activeStep === 3 ? (
             <ProductAccess
               ref={prodGridRef}
               username={rows?.[0]?.data}
               defaultView={defaultView}
             />
-          ) : userState.activeStep === 4 ? (
+          ) : userState?.activeStep === 4 ? (
             defaultView === "view" ? (
               <LoginShiftConfirmation
                 ref={loginShiftGridRef}
@@ -644,7 +687,7 @@ const CombinedStepper = ({ defaultView }) => {
                 userId={UserId}
               />
             )
-          ) : userState.activeStep === 5 ? (
+          ) : userState?.activeStep === 5 ? (
             defaultView === "view" ? (
               <BiometricLoginConfirmation
                 ref={loginBiometricRef}
@@ -674,11 +717,11 @@ const CombinedStepper = ({ defaultView }) => {
           }}
         >
           <Box style={{ position: "fixed", bottom: "20px", right: "10px" }}>
-            {userState.activeStep === 0 ? null : (
+            {userState?.activeStep === 0 ? null : (
               <GradientButton
                 onClick={() => {
                   setIsBackButton(true);
-                  setActiveStep(userState.activeStep - 1);
+                  setActiveStep(userState?.activeStep - 1);
                 }}
               >
                 Back
@@ -686,7 +729,7 @@ const CombinedStepper = ({ defaultView }) => {
             )}
             {(defaultView === "edit" || defaultView === "new") && (
               <>
-                {userState.activeStep !== steps.length - 1 ? (
+                {userState?.activeStep !== steps.length - 1 ? (
                   <GradientButton onClick={handleComplete}>
                     Save & Next
                   </GradientButton>
@@ -699,7 +742,7 @@ const CombinedStepper = ({ defaultView }) => {
             )}
             {defaultView === "view" && (
               <>
-                {userState.activeStep !== steps.length - 1 ? (
+                {userState?.activeStep !== steps.length - 1 ? (
                   <GradientButton onClick={handleComplete}>Next</GradientButton>
                 ) : null}
               </>

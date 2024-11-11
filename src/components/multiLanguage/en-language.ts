@@ -2215,4 +2215,5 @@ export const en_language_data = {
   CreditCashLimit: "Credit Cash Limit",
   CreditClearingLimit: "Credit Clearing Limit",
   CreditTransferLimit: "Credit Transfer Limit",
+  DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
 };
