@@ -4,7 +4,7 @@ export const LoanRescheduleGridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "SR_CD",
+    rowIdColumn: "UNIQUE_ROWID",
     defaultColumnConfig: {
       width: 350,
       minWidth: 300,
@@ -18,8 +18,8 @@ export const LoanRescheduleGridMetadata: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "78vh",
-      max: "78vh",
+      min: "70vh",
+      max: "70vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
@@ -169,6 +169,17 @@ export const LoanRescheduleGridMetadata: GridMetaDataType = {
     {
       accessor: "SR_CD",
       columnName: "Srcd",
+      sequence: 13,
+      alignment: "left",
+      componentType: "default",
+      width: 250,
+      minWidth: 200,
+      maxWidth: 300,
+      isVisible: false,
+    },
+    {
+      accessor: "UNIQUE_ROWID",
+      columnName: "uniqueRowId",
       sequence: 13,
       alignment: "left",
       componentType: "default",
