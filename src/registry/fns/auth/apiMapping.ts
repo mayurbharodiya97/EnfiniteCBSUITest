@@ -770,8 +770,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHQRTNBTN",
     packageName: "",
   },
-  GETSANPSHOTDTL: {
-    url: "/transactionServiceAPI/GETSANPSHOTDTL",
+  GETSNAPSHOTDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSNAPSHOTDTLF1",
     packageName: "",
   },
   GETSEARCHDTL: {

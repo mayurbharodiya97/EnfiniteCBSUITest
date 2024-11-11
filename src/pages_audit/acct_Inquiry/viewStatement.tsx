@@ -3,11 +3,9 @@ import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { AccountInquiry, PassbookStatement } from "./metaData";
 import { useTranslation } from "react-i18next";
-import { enqueueSnackbar } from "notistack";
 import {
   LoaderPaperComponent,
   usePopupContext,
@@ -29,12 +27,11 @@ export const ViewStatement = ({
 }) => {
   const [disableButton, setDisableButton] = useState(false);
   const [passbookOpen, setPassbookOpen] = useState(false);
-  const [passbookData, setPassbookData] = useState(false);
+  const [passbookData, setPassbookData] = useState([]);
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const parameterRef = useRef<any>();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const acctInqData: any = useQuery<any, any, any>(

@@ -2217,4 +2217,5 @@ export const en_language_data = {
   CreditClearingLimit: "Credit Clearing Limit",
   CreditTransferLimit: "Credit Transfer Limit",
   DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
 };
