@@ -225,6 +225,7 @@ const RtgsBranchHoConfirmationForm: FC<{
       onError: (error: any) => {},
     }
   );
+
   const getGenerateOtp: any = useMutation(
     "getGenerateOtp",
     API.getGenerateOtp,
@@ -236,7 +237,7 @@ const RtgsBranchHoConfirmationForm: FC<{
             comapanyCD: authState?.companyID,
             branchCD: authState?.user?.branchCode,
             transactionID: data?.[0]?.TRAN_CD,
-            username: authState?.user?.name,
+            username: authState?.user?.id,
             otpValidFor: result[0]?.data?.acBalanceData?.OTP_VALID_SEC,
             recieveOtp: data?.[0]?.OTP,
             sentDate: data?.[0]?.SENT_DATE,
