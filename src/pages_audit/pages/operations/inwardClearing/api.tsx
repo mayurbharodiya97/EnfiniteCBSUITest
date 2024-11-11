@@ -136,7 +136,7 @@ export const validateConfirm = async (apiReq) => {
 };
 export const getInwardZoneTypeList = async (ApiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETINWZONEDDW", {
+    await AuthSDK.internalFetcher("GETCLGZONELIST", {
       ...ApiReq,
     });
   if (status === "0") {

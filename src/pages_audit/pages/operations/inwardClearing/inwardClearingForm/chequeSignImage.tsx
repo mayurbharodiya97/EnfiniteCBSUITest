@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Grid, Card, CardContent, Dialog, Theme } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
 import { utilFunction } from "@acuteinfo/common-base";
 import noPhotoAvailble from "../../../../../assets/images/noPhotoAvailble.png";
@@ -8,12 +7,38 @@ import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "@acuteinfo/common-base";
 import { makeStyles } from "@mui/styles";
 import { useTranslation } from "react-i18next";
+import RotateRightIcon from "@mui/icons-material/RotateRight"; // Import right rotation icon
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import { useReactToPrint } from "react-to-print";
+import {
+  AppBar,
+  Card,
+  CardContent,
+  Dialog,
+  Grid,
+  Theme,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
-  printHidden: {
-    "@media print": {
-      display: "none !important",
-    },
+  root: {
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    background: "var(--theme-color5)",
+  },
+  title: {
+    flex: "1 1 100%",
+    color: "var(--white)",
+    letterSpacing: "1px",
+    fontSize: "1.2rem",
+  },
+  refreshiconhover: {},
+  paper: {
+    padding: theme.spacing(1),
+    height: "100%",
+    borderRadius: "10px",
   },
 }));
 export const ChequeSignImage: FC<{
@@ -22,8 +47,8 @@ export const ChequeSignImage: FC<{
   error?: any;
   acSignImage?: any;
   isVisibleSign?: any;
-}> = ({ imgData, loading, error, acSignImage, isVisibleSign }) => {
-  const classes = useTypeStyles();
+  formData?: any;
+}> = ({ imgData, loading, error, acSignImage, isVisibleSign, formData }) => {
   const [chequeImageURL, setChequeImageURL] = useState<any>(null);
   const [signImageURL, setSignImageURL] = useState<any>();
   const urlObj = useRef<any>(null);
@@ -31,40 +56,102 @@ export const ChequeSignImage: FC<{
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [rotateImg, setRotate] = useState<number>(0);
   const { t } = useTranslation();
+  const canvasRef = useRef<any>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const printRef = useRef<any>(null);
+  const headerClasses = useTypeStyles();
+
+  const handleZoomIn = () => setZoomLevel((prev) => prev * 1.2);
+  const handleZoomOut = () => setZoomLevel((prev) => prev / 1.2);
 
   const handleRotateChange = () => {
     const newRotateValue = (rotateImg + 90) % 360;
     setRotate(newRotateValue);
   };
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = selectedImageUrl;
+    img.onload = () => {
+      const canvas: any = canvasRef.current;
+      const context = canvas.getContext("2d");
+
+      // Set canvas dimensions based on rotation and zoom level
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      canvas.width =
+        rotateImg % 180 === 0 ? img.width * zoomLevel : img.height * zoomLevel;
+      canvas.height =
+        rotateImg % 180 === 0 ? img.height * zoomLevel : img.width * zoomLevel;
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      // Apply transformations (rotation and zoom)
+      context.translate(canvas.width / 2, canvas.height / 2); // Translate to the center of the canvas
+      context.rotate((rotateImg * Math.PI) / 180); // Apply rotation
+      context.scale(zoomLevel, zoomLevel); // Apply zoom
+
+      context.drawImage(img, -img.width / 2, -img.height / 2); // Center the image after transformations
+
+      context.setTransform(1, 0, 0, 1, 0, 0); // Reset the transformation matrix to default
+    };
+  }, [rotateImg, zoomLevel, selectedImageUrl]);
+
+  const getCanvasImage = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      return canvas.toDataURL(); // Get the canvas content as an image
+    }
+    return "";
+  };
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    onBeforeGetContent: () => {
+      // Get the current canvas image (with transformations)
+      const imageUrl = getCanvasImage();
+
+      // Set the image source inside the print container (using canvas data URL)
+      const imgElement = printRef.current.querySelector("img");
+      if (imgElement) {
+        imgElement.src = imageUrl; // Update the image source to canvas data URL
+      }
+
+      if (printRef.current) {
+        printRef.current.style.overflow = "hidden";
+      }
+
+      return Promise.resolve();
+    },
+    onAfterPrint: () => {
+      if (printRef.current) {
+        printRef.current.style.overflow = "scroll";
+      }
+    },
+  });
+
   useEffect(() => {
     if (Boolean(imgData?.[0])) {
       const images: any = [];
+      for (let i = 0; i < imgData?.length; i++) {
+        const imageProps = [
+          { prop: "FR_GREY_IMG", label: "FrontGrey" },
+          { prop: "FR_BW_IMG", label: "BlackWhite" },
+          { prop: "BACK_IMG", label: "BackImage" },
+        ];
 
-      if (Boolean(imgData[0].FR_GREY_IMG)) {
-        let blob = utilFunction.base64toBlob(imgData[0].FR_GREY_IMG);
-        urlObj.current =
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "";
-        images.push(urlObj.current);
-      }
-      if (Boolean(imgData[0].FR_BW_IMG)) {
-        let blob = utilFunction.base64toBlob(imgData[0].FR_BW_IMG);
-        urlObj.current =
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "";
-        images.push(urlObj.current);
-      }
-      if (Boolean(imgData[0].BACK_IMG)) {
-        let blob = utilFunction.base64toBlob(imgData[0].BACK_IMG);
-        urlObj.current =
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "";
-        images.push(urlObj.current);
-      }
+        imageProps.forEach(({ prop, label }) => {
+          if (Boolean(imgData[i]?.[prop])) {
+            const blob = utilFunction.base64toBlob(imgData[i][prop]);
+            const url =
+              typeof blob === "object" && Boolean(blob)
+                ? URL.createObjectURL(blob)
+                : "";
 
+            if (url) {
+              images.push({ url, label }); // Store both url and label
+            }
+          }
+        });
+      }
       setChequeImageURL(images);
     }
 
@@ -107,24 +194,25 @@ export const ChequeSignImage: FC<{
                 }}
               >{`${current} "of" ${total}`}</div>
             )}
-            renderIndicator={(onClickHandler, isSelected, index, label) => {
-              if (!(chequeImageURL && chequeImageURL.length > 0)) return null;
-              const indicatorLabel =
-                index === 0
-                  ? t("FrontGrey")
-                  : index === 2
-                  ? t("BackImage")
-                  : t("BlackWhite");
+            renderIndicator={(onClickHandler, isSelected, index) => {
+              // Ensure chequeImageURL is defined and has images at the current index
+              if (!chequeImageURL || chequeImageURL.length <= index)
+                return null;
+
+              // Get the image object for the current index
+              const imageInfo = chequeImageURL[index];
+
+              if (!imageInfo?.label) return null;
 
               return (
                 <label
                   style={{
                     marginLeft: "20px",
-                    color: "var( --theme-color2)",
+                    color: "var(--theme-color2)",
                   }}
                   key={index}
                 >
-                  {indicatorLabel}
+                  {t(imageInfo?.label)}
                   <input
                     type="radio"
                     name="carouselIndicator"
@@ -136,8 +224,8 @@ export const ChequeSignImage: FC<{
                       top: "2px",
                       left: "5px",
                       color: isSelected
-                        ? "var( --theme-color1)!important"
-                        : "var( --theme-color2)",
+                        ? "var(--theme-color1)"
+                        : "var(--theme-color2)",
                     }}
                   />
                 </label>
@@ -178,18 +266,19 @@ export const ChequeSignImage: FC<{
                       }}
                     >
                       <div
+                        ref={printRef}
                         style={{
                           width: "100%",
                           height: "100%",
                           cursor: "zoom-in",
                         }}
                         onClick={() => {
-                          setSelectedImageUrl(imageUrl); // Set the clicked image URL
+                          setSelectedImageUrl(imageUrl?.url); // Set the clicked image URL
                           setIsOpen(true); // Open the dialog
                         }}
                       >
                         <img
-                          src={imageUrl}
+                          src={imageUrl?.url}
                           alt={`image-${index}`}
                           // style={{ height: "100%", width: "100%" }}
                         />
@@ -235,7 +324,6 @@ export const ChequeSignImage: FC<{
         <>
           {isVisibleSign === undefined ? (
             <>
-              {console.log("test before", isVisibleSign)}
               <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
                 <div style={{ paddingRight: "40px" }}>
                   <Card
@@ -296,65 +384,78 @@ export const ChequeSignImage: FC<{
       <>
         <Dialog
           open={isOpen}
-          onClose={() => setIsOpen(false)}
-          PaperProps={{
-            style: {
-              width: "100%",
-            },
-          }}
-          maxWidth="lg"
+          PaperProps={{ style: { width: "100%" } }}
+          maxWidth="md"
         >
-          <div style={{ display: "flex", justifyContent: "end" }}>
-            <GradientButton
-              className={classes.printHidden}
-              onClick={handleRotateChange}
-            >
-              {rotateImg === 0 ? t("Rotate") : t("Reset")}
-            </GradientButton>
-            <GradientButton
-              onClick={() => {
-                window.print();
-              }}
-              className={classes.printHidden}
-            >
-              {t("Print")}
-            </GradientButton>
-          </div>
-          {rotateImg === 0 ? (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                cursor: "zoom-out",
-                padding: "0px 6px 6px 6px",
-              }}
-              onClick={() => {
-                setIsOpen(false);
-              }}
-            >
-              <img
-                src={selectedImageUrl}
-                alt={`image-`}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                }}
-              />{" "}
-            </div>
-          ) : (
-            <AvatarEditor
-              image={selectedImageUrl}
-              width={500}
-              height={500}
-              border={5}
-              // onClick={() => {
-              //   setIsOpen(false);
-              // }}
-              color={[255, 255, 255, 0.6]} // RGBA
-              rotate={rotateImg}
-              style={{ width: "100%", height: "100%", cursor: "pointer" }}
+          <AppBar
+            position="static"
+            sx={{
+              height: "auto",
+              background: "var(--theme-color5)",
+              margin: "10px",
+              width: "auto",
+            }}
+          >
+            <Toolbar className={headerClasses.root} variant={"dense"}>
+              <Typography
+                className={headerClasses.title}
+                color="inherit"
+                variant={"h4"}
+                component="div"
+              >
+                {formData?.CHEQUE_NO +
+                  "|" +
+                  formData?.MICR_TRAN_CD +
+                  "|" +
+                  formData?.AC_NO +
+                  "|" +
+                  (formData?.AMOUNT
+                    ? parseFloat(formData?.AMOUNT).toFixed(2)
+                    : "0.00") +
+                  "|" +
+                  formData?.OTHER_REMARKS}
+              </Typography>
+              <GradientButton onClick={handleRotateChange}>
+                <RotateRightIcon
+                  style={{
+                    transform: `rotate(${rotateImg}deg)`,
+                    transition: "transform 0.3s ease",
+                  }}
+                />
+              </GradientButton>
+
+              <GradientButton variant="contained" onClick={handleZoomIn}>
+                <ZoomInIcon />
+              </GradientButton>
+
+              <GradientButton variant="contained" onClick={handleZoomOut}>
+                <ZoomOutIcon />
+              </GradientButton>
+
+              <GradientButton onClick={handlePrint}>Print</GradientButton>
+
+              <GradientButton
+                variant="contained"
+                onClick={() => setIsOpen(false)}
+              >
+                Close
+              </GradientButton>
+            </Toolbar>
+          </AppBar>
+
+          <div
+            style={{
+              display: "flex",
+              height: "100%",
+              width: "100%",
+              border: "1px solid #ddd",
+            }}
+          >
+            <canvas
+              ref={canvasRef}
+              style={{ display: "flex", margin: "0 auto" }}
             />
-          )}
+          </div>
         </Dialog>
       </>
     </>

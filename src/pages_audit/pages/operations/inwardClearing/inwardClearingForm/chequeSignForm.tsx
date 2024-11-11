@@ -80,7 +80,7 @@ export const ChequeSignForm: FC<{
           />
         ) : (
           <>
-            <ChequeSignImage imgData={data} />
+            <ChequeSignImage imgData={data} formData={reqDataRef.current} />
           </>
         )}
       </Dialog>
