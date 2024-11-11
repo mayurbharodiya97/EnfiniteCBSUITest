@@ -164,6 +164,7 @@ const CombinedStepper = ({ defaultView }) => {
       message: "SaveData",
       messageTitle: "Confirmation",
       buttonNames: ["Yes", "No"],
+      icon: "CONFIRM",
       loadingBtnName: ["Yes"],
     });
     if (btnName === "Yes") {
