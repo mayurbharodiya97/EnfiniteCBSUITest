@@ -7,6 +7,7 @@ import AcctMST from "./acct-mst/AcctMST";
 import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 import { RecurringContextWrapper } from "./recurringPaymentEntry/context/recurringPaymentContext";
 import { FDContextWrapper } from "./fix-deposit/context/fdContext";
+import TRN001Provider from "./DailyTransaction/TRN001/Trn001Reducer";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -45,7 +46,7 @@ const DailyTransactionImportForm = lazy(
   () => import("./dailyTransactionImport")
 );
 const TellerScreen = lazy(
-  () => import("./denomination/tellerTransaction/tellerScreen")
+  () => import("./denomination/tellerTransaction/cashReceipt/tellerScreen")
 );
 const ConfirmationGridWrapper = lazy(() => import("../confirmations"));
 const SingleDenomination = lazy(
@@ -119,6 +120,11 @@ const CustomerExchangeEntry = lazy(
 );
 const RecInterestPaymentForm = lazy(() => import("./recInterestPayment"));
 const RecInterestPaymentConf = lazy(() => import("./recInterestPaymentConf"));
+const Trn001 = lazy(() => import("./DailyTransaction/TRN001"));
+const Trn002 = lazy(() => import("./DailyTransaction/TRN002"));
+const CashPaymentEntry = lazy(
+  () => import("./denomination/tellerTransaction/cashPayment/cashPayment")
+);
 
 export const OperationsMenu = () => (
   <Routes>
@@ -173,9 +179,12 @@ export const OperationsMenu = () => (
     />
     <Route
       path="cash-payment/*"
-      element={<TellerScreen screenFlag={"CASHPAY"} />}
+      element={<CashPaymentEntry screenFlag={"CASHPAY"} />}
     />
-    <Route path="single-denomination/*" element={<SingleDenomination />} />
+    <Route
+      path="single-denomination/*"
+      element={<SingleDenomination screenFlag={"SINGLEDENO"} />}
+    />
     <Route
       path="confirm-ckyc/*"
       element={
@@ -367,6 +376,22 @@ export const OperationsMenu = () => (
     <Route
       path="recpayint-master-confirmation/*"
       element={<RecInterestPaymentConf />}
+    />
+    <Route
+      path="daily_tran_F1/*"
+      element={
+        <TRN001Provider>
+          <Trn001 />
+        </TRN001Provider>
+      }
+    />
+    <Route
+      path="cnf_daily_tran_F2/*"
+      element={
+        <TRN001Provider>
+          <Trn002 />
+        </TRN001Provider>
+      }
     />
   </Routes>
 );

@@ -346,6 +346,7 @@ export const RecurringPaymentTransferFormMetaData = {
                     const { btnName, obj } = await getButtonName({
                       messageTitle: "ValidationFailed",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
+                      icon: "ERROR",
                     });
                     returnVal = "";
                   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -354,6 +355,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       const { btnName, obj } = await getButtonName({
                         messageTitle: "Alert",
                         message: postData?.MSG?.[i]?.O_MESSAGE,
+                        icon: "WARNING",
                       });
                     }
                     returnVal = postData;
@@ -363,6 +365,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       messageTitle: "Confirmation",
                       message: postData?.MSG?.[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;

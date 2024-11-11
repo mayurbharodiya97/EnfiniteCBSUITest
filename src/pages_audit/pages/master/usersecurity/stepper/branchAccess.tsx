@@ -75,19 +75,19 @@ const BranchAccessRights = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        const updatedGrid1Data = data.map((gridItem) => ({
+        const updatedGrid1Data = data?.map((gridItem) => ({
           ...gridItem,
-          BRANCH_CD: gridItem.BRANCH_CD,
-          LOGIN_ACCESS: gridItem.LOGIN_ACCESS === "Y" ? true : false,
-          REPORT_ACCESS: gridItem.REPORT_ACCESS === "Y" ? true : false,
+          BRANCH_CD: gridItem?.BRANCH_CD,
+          LOGIN_ACCESS: gridItem?.LOGIN_ACCESS === "Y" ? true : false,
+          REPORT_ACCESS: gridItem?.REPORT_ACCESS === "Y" ? true : false,
         }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
+        let filteredGrid1Data = updatedGrid1Data?.filter(
           (gridItem) =>
-            !branchData.some(
-              (dataItem) => dataItem.BRANCH_NM === gridItem.BRANCH_NM
+            !branchData?.some(
+              (dataItem) => dataItem.BRANCH_NM === gridItem?.BRANCH_NM
             )
         );
-        const last = filteredGrid1Data.map((row) => ({
+        const last = filteredGrid1Data?.map((row) => ({
           ...row,
           _isNewRow: true,
         }));

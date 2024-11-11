@@ -1099,7 +1099,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETPOSITIVEPAYDTL: {
-    url: "chequeServiceAPI/GETPOSITIVEPAYDTL",
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYDTL",
     packageName: "",
   },
   DOPOSTDML: {
@@ -1136,10 +1136,6 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCONFIMEDHISTORY: {
     url: "chequeServiceAPI/GETCONFIMEDHISTORY",
-    packageName: "",
-  },
-  GETINWZONEDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
     packageName: "",
   },
   GETINWREASONMSTDDW: {
@@ -2897,6 +2893,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityReportServiceAPI/GETFDDETAILREPORT",
     packageName: "",
   },
+  GETCASHPAYMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHPAYMENT",
+    packageName: "",
+  },
   GETDDPRINTCONFIGDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTCONFIGDTL",
     packageName: "",
@@ -2915,6 +2915,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETFDBUTTONS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDBUTTONS",
+    packageName: "",
+  },
+  GETOTHERCASHRECEIPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETOTHERCASHRECEIPT",
+    packageName: "",
+  },
+  VALIDATEACCOUNTDTL: {
+    url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
 };

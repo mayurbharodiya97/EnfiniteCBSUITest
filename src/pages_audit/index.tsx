@@ -165,6 +165,7 @@ const EntryPoint = () => (
     <CustomPropertiesConfigurationProvider
       config={{
         customExtendedTypes: meta,
+        denoTableType: "dual",
         defaultGridConfig: {
           variant: "contained",
           isContainedActionButton: true,

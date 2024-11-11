@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   LinearProgress,
@@ -18,8 +17,7 @@ import {
   Alert,
   FormWrapper,
   MetaDataType,
-  ActionTypes,
-  queryClient,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
@@ -141,7 +139,7 @@ export const ForceExpire: React.FC<LimitDtlCustomProps> = ({
             return (
               <>
                 {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -152,11 +150,11 @@ export const ForceExpire: React.FC<LimitDtlCustomProps> = ({
                     color={"primary"}
                   >
                     {t("Save")}
-                  </Button>
+                  </GradientButton>
                 )}
-                <Button color="primary" onClick={handleCloseDialog}>
+                <GradientButton color="primary" onClick={handleCloseDialog}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

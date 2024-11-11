@@ -268,7 +268,7 @@ export const RtgsEntryFormMetaData = {
           _optionsKey: "get_Account_Type",
           postValidationSetCrossFieldValues: (field, formState) => {
             return {
-              ACCT_NM: { value: "" },
+              ACCT_CD: { value: "" },
               LIMIT_AMOUNT: { value: "" },
               ACCT_NAME: { value: "" },
               CONTACT_INFO: { value: "" },
@@ -422,6 +422,9 @@ export const RtgsEntryFormMetaData = {
                 TYPE_CD: {
                   value: returnVal?.TYPE_CD ?? "",
                 },
+                PARA_UTR: {
+                  value: returnVal?.PARA_UTR ?? "",
+                },
               };
             } else if (!field?.value) {
               return {
@@ -434,6 +437,7 @@ export const RtgsEntryFormMetaData = {
                 TRAN_BAL: { value: "" },
                 PARA_BNFCRY: { value: "" },
                 TYPE_CD: { value: "" },
+                PARA_UTR: { value: "" },
               };
             }
 
@@ -495,6 +499,13 @@ export const RtgsEntryFormMetaData = {
         componentType: "hidden",
       },
       name: "PARA_BNFCRY",
+      label: "",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARA_UTR",
       label: "",
     },
     {

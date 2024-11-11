@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import {
+  extractMetaData,
   FormWrapper,
   MetaDataType,
   usePopupContext,
@@ -109,8 +110,7 @@ const CollateralJointTab = () => {
             );
             return {
               ...formData,
-              J_TYPE: "M",
-              CUSTOMER_ID: AcctMSTState?.customerIDctx,
+              // J_TYPE: "M",
             };
           }
         );
@@ -180,7 +180,12 @@ const CollateralJointTab = () => {
       <FormWrapper
         key={"acct-mst-joint-hypothication-form" + initialVal}
         ref={formRef}
-        metaData={collateraljoint_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            collateraljoint_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         onSubmitHandler={onFormSubmitHandler}
         formState={{
           PARAM320: AcctMSTState?.param320,

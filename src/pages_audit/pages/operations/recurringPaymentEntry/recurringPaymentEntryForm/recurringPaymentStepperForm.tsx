@@ -260,6 +260,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           messageTitle: "Error",
           message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -271,11 +272,13 @@ const RecurringPaymentStepperForm = ({
                 await MessageBox({
                   messageTitle: "ValidationFailed",
                   message: ddNeftObj?.O_MESSAGE ?? "",
+                  icon: "ERROR",
                 });
               } else if (ddNeftObj?.O_STATUS === "9") {
                 await MessageBox({
                   messageTitle: "Alert",
                   message: ddNeftObj?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               } else if (ddNeftObj?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
@@ -283,6 +286,7 @@ const RecurringPaymentStepperForm = ({
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "No") {
                   break;
@@ -295,11 +299,13 @@ const RecurringPaymentStepperForm = ({
                 await MessageBox({
                   messageTitle: "ValidationFailed",
                   message: voucherMsg?.O_MESSAGE ?? "",
+                  icon: "ERROR",
                 });
               } else if (voucherMsg?.O_STATUS === "9") {
                 await MessageBox({
                   messageTitle: "VouchersConfirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               } else if (voucherMsg?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
@@ -307,6 +313,7 @@ const RecurringPaymentStepperForm = ({
                   message: voucherMsg?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   let reqParam = {
@@ -427,6 +434,7 @@ const RecurringPaymentStepperForm = ({
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   recurringPaymentEntrySaveMutation.mutate({
@@ -448,12 +456,14 @@ const RecurringPaymentStepperForm = ({
               await MessageBox({
                 messageTitle: "validationAlert",
                 message: obj?.O_MESSAGE,
+                icon: "WARNING",
               });
             } else if (obj?.O_STATUS === "99") {
               const buttonName = await MessageBox({
                 messageTitle: "Confirmation",
                 message: obj?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (buttonName === "Yes") {
                 updateSaveValidationData({
@@ -505,6 +515,7 @@ const RecurringPaymentStepperForm = ({
               await MessageBox({
                 messageTitle: "ValidationFailed",
                 message: obj?.O_MESSAGE,
+                icon: "ERROR",
               });
             }
           }
@@ -527,6 +538,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           messageTitle: "PaymentAmountNotTally",
           message: "PayslipAmountShouldTallyWithPaymentAmount",
+          icon: "WARNING",
         });
         return;
       } else {
@@ -536,6 +548,7 @@ const RecurringPaymentStepperForm = ({
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           updatePayslipAndDDData([...data?.PAYSLIPDD]);
@@ -558,6 +571,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           message: "NEFTAmountShouldTallyWithPaymentAmount",
           messageTitle: "PaymentAmountNotTally",
+          icon: "WARNING",
         });
         return;
       } else {
@@ -567,6 +581,7 @@ const RecurringPaymentStepperForm = ({
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           updateBeneficiaryAcctData([...data?.BENEFIACCTDTL]);

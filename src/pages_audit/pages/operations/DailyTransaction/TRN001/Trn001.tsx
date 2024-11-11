@@ -648,7 +648,7 @@ export const Trn001 = () => {
         message: "Are you sure you want to reset the data?",
         buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
-        icon: "INFO",
+        icon: "CONFIRM",
       });
 
       if (msgBoxRes === "Yes") {
@@ -752,7 +752,7 @@ export const Trn001 = () => {
         buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
         loadingBtnName: ["Yes"],
-        icon: "INFO",
+        icon: "CONFIRM",
       });
       if (msgBoxRes === "Yes") {
         handleScrollSave2();

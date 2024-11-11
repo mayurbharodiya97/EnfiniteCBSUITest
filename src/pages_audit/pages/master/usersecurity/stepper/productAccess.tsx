@@ -81,18 +81,18 @@ export const ProductAccess = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        const updatedGrid1Data = data.map((gridItem) => ({
+        const updatedGrid1Data = data?.map((gridItem) => ({
           ...gridItem,
-          ACCT_TYPE: gridItem.ACCT_TYPE,
-          ACCESS: gridItem.ACCESS === "Y" ? true : false,
+          ACCT_TYPE: gridItem?.ACCT_TYPE,
+          ACCESS: gridItem?.ACCESS === "Y" ? true : false,
         }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
+        let filteredGrid1Data = updatedGrid1Data?.filter(
           (gridItem) =>
-            !productData.some(
-              (dataItem) => dataItem.TYPE_NM === gridItem.TYPE_NM
+            !productData?.some(
+              (dataItem) => dataItem.TYPE_NM === gridItem?.TYPE_NM
             )
         );
-        const last = filteredGrid1Data.map((row) => ({
+        const last = filteredGrid1Data?.map((row) => ({
           ...row,
           _isNewRow: true,
         }));
@@ -136,8 +136,8 @@ export const ProductAccess = forwardRef<any, any>(
         if (data.name === "populate") {
           setRowsData(data?.rows);
           mutation.mutate({
-            base_branch_cd: authState?.user?.baseBranchCode,
-            base_comp_cd: authState?.baseCompanyID,
+            base_branch_cd: authState?.user?.baseBranchCode ?? "",
+            base_comp_cd: authState?.baseCompanyID ?? "",
           });
         } else {
           navigate(data?.name, {
