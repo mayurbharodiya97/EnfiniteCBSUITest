@@ -1484,6 +1484,7 @@ export const en_language_data = {
   AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
+  UTRConfirmation: "UTR(s) Confirmation",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1797,7 +1798,7 @@ export const en_language_data = {
   ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
@@ -2215,4 +2216,6 @@ export const en_language_data = {
   CreditCashLimit: "Credit Cash Limit",
   CreditClearingLimit: "Credit Clearing Limit",
   CreditTransferLimit: "Credit Transfer Limit",
+  DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
 };

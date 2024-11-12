@@ -45,7 +45,7 @@ const actions: ActionTypes[] = [
 const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
-  const indexRef = useRef(0);
+  const indexRef = useRef(1);
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
   const { getEntries } = useContext(ClearCacheContext);
@@ -178,39 +178,29 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     }
     navigate(".");
   };
+
   const handlePrev = useCallback(() => {
-    navigate(".");
-    const index = (indexRef.current -= 1);
-    // console.log("index prev", index);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index - 1],
-            id: String(index - 1),
-          },
-        ],
-      });
-      // console.log("mutation?.data[index]", mutation?.data[index - 1]);
-    }, 0);
-  }, [mutation?.data]);
+    if (indexRef.current > 1) {
+      indexRef.current -= 1;
+      const index = indexRef.current;
+      setTimeout(() => {
+        setCurrentAction({
+          name: "view-detail",
+          rows: [{ data: mutation?.data[index - 1], id: String(index) }],
+        });
+      }, 0);
+    }
+  }, [mutation?.data, indexRef.current]);
+
   const handleNext = useCallback(() => {
-    navigate(".");
     const index = indexRef.current++;
-    // console.log("index next", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index + 1],
-            id: String(index + 1),
-          },
-        ],
+        rows: [{ data: mutation?.data[index], id: String(index + 1) }],
       });
     }, 0);
-  }, [mutation?.data]);
+  }, [mutation?.data, indexRef.current]);
 
   const typeDefaults = {
     R: { defaultValue: "10  ", label: "Inward Return Retrieve Information" },

@@ -949,6 +949,7 @@ export const RetrievalParameterFormMetaData = {
       name: "FROM_DT",
       label: "FromDate",
       fullWidth: true,
+      placeholder: "DD/MM/YYYY",
       required: true,
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
@@ -968,7 +969,7 @@ export const RetrievalParameterFormMetaData = {
       },
       name: "TO_DT",
       label: "ToDate",
-      placeholder: "",
+      placeholder: "DD/MM/YYYY",
       fullWidth: true,
       required: true,
       schemaValidation: {

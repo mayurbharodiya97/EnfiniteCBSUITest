@@ -54,31 +54,27 @@ export const TransferAcctDetailFormMetadata = {
       GridProps: {
         xs: 12,
         sm: 12,
-        md: 3.0,
-        lg: 5.3,
-        xl: 6.2,
+        md: 4.8,
+        lg: 6.3,
+        xl: 7.2,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CR_COMP_CD",
     },
     {
       render: {
         componentType: "amountField",
       },
-      name: "TOTAL_DR_AMOUNT",
-      label: "Total Debit Amount",
+      name: "TOTAL_FD_AMOUNT",
+      label: "TotalAmount",
       placeholder: "",
       isReadOnly: true,
       fullWidth: true,
       type: "text",
-      dependentFields: ["TRNDTLS"],
-      setValueOnDependentFieldsChange: (dependentFieldState) => {
-        let accumulatedTakeoverLoanAmount = (
-          Array.isArray(dependentFieldState?.["TRNDTLS"])
-            ? dependentFieldState?.["TRNDTLS"]
-            : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
-
-        return accumulatedTakeoverLoanAmount;
-      },
       textFieldStyle: {
         "& .MuiInputBase-root": {
           background: "var(--theme-color5)",
@@ -136,12 +132,22 @@ export const TransferAcctDetailFormMetadata = {
       render: {
         componentType: "amountField",
       },
-      name: "TOTAL_FD_AMOUNT",
-      label: "TotalAmount",
+      name: "TOTAL_DR_AMOUNT",
+      label: "Total Debit Amount",
       placeholder: "",
       isReadOnly: true,
       fullWidth: true,
       type: "text",
+      dependentFields: ["TRNDTLS"],
+      setValueOnDependentFieldsChange: (dependentFieldState) => {
+        let accumulatedTakeoverLoanAmount = (
+          Array.isArray(dependentFieldState?.["TRNDTLS"])
+            ? dependentFieldState?.["TRNDTLS"]
+            : []
+        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+
+        return accumulatedTakeoverLoanAmount;
+      },
       textFieldStyle: {
         "& .MuiInputBase-root": {
           background: "var(--theme-color5)",
@@ -158,31 +164,41 @@ export const TransferAcctDetailFormMetadata = {
       },
       GridProps: { xs: 6, sm: 6, md: 2.4, lg: 1.9, xl: 1.6 },
     },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "ADDNEWROW",
-      label: "AddRow",
-      placeholder: "",
-      // tabIndex: "-1",
-      iconStyle: {
-        fontSize: "25px !important",
-      },
-      GridProps: { xs: 6, sm: 6, md: 1.8, lg: 1, xl: 1 },
-    },
 
     {
       render: {
         componentType: "arrayField",
       },
       name: "TRNDTLS",
+      fixedRows: false,
       isDisplayCount: true,
-      isRemoveButton: true,
-      isScreenStyle: true,
-      fixedRows: true,
+      isRemoveButton: false,
+      isScreenStyle: false,
+      displayCountName: "Record",
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      addRowFn: (data) => {
+        const dataArray = Array.isArray(data?.TRNDTLS) ? data?.TRNDTLS : [];
+        if (dataArray?.length > 0) {
+          for (let i = 0; i < dataArray?.length; i++) {
+            const item = dataArray[0];
+            if (
+              item.BRANCH_CD.trim() &&
+              item.ACCT_TYPE.trim() &&
+              item.ACCT_CD.trim() &&
+              item.AMOUNT.trim()
+            ) {
+              return true;
+            }
+          }
+          return {
+            reason:
+              "Branch Code, Account Type, Account Number and Credit Amount are required. Please complete these fields to proceed.",
+          };
+        } else {
+          return true;
+        }
+      },
       _fields: [
         {
           render: {
@@ -260,10 +276,6 @@ export const TransferAcctDetailFormMetadata = {
             name: "ACCT_CD",
             dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
             runPostValidationHookAlways: true,
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: true,
-            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -271,6 +283,7 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
+
               if (
                 currentField.value &&
                 dependentFieldsValues?.["TRNDTLS.ACCT_TYPE"]?.value?.length ===
@@ -444,10 +457,6 @@ export const TransferAcctDetailFormMetadata = {
           autoComplete: "off",
           required: true,
           dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD", "TYPE_CD"],
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: true,
-            touchAndValidate: true,
-          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -616,10 +625,6 @@ export const TransferAcctDetailFormMetadata = {
             "ACCT_TYPE",
             "ACCT_CD",
           ],
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: true,
-            touchAndValidate: true,
-          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -739,7 +744,7 @@ export const TransferAcctDetailFormMetadata = {
 export const RenewTransferMetadata = {
   form: {
     name: "renewTransfer",
-    label: "",
+    label: "Renew Amount",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -790,7 +795,7 @@ export const RenewTransferMetadata = {
           },
         },
       },
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
     },
 
     {
@@ -848,7 +853,7 @@ export const RenewTransferMetadata = {
         return "";
       },
       fullWidth: true,
-      GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
+      GridProps: { xs: 12, sm: 6, md: 2.5, lg: 2.5, xl: 2.5 },
     },
   ],
 };

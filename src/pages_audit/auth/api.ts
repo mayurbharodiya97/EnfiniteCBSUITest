@@ -649,10 +649,25 @@ const getCachedImageData = async (imageURL, cacheName = "image-cache") => {
 
 const processImageData = async () => {
   let data = await getCachedImageData("imageData");
+  if (Boolean(data)) {
+    const GenerateCRC32 = async (str) => {
+      let fingerprint = await AuthSDK.Getfingerprintdata();
+      return String(CRC32C.str((str || "") + fingerprint));
+    };
+    if (
+      !Boolean(localStorage.getItem("specialChar")) &&
+      !Boolean(localStorage.getItem("charchecksum"))
+    ) {
+      localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+      localStorage.setItem(
+        "charchecksum",
+        await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+      );
+    }
+  }
   if (!data) {
     data = await cacheImageData("imageData");
   }
-
   return data;
 };
 

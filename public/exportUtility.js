@@ -101,7 +101,7 @@ const getTitleFilters = (
 };
 
 // get dynmaic row mapping columns and rows
-const getDynamicRow = (rows, columns) => {
+const getDynamicRow = (rows, columns, exportType) => {
   const filteredRows = rows.map((row) => {
     const filteredRow = {};
 
@@ -132,6 +132,14 @@ const getDynamicRow = (rows, columns) => {
             isValidDate(row[key])
           ) {
             filteredRow[key] = dateFns.format(new Date(row[key]), "HH:mm:ss");
+          } else if (
+            column["cellType"] === "currency" &&
+            exportType !== "PDF"
+          ) {
+            filteredRow[key] =
+              column.format +
+              " " +
+              new Intl.NumberFormat("en-IN").format(row[key]);
           } else
             filteredRow[key] = typeof row[key] === "undefined" ? "" : row[key];
         } else {

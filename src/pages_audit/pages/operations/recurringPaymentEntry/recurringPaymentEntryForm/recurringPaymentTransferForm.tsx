@@ -51,6 +51,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           messageTitle: "TransferPaymentNotTally",
           message: "PleaseDoFullTransferAmountToMoveForward",
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
         return;
       } else if (
@@ -66,6 +67,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
           defFocusBtnName: "Yes",
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           recurringPaymentEntrySaveMutation.mutate({
@@ -90,6 +92,7 @@ export const RecurringPaymentTransferForm = forwardRef<any, any>(
           message: "TransferPaymentAmountIsTallySureToContinue",
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           updateRecurPmtTransferData([...data?.RECPAYTRANS]);

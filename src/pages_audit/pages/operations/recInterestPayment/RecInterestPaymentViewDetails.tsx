@@ -1,53 +1,63 @@
-import { Box, CircularProgress } from "@mui/material";
+import {
+  extractMetaData,
+  FormWrapper,
+  GradientButton,
+  LoaderPaperComponent,
+  MetaDataType,
+  SubmitFnType,
+  usePopupContext,
+  utilFunction,
+} from "@acuteinfo/common-base";
+import { CircularProgress } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
-import { FdInterestPaymentFormMetaData } from "./metaData";
-import {
-  LoaderPaperComponent,
-  FormWrapper,
-  MetaDataType,
-  SubmitFnType,
-  GradientButton,
-  usePopupContext,
-  utilFunction,
-  extractMetaData,
-} from "@acuteinfo/common-base";
-const FdInterestPaymentForm = ({
+import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
+import * as API from "./api";
+
+const RecInterestPaymentViewDetails = ({
   closeDialog,
   gridData,
   rows,
   defaultView,
-  updateGrid,
-  updateRow,
   fdDetails,
+  dataReset,
 }) => {
   const { authState } = useContext(AuthContext);
   const [disableButton, setDisableButton] = useState(false);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [formMode, setFormMode] = useState(defaultView);
-  const isCurrentErrorFuncRef = useRef<any>(null);
-  const iscarryForwardErrorFuncRef = useRef<any>(null);
   const { t } = useTranslation();
   let currentPath = useLocation().pathname;
+  const { enqueueSnackbar } = useSnackbar();
+  const isErrorFuncRef = useRef<any>(null);
 
-  const updateAndCheck = (newData, oldData) => {
-    // Update oldData with newData
-    for (const key in newData) {
-      if (newData?.hasOwnProperty(key) && key !== "FD_NO") {
-        oldData[key] = newData[key];
-      }
+  const updateRecInterestPaymentEntry = useMutation(
+    API.updateRecInterestPaymentEntry,
+    {
+      onSuccess: async (data, variables) => {
+        {
+          enqueueSnackbar(
+            Boolean(rows?.[0]?.data?.PAYMENT_MODE)
+              ? t("RecordUpdatedMsg")
+              : t("RecordInsertedMsg"),
+            {
+              variant: "success",
+            }
+          );
+        }
+        closeDialog();
+        CloseMessageBox();
+        dataReset();
+      },
+      onError: async (error: any) => {
+        CloseMessageBox();
+      },
     }
-    // Call the updateGrid function with the updated oldData
-    updateGrid(oldData);
-  };
-  const isLastRow = () => {
-    const currentIndex = gridData?.findIndex(
-      (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
-    );
-    return currentIndex === gridData?.length - 1;
-  };
+  );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -58,6 +68,33 @@ const FdInterestPaymentForm = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
+
+    let newData = { ...data };
+    let oldData = { ...rows?.[0]?.data };
+    let upd = utilFunction.transformDetailsData(newData, oldData);
+    console.log("newData", newData);
+    console.log("oldData", oldData);
+    console.log("upd", upd);
+
+    isErrorFuncRef.current = {
+      data: {
+        ...newData,
+        ...upd,
+        COMP_CD: authState?.companyID,
+        CR_COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user.branchCode,
+        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+        ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+        ENTERED_COMP_CD: authState?.companyID ?? "",
+        ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+        _isNewRow: defaultView === "new" ? true : false,
+      },
+      displayData,
+      endSubmit,
+      setFieldError,
+    };
+    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
+
     if (!Boolean(data?.PAYMENT_MODE)) {
       const btnName = await MessageBox({
         messageTitle: "Alert",
@@ -65,91 +102,17 @@ const FdInterestPaymentForm = ({
         icon: "WARNING",
       });
       return;
-    }
-    const index = gridData?.findIndex(
-      (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
-    );
-    let currentOldData = { ...rows?.[0]?.data };
-    const currentfdNo = currentOldData?.FD_NO;
-    let flagCheckData =
-      fdDetails?.find((item) => item?.FD_NO === currentfdNo) || {};
-
-    let currentNewData = {
-      ...data,
-      isNewRow: flagCheckData?.PAYMENT_MODE === "" ? true : false,
-    };
-    let currentUpd = utilFunction.transformDetailsData(
-      currentNewData,
-      flagCheckData
-    );
-    if (actionFlag === "Save") {
-      isCurrentErrorFuncRef.current = {
-        data: {
-          ...currentNewData,
-          ...currentUpd,
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: currentOldData?.BRANCH_CD ?? "",
-          ACCT_TYPE: currentOldData?.ACCT_TYPE ?? "",
-          ACCT_CD: currentOldData?.ACCT_CD ?? "",
-        },
-        displayData,
-        endSubmit,
-        setFieldError,
-      };
+    } else {
       const btnName = await MessageBox({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
-        updateAndCheck(currentNewData, currentOldData);
-        updateRow(isCurrentErrorFuncRef.current?.data);
-        CloseMessageBox();
-        closeDialog();
-      }
-    }
-    if (actionFlag === "CarryForward") {
-      let carryForwardData = { ...data };
-
-      let nextRowData = gridData[index + 1];
-      carryForwardData.FD_NO = nextRowData?.FD_NO;
-      let carryForwardflagCheckData =
-        fdDetails?.find((item) => item?.FD_NO === nextRowData?.FD_NO) || {};
-
-      carryForwardData = {
-        ...carryForwardData,
-        isNewRow: carryForwardflagCheckData?.PAYMENT_MODE === "" ? true : false,
-      };
-      let carryForwardUpd = utilFunction.transformDetailsData(
-        carryForwardData,
-        carryForwardflagCheckData
-      );
-
-      iscarryForwardErrorFuncRef.current = {
-        data: {
-          ...carryForwardData,
-          ...carryForwardUpd,
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: nextRowData?.BRANCH_CD ?? "",
-          ACCT_TYPE: nextRowData?.ACCT_TYPE ?? "",
-          ACCT_CD: nextRowData?.ACCT_CD ?? "",
-        },
-        displayData,
-        endSubmit,
-        setFieldError,
-      };
-
-      let btnName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: `${t(`CarryForwardmsg`, {
-          CURRENT_FD_NO: currentOldData?.FD_NO,
-          CARRYFORWARD_FD_NO: carryForwardData?.FD_NO,
-        })}`,
-        buttonNames: ["Yes", "No"],
-      });
-      if (btnName === "Yes") {
-        updateAndCheck(carryForwardData, nextRowData);
-        updateRow(iscarryForwardErrorFuncRef?.current?.data);
+        updateRecInterestPaymentEntry.mutate({
+          data: { ...isErrorFuncRef.current?.data },
+        });
       }
     }
   };
@@ -170,7 +133,7 @@ const FdInterestPaymentForm = ({
   return (
     <>
       <FormWrapper
-        key={"FdInterestPaymentFormDetails" + formMode}
+        key={"RecInterestPaymentFormDetails" + formMode}
         metaData={
           extractMetaData(
             FdInterestPaymentFormMetaData,
@@ -204,24 +167,13 @@ const FdInterestPaymentForm = ({
             fdDetails.find((item) => item?.FD_NO === rows?.[0]?.data?.FD_NO) ||
             {},
           rowsData: rows,
-          SCREEN_REF: "TRN/584",
+          SCREEN_REF: "MST/894",
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
             {formMode === "edit" ? (
               <>
-                {!isLastRow() && (
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "CarryForward");
-                    }}
-                    disabled={isSubmitting || disableButton}
-                    color={"primary"}
-                  >
-                    {t("Carry Forward")}
-                  </GradientButton>
-                )}
                 <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
@@ -262,16 +214,6 @@ const FdInterestPaymentForm = ({
               </>
             ) : (
               <>
-                {!isLastRow() && (
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "CarryForward");
-                    }}
-                    color={"primary"}
-                  >
-                    {t("Carry Forward")}
-                  </GradientButton>
-                )}
                 <GradientButton
                   onClick={() => {
                     setFormMode("edit");
@@ -292,24 +234,22 @@ const FdInterestPaymentForm = ({
   );
 };
 
-export const FdInterestPaymentDetail = ({
+export const RecInterestPaymentDetail = ({
   closeDialog,
   gridData,
   rows,
   defaultView,
-  updateGrid,
-  updateRow,
+  dataReset,
   fdDetails,
 }) => {
   return (
     <>
       {gridData ? (
-        <FdInterestPaymentForm
+        <RecInterestPaymentViewDetails
           closeDialog={closeDialog}
           gridData={gridData}
+          dataReset={dataReset}
           rows={rows}
-          updateGrid={updateGrid}
-          updateRow={updateRow}
           defaultView={defaultView}
           fdDetails={fdDetails}
         />

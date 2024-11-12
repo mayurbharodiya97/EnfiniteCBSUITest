@@ -1,29 +1,41 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import * as API from "../api";
 import { positivePayFormMetaData } from "./metaData";
-import { LoaderPaperComponent, GradientButton } from "@acuteinfo/common-base";
-
+import {
+  LoaderPaperComponent,
+  GradientButton,
+  queryClient,
+  utilFunction,
+  ImageViewer,
+} from "@acuteinfo/common-base";
 import { FormWrapper, Alert, MetaDataType } from "@acuteinfo/common-base";
 
 export const PositivePayFormWrapper: FC<{
   onClose?: any;
   positiveData?: any;
 }> = ({ onClose, positiveData }) => {
+  const [isImageBlob, setIsImageBlob] = useState<any>(null);
+  const [isImageOpen, setIsImageOpen] = useState(false);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
   >(["getPositivePayData", { ...positiveData }], () =>
     API.getPositivePayData({
-      COMP_CD: positiveData?.COMP_CD,
-      BRANCH_CD: positiveData?.BRANCH_CD,
-      ACCT_TYPE: positiveData?.ACCT_TYPE,
-      ACCT_CD: positiveData?.ACCT_CD,
-      CHEQUE_NO: positiveData?.CHEQUE_NO,
+      A_COMP_CD: positiveData?.COMP_CD,
+      A_BRANCH_CD: positiveData?.BRANCH_CD,
+      A_ACCT_TYPE: positiveData?.ACCT_TYPE,
+      A_ACCT_CD: positiveData?.ACCT_CD,
+      A_CHEQUE_NO: positiveData?.CHEQUE_NO,
     })
   );
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getPositivePayData", positiveData]);
+    };
+  }, []);
   return (
     <>
       <Dialog
@@ -56,6 +68,13 @@ export const PositivePayFormWrapper: FC<{
                 background: "white",
               }}
               displayMode={"view"}
+              onFormButtonClickHandel={async (id) => {
+                if (data?.[0]?.CHEUQE_IMG) {
+                  setIsImageOpen(true);
+                  let blob = utilFunction.base64toBlob(data?.[0]?.CHEQUE_IMG);
+                  setIsImageBlob(blob);
+                }
+              }}
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
@@ -66,6 +85,27 @@ export const PositivePayFormWrapper: FC<{
           </>
         )}
       </Dialog>
+      {Boolean(isImageBlob) && Boolean(isImageOpen) && (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              height: "60%",
+              width: "60%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+        >
+          <ImageViewer
+            blob={isImageBlob}
+            fileName={"Inward Clearing Process"}
+            onClose={() => {
+              setIsImageOpen(false);
+            }}
+          />
+        </Dialog>
+      )}
     </>
   );
 };

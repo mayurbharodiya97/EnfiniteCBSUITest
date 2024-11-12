@@ -83,7 +83,7 @@ export const UserOnboardform = {
       maxLength: 16,
       placeholder: "Password",
       autoComplete: "off",
-      allowToggleVisiblity: true,
+      allowToggleVisiblity: false,
       fullWidth: true,
       dependentFields: ["USER_NAME"],
       postValidationSetCrossFieldValues: async (
@@ -148,13 +148,14 @@ export const UserOnboardform = {
       required: true,
       dependentFields: ["USER_PASSWORD"],
       placeholder: "EnterConfirmPassword",
-      allowToggleVisiblity: true,
+      allowToggleVisiblity: false,
       ignoreInSubmit: false,
       fullWidth: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Confirmpasswordisrequired"] }],
       },
+      runValidationOnDependentFieldsChange: true,
       validate: (currentField, dependentFields) => {
         if (currentField?.value !== dependentFields?.USER_PASSWORD?.value) {
           return "NewPasswordandConfirmPassworddidnotmatched";
@@ -663,8 +664,10 @@ export const UserOnboardform = {
       name: "INACTIVE_DATE",
       sequence: 22,
       label: "InactiveDate",
+      isReadOnly: true,
       type: "text",
       __EDIT__: {
+        isWorkingDate: true,
         ignoreInSubmit: (dependentFieldsValues) => {
           if (
             dependentFieldsValues?.ACTIVE_FLAG?.value === true ||
@@ -677,7 +680,6 @@ export const UserOnboardform = {
         },
       },
       autoComplete: "off",
-      defaultValue: new Date(),
       dependentFields: ["ACTIVE_FLAG"],
       __NEW__: {
         ignoreInSubmit: true,
