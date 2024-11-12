@@ -718,35 +718,35 @@ export default function FormModal({
     return state?.formmodectx == "view"
       ? state?.fromctx && state?.fromctx === "confirmation-entry" && (
           <React.Fragment>
-            <Button
+            <GradientButton
               onClick={() => openActionDialog("Y")}
               color="primary"
               // disabled={mutation.isLoading}
             >
               {t("Confirm")}
-            </Button>
+            </GradientButton>
             {!Boolean(state?.customerIDctx) && (
-              <Button
+              <GradientButton
                 onClick={() => openActionDialog("M")}
                 color="primary"
                 // disabled={mutation.isLoading}
               >
                 {t("Raise Query")}
-              </Button>
+              </GradientButton>
             )}
-            <Button
+            <GradientButton
               onClick={() => openActionDialog("R")}
               color="primary"
               // disabled={mutation.isLoading}
             >
               {t("Reject")}
-            </Button>
+            </GradientButton>
           </React.Fragment>
         )
       : state?.formmodectx == "edit" && state?.fromctx !== "new-draft" && (
-          <Button onClick={onUpdateForm} color="primary">
+          <GradientButton onClick={onUpdateForm} color="primary">
             {t("Update")}
-          </Button>
+          </GradientButton>
         );
   }, [
     state?.currentFormctx.currentFormRefctx,
@@ -891,13 +891,13 @@ export default function FormModal({
 
           {/* for checker, view-only */}
           {ActionBTNs}
-          <Button
+          <GradientButton
             onClick={onCancelForm}
             color="primary"
             // disabled={mutation.isLoading}
           >
             {t("Close")}
-          </Button>
+          </GradientButton>
         </Toolbar>
       </AppBar>
       <HeaderForm />
@@ -1041,7 +1041,7 @@ export default function FormModal({
       </Grid>
 
       <RemarksAPIWrapper
-        TitleText={"Confirmation"}
+        TitleText={"Rejection Reason"}
         onActionNo={() => {
           setIsOpen(false);
           setConfirmAction(null);
