@@ -182,6 +182,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "AccountInformation",
       name: "AccountInformation",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -901,6 +904,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "InterestDetail",
       name: "TDSPayable",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -1117,6 +1123,7 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "TDS_AMT",
       label: "CalculatedTDS",
+      autoComplete: "off",
       __NEW__: {
         isReadOnly(_, dependentFieldsValues, formState) {
           if (formState?.entryScreenFlagDataForm?.TDS_AMT_DIS === "Y") {
@@ -1192,6 +1199,7 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "TOTAL_AMOUNT",
       label: "TotalAmount",
+      autoComplete: "off",
       __NEW__: { isReadOnly: true },
       FormatProps: {
         allowNegative: true,
@@ -1235,6 +1243,14 @@ export const RecurringPaymentEntryFormMetaData = {
         allowNegative: true,
         allowLeadingZeros: true,
       },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          "&.Mui-disabled": {
+            color: "rgb(255, 0, 0)  !important",
+            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+          },
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1269,7 +1285,7 @@ export const RecurringPaymentEntryFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "PENAL_RATE",
-      label: "PenalRate",
+      label: "PenalRt",
       __NEW__: { isReadOnly: true },
       GridProps: {
         xs: 12,
@@ -1318,6 +1334,7 @@ export const RecurringPaymentEntryFormMetaData = {
       label: "PAN",
       type: "text",
       required: false,
+      placeholder: "AAAAA1111A",
       __NEW__: { isReadOnly: true },
       schemaValidation: {},
       dependentFields: ["FORM_60"],
@@ -1331,6 +1348,19 @@ export const RecurringPaymentEntryFormMetaData = {
           return true;
         }
       },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          "&.Mui-disabled": {
+            color: "rgb(255, 0, 0) !important",
+            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+          },
+        },
+        "& .MuiInputLabel-root": {
+          "&.Mui-disabled": {
+            color: "rgb(255, 0, 0) !important",
+          },
+        },
+      },
       GridProps: { xs: 12, sm: 2.5, md: 2.25, lg: 3, xl: 3 },
     },
 
@@ -1342,6 +1372,12 @@ export const RecurringPaymentEntryFormMetaData = {
       label: "ExplicitDeductTDS",
       type: "text",
       __NEW__: { isReadOnly: true },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
       GridProps: { xs: 12, sm: 1.5, md: 2.25, lg: 2.4, xl: 3 },
     },
 
@@ -1351,6 +1387,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "PaymentDetail",
       name: "PaymentDetail",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -1718,9 +1757,13 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "PAYSLIP_NO",
       label: "payslipNumber",
+      dependentFields: ["PAYSLIP"],
       type: "text",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "recurringPmtConf") {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          Boolean(dependentFieldsValues?.PAYSLIP?.value)
+        ) {
           return false;
         } else {
           return true;
@@ -1733,6 +1776,25 @@ export const RecurringPaymentEntryFormMetaData = {
         lg: 3,
         xl: 3,
       },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_PAYSLIP_NO",
+      dependentFields: ["PAYSLIP"],
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          !Boolean(dependentFieldsValues?.PAYSLIP?.value)
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 2.375, md: 2.375, lg: 3, xl: 3 },
     },
 
     {
@@ -1790,6 +1852,26 @@ export const RecurringPaymentEntryFormMetaData = {
         lg: 3,
         xl: 3,
       },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_DD_NEFT_AMT",
+      dependentFields: ["PAYSLIP", "RTGS_NEFT"],
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          !Boolean(dependentFieldsValues?.PAYSLIP?.value) &&
+          !Boolean(dependentFieldsValues?.RTGS_NEFT?.value)
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 2.375, md: 2.375, lg: 3, xl: 3 },
     },
 
     {

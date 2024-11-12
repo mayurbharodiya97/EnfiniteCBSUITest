@@ -242,6 +242,7 @@ export const en_language_data = {
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
+  PenalRt: "Penal Rate",
 
   // GridWrapper
   Search: "Search",
