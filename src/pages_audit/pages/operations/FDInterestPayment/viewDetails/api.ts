@@ -35,17 +35,6 @@ export const getIfscBenDetail = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getIfscBankDetail = async (reqData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRTGSIFSCCODEACWISE", {
-      ...reqData,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 export const getAccountTypeList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
